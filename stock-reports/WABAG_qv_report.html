@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VA Tech Wabag (WABAG) — Buffett Quality-Value Series v5.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A1F33;
+  --navy-2:#0F2C47;
+  --cyan:#16B8C4;
+  --cyan-soft:#9FE6EB;
+  --brass:#D98E2B;
+  --brass-soft:#F2C879;
+  --chrome:#AEBAC4;
+  --paper:#F6F8F8;
+  --paper-2:#ECEFEF;
+  --ink:#0E1B24;
+  --ink-soft:#4A5A66;
+  --green:#1E9E6B;
+  --green-bg:#E4F5EE;
+  --amber:#C8821E;
+  --amber-bg:#FBF0DD;
+  --red:#C84B3E;
+  --red-bg:#FBEAE7;
+  --grey:#8C99A2;
+  --grey-bg:#EEF1F2;
+  --line:#D8DEE1;
+  --display: 'Space Grotesk', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --body: 'IBM Plex Sans', sans-serif;
+  --radius: 10px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--body);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--display);margin:0 0 .4em 0;color:var(--navy);}
+p{margin:0 0 .8em 0;}
+.mono{font-family:var(--mono);}
+a{color:var(--cyan);}
+
+/* ===== HERO ===== */
+.hero{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 60%,#0A2A3D 100%);
+  color:#EAF2F4;
+  padding:26px 5vw 18px 5vw;
+  max-height:260px;
+  position:relative;
+  overflow:hidden;
+  border-bottom:3px solid var(--cyan);
+}
+.hero::after{
+  content:"";
+  position:absolute; right:-60px; top:-60px; width:320px; height:320px;
+  background:radial-gradient(circle, rgba(22,184,196,0.18) 0%, rgba(22,184,196,0) 70%);
+}
+.hero-top{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;}
+.hero-id .tag{font-family:var(--mono); font-size:11px; letter-spacing:.12em; color:var(--cyan-soft); text-transform:uppercase;}
+.hero-id h1{font-size:clamp(22px,3.4vw,34px); margin:2px 0 4px 0; color:#fff;}
+.hero-id .sub{font-family:var(--mono); font-size:12.5px; color:var(--chrome);}
+.verdict-badge{
+  background:#0D2A22; border:1.5px solid var(--green); color:#A9EFCB;
+  font-family:var(--display); font-weight:700; font-size:15px;
+  padding:8px 16px; border-radius:8px; text-align:center; white-space:nowrap;
+}
+.verdict-badge.watch{background:#2C2305; border-color:var(--brass); color:var(--brass-soft);}
+.badge-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+.pill{
+  font-family:var(--mono); font-size:11px; padding:4px 10px; border-radius:20px;
+  border:1px solid rgba(255,255,255,0.25); color:#EAF2F4; background:rgba(255,255,255,0.06);
+  display:inline-flex; align-items:center; gap:5px;
+}
+.pill.cat{border-color:var(--cyan); color:var(--cyan-soft);}
+.pill.ai-neutral{border-color:var(--grey); color:#D6DCDF;}
+.pill.macro{border-color:var(--brass); color:var(--brass-soft);}
+.conf-v{color:#7BE3A6;} .conf-e{color:#F0C36A;} .conf-r{color:#F09A8C;}
+.lede{font-size:13.5px; color:var(--chrome); max-width:760px; margin-top:10px;}
+
+/* ===== TAB BAR ===== */
+#tab-bar{
+  position:sticky; top:0; z-index:50;
+  background:#0D2236; display:flex; overflow-x:auto;
+  border-bottom:1px solid #1B3A52; scrollbar-width:thin;
+}
+.tab-btn{
+  font-family:var(--display); font-size:12.5px; font-weight:600; color:#8FA4B3;
+  background:transparent; border:none; padding:13px 16px; cursor:pointer;
+  border-bottom:3px solid transparent; white-space:nowrap; transition:.15s;
+}
+.tab-btn:hover{color:#fff;}
+.tab-btn.active{color:#fff; border-bottom-color:var(--cyan);}
+
+/* ===== LAYOUT ===== */
+.wrap{max-width:1180px; margin:0 auto; padding:28px 5vw 70px 5vw;}
+.tab-content{display:none;}
+section.block{margin-bottom:34px;}
+.block-title{
+  font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.1em;
+  color:var(--cyan); border-bottom:1px solid var(--line); padding-bottom:6px; margin-bottom:14px;
+}
+h2.h-tab{font-size:24px; margin-bottom:4px;}
+.subhead{color:var(--ink-soft); font-size:14px; margin-bottom:18px;}
+
+/* metric grid */
+.grid{display:grid; gap:12px;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:820px){.grid-4{grid-template-columns:repeat(2,1fr);} .grid-3{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+.metric{
+  background:#fff; border:1px solid var(--line); border-left:4px solid var(--cyan);
+  border-radius:8px; padding:12px 14px;
+}
+.metric.good{border-left-color:var(--green);}
+.metric.warn{border-left-color:var(--amber);}
+.metric.bad{border-left-color:var(--red);}
+.metric .label{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft);}
+.metric .value{font-family:var(--display); font-size:21px; font-weight:700; color:var(--navy); margin-top:2px;}
+.metric .note{font-size:11.5px; color:var(--ink-soft); margin-top:3px;}
+
+/* tables */
+table{width:100%; border-collapse:collapse; font-size:13px; background:#fff;}
+table.dtable th,table.dtable td{border:1px solid var(--line); padding:7px 9px; text-align:right;}
+table.dtable th{background:var(--navy); color:#fff; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; font-weight:500;}
+table.dtable td:first-child, table.dtable th:first-child{text-align:left; font-weight:500;}
+table.dtable tr:nth-child(even) td{background:#FAFBFB;}
+.table-wrap{overflow-x:auto; border-radius:8px; border:1px solid var(--line);}
+.table-wrap table.dtable{border:none;}
+.table-wrap table.dtable th,.table-wrap table.dtable td{border:none; border-bottom:1px solid var(--line); border-right:1px solid #EEF1F2;}
+
+/* cards */
+.card{background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px 18px;}
+.card h4{font-size:15px; margin-bottom:6px;}
+.card-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+@media(max-width:700px){.card-grid{grid-template-columns:1fr;}}
+
+/* scorecard PASS/MARGINAL/FAIL */
+.score-row{display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px dashed var(--line); font-size:13px;}
+.score-row:last-child{border-bottom:none;}
+.tag-pass,.tag-marg,.tag-fail{font-family:var(--mono); font-size:11px; font-weight:700; padding:2px 9px; border-radius:5px;}
+.tag-pass{background:var(--green-bg); color:var(--green);}
+.tag-marg{background:var(--amber-bg); color:var(--amber);}
+.tag-fail{background:var(--red-bg); color:var(--red);}
+
+/* moat stars */
+.stars{color:var(--brass); letter-spacing:1px;}
+
+/* verdict box */
+.verdict-box{
+  background:var(--navy); color:#EAF2F4; border-radius:14px; padding:26px 28px;
+  border:2px solid var(--brass); position:relative; overflow:hidden;
+}
+.verdict-box::before{content:""; position:absolute; left:-40px; bottom:-40px; width:220px; height:220px;
+  background:radial-gradient(circle, rgba(217,142,43,0.18), transparent 70%);}
+.verdict-box h3{color:#fff; font-size:26px;}
+.verdict-box .quote{font-style:italic; color:var(--chrome); border-left:3px solid var(--brass); padding-left:14px; margin-top:14px; font-size:14px;}
+
+/* pillar grade chips */
+.pillar-row{display:flex; gap:14px; flex-wrap:wrap; margin:16px 0;}
+.pillar-chip{flex:1; min-width:140px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px; text-align:center;}
+.pillar-chip .g{font-family:var(--display); font-size:30px; font-weight:700; color:var(--navy);}
+.pillar-chip .l{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:.06em;}
+
+/* upgrade conditions */
+.cond{display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--line);}
+.cond:last-child{border-bottom:none;}
+.cond .num{font-family:var(--display); font-weight:700; background:var(--cyan); color:#fff; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0;}
+
+/* badges generic */
+.flag{display:inline-block; padding:3px 10px; border-radius:6px; font-family:var(--mono); font-size:11px; font-weight:600;}
+.flag.green{background:var(--green-bg); color:var(--green);}
+.flag.amber{background:var(--amber-bg); color:var(--amber);}
+.flag.red{background:var(--red-bg); color:var(--red);}
+.flag.grey{background:var(--grey-bg); color:#5A6B75;}
+.flag.cyan{background:#E3F7F8; color:#0E7A82;}
+
+/* gauge */
+.gauge-wrap{display:flex; align-items:center; gap:18px;}
+.gauge{position:relative; width:120px; height:120px;}
+.gauge svg{transform:rotate(-90deg);}
+.gauge .num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column;}
+.gauge .num b{font-family:var(--display); font-size:24px; color:var(--navy);}
+.gauge .num span{font-family:var(--mono); font-size:9px; color:var(--ink-soft);}
+
+/* AI value chain */
+.chain{display:flex; gap:6px; flex-wrap:wrap;}
+.chain .lvl{flex:1; min-width:100px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px; text-align:center; font-size:11.5px;}
+.chain .lvl.active{background:var(--navy); color:#fff; border-color:var(--cyan);}
+.chain .lvl b{display:block; font-family:var(--display); font-size:12.5px; margin-bottom:3px;}
+
+/* footer */
+footer{background:var(--navy); color:var(--chrome); padding:30px 5vw; font-size:11.5px; line-height:1.7;}
+footer a{color:var(--cyan-soft);}
+footer .fmark{font-family:var(--mono); font-size:10px; color:#5A7383; margin-top:10px;}
+
+.flow-divider{height:3px; background:linear-gradient(90deg, var(--cyan), var(--brass), transparent); border-radius:3px; margin:24px 0;}
+
+ul.clean{margin:0; padding-left:18px;}
+ul.clean li{margin-bottom:6px; font-size:13.5px;}
+
+.two-col{display:grid; grid-template-columns:1.3fr 1fr; gap:20px;}
+@media(max-width:820px){.two-col{grid-template-columns:1fr;}}
+
+.src{font-size:10.5px; color:var(--grey); font-family:var(--mono); margin-top:4px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-id">
+      <div class="tag">Buffett Quality-Value Series v5.0 · Institutional Equity Research</div>
+      <h1>VA Tech Wabag Ltd.</h1>
+      <div class="sub">NSE: WABAG · BSE: 533269 · ISIN INE956G01038 · Water Technology / Industrial EPC &amp; O&amp;M</div>
+    </div>
+    <div class="verdict-badge watch">WATCH ★★<br><span style="font-size:11px;font-weight:400;">Quality compounder, price extended</span></div>
+  </div>
+  <div class="badge-row">
+    <span class="pill cat">CATEGORY C — Mature Quality Compounder</span>
+    <span class="pill ai-neutral">⚪ AI OVERLAY — NEUTRAL</span>
+    <span class="pill macro">MACRO: Tailwind (India capex + global water capex cycle)</span>
+    <span class="pill"><span class="conf-v">●</span> VERIFIED</span>
+    <span class="pill"><span class="conf-e">●</span> ESTIMATED</span>
+    <span class="pill"><span class="conf-r">●</span> UNVERIFIED</span>
+  </div>
+  <div class="lede">CMP ₹1,890 (19-Jun-2026, fresh 52-week high on maiden Kuwait order win) — a debt-free, asset-light global water-tech leader compounding ROCE through a record ₹17,200+ Cr order book, but trading ~34% above blended intrinsic value and ~90% above the Margin-of-Safety entry zone after a 43% YTD re-rating.</div>
+</div>
+
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+  <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intelligence</button>
+</div>
+
+<div class="wrap">
+
+<!-- ============ TAB 0 OVERVIEW ============ -->
+<div class="tab-content" id="t0" style="display:block;">
+  <h2 class="h-tab">Overview</h2>
+  <p class="subhead">Why this stock, why this category, why now</p>
+
+  <section class="block">
+    <div class="grid grid-4">
+      <div class="metric good"><div class="label">CMP (19-Jun-2026)</div><div class="value">₹1,890</div><div class="note">Fresh 52-wk high intraday <span class="conf-v">●V</span></div></div>
+      <div class="metric"><div class="label">Market Cap</div><div class="value">₹11,350 Cr</div><div class="note">SEBI: Small Cap <span class="conf-v">●V</span></div></div>
+      <div class="metric warn"><div class="label">Blended Base IV</div><div class="value">₹1,410</div><div class="note">CMP is 34% above <span class="conf-e">●E</span></div></div>
+      <div class="metric bad"><div class="label">MoS Entry Zone</div><div class="value">₹990–1,100</div><div class="note">CMP is ~85–90% above <span class="conf-e">●E</span></div></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Business Overview</div>
+    <p>VA Tech Wabag is a century-old (heritage dating to the Austrian VA Tech / Deutsche Babcock water business, current identity since 1999), Chennai-headquartered global water-technology multinational. It designs, builds and operates municipal and industrial water, wastewater, desalination, sludge and reuse plants across 25+ countries on four continents, and is ranked among the <strong>top-3 global private water operators and desalination players</strong> by Global Water Intelligence. The model is deliberately <strong>asset-light</strong>: WABAG owns very little fixed plant itself (₹67 Cr of gross block against ₹3,944 Cr of FY26 revenue); it wins EPC (Engineering, Procurement, Construction) and long-tenure O&amp;M (Operations &amp; Maintenance) contracts, financed largely through customer advances and working-capital lines rather than balance-sheet capital.</p>
+    <p>FY26 revenue of ₹3,944 Cr grew 19.7% YoY, PAT of ₹371 Cr grew ~26–27%, and the order book closed the year at a record <strong>₹17,200+ Cr</strong> (4.4x FY26 revenue), split ~62% EPC / 38% O&amp;M with roughly half from international markets (GCC, Southeast Asia, Africa, Europe). The company has been <strong>net-cash positive for 11 consecutive quarters</strong> and carries zero promoter pledging.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Series Rationale — Why the Buffett QV Framework Applies</div>
+    <p>WABAG is not a commodity contractor: large-scale desalination and complex membrane/biological treatment carry genuine technical entry barriers (process IP, performance-guarantee track record, government pre-qualification), which is why only a handful of global players can credibly bid for >300 MLD desalination EPC. Combined with a capital-light O&amp;M annuity tail and a strengthening balance sheet, this supports a moat-and-returns framework rather than a pure price-taker (Category E) treatment. It does <em>not</em> qualify for Category A (no >35% non-discretionary monopoly share, P/E has historically traded well under 30x) or Category B (sub-25% revenue CAGR), landing it squarely in <strong>Category C — Mature Quality Compounder</strong>, with shades of a recently-completed Category D turnaround (FY19–FY23 margin trough) now graduating into execution-proof quality.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">What Makes This Stock Interesting — and Challenging</div>
+    <div class="card-grid">
+      <div class="card">
+        <h4 style="color:var(--green);">Interesting</h4>
+        <ul class="clean">
+          <li>ROCE has structurally re-rated from 11% (FY19) to ~20% (FY26) as the order mix shifted toward higher-margin, technically-differentiated projects.</li>
+          <li>Record order book (4.4x revenue) provides multi-year revenue visibility; management guides 15–20% revenue CAGR, 13–15% EBITDA margin, RoCE/RoE &gt;20%/15% for FY27.</li>
+          <li>Maiden Kuwait entry (DBO desalination contract, ~₹1,000+ Cr) on 19-Jun-2026 extends the GCC franchise and triggered today's fresh 52-week high.</li>
+          <li>Zero promoter pledging; smart-money presence (Rekha Jhunjhunwala ~8% stake); credit rating upgraded to AA-/Stable.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--red);">Challenging</h4>
+        <ul class="clean">
+          <li>Stock has re-rated 43% YTD / ~35% in the past month; trailing P/E (~32x) sits ~75% above its own 5-year average (~18x) — squarely in the "expensive vs own history" zone.</li>
+          <li>Debtor days remain structurally high (223–254 days, FY23–FY25) — a real working-capital and earnings-quality watch item for an EPC business.</li>
+          <li>FY23 carried a one-off ₹(226) Cr other-income/exceptional hit that briefly crashed net profit to ₹11 Cr — flagged for monitoring under Management Integrity.</li>
+          <li>Promoter holding is low for Indian standards (19.1%) and has structurally declined from 24.7% (FY17) via past dilution.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Framework Adaptation</div>
+    <p>Standard Category C treatment applies (WACC 12–14%, terminal P/E 18–22x, MoS 20%, ×0.70 entry multiple). AI Overlay is assessed as <strong>NEUTRAL</strong>: AI/digital-twin/IoT tools are diffusing across the water-treatment industry for predictive maintenance and process optimisation (sector-wide, not WABAG-proprietary), but there is no evidence of a proprietary data flywheel, and the company's moat is not threatened by AI disruption — engineering execution, performance track record and government relationships are not easily replicated by software. Tab 9 is therefore presented in brief form (Classification dashboard + summary AI Opportunity Score) per the AI-Neutral depth rule.</p>
+  </section>
+</div>
+
+<!-- ============ TAB 1 MACRO & GROWTH ============ -->
+<div class="tab-content" id="t1">
+  <h2 class="h-tab">Macro &amp; Growth</h2>
+  <p class="subhead">Growth rates are derived outside-in from macro → sector → company alpha, not assumed</p>
+
+  <section class="block">
+    <div class="block-title">Layer 1 — Macro Cycle Dashboard</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th>Dimension</th><th>Reading</th><th>Status</th><th>Sector Impact</th></tr>
+        <tr><td>Real GDP (FY26 actual / FY27E)</td><td>~7.4–7.8% / 6.6%E <span class="conf-v">●V</span></td><td><span class="flag green">Tailwind</span></td><td>Supports public infra capex pipeline</td></tr>
+        <tr><td>CPI Inflation (new series)</td><td>~3.4–3.5% (Mar/Apr-26) <span class="conf-v">●V</span></td><td><span class="flag green">Benign</span></td><td>Low input-cost pressure on EPC margins</td></tr>
+        <tr><td>Nominal GDP ceiling</td><td>≈10% (Budget FY27 est.) <span class="conf-e">●E</span></td><td><span class="flag grey">Terminal-g ceiling</span></td><td>Caps long-run terminal growth assumption</td></tr>
+        <tr><td>RBI Rate Cycle</td><td>Repo 5.25%, neutral-to-easing bias <span class="conf-v">●V</span></td><td><span class="flag green">Tailwind</span></td><td>Lower funding cost for HAM/EPC working capital</td></tr>
+        <tr><td>Govt. Capex / Water Mission Cycle</td><td>Jal Jeevan 2.0 ₹8.7 trn, AMRUT 2.0 ₹3 trn, Namami Gange ₹3,100 Cr <span class="conf-v">●V</span></td><td><span class="flag green">Strong Tailwind</span></td><td>Direct order-book feeder for municipal segment</td></tr>
+        <tr><td>AI Adoption Cycle (sector)</td><td>Digital twins/IoT diffusing industry-wide; ~70% of utilities targeting digital integration by 2026 <span class="conf-e">●E</span></td><td><span class="flag grey">Neutral / Opportunity</span></td><td>Efficiency tool, not a moat disruptor — see Tab 9</td></tr>
+      </table>
+    </div>
+    <p style="margin-top:10px;"><strong>Macro Composite: <span class="flag green">TAILWIND</span></strong> &nbsp; <strong>AI Cycle Impact: <span class="flag grey">NEUTRAL</span></strong> — India's 10-yr G-Sec yield ~6.8% (mid-Jun-26, near 2-month low) and Nifty50 P/E ~20.0–20.8x (14–17% below 10-yr median of ~23.4x) <span class="conf-v">●V</span> together describe a supportive risk-free-rate and broad-market-valuation backdrop, even as WABAG itself has individually re-rated well ahead of the index.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Layer 2 — Sector Growth Derivation</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Sector / Sub-segment</th><th>Stress</th><th>Base</th><th>Accel</th><th>AI Impact</th></tr>
+        <tr><td style="text-align:left;">India Water &amp; Wastewater Treatment (blended)</td><td>7–9%</td><td>9–11%</td><td>12–15%</td><td>NEUTRAL</td></tr>
+        <tr><td style="text-align:left;">India Desalination Tech</td><td>5–7%</td><td>7–8.5%</td><td>9–12%</td><td>NEUTRAL</td></tr>
+        <tr><td style="text-align:left;">Industrial Water Infra (ZLD/MLD)</td><td>6–8%</td><td>8.3–10%</td><td>11–14%</td><td>WIDENER (mild)</td></tr>
+        <tr><td style="text-align:left;">Capital Goods (framework reference band)</td><td>8–12%</td><td>15–19%</td><td>20–25%</td><td>WIDENER</td></tr>
+        <tr><td style="text-align:left;"><strong>Blended sector range applied</strong></td><td><strong>8–10%</strong></td><td><strong>12–15%</strong></td><td><strong>16–20%</strong></td><td><strong>NEUTRAL</strong></td></tr>
+      </table>
+    </div>
+    <p class="src">Sources: Market Research Future, MarkNtel, Frost &amp; Sullivan, Mordor Intelligence, MarketsandData (India water/desal/industrial-water reports, 2025–26) <span class="conf-e">●E</span>. Blended range weighted toward WABAG's own municipal + industrial + desalination mix and skewed up by management's own 15–20% revenue-growth guidance and order-book visibility.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Layer 3 — Company Alpha Over Sector</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+        <tr><td style="text-align:left;">Market share gain (India + intl. EPC)</td><td>Active</td><td>+2–3%</td><td>+1%</td></tr>
+        <tr><td style="text-align:left;">Premiumisation (mix shift to desal/ZLD, higher-margin O&amp;M)</td><td>Active</td><td>+2%</td><td>+1%</td></tr>
+        <tr><td style="text-align:left;">Category/product expansion (Future Energy: green H2, solar UPW, CBG)</td><td>Potential</td><td>+0.5%</td><td>+1%</td></tr>
+        <tr><td style="text-align:left;">Geographic expansion (GCC: maiden Kuwait win, deeper UAE/Saudi)</td><td>Active</td><td>+2%</td><td>+1%</td></tr>
+        <tr><td style="text-align:left;">Pricing power above inflation</td><td>Potential</td><td>+1%</td><td>+0.5%</td></tr>
+        <tr><td style="text-align:left;">AI-driven alpha (6a cost / 6b market exp. / 6c flywheel)</td><td>Feature only</td><td>+0–1%</td><td>+0.5%</td></tr>
+        <tr><td style="text-align:left;"><strong>Total alpha</strong></td><td>—</td><td><strong>+7.5–9.5%</strong></td><td><strong>+5%</strong></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Growth Rate Summary Table (3 Scenarios)</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Parameter</th><th>Stress</th><th>Base</th><th>Accel</th></tr>
+        <tr><td style="text-align:left;">Macro state</td><td>GDP ~5.5–6%</td><td>GDP ~6.6–6.8%</td><td>GDP ~8%+</td></tr>
+        <tr><td style="text-align:left;">Sector growth</td><td>8–10%</td><td>12–15%</td><td>16–20%</td></tr>
+        <tr><td style="text-align:left;">Company alpha (Stage 1)</td><td>+5%</td><td>+7.5%</td><td>+9.5%</td></tr>
+        <tr><td style="text-align:left;">AI alpha (6a+6b+6c)</td><td>+0%</td><td>+0.5%</td><td>+1%</td></tr>
+        <tr><td style="text-align:left;"><strong>Stage 1 Revenue/FCF CAGR</strong></td><td><strong>~10%</strong></td><td><strong>~15–18%</strong></td><td><strong>~20–24%</strong></td></tr>
+        <tr><td style="text-align:left;">Stage 2 FCF CAGR</td><td>6–7%</td><td>10–12%</td><td>14–16%</td></tr>
+        <tr><td style="text-align:left;">Terminal growth (g)</td><td>5%</td><td>7%</td><td>8.5%</td></tr>
+        <tr><td style="text-align:left;">Margin direction</td><td>Compress (mix to EPC)</td><td>Stable/Expand</td><td>Expand (O&amp;M/desal mix)</td></tr>
+        <tr><td style="text-align:left;">Key risk</td><td>GCC geopolitics, order slippage</td><td>WC/debtor-day normalisation</td><td>New-energy diversification pays off</td></tr>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- ============ TAB 2 FINANCIALS ============ -->
+<div class="tab-content" id="t2">
+  <h2 class="h-tab">Financials</h2>
+  <p class="subhead">Category A/B/C/D standard treatment — Financial Fortress scorecard + Owner Earnings + O'Glove earnings quality</p>
+
+  <section class="block">
+    <div class="block-title">5-Year ROE / ROCE Trend</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Metric</th><th>FY21</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>FY26</th></tr>
+        <tr><td style="text-align:left;">Revenue (₹ Cr)</td><td>2,834</td><td>2,979</td><td>2,960</td><td>2,856</td><td>3,294</td><td><strong>3,944</strong></td></tr>
+        <tr><td style="text-align:left;">OPM %</td><td>8%</td><td>8%</td><td>11%</td><td>13%</td><td>13%</td><td><strong>13.3%</strong></td></tr>
+        <tr><td style="text-align:left;">Net Profit (₹ Cr)</td><td>101</td><td>132</td><td style="color:var(--red);">11*</td><td>250</td><td>295</td><td><strong>371</strong></td></tr>
+        <tr><td style="text-align:left;">EPS (₹)</td><td>17.71</td><td>21.21</td><td>2.09*</td><td>39.49</td><td>47.48</td><td><strong>59.51</strong></td></tr>
+        <tr><td style="text-align:left;">ROCE %</td><td>13%</td><td>13%</td><td>20%</td><td>20%</td><td>20%</td><td><strong>~20%E</strong></td></tr>
+        <tr><td style="text-align:left;">ROE %</td><td>~9%</td><td>~10%</td><td>~1%*</td><td>~14%</td><td>14.6%</td><td><strong>~15.3%E</strong></td></tr>
+      </table>
+    </div>
+    <p class="src">*FY23 net profit was depressed by a one-off ₹(226) Cr other-income/exceptional charge (Q4FY23 standalone loss of ₹111 Cr) — see Management tab for treatment. ROCE 5-yr trend (FY21→FY26): 13% → 13% → 20% → 20% → 20% → ~20%, i.e. structurally re-rated and durable post-FY23, not a one-quarter blip. <span class="conf-v">●V</span> Screener.in, company filings.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Financial Fortress Scorecard</div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="score-row"><span>ROE ≥15% for 5 consecutive years</span><span class="tag-fail">FAIL</span></div>
+        <div class="score-row"><span>ROIC (ROCE) &gt; WACC for 5 consecutive years</span><span class="tag-pass">PASS</span></div>
+        <div class="score-row"><span>Net cash preferred (vs net debt)</span><span class="tag-pass">PASS — 11 qtrs net cash</span></div>
+        <div class="score-row"><span>Net profit margin ≥15%</span><span class="tag-fail">FAIL — 9.4% FY26</span></div>
+        <div class="score-row"><span>FCF positive + growing</span><span class="tag-pass">PASS — ₹351 Cr FY25</span></div>
+        <div class="score-row"><span>Owner earnings ≥ net income</span><span class="tag-marg">MARGINAL — WC drag</span></div>
+      </div>
+      <div class="card">
+        <div class="score-row"><span>Pricing power proven</span><span class="tag-marg">MARGINAL</span></div>
+        <div class="score-row"><span>Revenue CAGR ≥ macro-derived sector CAGR</span><span class="tag-pass">PASS — TTM 20% vs 9–11%</span></div>
+        <div class="score-row"><span>Predictable / recurring revenue</span><span class="tag-marg">MARGINAL — 62% EPC / 38% O&amp;M</span></div>
+        <div class="score-row"><span>Capital-light model</span><span class="tag-pass">PASS — Fixed assets ₹67 Cr</span></div>
+        <div class="score-row"><span>Dividend payout &lt;80% of owner earnings</span><span class="tag-pass">PASS — ~8–9% payout</span></div>
+        <div class="score-row"><span>Overall scorecard</span><span class="tag-marg">6 PASS / 3 MARGINAL / 2 FAIL</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Owner Earnings (FY26, ₹ Cr) <span class="conf-e">●E</span></div>
+    <div class="card" style="background:#FAFCFC;">
+      <table class="dtable" style="border:none;">
+        <tr><td style="text-align:left;border:none;">Net Income</td><td style="border:none;">371</td></tr>
+        <tr><td style="text-align:left;border:none;">+ D&amp;A</td><td style="border:none;">~8</td></tr>
+        <tr><td style="text-align:left;border:none;">+ Non-cash FX (normalised)</td><td style="border:none;">~5</td></tr>
+        <tr><td style="text-align:left;border:none;">− Maintenance CapEx (asset-light, conservative)</td><td style="border:none;">~(10)</td></tr>
+        <tr><td style="text-align:left;border:none;">± Working-capital change (debtor-day drag)</td><td style="border:none;">~(60)</td></tr>
+        <tr style="border-top:2px solid var(--navy);"><td style="text-align:left;border:none;font-weight:700;">Owner Earnings — Conservative</td><td style="border:none;font-weight:700;">~314</td></tr>
+        <tr><td style="text-align:left;border:none;font-weight:700;">Owner Earnings — Base (normalised WC)</td><td style="border:none;font-weight:700;">~350</td></tr>
+      </table>
+    </div>
+    <p style="margin-top:8px;font-size:13px;">Owner earnings sit modestly <em>below</em> reported net income at the conservative end once the elevated 223+ day debtor cycle is normalised — the central earnings-quality watch item for this name, not a fatal flaw given the FY25 CFO/Net-Income ratio of 103–120%, but it argues for some caution on reported-earnings-multiple valuation.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Earnings Quality — O'Glove Framework</div>
+    <div class="grid grid-3">
+      <div class="card"><h4>Test 1 — FCF Conversion (5yr)</h4><p style="font-size:13px;">CFO/NI: FY22 9%, FY23 773%(distorted), FY24 54%, FY25 103–120%. Volatile but recent trend &gt;80%.</p><span class="tag-marg">MARGINAL</span></div>
+      <div class="card"><h4>Test 2 — DSO Trend (3yr)</h4><p style="font-size:13px;">Debtor days: 186 (FY23) → 254 (FY24) → 223 (FY25). Rose then partly reversed, but absolute level remains structurally elevated for an EPC model.</p><span class="tag-fail">FAIL</span></div>
+      <div class="card"><h4>Test 3 — Inventory Days (3yr)</h4><p style="font-size:13px;">Not separately disclosed for an EPC/project-revenue model.</p><span class="tag-marg">N/A</span></div>
+      <div class="card"><h4>Test 4 — Accounting Policy Stability</h4><p style="font-size:13px;">FY23 one-off ₹(226) Cr other-income hit flagged; no subsequent recurrence FY24–FY26. <span class="conf-r">●UNVERIFIED root cause</span></p><span class="tag-marg">MARGINAL</span></div>
+      <div class="card"><h4>Test 5 — Gross Margin Consistency (5yr)</h4><p style="font-size:13px;">OPM expanded structurally 8%→13% over 5 years, consistent with the disclosed shift toward higher-margin desal/O&amp;M mix.</p><span class="tag-pass">PASS</span></div>
+      <div class="card" style="background:var(--amber-bg);border-color:var(--amber);"><h4>Overall Grade</h4><p style="font-size:13px;">2 PASS / 2 MARGINAL / 1 FAIL (+N/A)</p><span class="tag-marg" style="font-size:13px;">ACCEPTABLE — quality-adjusted, widen MoS +5%</span></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ TAB 3 MOAT ============ -->
+<div class="tab-content" id="t3">
+  <h2 class="h-tab">Economic Moat</h2>
+  <p class="subhead">Switching costs · cost advantage · intangible assets · efficient scale · data flywheel test</p>
+
+  <section class="block">
+    <div class="grid grid-2">
+      <div class="card">
+        <h4>Switching Costs <span class="stars">★★★☆☆</span></h4>
+        <p style="font-size:13px;">O&amp;M contracts typically run 10–20 years with embedded performance guarantees; municipal/industrial clients face high re-tendering and re-qualification friction once WABAG is operating a plant. 38% of order book is O&amp;M, providing an annuity-like revenue tail.</p>
+      </div>
+      <div class="card">
+        <h4>Cost Advantage <span class="stars">★★★☆☆</span></h4>
+        <p style="font-size:13px;">Asset-light EPC model (₹67 Cr gross block vs ₹3,944 Cr revenue) means low capital intensity per ₹ of revenue versus integrated/utility-owned competitors; in-house process design reduces reliance on costly third-party licensing for membrane/RO and biological treatment trains.</p>
+      </div>
+      <div class="card">
+        <h4>Intangible Assets <span class="stars">★★★★☆</span></h4>
+        <p style="font-size:13px;">100+ year water-engineering heritage (VA Tech / Deutsche Babcock lineage), 6,500+ executed municipal/industrial projects across 25+ countries, AA-/Stable credit rating, recognised by Global Water Intelligence as a top-3 global desalination player, in-house R&amp;D centres (Chennai, Vienna, Winterthur).</p>
+      </div>
+      <div class="card">
+        <h4>Efficient Scale <span class="stars">★★★★☆</span></h4>
+        <p style="font-size:13px;">Very few global players can credibly bid &gt;300 MLD seawater desalination EPC (technical pre-qualification, performance-bond capacity, multi-decade track record) — a natural-oligopoly dynamic in the largest, highest-margin project tier, even though smaller municipal STP/ETP tenders are more commoditised.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">ROIC as Moat Proof — 5-Year Trend</div>
+    <p style="font-size:13.5px;">ROCE: 13% (FY21) → 13% (FY22) → 20% (FY23) → 20% (FY24) → 20% (FY25) → ~20%E (FY26). Per framework bands (&gt;40% exceptional · 20–40% wide · 15–20% narrow · 10–15% weak · &lt;10% no moat), WABAG sits at the <strong>narrow/wide boundary (~20%)</strong> — a real, durable improvement from the "weak" 11–13% band of FY19–22, but not yet in the exceptional tier.</p>
+    <div class="flow-divider"></div>
+    <div class="block-title">Macro Stress Test</div>
+    <table class="dtable">
+      <tr><th style="text-align:left;">Moat source</th><th>Stress-scenario verdict</th></tr>
+      <tr><td style="text-align:left;">Switching costs (O&amp;M base)</td><td><span class="flag green">STRENGTHENS</span> — clients least likely to re-tender O&amp;M during budget stress</td></tr>
+      <tr><td style="text-align:left;">Cost advantage (asset-light)</td><td><span class="flag amber">HOLDS</span> — but working-capital strain rises if client payments slow in a stress scenario</td></tr>
+      <tr><td style="text-align:left;">Intangible / track record</td><td><span class="flag green">STRENGTHENS</span> — flight to credible, bonded contractors in a downturn</td></tr>
+      <tr><td style="text-align:left;">Efficient scale (large desal niche)</td><td><span class="flag amber">HOLDS</span> — GCC capex cycle is oil-price sensitive; a sharp crude downturn could delay mega-project awards</td></tr>
+    </table>
+  </section>
+
+  <section class="block">
+    <div class="block-title" style="border-bottom:none;">Data Flywheel Verdict</div>
+    <div class="card" style="border:2px solid var(--grey); background:#FAFBFB;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+        <div>
+          <h4 style="margin-bottom:10px;">Flywheel Test (all 3 must be true for CONFIRMED)</h4>
+          <ul class="clean">
+            <li>✗ Proprietary training data competitors cannot replicate — no disclosed proprietary cross-client dataset</li>
+            <li>✗ More users/data measurably improves AI accuracy/relevance — not evidenced</li>
+            <li>~ Better AI/digital tools attract more users — SCADA/IoT used operationally for O&amp;M efficiency, a feature not a loop</li>
+          </ul>
+        </div>
+        <div style="text-align:center;">
+          <div class="flag grey" style="font-size:15px;padding:8px 18px;">FEATURE</div>
+          <div style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--navy);margin-top:8px;">3<span style="font-size:13px;color:var(--ink-soft);">/10</span></div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:10px;font-size:13px;">India-specific flywheel opportunities (UPI/Aadhaar-style data loops) are <strong>not applicable</strong> to this business model — WABAG's defensibility runs through engineering execution and contractual switching costs, not data network effects. AI tools here are operational-efficiency features (predictive maintenance, energy/chemical-dosing optimisation, in line with industry-wide adoption such as Xylem's GoAigua platform), not a structural moat widener. <strong>Overall Moat Grade: B+</strong>.</p>
+  </section>
+</div>
+
+<!-- ============ TAB 4 MANAGEMENT ============ -->
+<div class="tab-content" id="t4">
+  <h2 class="h-tab">Management Integrity</h2>
+  <p class="subhead">Capital allocation · ownership alignment · guidance reliability · red flags</p>
+
+  <section class="block">
+    <div class="grid grid-4">
+      <div class="metric good"><div class="label">Pledged Shares</div><div class="value">0%</div><div class="note">PASS <span class="conf-v">●V</span></div></div>
+      <div class="metric warn"><div class="label">Promoter Holding</div><div class="value">19.09%</div><div class="note">Low for India; flat 3+ yrs <span class="conf-v">●V</span></div></div>
+      <div class="metric good"><div class="label">Credit Rating</div><div class="value">AA-/Stable</div><div class="note">Upgraded FY25 <span class="conf-v">●V</span></div></div>
+      <div class="metric"><div class="label">Notable Holder</div><div class="value">~8%</div><div class="note">Rekha Jhunjhunwala (smart money) <span class="conf-v">●V</span></div></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="card-grid">
+      <div class="card">
+        <h4 style="color:var(--green);">Strengths</h4>
+        <ul class="clean">
+          <li>Zero promoter pledging eliminates forced-selling risk entirely.</li>
+          <li>Five consecutive years (through FY25) of net-cash-positive balance sheet; 11 consecutive net-cash quarters; gross cash ₹815 Cr, net cash &gt;₹1,000 Cr (FY26).</li>
+          <li>Conservative, debt-free capital allocation philosophy with rising but disciplined dividends (₹4/share FY25 → ₹5/share, 250% of face value, FY26).</li>
+          <li>Long-tenured CMD (Rajiv Mittal) and stable senior team (Deputy MD &amp; Group CEO, CFO) through multiple cycles.</li>
+          <li>Consistent, candid guidance: management's FY27 targets (15–20% revenue CAGR, 13–15% EBITDA margin, RoCE &gt;20%, RoE &gt;15%) have tracked closely to delivered results over the past 6 quarters.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--red);">Concerns / Red Flags</h4>
+        <ul class="clean">
+          <li><strong>FY23 exceptional item:</strong> a ₹(226) Cr other-income/exceptional hit drove Q4FY23 to a standalone loss and crashed full-year net profit to ₹11 Cr. Root cause not independently re-verified in this update <span class="conf-r">●UNVERIFIED</span> — has not recurred FY24–FY26, but warrants a standing monitor flag.</li>
+          <li>Promoter holding has structurally declined from 24.7% (FY17) to 19.1% (current) through past equity dilution — below-average skin-in-the-game by Indian small-cap standards.</li>
+          <li>Structurally elevated debtor days (220+) across FY23–FY25 — working-capital discipline, not fraud, but a recurring earnings-quality watch item (see Tab 2).</li>
+          <li>Company itself flags geopolitical tension in the Middle East as a risk given the growing GCC order-book concentration (~50% international mix).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Capital Allocation &amp; Counter-Cyclical Behaviour</div>
+    <p>Capital has been directed toward working-capital support for order-book execution rather than M&amp;A empire-building; the company has stayed within its asset-light identity rather than chasing build-own-operate concession assets that would gear up the balance sheet. Dividend payout has been deliberately kept low (0–9% of earnings through FY21–FY26) to preserve flexibility for an expanding, working-capital-intensive order book — a reasonable trade-off given FCF has remained positive (₹351 Cr FY25) throughout. The FY23 trough (and the post-COVID FY20–22 margin compression) did not trigger panic cost-cutting or a dividend cut from an already-low base; management instead used the period to re-mix the order book toward higher-margin desalination/O&amp;M work, which shows up directly in the FY23→FY26 OPM expansion (8%→13%).</p>
+  </section>
+</div>
+
+<!-- ============ TAB 5 VALUATION ============ -->
+<div class="tab-content" id="t5">
+  <h2 class="h-tab">Valuation &amp; Margin of Safety</h2>
+  <p class="subhead">Category C — Standard 5-Method treatment · WACC 13% · Terminal P/E 20x · MoS 20% (×0.70 entry)</p>
+
+  <section class="block">
+    <div class="block-title">Method 1 — DCF (2-Stage, Owner-Earnings Based)</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Scenario</th><th>WACC</th><th>Stage-1 g</th><th>Terminal g</th><th>PV Explicit FCF</th><th>PV Terminal Value</th><th>Equity Value</th><th>IV / Share</th></tr>
+        <tr><td style="text-align:left;">Stress</td><td>14%</td><td>10%</td><td>5%</td><td>₹1,574 Cr</td><td>₹3,416 Cr</td><td>₹5,990 Cr</td><td><strong>₹961</strong></td></tr>
+        <tr style="background:#EFF8F9;"><td style="text-align:left;"><strong>Base</strong></td><td>13%</td><td>15%</td><td>7%</td><td>₹1,845 Cr</td><td>₹6,812 Cr</td><td>₹9,657 Cr</td><td><strong>₹1,550</strong></td></tr>
+        <tr><td style="text-align:left;">Accel</td><td>12%</td><td>20%</td><td>8.5%</td><td>₹2,163 Cr</td><td>₹15,318 Cr</td><td>₹18,481 Cr</td><td><strong>₹2,967</strong></td></tr>
+      </table>
+    </div>
+    <p class="src">FY26 base FCF ~₹350 Cr; 6.23 Cr shares outstanding; net cash ~₹1,000 Cr added to enterprise value. <span class="conf-e">●E — proprietary model, not a published sell-side DCF.</span></p>
+    <div class="block-title" style="margin-top:18px;">DCF Sensitivity (Base Case)</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th></th><th>g = 6%</th><th>g = 7%</th><th>g = 8%</th></tr>
+        <tr><td style="text-align:left;">WACC = 12%</td><td>₹1,520</td><td>₹1,790</td><td>₹2,180</td></tr>
+        <tr style="background:#EFF8F9;"><td style="text-align:left;">WACC = 13%</td><td>₹1,340</td><td><strong>₹1,550</strong></td><td>₹1,830</td></tr>
+        <tr><td style="text-align:left;">WACC = 14%</td><td>₹1,200</td><td>₹1,360</td><td>₹1,560</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Methods 2–5 Summary</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adjustment</th></tr>
+        <tr><td style="text-align:left;">1. DCF (2-Stage)</td><td>₹961</td><td>₹1,550</td><td>₹2,967</td><td>None — NEUTRAL</td></tr>
+        <tr><td style="text-align:left;">2. Owner Earnings Capitalisation</td><td>₹780</td><td>₹1,100</td><td>₹1,520</td><td>None — NEUTRAL</td></tr>
+        <tr><td style="text-align:left;">3. ROIC / EPV (growth-adjusted)</td><td>₹600</td><td>₹1,300</td><td>₹1,750</td><td>None — NEUTRAL</td></tr>
+        <tr><td style="text-align:left;">4. P/E Earnings Power</td><td>₹1,260</td><td>₹1,700</td><td>₹2,200</td><td>None — NEUTRAL</td></tr>
+        <tr><td style="text-align:left;">5. Earnings Yield vs Bond Yield</td><td colspan="3" style="text-align:center;">Qualitative — see panel below (ERP currently negative)</td><td>None — NEUTRAL</td></tr>
+        <tr style="background:var(--navy);color:#fff;"><td style="text-align:left;font-weight:700;">Blended Base IV (avg. of 4 quant. methods)</td><td colspan="3" style="text-align:center;font-weight:700;font-size:15px;">≈ ₹1,410</td><td>+0% (AI Overlay NEUTRAL)</td></tr>
+      </table>
+    </div>
+    <div class="grid grid-3" style="margin-top:14px;">
+      <div class="metric"><div class="label">Blended Base IV</div><div class="value">₹1,410</div></div>
+      <div class="metric warn"><div class="label">MoS Entry (×0.70)</div><div class="value">₹987</div><div class="note">≈ ₹990–1,100 zone</div></div>
+      <div class="metric bad"><div class="label">CMP vs Base IV</div><div class="value">+34%</div><div class="note">Trading above intrinsic value</div></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Earnings Yield vs Bond Yield Panel</div>
+    <div class="grid grid-4">
+      <div class="metric"><div class="label">Trailing Earnings Yield</div><div class="value">3.15%</div></div>
+      <div class="metric"><div class="label">India 10-yr G-Sec</div><div class="value">6.80%</div></div>
+      <div class="metric bad"><div class="label">Implied ERP</div><div class="value">−3.65%</div><div class="note">Negative — caution flag</div></div>
+      <div class="metric"><div class="label">FCF Yield / Div. Yield</div><div class="value">3.1% / 0.27%</div></div>
+    </div>
+    <p style="margin-top:10px;font-size:13.5px;">A negative implied equity risk premium means the bond market currently offers a higher running yield than WABAG's trailing earnings yield — the stock is priced for continued high growth and multiple re-rating, not for current income or static value support. This is a normal feature of a re-rating quality compounder, but it removes the yield-based cushion a value investor would otherwise rely on.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Relative Valuation Gauge (vs Own History)</div>
+    <div class="grid grid-4">
+      <div class="metric"><div class="label">Trailing P/E</div><div class="value">~31.7x</div></div>
+      <div class="metric"><div class="label">5-Yr Avg P/E</div><div class="value">~18x</div></div>
+      <div class="metric"><div class="label">FY27E / FY28E P/E</div><div class="value">~22–26x / ~17–21x</div></div>
+      <div class="metric bad"><div class="label">Premium to 5-Yr Avg</div><div class="value">~+75%</div><div class="note">🔴 20%+ premium zone</div></div>
+    </div>
+    <p style="margin-top:10px;font-size:13.5px;">On the framework's own-history gauge (🟢 ≥20% discount · 🟡 10–20% discount · ⚪ ±10% · 🟠 10–20% premium · 🔴 20%+ premium), WABAG trailing P/E sits firmly in the <strong>🔴 deep-premium zone</strong> versus its own 5-year average — consistent with broker commentary (MarketsMojo, Business Standard) flagging "valuation concerns" even as fundamentals improve. AI Overlay is NEUTRAL, so no structurally-higher-multiple justification applies here (unlike an AI WIDENER case).</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Brokerage Cross-Check (for context, not part of the QV model)</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Brokerage</th><th>Rating</th><th>Target Price</th><th>Basis</th></tr>
+        <tr><td style="text-align:left;">Motilal Oswal (MOFSL)</td><td><span class="flag green">BUY</span></td><td>₹1,905</td><td>22x FY28E EPS</td></tr>
+        <tr><td style="text-align:left;">ICICI Securities</td><td><span class="flag green">BUY</span></td><td>₹1,930</td><td>20x FY28E EPS</td></tr>
+        <tr><td style="text-align:left;">Other coverage</td><td>Mixed Hold/Buy</td><td>₹1,300–1,450</td><td>Execution-risk discount</td></tr>
+      </table>
+    </div>
+    <p style="margin-top:8px;font-size:12.5px;color:var(--ink-soft);">Sell-side targets (₹1,905–1,930) sit close to CMP (₹1,890) — consensus largely views the stock as fairly-to-fully priced for FY28 earnings today, which corroborates this framework's independent "extended valuation" conclusion even though the Street's framing (forward earnings multiple) differs from the QV Series' margin-of-safety framing.</p>
+  </section>
+</div>
+
+<!-- ============ TAB 6 VERDICT ============ -->
+<div class="tab-content" id="t6">
+  <h2 class="h-tab">Verdict</h2>
+  <p class="subhead">Four-pillar synthesis · AI Overlay · upgrade conditions</p>
+
+  <section class="block">
+    <div class="pillar-row">
+      <div class="pillar-chip"><div class="g">B+</div><div class="l">Moat</div></div>
+      <div class="pillar-chip"><div class="g">B−</div><div class="l">Financial Fortress</div></div>
+      <div class="pillar-chip"><div class="g">A−</div><div class="l">Management</div></div>
+      <div class="pillar-chip"><div class="g">C−</div><div class="l">Valuation</div></div>
+    </div>
+    <div style="text-align:center;margin-bottom:10px;"><span class="pill ai-neutral" style="font-size:13px;">⚪ AI OVERLAY: NEUTRAL — no change to base thesis</span></div>
+  </section>
+
+  <section class="block">
+    <div class="verdict-box">
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--brass-soft);text-transform:uppercase;">Final Verdict</div>
+      <h3>WATCH ★★ — Decent Quality With Genuine Concerns; Wait For Correction</h3>
+      <p style="color:var(--chrome);max-width:680px;">Three of four pillars are solid-to-strong (Moat B+, Management A−, and an improving-but-not-yet-clean Financial Fortress at B−), and the operating story — record order book, margin inflection, debt-free balance sheet, fresh GCC contract wins — is genuinely attractive. But Valuation grades C−: CMP (₹1,890) sits ~34% above blended Base IV (₹1,410) and ~90% above the Margin-of-Safety entry zone (₹990–1,100), trailing P/E carries a ~75% premium to its own 5-year average, and the implied equity risk premium is negative. A Buffett-style margin-of-safety discipline says this is a "great business, poor entry price" situation today, compounded by an unresolved earnings-quality flag (debtor days) and a historical (FY23) exceptional-item scar that still warrants monitoring.</p>
+      <div class="quote">"Price is what you pay; value is what you get." — Applying that discipline here argues for patience, not for chasing today's fresh 52-week high.</div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Upgrade Conditions (Need 4–5, Specific &amp; Measurable)</div>
+    <div class="card">
+      <div class="cond"><div class="num">1</div><div>Price corrects to <strong>₹1,400–1,450</strong> (≈20% discount to CMP, approaching 5-yr average P/E of ~18–20x on FY27E EPS).</div></div>
+      <div class="cond"><div class="num">2</div><div>Daily RSI(14) falls below <strong>45–50</strong>, unwinding the current overbought extension from the Kuwait-order breakout.</div></div>
+      <div class="cond"><div class="num">3</div><div>Price retests the <strong>₹1,300–1,350</strong> zone (prior breakout shelf / 50-DMA support) and holds.</div></div>
+      <div class="cond"><div class="num">4</div><div>Debtor days (DSO) decline back below <strong>200 days</strong> for 2 consecutive quarters, confirming working-capital discipline.</div></div>
+      <div class="cond"><div class="num">5</div><div>Net profit margin sustains above <strong>10–11%</strong> for 2 consecutive quarters, progressing toward the 15% Financial Fortress threshold.</div></div>
+    </div>
+    <p style="margin-top:10px;font-size:12.5px;color:var(--ink-soft);">Conditions currently met: <strong>0 / 5</strong>. Not acceptable as upgrade triggers: vague language such as "sentiment improves" or "order momentum continues" — every condition above is a specific, checkable number.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">Series Tracker</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Field</th><th>Reading</th></tr>
+        <tr><td style="text-align:left;">Category</td><td>C — Mature Quality Compounder</td></tr>
+        <tr><td style="text-align:left;">AI Column</td><td>⚪ NEUTRAL</td></tr>
+        <tr><td style="text-align:left;">Verdict</td><td>WATCH ★★</td></tr>
+        <tr><td style="text-align:left;">Base IV / MoS Entry</td><td>₹1,410 / ₹990–1,100</td></tr>
+        <tr><td style="text-align:left;">CMP</td><td>₹1,890 (19-Jun-2026)</td></tr>
+        <tr><td style="text-align:left;">Horizon</td><td>5–7 years</td></tr>
+        <tr><td style="text-align:left;">Next Review Trigger</td><td>Q1FY27 results (Aug-2026) or any upgrade condition met</td></tr>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- ============ TAB 7 TECHNICAL ============ -->
+<div class="tab-content" id="t7">
+  <h2 class="h-tab">Technical Analysis</h2>
+  <p class="subhead">Price structure · moving averages · momentum · volume · trade structure</p>
+
+  <section class="block">
+    <div class="block-title">(A) Price Structure &amp; Ladder</div>
+    <div class="grid grid-4">
+      <div class="metric good"><div class="label">CMP</div><div class="value">₹1,890</div></div>
+      <div class="metric"><div class="label">52-Wk High / Low</div><div class="value">₹1,919 / ₹1,033</div></div>
+      <div class="metric good"><div class="label">1-Month Change</div><div class="value">+35%</div></div>
+      <div class="metric good"><div class="label">YTD Change</div><div class="value">+43%</div></div>
+    </div>
+    <p style="margin-top:10px;font-size:13px;">Stock made a fresh all-time/52-week high intraday today (19-Jun-2026) on the maiden Kuwait DBO desalination order, up ~4% to ~₹1,898–1,919 in opening trade <span class="conf-v">●V</span>, extending a sequence of 52-week highs set repeatedly through June 2026 (₹1,743 → ₹1,749 → ₹1,751 → ₹1,898+) on a string of large order wins (UAE Ajman, Kuwait MEWRE). Multi-timeframe trend: bullish on daily and weekly; monthly oscillators show some caution per third-party technical screens <span class="conf-e">●E</span>.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">(B) Moving Average Dashboard</div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Average</th><th>Status (as of 16–19 Jun 2026)</th></tr>
+        <tr><td style="text-align:left;">5 / 20 / 50 / 100 / 200-DMA</td><td><span class="flag green">Price above ALL five</span> — full bullish stack <span class="conf-v">●V</span></td></tr>
+        <tr><td style="text-align:left;">Golden/Death Cross</td><td>50-DMA materially above 200-DMA — bullish configuration intact <span class="conf-e">●E</span></td></tr>
+        <tr><td style="text-align:left;">200-DMA (reference, pre-rally)</td><td>~₹1,218 (Investing.com technical screen) <span class="conf-r">●UNVERIFIED — wide source variance</span></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">(C) Volume / OBV</div>
+    <p style="font-size:13.5px;">Today's volume (~12 lakh shares by mid-morning) and the past week's volume both run materially above multi-week averages, consistent with institutional participation behind the breakout rather than a thin, retail-only squeeze. On-Balance Volume read as bullish on the monthly timeframe per third-party screens, with no clear weekly trend signal — i.e., accumulation rather than distribution <span class="conf-e">●E</span>.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">(D) Momentum — RSI / MACD / Stochastic</div>
+    <div class="grid grid-3">
+      <div class="metric warn"><div class="label">RSI(14) Daily</div><div class="value">~72–78E</div><div class="note">Deep overbought zone <span class="conf-e">●E</span></div></div>
+      <div class="metric"><div class="label">MACD (Weekly)</div><div class="value">Bullish</div><div class="note">Mildly bearish on monthly <span class="conf-e">●E</span></div></div>
+      <div class="metric"><div class="label">Stochastic / Williams %R</div><div class="value">Overbought</div><div class="note">Consistent with fresh highs <span class="conf-e">●E</span></div></div>
+    </div>
+    <p style="margin-top:8px;font-size:12.5px;color:var(--ink-soft);">No single real-time RSI print could be independently verified across sources at time of writing; the ~72–78 estimate is derived from the magnitude/speed of the rally (+35% in 1 month, repeated fresh highs) rather than a quoted indicator value, and is flagged accordingly.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">(E) Chart Patterns</div>
+    <p style="font-size:13.5px;">Price action shows a multi-month base (₹1,300–1,480, roughly Jan–May 2026) followed by a confirmed ascending breakout on rising volume — structurally similar to a Cup &amp; Handle / ascending-triangle resolution, now extending into a series of measured-move continuation gaps on order-win news rather than a clean technical pattern. No bearish reversal pattern (H&amp;S, double-top) currently visible.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">(F) Trade Structure</div>
+    <div class="card-grid">
+      <div class="card" style="border-color:var(--amber);">
+        <h4>Chase-the-breakout plan (not recommended at CMP)</h4>
+        <table class="dtable" style="border:none;">
+          <tr><td style="text-align:left;border:none;">Entry</td><td style="border:none;">₹1,890</td></tr>
+          <tr><td style="text-align:left;border:none;">Stop-loss</td><td style="border:none;">₹1,650</td></tr>
+          <tr><td style="text-align:left;border:none;">Target 1 / 2</td><td style="border:none;">₹1,930 / ₹2,100</td></tr>
+          <tr><td style="text-align:left;border:none;font-weight:700;">R:R</td><td style="border:none;font-weight:700;color:var(--red);">~1:0.9 — fails ≥1:2.5 threshold</td></tr>
+        </table>
+      </div>
+      <div class="card" style="border-color:var(--green);">
+        <h4>Disciplined pullback plan (preferred)</h4>
+        <table class="dtable" style="border:none;">
+          <tr><td style="text-align:left;border:none;">Entry (on retest)</td><td style="border:none;">₹1,420</td></tr>
+          <tr><td style="text-align:left;border:none;">Stop-loss</td><td style="border:none;">₹1,300</td></tr>
+          <tr><td style="text-align:left;border:none;">Target 1 / 2</td><td style="border:none;">₹1,750 / ₹1,930</td></tr>
+          <tr><td style="text-align:left;border:none;font-weight:700;">R:R</td><td style="border:none;font-weight:700;color:var(--green);">~2.75:1 to 4.25:1 — meets threshold</td></tr>
+        </table>
+      </div>
+    </div>
+    <p style="margin-top:8px;font-size:12.5px;">Position sizing: standard single-position cap (no Cat-F constraint applies); size down given the current overbought/extended state regardless of which plan is used.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">(G) Technical Composite Score</div>
+    <div class="gauge-wrap">
+      <div class="gauge">
+        <svg width="120" height="120"><circle cx="60" cy="60" r="50" stroke="#E5EAEC" stroke-width="12" fill="none"/><circle cx="60" cy="60" r="50" stroke="#16B8C4" stroke-width="12" fill="none" stroke-dasharray="314" stroke-dashoffset="69" stroke-linecap="round"/></svg>
+        <div class="num"><b>78%</b><span>23.5/30</span></div>
+      </div>
+      <div style="font-size:13px;">
+        <p style="margin-bottom:4px;"><strong>Trend (5/5)</strong> · <strong>MA Stack (5/5)</strong> · <strong>Volume (4/5)</strong></p>
+        <p style="margin-bottom:4px;"><strong>Momentum (3/5 — overbought penalty)</strong> · <strong>Pattern (4.5/5)</strong> · <strong>Risk/Reward at CMP (2/5)</strong></p>
+        <p style="color:var(--ink-soft);">Strong trend-following score, pulled down chiefly by an unfavourable risk-reward at the current extended price — mirrors the fundamental WATCH verdict.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ TAB 8 SHAREHOLDING ============ -->
+<div class="tab-content" id="t8">
+  <h2 class="h-tab">Shareholding Pattern</h2>
+  <p class="subhead">5-quarter promoter / FII / DII trend · free float · ownership signals</p>
+
+  <section class="block">
+    <div class="block-title">(A) Promoter Trend (5 Quarters) <span style="font-weight:400;color:var(--ink-soft);">&nbsp;— Pledged: 0%</span></div>
+    <div class="table-wrap">
+      <table class="dtable">
+        <tr><th style="text-align:left;">Category</th><th>Mar-25</th><th>Jun-25</th><th>Sep-25</th><th>Dec-25</th><th>Mar-26</th><th>Trend</th></tr>
+        <tr><td style="text-align:left;">Promoters</td><td>19.12%</td><td>19.12%</td><td>19.10%</td><td>19.10%</td><td>19.09%</td><td>→ Flat</td></tr>
+        <tr><td style="text-align:left;">FIIs</td><td>18.58%</td><td>18.69%</td><td>18.40%</td><td>18.97%</td><td>16.60%</td><td>↓ Trimmed Q4</td></tr>
+        <tr><td style="text-align:left;">DIIs</td><td>3.02%</td><td>3.66%</td><td>4.47%</td><td>4.32%</td><td>5.77%</td><td>↑ Building</td></tr>
+        <tr><td style="text-align:left;">Public / Retail</td><td>59.28%</td><td>58.51%</td><td>58.04%</td><td>57.62%</td><td>58.54%</td><td>→ Broadly flat</td></tr>
+        <tr><td style="text-align:left;">Shareholder count</td><td>1,90,518</td><td>1,92,972</td><td>1,94,281</td><td>1,93,784</td><td>2,00,388</td><td>↑ Growing</td></tr>
+      </table>
+    </div>
+    <p class="src">Source: Screener.in / BSE shareholding disclosures <span class="conf-v">●V</span>.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">(B) FII / DII Detail &amp; Sectoral Headroom</div>
+    <p style="font-size:13.5px;">DIIs have been steadily adding for four straight quarters (3.02% → 5.77%), a constructive domestic-institutional accumulation signal. FIIs trimmed meaningfully in the Mar-26 quarter (18.97% → 16.60%) even as the stock rallied — plausibly profit-booking into strength rather than a fundamental view shift, but worth watching next quarter. General FPI/FII sectoral cap headroom for a non-sensitive-sector company is ample (well below any standard 100%/board-set ceiling) <span class="conf-r">●UNVERIFIED specific company-set cap</span>.</p>
+  </section>
+
+  <section class="block">
+    <div class="grid grid-4">
+      <div class="metric"><div class="label">Free Float</div><div class="value">~80.9%</div><div class="note">100% − promoter 19.1%</div></div>
+      <div class="metric"><div class="label">Free-Float Mkt Cap</div><div class="value">~₹9,180 Cr</div></div>
+      <div class="metric"><div class="label">Index Membership</div><div class="value">Nifty Microcap 250</div><div class="note">BSE 1000, Nifty Total Market <span class="conf-v">●V</span></div></div>
+      <div class="metric"><div class="label">SEBI Classification</div><div class="value">Small Cap</div></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-title">(E) Ownership Momentum &amp; Risk Scores</div>
+    <div class="gauge-wrap" style="gap:36px;">
+      <div class="gauge">
+        <svg width="120" height="120"><circle cx="60" cy="60" r="50" stroke="#E5EAEC" stroke-width="12" fill="none"/><circle cx="60" cy="60" r="50" stroke="#1E9E6B" stroke-width="12" fill="none" stroke-dasharray="314" stroke-dashoffset="120" stroke-linecap="round"/></svg>
+        <div class="num"><b>62</b><span>/100 Momentum</span></div>
+      </div>
+      <div class="gauge">
+        <svg width="120" height="120"><circle cx="60" cy="60" r="50" stroke="#E5EAEC" stroke-width="12" fill="none"/><circle cx="60" cy="60" r="50" stroke="#C8821E" stroke-width="12" fill="none" stroke-dasharray="314" stroke-dashoffset="220" stroke-linecap="round"/></svg>
+        <div class="num"><b>30</b><span>/100 Risk</span></div>
+      </div>
+      <div style="font-size:13px;max-width:340px;">
+        <p><strong>Ownership Momentum (62/100):</strong> rising DII conviction and a fast-growing, broadening retail shareholder base offset the Q4 FII trim and the structurally low promoter stake.</p>
+        <p><strong>Shareholding Risk (30/100, lower=better):</strong> zero pledging and stable promoter base keep this low; the main risk contributor is low absolute promoter skin-in-the-game rather than any pledge/distress signal.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ TAB 9 AI INTELLIGENCE (BRIEF — AI NEUTRAL) ============ -->
+<div class="tab-content" id="t9">
+  <h2 class="h-tab">AI Intelligence</h2>
+  <p class="subhead">AI Overlay = NEUTRAL → brief treatment: Classification dashboard + summary Opportunity Score only</p>
+
+  <section class="block">
+    <div class="block-title">(A) AI Classification Dashboard</div>
+    <div class="badge-row" style="margin-bottom:14px;">
+      <span class="pill cat" style="color:#0E7A82;border-color:#0E7A82;background:#E3F7F8;">CATEGORY: C</span>
+      <span class="pill" style="color:#5A6B75;border-color:#8C99A2;background:#EEF1F2;">AI OVERLAY: ⚪ NEUTRAL</span>
+      <span class="pill" style="color:#5A6B75;border-color:#8C99A2;background:#EEF1F2;">FLYWHEEL: FEATURE (3/10)</span>
+      <span class="pill" style="color:#0E7A82;border-color:#0E7A82;background:#E3F7F8;">ADOPTION PHASE: 2 (Sector)</span>
+    </div>
+    <p style="font-size:13.5px;">Evidence: industry-wide deployment of SCADA + IoT + AI-driven digital twins for predictive maintenance and process/energy optimisation is underway across the global water-treatment sector (e.g. Xylem's "Vue powered by GoAigua"), with one 2026 industry survey suggesting ~70% of municipal utilities are targeting full digital integration <span class="conf-e">●E</span>. This is a real, sector-wide efficiency trend — <strong>Phase 2 (early-to-mid adoption)</strong> — but no public evidence indicates WABAG has built or disclosed a proprietary AI/data product that differentiates its win-rate or margins versus peers <span class="conf-r">●UNVERIFIED at company level</span>.</p>
+  </section>
+
+  <section class="block">
+    <div class="block-title">(F) AI Opportunity Score — Summary</div>
+    <div class="gauge-wrap">
+      <div class="gauge">
+        <svg width="120" height="120"><circle cx="60" cy="60" r="50" stroke="#E5EAEC" stroke-width="12" fill="none"/><circle cx="60" cy="60" r="50" stroke="#8C99A2" stroke-width="12" fill="none" stroke-dasharray="314" stroke-dashoffset="176" stroke-linecap="round"/></svg>
+        <div class="num"><b>44</b><span>/100</span></div>
+      </div>
+      <div style="font-size:13px;">
+        <table class="dtable" style="border:none;">
+          <tr><td style="text-align:left;border:none;">Data Flywheel</td><td style="border:none;">4/20</td></tr>
+          <tr><td style="text-align:left;border:none;">Adoption Phase Timing</td><td style="border:none;">10/20</td></tr>
+          <tr><td style="text-align:left;border:none;">Value Chain Position</td><td style="border:none;">8/20</td></tr>
+          <tr><td style="text-align:left;border:none;">India Structural Advantage</td><td style="border:none;">4/20</td></tr>
+          <tr><td style="text-align:left;border:none;">AI Threat Resistance</td><td style="border:none;">18/20</td></tr>
+        </table>
+      </div>
+    </div>
+    <p style="margin-top:10px;"><strong>Portfolio Role: <span class="flag grey" style="font-size:13px;">MONITOR (40–60 band)</span></strong> · <strong>Investment Horizon (AI lens):</strong> 5–7 years (Level-5 AI-enabled incumbent). AI is neither a meaningful tailwind nor a meaningful threat to this thesis — the investment case rests on engineering execution, order-book conversion and capital discipline, not on an AI narrative. This is the correct, honest output of the AI-Neutral classification: a high score would be manufactured, and this name should not be re-rated up or down on AI grounds.</p>
+  </section>
+</div>
+
+</div>
+
+<footer>
+  <strong>Disclaimer:</strong> This report is generated for educational and informational purposes only under the Buffett Quality-Value Series v5.0 research framework and does not constitute investment advice, a recommendation, or an offer/solicitation to buy or sell any security. It has not been prepared by a SEBI-registered Research Analyst or Investment Adviser. Data is sourced from public filings (NSE/BSE/company investor presentations), Screener.in, brokerage commentary (MOFSL, ICICI Securities) and financial news aggregators as cited inline, current as of 19-Jun-2026; figures marked <span class="conf-e">●ESTIMATED</span> or <span class="conf-r">●UNVERIFIED</span> reflect the model's own derivation or single-source/unconfirmed data and should be independently verified before any investment decision. Past performance and order-book size are not guarantees of future execution or returns. Please consult a SEBI-registered investment adviser before making investment decisions.
+  <div class="fmark">Buffett Quality-Value Series v5.0 — Display: Space Grotesk · Body: IBM Plex Sans · Mono/Data: JetBrains Mono · Report generated 19-Jun-2026</div>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
