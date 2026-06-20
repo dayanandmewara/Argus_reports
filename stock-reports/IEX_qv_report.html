@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IEX — Indian Energy Exchange | Buffett Quality-Value Series</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy2: #1B2A3B;
+    --navy3: #243447;
+    --amber: #F4A261;
+    --amber-light: #FFD6A5;
+    --teal: #2EC4B6;
+    --teal-dark: #1A9E93;
+    --coral: #E76F51;
+    --text: #E8EFF5;
+    --text-muted: #7A98B8;
+    --text-dim: #6A80A0;
+    --border: rgba(46,196,182,0.2);
+    --verified: #2EC4B6;
+    --estimated: #F4A261;
+    --unverified: #E76F51;
+    --pass: #4CAF50;
+    --marginal: #F4A261;
+    --fail: #E76F51;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --radius: 12px;
+    --font-display: 'Oswald', sans-serif;
+    --font-body: 'Nunito', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--navy); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+  a { color: var(--teal); text-decoration: none; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0D1B2A 0%, #142235 40%, #1A2E45 100%);
+    border-bottom: 2px solid var(--amber);
+    padding: 28px 32px 22px;
+    max-height: 220px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(244,162,97,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .hero-left { flex: 1; }
+  .hero-ticker { font-family: var(--font-mono); color: var(--teal); font-size: 13px; letter-spacing: 2px; margin-bottom: 4px; }
+  .hero-name { font-family: var(--font-display); font-size: 36px; font-weight: 700; color: #fff; letter-spacing: 1px; line-height: 1; }
+  .hero-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+  .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 11px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+    font-family: var(--font-mono);
+  }
+  .badge-cat { background: rgba(244,162,97,0.2); border: 1px solid var(--amber); color: var(--amber); }
+  .badge-ai-neutral { background: rgba(200,200,200,0.1); border: 1px solid #888; color: #ccc; }
+  .badge-macro { background: rgba(46,196,182,0.15); border: 1px solid var(--teal); color: var(--teal); }
+  .badge-flywheel { background: rgba(255,255,255,0.07); border: 1px solid #556; color: var(--text-muted); }
+  .verdict-box {
+    background: rgba(244,162,97,0.12);
+    border: 2px solid var(--amber);
+    border-radius: 10px;
+    padding: 12px 18px;
+    text-align: center;
+    min-width: 160px;
+  }
+  .verdict-label { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); letter-spacing: 2px; }
+  .verdict-main { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--amber); }
+  .verdict-stars { color: var(--amber); font-size: 16px; }
+  .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .pill {
+    font-family: var(--font-mono); font-size: 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 4px 10px;
+    color: var(--text);
+  }
+  .pill-val { color: var(--teal); }
+  .pill-neg { color: var(--coral); }
+  .pill-pos { color: var(--pass); }
+
+  /* TAB BAR */
+  #tab-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: #0A1520;
+    border-bottom: 1px solid rgba(46,196,182,0.25);
+    display: flex; overflow-x: auto; gap: 0;
+    padding: 0 8px;
+  }
+  #tab-bar::-webkit-scrollbar { height: 3px; }
+  #tab-bar::-webkit-scrollbar-thumb { background: var(--amber); }
+  .tab-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--text-muted); font-family: var(--font-body);
+    font-size: 13px; font-weight: 600;
+    padding: 12px 14px; white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 28px 32px 48px; max-width: 1100px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* TYPOGRAPHY */
+  h2 { font-family: var(--font-display); font-size: 26px; font-weight: 600; color: var(--amber); letter-spacing: 0.5px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  h3 { font-family: var(--font-display); font-size: 20px; color: var(--teal); margin: 28px 0 12px; }
+  h4 { font-family: var(--font-body); font-size: 15px; font-weight: 700; color: var(--text); margin: 18px 0 8px; }
+  p { margin-bottom: 10px; color: var(--text); font-size: 15px; }
+
+  /* CARDS */
+  .card { background: var(--navy2); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 18px; box-shadow: var(--shadow); }
+  .card-accent { border-left: 4px solid var(--amber); }
+  .card-teal { border-left: 4px solid var(--teal); }
+  .card-coral { border-left: 4px solid var(--coral); }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  /* METRIC CARDS */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 16px 0; }
+  .metric-card {
+    background: var(--navy3); border-radius: 10px;
+    padding: 14px 18px;
+    border-left: 4px solid var(--teal);
+  }
+  .metric-label { font-size: 11px; font-family: var(--font-mono); color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+  .metric-value { font-family: var(--font-mono); font-size: 20px; font-weight: 600; color: var(--text); margin: 4px 0 2px; }
+  .metric-sub { font-size: 12px; color: var(--text-muted); }
+
+  /* CONFIDENCE PILLS */
+  .v { background: rgba(46,196,182,0.15); border: 1px solid var(--teal); color: var(--teal); border-radius: 4px; padding: 1px 7px; font-size: 10px; font-family: var(--font-mono); }
+  .e { background: rgba(244,162,97,0.15); border: 1px solid var(--amber); color: var(--amber); border-radius: 4px; padding: 1px 7px; font-size: 10px; font-family: var(--font-mono); }
+  .u { background: rgba(231,111,81,0.15); border: 1px solid var(--coral); color: var(--coral); border-radius: 4px; padding: 1px 7px; font-size: 10px; font-family: var(--font-mono); }
+
+  /* TABLE */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 14px; margin: 14px 0; }
+  .tbl th { background: var(--navy3); color: var(--teal); font-family: var(--font-mono); font-size: 12px; text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .tbl td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text); vertical-align: top; }
+  .tbl tr:hover td { background: rgba(255,255,255,0.03); }
+  .tbl .num { font-family: var(--font-mono); text-align: right; }
+  .tbl .good { color: var(--pass); font-weight: 600; }
+  .tbl .warn { color: var(--amber); }
+  .tbl .bad { color: var(--coral); }
+
+  /* SCORECARD */
+  .scorecard { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin: 16px 0; }
+  .score-item {
+    background: var(--navy3); border-radius: 8px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-left: 4px solid transparent;
+  }
+  .score-item.pass { border-left-color: var(--pass); }
+  .score-item.marginal { border-left-color: var(--amber); }
+  .score-item.fail { border-left-color: var(--coral); }
+  .score-icon { font-size: 18px; flex-shrink: 0; }
+  .score-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .score-note { font-size: 12px; color: var(--text-muted); }
+  .score-badge { margin-left: auto; font-family: var(--font-mono); font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .score-badge.pass { color: var(--pass); }
+  .score-badge.marginal { color: var(--amber); }
+  .score-badge.fail { color: var(--coral); }
+
+  /* PILLAR GRADES */
+  .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
+  .pillar-card {
+    background: var(--navy3); border-radius: 10px; padding: 18px 14px;
+    text-align: center; border-top: 3px solid var(--amber);
+  }
+  .pillar-title { font-size: 12px; font-family: var(--font-mono); color: var(--text-dim); letter-spacing: 1px; margin-bottom: 8px; }
+  .pillar-grade { font-family: var(--font-display); font-size: 40px; font-weight: 700; color: var(--amber); }
+  .pillar-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* MOAT STARS */
+  .moat-card { background: var(--navy3); border-radius: 10px; padding: 16px 20px; margin-bottom: 10px; }
+  .moat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .moat-name { font-weight: 600; font-size: 14px; }
+  .moat-stars { color: var(--amber); font-size: 16px; }
+  .moat-note { font-size: 13px; color: var(--text-muted); }
+
+  /* FLYWHEEL */
+  .flywheel-box {
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(120,120,140,0.4);
+    border-radius: 12px; padding: 20px 24px;
+    margin: 16px 0;
+  }
+  .flywheel-title { font-family: var(--font-display); font-size: 18px; color: #aaa; margin-bottom: 8px; }
+  .flywheel-badge { display: inline-block; background: rgba(200,200,200,0.1); border: 1px solid #666; color: #999; border-radius: 20px; padding: 4px 16px; font-size: 13px; font-family: var(--font-mono); margin-bottom: 12px; }
+
+  /* DCF TABLE */
+  .dcf-scenario { background: var(--navy3); border-radius: 10px; padding: 16px 20px; }
+  .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0; }
+  .scenario-card {
+    background: var(--navy2); border-radius: 8px; padding: 14px;
+    border-top: 3px solid var(--border);
+    text-align: center;
+  }
+  .scenario-card.stress { border-top-color: var(--coral); }
+  .scenario-card.base { border-top-color: var(--amber); }
+  .scenario-card.accel { border-top-color: var(--teal); }
+  .scenario-label { font-size: 11px; font-family: var(--font-mono); color: var(--text-dim); }
+  .scenario-iv { font-family: var(--font-display); font-size: 28px; font-weight: 700; margin: 6px 0; }
+  .scenario-card.stress .scenario-iv { color: var(--coral); }
+  .scenario-card.base .scenario-iv { color: var(--amber); }
+  .scenario-card.accel .scenario-iv { color: var(--teal); }
+
+  /* VERDICT */
+  .verdict-main-box {
+    background: linear-gradient(135deg, rgba(244,162,97,0.1) 0%, rgba(244,162,97,0.05) 100%);
+    border: 2px solid var(--amber);
+    border-radius: 14px; padding: 28px 32px;
+    margin: 20px 0;
+  }
+  .verdict-headline { font-family: var(--font-display); font-size: 36px; color: var(--amber); }
+  .verdict-quote { font-style: italic; color: var(--text-muted); font-size: 14px; margin-top: 10px; border-left: 3px solid var(--amber); padding-left: 14px; }
+  .upgrade-items { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .upgrade-item {
+    background: var(--navy3); border-radius: 8px; padding: 12px 16px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .upgrade-num {
+    background: var(--amber); color: var(--navy); border-radius: 50%;
+    width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0;
+  }
+
+  /* TECHNICAL */
+  .price-ladder { background: var(--navy3); border-radius: 10px; padding: 16px 20px; }
+  .ladder-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .ladder-label { font-size: 13px; color: var(--text-muted); }
+  .ladder-price { font-family: var(--font-mono); font-weight: 600; color: var(--text); }
+
+  /* MA DASHBOARD */
+  .ma-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 12px 0; }
+  .ma-item { background: var(--navy3); border-radius: 8px; padding: 12px; text-align: center; }
+  .ma-label { font-size: 11px; font-family: var(--font-mono); color: var(--text-dim); }
+  .ma-val { font-family: var(--font-mono); font-size: 18px; font-weight: 600; margin: 4px 0; }
+  .ma-status { font-size: 11px; }
+  .above { color: var(--pass); }
+  .below { color: var(--coral); }
+
+  /* SHAREHOLDING */
+  .sh-bar { background: var(--navy3); border-radius: 8px; overflow: hidden; height: 18px; margin: 4px 0; display: flex; }
+  .sh-seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-family: var(--font-mono); font-weight: 600; }
+
+  /* AI TAB */
+  .ai-dash { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+  .ai-badge-card { background: var(--navy3); border-radius: 10px; padding: 14px; text-align: center; }
+  .ai-badge-label { font-size: 10px; font-family: var(--font-mono); color: var(--text-dim); letter-spacing: 1px; margin-bottom: 6px; }
+  .ai-badge-val { font-family: var(--font-display); font-size: 16px; font-weight: 600; }
+
+  /* VALUE CHAIN */
+  .value-chain { display: flex; gap: 0; margin: 16px 0; align-items: stretch; overflow-x: auto; }
+  .vc-level { flex: 1; min-width: 120px; background: var(--navy3); padding: 12px 10px; text-align: center; border-right: 1px solid var(--border); font-size: 12px; }
+  .vc-level:first-child { border-radius: 8px 0 0 8px; }
+  .vc-level:last-child { border-radius: 0 8px 8px 0; border-right: none; }
+  .vc-level.active { background: rgba(244,162,97,0.15); border: 2px solid var(--amber); }
+  .vc-num { font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--text-muted); }
+  .vc-level.active .vc-num { color: var(--amber); }
+  .vc-name { font-weight: 600; font-size: 12px; margin: 4px 0; }
+  .vc-desc { font-size: 11px; color: var(--text-dim); }
+
+  /* RISK BOX */
+  .risk-box {
+    background: rgba(231,111,81,0.08);
+    border: 1.5px solid rgba(231,111,81,0.5);
+    border-radius: 10px; padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .risk-title { color: var(--coral); font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+
+  /* SERIES TABLE */
+  .series-tbl { font-size: 13px; }
+  .series-tbl td, .series-tbl th { padding: 8px 10px; }
+
+  /* GAUGE */
+  .gauge-wrap { display: flex; align-items: center; gap: 16px; padding: 16px 0; }
+  .gauge-bar { flex: 1; height: 18px; background: var(--navy3); border-radius: 9px; overflow: hidden; }
+  .gauge-fill { height: 100%; background: linear-gradient(90deg, var(--coral), var(--amber), var(--teal)); border-radius: 9px; }
+  .gauge-score { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--amber); }
+  .gauge-label { font-size: 13px; color: var(--text-muted); }
+
+  /* RESPONSIVE */
+  @media (max-width: 680px) {
+    .hero { padding: 20px 16px 16px; }
+    .hero-name { font-size: 26px; }
+    .tab-content { padding: 18px 16px 40px; }
+    .pillars { grid-template-columns: repeat(2, 1fr); }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .ma-grid { grid-template-columns: repeat(3, 1fr); }
+    .ai-dash { grid-template-columns: repeat(2, 1fr); }
+    .scenario-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .hero-top { flex-direction: column; }
+    .verdict-box { min-width: unset; width: 100%; }
+    .pillars { grid-template-columns: repeat(2, 1fr); }
+    .ma-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+  .tag-r { float: right; font-size: 11px; }
+  .alert { background: rgba(231,111,81,0.1); border: 1px solid rgba(231,111,81,0.4); border-radius: 8px; padding: 12px 16px; margin: 10px 0; font-size: 14px; color: var(--coral); }
+  .info { background: rgba(46,196,182,0.07); border: 1px solid rgba(46,196,182,0.3); border-radius: 8px; padding: 12px 16px; margin: 10px 0; font-size: 14px; }
+  footer { text-align: center; padding: 24px 32px; font-size: 12px; color: var(--text-dim); border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-left">
+      <div class="hero-ticker">NSE: IEX &nbsp;|&nbsp; BSE: 540750 &nbsp;|&nbsp; ISIN: INE022Q01020</div>
+      <div class="hero-name">INDIAN ENERGY EXCHANGE</div>
+      <div class="hero-sub">India's Premier Power Exchange — Electricity, Green Energy, Gas &amp; Certificates Platform</div>
+      <div class="hero-badges">
+        <span class="badge badge-cat">CAT C — MATURE QUALITY COMPOUNDER</span>
+        <span class="badge badge-ai-neutral">⚪ AI NEUTRAL</span>
+        <span class="badge badge-macro">⚡ MACRO TAILWIND — INDIA POWER DEMAND</span>
+        <span class="badge badge-flywheel">FLYWHEEL: COSMETIC</span>
+      </div>
+      <div class="hero-pills">
+        <span class="pill">CMP <span class="pill-val">₹124.6</span></span>
+        <span class="pill">Mkt Cap <span class="pill-val">~₹11,150 Cr</span></span>
+        <span class="pill">52W High <span class="pill-neg">₹215.4</span></span>
+        <span class="pill">52W Low <span class="pill-val">₹114.6</span></span>
+        <span class="pill">P/E TTM <span class="pill-val">~22.7x</span></span>
+        <span class="pill">ROIC <span class="pill-pos">&gt;178%</span></span>
+      </div>
+    </div>
+    <div class="verdict-box">
+      <div class="verdict-label">VERDICT</div>
+      <div class="verdict-main">WATCH</div>
+      <div class="verdict-stars">★★★</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Entry: ₹105–115</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content active">
+  <h2>Company Overview</h2>
+
+  <div class="card card-accent">
+    <h3 style="margin-top:0">The Only Listed Power Exchange in India</h3>
+    <p>Indian Energy Exchange (IEX), founded in 2007 and operational since June 2008, is India's first and largest electricity exchange. As of FY2026, it commands <strong>85–98% market share</strong> across its various segments — Day-Ahead Market (DAM), Real-Time Market (RTM), Term-Ahead Market (TAM), and Green Markets — making it a near-monopoly regulated by the Central Electricity Regulatory Commission (CERC).</p>
+    <p>The business is structurally extraordinary: only <strong>179 employees</strong> operate a platform handling 141 billion units (BU) of electricity trading in FY26. Revenue comes almost entirely from transaction fees — approximately 0.5–0.6 paise per unit per side — making it one of the most asset-light, high-ROIC businesses listed on Indian exchanges.</p>
+    <p>IEX sits at the intersection of India's two mega-structural themes: the electrification of the economy and the renewable energy transition. Its subsidiaries include the Indian Gas Exchange (IGX) for gas trading, the International Carbon Exchange (ICX) for carbon certificates, and a planned Coal Exchange.</p>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-label">FY26E Revenue</div>
+      <div class="metric-value">₹660–680 Cr</div>
+      <div class="metric-sub">~10% YoY growth <span class="e">EST</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">FY26E PAT</div>
+      <div class="metric-value">~₹490 Cr</div>
+      <div class="metric-sub">Based on 9M PAT ₹363 Cr <span class="e">EST</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">PAT Margin</div>
+      <div class="metric-value">~72–74%</div>
+      <div class="metric-sub">Extraordinary for any business <span class="v">VFD</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">ROIC</div>
+      <div class="metric-value">&gt;178%</div>
+      <div class="metric-sub">Asset-light exchange model <span class="v">VFD</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">FY26 Volume</div>
+      <div class="metric-value">141 BU</div>
+      <div class="metric-sub">+17% YoY, all-time record <span class="v">VFD</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Employees</div>
+      <div class="metric-value">179</div>
+      <div class="metric-sub">Revenue per employee ~₹3.8 Cr <span class="v">VFD</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Net Debt</div>
+      <div class="metric-value">Net Cash</div>
+      <div class="metric-sub">Essentially debt-free <span class="v">VFD</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Market Share</div>
+      <div class="metric-value">85–98%</div>
+      <div class="metric-sub">Segment-dependent <span class="v">VFD</span></div>
+    </div>
+  </div>
+
+  <h3>Business Segments</h3>
+  <table class="tbl">
+    <tr><th>Segment</th><th>FY26 Volume</th><th>YoY Growth</th><th>Note</th></tr>
+    <tr><td>Day-Ahead Market (DAM)</td><td class="num">~72 BU</td><td class="num warn">+2.4%</td><td>Core; maturing; price-discovery moat under regulatory threat</td></tr>
+    <tr><td>Real-Time Market (RTM)</td><td class="num">~42 BU</td><td class="num good">+41%</td><td>Fastest-growing; renewable grid-balancing driver</td></tr>
+    <tr><td>Term-Ahead Market (TAM)</td><td class="num">~9 BU</td><td class="num good">+20%</td><td>Flexible contracting; growing with C&amp;I consumer participation</td></tr>
+    <tr><td>Green Market (G-DAM + G-TAM)</td><td class="num">10.78 BU</td><td class="num good">+23%</td><td>Renewable energy trading; structural growth</td></tr>
+    <tr><td>REC Market</td><td class="num">187.2 lakh RECs</td><td class="num warn">+5%</td><td>Renewable Energy Certificates; compliance-driven</td></tr>
+    <tr><td>Indian Gas Exchange (IGX)</td><td class="num">17.5M MMBtu (Q3)</td><td class="num warn">+8%</td><td>Gas trading subsidiary; profitable</td></tr>
+    <tr><td>Int'l Carbon Exchange (ICX)</td><td class="num">13.3M I-RECs (9M)</td><td class="num good">+125%</td><td>Carbon credits; nascent but high growth</td></tr>
+  </table>
+
+  <h3>Why This Stock Is in the Series</h3>
+  <div class="card card-teal">
+    <p>IEX represents one of the most unusual businesses on Indian exchanges — a regulated exchange monopoly with software-like economics (74% PAT margin, ROIC >178%) but subject to a once-in-a-decade regulatory risk. The stock has fallen ~47% from its 52-week high of ₹215.4 to ₹124.6, purely due to the CERC Market Coupling directive (Feb 13, 2026 APTEL dismissal is the pivotal event). The core analytical question: <strong>is the market correctly pricing the regulatory risk, or has it overreacted?</strong></p>
+    <p>The business fundamentals remain exceptional. The regulatory risk is real but implementation is still months to years away. This is a classic quality-at-discount setup — but the Margin of Safety needs to be wider given the structural nature of the threat.</p>
+  </div>
+
+  <div class="alert">⚠️ DOMINANT RISK: On February 13, 2026, APTEL dismissed IEX's plea challenging CERC's Market Coupling directive. CERC can now draft and notify formal market coupling regulations. Once notified, IEX retains legal right to challenge, but the regulatory trajectory is adverse to IEX's monopoly moat. This is a binary risk that defines the investment thesis.</div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <h2>Macro Context &amp; Growth Derivation</h2>
+
+  <h3>Layer 1 — Macro Anchor</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>India Macro (FY2025-26)</h4>
+      <table class="tbl">
+        <tr><td>Real GDP Growth (RBI estimate)</td><td class="num good">7.3% <span class="v">VFD</span></td></tr>
+        <tr><td>CPI Inflation (benign cycle)</td><td class="num good">~1–2% <span class="v">VFD</span></td></tr>
+        <tr><td>India Nominal GDP Growth</td><td class="num good">~8.6% <span class="v">VFD</span></td></tr>
+        <tr><td>10-yr G-Sec Yield (estimate)</td><td class="num warn">~6.5–6.7% <span class="e">EST</span></td></tr>
+        <tr><td>Repo Rate (RBI, Dec 2025)</td><td class="num">5.25% <span class="v">VFD</span></td></tr>
+        <tr><td>Terminal g ceiling (GDP×0.72)</td><td class="num">~6.2%</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>Macro Cycle Dashboard</h4>
+      <table class="tbl">
+        <tr><td>Rural Income Cycle</td><td class="num good">Recovery/Neutral</td></tr>
+        <tr><td>Urban Consumption</td><td class="num good">Resilient</td></tr>
+        <tr><td>Input Cost Cycle</td><td class="num good">Falling (coal -10% YoY)</td></tr>
+        <tr><td>Interest Rate Cycle</td><td class="num good">Easing (repo 5.25%)</td></tr>
+        <tr><td>Govt Capex (Power Infra)</td><td class="num good">Strong (+55GW added FY26)</td></tr>
+        <tr><td>AI Adoption Cycle</td><td class="num warn">Neutral for IEX</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="info">MACRO COMPOSITE: <strong>TAILWIND</strong> — India's power demand is growing, renewable capacity expanding, short-term trading penetration increasing. The broader macro strongly supports IEX's volume growth. The only headwind is regulatory (market coupling), not macroeconomic.</div>
+
+  <h3>Layer 2 — Sector Growth</h3>
+  <div class="card">
+    <p>IEX operates in the <strong>Power Exchange / Electricity Trading</strong> sector. India's total electricity consumption is ~1,700 BU/year. Short-term trading (including exchanges) = ~238 BU in FY25 (~14% of total). Exchange-traded portion = ~121–141 BU (IEX dominant).</p>
+    <table class="tbl">
+      <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Acceleration</th></tr>
+      <tr><td>India power demand growth</td><td class="num warn">3–4%</td><td class="num">5–7%</td><td class="num good">8–10%</td></tr>
+      <tr><td>Exchange penetration shift</td><td class="num warn">+0.5% pts</td><td class="num">+1–1.5% pts</td><td class="num good">+2–3% pts</td></tr>
+      <tr><td>Implied exchange volume CAGR</td><td class="num warn">7–9%</td><td class="num">12–16%</td><td class="num good">18–22%</td></tr>
+      <tr><td>Revenue CAGR (with mix/fee effects)</td><td class="num warn">5–8%</td><td class="num">10–13%</td><td class="num good">15–18%</td></tr>
+      <tr><td>AI Impact on sector</td><td colspan="3" class="num">NEUTRAL — AI in grid mgmt helps IEX indirectly (RTM growth)</td></tr>
+    </table>
+    <p style="margin-top:10px;font-size:13px;color:var(--text-muted)"><strong>Structural tailwinds:</strong> (1) Short-term trading still only 14% of total power — massive room for growth vs European/US markets at 30–40%; (2) Renewable intermittency requires real-time balancing = RTM structural growth; (3) Green energy mandates drive REC/IREC demand; (4) Industrial open access growth.</p>
+  </div>
+
+  <h3>Layer 3 — Company Alpha Sources</h3>
+  <table class="tbl">
+    <tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Notes</th></tr>
+    <tr><td>Market Share Gain</td><td class="warn">At Risk</td><td class="num warn">0% to -5%</td><td>Market coupling could erode DAM share; RTM holds</td></tr>
+    <tr><td>Premiumisation</td><td class="num">N/A</td><td class="num">N/A</td><td>Exchange fee business — no premiumisation lever</td></tr>
+    <tr><td>Segment Expansion</td><td class="good">Active</td><td class="num good">+2–3%</td><td>Coal Exchange, Carbon Credits, IGX gas, VPPAs</td></tr>
+    <tr><td>Geographic Expansion</td><td class="warn">Nascent</td><td class="num warn">+0–1%</td><td>Cross-border trade (Nepal, Bhutan) — limited near-term</td></tr>
+    <tr><td>Pricing Power</td><td class="bad">Declining</td><td class="num bad">-1 to 0%</td><td>Revenue per unit declining; fee pressure rising</td></tr>
+    <tr><td>AI Alpha (6a+6b+6c)</td><td class="num">Minimal</td><td class="num warn">+0%</td><td>AI Neutral — operational efficiency only</td></tr>
+  </table>
+
+  <h3>Growth Rate Summary Table</h3>
+  <table class="tbl">
+    <tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr>
+    <tr><td>Macro State</td><td>GDP ~5.5%</td><td>GDP ~7.3%</td><td>GDP ~8%+</td></tr>
+    <tr><td>Power Demand Growth</td><td class="warn">3–4%</td><td>5–7%</td><td class="good">8–10%</td></tr>
+    <tr><td>Exchange Volume CAGR</td><td class="bad">6–8%</td><td class="warn">12–15%</td><td class="good">18–22%</td></tr>
+    <tr><td>Revenue CAGR (Stage 1, 5yr)</td><td class="bad">4–6%</td><td class="warn">10–12%</td><td class="good">14–16%</td></tr>
+    <tr><td>Revenue CAGR (Stage 2, 5yr)</td><td class="bad">4%</td><td class="warn">7–8%</td><td class="good">10%</td></tr>
+    <tr><td>Terminal Growth</td><td class="bad">3.5%</td><td class="warn">5.5%</td><td class="good">6.2%</td></tr>
+    <tr><td>Margin Direction</td><td class="bad">Compress (mkt coupling)</td><td>Stable</td><td class="good">Expand (leverage)</td></tr>
+    <tr><td>Key Risk</td><td class="bad">Mkt coupling + demand shock</td><td class="warn">Mkt coupling delay</td><td class="good">Mkt coupling benign</td></tr>
+    <tr><td>AI Alpha</td><td>₹0</td><td>₹0</td><td>₹0</td></tr>
+  </table>
+  <p style="font-size:13px;color:var(--text-muted)">Sensitivity: A 1% change in terminal growth rate changes IV by approximately 12–15%. A 1% change in Stage 1 growth changes IV by approximately 6–8%.</p>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <h2>Financial Analysis</h2>
+
+  <h3>Section A — Financial Fortress</h3>
+  <div class="grid-2">
+    <div>
+      <h4>Revenue &amp; Profit Track (₹ Cr)</h4>
+      <table class="tbl">
+        <tr><th>Year</th><th>Revenue</th><th>PAT</th><th>PAT Margin</th><th>YoY Rev</th></tr>
+        <tr><td>FY22</td><td class="num">~₹378 <span class="e">EST</span></td><td class="num">~₹295</td><td class="num good">78%</td><td class="num">—</td></tr>
+        <tr><td>FY23</td><td class="num">~₹430 <span class="e">EST</span></td><td class="num">~₹328</td><td class="num good">76%</td><td class="num warn">+14%</td></tr>
+        <tr><td>FY24</td><td class="num">₹551 <span class="v">VFD</span></td><td class="num">₹351</td><td class="num good">64%</td><td class="num good">+28%</td></tr>
+        <tr><td>FY25</td><td class="num">₹657 <span class="v">VFD</span></td><td class="num">₹429</td><td class="num good">65%</td><td class="num good">+19%</td></tr>
+        <tr><td>FY26E</td><td class="num">~₹660–680 <span class="e">EST</span></td><td class="num">~₹490</td><td class="num good">72–74%</td><td class="num warn">+3–4%</td></tr>
+      </table>
+      <p style="font-size:12px;color:var(--text-dim)">Note: Revenue growth muted in FY26 despite 17% volume growth due to lower DAM prices (-13.7% YoY) affecting ad-valorem fee component and RTM mix shift. Pure volume growth remains strong.</p>
+    </div>
+    <div>
+      <h4>ROE Track (5-Year)</h4>
+      <table class="tbl">
+        <tr><th>Year</th><th>ROE</th><th>ROIC</th><th>Comment</th></tr>
+        <tr><td>FY22</td><td class="num good">~45%</td><td class="num good">&gt;100%</td><td>Exceptional</td></tr>
+        <tr><td>FY23</td><td class="num good">~38%</td><td class="num good">&gt;100%</td><td>Exceptional</td></tr>
+        <tr><td>FY24</td><td class="num good">~35%</td><td class="num good">&gt;150%</td><td>Exceptional</td></tr>
+        <tr><td>FY25</td><td class="num good">39.2% <span class="v">VFD</span></td><td class="num good">178.7% <span class="v">VFD</span></td><td>World-class</td></tr>
+        <tr><td>FY26E</td><td class="num good">~42–45%</td><td class="num good">&gt;180%</td><td>Improving</td></tr>
+      </table>
+      <div class="info" style="font-size:13px;">The ROIC of 178%+ puts IEX in the same league as NSE, BSE, and global exchange businesses. This is the hallmark of a regulatory-licensed natural monopoly platform — the business requires almost no incremental capital to grow.</div>
+    </div>
+  </div>
+
+  <h3>Financial Fortress Scorecard</h3>
+  <div class="scorecard">
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">ROE ≥15% for 5 years</div><div class="score-note">ROE 35–45% consistently</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">ROIC &gt; WACC consistently</div><div class="score-note">ROIC 178% vs WACC 12%</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Net Cash Position</div><div class="score-note">Debt-free; strong cash reserves</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">PAT Margin ≥15%</div><div class="score-note">PAT margin 65–74% — software-level</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">FCF Positive &amp; Growing</div><div class="score-note">FCF ≈ PAT; virtually zero CapEx</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Capital-Light Model</div><div class="score-note">179 employees; exchange platform</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Revenue CAGR ≥ Sector CAGR</div><div class="score-note">Rev CAGR 15–19% vs sector 12–14%</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item marginal"><div class="score-icon">~</div><div><div class="score-name">Dividend Payout Sustainable</div><div class="score-note">53.4% payout; high but supportable</div></div><div class="score-badge marginal">MARGINAL</div></div>
+    <div class="score-item marginal"><div class="score-icon">~</div><div><div class="score-name">Predictable Revenue Composition</div><div class="score-note">Volume-driven; market coupling disrupts</div></div><div class="score-badge marginal">MARGINAL</div></div>
+    <div class="score-item fail"><div class="score-icon">✗</div><div><div class="score-name">Revenue per Unit (Pricing Power)</div><div class="score-note">Revenue/unit declining; mix shift + price fall</div></div><div class="score-badge fail">FAIL</div></div>
+  </div>
+
+  <h3>Owner Earnings (FY25 &amp; FY26E)</h3>
+  <div class="card card-accent">
+    <table class="tbl">
+      <tr><th>Component</th><th>FY25</th><th>FY26E</th></tr>
+      <tr><td>Net Income (PAT)</td><td class="num">₹429 Cr</td><td class="num">~₹490 Cr</td></tr>
+      <tr><td>+ Depreciation &amp; Amortisation</td><td class="num">~₹12 Cr</td><td class="num">~₹14 Cr</td></tr>
+      <tr><td>+ Non-cash items</td><td class="num">~₹5 Cr</td><td class="num">~₹5 Cr</td></tr>
+      <tr><td>− Maintenance CapEx</td><td class="num">(~₹15 Cr)</td><td class="num">(~₹18 Cr)</td></tr>
+      <tr><td>± Working Capital Changes</td><td class="num">Minimal</td><td class="num">Minimal</td></tr>
+      <tr><td><strong>Owner Earnings (Conservative)</strong></td><td class="num good"><strong>~₹431 Cr</strong></td><td class="num good"><strong>~₹491 Cr</strong></td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px;">Owner Earnings ≈ Net Income for IEX — the ultimate capital-light business. Total CapEx is primarily technology maintenance and exchange system upgrades. FCF conversion is effectively ~100%.</p>
+  </div>
+
+  <h3>Section B — Earnings Quality (O'Glove Framework)</h3>
+  <div class="scorecard">
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Test 1 — FCF Conversion</div><div class="score-note">Op CFO / Net Income ≈ 95–100% consistently over 5 years</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Test 2 — DSO Trend</div><div class="score-note">Exchange business — settlement is T+1. No receivables risk.</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Test 3 — Inventory Days</div><div class="score-note">N/A — exchange business, no inventory.</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Test 4 — Accounting Policy Stability</div><div class="score-note">No aggressive policy changes detected in last 3 years</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Test 5 — Gross Margin Consistency</div><div class="score-note">PAT margins 64–78% over 5 years; stable to improving</div></div><div class="score-badge pass">PASS</div></div>
+  </div>
+  <div class="info"><strong>Earnings Quality: CLEAN</strong> — IEX has one of the purest financial statements on Indian exchanges. Revenue = transaction fees (reported gross). Expenses = employee costs + technology + regulatory fees. No working capital games, no inventory, no receivables risk (T+1 settlement), and FCF ≈ Net Income. The earnings are as real as they get.</div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <h2>Economic Moat Analysis</h2>
+
+  <h3>Moat Sources</h3>
+
+  <div class="moat-card">
+    <div class="moat-row">
+      <span class="moat-name">Regulatory License / Efficient Scale</span>
+      <span class="moat-stars">★★★★★</span>
+    </div>
+    <div class="moat-note">IEX operates under a CERC license — only 3 power exchanges exist in India (IEX, PXIL, HPX). This regulatory moat has historically been the bedrock of the business. However, market coupling directly threatens the price-discovery exclusivity this license confers.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-row">
+      <span class="moat-name">Network Effects / Liquidity Moat</span>
+      <span class="moat-stars">★★★★</span>
+    </div>
+    <div class="moat-note">IEX's dominant market share creates a self-reinforcing liquidity pool. More buyers attract more sellers → tighter bid-ask spreads → better price discovery → more participants. This is the classic exchange network effect. <strong>Market coupling deliberately dismantles this advantage</strong> by pooling all exchanges' liquidity into a common clearing mechanism.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-row">
+      <span class="moat-name">Switching Costs (Participant Lock-in)</span>
+      <span class="moat-stars">★★★</span>
+    </div>
+    <div class="moat-note">7,900+ participants (DISCOMs, generators, industrial consumers) integrated with IEX's systems. Member fees, technical integration, and familiarity create moderate switching inertia. Under market coupling, this persists for non-DAM segments but weakens for DAM.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-row">
+      <span class="moat-name">Data &amp; Analytics Advantage</span>
+      <span class="moat-stars">★★★</span>
+    </div>
+    <div class="moat-note">18 years of electricity price and volume data — the most comprehensive power market dataset in India. This proprietary data could support premium analytics products, forecasting tools, and market intelligence services as a second revenue stream. Largely untapped.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-row">
+      <span class="moat-name">Brand &amp; Institutional Trust</span>
+      <span class="moat-stars">★★★★</span>
+    </div>
+    <div class="moat-note">Recognized as India's premier power exchange by all stakeholders. First-mover advantage since 2008. The brand equity is real — state DISCOMs, major industrial consumers, and power generators default to IEX.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-row">
+      <span class="moat-name">Product Ecosystem (IGX, ICX, Green, Carbon)</span>
+      <span class="moat-stars">★★★</span>
+    </div>
+    <div class="moat-note">IEX is diversifying beyond electricity DAM into gas (IGX), carbon credits (ICX), VPPAs, and now Coal Exchange. This multi-product strategy reduces dependency on DAM and creates cross-selling opportunities across participants already on the platform.</div>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">DATA FLYWHEEL TEST</div>
+    <div class="flywheel-badge">⬤ AI COSMETIC</div>
+    <table class="tbl">
+      <tr><th>Test</th><th>Evidence</th><th>Result</th></tr>
+      <tr><td>Proprietary training data exclusive to IEX?</td><td>Yes — 18 years of price/volume data. However, this is regulated market data, not truly proprietary (CERC has access).</td><td class="warn">PARTIAL</td></tr>
+      <tr><td>More users → measurably better AI?</td><td>No evidence of AI products that improve with usage. Analytics tools exist but no flywheel mechanism.</td><td class="bad">NO</td></tr>
+      <tr><td>Better AI attracts more users (loop)?</td><td>Not demonstrated. Price discovery is the attractor, not AI.</td><td class="bad">NO</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:10px;">Verdict: IEX's moat is built on regulatory exclusivity and liquidity network effects — not on an AI data flywheel. The data advantage exists but has not been monetized into a compounding AI moat. This is an area of <strong>unexploited optionality</strong>.</p>
+  </div>
+
+  <h3>ROIC as Moat Proof</h3>
+  <div class="info">ROIC of 178.7% vs WACC of 12% = <strong>Economic Profit spread of 166%</strong>. This is among the highest ROIC readings on NSE. It proves the moat is real: IEX earns extraordinary returns on virtually no capital. For comparison, NSE (unlisted) and BSE have similarly extraordinary ROIC profiles.</div>
+
+  <h3>Macro Moat Stress Test</h3>
+  <table class="tbl">
+    <tr><th>Moat Source</th><th>Base Case</th><th>Market Coupling Stress</th></tr>
+    <tr><td>Regulatory License</td><td class="good">HOLDS</td><td class="warn">WEAKENS — DAM exclusivity shared</td></tr>
+    <tr><td>Liquidity Network Effect</td><td class="good">HOLDS</td><td class="bad">WEAKENS SEVERELY — pooled clearing eliminates IEX edge</td></tr>
+    <tr><td>Switching Costs</td><td class="good">HOLDS</td><td class="warn">WEAKENS for DAM, holds for RTM/TAM/Green</td></tr>
+    <tr><td>Data Advantage</td><td class="good">HOLDS</td><td class="warn">WEAKENS — CERC MCO gets aggregate data</td></tr>
+    <tr><td>Brand &amp; Trust</td><td class="good">HOLDS</td><td class="good">HOLDS — brand doesn't depend on monopoly</td></tr>
+    <tr><td>Product Ecosystem</td><td class="good">HOLDS</td><td class="good">STRENGTHENS — diversification thesis justified</td></tr>
+  </table>
+
+  <div class="risk-box">
+    <div class="risk-title">⚠️ Market Coupling: Moat Under Structural Attack</div>
+    <p>The CERC market coupling mechanism, once implemented, would aggregate all buy/sell bids from IEX, PXIL, and HPX into a single clearing price. This means IEX's price-discovery moat in DAM — its most liquid, highest-volume segment — would be eliminated. IEX becomes a "bid aggregation interface" competing on fee and service quality rather than on liquidity.</p>
+    <p style="margin-top:8px;">Estimated DAM revenue impact if market coupling is fully implemented: <strong>−15 to −25% of DAM revenue</strong> as market share normalizes from ~90% to 60–70% over 3–5 years. DAM is approximately 50% of IEX's exchange revenue. Net impact: 8–13% total revenue reduction.</p>
+    <p style="margin-top:8px;">Offsetting factor: RTM (growing 41% YoY) is NOT included in Phase 1 market coupling. Green markets, TAM, IGX, ICX are unaffected. The business is diversifying away from DAM dependency naturally.</p>
+  </div>
+
+  <div class="info" style="margin-top:16px">
+    <strong>Moat Grade: B+</strong> — IEX has a historically wide moat (regulatory license + network effects) that is under structural attack in its core DAM segment. The moat remains wide in RTM, Green, Gas, and Carbon segments. Rating would be A− without market coupling; B with full implementation risk discounted. B+ reflects current uncertainty with asymmetric scenario weighting.
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <h2>Management Integrity &amp; Capital Allocation</h2>
+
+  <div class="card card-accent">
+    <h3 style="margin-top:0">Governance Profile</h3>
+    <p>IEX has <strong>zero promoter shareholding</strong> — it is a professionally managed public company. This is unusual in the Indian context and carries both positives (no pledge risk, no related-party siphoning) and risks (no cornerstone owner with long-term skin in the game).</p>
+    <p>The Chairman is Satyanarayan Goel, former CMD of Power Grid Corporation. The management team comprises career energy sector professionals with deep domain expertise. Leadership stability has been a hallmark since listing in 2017.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4>Strengths</h4>
+      <ul style="font-size:14px;padding-left:18px;line-height:1.8">
+        <li>Zero promoter pledges — clean governance <span class="v">VFD</span></li>
+        <li>Consistent dividend payout (53.4% of profits) — shareholder-friendly <span class="v">VFD</span></li>
+        <li>High dividend coverage by FCF (~1.9x)</li>
+        <li>Aggressive product diversification strategy (IGX, ICX, Coal Exchange)</li>
+        <li>CERC SEBI insider trading allegation targets CERC officers, not IEX management</li>
+        <li>Counter-cyclical: business benefits from power deficit periods (higher price = more trading)</li>
+        <li>Patent filing and technology innovation track record</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Concerns</h4>
+      <ul style="font-size:14px;padding-left:18px;line-height:1.8">
+        <li>No promoter creates lack of long-term capital stewardship champion</li>
+        <li>No history of buybacks despite strong FCF — questionable capital return policy</li>
+        <li>Regulatory engagement quality: failed to prevent CERC market coupling direction</li>
+        <li>Revenue per unit declining — management not effectively defending pricing</li>
+        <li>SEBI insider trading investigation at CERC creates regulatory uncertainty <span class="u">UNVFD</span></li>
+        <li>Investor relations: stock down 47% from highs; limited management guidance on market coupling scenario</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Shareholding Integrity</h3>
+  <div class="scorecard">
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Promoter Pledges</div><div class="score-note">0% — no promoter, so no pledge risk whatsoever</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Related Party Transactions</div><div class="score-note">Exchange business — minimal RPT exposure</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Dividend Policy</div><div class="score-note">53.4% payout; consistent and growing</div></div><div class="score-badge pass">PASS</div></div>
+    <div class="score-item marginal"><div class="score-icon">~</div><div><div class="score-name">Capital Allocation (Buybacks)</div><div class="score-note">No buybacks despite net cash + strong FCF</div></div><div class="score-badge marginal">MARGINAL</div></div>
+    <div class="score-item marginal"><div class="score-icon">~</div><div><div class="score-name">Regulatory Management</div><div class="score-note">Failed to prevent market coupling; legal challenge unsuccessful</div></div><div class="score-badge marginal">MARGINAL</div></div>
+    <div class="score-item pass"><div class="score-icon">✓</div><div><div class="score-name">Guidance Reliability</div><div class="score-note">Volume targets consistently met or exceeded</div></div><div class="score-badge pass">PASS</div></div>
+  </div>
+
+  <h3>Capital Allocation Track Record</h3>
+  <div class="card">
+    <p>With ~₹490 Cr in annual FCF and minimal reinvestment needs, IEX generates substantial surplus capital. Historical allocation has been primarily dividends (₹3–4/share annually) with some technology capex (~₹15–20 Cr). The new product development investments (IGX established, ICX growing) demonstrate strategic thinking — using the exchange platform and participant base to launch adjacent markets at low marginal cost.</p>
+    <p>The decision to pursue a Coal Exchange in March 2026, exploring establishment under proposed Coal Regulations 2025, is a smart hedge against any electricity exchange market share dilution. The coal market in India is substantial and no organized exchange currently exists.</p>
+  </div>
+
+  <div class="info"><strong>Management Grade: B</strong> — Professional, technically competent, shareholder-friendly on dividends. Docked for lack of buyback program, sub-optimal regulatory engagement, and declining revenue per unit without a clear pricing response strategy.</div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <h2>Valuation &amp; Margin of Safety</h2>
+
+  <div class="alert">All valuations incorporate a market coupling regulatory risk discount. Without this discount, base IV would be ~₹185–200/share. With full risk discount, range narrows to ₹120–155/share. Current price of ₹124.6 is near the bottom of the fair range.</div>
+
+  <h3>Method 1 — DCF (2-Stage Owner Earnings)</h3>
+  <div class="dcf-scenario">
+    <table class="tbl">
+      <tr><th>Parameter</th><th class="bad">STRESS</th><th class="warn">BASE</th><th class="good">ACCEL.</th></tr>
+      <tr><td>Base OE (FY26E)</td><td class="num">₹491 Cr</td><td class="num">₹491 Cr</td><td class="num">₹491 Cr</td></tr>
+      <tr><td>Stage 1 CAGR (5yr)</td><td class="num bad">5%</td><td class="num warn">11%</td><td class="num good">15%</td></tr>
+      <tr><td>Stage 2 CAGR (5yr)</td><td class="num bad">4%</td><td class="num warn">7%</td><td class="num good">10%</td></tr>
+      <tr><td>Terminal Growth</td><td class="num bad">3.5%</td><td class="num warn">5.5%</td><td class="num good">6.2%</td></tr>
+      <tr><td>WACC</td><td class="num">13% <em>(risk premium)</em></td><td class="num">12%</td><td class="num">11%</td></tr>
+      <tr><td>Mkt Coupling Discount</td><td class="num bad">−25%</td><td class="num warn">−15%</td><td class="num good">−5%</td></tr>
+      <tr><td><strong>DCF IV per share</strong></td><td class="num bad"><strong>~₹98</strong></td><td class="num warn"><strong>~₹148</strong></td><td class="num good"><strong>~₹225</strong></td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:8px">DCF sensitivity: ±1% terminal growth rate = ±₹12–15/share IV change.</p>
+  </div>
+
+  <h3>Method 2 — Owner Earnings Capitalisation</h3>
+  <div class="scenario-grid">
+    <div class="scenario-card stress"><div class="scenario-label">STRESS (g=4%, r=13%)</div><div class="scenario-iv">₹92</div><div style="font-size:12px;color:var(--text-dim)">With mkt coupling stress</div></div>
+    <div class="scenario-card base"><div class="scenario-label">BASE (g=6%, r=12%)</div><div class="scenario-iv">₹143</div><div style="font-size:12px;color:var(--text-dim)">Mkt coupling partial discount</div></div>
+    <div class="scenario-card accel"><div class="scenario-label">ACCEL. (g=7.5%, r=11%)</div><div class="scenario-iv">₹222</div><div style="font-size:12px;color:var(--text-dim)">Mkt coupling benign</div></div>
+  </div>
+
+  <h3>Method 3 — ROIC/EPV</h3>
+  <div class="card">
+    <p>At ROIC of 178.7% and WACC of 12%, the growth premium is extraordinary. EPV (no-growth basis) = NOPAT/WACC = ~₹430 Cr/0.12 = ~₹3,583 Cr = ~₹40/share. This is the floor — the exchange is worth far more as a going concern given the growth runway.</p>
+    <p>With market coupling, the "right" ROIC to discount from may compress to 80–100% (sharing liquidity pool reduces the pricing power). Even at 80% ROIC: still 6.7x WACC — an extraordinary business.</p>
+    <p>EPV with growth premium: <strong>Stress ₹105 | Base ₹150 | Accel ₹220</strong></p>
+  </div>
+
+  <h3>Method 4 — P/E Earnings Power</h3>
+  <div class="card">
+    <table class="tbl">
+      <tr><th>P/E Scenario</th><th>P/E Multiple</th><th>FY26E EPS</th><th>IV</th></tr>
+      <tr><td>5-year historical avg P/E (pre-regulatory)</td><td class="num">~40–50x</td><td class="num">₹5.48</td><td class="num">₹220–274</td></tr>
+      <tr><td>Current (post-regulatory anxiety)</td><td class="num warn">22.7x</td><td class="num">₹5.48</td><td class="num warn">₹124.6</td></tr>
+      <tr><td>Fair P/E (exchange + regulatory risk)</td><td class="num warn">25x</td><td class="num">₹5.48</td><td class="num warn">₹137</td></tr>
+      <tr><td>Fair P/E (market coupling resolved)</td><td class="num good">32x</td><td class="num">₹5.48</td><td class="num good">₹175</td></tr>
+      <tr><td>Bear (full coupling implemented)</td><td class="num bad">18x</td><td class="num bad">₹4.80 (reduced EPS)</td><td class="num bad">₹86</td></tr>
+    </table>
+    <div class="info">AI Premium/Discount: IEX is AI NEUTRAL. No AI premium or discount applicable. Base P/E should reflect: (a) exchange monopoly premium; (b) regulatory risk discount; (c) growth optionality from new products.</div>
+  </div>
+
+  <h3>Method 5 — Earnings Yield vs Bond Yield</h3>
+  <div class="card">
+    <table class="tbl">
+      <tr><th>Metric</th><th>Value</th><th>Implication</th></tr>
+      <tr><td>FCF Yield (FY26E PAT basis)</td><td class="num good">4.4%</td><td>Above 10-yr G-Sec yield (~6.6%) — NOT cheap on pure yield basis</td></tr>
+      <tr><td>Earnings Yield</td><td class="num warn">4.4%</td><td>EY of 4.4% vs G-Sec 6.6% = equity risk premium of NEGATIVE (-2.2%)</td></tr>
+      <tr><td>Dividend Yield (TTM)</td><td class="num warn">~2.4%</td><td>₹3/share at ₹124.6</td></tr>
+      <tr><td>Yield on Cost (5yr, 11% g)</td><td class="num good">~6.2%</td><td>Crosses G-Sec yield in Year 5 at 11% earnings growth</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--text-muted)">The negative equity risk premium at current prices suggests the market is pricing in growth expectations. This confirms IEX is not a pure dividend yield play — it must deliver growth to justify its P/E. At ₹110 (7% below current), EY crosses 4.8% making the risk-reward materially better.</p>
+  </div>
+
+  <h3>5-Method Valuation Summary</h3>
+  <table class="tbl">
+    <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th></tr>
+    <tr><td>1. DCF (2-Stage)</td><td class="num bad">₹98</td><td class="num warn">₹148</td><td class="num good">₹225</td></tr>
+    <tr><td>2. OE Capitalisation</td><td class="num bad">₹92</td><td class="num warn">₹143</td><td class="num good">₹222</td></tr>
+    <tr><td>3. ROIC/EPV</td><td class="num bad">₹105</td><td class="num warn">₹150</td><td class="num good">₹220</td></tr>
+    <tr><td>4. P/E Earnings Power</td><td class="num bad">₹86</td><td class="num warn">₹137</td><td class="num good">₹175</td></tr>
+    <tr><td>5. Earnings Yield</td><td class="num bad">₹90</td><td class="num warn">₹135</td><td class="num good">₹185</td></tr>
+    <tr style="background:rgba(244,162,97,0.1)"><td><strong>Blended Base IV</strong></td><td class="num bad"><strong>₹94</strong></td><td class="num warn"><strong>₹143</strong></td><td class="num good"><strong>₹205</strong></td></tr>
+    <tr><td>AI Premium/Discount</td><td colspan="3" class="num">₹0 (AI Neutral)</td></tr>
+    <tr style="background:rgba(46,196,182,0.07)"><td><strong>MoS Entry Price (20% below base IV)</strong></td><td class="num bad">₹75</td><td class="num warn"><strong>₹115</strong></td><td class="num good">₹164</td></tr>
+  </table>
+
+  <h3>Relative Valuation</h3>
+  <div class="card">
+    <table class="tbl">
+      <tr><th>Metric</th><th>5-yr Avg (Pre-2025)</th><th>Current</th><th>Signal</th></tr>
+      <tr><td>P/E</td><td class="num">~42x</td><td class="num warn">~22.7x</td><td class="good">🟢 46% below 5yr avg</td></tr>
+      <tr><td>P/B</td><td class="num">~14x</td><td class="num warn">~8.5x</td><td class="good">🟢 39% below 5yr avg</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">The 46% P/E discount to 5-year average is significant. However, the 5-year average included periods when market coupling risk was non-existent. A 20–25% structural discount to that historical multiple is arguably justified. Even so, the current price appears to have over-discounted the regulatory risk.</p>
+    <div class="info">Conclusion: At ₹124.6, IEX trades below blended base IV of ₹143. However, the MoS entry zone for BUY would be ₹105–115 (20% below base IV). The stock is in the WATCH zone — approaching fair value but not yet at a compelling margin of safety given the regulatory binary risk.</div>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <h2>Investment Verdict</h2>
+
+  <h3>Pillar Grades</h3>
+  <div class="pillars">
+    <div class="pillar-card">
+      <div class="pillar-title">PILLAR 1</div>
+      <div class="pillar-title">ECONOMIC MOAT</div>
+      <div class="pillar-grade">B+</div>
+      <div class="pillar-sub">Historically wide; under structural attack in DAM via market coupling. RTM/Green moat intact.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-title">PILLAR 2</div>
+      <div class="pillar-title">FINANCIAL FORTRESS</div>
+      <div class="pillar-grade">A−</div>
+      <div class="pillar-sub">ROIC 178%, clean earnings, net cash. Best-in-class financial quality. Minor: no buybacks.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-title">PILLAR 3</div>
+      <div class="pillar-title">MANAGEMENT</div>
+      <div class="pillar-grade">B</div>
+      <div class="pillar-sub">Professional, shareholder-friendly. Docked for regulatory failure and sub-optimal capital return.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-title">PILLAR 4</div>
+      <div class="pillar-title">VALUATION</div>
+      <div class="pillar-grade">B−</div>
+      <div class="pillar-sub">Near-fair-value. Approaching MoS entry zone (₹105–115) but not there yet. Regulatory risk discounts required.</div>
+    </div>
+  </div>
+
+  <div class="verdict-main-box">
+    <div class="verdict-label" style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);letter-spacing:2px">BUFFETT QUALITY-VALUE SERIES — VERDICT</div>
+    <div class="verdict-headline" style="margin-top:8px">WATCH ★★★</div>
+    <div style="font-size:15px;color:var(--text-muted);margin-top:6px">Strong quality business approaching fair value, one catalyst and additional ~8% correction from BUY</div>
+    <div class="verdict-quote" style="margin-top:16px">"The business is extraordinary — the regulation is not. At ₹124, you are paying a fair price for a great business with a binary risk hanging over it. Wait for clarity or a deeper discount. The same business at ₹105 with a regulatory resolution would be a strong BUY."</div>
+    <div style="margin-top:16px;font-size:14px;color:var(--text)">
+      IEX's core investment thesis rests on three pillars: (1) India's electricity demand growing 5–7% annually with exchange penetration of total power still only ~14%; (2) Renewable energy intermittency structurally drives RTM and green market growth regardless of market coupling; (3) Extraordinary financial quality (ROIC >178%, 74% PAT margin, zero debt) means the business generates substantial shareholder value even at lower growth rates. The risk is singular but material: market coupling could erode 15–25% of DAM revenues. The stock has already fallen ~47% from its highs, pricing in significant but not certain damage. At ₹143 base IV with a 20% MoS, entry should be sought at ₹105–115.
+    </div>
+  </div>
+
+  <h3>WATCH → BUY Upgrade Conditions (5 Specific &amp; Measurable)</h3>
+  <div class="upgrade-items">
+    <div class="upgrade-item">
+      <div class="upgrade-num">1</div>
+      <div><strong>Market Coupling Clarity — Favourable:</strong> CERC drafts market coupling regulations that preserve IEX's fee structure and MCO rotation includes IEX as first/primary operator, OR regulations are materially delayed beyond FY2027. Price target adjustment: BUY at current price if either condition confirmed.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">2</div>
+      <div><strong>Price Corrects to ₹105–115:</strong> IEX price touches ₹110 (23% MoS on base IV of ₹143), providing adequate regulatory risk buffer. At this price, earnings yield crosses 5.0% — above the risk-free rate.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">3</div>
+      <div><strong>RTM Segment Sustains ≥35% Volume Growth for 2 Consecutive Quarters</strong> (confirming structural driver intact regardless of DAM market coupling outcome). RTM is NOT in Phase 1 market coupling scope.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">4</div>
+      <div><strong>Revenue per Unit Stabilises or Increases</strong> for 2 consecutive quarters (currently declining). Stabilisation signals IEX has pricing power in non-DAM segments sufficient to offset DAM fee pressure.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">5</div>
+      <div><strong>Coal Exchange Launch Approved by CERC</strong> with formal grant of exchange license within FY27. Coal is a multi-hundred-BU market with no organized exchange — this could add ₹100–150 Cr revenue by FY29 and re-rate the stock on diversification grounds.</div>
+    </div>
+  </div>
+
+  <h3>Series Context</h3>
+  <table class="tbl series-tbl">
+    <tr><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Key Thesis</th></tr>
+    <tr><td><strong>IEX</strong></td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>A−</td><td>B</td><td>B−</td><td>WATCH★★★</td><td>Exchange monopoly, ROIC >178%; market coupling = binary risk; entry ₹105–115</td></tr>
+    <tr><td>TRAVELFOOD</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>A−</td><td>B</td><td>B</td><td>WATCH★★★</td><td>Airport F&amp;B monopoly; CBI FIR risk</td></tr>
+    <tr><td>SYM</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>B+</td><td>B−</td><td>B</td><td>B−</td><td>WATCH★★★</td><td>AI warehouse robotics; $22.7B backlog</td></tr>
+  </table>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <h2>Technical Analysis</h2>
+
+  <h3>Section A — Price Structure &amp; Multi-Timeframe Trend</h3>
+  <div class="card">
+    <table class="tbl">
+      <tr><th>Timeframe</th><th>Trend</th><th>Comment</th></tr>
+      <tr><td>Monthly</td><td class="bad">Downtrend</td><td>Peaked ~₹215 (Jul 2025), in secular downtrend post market coupling news</td></tr>
+      <tr><td>Weekly</td><td class="bad">Downtrend</td><td>Lower highs, lower lows since Jul 2025; recent base formation at ₹114–120</td></tr>
+      <tr><td>Daily</td><td class="warn">Attempting Base</td><td>Stock bouncing between ₹114.6 (52W low) and ₹130; potential double bottom forming</td></tr>
+    </table>
+  </div>
+
+  <h3>Section B — Moving Average Dashboard</h3>
+  <div class="ma-grid">
+    <div class="ma-item">
+      <div class="ma-label">20-EMA</div>
+      <div class="ma-val below">~₹120</div>
+      <div class="ma-status below">Price at/above 20-EMA <span class="e">EST</span></div>
+    </div>
+    <div class="ma-item">
+      <div class="ma-label">50-DMA</div>
+      <div class="ma-val warn">₹123.67 <span class="v">VFD</span></div>
+      <div class="ma-status above">Price ~₹124 → near 50-DMA</div>
+    </div>
+    <div class="ma-item">
+      <div class="ma-label">100-DMA</div>
+      <div class="ma-val below">~₹132</div>
+      <div class="ma-status below">Price below 100-DMA <span class="e">EST</span></div>
+    </div>
+    <div class="ma-item">
+      <div class="ma-label">200-DMA</div>
+      <div class="ma-val below">₹144.23 <span class="v">VFD</span></div>
+      <div class="ma-status below">Price ~14% below 200-DMA</div>
+    </div>
+    <div class="ma-item">
+      <div class="ma-label">200-WMA</div>
+      <div class="ma-val below">~₹155</div>
+      <div class="ma-status below">Below long-term MA <span class="e">EST</span></div>
+    </div>
+  </div>
+  <div class="info">Death Cross (50 below 200 DMA) is in effect. Price is below all major MAs — a clear bear market structure. However, the stock is attempting to base near its 52-week low. A cross of the 50-DMA on volume could signal short-term recovery.</div>
+
+  <h3>Section C — Volume Analysis</h3>
+  <div class="card">
+    <p>January 9, 2026 (APTEL deferral): IEX saw <strong>7.3× the two-week average volume</strong> (1,992 lakh shares vs 272 lakh avg), with stock falling 6.92% to ₹139.70. This is a definitive institutional distribution event. <span class="v">VFD</span></p>
+    <p>February 13, 2026 (APTEL dismissal): 1.62 Cr shares traded (10× normal), stock fell 5.2%. Classic capitulation-adjacent event. <span class="v">VFD</span></p>
+    <p>April 6, 2026 (Current): Normal volumes, price attempting recovery above ₹120–125 zone. OBV likely neutral to slightly declining. Absence of panic volume at recent lows is a mild positive signal.</p>
+  </div>
+
+  <h3>Section D — Momentum</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>RSI</h4>
+      <p>Daily RSI: ~45–50 (recovering from oversold <30 territory in Jan-Feb 2026) <span class="e">EST</span></p>
+      <p>Weekly RSI: ~35–38 (still oversold, approaching bottom territory) <span class="e">EST</span></p>
+      <p>RSI divergence: Price making new lows in Jan-Feb while RSI holding higher = bullish divergence signal (unconfirmed)</p>
+    </div>
+    <div class="card">
+      <h4>MACD &amp; Pattern</h4>
+      <p>MACD: Negative, but histogram narrowing — momentum deceleration to downside</p>
+      <p>Potential pattern: <strong>Double Bottom</strong> forming at ₹114–118 zone (Jan 2026 low and Mar 2026 low). Confirmation requires break above ₹140 with volume.</p>
+      <p>Neckline of double bottom: ~₹145–150 (if pattern confirmed = target ₹170–180)</p>
+    </div>
+  </div>
+
+  <h3>Section E — Chart Patterns</h3>
+  <div class="card">
+    <p><strong>Potential Double Bottom:</strong> Low 1 at ~₹130.35 (Jan 2026), Low 2 at ₹114.6 (Mar 2026). Pattern completion requires close above ₹145 with above-average volume. If confirmed, target ~₹170–180. Invalidation: close below ₹110.</p>
+    <p><strong>Descending channel (bear):</strong> Stock in a clear descending channel from July 2025. Channel resistance: ~₹140–145. A decisive channel breakout would change the intermediate trend.</p>
+  </div>
+
+  <h3>Section F — Trade Structure</h3>
+  <div class="card card-accent">
+    <h4>PRIMARY TRIGGER (Not Yet Active)</h4>
+    <p>Entry Zone: ₹105–115 (MoS entry per valuation, near 52W low support)</p>
+    <p>Stop Loss: ₹95 (below structural support, close below 52W low)</p>
+    <p>Target 1: ₹145 (200-DMA reclaim + neckline break)</p>
+    <p>Target 2: ₹175 (double bottom target + base IV approach)</p>
+    <p>R:R at ₹110 entry: Risk ₹15 (to ₹95 SL), Reward T1 ₹35 / T2 ₹65 → R:R = 1:2.3 to 1:4.3</p>
+    <h4 style="margin-top:16px">SECONDARY TRIGGER (Watch for)</h4>
+    <p>6-week consolidation above ₹120 + RSI crosses 50 daily + MACD bullish crossover = starter position signal without waiting for ₹105</p>
+    <p>Position Size: 3–4% of portfolio maximum until regulatory clarity achieved</p>
+  </div>
+
+  <h3>Section G — Technical Composite Score</h3>
+  <div class="price-ladder">
+    <div class="ladder-row"><span class="ladder-label">Price Structure (1–5)</span><span class="ladder-price">2/5 — Downtrend, basing</span></div>
+    <div class="ladder-row"><span class="ladder-label">Moving Averages (1–5)</span><span class="ladder-price">2/5 — Below all MAs; at 50-DMA</span></div>
+    <div class="ladder-row"><span class="ladder-label">Volume Analysis (1–5)</span><span class="ladder-price">3/5 — Capitulation events complete; normal vol</span></div>
+    <div class="ladder-row"><span class="ladder-label">Momentum RSI/MACD (1–5)</span><span class="ladder-price">3/5 — Weekly oversold; divergence forming</span></div>
+    <div class="ladder-row"><span class="ladder-label">Chart Patterns (1–5)</span><span class="ladder-price">3/5 — Double bottom forming; unconfirmed</span></div>
+    <div class="ladder-row"><span class="ladder-label">Trade Structure (1–5)</span><span class="ladder-price">3/5 — Good R:R at ₹110; not yet at entry</span></div>
+    <div class="ladder-row" style="background:rgba(244,162,97,0.1)"><span class="ladder-label"><strong>Technical Composite</strong></span><span class="ladder-price"><strong>16/30 = 53%</strong> — NEUTRAL/WEAK</span></div>
+  </div>
+
+  <div class="price-ladder" style="margin-top:16px">
+    <div class="ladder-row"><span class="ladder-label">52W High</span><span class="ladder-price bad">₹215.40</span></div>
+    <div class="ladder-row"><span class="ladder-label">200-DMA (Key Resistance)</span><span class="ladder-price warn">₹144.23</span></div>
+    <div class="ladder-row"><span class="ladder-label">100-DMA</span><span class="ladder-price warn">~₹132</span></div>
+    <div class="ladder-row"><span class="ladder-label">Current Price</span><span class="ladder-price good">₹124.60</span></div>
+    <div class="ladder-row"><span class="ladder-label">50-DMA</span><span class="ladder-price">₹123.67</span></div>
+    <div class="ladder-row"><span class="ladder-label">MoS Entry Zone</span><span class="ladder-price good">₹105–115</span></div>
+    <div class="ladder-row"><span class="ladder-label">52W Low / Stop Loss Area</span><span class="ladder-price bad">₹114.60</span></div>
+    <div class="ladder-row"><span class="ladder-label">Hard Stop</span><span class="ladder-price bad">₹95</span></div>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <h2>Shareholding &amp; Free Float Analysis</h2>
+
+  <div class="info">IEX has <strong>zero promoter holding</strong> — it is a professionally managed public company with no controlling shareholder. This eliminates all promoter-related risks (pledge, creeping acquisition, family disputes) but also means no aligned cornerstone owner.</div>
+
+  <h3>Section A — Promoter Holding Trend</h3>
+  <div class="card">
+    <table class="tbl">
+      <tr><th>Quarter</th><th>Promoter %</th><th>Pledged %</th><th>Signal</th></tr>
+      <tr><td>Mar 2025</td><td class="num">0.00%</td><td class="num">0%</td><td>N/A — no promoter</td></tr>
+      <tr><td>Jun 2025</td><td class="num">0.00%</td><td class="num">0%</td><td>N/A</td></tr>
+      <tr><td>Sep 2025</td><td class="num">0.00%</td><td class="num">0%</td><td>N/A</td></tr>
+      <tr><td>Dec 2025</td><td class="num">0.00%</td><td class="num">0%</td><td>N/A</td></tr>
+      <tr><td>Mar 2026</td><td class="num">0.00%</td><td class="num">0%</td><td>N/A</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--text-muted)">No promoter = no promoter pledge risk. Clean governance structure. Exchange regulation (CERC) provides institutional oversight.</p>
+  </div>
+
+  <h3>Section B — FII &amp; DII Holdings (Trend)</h3>
+  <table class="tbl">
+    <tr><th>Quarter</th><th>FII %</th><th>DII %</th><th>MF %</th><th>Retail %</th><th>Signal</th></tr>
+    <tr><td>Mar 2025</td><td class="num">~18%</td><td class="num">~32%</td><td class="num">~25%</td><td class="num">~50%</td><td class="e">EST</td></tr>
+    <tr><td>Jun 2025</td><td class="num">~17%</td><td class="num">~33%</td><td class="num">~26%</td><td class="num">~50%</td><td class="e">EST</td></tr>
+    <tr><td>Sep 2025</td><td class="num">~16%</td><td class="num">~34%</td><td class="num">~27%</td><td class="num">~50%</td><td class="e">EST</td></tr>
+    <tr><td>Dec 2025</td><td class="num warn">16.12%</td><td class="num good">34.95%</td><td class="num good">27.12% <span class="v">VFD</span></td><td class="num">49.76%</td><td>FII selling; DII/MF buying</td></tr>
+    <tr><td>Apr 2026</td><td class="num warn">11.41% <span class="v">VFD</span></td><td class="num good">34.95%</td><td class="num good">27.12%</td><td class="num">36.03%</td><td class="bad">FII significantly reduced</td></tr>
+  </table>
+  <div class="alert">FII selling: FII holding dropped from ~18% to ~11.4% — a reduction of ~6.6 percentage points, implying sale of ~5.9 Cr shares worth ~₹735 Cr at current prices. This is significant foreign investor exit, driven by regulatory risk and India allocation cuts. DII/MF absorbing — mutual funds now 27.12% vs lower levels.</div>
+
+  <h3>Section C — Free Float &amp; Market Structure</h3>
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-label">Total Shares</div>
+      <div class="metric-value">~89.4 Cr</div>
+      <div class="metric-sub">Face value ₹1</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Free Float</div>
+      <div class="metric-value">~100%</div>
+      <div class="metric-sub">All public; no locked-in promoter</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Market Cap</div>
+      <div class="metric-value">~₹11,150 Cr</div>
+      <div class="metric-sub">Mid-cap territory post correction</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Monthly SIP Inflow Est.</div>
+      <div class="metric-value">~₹80–100 Cr</div>
+      <div class="metric-sub">Based on 27.12% MF holding + SIP flows</div>
+    </div>
+  </div>
+
+  <h3>Section D — Full Ownership Composition</h3>
+  <div class="card">
+    <table class="tbl">
+      <tr><th>Holder Type</th><th>% Holding</th><th>Trend</th><th>Signal</th></tr>
+      <tr><td>Promoters</td><td class="num">0.00%</td><td>—</td><td class="warn">No cornerstone owner</td></tr>
+      <tr><td>FII / FPI</td><td class="num warn">11.41%</td><td>↓↓ Sharp decline</td><td class="bad">Significant foreign exit</td></tr>
+      <tr><td>DII (Total)</td><td class="num good">34.95%</td><td>↑ Increasing</td><td class="good">Domestic institutional accumulating</td></tr>
+      <tr><td>- Mutual Funds</td><td class="num good">27.12%</td><td>↑ Increasing</td><td class="good">SIP-driven accumulation</td></tr>
+      <tr><td>- Insurance / Others</td><td class="num">~7.83%</td><td>Stable</td><td>Neutral</td></tr>
+      <tr><td>Public / Retail</td><td class="num">36.03%</td><td>↑ Increasing</td><td class="warn">Retail buying on dip — sentiment mixed</td></tr>
+      <tr><td>Government</td><td class="num">0.00%</td><td>—</td><td>No govt holding</td></tr>
+    </table>
+  </div>
+
+  <h3>Section E — Ownership Momentum &amp; Risk Scores</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>Ownership Momentum Score</h4>
+      <div class="gauge-wrap">
+        <div class="gauge-bar"><div class="gauge-fill" style="width:40%"></div></div>
+        <div>
+          <div class="gauge-score">40/100</div>
+          <div class="gauge-label">FII exit offsets DII accumulation</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted)">FII exit (-6.6% pts) is a significant drag. DII accumulation (+3% pts) partially offsets. Net momentum: negative, driven by regulatory risk-induced foreign selling.</p>
+    </div>
+    <div class="card">
+      <h4>Shareholding Risk Score</h4>
+      <div class="gauge-wrap">
+        <div class="gauge-bar"><div class="gauge-fill" style="width:28%;background:linear-gradient(90deg,var(--pass),var(--teal))"></div></div>
+        <div>
+          <div class="gauge-score">28/100</div>
+          <div class="gauge-label">LOW risk (lower = better)</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted)">Zero promoter pledges, no governance concentration risk. Main risk: FII overhang (further selling possible). Clean structure overall.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <h2>AI Opportunity Intelligence</h2>
+
+  <h3>Section A — AI Classification Dashboard</h3>
+  <div class="ai-dash">
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">CATEGORY</div>
+      <div class="ai-badge-val" style="color:var(--amber)">C</div>
+      <div style="font-size:12px;color:var(--text-muted)">Mature Quality Compounder</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">AI OVERLAY</div>
+      <div class="ai-badge-val" style="color:#aaa">⚪ NEUTRAL</div>
+      <div style="font-size:12px;color:var(--text-muted)">AI a tool, not a moat</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">DATA FLYWHEEL</div>
+      <div class="ai-badge-val" style="color:#888">COSMETIC</div>
+      <div style="font-size:12px;color:var(--text-muted)">0/3 criteria confirmed</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">SECTOR AI PHASE</div>
+      <div class="ai-badge-val" style="color:var(--teal)">Phase 2</div>
+      <div style="font-size:12px;color:var(--text-muted)">AI in grid mgmt emerging</div>
+    </div>
+  </div>
+
+  <p>IEX is classified as <strong>AI Neutral</strong>. The company uses technology and data analytics extensively (automated auction matching, price discovery algorithms, market surveillance), but these are operational tools — not AI that compounds in moat strength with usage. The core competitive advantage is the regulatory license + liquidity network, not a data flywheel.</p>
+
+  <h3>Section B — Data Flywheel Analysis</h3>
+  <div class="flywheel-box">
+    <div class="flywheel-title">FLYWHEEL VERDICT: AI COSMETIC</div>
+    <div class="flywheel-badge">Score: 2/10</div>
+    <table class="tbl" style="margin-top:12px">
+      <tr><th>Question</th><th>Evidence</th><th>Score</th></tr>
+      <tr>
+        <td>Q1: Does IEX have proprietary AI training data?</td>
+        <td>IEX holds 18 years of electricity price/volume data — the largest such dataset in India. However: (1) this is regulated market data, not exclusively proprietary; (2) CERC and Grid-India also have access; (3) IEX does not appear to use this for AI model training.</td>
+        <td class="warn">Partial (1/3)</td>
+      </tr>
+      <tr>
+        <td>Q2: Does more usage measurably improve IEX's AI?</td>
+        <td>No evidence. IEX's auction matching algorithms operate on market economics (double-sided auction), not machine learning that improves with more data. No AI accuracy improvement metrics cited in earnings calls.</td>
+        <td class="bad">No (0/4)</td>
+      </tr>
+      <tr>
+        <td>Q3: Does better AI attract more participants?</td>
+        <td>Participants join IEX for liquidity and price discovery — not for AI. The attractor is economic, not technological. Better AI would not independently drive participant growth.</td>
+        <td class="bad">No (0/3)</td>
+      </tr>
+    </table>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:12px"><strong>Untapped Flywheel Opportunity:</strong> IEX's 18-year electricity price dataset is genuinely valuable. If IEX launched AI-powered forecasting tools — helping DISCOMs and industrial consumers predict optimal procurement timing — it could create a data flywheel. This is unexploited optionality worth monitoring.</p>
+  </div>
+
+  <h3>Section C — AI Value Chain Position</h3>
+  <div class="value-chain">
+    <div class="vc-level">
+      <div class="vc-num">1</div>
+      <div class="vc-name">Infrastructure</div>
+      <div class="vc-desc">Semiconductors, data centres, power</div>
+    </div>
+    <div class="vc-level">
+      <div class="vc-num">2</div>
+      <div class="vc-name">Foundation Models</div>
+      <div class="vc-desc">OpenAI, Krutrim</div>
+    </div>
+    <div class="vc-level">
+      <div class="vc-num">3</div>
+      <div class="vc-name">Platforms</div>
+      <div class="vc-desc">Snowflake, Palantir</div>
+    </div>
+    <div class="vc-level">
+      <div class="vc-num">4</div>
+      <div class="vc-name">Vertical Apps</div>
+      <div class="vc-desc">Industry-specific AI</div>
+    </div>
+    <div class="vc-level active">
+      <div class="vc-num">5</div>
+      <div class="vc-name">AI-Enabled Incumbent ⬤</div>
+      <div class="vc-desc">IEX: existing business + potential AI tooling</div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted)">IEX sits at Level 5 — an AI-enabled incumbent. This is the best risk/reward position in the AI value chain. The investment horizon is long (7–10 years), the risk is low-medium, and the return comes from steady compounding of its exchange monopoly supplemented by AI tools. The risk is that IEX's Level 5 position is compromised by regulatory action before it can deploy AI advantages.</p>
+
+  <h3>Section D — India AI Opportunity Context</h3>
+  <table class="tbl">
+    <tr><th>India AI Advantage</th><th>IEX Relevance</th><th>Opportunity</th></tr>
+    <tr><td>Data at Scale (UPI/Aadhaar)</td><td class="warn">Adjacent</td><td>Electricity consumption data could integrate with GST/payment data for MSME credit scoring — no current initiative</td></tr>
+    <tr><td>Language Diversity = Vernacular AI</td><td class="bad">None</td><td>IEX operates B2B — vernacular AI not relevant for exchange trading</td></tr>
+    <tr><td>India Stack as Free Infrastructure</td><td class="warn">Adjacent</td><td>E-Marketplace integration with ONDC for energy products theoretically possible</td></tr>
+    <tr><td>AI Talent Cost Arbitrage</td><td class="good">Applicable</td><td>IEX could build AI analytics team at 30–40% global cost. 179 employees — room to add AI talent without bloating cost structure.</td></tr>
+  </table>
+
+  <table class="tbl" style="margin-top:16px">
+    <tr><th>India AI Theme</th><th>Phase</th><th>IEX Relevance</th></tr>
+    <tr><td>AI in banking/credit</td><td>Phase 3</td><td class="bad">None</td></tr>
+    <tr><td>AI in logistics/supply chain</td><td>Phase 2–3</td><td class="warn">Adjacent — energy dispatch optimization</td></tr>
+    <tr><td>Data centres (infra)</td><td>Phase 3–4</td><td class="good">Directly — data centres are massive power consumers; IEX benefits from their electricity procurement</td></tr>
+    <tr><td>AI in grid management</td><td>Phase 2</td><td class="good">Directly — IEX's RTM growth driven by AI/ML-based grid balancing by DISCOMs</td></tr>
+    <tr><td>Green energy trading</td><td>Phase 2</td><td class="good">Directly — IEX's green market growing 23% YoY</td></tr>
+    <tr><td>AI in SME credit</td><td>Phase 2</td><td class="bad">None</td></tr>
+  </table>
+
+  <h3>Section F — AI Opportunity Verdict &amp; Portfolio Role</h3>
+  <div class="card">
+    <h4>AI Opportunity Score</h4>
+    <table class="tbl">
+      <tr><td>Data Flywheel Strength (/20)</td><td class="num warn">4/20</td></tr>
+      <tr><td>Adoption Phase Timing (/20)</td><td class="num warn">10/20 (Phase 2 — early; IEX benefits as enabler)</td></tr>
+      <tr><td>Value Chain Position (/20)</td><td class="num good">15/20 (Level 5 — best risk/reward)</td></tr>
+      <tr><td>India Structural Advantage (/20)</td><td class="num warn">8/20 (data centre electricity demand; limited direct AI advantage)</td></tr>
+      <tr><td>AI Threat Resistance (/20)</td><td class="num good">16/20 (exchange model is AI-resistant; price discovery algorithms won't be disrupted)</td></tr>
+      <tr style="background:rgba(244,162,97,0.1)"><td><strong>TOTAL AI OPPORTUNITY SCORE</strong></td><td class="num warn"><strong>53/100</strong></td></tr>
+    </table>
+    <div class="gauge-wrap" style="margin-top:12px">
+      <div class="gauge-bar"><div class="gauge-fill" style="width:53%"></div></div>
+      <div>
+        <div class="gauge-score">53/100</div>
+        <div class="gauge-label">MONITOR — AI opportunity exists but timing uncertain</div>
+      </div>
+    </div>
+    <div class="info" style="margin-top:12px">
+      <strong>Portfolio Role: MONITOR</strong><br>
+      AI opportunity exists but is not the core investment thesis for IEX. The stock's investment merit is based on exchange monopoly fundamentals and India's power sector growth — not on an AI thesis. AI's primary role for IEX is as an <em>enabler of its customers</em> (DISCOMs using AI for grid balancing = more RTM trading). Investment horizon for IEX: 5–7 years. AI theme: set alerts for IEX launching AI-powered analytics products or data monetization initiatives.
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>This report is part of the Buffett Quality-Value Series and is for educational and informational purposes only. It does not constitute investment advice or a recommendation to buy or sell securities.</p>
+  <p style="margin-top:6px">SEBI Registration: This analysis is for personal research use only. All investment decisions should be made in consultation with a SEBI-registered investment adviser. Past performance is not indicative of future results.</p>
+  <p style="margin-top:6px">Data as of April 6–7, 2026. Sources: NSE filings, company press releases, CERC/APTEL orders, Screener.in, Yahoo Finance, Dhan, Groww, Business Standard, Mercom India. Confidence labels: <span class="v">VERIFIED</span> = official/live source | <span class="e">ESTIMATED</span> = cross-referenced | <span class="u">UNVERIFIED</span> = limited source.</p>
+  <p style="margin-top:6px">Fonts: Oswald, Nunito, JetBrains Mono (Google Fonts, open license).</p>
+</footer>
+
+<script>
+  var TAB_BAR_TOP = 0;
+
+  window.addEventListener('load', function () {
+    var tabBar = document.getElementById('tab-bar');
+    if (tabBar) {
+      var el = tabBar, top = 0;
+      while (el) { top += el.offsetTop; el = el.offsetParent; }
+      TAB_BAR_TOP = top;
+    }
+  });
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(function (el) {
+      el.style.display = 'none';
+      el.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+    var target = document.getElementById(tabId);
+    if (target) {
+      target.style.display = 'block';
+      target.classList.add('active');
+    }
+    var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+    if (activeBtn) { activeBtn.classList.add('active'); }
+    window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+  }
+
+  // Initialize first tab display
+  document.querySelectorAll('.tab-content').forEach(function(el) {
+    if (!el.classList.contains('active')) { el.style.display = 'none'; }
+  });
+</script>
+</body>
+</html>

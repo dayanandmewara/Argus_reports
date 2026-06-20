@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indigo Paints — Buffett Quality-Value Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:     #1C1B18;
+  --sienna:  #C1440E;
+  --cerulean:#1A6FA0;
+  --parch:   #F7F0E3;
+  --cream:   #FBF7F0;
+  --sand:    #E8DDCC;
+  --hero:    #17151C;
+  --pass:    #14803C;
+  --marg:    #B05D00;
+  --fail:    #C0392B;
+  --card:    #FFFFFF;
+  --border:  #E0D5C4;
+  --text2:   #5C5346;
+  --shadow:  0 2px 12px rgba(28,27,24,0.10);
+  --r:       8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--parch);color:var(--ink);font-size:15px;line-height:1.65}
+a{color:var(--sienna);text-decoration:none}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif}
+code,pre,.mono{font-family:'JetBrains Mono',monospace}
+
+/* ── HERO ── */
+.hero{background:var(--hero);color:#fff;padding:28px 24px 22px;position:relative;overflow:hidden;min-height:180px}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(193,68,14,.18) 0%,transparent 70%)}
+.hero::after{content:'';position:absolute;bottom:-40px;left:60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(26,111,160,.14) 0%,transparent 70%)}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;position:relative;z-index:1}
+.hero-name{font-size:clamp(28px,5vw,46px);font-family:'Cormorant Garamond',serif;font-weight:700;letter-spacing:-0.5px;color:#fff}
+.hero-sub{color:rgba(255,255,255,.6);font-size:13px;margin-top:2px}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.b-cat{background:rgba(26,111,160,.25);color:#6EC6F5;border:1px solid rgba(110,198,245,.3)}
+.b-ai{background:rgba(255,255,255,.12);color:#E8D5C0;border:1px solid rgba(232,213,192,.3)}
+.b-macro{background:rgba(193,68,14,.2);color:#F5A783;border:1px solid rgba(245,167,131,.3)}
+.b-verdict{background:rgba(255,255,255,.08);color:#B8C6D6;border:1px solid rgba(184,198,214,.25)}
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;position:relative;z-index:1}
+.pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:6px 12px;font-size:12px;color:rgba(255,255,255,.8)}
+.pill span{color:#fff;font-weight:700;font-family:'JetBrains Mono',monospace}
+.hero-lede{max-width:820px;margin-top:16px;font-size:13.5px;color:rgba(255,255,255,.72);line-height:1.7;position:relative;z-index:1}
+
+/* ── TAB BAR ── */
+#tab-bar{background:#fff;border-bottom:2px solid var(--sand);position:sticky;top:0;z-index:100;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.tab-btn{display:inline-block;padding:11px 14px;font-size:12.5px;font-weight:700;letter-spacing:.4px;color:var(--text2);cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;transition:all .2s;font-family:'Nunito',sans-serif;text-transform:uppercase}
+.tab-btn:hover{color:var(--sienna)}
+.tab-btn.active{color:var(--sienna);border-bottom-color:var(--sienna)}
+
+/* ── CONTENT ── */
+.tab-content{display:none;padding:24px 20px 48px;max-width:1100px;margin:0 auto}
+.tab-content.active{display:block}
+.section-title{font-size:22px;font-weight:700;color:var(--sienna);margin:28px 0 14px;padding-bottom:6px;border-bottom:2px solid var(--sand);font-family:'Cormorant Garamond',serif;letter-spacing:.3px}
+.section-title:first-child{margin-top:8px}
+.sub-title{font-size:16px;font-weight:700;color:var(--ink);margin:20px 0 10px}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:18px;box-shadow:var(--shadow)}
+.card-grid{display:grid;gap:14px}
+.card-grid.g2{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card-grid.g3{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.card-grid.g4{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+
+/* ── METRIC CARDS ── */
+.metric-card{background:var(--card);border-radius:var(--r);border-left:4px solid var(--sienna);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 16px;box-shadow:var(--shadow)}
+.metric-card.blue{border-left-color:var(--cerulean)}
+.metric-card.green{border-left-color:#14803C}
+.metric-card.amber{border-left-color:#B05D00}
+.metric-card.red{border-left-color:#C0392B}
+.metric-label{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2);margin-bottom:4px}
+.metric-value{font-size:22px;font-weight:800;color:var(--ink);font-family:'Cormorant Garamond',serif}
+.metric-note{font-size:11px;color:var(--text2);margin-top:3px}
+.metric-conf{font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;vertical-align:middle;margin-left:4px}
+.v{background:#D4EDDA;color:#14803C}
+.e{background:#FFF3CD;color:#856404}
+.u{background:#F8D7DA;color:#721C24}
+
+/* ── TABLES ── */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--ink);color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:12px;letter-spacing:.3px}
+td{padding:7px 10px;border-bottom:1px solid var(--sand)}
+tr:hover td{background:rgba(193,68,14,.04)}
+tr:nth-child(even) td{background:#FAFAF8}
+.tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow)}
+
+/* ── SCORECARD ── */
+.sc-row{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--sand);gap:8px;flex-wrap:wrap}
+.sc-row:last-child{border-bottom:none}
+.sc-label{font-size:13px;color:var(--ink);font-weight:600;flex:1}
+.sc-note{font-size:11.5px;color:var(--text2);flex:2;font-style:italic}
+.sc-badge{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:800;letter-spacing:.4px;white-space:nowrap}
+.pass-b{background:#D4EDDA;color:#14803C}
+.marg-b{background:#FFF3CD;color:#856404}
+.fail-b{background:#F8D7DA;color:#721C24}
+
+/* ── MOAT STARS ── */
+.stars{color:#C1440E;font-size:14px;letter-spacing:1px}
+
+/* ── GRADE BADGES ── */
+.grade{display:inline-block;padding:2px 9px;border-radius:4px;font-size:13px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.g-a{background:#D4EDDA;color:#14803C}
+.g-b{background:#D6E9F8;color:#1A6FA0}
+.g-c{background:#FFF3CD;color:#856404}
+.g-d{background:#F8D7DA;color:#721C24}
+.g-f{background:#2D0B0B;color:#F8D7DA}
+
+/* ── VERDICT BOX ── */
+.verdict-box{background:var(--hero);color:#fff;border-radius:12px;padding:28px;border:1px solid rgba(193,68,14,.5);box-shadow:0 4px 24px rgba(193,68,14,.15);margin:20px 0}
+.verdict-rating{font-size:42px;font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--sienna)}
+.verdict-label{font-size:13px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.6);text-transform:uppercase;margin-top:4px}
+.verdict-prose{color:rgba(255,255,255,.8);font-size:14px;line-height:1.8;margin-top:14px}
+.upgrade-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.upgrade-item:last-child{border-bottom:none}
+.upgrade-num{background:var(--sienna);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px}
+.upgrade-text{font-size:13px;color:rgba(255,255,255,.8)}
+
+/* ── FLYWHEEL BOX ── */
+.flywheel-box{background:linear-gradient(135deg,#0D2137 0%,#1A3550 100%);color:#fff;border-radius:10px;padding:22px;border:1px solid rgba(26,111,160,.4);margin:16px 0}
+.flywheel-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:#6EC6F5;margin-bottom:12px}
+.flywheel-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;background:rgba(255,255,255,.12);color:#B8D9F5;border:1px solid rgba(184,217,245,.3);margin-bottom:10px}
+.fw-q{display:flex;align-items:flex-start;gap:10px;margin:8px 0}
+.fw-q .q-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+.fw-q .q-text{font-size:13px;color:rgba(255,255,255,.8)}
+
+/* ── AI DASHBOARD ── */
+.ai-dash{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:14px 0}
+.ai-card{background:var(--ink);color:#fff;border-radius:8px;padding:14px;text-align:center}
+.ai-card-label{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px}
+.ai-card-value{font-size:14px;font-weight:800;color:#fff}
+.ai-card-value.green{color:#5DE292}
+.ai-card-value.grey{color:#B8C6D6}
+.ai-card-value.red{color:#F58C8C}
+
+/* ── TECHNICAL ── */
+.price-ladder{border-radius:var(--r);overflow:hidden;border:1px solid var(--border)}
+.pl-row{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--sand);gap:8px;flex-wrap:wrap}
+.pl-label{font-size:12px;color:var(--text2);font-weight:600}
+.pl-price{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--ink)}
+.pl-note{font-size:11px;color:var(--text2);font-style:italic}
+.pl-resist{background:rgba(192,57,43,.06)}
+.pl-current{background:rgba(193,68,14,.12)}
+.pl-support{background:rgba(20,128,60,.06)}
+
+/* ── OPT GAUGE SIMPLE ── */
+.score-bar-wrap{background:var(--sand);border-radius:20px;height:16px;overflow:hidden;margin:6px 0}
+.score-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--sienna),var(--cerulean));transition:width .6s}
+
+/* ── SERIES TABLE ── */
+.series-tbl{font-size:11.5px}
+.series-tbl td{padding:5px 8px}
+.series-tbl th{padding:6px 8px;font-size:11px}
+
+/* ── OE BOX ── */
+.oe-box{background:linear-gradient(135deg,#1C2B17 0%,#243520 100%);color:#fff;border-radius:10px;padding:20px;border:1px solid rgba(20,128,60,.35);margin:16px 0}
+.oe-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:#7DD38A;margin-bottom:12px}
+.oe-line{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
+.oe-line:last-child{border-bottom:none;font-weight:800;font-size:15px;padding-top:10px;color:#7DD38A}
+.oe-val{font-family:'JetBrains Mono',monospace;font-weight:700}
+.oe-pos{color:#7DD38A}.oe-neg{color:#F58C8C}
+
+/* ── MACRO CYCLE ── */
+.macro-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:14px 0}
+.mc-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px;box-shadow:var(--shadow)}
+.mc-label{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--text2);margin-bottom:6px}
+.mc-status{font-size:15px;font-weight:800;font-family:'Cormorant Garamond',serif;padding:3px 10px;border-radius:5px;display:inline-block}
+.st-head{background:#FFF3CD;color:#856404}
+.st-neut{background:#E8F4FD;color:#1A6FA0}
+.st-tail{background:#D4EDDA;color:#14803C}
+.mc-note{font-size:11.5px;color:var(--text2);margin-top:6px}
+
+/* ── DCF TABLE ── */
+.dcf-table td,.dcf-table th{padding:6px 9px;font-size:12px}
+.dcf-stress{background:#FFF3CD}
+.dcf-base{background:#EAF5FB}
+.dcf-accel{background:#EAFAF1}
+
+/* ── RESPONSIVE ── */
+@media(max-width:680px){
+  .hero-name{font-size:24px}
+  .card-grid.g2,.card-grid.g3,.card-grid.g4{grid-template-columns:1fr}
+  .macro-grid{grid-template-columns:1fr 1fr}
+  .tab-btn{padding:9px 10px;font-size:11px}
+  .ai-dash{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .macro-grid{grid-template-columns:1fr}
+  .ai-dash{grid-template-columns:1fr}
+}
+
+/* ── COLOUR LEGEND ── */
+.conf-legend{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0;font-size:12px}
+.conf-legend span{display:flex;align-items:center;gap:4px}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-name">Indigo Paints</div>
+      <div class="hero-sub">NSE: INDIGOPNTS &nbsp;|&nbsp; Decorative Paints &nbsp;|&nbsp; India</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:32px;font-weight:900;font-family:'Cormorant Garamond',serif;color:var(--sienna)">WATCH ★★★</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.8px;text-transform:uppercase;margin-top:2px">Buffett Quality-Value Series v5.0</div>
+    </div>
+  </div>
+
+  <div class="badge-row">
+    <span class="badge b-cat">Cat C · Mature Compounder</span>
+    <span class="badge b-ai">⚪ AI NEUTRAL</span>
+    <span class="badge b-macro">⚠ Macro: Mixed / Input Cost Risk</span>
+    <span class="badge b-verdict">Flywheel: Cosmetic</span>
+  </div>
+
+  <div class="hero-pills">
+    <div class="pill">Price <span>₹769</span> <span class="metric-conf e">ESTIMATED</span></div>
+    <div class="pill">Mkt Cap <span>₹3,651 Cr</span></div>
+    <div class="pill">FY25 Revenue <span>₹1,360 Cr</span></div>
+    <div class="pill">FY25 PAT <span>₹144 Cr</span></div>
+    <div class="pill">ROCE <span>20%</span></div>
+    <div class="pill">P/E (TTM) <span>~25x</span></div>
+    <div class="pill">Net Cash <span>₹227 Cr</span></div>
+  </div>
+
+  <div class="hero-lede">
+    Indigo Paints is India's 5th-largest decorative paints company and the only category-creator challenger brand in the sector — pioneering metallic emulsions, tile coat emulsions, and textured finishes that command 80–90% niche market share. Founded by chemical engineer Hemant Jalan with ₹1 lakh in 2000, it scaled to ₹1,360 Cr in FY25 consolidated revenue. The investment case today is a tension between genuine product differentiation and an industry undergoing its most disruptive structural shift in two decades: Birla Opus (Grasim Industries) has deployed ₹10,000 Cr to capture 10%+ market share in just one year, compressing growth trajectories and valuations across the sector. The stock is 77% below its 2021 ATH — down from ₹3,329 to ₹783 lows — but has not yet reached an unambiguous margin of safety on fundamentals.
+  </div>
+</div>
+
+<!-- ═══ TAB BAR ═══ -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intel</button>
+</div>
+
+<!-- ════════════════════════════════ TAB 0 ════════════════════════════════ -->
+<div id="tab0" class="tab-content" style="display:block">
+
+  <div class="section-title">Business Overview</div>
+
+  <div class="card-grid g2">
+    <div class="card">
+      <div class="sub-title">Company DNA</div>
+      <p style="font-size:13.5px;color:var(--text2);line-height:1.8">Founded in 2000 by Hemant Jalan in Jharkhand with ₹1 lakh seed capital. Bootstrapped until 2014 when Sequoia invested ₹50 Cr. Listed on NSE/BSE in February 2021 (IPO at ₹1,490, opened at ₹3,329 — one of India's most oversubscribed paint IPOs). The only paint company in India to have created entirely new product categories rather than following incumbents. <br><br>Acquired 51% stake in Apple Chemie India Pvt Ltd (construction chemicals/waterproofing) in April 2023, adding a fast-growing B2B adjacent revenue stream.</p>
+    </div>
+    <div class="card">
+      <div class="sub-title">Why This Stock is in the Series</div>
+      <p style="font-size:13.5px;color:var(--text2);line-height:1.8">Indigo represents a critical test case for the framework: a genuine quality challenger brand with proven product innovation and solid capital discipline, caught in the crossfire of the largest disruption the Indian paints sector has seen in a generation. Birla Opus's entry changes the TAM math, the competitive intensity, and the multiples ceiling. This analysis answers: At what price does the disruption risk become priced in adequately to warrant capital allocation?</p>
+    </div>
+  </div>
+
+  <div class="section-title">Key Differentiators</div>
+  <div class="card-grid g3">
+    <div class="metric-card">
+      <div class="metric-label">Category Creation</div>
+      <div class="metric-value" style="font-size:16px">First Mover</div>
+      <div class="metric-note">Metallic emulsions, tile coat emulsions, epoxy — 80–90% niche market share <span class="metric-conf v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Tinting Machines</div>
+      <div class="metric-value">11,650+</div>
+      <div class="metric-note">Active tinting machines at dealer outlets (Sep 2025) <span class="metric-conf v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Active Dealer Network</div>
+      <div class="metric-value">18,900+</div>
+      <div class="metric-note">Across 28 states + 54 self-operated depots <span class="metric-conf v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Apple Chemie (51%)</div>
+      <div class="metric-value">+31.5% YoY</div>
+      <div class="metric-note">Q3 FY26 subsidiary revenue; B2B construction chemicals <span class="metric-conf v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Waterproofing</div>
+      <div class="metric-value">~7%</div>
+      <div class="metric-note">Contribution to revenue; fastest-growing segment started 2 years ago <span class="metric-conf e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Birla Opus Threat</div>
+      <div class="metric-value">10%+ Share</div>
+      <div class="metric-note">Grasim captured 10%+ decorative market share in 12 months with ₹10,000 Cr investment <span class="metric-conf v">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Framework Classification</div>
+  <div class="card">
+    <table>
+      <tr><th>Dimension</th><th>Classification</th><th>Rationale</th></tr>
+      <tr><td><strong>Category</strong></td><td><span class="grade g-b">C</span> Mature Compounder</td><td>ROIC 20–23%, durable though narrow moat, stable growth historically 12–15% (now decelerating to 8–11% amid disruption)</td></tr>
+      <tr><td><strong>AI Overlay</strong></td><td>⚪ NEUTRAL</td><td>Uses AI for demand sensing, logistics, dealer analytics; no proprietary data flywheel; AI does not structurally alter competitive position</td></tr>
+      <tr><td><strong>Data Flywheel</strong></td><td>Cosmetic</td><td>Tinting machine data is useful for demand forecasting but competitors have equal or better access to market data; no self-reinforcing AI loop</td></tr>
+      <tr><td><strong>AI Phase</strong></td><td>Phase 4 (AI in paints)</td><td>Paint sector AI is mainstream tooling (demand sensing, route optimisation); no competitive differentiation from AI deployment</td></tr>
+      <tr><td><strong>Value Chain</strong></td><td>Level 5: AI-Enabled Incumbent</td><td>Traditional consumer brand using AI as operational tool</td></tr>
+      <tr><td><strong>WACC</strong></td><td>13% (Cat C, small cap)</td><td>Standard Cat C range 12–14%; +0.5–1% small-cap premium for Indigo's size vs Asian Paints/Berger</td></tr>
+      <tr><td><strong>Terminal g</strong></td><td>6.5%</td><td>India nominal GDP ~11.5%; ceiling = 65% of nominal; Indigo challenger status → lower ceiling than incumbent</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Current State Snapshot</div>
+  <div class="card-grid g4">
+    <div class="metric-card"><div class="metric-label">Price (Apr 6, 2026)</div><div class="metric-value">₹769</div><div class="metric-note"><span class="metric-conf e">ESTIMATED</span></div></div>
+    <div class="metric-card red"><div class="metric-label">vs 52-Wk High</div><div class="metric-value">−43%</div><div class="metric-note">52-wk high ₹1,346 <span class="metric-conf v">VERIFIED</span></div></div>
+    <div class="metric-card green"><div class="metric-label">vs 52-Wk Low</div><div class="metric-value">+8%</div><div class="metric-note">52-wk low ₹711; ATL ₹783 Mar 2026 <span class="metric-conf v">VERIFIED</span></div></div>
+    <div class="metric-card"><div class="metric-label">All-Time High</div><div class="metric-value">₹3,330</div><div class="metric-note">Feb 2021 (IPO day) <span class="metric-conf v">VERIFIED</span></div></div>
+    <div class="metric-card amber"><div class="metric-label">P/E (TTM)</div><div class="metric-value">~25x</div><div class="metric-note">TTM EPS ₹30.4 <span class="metric-conf e">ESTIMATED</span></div></div>
+    <div class="metric-card blue"><div class="metric-label">EV/EBITDA</div><div class="metric-value">~14.5x</div><div class="metric-note">FY25 EBITDA ₹232 Cr <span class="metric-conf e">ESTIMATED</span></div></div>
+    <div class="metric-card green"><div class="metric-label">FCF Conversion</div><div class="metric-value">142%</div><div class="metric-note">FY25 Op CF ₹205 Cr / PAT ₹144 Cr <span class="metric-conf v">VERIFIED</span></div></div>
+    <div class="metric-card"><div class="metric-label">Entry Zone (MoS)</div><div class="metric-value">₹550–650</div><div class="metric-note">15–20% below blended base IV ~₹672</div></div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════ TAB 1 ════════════════════════════════ -->
+<div id="tab1" class="tab-content">
+
+  <div class="section-title">Layer 1 — Macro Anchor</div>
+  <div class="card" style="margin-bottom:16px">
+    <table>
+      <tr><th>Macro Variable</th><th>Current / FY27E</th><th>Source</th><th>Confidence</th></tr>
+      <tr><td>India Real GDP Growth (FY27E)</td><td><strong>6.9%</strong></td><td>RBI MPC April 2026</td><td><span class="metric-conf v">VERIFIED</span></td></tr>
+      <tr><td>India CPI Inflation (FY27E)</td><td><strong>4.6%</strong></td><td>RBI MPC April 2026 (Q3 peak 5.2%)</td><td><span class="metric-conf v">VERIFIED</span></td></tr>
+      <tr><td>India Nominal GDP Growth</td><td><strong>~11.5%</strong> (6.9+4.6)</td><td>Derived</td><td><span class="metric-conf e">ESTIMATED</span></td></tr>
+      <tr><td>India 10-Yr G-Sec Yield</td><td><strong>~7.0%</strong> (crossed 7%)</td><td>Trading Economics / April 2026</td><td><span class="metric-conf v">VERIFIED</span></td></tr>
+      <tr><td>RBI Repo Rate</td><td><strong>5.25%</strong> (held April 8, 2026)</td><td>RBI MPC</td><td><span class="metric-conf v">VERIFIED</span></td></tr>
+      <tr><td>Nifty 50 P/E (approx)</td><td><strong>~22x</strong></td><td>Estimated from market data</td><td><span class="metric-conf e">ESTIMATED</span></td></tr>
+      <tr><td>Brent Crude (conflict spike)</td><td><strong>&gt;$100/bbl</strong></td><td>West Asia conflict (US-Iran), Apr 2026</td><td><span class="metric-conf v">VERIFIED</span></td></tr>
+    </table>
+    <div style="margin-top:12px;padding:10px;background:rgba(193,68,14,.07);border-radius:6px;font-size:13px;color:var(--text2)">
+      <strong>Terminal Growth Ceiling:</strong> India Nominal GDP ~11.5% × 65% = <strong>7.5%</strong>. For Indigo as a challenger brand (Cat C, smaller), we apply <strong>6.5%</strong> terminal growth — reflecting its lower likelihood of sustaining above-market growth at perpetuity relative to category leaders. This is below the ceiling. ✓
+    </div>
+  </div>
+
+  <div class="section-title">Macro Cycle Status — 6 Dimensions</div>
+  <div class="macro-grid">
+    <div class="mc-card">
+      <div class="mc-label">Rural Income Cycle</div>
+      <div class="mc-status st-neut">Neutral → Recovery</div>
+      <div class="mc-note">Good monsoon 2025, income tax cuts in Union Budget; rural demand recovering but not booming. Paint demand impact: neutral to +1–2%.</div>
+    </div>
+    <div class="mc-card">
+      <div class="mc-label">Urban Consumption Cycle</div>
+      <div class="mc-status st-neut">Neutral</div>
+      <div class="mc-note">IT sector wage growth slowing; real estate activity healthy but not exuberant; premium paint demand tepid. Impact: neutral.</div>
+    </div>
+    <div class="mc-card">
+      <div class="mc-label">Input Cost Cycle</div>
+      <div class="mc-status st-head">Headwind Renewed</div>
+      <div class="mc-note">Crude >$100/bbl (West Asia conflict). TiO2, solvents, resins under pressure. Margin headwind: −1 to −2% EBITDA margin risk if sustained.</div>
+    </div>
+    <div class="mc-card">
+      <div class="mc-label">Interest Rate Cycle (RBI)</div>
+      <div class="mc-status st-neut">Neutral / Pause</div>
+      <div class="mc-note">Repo at 5.25%, held April 2026. No immediate cuts or hikes. Housing/renovation demand stable. EMI burden: unchanged.</div>
+    </div>
+    <div class="mc-card">
+      <div class="mc-label">Government Capex Cycle</div>
+      <div class="mc-status st-tail">Supportive</div>
+      <div class="mc-note">Infra spend driving Apple Chemie (B2B construction chemicals) strongly; Apple Chemie +31.5% YoY Q3 FY26. Adjacent tailwind for Indigo.</div>
+    </div>
+    <div class="mc-card">
+      <div class="mc-label">AI Adoption Cycle</div>
+      <div class="mc-status st-neut">Neutral</div>
+      <div class="mc-note">AI is Phase 4 in paint sector (mainstream tooling). No competitive differentiation available. Disruption risk: LOW. Opportunity: LOW.</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:4px;border-left:4px solid var(--sienna);padding:12px 16px">
+    <strong>MACRO COMPOSITE for Indigo Paints: ⚠ Mixed / Modest Headwind</strong><br>
+    <span style="font-size:13px;color:var(--text2)">Crude oil spike is the primary near-term risk (direct input cost). Rural recovery provides modest volume support. Infra capex is a tailwind for Apple Chemie subsidiary. Net: slight headwind on margins, neutral on volumes.</span>
+  </div>
+
+  <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Scenario</th><th>Sector Base Rate</th><th>Macro Adjustment</th><th>Competitive Adjustment</th><th>Effective Sector Growth</th></tr>
+      <tr class="dcf-stress"><td>Stress (Crude >$100, Birla Opus intensifies)</td><td>8–10%</td><td>−1% (input cost pressure)</td><td>−1.5% (market share dilution to new entrants)</td><td><strong>5.5–7.5%</strong></td></tr>
+      <tr class="dcf-base"><td>Base (Crude moderates, demand recovers)</td><td>10–12%</td><td>Neutral</td><td>−0.5% (Birla Opus stabilises at ~10–12% share)</td><td><strong>9.5–11.5%</strong></td></tr>
+      <tr class="dcf-accel"><td>Acceleration (Rural boom, crude corrects)</td><td>13–15%</td><td>+1% (input cost relief)</td><td>Neutral (market shares stabilise)</td><td><strong>14–16%</strong></td></tr>
+    </table>
+  </div>
+  <div style="margin-top:10px;font-size:13px;color:var(--text2);padding:10px;background:#F5F0E8;border-radius:6px;border:1px solid var(--border)">
+    <strong>Sector Note:</strong> Indian decorative paints is a ₹70,000–80,000 Cr market growing at 10–12% in base conditions. FY25 was one of the most subdued years in two decades — industry volume growth muted. FY26 showing recovery signals post-Q2. Birla Opus has permanently added capacity and competitive intensity; the sector's growth will partially be competed away rather than captured by incumbents. <strong>AI Impact on sector: NEUTRAL</strong> — AI does not change the fundamental economics of paint manufacturing or consumer purchasing decisions.
+  </div>
+
+  <div class="section-title">Layer 3 — Company Alpha Over Sector</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Alpha Source</th><th>Status</th><th>Mechanism</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+      <tr><td>Market Share Gain</td><td style="color:#856404">⚠ Contested</td><td>Gaining in tier-3/4 towns; losing ground in metros/tier-1 to Birla Opus and Asian Paints</td><td>0 to +1%</td><td>+1 to +2%</td></tr>
+      <tr><td>Premiumisation</td><td style="color:#14803C">Active</td><td>Category-defining premium products (metallic, tile coat) with 80–90% niche share; premium outperforming economy</td><td>+1.5%</td><td>+1%</td></tr>
+      <tr><td>Category / Product Expansion</td><td style="color:#14803C">Active</td><td>Waterproofing (7% of revenue, high growth); construction chemicals via Apple Chemie</td><td>+1.5%</td><td>+1%</td></tr>
+      <tr><td>Geographic Expansion</td><td style="color:#856404">Partial</td><td>Historically strong in South; T3/T4 towns; underindex in 4–5 major metros. New Jodhpur plants open North/East</td><td>+1%</td><td>+0.5%</td></tr>
+      <tr><td>Pricing Power</td><td style="color:#856404">Limited</td><td>Competitive intensity limits above-inflation price increases; management guided stable gross margins despite pressure</td><td>0%</td><td>+0.5%</td></tr>
+      <tr><td>AI Alpha (6a+6b+6c)</td><td style="color:var(--text2)">⚪ Nil</td><td>AI used for demand sensing / logistics only; no proprietary flywheel; no structural advantage from AI</td><td>0%</td><td>0%</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Growth Rate Summary — Final Matrix</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Parameter</th><th style="background:#7D6000;color:#fff">STRESS</th><th style="background:#1A6FA0">BASE</th><th style="background:#14803C">ACCELERATION</th></tr>
+      <tr><td>Macro State</td><td>GDP ~5.5% (conflict drag)</td><td>GDP ~6.9% (RBI base)</td><td>GDP ~8%+ (conflict resolved)</td></tr>
+      <tr><td>CPI / Nominal GDP</td><td>~5.5% / ~11%</td><td>~4.6% / ~11.5%</td><td>~3.5% / ~11.5%</td></tr>
+      <tr><td>Sector Growth</td><td>5.5–7.5%</td><td>9.5–11.5%</td><td>14–16%</td></tr>
+      <tr><td>Company Alpha (ex-AI)</td><td>+2%</td><td>+3.5–4%</td><td>+5–6%</td></tr>
+      <tr><td>AI Alpha</td><td>0%</td><td>0%</td><td>0%</td></tr>
+      <tr><td><strong>Stage 1 Revenue CAGR (5yr)</strong></td><td><strong>9%</strong></td><td><strong>13%</strong></td><td><strong>19%</strong></td></tr>
+      <tr><td>Stage 2 FCF CAGR</td><td>7%</td><td>9%</td><td>12%</td></tr>
+      <tr><td>Terminal Growth</td><td>5.5%</td><td>6.5%</td><td>7.0%</td></tr>
+      <tr><td>Margin Direction</td><td>Compress (crude)</td><td>Stable / slight expand</td><td>Expand (crude relief)</td></tr>
+      <tr><td>Key Risk</td><td>Birla Opus share gains + crude spike</td><td>Execution on metros + capex timing</td><td>Capacity constraint; Apple Chemie integration</td></tr>
+    </table>
+  </div>
+  <div style="margin-top:10px;font-size:13px;color:var(--text2);padding:10px;background:#F5F0E8;border-radius:6px;border:1px solid var(--border)">
+    <strong>Sensitivity:</strong> A 1% change in terminal growth rate changes IV by approximately <strong>±11–13%</strong>. A 1% change in Stage 1 growth rate changes IV by approximately <strong>±6–8%</strong>. The dominant driver of value at current subdued multiples is whether the company can re-establish 12–15% revenue growth in FY27–28.
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════ TAB 2 ════════════════════════════════ -->
+<div id="tab2" class="tab-content">
+
+  <div class="section-title">ROE & ROIC — 5-Year Track</div>
+  <div class="card-grid g4">
+    <div class="card" style="text-align:center">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2)">FY21</div>
+      <div style="font-size:24px;font-weight:800;color:var(--cerulean);font-family:'Cormorant Garamond',serif">16.1%</div>
+      <div style="font-size:11px;color:var(--text2)">ROE | ROIC 25%</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2)">FY22</div>
+      <div style="font-size:24px;font-weight:800;color:var(--cerulean);font-family:'Cormorant Garamond',serif">13.4%</div>
+      <div style="font-size:11px;color:var(--text2)">ROE | ROIC 19%</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2)">FY23</div>
+      <div style="font-size:24px;font-weight:800;color:var(--sienna);font-family:'Cormorant Garamond',serif">19.1%</div>
+      <div style="font-size:11px;color:var(--text2)">ROE | ROIC 22%</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2)">FY24</div>
+      <div style="font-size:24px;font-weight:800;color:var(--sienna);font-family:'Cormorant Garamond',serif">17.9%</div>
+      <div style="font-size:11px;color:var(--text2)">ROE | ROIC 23%</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2)">FY25</div>
+      <div style="font-size:24px;font-weight:800;color:var(--sienna);font-family:'Cormorant Garamond',serif">14.6%</div>
+      <div style="font-size:11px;color:var(--text2)">ROE | ROIC 20%</div>
+    </div>
+    <div class="card" style="text-align:center;border:1px dashed var(--sienna)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2)">5-Yr Avg</div>
+      <div style="font-size:24px;font-weight:800;color:var(--ink);font-family:'Cormorant Garamond',serif">16.2%</div>
+      <div style="font-size:11px;color:var(--text2)">ROE Avg | ROIC 22%</div>
+    </div>
+  </div>
+  <div style="font-size:13px;color:var(--text2);padding:8px 12px;background:#F5F0E8;border-radius:6px;margin-top:6px">
+    ROIC consistently above WACC (13%) — confirms economic value creation. Recent dip to 20% reflects elevated capex cycle (new plants FY24/25). WACC threshold clearly passed. <span class="metric-conf v">VERIFIED</span>
+  </div>
+
+  <div class="section-title">Revenue & Profit History</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Year</th><th>Revenue (Cr)</th><th>EBITDA (Cr)</th><th>EBITDA%</th><th>PAT (Cr)</th><th>PAT%</th><th>Op CF (Cr)</th></tr>
+      <tr><td>FY21</td><td>723</td><td>123</td><td>17%</td><td>71</td><td>9.8%</td><td>121</td></tr>
+      <tr><td>FY22</td><td>906</td><td>136</td><td>15%</td><td>84</td><td>9.3%</td><td>65</td></tr>
+      <tr><td>FY23</td><td>1,073</td><td>182</td><td>17%</td><td>132</td><td>12.3%</td><td>116</td></tr>
+      <tr><td>FY24</td><td>1,255</td><td>233</td><td>19%</td><td>149</td><td>11.9%</td><td>152</td></tr>
+      <tr><td>FY25</td><td>1,277</td><td>232</td><td>18.2%</td><td>144</td><td>11.3%</td><td>205</td></tr>
+      <tr style="font-weight:700;background:#F7F0E3"><td>TTM</td><td>1,299</td><td>241</td><td>18.5%</td><td>145</td><td>11.2%</td><td>~205</td></tr>
+      <tr style="background:#EAF5FB"><td>CAGR (5yr)</td><td style="color:#14803C"><strong>15%</strong></td><td>17%</td><td>—</td><td style="color:#14803C"><strong>25%</strong></td><td>—</td><td>14%</td></tr>
+      <tr style="background:#FFF3CD"><td>CAGR (1yr/TTM)</td><td style="color:#C0392B"><strong>+2%</strong></td><td>+4%</td><td>—</td><td style="color:#C0392B"><strong>−3%</strong></td><td>—</td><td>+35%</td></tr>
+    </table>
+  </div>
+  <div style="font-size:12px;color:var(--text2);margin-top:6px"><span class="metric-conf v">VERIFIED</span> Standalone figures. Consolidated FY25 revenue ~₹1,360 Cr (includes Apple Chemie ₹83 Cr).</div>
+
+  <div class="section-title">Financial Fortress Scorecard</div>
+  <div class="card">
+    <div class="sc-row"><div class="sc-label">ROE ≥ 15% for 5 years</div><div class="sc-note">3 of 5 years ≥15%; avg 16.2%; FY25 dipped to 14.6%</div><div class="sc-badge marg-b">MARGINAL ~</div></div>
+    <div class="sc-row"><div class="sc-label">ROIC > WACC (13%) for 5 years</div><div class="sc-note">ROIC 19–25% consistently; well above 13% WACC throughout</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Net cash (preferred)</div><div class="sc-note">Net cash ~₹227 Cr (investments ₹247 Cr minus borrowings ₹20 Cr)</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Net Profit Margin ≥ 15%</div><div class="sc-note">Margin range 9.3–12.3% over 5 years; below 15% threshold</div><div class="sc-badge fail-b">FAIL ✗</div></div>
+    <div class="sc-row"><div class="sc-label">FCF positive and growing</div><div class="sc-note">Op CF ₹205 Cr FY25 (highest ever); FCF conversion 142% of PAT</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">FCF conversion ≥ 80% of net income</div><div class="sc-note">FY25: ₹205 Cr / ₹144 Cr = 142%; historically lumpy (FY22 dipped on WC)</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Pricing power proven</div><div class="sc-note">Managed modest price increases; Birla Opus entry limiting future power</div><div class="sc-badge marg-b">MARGINAL ~</div></div>
+    <div class="sc-row"><div class="sc-label">Revenue CAGR ≥ sector CAGR</div><div class="sc-note">5yr CAGR 15% vs sector 10–12% ✓. TTM 2% vs sector 9–11% ✗</div><div class="sc-badge marg-b">MARGINAL ~</div></div>
+    <div class="sc-row"><div class="sc-label">Capital-light model (high ROIC)</div><div class="sc-note">ROIC 20–25%; new capex cycle (FY24–26 plants) temporarily elevated; normalises FY27+</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Dividend payout sustainable</div><div class="sc-note">Payout 11–12% of PAT; very conservative; ample reinvestment headroom</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div style="padding:10px 14px;background:#F5F0E8;border-radius:0 0 8px 8px;font-size:13px;font-weight:700;color:var(--sienna)">Overall Financial Quality: <span class="grade g-b">B+</span> — Strong FCF, healthy ROIC, net cash; partially offset by margins below 15% and revenue growth stalling FY25</div>
+  </div>
+
+  <div class="section-title">Owner Earnings Calculation — FY25</div>
+  <div class="oe-box">
+    <div class="oe-title">Owner Earnings — Indigo Paints FY25 (Standalone)</div>
+    <div class="oe-line"><span>Net Income (PAT)</span><span class="oe-val oe-pos">+ ₹144 Cr</span></div>
+    <div class="oe-line"><span>Depreciation & Amortisation</span><span class="oe-val oe-pos">+ ₹54 Cr</span></div>
+    <div class="oe-line"><span>Non-cash / Other Income adjustments</span><span class="oe-val oe-neg">− ₹17 Cr</span></div>
+    <div class="oe-line"><span>Total CapEx (FY25)</span><span class="oe-val oe-neg">− ₹175 Cr</span></div>
+    <div class="oe-line"><span style="color:rgba(255,255,255,.6);font-size:12px">  → Maintenance CapEx (~35% of total, est.)</span><span class="oe-val oe-neg" style="font-size:12px">− ₹61 Cr</span></div>
+    <div class="oe-line"><span style="color:rgba(255,255,255,.6);font-size:12px">  → Growth CapEx (new plants, Tamil Nadu, Jodhpur)</span><span class="oe-val" style="font-size:12px;color:rgba(255,255,255,.5)">₹114 Cr (excluded)</span></div>
+    <div class="oe-line"><span>Working Capital Change (Est.)</span><span class="oe-val oe-neg">− ₹15 Cr</span></div>
+    <div class="oe-line"><span><strong>CONSERVATIVE OWNER EARNINGS</strong></span><span class="oe-val"><strong>≈ ₹105 Cr</strong></span></div>
+    <div class="oe-line"><span><strong>BASE OWNER EARNINGS</strong> (normalised maintenance CapEx)</span><span class="oe-val"><strong>≈ ₹145 Cr</strong></span></div>
+    <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,.5)"><span class="metric-conf e">ESTIMATED</span> CapEx split is estimated; total CapEx per cash flow statement.</div>
+  </div>
+
+  <div class="section-title">Earnings Quality — O'Glove Framework</div>
+  <div class="card">
+    <div class="sc-row"><div class="sc-label">Test 1 — FCF Conversion (5yr)</div><div class="sc-note">FY21: 171%, FY22: 77%, FY23: 88%, FY24: 102%, FY25: 142%. 4 of 5 years ≥80%. FY22 dip due to large WC build (expansion year).</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Test 2 — DSO Trend (3yr)</div><div class="sc-note">FY23: 68 days → FY24: 59 days → FY25: 63 days. Stable / slight deterioration; no alarming rise. Industry context: normal for paint distribution.</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Test 3 — Inventory Days (3yr)</div><div class="sc-note">FY23: 72 → FY24: 93 → FY25: 80. Rise in FY24 coincided with demand slowdown (Birla Opus entry disruption); FY25 partial recovery. Watch.</div><div class="sc-badge marg-b">MARGINAL ~</div></div>
+    <div class="sc-row"><div class="sc-label">Test 4 — Accounting Policy Stability</div><div class="sc-note">No material accounting policy changes noted in last 3 annual reports. GST compliance intact. No related-party red flags in last 3 years.</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Test 5 — Gross Margin Consistency (5yr)</div><div class="sc-note">Gross margins: FY21 16.9% → FY22 15% (crude spike) → FY23 17% → FY24 18.6% → FY25 18.2%. Consistent recovery post-input cost cycles.</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div style="padding:10px 14px;background:#D4EDDA;border-radius:0 0 8px 8px;font-size:13px;font-weight:700;color:#14803C">Overall Earnings Quality: <strong>ACCEPTABLE</strong> — 4/5 tests pass cleanly. Inventory build in FY24 is the main flag; resolved partially in FY25. Standard MoS applies (no widening required).</div>
+  </div>
+
+  <div class="section-title">⚠ Working Capital Deterioration — Key Watch</div>
+  <div class="card" style="border-left:4px solid var(--sienna)">
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.8">The Cash Conversion Cycle has worsened significantly: <strong>FY23: 18 days → FY24: 29 days → FY25: 54 days</strong>. The primary driver is a collapse in Days Payable from 122 days (FY23) to 88 days (FY25) — management confirmed this is due to MSME supplier payment compliance. This is a <strong>one-time structural shift</strong>, not a sign of business deterioration, but it permanently raises working capital requirements by ~₹40–50 Cr relative to prior years. FCF generation remains strong because Op CF captures WC changes.</p>
+    <div style="margin-top:10px;display:flex;gap:14px;flex-wrap:wrap">
+      <div><div style="font-size:11px;color:var(--text2)">Days Payable FY23</div><div style="font-weight:800;font-size:18px;font-family:'Cormorant Garamond',serif">122 days</div></div>
+      <div style="font-size:20px;color:var(--sienna);margin-top:10px">→</div>
+      <div><div style="font-size:11px;color:var(--text2)">Days Payable FY25</div><div style="font-weight:800;font-size:18px;font-family:'Cormorant Garamond',serif;color:var(--sienna)">88 days</div></div>
+      <div style="font-size:20px;color:var(--text2);margin-top:10px">|</div>
+      <div><div style="font-size:11px;color:var(--text2)">CCC FY25</div><div style="font-weight:800;font-size:18px;font-family:'Cormorant Garamond',serif;color:var(--sienna)">54 days</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════ TAB 3 ════════════════════════════════ -->
+<div id="tab3" class="tab-content">
+
+  <div class="section-title">Pillar 1 — Economic Moat Assessment</div>
+
+  <div class="card-grid g2">
+    <div class="card">
+      <div class="sub-title">1. Category Creation / Intangible Assets <span class="stars">★★★★</span></div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.8">First-mover in metallic emulsions, tile coat emulsions, epoxy-based products — creating entirely new paint categories with <strong>80–90% market share</strong> in those niches. This is genuine product moat: competitors haven't replicated the exact positioning despite years of trying. However, Birla Opus is attempting to match this by quickly building a full portfolio (179+ products, 1,450+ SKUs within 1 year). Brand moat is building (Colour Canvas stores, painter loyalty programmes) but remains narrower than Asian Paints or Berger. <span class="metric-conf v">VERIFIED</span></p>
+    </div>
+    <div class="card">
+      <div class="sub-title">2. Distribution / Tinting Machine Network <span class="stars">★★★</span></div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.8">18,900+ dealers and 11,650+ tinting machines create a sticky distribution moat. Once a tinting machine is installed at a dealer, it creates switching costs (machine maintenance, colour matching familiarity). However, Birla Opus deployed <strong>45,000+ tinting machines</strong> to dealers — replicating and exceeding this network at massive speed. The distribution moat advantage relative to Birla Opus has been partially neutralised. Relative to Kansai Nerolac, AkzoNobel — still superior. <span class="metric-conf v">VERIFIED</span></p>
+    </div>
+    <div class="card">
+      <div class="sub-title">3. Painter / Contractor Ecosystem <span class="stars">★★★</span></div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.8">Painters are key influencers for homeowners (80%+ of paint decisions are painter-led). Indigo's painter engagement programme creates switching costs. Token scanning data from painters shows unprecedented levels (management Q2 FY26 call), indicating strong secondary sales confirmation. However, Birla Opus is aggressively recruiting painters with incentives — the ecosystem moat is contested. <span class="metric-conf e">ESTIMATED</span></p>
+    </div>
+    <div class="card">
+      <div class="sub-title">4. Cost Advantages / Scale <span class="stars">★★</span></div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.8">New manufacturing plants (Tamil Nadu, Jodhpur) improve cost efficiency. But Indigo is the 5th-largest player by revenue — it lacks the purchasing scale of Asian Paints (₹30,000+ Cr revenue) or even Berger (₹10,000+ Cr). Birla Opus, backed by Grasim, has superior raw material negotiation power. Scale moat is the weakest of Indigo's moat sources. Apple Chemie acquisition adds adjacent manufacturing capability. <span class="metric-conf e">ESTIMATED</span></p>
+    </div>
+  </div>
+
+  <div class="flywheel-box" style="margin-top:20px">
+    <div class="flywheel-title">🔄 Data Flywheel Test — Indigo Paints</div>
+    <div class="flywheel-badge">AI FEATURE, NOT MOAT ★</div>
+    <div class="fw-q">
+      <div class="q-icon">❓</div>
+      <div class="q-text"><strong>Q1: Proprietary training data?</strong> — Tinting machine colour mix data, token scanning data (painter behaviour), dealer order patterns. Useful for demand forecasting. However, this data is not <em>uniquely</em> proprietary — all paint companies with tinting machines collect similar data. Asian Paints/Berger have larger datasets. <strong style="color:#F5B8A0">PARTIAL</strong></div>
+    </div>
+    <div class="fw-q">
+      <div class="q-icon">❓</div>
+      <div class="q-text"><strong>Q2: Does AI improve as more data accumulates?</strong> — Demand forecasting accuracy improves with more data, but this is incremental efficiency (AI NEUTRAL benefit), not a compounding competitive advantage. No evidence that Indigo's AI is demonstrably better than competitors'. <strong style="color:#F5B8A0">NOT CONFIRMED</strong></div>
+    </div>
+    <div class="fw-q">
+      <div class="q-icon">❓</div>
+      <div class="q-text"><strong>Q3: Does better AI attract more users?</strong> — No. Painters and homeowners choose paints based on colour quality, price, dealer relationships, brand trust — not because Indigo's AI is better. The feedback loop does not exist. <strong style="color:#F5B8A0">NOT CONFIRMED</strong></div>
+    </div>
+    <div style="margin-top:14px;padding:12px;background:rgba(255,255,255,.06);border-radius:6px">
+      <strong>Flywheel Score: 1.5/10</strong> — AI is a useful operational tool for demand planning and inventory management but does NOT create a compounding competitive advantage. The moat grade is NOT upgraded. This is consistent with the ⚪ NEUTRAL AI Overlay classification.
+    </div>
+  </div>
+
+  <div class="section-title">MOAT Macro Stress Test</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Moat Source</th><th>In Boom</th><th>In Base</th><th>In Stress</th><th>Verdict</th></tr>
+      <tr><td>Category Creation / Intangibles</td><td>STRENGTHENS</td><td>HOLDS</td><td>HOLDS (premium demand resilient)</td><td style="color:#14803C">✓ Durable</td></tr>
+      <tr><td>Distribution / Tinting Machines</td><td>HOLDS</td><td>HOLDS</td><td>WEAKENS (channel discounting intensifies)</td><td style="color:#856404">⚠ Contested</td></tr>
+      <tr><td>Painter Ecosystem</td><td>HOLDS</td><td>HOLDS</td><td>WEAKENS (competitor incentives win painters)</td><td style="color:#856404">⚠ Contested</td></tr>
+      <tr><td>Cost / Scale</td><td>HOLDS</td><td>WEAKENS (Birla Opus scale advantage)</td><td>WEAKENS</td><td style="color:#C0392B">✗ Structurally Weaker</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">ROIC as Moat Proof</div>
+  <p style="font-size:13.5px;color:var(--text2);margin:10px 0">ROIC range of <strong>19–25%</strong> over 5 years firmly establishes a <strong>narrow-to-moderate moat</strong> (threshold: >15% = narrow, >20% = wide). ROIC > WACC by 7–12% — economic value creation confirmed. The moat is <strong>real but narrower than it appears</strong> because it hasn't yet been fully stress-tested by a well-capitalised competitor. Birla Opus is that test, and ROIC has already dipped to 20% in FY25.</p>
+
+  <div class="section-title">Peer Comparison</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Company</th><th>Mkt Cap (Cr)</th><th>Revenue CAGR 3yr</th><th>EBITDA Margin</th><th>ROCE</th><th>P/E (approx)</th><th>Moat Width</th></tr>
+      <tr><td><strong>Asian Paints</strong></td><td>~₹1,60,000</td><td>8%</td><td>18–20%</td><td>32%</td><td>~45x</td><td>Wide</td></tr>
+      <tr><td><strong>Berger Paints</strong></td><td>~₹65,000</td><td>10%</td><td>15–17%</td><td>22%</td><td>~48x</td><td>Moderate-Wide</td></tr>
+      <tr><td><strong>Kansai Nerolac</strong></td><td>~₹28,000</td><td>7%</td><td>13–15%</td><td>18%</td><td>~38x</td><td>Narrow</td></tr>
+      <tr><td><strong>AkzoNobel India</strong></td><td>~₹11,000</td><td>8%</td><td>16–18%</td><td>25%</td><td>~35x</td><td>Moderate</td></tr>
+      <tr style="background:#FDF6EC"><td><strong>Indigo Paints</strong></td><td>₹3,651</td><td>12%</td><td>18–19%</td><td>20%</td><td>~25x</td><td>Narrow-Moderate</td></tr>
+    </table>
+  </div>
+  <div style="font-size:12.5px;color:var(--text2);margin-top:8px;padding:8px;background:#F5F0E8;border-radius:6px;border:1px solid var(--border)">
+    Indigo trades at the lowest P/E in the sector despite historically strong 5yr CAGR. The discount reflects: (1) smallest scale/revenue base, (2) greatest relative exposure to Birla Opus disruption (smaller market share = harder to defend), (3) growth deceleration (TTM 2% vs peers 7–10%). The discount is partially justified. Full normalization of discount requires demonstrating 12%+ revenue growth for 2+ consecutive quarters. <span class="metric-conf e">ESTIMATED</span>
+  </div>
+
+  <div class="section-title">Overall Moat Grade: <span class="grade g-b">B+</span></div>
+  <p style="font-size:13.5px;color:var(--text2)">Narrow-to-moderate moat anchored in category creation and differentiated products. Distribution switching costs are real but partially replicated by Birla Opus. ROIC >20% confirms value creation. The moat is not wide enough to absorb the Birla Opus disruption without some market share attrition, but the differentiated niches (metallic emulsions, tile coat) create defensible revenue pockets. Moat is <strong>HOLDING, not WEAKENING</strong> in the structural sense — category leadership in niche products is durable.</p>
+
+</div>
+
+<!-- ════════════════════════════════ TAB 4 ════════════════════════════════ -->
+<div id="tab4" class="tab-content">
+
+  <div class="section-title">Management Assessment</div>
+
+  <div class="card-grid g2">
+    <div class="card">
+      <div class="sub-title">Hemant Jalan — Founder & CMD</div>
+      <p style="font-size:13.5px;color:var(--text2);line-height:1.8">Chemical engineer who bootstrapped Indigo from ₹1 lakh (2000) to a ₹1,360 Cr revenue company over 25 years. Took first external capital only in 2014 (Sequoia ₹50 Cr) — 14 years of capital discipline. Personal remuneration: ₹5.86 Cr (FY24) = <strong>3.8% of PAT</strong> — extremely conservative for a founder-promoter. This is founder-level commitment to retained earnings growth rather than extraction. Track record of delivering differentiated product innovation in a commoditised industry. <span class="metric-conf v">VERIFIED</span></p>
+    </div>
+    <div class="card">
+      <div class="sub-title">Capital Allocation Track Record</div>
+      <ul style="font-size:13.5px;color:var(--text2);line-height:1.8;padding-left:16px">
+        <li>Maintained near debt-free balance sheet through entire growth cycle</li>
+        <li>Growth CapEx (FY24 Tamil Nadu, FY25–26 Jodhpur plants) funded from internal accruals + minimal debt</li>
+        <li>Dividend payout: 11–12% of PAT — appropriately conservative for a growth phase company</li>
+        <li>Apple Chemie acquisition (₹30 Cr for 51%, April 2023) — small, adjacent, accretive (+31.5% YoY growth); shows capital discipline in M&A</li>
+        <li>Tinting machine deployment ROI stated as &gt;20% — capital allocation rational</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">Shareholding Integrity</div>
+  <div class="card-grid g3">
+    <div class="metric-card green">
+      <div class="metric-label">Promoter Holding</div>
+      <div class="metric-value">53.88%</div>
+      <div class="metric-note">Stable over 5 quarters — slight creep down (54.0% → 53.88%) but well above 50% threshold <span class="metric-conf v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Pledged Shares</div>
+      <div class="metric-value">0%</div>
+      <div class="metric-note">No pledged shares reported. Clean shareholding. <span class="metric-conf v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Promoter Signal</div>
+      <div class="metric-value">NEUTRAL</div>
+      <div class="metric-note">Minor creep (54.0% → 53.88% over 6 quarters) — no active selling or buying. Peak XV Partners exited ₹158 Cr stake (May 2025). <span class="metric-conf v">VERIFIED</span></div>
+    </div>
+  </div>
+  <div style="padding:10px 14px;margin-top:4px;border-radius:6px;background:#D4EDDA;border:1px solid rgba(20,128,60,.3);font-size:13px;color:#14803C">
+    <strong>Pledge Risk: PASS ✓</strong> — Zero pledges. No insider selling by promoter. Peak XV (financial investor) exiting in May 2025 is expected at 4+ years post-IPO — not a concern. Board has 5 independent directors out of 8. <span class="metric-conf v">VERIFIED</span>
+  </div>
+
+  <div class="section-title">Management Scorecard</div>
+  <div class="card">
+    <div class="sc-row"><div class="sc-label">Guidance Reliability</div><div class="sc-note">Management targets 2.5x–3x industry growth; not met in FY25 (2% TTM vs ~10% sector). Explained by market disruption rather than execution failure.</div><div class="sc-badge marg-b">MARGINAL ~</div></div>
+    <div class="sc-row"><div class="sc-label">Capital Allocation</div><div class="sc-note">Excellent track record — debt-free, high-ROI CapEx (tinting machines >20% ROI), small accretive M&A (Apple Chemie). No dilutive equity issuances since IPO.</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Ownership Alignment</div><div class="sc-note">Promoter holds 53.88% with no pledges. Remuneration 3.8% of PAT — founder conservative. Skin in the game: strong.</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Transparency / Disclosures</div><div class="sc-note">Detailed quarterly investor presentations; management commentary candid on competitive pressures (Birla Opus). No accounting red flags. ESG score 62.8/100 (SES ESG Research).</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Counter-Cyclical Behaviour</div><div class="sc-note">Accelerated capex (new plants) during industry slowdown (FY24–25) — classic counter-cyclical investment to be ready for demand recovery. Smart timing.</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div class="sc-row"><div class="sc-label">Related Party Transactions</div><div class="sc-note">No significant RPTs in FY24 annual report. Contingent liabilities: ₹21 Cr (GST/tax) = 2.4% of net worth — immaterial.</div><div class="sc-badge pass-b">PASS ✓</div></div>
+    <div style="padding:10px 14px;background:#D6E9F8;border-radius:0 0 8px 8px;font-size:13px;font-weight:700;color:var(--cerulean)">Overall Management Grade: <span class="grade g-b">B+</span> — High alignment, capital discipline, strong transparency. The sole concern is the guidance credibility gap from the Birla Opus disruption impact on growth.</div>
+  </div>
+
+  <div class="section-title">Key Risks to Watch</div>
+  <div class="card" style="border-left:4px solid var(--sienna)">
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.8">
+      <strong>1. Succession Planning:</strong> Hemant Jalan is ~68 years old. The company recently appointed Narayanankutty K. Venugopal as Executive Director (June 2025) — a positive step. His son Parag is a non-executive director. Transition planning is underway but not complete. Monitor.<br><br>
+      <strong>2. Single-Brand Strategy Risk:</strong> Indigo operates with one brand unlike Asian Paints (multiple) or Berger (multiple). This concentrates marketing spend effectively but limits addressable segments.<br><br>
+      <strong>3. Competitive Response Strategy:</strong> Management has maintained that gross margins have NOT been significantly impacted by Birla Opus — this is credible given FY25 EBITDA margin of 18.2%. The risk is in volume growth, not margin collapse. The company has modestly increased trade discounts but pulled back from loss-making putty sales in high-competitive-intensity periods — rational discipline.
+    </p>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════ TAB 5 ════════════════════════════════ -->
+<div id="tab5" class="tab-content">
+
+  <div class="section-title">Method 1 — DCF (2-Stage)</div>
+  <div class="card" style="margin-bottom:16px">
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Base OE (FY25): <strong>₹145 Cr</strong> | WACC: <strong>13%</strong> | Terminal g: Base 6.5% | Entry at 15% MoS</p>
+    <div class="tbl-wrap">
+      <table class="dcf-table">
+        <tr><th>Year</th><th class="dcf-stress">STRESS FCF (9%)</th><th class="dcf-stress">PV Stress</th><th class="dcf-base">BASE FCF (13%)</th><th class="dcf-base">PV Base</th><th class="dcf-accel">ACCEL FCF (17%)</th><th class="dcf-accel">PV Accel</th></tr>
+        <tr><td>FY26</td><td>₹158 Cr</td><td>₹140 Cr</td><td>₹164 Cr</td><td>₹145 Cr</td><td>₹170 Cr</td><td>₹150 Cr</td></tr>
+        <tr><td>FY27</td><td>₹172 Cr</td><td>₹135 Cr</td><td>₹185 Cr</td><td>₹145 Cr</td><td>₹199 Cr</td><td>₹156 Cr</td></tr>
+        <tr><td>FY28</td><td>₹188 Cr</td><td>₹130 Cr</td><td>₹209 Cr</td><td>₹145 Cr</td><td>₹232 Cr</td><td>₹161 Cr</td></tr>
+        <tr><td>FY29</td><td>₹205 Cr</td><td>₹125 Cr</td><td>₹236 Cr</td><td>₹145 Cr</td><td>₹271 Cr</td><td>₹165 Cr</td></tr>
+        <tr><td>FY30</td><td>₹223 Cr</td><td>₹121 Cr</td><td>₹267 Cr</td><td>₹144 Cr</td><td>₹317 Cr</td><td>₹171 Cr</td></tr>
+        <tr style="font-weight:700"><td>Stage 1 PV Sum</td><td class="dcf-stress">₹651 Cr</td><td></td><td class="dcf-base">₹724 Cr</td><td></td><td class="dcf-accel">₹803 Cr</td><td></td></tr>
+        <tr style="font-weight:700"><td>Terminal Value (TV)</td><td class="dcf-stress">₹223×1.055/(0.13−0.055)=₹3,134 Cr<br>PV: ₹1,703 Cr</td><td></td><td class="dcf-base">₹267×1.065/(0.13−0.065)=₹4,368 Cr<br>PV: ₹2,371 Cr</td><td></td><td class="dcf-accel">₹317×1.070/(0.13−0.07)=₹5,653 Cr<br>PV: ₹3,069 Cr</td><td></td></tr>
+        <tr style="font-weight:700"><td>+ Net Cash</td><td class="dcf-stress">₹227 Cr</td><td></td><td class="dcf-base">₹227 Cr</td><td></td><td class="dcf-accel">₹227 Cr</td><td></td></tr>
+        <tr style="font-weight:900;font-size:14px"><td>Total Enterprise Value</td><td class="dcf-stress">₹2,581 Cr</td><td></td><td class="dcf-base">₹3,322 Cr</td><td></td><td class="dcf-accel">₹4,099 Cr</td><td></td></tr>
+        <tr style="font-weight:900;font-size:14px"><td>IV Per Share (÷48M)</td><td class="dcf-stress">₹538</td><td></td><td class="dcf-base">₹692</td><td></td><td class="dcf-accel">₹854</td><td></td></tr>
+      </table>
+    </div>
+    <div style="margin-top:10px;padding:8px;background:#F5F0E8;border-radius:6px;font-size:12px;color:var(--text2)">
+      <strong>DCF Sensitivity — Base scenario:</strong> ±1% terminal g → IV changes by ±₹82/share (±12%). ±1% WACC → IV changes by ±₹73/share (±11%). Growth rate assumption is the dominant driver. AI premium/discount: <strong>Zero</strong> — AI Neutral flag implies no adjustment to DCF.
+    </div>
+  </div>
+
+  <div class="section-title">Method 2 — Owner Earnings Capitalisation</div>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Scenario</th><th>Owner Earnings</th><th>Required Return</th><th>Long-term g</th><th>Implied Value</th><th>Per Share</th></tr>
+        <tr class="dcf-stress"><td>Stress</td><td>₹105 Cr (conservative)</td><td>13%</td><td>5.5%</td><td>₹105/(0.13−0.055)+₹227=₹1,627 Cr</td><td><strong>₹339</strong></td></tr>
+        <tr class="dcf-base"><td>Base</td><td>₹145 Cr (normalised)</td><td>13%</td><td>6.5%</td><td>₹145/(0.13−0.065)+₹227=₹2,450 Cr</td><td><strong>₹510</strong></td></tr>
+        <tr class="dcf-accel"><td>Acceleration</td><td>₹165 Cr (expanded OE)</td><td>13%</td><td>7.0%</td><td>₹165/(0.13−0.07)+₹227=₹2,977 Cr</td><td><strong>₹621</strong></td></tr>
+      </table>
+    </div>
+    <div style="margin-top:10px;font-size:13px;color:var(--text2)">OE capitalisation gives a lower valuation than DCF because it does not capture Stage 1 growth premium. The conservative OE stress case (₹339) represents true downside at zero growth in owner earnings.</div>
+  </div>
+
+  <div class="section-title">Method 3 — ROIC / EPV</div>
+  <div class="card">
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.8">NOPAT (FY25) = EBIT ₹195 Cr × (1−0.25 tax rate) = <strong>₹146 Cr</strong>. EPV (no-growth): ₹146/0.13 = ₹1,123 Cr + ₹227 cash = ₹1,350 Cr → <strong>₹281/share</strong>. <br>With growth premium (ROIC 20% vs WACC 13% on a 5% reinvestment rate): Economic Profit = (20%−13%) × ₹1,050 Cr invested capital = ₹73.5 Cr/yr; PV of EP stream = ₹73.5/0.065 (Stage 1 discount) = ₹1,131 Cr; Total EV = ₹1,350 + ₹1,131 = ₹2,481 Cr + ₹227 = <strong>₹2,708 Cr → ₹564/share</strong>.</p>
+    <div style="padding:8px;background:#F5F0E8;border-radius:6px;font-size:12px;color:var(--text2)">
+      <strong>ROIC/EPV Base: ₹564/share</strong> — Confirms moderate undervaluation at current price ₹769 by this method. ROIC at 20% is real, not manufactured.
+    </div>
+  </div>
+
+  <div class="section-title">Method 4 — P/E Earnings Power</div>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Metric</th><th>Stress</th><th>Base</th><th>Accel</th></tr>
+        <tr><td>FY28E EPS (analyst est.)</td><td>₹30 (no growth)</td><td>₹40.6 (ACMIIL est.)</td><td>₹52 (15% CAGR)</td></tr>
+        <tr><td>Target P/E (Cat C challenger)</td><td>20x (disruption discount)</td><td>25x</td><td>32x</td></tr>
+        <tr><td>FY28 Target Value</td><td>₹600</td><td>₹1,015</td><td>₹1,664</td></tr>
+        <tr><td>PV discounted to today (13%, 2yr)</td><td><strong>₹470</strong></td><td><strong>₹795</strong></td><td><strong>₹1,303</strong></td></tr>
+      </table>
+    </div>
+    <div style="margin-top:10px;font-size:13px;color:var(--text2)">Peers Asian Paints/Berger trade at 40–48x P/E. Indigo's lower scale and challenger status justify a discount. The key question: can Indigo reach 25–32x if growth re-accelerates? The answer depends entirely on the Birla Opus stabilisation thesis. <strong>AI premium/discount: Zero</strong> (AI Neutral flag).</div>
+  </div>
+
+  <div class="section-title">Method 5 — Earnings Yield vs Bond Yield</div>
+  <div class="card">
+    <div class="card-grid g3">
+      <div class="metric-card red">
+        <div class="metric-label">Earnings Yield (TTM)</div>
+        <div class="metric-value">3.95%</div>
+        <div class="metric-note">EPS ₹30.4 / Price ₹769</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">FCF Yield</div>
+        <div class="metric-value">3.97%</div>
+        <div class="metric-note">₹145 Cr OE / ₹3,651 Cr Market Cap</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">10-Yr G-Sec Yield</div>
+        <div class="metric-value">7.0%</div>
+        <div class="metric-note">RBI verified April 2026 <span class="metric-conf v">VERIFIED</span></div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">Equity Risk Premium</div>
+        <div class="metric-value">−3.05%</div>
+        <div class="metric-note">EY 3.95% − G-Sec 7.0% = Negative ERP. Unattractive on yield basis.</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">FCF Yield vs Bond</div>
+        <div class="metric-value">−3.03%</div>
+        <div class="metric-note">Bonds yield ~3% more than equity FCF. Only justified if growth re-accelerates.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Dividend Yield</div>
+        <div class="metric-value">0.46%</div>
+        <div class="metric-note">₹3.50 dividend / ₹769 price. Minimal yield support.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px;background:#F8D7DA;border-radius:6px;font-size:13px;color:#721C24">
+      <strong>Yield Warning:</strong> At ₹769, Indigo's earnings yield is <strong>deeply negative vs government bonds</strong>. Investors are paying for future growth, not current income. This is only defensible if earnings compound at 12%+ CAGR over 5–7 years. At current TTM growth (−3% PAT), the stock is difficult to justify on yield basis alone.
+    </div>
+    <div style="margin-top:8px;font-size:13px;color:var(--text2)"><strong>Yield-on-Cost (at entry ₹650):</strong> FY26E EPS ~₹33 → YoC 5.1%. FY28E EPS ~₹40.6 → YoC 6.2%. Bond crossover year: ~FY30 if EPS grows 12% CAGR.</div>
+  </div>
+
+  <div class="section-title">5-Method Summary Table</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adjustment</th></tr>
+      <tr><td>DCF (2-Stage)</td><td>₹538</td><td>₹692</td><td>₹854</td><td>Zero (NEUTRAL)</td></tr>
+      <tr><td>Owner Earnings Cap</td><td>₹339</td><td>₹510</td><td>₹621</td><td>Zero (NEUTRAL)</td></tr>
+      <tr><td>ROIC / EPV</td><td>₹380</td><td>₹564</td><td>₹680</td><td>Zero (NEUTRAL)</td></tr>
+      <tr><td>P/E Earnings Power (FY28E discounted)</td><td>₹470</td><td>₹795</td><td>₹1,303</td><td>Zero (NEUTRAL)</td></tr>
+      <tr><td>Earnings Yield / ERP</td><td>Below bond EY</td><td>Needs 12%+ growth</td><td>Justified at ₹700+</td><td>Zero</td></tr>
+      <tr style="font-weight:800;background:#F7F0E3"><td><strong>Blended Base IV (4 quant methods avg)</strong></td><td><strong>₹432</strong></td><td><strong>₹640</strong></td><td><strong>₹865</strong></td><td><strong>₹0 AI adjustment</strong></td></tr>
+      <tr style="font-weight:800;background:#E8DDCC"><td><strong>Entry Price (15% MoS from Base)</strong></td><td>₹367</td><td><strong>₹544</strong></td><td>₹735</td><td>—</td></tr>
+    </table>
+  </div>
+  <div style="margin-top:12px;padding:12px;background:rgba(193,68,14,.08);border-radius:8px;border:1px solid rgba(193,68,14,.25)">
+    <strong style="color:var(--sienna)">Valuation Verdict:</strong> Current price ₹769 is <strong>19% above blended base IV ₹640</strong> and 41% above MoS entry price ₹544. The stock is not yet at an unambiguous value entry point. The P/E method gives a more optimistic base IV (₹795) which would suggest the stock is fairly valued — but that requires FY28E EPS of ₹40.6 actually being achieved (currently in doubt given TTM growth). Risk is asymmetric: downside to ₹432–544 if growth fails to recover; upside to ₹865+ if 2.5x industry growth thesis plays out. Verdict: <strong>WATCH ★★★ — Buy only below ₹544–600</strong>.
+  </div>
+
+  <div class="section-title">Relative Valuation — Own History</div>
+  <div class="card">
+    <table>
+      <tr><th>Period</th><th>Approx P/E Range</th><th>Current P/E ~25x</th><th>Signal</th></tr>
+      <tr><td>IPO (Feb 2021)</td><td>200x+ (froth)</td><td>~88% discount</td><td>🟢 Deep Discount to IPO</td></tr>
+      <tr><td>FY23 Peak (~₹1,200)</td><td>~50–55x</td><td>~50% discount</td><td>🟢 Discount to FY23 levels</td></tr>
+      <tr><td>FY24 Normalised (~₹1,000)</td><td>~35–40x</td><td>~30–37% discount</td><td>🟢 Discount to FY24 levels</td></tr>
+      <tr><td>Sector Median (FY26 peers)</td><td>~38–42x</td><td>~40% discount</td><td>🟢 Discount to peers</td></tr>
+    </table>
+    <div style="margin-top:10px;font-size:13px;color:var(--text2)">The discount is wide vs history and peers — but it is <strong>structurally justified</strong> given the growth deceleration and competitive intensity increase. A re-rating to 30–35x (from 25x) requires 2+ quarters of 12–15% revenue growth. <span class="metric-conf e">ESTIMATED</span></div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════ TAB 6 ════════════════════════════════ -->
+<div id="tab6" class="tab-content">
+
+  <div class="section-title">Four Pillars — Final Grades</div>
+  <div class="card-grid g4">
+    <div class="metric-card">
+      <div class="metric-label">Pillar 1 — Moat</div>
+      <div class="metric-value"><span class="grade g-b">B+</span></div>
+      <div class="metric-note">Narrow-moderate; category creation + distribution switching costs; partially contested by Birla Opus</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Pillar 2 — Financial Quality</div>
+      <div class="metric-value"><span class="grade g-b">B+</span></div>
+      <div class="metric-note">ROIC 20%+, near debt-free, excellent FCF conversion; PAT margin &lt;15% and growth stalling</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Pillar 3 — Management</div>
+      <div class="metric-value"><span class="grade g-b">B+</span></div>
+      <div class="metric-note">Founder-aligned, zero pledges, capital-disciplined; guidance credibility gap vs Birla Opus disruption</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Pillar 4 — Valuation</div>
+      <div class="metric-value"><span class="grade g-c">C+</span></div>
+      <div class="metric-note">Base IV ₹640; current ₹769 is 19% above base IV; negative earnings yield vs bonds; entry zone ₹544–600</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="verdict-rating">WATCH ★★★</div>
+        <div class="verdict-label">Quality at Wrong Price | Buffett QV v5.0 | April 2026</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:13px;color:rgba(255,255,255,.5)">AI Overlay: ⚪ NEUTRAL</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.5)">Category: C | Flywheel: Cosmetic</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:4px">Entry Zone: ₹544–600</div>
+      </div>
+    </div>
+    <div class="verdict-prose">
+      Indigo Paints is a genuinely differentiated paint company led by a founder with exceptional capital discipline and a 25-year record of building in a commoditised industry. The business has real — if narrow — moats in category creation, painter ecosystems, and tinting machine switching costs. Financial quality is solid: ROIC >20%, near debt-free, and FCF conversion of 142% in FY25.
+      <br><br>
+      The case against an immediate BUY is structural: Birla Opus has permanently altered the competitive landscape, and the company's TTM revenue growth of 2% vs a sector that was growing 10–12% represents a <strong>meaningful market share loss in the making</strong> — or at minimum, a significant deceleration from the 2.5x-3x industry growth target. The blended base IV of ₹640 and MoS entry of ₹544 are <strong>not yet reached</strong> at the current ₹769 price. Earnings yield at 3.95% is deeply unattractive vs the 7.0% 10-year G-Sec.
+      <br><br>
+      Wait for price to reach ₹544–600 <em>AND</em> for management to demonstrate 2 consecutive quarters of 12%+ revenue growth before initiating a position.
+    </div>
+    <div style="margin-top:18px">
+      <div style="font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px">WATCH → BUY UPGRADE CONDITIONS (5 required)</div>
+      <div class="upgrade-item"><div class="upgrade-num">1</div><div class="upgrade-text">Price falls to <strong>₹600 or below</strong> (20% MoS to blended base IV; P/E ~20x TTM)</div></div>
+      <div class="upgrade-item"><div class="upgrade-num">2</div><div class="upgrade-text"><strong>Two consecutive quarters</strong> of consolidated revenue growth ≥ 12% YoY — confirming Birla Opus impact has stabilised and growth resumed</div></div>
+      <div class="upgrade-item"><div class="upgrade-num">3</div><div class="upgrade-text">RSI falls below <strong>30</strong> on the daily chart (capitulation signal; stock at absolute oversold)</div></div>
+      <div class="upgrade-item"><div class="upgrade-num">4</div><div class="upgrade-text">EBITDA margin <strong>stabilises above 18%</strong> for 2 consecutive quarters despite elevated crude oil (demonstrates pricing power surviving input cost spike)</div></div>
+      <div class="upgrade-item"><div class="upgrade-num">5</div><div class="upgrade-text">Apple Chemie revenue growing <strong>25%+ for 3 consecutive quarters</strong> (confirms adjacent moat building credibly contributes to consolidated growth)</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Series Table — All Coverage</div>
+  <div class="tbl-wrap">
+    <table class="series-tbl">
+      <tr><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry</th></tr>
+      <tr><td>AMAGI</td><td>NSE</td><td>F</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>A−</td><td>BUY ★★★★★ AI</td><td>₹350</td></tr>
+      <tr><td>AMZN</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>A−</td><td>B+</td><td>A−</td><td>B+</td><td>WATCH ★★★★</td><td>~$199</td></tr>
+      <tr><td>BAJAJHFL</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH ★★★</td><td>₹65–75</td></tr>
+      <tr><td>BANDHANBNK</td><td>NSE</td><td>D</td><td>🟢</td><td>B−</td><td>C+</td><td>C+</td><td>B</td><td>WATCH ★★★</td><td>₹140–147</td></tr>
+      <tr><td>E2E</td><td>NSE</td><td>F</td><td>🌀</td><td>C+</td><td>C+</td><td>C</td><td>C</td><td>WATCH ★★</td><td>₹1,400–1,700</td></tr>
+      <tr><td>FRACTAL</td><td>NSE</td><td>C</td><td>🟢</td><td>B+</td><td>B</td><td>B+</td><td>B−</td><td>WATCH ★★★</td><td>₹722</td></tr>
+      <tr><td>GEMAROMA</td><td>NSE</td><td>B</td><td>⚪</td><td>B−</td><td>B</td><td>B+</td><td>A−</td><td>WATCH ★★★</td><td>₹130–165</td></tr>
+      <tr><td>GOOGL</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>B+</td><td>B</td><td>WATCH ★★★★</td><td>$224–$260</td></tr>
+      <tr><td>IONQ</td><td>NASDAQ</td><td>F Ph1</td><td>⚪</td><td>B−</td><td>D+</td><td>B−</td><td>D</td><td>WATCH ★★</td><td>$15–17</td></tr>
+      <tr><td>ITC</td><td>NSE</td><td>C</td><td>⚪</td><td>A−</td><td>B+</td><td>B+</td><td>B+</td><td>WATCH ★★★</td><td>₹280</td></tr>
+      <tr><td>MELI</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>A</td><td>A−</td><td>A</td><td>A</td><td>BUY ★★★★★ AI</td><td>~$1,810</td></tr>
+      <tr><td>META</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A+</td><td>A−</td><td>B+</td><td>A−</td><td>BUY STARTER ★★★★½</td><td>~$542</td></tr>
+      <tr><td>MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A−</td><td>A−</td><td>A</td><td>B+</td><td>WATCH ★★★★</td><td>$340–365</td></tr>
+      <tr><td>NBIS</td><td>NASDAQ</td><td>F</td><td>🌀</td><td>A−</td><td>B+</td><td>A−</td><td>B</td><td>WATCH ★★★★</td><td>~$133</td></tr>
+      <tr><td>NETWEB</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>B−</td><td>B</td><td>D+</td><td>WATCH ★★★</td><td>₹795/₹2,800–3,000</td></tr>
+      <tr><td>NVO</td><td>NYSE</td><td>C→D</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>A−</td><td>WATCH ★★★★</td><td>~$44–49</td></tr>
+      <tr><td>PL</td><td>NYSE</td><td>F</td><td>🌀</td><td>A</td><td>B+</td><td>A−</td><td>B−</td><td>WATCH ★★★★</td><td>$27–31</td></tr>
+      <tr><td>RAJESHEXPO</td><td>NSE</td><td>E</td><td>⚪</td><td>F</td><td>F</td><td>D−</td><td>F</td><td>AVOID</td><td>N/A</td></tr>
+      <tr><td>SHADOWFAX</td><td>NSE</td><td>B</td><td>⚪</td><td>B−</td><td>C+</td><td>B−</td><td>B</td><td>WATCH ★★★</td><td>₹98–115</td></tr>
+      <tr><td>TRAVELFOOD</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>A−</td><td>B</td><td>B</td><td>WATCH ★★★</td><td>₹1,000–1,100</td></tr>
+      <tr><td>UNH</td><td>NYSE</td><td>C</td><td>⚪</td><td>A−</td><td>B−</td><td>B−</td><td>B+</td><td>WATCH ★★★★</td><td>$260–$310</td></tr>
+      <tr style="background:rgba(193,68,14,.08);font-weight:700"><td>INDIGOPNTS</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH ★★★</td><td>₹544–600</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════ TAB 7 ════════════════════════════════ -->
+<div id="tab7" class="tab-content">
+
+  <div class="section-title">Section A — Price Structure & Multi-Timeframe Trend</div>
+  <div class="card" style="margin-bottom:14px">
+    <table>
+      <tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Signal</th></tr>
+      <tr><td>Long-Term (Monthly)</td><td style="color:#C0392B;font-weight:700">▼ Severe Downtrend</td><td>ATH ₹3,330 → ATL ₹783</td><td>Down 77% from ATH; structural bear market since Feb 2021</td></tr>
+      <tr><td>Medium-Term (Weekly)</td><td style="color:#C0392B;font-weight:700">▼ Downtrend</td><td>52-wk high ₹1,346 → 52-wk low ₹711</td><td>Series of lower highs and lower lows intact</td></tr>
+      <tr><td>Short-Term (Daily)</td><td style="color:#856404;font-weight:700">→ Potential Base</td><td>₹711–₹810 range</td><td>Some stabilisation signals near all-time low zone; no confirmed reversal</td></tr>
+    </table>
+    <div style="margin-top:10px;font-size:13px;color:var(--text2)"><span class="metric-conf e">ESTIMATED</span> — Technical data estimated from multiple sources. Live chart confirmation recommended.</div>
+  </div>
+
+  <div class="section-title">Section B — Moving Average Dashboard</div>
+  <div class="card-grid g4">
+    <div class="metric-card red"><div class="metric-label">20-EMA</div><div class="metric-value">~₹820</div><div class="metric-note">Price BELOW (bearish) — ~6% gap</div></div>
+    <div class="metric-card red"><div class="metric-label">50-DMA</div><div class="metric-value">~₹880</div><div class="metric-note">Price BELOW (bearish) — ~14% gap</div></div>
+    <div class="metric-card red"><div class="metric-label">100-DMA</div><div class="metric-value">~₹1,010</div><div class="metric-note">Price BELOW (bearish) — ~31% gap</div></div>
+    <div class="metric-card red"><div class="metric-label">200-DMA</div><div class="metric-value">~₹1,100</div><div class="metric-note">Price BELOW (bearish) — ~43% gap</div></div>
+    <div class="metric-card red"><div class="metric-label">200-WMA</div><div class="metric-value">~₹1,400</div><div class="metric-note">Price DEEPLY below long-term average <span class="metric-conf e">ESTIMATED</span></div></div>
+    <div class="metric-card red"><div class="metric-label">MA Status</div><div class="metric-value">Death Cross</div><div class="metric-note">50-DMA well below 200-DMA; all MAs in descending order — fully bearish ribbon</div></div>
+  </div>
+
+  <div class="section-title">Section C — Volume Analysis</div>
+  <div class="card">
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.8">Recent trading volumes thin (~1.94 Lakh shares/day, April 2026) — characteristic of low-float stocks in a prolonged downtrend. <strong>Significant volume events:</strong> (1) Peak XV Partners sold ₹158 Cr stake in May 2025 — heavy supply pressure event. (2) DII accumulation building (DII holding jumped from 1.96% → 21.13% over 6 quarters) — potentially supportive long-term but the DII buying hasn't arrested the decline, suggesting price discovery still ongoing. OBV (estimated): declining trend. No institutional accumulation breakout signal yet. <span class="metric-conf e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Section D — Momentum Indicators</div>
+  <div class="card-grid g3">
+    <div class="metric-card green">
+      <div class="metric-label">RSI-14 (Daily, Est.)</div>
+      <div class="metric-value">~30–35</div>
+      <div class="metric-note">Approaching oversold but not yet confirmed RSI &lt;30 capitulation. Price near ATL. <span class="metric-conf e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">RSI-14 (Weekly)</div>
+      <div class="metric-value">~20–25</div>
+      <div class="metric-note">Deep oversold on weekly — historically reversal zone. But fundamental catalyst needed. <span class="metric-conf e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">MACD (Daily)</div>
+      <div class="metric-value">Negative</div>
+      <div class="metric-note">Signal line below zero; histogram compressing — potential bullish divergence forming near ATL <span class="metric-conf e">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Section E — Chart Pattern</div>
+  <div class="card">
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.8"><strong>Primary Pattern: Extended Falling Wedge / Capitulation Compression.</strong> The stock has been in a multi-year downtrend from ₹3,329 (Feb 2021) to ₹783 ATL (March 13, 2026) — a 77% drawdown. At ₹769, the stock is essentially at its all-time low zone on a post-IPO adjusted basis. This level has historically been a reversal zone for similar quality paint companies. Key: a weekly close above ₹900 with above-average volume would be the first signal of base formation. Target if base forms: ₹1,000–1,100 (50-DMA zone). Invalidation: weekly close below ₹700.</p>
+  </div>
+
+  <div class="section-title">Section F — Trade Structure</div>
+  <div class="price-ladder">
+    <div class="pl-row pl-resist"><div class="pl-label">200-DMA (Major Resistance)</div><div class="pl-price">~₹1,100</div><div class="pl-note">Major MA resistance — re-rating requires breaking this</div></div>
+    <div class="pl-row pl-resist"><div class="pl-label">100-DMA (Medium Resistance)</div><div class="pl-price">~₹1,010</div><div class="pl-note">Psychological ₹1,000 level; first significant resistance</div></div>
+    <div class="pl-row pl-resist"><div class="pl-label">50-DMA (Near-Term Resistance)</div><div class="pl-price">~₹880</div><div class="pl-note">Target 1 in any relief rally scenario</div></div>
+    <div class="pl-row pl-current"><div class="pl-label">⬤ CURRENT PRICE</div><div class="pl-price">₹769</div><div class="pl-note">~43% below 52-week high; ~8% above 52-wk low</div></div>
+    <div class="pl-row pl-support"><div class="pl-label">52-Week Low / Near Support</div><div class="pl-price">₹711–₹783</div><div class="pl-note">All-time low zone (₹783 hit March 13, 2026); critical support</div></div>
+    <div class="pl-row pl-support"><div class="pl-label">MoS Entry Zone — Starter</div><div class="pl-price">₹600</div><div class="pl-note">~6% below 52-wk low; P/E ~19.7x TTM; requires faith in recovery</div></div>
+    <div class="pl-row pl-support"><div class="pl-label">MoS Entry Zone — Full Position</div><div class="pl-price">₹544</div><div class="pl-note">15% MoS to blended base IV; P/E ~17.9x; asymmetric risk/reward</div></div>
+  </div>
+
+  <div class="section-title">Trade Structure — Specific Parameters</div>
+  <div class="card" style="border-left:4px solid var(--cerulean)">
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.8">
+      <strong>PRIMARY TRIGGER (Not Yet Active):</strong> Stock must close below ₹600 (MoS entry zone) AND show a weekly RSI &lt;30 capitulation AND management delivers 12%+ revenue growth for Q4 FY26 (May 2026 results). Without the growth catalyst, buying near 52-week lows remains a value trap risk.<br><br>
+      <strong>SECONDARY TRIGGER:</strong> 3-month base consolidation in ₹711–850 range + price breaks above ₹900 on 2x average volume + 50-DMA turns flat-to-upward. This signals institutional re-entry and base formation completion.<br><br>
+      <strong>If Primary triggered at ₹580:</strong> Entry ₹580 | Stop ₹490 (below ATL ₹783 psychological zone) | T1 ₹780 (ATL zone regain) | T2 ₹950 (50-DMA) | R:R = 1:3.4 ✓<br><br>
+      <strong>Position Size:</strong> Maximum 3% of portfolio until growth confirmation (2 consecutive quarters ≥12%). Not Cat F, so no 3–5% hard cap, but competitive disruption warrants conservative sizing.
+    </p>
+  </div>
+
+  <div class="section-title">Section G — Technical Composite Score</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Dimension</th><th>Score (/5)</th><th>Observation</th></tr>
+      <tr><td>Price Structure (Trend)</td><td style="color:#C0392B">1/5</td><td>Multi-year bearish downtrend, no reversal confirmation</td></tr>
+      <tr><td>Moving Average Alignment</td><td style="color:#C0392B">1/5</td><td>Price below all 4 MAs, death cross active</td></tr>
+      <tr><td>Volume / OBV</td><td style="color:#856404">2/5</td><td>DII accumulation positive; thin float creates volatility; OBV declining</td></tr>
+      <tr><td>Momentum (RSI / MACD)</td><td style="color:#856404">2.5/5</td><td>Weekly RSI deeply oversold; potential divergence forming; not confirmed</td></tr>
+      <tr><td>Chart Pattern</td><td style="color:#856404">2/5</td><td>Extended falling wedge near ATL; base potentially forming but unconfirmed</td></tr>
+      <tr><td>Trade Structure / R:R</td><td style="color:#856404">2/5</td><td>No active trigger; potential at ₹544–600; R:R acceptable only at entry zone</td></tr>
+      <tr style="font-weight:700;background:#F7F0E3"><td>TOTAL</td><td>10.5/30 (35%)</td><td>Technical outlook: WEAK / BEARISH — not yet a confirmed buy on technicals</td></tr>
+    </table>
+  </div>
+  <div style="margin-top:10px;font-size:13px;color:var(--text2);padding:8px;background:#F8D7DA;border-radius:6px;border:1px solid rgba(192,57,43,.2)"><strong>Technical alignment:</strong> Fundamentals and Technicals do NOT converge. The stock is not at a confirmed technical entry point. This reinforces WATCH status — patience required for either (a) price to reach MoS entry zone, or (b) reversal confirmation via breakout above ₹900 on volume.</div>
+  <div style="margin-top:6px;font-size:11.5px;color:var(--text2)">All technical levels <span class="metric-conf e">ESTIMATED</span> — confirm with live NSE/BSE data before trading.</div>
+
+</div>
+
+<!-- ════════════════════════════════ TAB 8 ════════════════════════════════ -->
+<div id="tab8" class="tab-content">
+
+  <div class="section-title">Section A — Promoter Holding Trend (5 Quarters)</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Quarter</th><th>Promoter %</th><th>QoQ Change</th><th>Signal</th></tr>
+      <tr><td>Dec 2024</td><td>53.93%</td><td>−0.00%</td><td>Stable</td></tr>
+      <tr><td>Mar 2025</td><td>53.93%</td><td>−0.00%</td><td>Stable</td></tr>
+      <tr><td>Jun 2025</td><td>53.93%</td><td>−0.00%</td><td>Stable</td></tr>
+      <tr><td>Sep 2025</td><td>53.88%</td><td>−0.05%</td><td>Negligible change; well above 50%</td></tr>
+      <tr><td>Dec 2025</td><td>53.88%</td><td>0.00%</td><td>Stable</td></tr>
+    </table>
+  </div>
+  <div style="padding:8px 12px;background:#D4EDDA;border-radius:6px;margin-top:8px;font-size:13px;color:#14803C">
+    <strong>Pledged Shares: 0%</strong> — Exemplary. No financial engineering or leverage against equity stakes. Hemant Jalan's 53.88% holding is unencumbered. <strong>PASS ✓</strong> <span class="metric-conf v">VERIFIED</span>
+  </div>
+
+  <div class="section-title">Section B — FII and DII Holding Trends</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Quarter</th><th>FII %</th><th>FII Signal</th><th>DII %</th><th>DII Signal</th><th>Public %</th></tr>
+      <tr><td>Mar 2024</td><td>7.73%</td><td>—</td><td>1.96%</td><td>—</td><td>36.37%</td></tr>
+      <tr><td>Jun 2024</td><td>8.28%</td><td>↑ +0.55%</td><td>1.07%</td><td>↓</td><td>36.73%</td></tr>
+      <tr><td>Sep 2024</td><td>12.31%</td><td>↑↑ +4.03%</td><td>16.14%</td><td>↑↑↑ Reclassification</td><td>17.64%</td></tr>
+      <tr><td>Dec 2024</td><td>12.50%</td><td>↑ +0.19%</td><td>17.06%</td><td>↑</td><td>16.52%</td></tr>
+      <tr><td>Mar 2025</td><td>12.41%</td><td>↓ −0.09%</td><td>16.74%</td><td>→</td><td>16.93%</td></tr>
+      <tr><td>Jun 2025</td><td>11.71%</td><td>↓ −0.70%</td><td>19.29%</td><td>↑ +2.55%</td><td>15.09%</td></tr>
+      <tr><td>Sep 2025</td><td>11.81%</td><td>↑ +0.10%</td><td>19.68%</td><td>↑ +0.39%</td><td>14.64%</td></tr>
+      <tr><td>Dec 2025</td><td>11.21%</td><td>↓ −0.60%</td><td>21.13%</td><td>↑ +1.45%</td><td>13.80%</td></tr>
+    </table>
+  </div>
+  <div style="margin-top:8px;padding:10px;background:#F5F0E8;border-radius:6px;font-size:13px;color:var(--text2)">
+    <strong>⚠ Classification Note:</strong> The jump in DII from 1.96% (Mar 2024) to 16.14% (Sep 2024) reflects a XBRL format reclassification that moved certain bank/FPI holdings — not pure new buying. Screener.in confirmed this caveat. The trend from Sep 2024 onwards is directionally meaningful: DIIs (primarily mutual funds) are gradually accumulating, rising from 16.14% to 21.13% over 5 quarters. FIIs have been steady at 11–12%.
+  </div>
+
+  <div class="section-title">Section C — Free Float & Market Context</div>
+  <div class="card-grid g3">
+    <div class="metric-card">
+      <div class="metric-label">Total Shares</div>
+      <div class="metric-value">4.80 Cr</div>
+      <div class="metric-note">48,000,000 shares at ₹10 face value</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-label">Free Float</div>
+      <div class="metric-value">46.12%</div>
+      <div class="metric-note">~2.21 Cr shares publicly held; thinly traded</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Free Float Mkt Cap</div>
+      <div class="metric-value">~₹1,685 Cr</div>
+      <div class="metric-note">At ₹769 price; relatively illiquid for institutional size</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Index Membership</div>
+      <div class="metric-value">Nifty Microcap 250</div>
+      <div class="metric-note">Nifty Total Market, Nifty500 variants; NOT in Nifty 50 or Nifty Midcap 100</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Monthly SIP Inflow Est.</div>
+      <div class="metric-value">~₹20–35 Cr</div>
+      <div class="metric-note">Estimated SIP inflows into microcap/small-cap funds that hold INDIGOPNTS <span class="metric-conf e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">No. of Shareholders</div>
+      <div class="metric-value">1,42,630</div>
+      <div class="metric-note">Dec 2025; declining from peak 1,58,925 (Mar 2025) — retail distribution <span class="metric-conf v">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Section D — Full Shareholding Composition</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Category</th><th>Dec 2025</th><th>Mar 2025</th><th>Sep 2024</th><th>Trend</th></tr>
+      <tr><td>Promoters</td><td>53.88%</td><td>53.93%</td><td>53.93%</td><td>→ Stable</td></tr>
+      <tr><td>Foreign Institutional (FII/FPI)</td><td>11.21%</td><td>12.41%</td><td>12.31%</td><td>↓ Slight outflow</td></tr>
+      <tr><td>Domestic Institutional (DII / MF)</td><td>21.13%</td><td>16.74%</td><td>16.14%</td><td>↑↑ Accumulating</td></tr>
+      <tr><td>Public / Retail</td><td>13.80%</td><td>16.93%</td><td>17.64%</td><td>↓ Distribution to institutions</td></tr>
+    </table>
+  </div>
+  <div style="margin-top:8px;padding:10px;background:#F5F0E8;border-radius:6px;font-size:13px;color:var(--text2)">
+    The pattern is a classic institutional absorption of retail distribution: retail declining from 36% (Mar 2024) to 13.8% (Dec 2025) as DIIs steadily absorb (growing from ~2% to 21%). This is a positive structural signal — quality institutions are accumulating on the downtrend. However, this hasn't prevented further price decline, suggesting the institutional buying pace doesn't yet overwhelm selling pressure.
+  </div>
+
+  <div class="section-title">Section E — Ownership Scores</div>
+  <div class="card-grid g2">
+    <div class="card">
+      <div class="sub-title">Ownership Momentum Score</div>
+      <div style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">Promoter stability</span><span style="font-weight:700">18/20</span></div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:90%"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">FII trend</span><span style="font-weight:700">10/20</span></div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:50%"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">DII accumulation</span><span style="font-weight:700">18/20</span></div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:90%"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px">Retail distribution (quality upgrade)</span><span style="font-weight:700">15/20</span></div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:75%"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-weight:800"><span>TOTAL MOMENTUM SCORE</span><span>61/80 (76%)</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sub-title">Shareholding Risk Score (lower = safer)</div>
+      <div style="margin-top:10px">
+        <div class="sc-row"><div class="sc-label">Pledge Risk</div><div class="sc-badge pass-b">ZERO ✓</div></div>
+        <div class="sc-row"><div class="sc-label">Promoter Creep Risk</div><div class="sc-badge pass-b">MINIMAL ✓</div></div>
+        <div class="sc-row"><div class="sc-label">FII Limit Headroom</div><div class="sc-badge pass-b">Ample (FII ~11% of 49% limit)</div></div>
+        <div class="sc-row"><div class="sc-label">Block Sale Risk (PE exit)</div><div class="sc-badge marg-b">MEDIUM — Peak XV exited; remaining PEs?</div></div>
+        <div class="sc-row"><div class="sc-label">Float Illiquidity Risk</div><div class="sc-badge marg-b">MEDIUM — thin float can amplify moves</div></div>
+        <div style="padding:10px 14px;background:#F5F0E8;border-radius:0 0 8px 8px;font-size:13px;font-weight:700;color:var(--cerulean)">Overall Shareholding Risk: <strong>LOW-MODERATE</strong></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════ TAB 9 ════════════════════════════════ -->
+<div id="tab9" class="tab-content">
+
+  <div class="section-title">Section A — AI Classification Dashboard</div>
+  <div class="ai-dash">
+    <div class="ai-card">
+      <div class="ai-card-label">Category</div>
+      <div class="ai-card-value grey">C — Mature Compounder</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">AI Overlay</div>
+      <div class="ai-card-value grey">⚪ AI NEUTRAL</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">Data Flywheel</div>
+      <div class="ai-card-value grey">Cosmetic (0 of 3)</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">AI Adoption Phase</div>
+      <div class="ai-card-value grey">Phase 4 — Mainstream</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">AI Value Chain</div>
+      <div class="ai-card-value grey">Level 5 — AI-Enabled</div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-label">AI Opportunity Score</div>
+      <div class="ai-card-value grey">22/100</div>
+    </div>
+  </div>
+
+  <div class="section-title">Adoption Phase Evidence — Paints Sector AI</div>
+  <div class="card">
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.8"><strong>Phase 4 — Mainstream (40–80% adoption).</strong> AI tools for demand forecasting, route optimisation, inventory management, and colour recommendation engines are now standard across all major paint companies. Asian Paints, Berger, and Kansai Nerolac all deploy similar AI toolsets. Birla Opus launched with AI-powered tinting machine management from day one. At Phase 4, <strong>AI is infrastructure, not a moat</strong> — the absence of AI would be a competitive disadvantage, but the presence of AI does not create one. <span class="metric-conf e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Section B — Data Flywheel Deep-Dive (Summary)</div>
+  <div class="flywheel-box">
+    <div class="flywheel-title">Flywheel Assessment — Indigo Paints</div>
+    <div class="flywheel-badge">AI COSMETIC — 0 of 3 conditions confirmed</div>
+    <div class="fw-q"><div class="q-icon">❌</div><div class="q-text"><strong>Q1 — Proprietary data?</strong> Tinting machine mix data, token scanning data, dealer order history. Useful, but Asian Paints has 10x the data volume and Birla Opus is capturing dealer data aggressively from day one. No uniquely proprietary dataset. NOT CONFIRMED.</div></div>
+    <div class="fw-q"><div class="q-icon">❌</div><div class="q-text"><strong>Q2 — AI improves with scale?</strong> Demand forecasting does improve marginally with more data, but this is commodity AI (available from any cloud provider). No evidence of proprietary models with measurable accuracy improvements. NOT CONFIRMED.</div></div>
+    <div class="fw-q"><div class="q-icon">❌</div><div class="q-text"><strong>Q3 — Better AI attracts users?</strong> Homeowners and painters choose Indigo for colour quality, product differentiation, price — not for AI superiority. No feedback loop. NOT CONFIRMED.</div></div>
+    <div style="margin-top:12px;padding:10px;background:rgba(255,255,255,.06);border-radius:6px;font-size:13px;color:rgba(255,255,255,.7)"><strong>Flywheel Score: 1/10</strong> (Data Quality 1/3 | Improvement Evidence 0/4 | Loop Speed 0/3) — AI is used for operational efficiency only. This is appropriate for a Phase 4 consumer brand. It is not a moat.</div>
+  </div>
+
+  <div class="section-title">Section C — AI Value Chain Position</div>
+  <div class="card">
+    <div style="display:flex;gap:0;border-radius:8px;overflow:hidden;margin-bottom:12px">
+      <div style="flex:1;padding:10px;background:var(--sand);text-align:center;font-size:11px;font-weight:700;color:var(--text2)">L1<br>Infrastructure</div>
+      <div style="flex:1;padding:10px;background:var(--sand);text-align:center;font-size:11px;font-weight:700;color:var(--text2)">L2<br>Foundation Models</div>
+      <div style="flex:1;padding:10px;background:var(--sand);text-align:center;font-size:11px;font-weight:700;color:var(--text2)">L3<br>Platforms</div>
+      <div style="flex:1;padding:10px;background:var(--sand);text-align:center;font-size:11px;font-weight:700;color:var(--text2)">L4<br>Vertical Apps</div>
+      <div style="flex:1;padding:10px;background:var(--sienna);text-align:center;font-size:11px;font-weight:800;color:#fff">L5 ← HERE<br>AI-Enabled Incumbent</div>
+    </div>
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.8"><strong>Level 5 — AI-Enabled Incumbent</strong>: Indigo is a traditional consumer brand using AI as an operational tool. This is the safest position in the AI value chain — the business does not depend on AI to function, and AI disruption risk is low. The risk/reward profile is driven entirely by the core business fundamentals (paints manufacturing, distribution, brand building) — not by AI. Investment horizon: <strong>7–10 years</strong> for a compounder thesis; shorter if taken purely as a disruption recovery play (2–3 years).</p>
+  </div>
+
+  <div class="section-title">Section D — India AI Opportunity Context</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>India AI Advantage</th><th>Relevant?</th><th>Assessment</th></tr>
+      <tr><td>Data at Scale (UPI/Aadhaar)</td><td style="color:#C0392B">NO</td><td>Paint sales are not UPI-linked; no India Stack data advantage</td></tr>
+      <tr><td>Language Diversity (Vernacular AI)</td><td style="color:#C0392B">NO</td><td>Paint brand interactions are visual/tactile, not language-dependent</td></tr>
+      <tr><td>India Stack as Free Infrastructure</td><td style="color:#C0392B">NO</td><td>Not applicable to paint manufacturing or distribution</td></tr>
+      <tr><td>AI Talent Cost Arbitrage</td><td style="color:#856404">MARGINAL</td><td>Uses AI/data analytics teams for demand forecasting; no export or structural advantage</td></tr>
+    </table>
+  </div>
+
+  <div class="sub-title">India AI Theme Relevance</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>AI Theme</th><th>Phase</th><th>Indigo Relevance</th></tr>
+      <tr><td>AI in banking/credit</td><td>Phase 3</td><td style="color:#C0392B">None</td></tr>
+      <tr><td>AI in logistics/supply</td><td>Phase 2–3</td><td style="color:#856404">Adjacent — demand forecasting, route optimisation</td></tr>
+      <tr><td>AI in diagnostics/health</td><td>Phase 2</td><td style="color:#C0392B">None</td></tr>
+      <tr><td>AI in retail/e-commerce</td><td>Phase 4</td><td style="color:#856404">Adjacent — colour recommendation engines (cosmetic)</td></tr>
+      <tr><td>Data centres (infra)</td><td>Phase 3–4</td><td style="color:#C0392B">None</td></tr>
+      <tr><td>AI in construction/waterproofing</td><td>Phase 1–2</td><td style="color:#14803C">Adjacent via Apple Chemie (B2B construction chemicals)</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Section E — Moat vs AI Disruption Risk</div>
+  <div class="card">
+    <p style="font-size:13.5px;color:var(--text2);line-height:1.8">
+      <strong>Disruption Timeline: Remote (10+ years)</strong>. AI does not fundamentally change the economics of paint. The consumer still touches, sees, and smells paint. The painter still applies it. The dealer still stocks it. None of these physical interactions are AI-disrupted.<br><br>
+      <strong>Specific Threats:</strong> None imminent. The closest risk is AI-powered colour simulation apps that reduce paint try-outs (leading to fewer SKU purchases) — but this is an industry-wide phenomenon benefiting all digital-forward brands equally.<br><br>
+      <strong>Moat Resilience Score: 8/10</strong> — Paint manufacturing + distribution moat is highly AI-resistant. The disruption threat is Birla Opus (capital and competition), NOT AI. Investors should not conflate these two risks.
+    </p>
+  </div>
+
+  <div class="section-title">Section F — AI Opportunity Score & Portfolio Role</div>
+  <div class="card">
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:700">Data Flywheel</span><span style="font-weight:800;color:var(--sienna)">2/20</span></div>
+      <div class="score-bar-wrap"><div class="score-bar" style="width:10%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:700">Adoption Phase (Phase 4 = low score)</span><span style="font-weight:800;color:var(--sienna)">5/20</span></div>
+      <div class="score-bar-wrap"><div class="score-bar" style="width:25%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:700">Value Chain (Level 5 = stable not high-growth)</span><span style="font-weight:800;color:var(--sienna)">8/20</span></div>
+      <div class="score-bar-wrap"><div class="score-bar" style="width:40%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:700">India Structural Advantage</span><span style="font-weight:800;color:var(--sienna)">3/20</span></div>
+      <div class="score-bar-wrap"><div class="score-bar" style="width:15%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:700">AI Threat Resistance</span><span style="font-weight:800;color:#14803C">16/20</span></div>
+      <div class="score-bar-wrap"><div class="score-bar" style="width:80%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:16px;font-weight:900;border-top:2px solid var(--sand);padding-top:10px"><span>TOTAL AI OPPORTUNITY SCORE</span><span style="color:var(--sienna)">34/100</span></div>
+    </div>
+    <div style="padding:12px;background:rgba(193,68,14,.08);border-radius:8px;border:1px solid rgba(193,68,14,.2)">
+      <strong>Portfolio Role: AI NEUTRAL — Standard Fundamental Framework Governs</strong><br>
+      <span style="font-size:13px;color:var(--text2)">Score of 34/100 places Indigo in the "AI NEUTRAL" category (20–40 range). AI neither helps nor hurts materially. Investment decision should be made purely on: competitive moat sustainability, growth recovery credibility, valuation discipline, and management execution. <strong>Investment Horizon: 5–7 years</strong> for a compounder thesis if bought at MoS entry zone. Not a 12-month trade.</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<div style="background:var(--ink);color:rgba(255,255,255,.5);padding:24px 20px;margin-top:32px;font-size:12px;line-height:1.8">
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:rgba(255,255,255,.7);margin-bottom:8px">Buffett Quality-Value Series v5.0 — Indigo Paints (INDIGOPNTS)</div>
+    <p><strong>SEBI DISCLAIMER:</strong> This report is prepared for educational and informational purposes only. It is NOT a SEBI-registered research report, investment advice, or solicitation to buy or sell securities. The author is not a SEBI-registered Investment Adviser. Do not make investment decisions based solely on this document. Consult a SEBI-registered financial advisor. Past performance does not guarantee future results. Investments in equity markets are subject to market risks. Read all scheme-related documents carefully.</p>
+    <p style="margin-top:8px"><strong>DATA CONFIDENCE NOTICE:</strong> <span style="background:#D4EDDA;color:#14803C;padding:1px 4px;border-radius:3px;font-weight:700">VERIFIED</span> = official filings/live search this session. <span style="background:#FFF3CD;color:#856404;padding:1px 4px;border-radius:3px;font-weight:700">ESTIMATED</span> = cross-referenced; high confidence. <span style="background:#F8D7DA;color:#721C24;padding:1px 4px;border-radius:3px;font-weight:700">UNVERIFIED</span> = limited source; treat with caution. Figures from Screener.in (standalone), quarterly filings (BSE), management commentary (earnings calls). Consolidated FY25 includes Apple Chemie subsidiary.</p>
+    <p style="margin-top:8px"><strong>TECHNICAL DATA:</strong> Moving averages and RSI levels are estimated from publicly available data; confirm with live NSE/BSE charts. Current price as of April 6, 2026 (ESTIMATED).</p>
+    <p style="margin-top:8px;color:rgba(255,255,255,.35)">Typography: Cormorant Garamond (display) · JetBrains Mono (monospace) · Nunito (body) | Report Date: April 2026</p>
+  </div>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

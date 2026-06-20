@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salesforce (CRM) — Buffett Quality-Value Series</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #032D60;
+  --blue: #00A1E0;
+  --blue-mid: #0070D2;
+  --gold: #FFB75D;
+  --amber: #FF7A00;
+  --light: #E8F4FD;
+  --bg: #060D1A;
+  --card: #0D1B2E;
+  --card2: #102039;
+  --border: #1A3050;
+  --text: #D4E8F7;
+  --muted: #7A9BBF;
+  --green: #00C853;
+  --red: #FF3D57;
+  --orange: #FF9F1C;
+  --white: #FFFFFF;
+  --pass: #0B7B3E;
+  --passtext: #4DFFA0;
+  --fail: #7B0B1E;
+  --failtext: #FF6B7A;
+  --marginal: #7B5B0B;
+  --marginaltext: #FFD166;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; line-height: 1.6; }
+h1,h2,h3,h4 { font-family: 'DM Serif Display', serif; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #020912 0%, #032D60 45%, #0D1B2E 100%);
+  padding: 28px 32px 24px;
+  border-bottom: 2px solid var(--blue);
+  position: relative;
+  min-height: 210px;
+}
+.hero-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+.hero-title { font-size: 2.4rem; color: var(--white); letter-spacing: -0.02em; }
+.hero-sub { color: var(--blue); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 2px; }
+.hero-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; }
+.badge-cat { background: var(--navy); border: 1px solid var(--blue); color: var(--blue); }
+.badge-ai { background: #0B2E14; border: 1px solid var(--green); color: var(--passtext); }
+.badge-verdict { background: var(--blue); color: var(--white); font-size: 0.82rem; padding: 6px 16px; }
+.badge-macro { background: #1A2A0D; border: 1px solid #3A5A1A; color: #8FD06A; }
+.badge-phase { background: #1A2940; border: 1px solid var(--blue); color: var(--blue); }
+.hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pill { background: rgba(0,161,224,0.12); border: 1px solid rgba(0,161,224,0.3); border-radius: 6px; padding: 4px 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--light); }
+.hero-lede { margin-top: 14px; color: #9ABFDC; font-size: 0.92rem; max-width: 820px; line-height: 1.5; }
+
+/* TAB BAR */
+#tab-bar { background: #060D1A; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 100; display: flex; overflow-x: auto; padding: 0 16px; }
+#tab-bar::-webkit-scrollbar { height: 3px; } #tab-bar::-webkit-scrollbar-thumb { background: var(--border); }
+.tab-btn { background: none; border: none; color: var(--muted); padding: 12px 14px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.78rem; font-weight: 600; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s; letter-spacing: 0.03em; }
+.tab-btn:hover { color: var(--light); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+.tab-content { display: none; padding: 28px 24px; max-width: 1200px; margin: 0 auto; }
+.tab-content.active-content { display: block; }
+
+/* CARDS */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 18px; }
+.card-accent { border-left: 4px solid var(--blue); }
+.card-gold { border-left: 4px solid var(--gold); }
+.card-green { border-left: 4px solid var(--green); }
+.card-red { border-left: 4px solid var(--red); }
+.card-orange { border-left: 4px solid var(--orange); }
+.card h3 { color: var(--white); font-size: 1.0rem; margin-bottom: 12px; }
+.card h4 { color: var(--blue); font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+
+/* GRID */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media(max-width:680px) { .grid-2,.grid-3,.grid-4 { grid-template-columns: 1fr; } }
+@media(max-width:680px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* METRIC CARDS */
+.metric { background: var(--card2); border-radius: 8px; padding: 14px 16px; border-left: 3px solid var(--blue); }
+.metric-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.metric-value { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: var(--white); margin: 3px 0; }
+.metric-note { font-size: 0.72rem; color: var(--muted); }
+.metric.up { border-left-color: var(--green); }
+.metric.down { border-left-color: var(--red); }
+.metric.gold { border-left-color: var(--gold); }
+
+/* DATA LABELS */
+.verified { background: #0B2E14; color: var(--passtext); border-radius: 4px; padding: 1px 6px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em; font-family: 'JetBrains Mono', monospace; }
+.estimated { background: #2E1E0B; color: var(--marginaltext); border-radius: 4px; padding: 1px 6px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em; font-family: 'JetBrains Mono', monospace; }
+.unverified { background: #2E0B12; color: var(--failtext); border-radius: 4px; padding: 1px 6px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em; font-family: 'JetBrains Mono', monospace; }
+
+/* TABLE */
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.tbl th { background: var(--navy); color: var(--light); padding: 8px 10px; text-align: left; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; }
+.tbl td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+.tbl tr:hover td { background: rgba(0,161,224,0.05); }
+.tbl .mono { font-family: 'JetBrains Mono', monospace; }
+.num { text-align: right; font-family: 'JetBrains Mono', monospace; }
+
+/* SCORECARD */
+.sc-pass { background: var(--pass); color: var(--passtext); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 700; }
+.sc-fail { background: var(--fail); color: var(--failtext); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 700; }
+.sc-marginal { background: var(--marginal); color: var(--marginaltext); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 700; }
+
+/* STARS */
+.stars { color: var(--gold); font-size: 1.1rem; letter-spacing: 2px; }
+
+/* GRADE BOX */
+.grade-box { display: inline-block; background: var(--navy); border: 2px solid var(--blue); border-radius: 8px; padding: 6px 14px; font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--white); min-width: 52px; text-align: center; }
+.grade-box.A { border-color: var(--green); color: var(--passtext); }
+.grade-box.B { border-color: var(--blue); color: var(--light); }
+.grade-box.C { border-color: var(--gold); color: var(--gold); }
+
+/* PILLAR GRID */
+.pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+@media(max-width:680px) { .pillar-grid { grid-template-columns: 1fr 1fr; } }
+.pillar-card { background: var(--card2); border-radius: 10px; padding: 18px; text-align: center; border-top: 4px solid var(--blue); }
+.pillar-card h4 { color: var(--muted); font-size: 0.70rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; font-family: 'Plus Jakarta Sans', sans-serif; }
+.pillar-grade { font-family: 'DM Serif Display', serif; font-size: 2.0rem; color: var(--white); margin: 6px 0; }
+
+/* VERDICT BOX */
+.verdict-box { background: linear-gradient(135deg, #032D60, #060D1A); border: 2px solid var(--blue); border-radius: 12px; padding: 28px; margin: 20px 0; position: relative; overflow: hidden; }
+.verdict-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--blue), var(--gold), var(--green)); }
+.verdict-rating { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--white); margin-bottom: 8px; }
+.verdict-stars { color: var(--gold); font-size: 1.4rem; margin-bottom: 14px; }
+.verdict-quote { font-style: italic; color: var(--muted); border-left: 3px solid var(--blue); padding-left: 14px; margin: 14px 0; font-size: 0.92rem; }
+
+/* UPGRADE CONDITIONS */
+.upgrade-list { list-style: none; }
+.upgrade-list li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+.upgrade-num { background: var(--blue); color: var(--white); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+/* MACRO CYCLE */
+.cycle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+@media(max-width:680px) { .cycle-grid { grid-template-columns: 1fr 1fr; } }
+.cycle-cell { background: var(--card2); border-radius: 8px; padding: 12px; border-top: 3px solid; }
+.cycle-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+.cycle-status { font-size: 0.82rem; font-weight: 700; }
+
+/* YEAR CARD (ROE/ROIC) */
+.year-cards { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.year-card { background: var(--card2); border-radius: 8px; padding: 10px 14px; min-width: 80px; text-align: center; border-top: 3px solid; }
+.year-label { font-size: 0.68rem; color: var(--muted); }
+.year-val { font-family: 'JetBrains Mono', monospace; font-size: 1.0rem; color: var(--white); margin-top: 3px; }
+
+/* FLYWHEEL BOX */
+.flywheel-box { background: linear-gradient(135deg, #0B2020, #060D1A); border: 2px solid #00C853; border-radius: 12px; padding: 22px; margin: 16px 0; }
+.flywheel-score { font-family: 'JetBrains Mono', monospace; font-size: 2rem; color: var(--passtext); }
+.flywheel-badge { display: inline-flex; align-items: center; gap: 6px; background: #0B2E14; border: 1px solid var(--green); border-radius: 20px; padding: 5px 14px; font-size: 0.80rem; font-weight: 700; color: var(--passtext); margin-bottom: 12px; }
+
+/* AI VALUE CHAIN */
+.vc-row { display: flex; gap: 0; margin: 16px 0; overflow-x: auto; }
+.vc-item { flex: 1; min-width: 80px; background: var(--card2); padding: 12px 8px; text-align: center; border-right: 1px solid var(--border); font-size: 0.70rem; color: var(--muted); }
+.vc-item:last-child { border-right: none; }
+.vc-item.active { background: var(--navy); color: var(--blue); border-top: 3px solid var(--blue); font-weight: 700; }
+.vc-item .vc-num { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+
+/* OE BOX */
+.oe-box { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 18px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+.oe-line { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.oe-total { display: flex; justify-content: space-between; padding: 10px 0 4px; font-weight: 700; font-size: 0.95rem; color: var(--white); }
+
+/* SCENARIO TABLE */
+.scenario-tbl-wrap { overflow-x: auto; }
+.s-header { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 0; }
+.s-col { text-align: center; padding: 8px 6px; font-size: 0.75rem; font-weight: 700; }
+.s-row { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; border-bottom: 1px solid var(--border); }
+.s-cell { padding: 7px 6px; font-size: 0.82rem; }
+.s-cell.num { text-align: center; font-family: 'JetBrains Mono', monospace; }
+
+/* PRICE LADDER */
+.ladder { display: flex; flex-direction: column; gap: 6px; }
+.ladder-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; font-size: 0.83rem; }
+.ladder-price { font-family: 'JetBrains Mono', monospace; font-weight: 700; min-width: 70px; }
+
+/* TECH SCORE */
+.tech-score-bar { background: var(--border); border-radius: 4px; height: 8px; margin-top: 6px; }
+.tech-score-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--blue), var(--green)); }
+
+/* PROGRESS */
+.progress-bar { background: var(--border); border-radius: 4px; height: 10px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 4px; transition: width 1s; }
+
+/* AI SCORE GAUGE */
+.ai-gauge { position: relative; width: 120px; height: 120px; }
+.ai-gauge svg { transform: rotate(-90deg); }
+.ai-gauge-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.ai-gauge-num { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--white); }
+.ai-gauge-text { font-size: 0.65rem; color: var(--muted); }
+
+/* SERIES TABLE */
+.series-tbl { overflow-x: auto; }
+
+/* FOOTER */
+footer { background: #030810; border-top: 1px solid var(--border); padding: 20px 24px; font-size: 0.72rem; color: var(--muted); line-height: 1.7; }
+
+/* MA CARD */
+.ma-card { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--card2); border-radius: 8px; margin-bottom: 6px; }
+.ma-label { font-size: 0.80rem; color: var(--muted); }
+.ma-val { font-family: 'JetBrains Mono', monospace; font-size: 0.90rem; }
+.signal-bull { color: var(--green); font-weight: 700; font-size: 0.75rem; }
+.signal-bear { color: var(--red); font-weight: 700; font-size: 0.75rem; }
+.signal-neu { color: var(--muted); font-weight: 700; font-size: 0.75rem; }
+
+.section-title { font-family: 'DM Serif Display', serif; font-size: 1.25rem; color: var(--white); border-bottom: 2px solid var(--blue); padding-bottom: 8px; margin: 24px 0 16px; }
+.sub-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue); margin-bottom: 8px; font-weight: 700; }
+
+.tag { display: inline-block; border-radius: 4px; padding: 2px 8px; font-size: 0.70rem; font-weight: 700; margin: 1px; }
+.tag-blue { background: rgba(0,161,224,0.2); color: var(--blue); }
+.tag-green { background: rgba(0,200,83,0.15); color: var(--passtext); }
+.tag-red { background: rgba(255,61,87,0.15); color: var(--failtext); }
+.tag-gold { background: rgba(255,183,93,0.15); color: var(--gold); }
+
+p { margin-bottom: 10px; color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-sub">NYSE: CRM &nbsp;•&nbsp; BUFFETT QUALITY-VALUE SERIES</div>
+      <h1 class="hero-title">Salesforce, Inc.</h1>
+    </div>
+    <span class="badge badge-verdict">WATCH ★★★</span>
+  </div>
+  <div class="hero-badges">
+    <span class="badge badge-cat">CATEGORY C — Mature SaaS Compounder</span>
+    <span class="badge badge-ai">🟢 AI WIDENER — Agentforce Platform</span>
+    <span class="badge badge-phase">Phase 2 → 3 Transition</span>
+    <span class="badge badge-macro">⚠️ MACRO: Stagflation-Lite Headwind</span>
+  </div>
+  <div class="hero-pills">
+    <span class="pill">Price ~$181 <span class="unverified">UNVERIFIED</span></span>
+    <span class="pill">FY26 Revenue $41.5B <span class="verified">VERIFIED</span></span>
+    <span class="pill">FCF $14.4B <span class="verified">VERIFIED</span></span>
+    <span class="pill">RPO $72.4B <span class="verified">VERIFIED</span></span>
+    <span class="pill">Agentforce ARR $800M+ <span class="verified">VERIFIED</span></span>
+    <span class="pill">FCF Yield ~9.7%</span>
+    <span class="pill">10-yr UST 4.27% <span class="verified">VERIFIED</span></span>
+  </div>
+  <p class="hero-lede">The world's #1 AI CRM sits at a compelling inflection: Agentforce AI revenue exploding +169% YoY, FCF of $14.4B (+16%), and a $50B buyback authorization — yet the stock has surrendered 39% from its all-time high as "vibe coding" fears and stagflation headwinds reset multiples. The core franchise moat (150K+ enterprise customers, $72B RPO, 77.7% gross margin) remains intact. The question is whether Agentforce represents a true data flywheel or a feature premium. We rate it FORMING — conviction rises with monetisation evidence.</p>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro</button>
+  <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+  <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intelligence</button>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="t0" class="tab-content active-content">
+  <h2 class="section-title">Business Overview</h2>
+  <div class="grid-2">
+    <div class="card card-accent">
+      <h3>Company Identity</h3>
+      <p>Salesforce is the world's largest enterprise Customer Relationship Management (CRM) software company, commanding roughly 21–22% of the global CRM market — nearly equal to the next four competitors combined. Founded in 1999 by Marc Benioff, it pioneered SaaS delivery and Cloud CRM. It operates six product families: Sales Cloud, Service Cloud, Marketing Cloud (Advertising), Commerce Cloud, Platform (Slack, MuleSoft), and Data Cloud + AI (Agentforce).</p>
+      <p>The company's FY26 (ended Jan 31, 2026) revenue of <strong>$41.5 billion</strong> makes it the largest pure-play enterprise software company outside Microsoft. Subscription & support revenue represents 93% of total revenue — a high-quality recurring mix. <span class="verified">VERIFIED</span></p>
+    </div>
+    <div class="card card-gold">
+      <h3>Why This Stock Is in the Series</h3>
+      <p>Salesforce occupies a uniquely complex analytical position: it is simultaneously a <strong>mature compounder</strong> with durable switching costs, an <strong>AI transition story</strong> via Agentforce, and a <strong>deep-value candidate</strong> after a 39% drawdown from its ATH of $364.</p>
+      <p>The critical question for this report: Is Agentforce a true data flywheel (buy the moat) or just a feature layer that expensive AI-native competitors can replicate? Our answer is <strong>FORMING</strong> — the flywheel shows 2 of 3 conditions met, making this a high-conviction watchlist candidate pending monetisation inflection.</p>
+    </div>
+  </div>
+  <div class="grid-4" style="margin-top:4px;">
+    <div class="metric up">
+      <div class="metric-label">FY26 Revenue</div>
+      <div class="metric-value">$41.5B</div>
+      <div class="metric-note">+10% YoY | <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric up">
+      <div class="metric-label">FY26 Free Cash Flow</div>
+      <div class="metric-value">$14.4B</div>
+      <div class="metric-note">+16% YoY | <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric gold">
+      <div class="metric-label">RPO (Backlog)</div>
+      <div class="metric-value">$72.4B</div>
+      <div class="metric-note">+14% YoY | <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric up">
+      <div class="metric-label">Agentforce + Data ARR</div>
+      <div class="metric-value">$1.8B</div>
+      <div class="metric-note">+120% YoY run-rate | <span class="estimated">ESTIMATED</span></div>
+    </div>
+  </div>
+  <div class="grid-3" style="margin-top:12px;">
+    <div class="card">
+      <h4>Product Portfolio</h4>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
+        <span class="tag tag-blue">Sales Cloud</span>
+        <span class="tag tag-blue">Service Cloud</span>
+        <span class="tag tag-blue">Marketing Cloud</span>
+        <span class="tag tag-blue">Commerce Cloud</span>
+        <span class="tag tag-blue">MuleSoft</span>
+        <span class="tag tag-blue">Tableau</span>
+        <span class="tag tag-blue">Slack</span>
+        <span class="tag tag-green">Agentforce ★</span>
+        <span class="tag tag-green">Data Cloud ★</span>
+        <span class="tag tag-blue">AppExchange</span>
+      </div>
+    </div>
+    <div class="card">
+      <h4>Key Competitors</h4>
+      <table class="tbl">
+        <tr><td>Microsoft Dynamics + Copilot</td><td class="num" style="color:var(--red)">High threat</td></tr>
+        <tr><td>ServiceNow (NOW)</td><td class="num" style="color:var(--orange)">Adjacent</td></tr>
+        <tr><td>Oracle CX Cloud</td><td class="num" style="color:var(--muted)">Moderate</td></tr>
+        <tr><td>SAP CRM</td><td class="num" style="color:var(--muted)">Moderate</td></tr>
+        <tr><td>HubSpot (SMB)</td><td class="num" style="color:var(--muted)">Low-end</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>Framework Adaptations</h4>
+      <p style="font-size:0.83rem;">Cat C with SaaS overlay. O'Glove tests applied with SBC-adjusted owner earnings as primary owner earnings measure. Non-GAAP operating margins tracked alongside GAAP (standard for SaaS). Rule of 40 monitored as secondary health metric. RPO / cRPO growth rates used as leading revenue indicators in addition to trailing financials.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Special Context: The "Vibe Coding" Fear vs. Agentforce Reality</h2>
+  <div class="card card-orange">
+    <h3>Market Misperception Driving the 39% Drawdown</h3>
+    <p>The dominant bear thesis is that AI-native coding tools (GitHub Copilot, Cursor, "vibe coding") will allow companies to self-build CRM alternatives, eliminating Salesforce's lock-in. This is technically plausible but economically implausible for large enterprises. Marc Benioff explicitly addressed this in April 2026: replacing Salesforce's data architecture, compliance infrastructure, 150K-customer ecosystem, and 20+ years of transaction history is not a vibe-coding weekend project.</p>
+    <p>The real structural question is different: can Microsoft Dynamics + Copilot offer a credible AI CRM alternative within an already-deployed M365 environment? This is the legitimate competitive threat, and it explains why the stock warrants a WATCH rather than an outright BUY at current prices.</p>
+    <span class="estimated">ESTIMATED — based on news analysis, Apr 2026</span>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO -->
+<div id="t1" class="tab-content">
+  <h2 class="section-title">Layer 1 — US Macro Anchor</h2>
+  <div class="grid-4">
+    <div class="metric down">
+      <div class="metric-label">US 10-yr Treasury</div>
+      <div class="metric-value">4.27%</div>
+      <div class="metric-note">Apr 21, 2026 | <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric down">
+      <div class="metric-label">US CPI (March 2026)</div>
+      <div class="metric-value">3.3%</div>
+      <div class="metric-note">Above 2% target | <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">US Real GDP (2026E)</div>
+      <div class="metric-value">~2.0%</div>
+      <div class="metric-note">RSM / IMF est. | <span class="estimated">ESTIMATED</span></div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">US Nominal GDP</div>
+      <div class="metric-value">~5.5%</div>
+      <div class="metric-note">Real + CPI ceiling | <span class="estimated">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h3>Macro Cycle Dashboard — 6 Dimensions</h3>
+    <div class="cycle-grid">
+      <div class="cycle-cell" style="border-color:var(--red);">
+        <div class="cycle-label">IT Spending Cycle</div>
+        <div class="cycle-status" style="color:var(--orange);">Selective Tightening</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">CIOs prioritising AI ROI proof over broad SaaS expansion</div>
+      </div>
+      <div class="cycle-cell" style="border-color:var(--orange);">
+        <div class="cycle-label">Interest Rate Cycle</div>
+        <div class="cycle-status" style="color:var(--orange);">Hawkish Hold</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Fed on hold; 10-yr at 4.27%; Iran tensions adding inflation risk</div>
+      </div>
+      <div class="cycle-cell" style="border-color:var(--green);">
+        <div class="cycle-label">AI Investment Cycle</div>
+        <div class="cycle-status" style="color:var(--passtext);">Accelerating</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Enterprise AI from experimentation → deployment; CIO surveys confirm</div>
+      </div>
+      <div class="cycle-cell" style="border-color:var(--orange);">
+        <div class="cycle-label">USD / FX Cycle</div>
+        <div class="cycle-status" style="color:var(--orange);">Headwind</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Strong USD weighs on EMEA & APAC revenue in constant currency</div>
+      </div>
+      <div class="cycle-cell" style="border-color:var(--green);">
+        <div class="cycle-label">Enterprise Employment</div>
+        <div class="cycle-status" style="color:var(--passtext);">Stable</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Low unemployment supports SaaS seat expansion for Sales & Service Cloud</div>
+      </div>
+      <div class="cycle-cell" style="border-color:var(--red);">
+        <div class="cycle-label">Geopolitical Risk</div>
+        <div class="cycle-status" style="color:var(--red);">Elevated</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Iran conflict, energy shock → inflationary; tech sector multiple compression</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:var(--card2);border-radius:8px;padding:12px;border-left:4px solid var(--orange);">
+      <strong style="color:var(--white);">Macro Composite for CRM: MILD HEADWIND</strong>
+      <p style="font-size:0.83rem;margin-top:4px;margin-bottom:0;">High rates compress terminal multiples; strong USD mutes international growth (50% of revenue). Offset by AI investment tailwind directly benefiting Agentforce. Net effect: macro is a 1–2 multiple point headwind for DCF but not a business fundamental risk.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Layer 2 — Enterprise SaaS Sector Growth</h2>
+  <div class="card card-accent">
+    <h4>Enterprise CRM / SaaS Growth Reference</h4>
+    <div style="overflow-x:auto;">
+      <table class="tbl">
+        <thead><tr><th>Metric</th><th>Stress</th><th>Base</th><th>Accel.</th><th>AI Impact</th></tr></thead>
+        <tbody>
+          <tr><td>CRM Market CAGR (IDC)</td><td class="num">8%</td><td class="num">12%</td><td class="num">16%</td><td><span class="tag tag-green">AI Widener</span></td></tr>
+          <tr><td>Enterprise SaaS (broad)</td><td class="num">9%</td><td class="num">13%</td><td class="num">18%</td><td><span class="tag tag-green">AI Widener</span></td></tr>
+          <tr><td>AI Agents / Agentic SW</td><td class="num">35%</td><td class="num">55%</td><td class="num">80%+</td><td><span class="tag tag-green">Core Driver</span></td></tr>
+          <tr><td>Salesforce historical CAGR</td><td colspan="3" class="num">11–14% (FY21–FY26)</td><td><span class="tag tag-blue">Tracking</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:0.80rem;color:var(--muted);margin-top:8px;margin-bottom:0;"><span class="estimated">ESTIMATED</span> — IDC Worldwide CRM Applications Software Tracker; sector Accel. scenario reflects successful Agentforce platform monetisation driving re-acceleration above core CRM growth.</p>
+  </div>
+
+  <h2 class="section-title">Layer 3 — Company Alpha Sources</h2>
+  <div class="card card-accent">
+    <table class="tbl">
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Market share gain</td><td><span class="tag tag-green">Active</span></td><td class="num">+1%</td><td class="num">+0.5%</td><td style="font-size:0.78rem;">Already 21% share; gains incremental at scale</td></tr>
+        <tr><td>Premiumisation (Agentforce)</td><td><span class="tag tag-green">Active</span></td><td class="num">+2%</td><td class="num">+3%</td><td style="font-size:0.78rem;">$2/conversation pricing unlocking new ARPU</td></tr>
+        <tr><td>Platform expansion (Data Cloud)</td><td><span class="tag tag-green">Active</span></td><td class="num">+1.5%</td><td class="num">+2%</td><td style="font-size:0.78rem;">Data unification from 150K customers = sticky</td></tr>
+        <tr><td>Geographic expansion</td><td><span class="tag tag-blue">Potential</span></td><td class="num">+0.5%</td><td class="num">+1%</td><td style="font-size:0.78rem;">APAC +14% CC; EMEA constrained by FX</td></tr>
+        <tr><td>Pricing power</td><td><span class="tag tag-green">Active</span></td><td class="num">+1%</td><td class="num">+1%</td><td style="font-size:0.78rem;">Subscription + support +11% YoY CC in Q2 FY26</td></tr>
+        <tr><td>AI alpha (6a cost reduction)</td><td><span class="tag tag-green">Active</span></td><td class="num">+1%</td><td class="num">+2%</td><td style="font-size:0.78rem;">Agentforce reducing per-unit service costs for customers</td></tr>
+        <tr><td>AI alpha (6b market expansion)</td><td><span class="tag tag-blue">Potential</span></td><td class="num">+1%</td><td class="num">+3%</td><td style="font-size:0.78rem;">SMB penetration via Starter Suite + Agentforce</td></tr>
+        <tr><td>AI alpha (6c flywheel switching cost)</td><td><span class="tag tag-blue">Forming</span></td><td class="num">+0.5%</td><td class="num">+2%</td><td style="font-size:0.78rem;">Transaction data moat forming — not yet confirmed</td></tr>
+        <tr style="font-weight:700;"><td>Total Alpha</td><td>—</td><td class="num" style="color:var(--gold);">+8.5%</td><td class="num" style="color:var(--gold);">+14.5%</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Growth Rate Summary Matrix</h2>
+  <div style="overflow-x:auto;">
+    <div style="min-width:560px;">
+      <div class="s-header" style="background:var(--navy);border-radius:8px 8px 0 0;">
+        <div class="s-col" style="text-align:left;padding-left:12px;">Parameter</div>
+        <div class="s-col" style="color:var(--red);">STRESS</div>
+        <div class="s-col" style="color:var(--blue);">BASE</div>
+        <div class="s-col" style="color:var(--green);">ACCEL.</div>
+      </div>
+      <div style="background:var(--card);border-radius:0 0 8px 8px;border:1px solid var(--border);">
+        <div class="s-row"><div class="s-cell">US Real GDP</div><div class="s-cell num">~1.2%</div><div class="s-cell num">~2.0%</div><div class="s-cell num">~3.0%</div></div>
+        <div class="s-row"><div class="s-cell">US CPI</div><div class="s-cell num">4.0%</div><div class="s-cell num">3.3%</div><div class="s-cell num">2.5%</div></div>
+        <div class="s-row"><div class="s-cell">US Nominal GDP</div><div class="s-cell num">5.2%</div><div class="s-cell num">5.5%</div><div class="s-cell num">5.5%</div></div>
+        <div class="s-row"><div class="s-cell">CRM Sector growth</div><div class="s-cell num">8%</div><div class="s-cell num">12%</div><div class="s-cell num">16%</div></div>
+        <div class="s-row"><div class="s-cell">Company alpha (AI incl.)</div><div class="s-cell num">+3%</div><div class="s-cell num">+8.5%</div><div class="s-cell num">+14.5%</div></div>
+        <div class="s-row" style="background:rgba(0,161,224,0.06)"><div class="s-cell" style="font-weight:700;">Stage 1 FCF CAGR (5yr)</div><div class="s-cell num" style="color:var(--red);font-weight:700;">7%</div><div class="s-cell num" style="color:var(--blue);font-weight:700;">10%</div><div class="s-cell num" style="color:var(--green);font-weight:700;">14%</div></div>
+        <div class="s-row"><div class="s-cell">Stage 2 FCF CAGR (5yr)</div><div class="s-cell num">4%</div><div class="s-cell num">6%</div><div class="s-cell num">8%</div></div>
+        <div class="s-row"><div class="s-cell">Terminal growth</div><div class="s-cell num">2.5%</div><div class="s-cell num">3.5%</div><div class="s-cell num">4.0%</div></div>
+        <div class="s-row"><div class="s-cell">Margin direction</div><div class="s-cell num">Compress</div><div class="s-cell num">Stable/Expand</div><div class="s-cell num">Expand</div></div>
+        <div class="s-row"><div class="s-cell">Key risk</div><div class="s-cell" style="font-size:0.75rem">MSFT Dynamics + energy shock</div><div class="s-cell" style="font-size:0.75rem">FX headwinds</div><div class="s-cell" style="font-size:0.75rem">Agentforce competition</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px;background:var(--card2);">
+    <div class="sub-label">Sensitivity Check</div>
+    <p style="font-size:0.84rem;">A 1% change in terminal growth rate changes base IV by approximately ±15%. A 1% change in Stage 1 FCF CAGR changes base IV by approximately ±8%. Current price ~$181 implies the market is pricing in roughly 6% perpetual FCF growth — well below our base scenario and reflecting maximum macro fear.</p>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="t2" class="tab-content">
+  <h2 class="section-title">Revenue & Gross Margin Trend</h2>
+  <div class="year-cards">
+    <div class="year-card" style="border-color:var(--muted)"><div class="year-label">FY22</div><div class="year-val">$26.5B</div><div class="year-label">Rev | GM 72.8%</div></div>
+    <div class="year-card" style="border-color:var(--blue)"><div class="year-label">FY23</div><div class="year-val">$31.4B</div><div class="year-label">Rev | GM 73.3%</div></div>
+    <div class="year-card" style="border-color:var(--blue)"><div class="year-label">FY24</div><div class="year-val">$34.9B</div><div class="year-label">Rev | GM 75.5%</div></div>
+    <div class="year-card" style="border-color:var(--gold)"><div class="year-label">FY25</div><div class="year-val">$37.9B</div><div class="year-label">Rev | GM 77.2%</div></div>
+    <div class="year-card" style="border-color:var(--green)"><div class="year-label">FY26</div><div class="year-val">$41.5B</div><div class="year-label">Rev | GM 77.7%</div></div>
+  </div>
+  <p style="font-size:0.80rem;color:var(--muted);margin-top:6px;">5-yr Revenue CAGR (FY22→FY26): ~11.9% | Gross margin expanding 470bps over 4 years — a positive structural signal. <span class="verified">VERIFIED</span></p>
+
+  <div class="grid-2" style="margin-top:16px;">
+    <div>
+      <h2 class="section-title">ROIC Trend</h2>
+      <div class="year-cards">
+        <div class="year-card" style="border-color:var(--muted)"><div class="year-label">FY22</div><div class="year-val">5.4%</div></div>
+        <div class="year-card" style="border-color:var(--red)"><div class="year-label">FY23</div><div class="year-val">3.0%</div></div>
+        <div class="year-card" style="border-color:var(--orange)"><div class="year-label">FY24</div><div class="year-val">5.7%</div></div>
+        <div class="year-card" style="border-color:var(--gold)"><div class="year-label">FY25</div><div class="year-val">8.4%</div></div>
+        <div class="year-card" style="border-color:var(--green)"><div class="year-label">FY26E</div><div class="year-val">~10.5%</div></div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:6px;"><span class="estimated">ESTIMATED</span> — ROIC compressed by ~$60B goodwill from Tableau, Slack, MuleSoft, Informatica acquisitions. Ex-goodwill ROIC is substantially higher (&gt;40%), reflecting the exceptional underlying business economics. FY23 low reflects activist-driven restructuring charges.</p>
+    </div>
+    <div>
+      <h2 class="section-title">ROE Trend</h2>
+      <div class="year-cards">
+        <div class="year-card" style="border-color:var(--muted)"><div class="year-label">FY22</div><div class="year-val">~1.5%</div></div>
+        <div class="year-card" style="border-color:var(--red)"><div class="year-label">FY23</div><div class="year-val">~0.3%</div></div>
+        <div class="year-card" style="border-color:var(--orange)"><div class="year-label">FY24</div><div class="year-val">~6.5%</div></div>
+        <div class="year-card" style="border-color:var(--gold)"><div class="year-label">FY25</div><div class="year-val">~9.5%</div></div>
+        <div class="year-card" style="border-color:var(--green)"><div class="year-label">FY26</div><div class="year-val">12.4%</div></div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:6px;"><span class="estimated">ESTIMATED FY22-FY25</span> <span class="verified">VERIFIED FY26</span> — ROE suppressed by massive equity book from acquisitions. Directional trend strongly positive. Buybacks ($12.7B in FY26) will mechanically improve ROE by reducing equity.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Financial Fortress Scorecard</h2>
+  <table class="tbl" style="margin-top:4px;">
+    <thead><tr><th>Test</th><th>Metric</th><th>Result</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>ROE ≥ 15% (5yr)</td><td class="num mono">12.4% (FY26), recovering</td><td>Trend positive; below threshold due to acquisition equity</td><td><span class="sc-marginal">MARGINAL ~</span></td></tr>
+      <tr><td>ROIC > WACC (5yr)</td><td class="num mono">~10.5% vs WACC 10%</td><td>Just crossing WACC; ex-goodwill ROIC &gt;40%</td><td><span class="sc-marginal">MARGINAL ~</span></td></tr>
+      <tr><td>Net cash position</td><td class="num mono">~Net neutral to slight net debt</td><td>Cash ~$11B; gross debt ~$10-12B; manageable</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      <tr><td>Net profit margin ≥ 15%</td><td class="num mono">18.0% GAAP FY26</td><td>GAAP margin expansion from 1% (FY23) to 18% shows operating leverage</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      <tr><td>FCF positive & growing</td><td class="num mono">$14.4B FY26 (+16%)</td><td>Exceptional FCF; 5-year FCF CAGR ~15%+</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      <tr><td>FCF conversion ≥ 80%</td><td class="num mono">OCF/NI = 200%</td><td>High conversion reflects D&A + SBC add-backs; SBC-adj. ~96%</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      <tr><td>Revenue growth ≥ sector CAGR</td><td class="num mono">+10% YoY (FY26)</td><td>Matching sector base; below sector accel. scenario</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      <tr><td>Predictable recurring revenue</td><td class="num mono">93% subscription</td><td>$72.4B RPO provides extraordinary visibility</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      <tr><td>Capital-light (high ROIC/capex)</td><td class="num mono">CapEx ~$0.6B vs FCF $14.4B</td><td>Highly capital-efficient; CapEx/Revenue &lt;1.5%</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+    </tbody>
+  </table>
+  <div style="background:var(--pass);border-radius:8px;padding:12px 16px;margin-top:12px;display:inline-block;">
+    <span style="color:var(--passtext);font-weight:700;font-size:0.88rem;">FINANCIAL FORTRESS GRADE: ACCEPTABLE (7/9 Pass | 2 Marginal)</span>
+  </div>
+
+  <h2 class="section-title">Owner Earnings (FY26)</h2>
+  <div class="oe-box">
+    <div class="oe-line"><span>GAAP Net Income</span><span class="mono" style="color:var(--white);">+$7,457M</span></div>
+    <div class="oe-line"><span>+ Depreciation & Amortisation (infra D&A)</span><span class="mono" style="color:var(--passtext);">+$1,200M</span></div>
+    <div class="oe-line"><span>+ Acquisition Intangible Amortisation</span><span class="mono" style="color:var(--passtext);">+$2,050M</span></div>
+    <div class="oe-line"><span>– Stock-Based Compensation (real economic cost)</span><span class="mono" style="color:var(--failtext);">−$3,500M</span></div>
+    <div class="oe-line"><span>– Maintenance CapEx (estimated)</span><span class="mono" style="color:var(--failtext);">−$550M</span></div>
+    <div class="oe-line"><span>± Working Capital changes (minimal for SaaS)</span><span class="mono" style="color:var(--muted);">~$0M</span></div>
+    <div class="oe-total"><span>OWNER EARNINGS (Conservative)</span><span class="mono">$6,657M</span></div>
+    <div class="oe-total"><span>Per Share (~818M shares)</span><span class="mono" style="color:var(--gold);">~$8.14 / share</span></div>
+  </div>
+  <p style="font-size:0.78rem;color:var(--muted);margin-top:6px;"><span class="estimated">ESTIMATED</span> — SBC $3.5B and acquisition amortisation estimated from non-GAAP reconciliation disclosures. Maintenance CapEx estimated at ~$550M (total FY26 CapEx ~$600M, majority infra maintenance).</p>
+
+  <h2 class="section-title">Rule of 40 Health Check</h2>
+  <div class="grid-2">
+    <div class="card card-accent">
+      <h4>Rule of 40 Calculation (FY26)</h4>
+      <table class="tbl">
+        <tr><td>Revenue Growth (YoY)</td><td class="num mono">+10%</td></tr>
+        <tr><td>FCF Margin (FCF/Revenue)</td><td class="num mono">+34.7%</td></tr>
+        <tr><td style="font-weight:700;">Rule of 40 Score</td><td class="num mono" style="color:var(--passtext);font-weight:700;">44.7</td></tr>
+        <tr><td>Non-GAAP Op. Margin</td><td class="num mono">34.1%</td></tr>
+        <tr><td>Non-GAAP R40 Alternative</td><td class="num mono" style="color:var(--passtext);">44.1</td></tr>
+      </table>
+      <div style="margin-top:10px;background:var(--pass);border-radius:6px;padding:8px 12px;">
+        <span style="color:var(--passtext);font-size:0.82rem;font-weight:700;">✓ R40 Score 44.7 — Healthy Quality Tier (>40)</span>
+      </div>
+    </div>
+    <div class="card">
+      <h4>O'Glove Earnings Quality Tests</h4>
+      <table class="tbl">
+        <tr><td>Test 1 — FCF Conversion</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+        <tr><td>Test 2 — DSO Trend</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+        <tr><td>Test 3 — Inventory Days</td><td><span class="sc-pass">N/A (SaaS)</span></td></tr>
+        <tr><td>Test 4 — Accounting Policy</td><td><span class="sc-marginal">MARGINAL ~</span></td></tr>
+        <tr><td>Test 5 — Gross Margin Consistency</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      </table>
+      <div style="margin-top:10px;background:var(--pass);border-radius:6px;padding:8px 12px;">
+        <span style="color:var(--passtext);font-size:0.82rem;font-weight:700;">Earnings Quality: ACCEPTABLE</span>
+      </div>
+      <p style="font-size:0.76rem;color:var(--muted);margin-top:6px;margin-bottom:0;">Test 4 marginal: Informatica acquisition ($8B, FY26) adds complexity to period comparisons; Pro-forma adjustments warranted. High SBC is a recurring earnings quality note — use SBC-adjusted owner earnings for IV calculations.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="t3" class="tab-content">
+  <h2 class="section-title">Pillar 1 — Economic Moat Assessment</h2>
+  <div class="grid-2">
+    <div class="card card-accent">
+      <h4>Moat Source 1: Switching Costs <span class="stars">★★★★★</span></h4>
+      <p style="font-size:0.85rem;">Salesforce is the operating system for revenue operations. Replacing it means migrating 20+ years of customer interaction records, sales pipeline data, custom workflow automations, AppExchange integrations, and compliance audit trails. Enterprise switching costs are among the highest in software — estimated multi-year implementation cost $1M–$50M+ for large enterprises. cRPO growing 16% YoY confirms customers renewing and expanding despite competitive pressure.</p>
+    </div>
+    <div class="card card-accent">
+      <h4>Moat Source 2: Network Effects (Platform) <span class="stars">★★★☆</span></h4>
+      <p style="font-size:0.85rem;">AppExchange has 7,000+ apps built by third parties. The more ISVs that build on Salesforce, the more valuable the platform. Trailblazer community (millions of certified Salesforce developers) creates a labour market lock-in: enterprises hire Salesforce-certified admins, which further commits them to the platform. Agentforce is now extending this with an "Agent Skills Marketplace" — each skill built by any partner adds value to all agents. Moderate but growing network effect.</p>
+    </div>
+    <div class="card card-green">
+      <h4>Moat Source 3: Transaction Data Asset <span class="stars">★★★☆</span></h4>
+      <p style="font-size:0.85rem;">150K+ enterprises have stored their customer interactions, sales outcomes, service resolutions, and marketing engagement data in Salesforce for decades. This proprietary outcome data (who bought, who churned, what resolved the case) is the training substrate for Agentforce. No competitor can replicate this data without building the same customer base. Data Cloud now houses 50 trillion records (doubled YoY). This is the foundation of the potential flywheel — currently FORMING.</p>
+    </div>
+    <div class="card">
+      <h4>Moat Source 4: Brand & Trust (Enterprise) <span class="stars">★★★★</span></h4>
+      <p style="font-size:0.85rem;">"No one ever got fired for buying Salesforce" — the enterprise software equivalent of IBM's historical lock. Salesforce's brand in revenue ops, compliance (especially in regulated industries: FinServ, Healthcare, Gov) provides a moat that AI-native startups cannot overcome quickly. Dreamforce, the world's largest software conference, is itself a moat: 45,000+ attendees annually reinforce community and loyalty.</p>
+    </div>
+  </div>
+
+  <div class="flywheel-box" style="margin-top:8px;">
+    <div class="flywheel-badge">🔄 DATA FLYWHEEL STATUS: FORMING ★★★</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div class="sub-label">Flywheel Strength Score</div>
+        <div class="flywheel-score">6.5 / 10</div>
+        <div style="color:var(--muted);font-size:0.80rem;">2 of 3 conditions confirmed</div>
+      </div>
+      <div style="flex:1;min-width:280px;">
+        <table class="tbl">
+          <tr>
+            <td>✓ Proprietary training data (50T records, unique outcomes)</td>
+            <td><span class="sc-pass">CONFIRMED</span></td>
+          </tr>
+          <tr>
+            <td>⚠ Measurable AI accuracy improvement with more data/users</td>
+            <td><span class="sc-marginal">FORMING</span></td>
+          </tr>
+          <tr>
+            <td>✓ Better AI attracts more users (Agentforce deal momentum)</td>
+            <td><span class="sc-pass">CONFIRMED</span></td>
+          </tr>
+        </table>
+        <p style="font-size:0.76rem;color:var(--muted);margin-top:6px;margin-bottom:0;">Condition 2 is the key gap: Salesforce has not yet publicly disclosed specific metrics showing Agentforce accuracy improving as transaction volume scales. The 84% self-resolution rate on help.salesforce.com (380K conversations) is promising but insufficient to confirm the flywheel. Watch for quantitative accuracy disclosures in future earnings calls.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">ROIC as Moat Proof — Interpretation</h2>
+  <div class="card card-orange">
+    <p style="font-size:0.85rem;">Headline ROIC of ~10.5% (FY26E) barely exceeds WACC — but this is misleading. Salesforce's invested capital includes ~$60B of acquisition goodwill (Tableau $15.7B, Slack $27.7B, MuleSoft $6.5B, Informatica $8B). Stripping goodwill, the underlying business earns ROIC of 35–45% — comfortably in the "wide moat" zone. The depressed headline ROIC reflects acquisition pricing, not underlying business quality. The trend (3.0% → 5.7% → 8.4% → 10.5%) clearly shows operating leverage kicking in post-restructuring. <span class="estimated">ESTIMATED</span></p>
+    <p style="font-size:0.83rem;margin-bottom:0;"><strong style="color:var(--white);">Macro Moat Stress Test:</strong> Switching costs STRENGTHEN in stress (enterprises defer migration risk). Network effects HOLD (AppExchange integrations don't disappear). Data asset STRENGTHENS (more AI usage = more data, regardless of macro). Brand HOLDS. Overall moat: STRENGTHENS in stress — this is a hallmark of a wide moat business.</p>
+  </div>
+
+  <div class="card card-red" style="margin-top:8px;">
+    <h3>Moat Threats to Monitor</h3>
+    <table class="tbl">
+      <tr><td>Microsoft Dynamics + Copilot bundled with M365</td><td><span class="tag tag-red">High | 3-5yr</span></td></tr>
+      <tr><td>ServiceNow expanding into revenue operations</td><td><span class="tag tag-gold">Medium | 5yr</span></td></tr>
+      <tr><td>AI-native CRM startups (Attio, Folk, etc.)</td><td><span class="tag tag-gold">Medium | SMB only</span></td></tr>
+      <tr><td>"Vibe coding" self-build narrative</td><td><span class="tag tag-blue">Low | Enterprise</span></td></tr>
+      <tr><td>Data sovereignty / AI regulation (EU AI Act)</td><td><span class="tag tag-gold">Medium | EMEA</span></td></tr>
+    </table>
+  </div>
+
+  <div class="card" style="margin-top:10px;">
+    <h4>Moat Grade</h4>
+    <div class="grade-box B" style="font-size:1.5rem;">B+</div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;margin-bottom:0;">Wide moat on switching costs + data asset. Network effect moderate and growing. If Agentforce flywheel confirms in 2-3 quarters, upgrade to A−. Microsoft threat is real but market share data shows Salesforce holding position in enterprise (not SMB).</p>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="t4" class="tab-content">
+  <h2 class="section-title">Pillar 3 — Management Integrity</h2>
+  <div class="grid-2">
+    <div class="card card-accent">
+      <h3>Capital Allocation Record</h3>
+      <table class="tbl">
+        <tr><td>FY26 Share buybacks</td><td class="num mono" style="color:var(--passtext);">$12.7B</td></tr>
+        <tr><td>FY26 Dividends</td><td class="num mono">$1.6B</td></tr>
+        <tr><td>Total FY26 shareholder return</td><td class="num mono" style="color:var(--passtext);">$14.3B</td></tr>
+        <tr><td>New buyback authorization (2026)</td><td class="num mono">$50B program</td></tr>
+        <tr><td>Total returned since inception</td><td class="num mono">&gt;$21B+</td></tr>
+        <tr><td>R&D / Technology investment</td><td class="num mono">~$5.5B/yr est.</td></tr>
+      </table>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:8px;margin-bottom:0;"><span class="verified">VERIFIED</span> — The $50B authorization represents 33% of the entire market cap at current prices — one of the most aggressive buyback programs in software history. This signals management confidence in the business and provides a valuation floor.</p>
+    </div>
+    <div class="card card-green">
+      <h3>Management Strengths</h3>
+      <table class="tbl">
+        <tr><td>Counter-cyclical cost discipline (FY23 restructuring)</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+        <tr><td>Margin expansion track record (GAAP 1%→20%)</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+        <tr><td>FCF conversion improving annually</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+        <tr><td>Promoter/insider alignment (Benioff ~1.6% ownership)</td><td><span class="sc-marginal">MARGINAL ~</span></td></tr>
+        <tr><td>Guidance reliability (beat every quarter FY26)</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+        <tr><td>Activist response (Starboard, Elliott in FY23)</td><td><span class="sc-pass">CONSTRUCTIVE</span></td></tr>
+        <tr><td>Promoter pledge / fraud flags</td><td><span class="sc-pass">NONE</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card card-gold" style="margin-top:4px;">
+    <h3>Activist Transformation (FY23–FY24) — Key Event</h3>
+    <p style="font-size:0.85rem;">In early FY23, activist investors Starboard Value and Elliott Management took significant positions, demanding improved profitability and capital returns. Management responded constructively: 10% workforce reduction, real estate rationalisation, margin expansion from 1% GAAP to 20%+ over 3 years, and $21B+ in shareholder returns. This represents textbook counter-cyclical capital allocation — a Buffett hallmark. The restructuring also laid the foundation for Agentforce by creating headroom for AI R&D investment.</p>
+  </div>
+
+  <div class="card" style="margin-top:8px;">
+    <h3>AI Team Quality Assessment</h3>
+    <table class="tbl">
+      <tr><td>AI-native leadership depth (Marc Benioff + Einstein AI team)</td><td><span class="sc-marginal">MARGINAL ~</span></td></tr>
+      <tr><td>Agentforce / Atlas Reasoning Engine development team</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      <tr><td>AI Acquisitions (Salesforce Ventures AI portfolio)</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      <tr><td>R&D as % of revenue (estimated ~13-15%)</td><td><span class="sc-pass">PASS ✓</span></td></tr>
+      <tr><td>Building proprietary models vs. using commodity APIs</td><td><span class="sc-marginal">MARGINAL ~</span></td></tr>
+    </table>
+    <p style="font-size:0.78rem;color:var(--muted);margin-top:8px;margin-bottom:0;">Note: Salesforce uses a mix of proprietary Atlas Reasoning Engine and third-party LLMs (via Model Garden). The Atlas RE is purpose-built for business workflows, which is a genuine differentiation. However, it is not a pure foundation model developer — this is appropriate for a Level 5 AI-enabled incumbent, where domain data matters more than raw model capability.</p>
+  </div>
+
+  <div class="card card-red" style="margin-top:8px;">
+    <h3>Management Concerns</h3>
+    <p style="font-size:0.85rem;"><strong>SBC remains elevated at ~$3.5B/year</strong> (~8.4% of revenue) — the primary earnings quality concern. While dilution is partially offset by buybacks ($12.7B in FY26), SBC represents real economic value transfer from shareholders to employees. This is structurally high but improving as a percentage of revenue. Watch for SBC/revenue declining below 7% as a positive signal.</p>
+    <p style="font-size:0.85rem;"><strong>Acquisition integration track record is mixed:</strong> Slack ($27.7B) has underperformed expectations as a standalone productivity tool, though its integration into the Salesforce workflow is improving via Agentforce. Tableau is performing well post-integration. Informatica ($8B, FY26) adds data management capability but also dilutes FY26 comparisons. Overall: acquisitive strategy is a feature, not a bug, for an enterprise platform.</p>
+  </div>
+
+  <div class="card" style="margin-top:8px;">
+    <h4>Management Grade</h4>
+    <div class="grade-box B">B+</div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;margin-bottom:0;">Strong capital return record, disciplined cost response to activist pressure, solid guidance execution. Key concern is high SBC and mixed acquisition track record. No red flags on integrity or governance.</p>
+  </div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="t5" class="tab-content">
+  <h2 class="section-title">Method 1 — DCF (SBC-Adjusted FCF)</h2>
+  <p style="font-size:0.83rem;color:var(--muted);">Base FCF FY26: $14.4B. SBC-adjusted (−$3.5B): <strong style="color:var(--white);">$10.9B</strong>. WACC: 10% (Cat C US). Terminal g: 3.5% base. Shares: ~818M. <span class="estimated">ESTIMATED</span></p>
+  <div class="card card-accent">
+    <div style="overflow-x:auto;">
+      <table class="tbl">
+        <thead><tr><th>Year</th><th>Stress (7% g)</th><th>Base (10% g)</th><th>Accel. (14% g)</th></tr></thead>
+        <tbody>
+          <tr><td>FY27</td><td class="num">$11.7B</td><td class="num">$12.0B</td><td class="num">$12.4B</td></tr>
+          <tr><td>FY28</td><td class="num">$12.5B</td><td class="num">$13.2B</td><td class="num">$14.2B</td></tr>
+          <tr><td>FY29</td><td class="num">$13.3B</td><td class="num">$14.5B</td><td class="num">$16.2B</td></tr>
+          <tr><td>FY30</td><td class="num">$14.3B</td><td class="num">$16.0B</td><td class="num">$18.4B</td></tr>
+          <tr><td>FY31</td><td class="num">$15.3B</td><td class="num">$17.5B</td><td class="num">$21.0B</td></tr>
+          <tr><td>Stage 1 PV</td><td class="num mono">$51.0B</td><td class="num mono" style="color:var(--blue)">$55.3B</td><td class="num mono" style="color:var(--green)">$60.4B</td></tr>
+          <tr><td>Terminal Value (PV)</td><td class="num mono">$110B</td><td class="num mono" style="color:var(--blue)">$175B</td><td class="num mono" style="color:var(--green)">$255B</td></tr>
+          <tr style="font-weight:700;"><td>Total Enterprise IV</td><td class="num mono">$161B</td><td class="num mono" style="color:var(--blue)">$230B</td><td class="num mono" style="color:var(--green)">$315B</td></tr>
+          <tr style="font-weight:700;background:rgba(0,161,224,0.08)"><td><strong>IV per Share</strong></td><td class="num mono" style="color:var(--red)">$197</td><td class="num mono" style="color:var(--blue)">$281</td><td class="num mono" style="color:var(--green)">$385</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:0.76rem;color:var(--muted);margin-top:6px;margin-bottom:0;">Terminal g: Stress 2.5% | Base 3.5% | Accel. 4.0%. WACC 10%. Stage 1 grows at scenario rate. Stage 2 (yr 6-10) grows at US nominal GDP × 0.65.</p>
+  </div>
+
+  <h2 class="section-title">Method 2 — Owner Earnings Capitalisation</h2>
+  <div class="card card-accent">
+    <table class="tbl">
+      <tr><td>Owner Earnings (FY26 conservative)</td><td class="num mono">$6,657M</td></tr>
+      <tr><td>Required return</td><td class="num mono">10%</td></tr>
+      <tr><td>Base growth (terminal g)</td><td class="num mono">3.5%</td></tr>
+      <tr><td>Value = OE / (r – g)</td><td class="num mono">$6,657M / 0.065 = $102.4B</td></tr>
+      <tr><td>IV per Share (818M shares)</td><td class="num mono" style="color:var(--blue);font-weight:700;">$125 (floor) | $165 (3.0% g) | $198 (4.0% g)</td></tr>
+    </table>
+    <p style="font-size:0.76rem;color:var(--muted);margin-top:6px;margin-bottom:0;">Conservative OE method treats SBC as full cash cost. This is the absolute floor — real IV is higher because FCF substantially exceeds OE due to SaaS deferred revenue mechanics. Use as downside scenario check only.</p>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h2 class="section-title">Method 3 — EPV (Floor)</h2>
+      <div class="card card-accent">
+        <table class="tbl">
+          <tr><td>GAAP NOPAT (FY26)</td><td class="num mono">$6,500M</td></tr>
+          <tr><td>WACC</td><td class="num mono">10%</td></tr>
+          <tr><td>EPV (no-growth)</td><td class="num mono">$65B</td></tr>
+          <tr><td>EPV per Share</td><td class="num mono" style="color:var(--orange);">$79</td></tr>
+          <tr><td>Growth premium (AI Widener)</td><td class="num mono">+$120-160 /sh</td></tr>
+        </table>
+        <p style="font-size:0.76rem;color:var(--muted);margin-top:6px;margin-bottom:0;">EPV is the go-dark floor. Real value far exceeds this. AI WIDENER designation adds explicit growth premium over pure EPV.</p>
+      </div>
+    </div>
+    <div>
+      <h2 class="section-title">Method 4 — P/E Earnings Power</h2>
+      <div class="card card-accent">
+        <table class="tbl">
+          <tr><td>FY26 GAAP EPS</td><td class="num mono">$7.80</td></tr>
+          <tr><td>FY26 Non-GAAP EPS (est.)</td><td class="num mono">~$10.90</td></tr>
+          <tr><td>Sector P/E (non-GAAP): 25-30x</td><td class="num mono">$273–$327</td></tr>
+          <tr><td>AI Widener premium: +15%</td><td class="num mono">$314–$376</td></tr>
+          <tr><td>FY27E Non-GAAP EPS (est.)</td><td class="num mono">~$12.00</td></tr>
+          <tr><td>FY27 at 25x non-GAAP</td><td class="num mono" style="color:var(--blue);font-weight:700;">$300</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Method 5 — Earnings Yield vs Treasury</h2>
+  <div class="card card-accent">
+    <div class="grid-4">
+      <div class="metric down">
+        <div class="metric-label">GAAP Earnings Yield</div>
+        <div class="metric-value">4.31%</div>
+        <div class="metric-note">$7.80 / $181</div>
+      </div>
+      <div class="metric up">
+        <div class="metric-label">FCF Yield (unadj.)</div>
+        <div class="metric-value">9.73%</div>
+        <div class="metric-note">$14.4B / ~$148B mkt cap</div>
+      </div>
+      <div class="metric up">
+        <div class="metric-label">SBC-Adj. FCF Yield</div>
+        <div class="metric-value">7.36%</div>
+        <div class="metric-note">$10.9B / ~$148B mkt cap</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">10-yr UST Yield</div>
+        <div class="metric-value">4.27%</div>
+        <div class="metric-note">Risk-free rate</div>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:10px;">
+      <div>
+        <div class="sub-label">GAAP ERP vs Treasury</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--orange);">+0.04%</div>
+        <div style="font-size:0.75rem;color:var(--muted);">Near-zero. GAAP basis suggests modest overvaluation.</div>
+      </div>
+      <div>
+        <div class="sub-label">SBC-Adj. FCF ERP vs Treasury</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--passtext);">+3.09%</div>
+        <div style="font-size:0.75rem;color:var(--muted);">Meaningful positive ERP. FCF basis suggests clear value.</div>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--muted);margin-top:8px;margin-bottom:0;">The ERP split between GAAP (near-zero) and FCF-based (positive) reflects the accounting distortion from SBC and acquisition amortisation. For a SaaS compounder, the FCF-based ERP is more economically meaningful. The positive FCF ERP at 4.27% Treasury rates makes this stock look reasonably attractive versus bonds — unusual for a software name at sub-$200.</p>
+  </div>
+
+  <h2 class="section-title">5-Method Summary Table</h2>
+  <div style="overflow-x:auto;">
+    <table class="tbl">
+      <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>AI Adj.</th></tr></thead>
+      <tbody>
+        <tr><td>DCF (SBC-adj. FCF)</td><td class="num mono">$197</td><td class="num mono">$281</td><td class="num mono">$385</td><td><span class="tag tag-green">+$20 Widener</span></td></tr>
+        <tr><td>OE Capitalisation</td><td class="num mono">$125</td><td class="num mono">$165</td><td class="num mono">$198</td><td><span class="tag tag-blue">Floor only</span></td></tr>
+        <tr><td>EPV + Growth Premium</td><td class="num mono">$130</td><td class="num mono">$200</td><td class="num mono">$260</td><td><span class="tag tag-green">+$25 Widener</span></td></tr>
+        <tr><td>P/E Earnings Power</td><td class="num mono">$195</td><td class="num mono">$300</td><td class="num mono">$370</td><td><span class="tag tag-green">+$30 AI prem.</span></td></tr>
+        <tr style="background:rgba(0,161,224,0.08);font-weight:700;"><td>Blended Base IV (ex OE floor)</td><td class="num mono" style="color:var(--red);">$174</td><td class="num mono" style="color:var(--blue);">$261</td><td class="num mono" style="color:var(--green);">$338</td><td></td></tr>
+        <tr style="background:rgba(255,183,93,0.08);"><td><strong>MoS Entry (30% discount)</strong></td><td class="num mono" style="color:var(--red);">$122</td><td class="num mono" style="color:var(--gold);font-weight:700;">$183</td><td class="num mono" style="color:var(--green);">$237</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card" style="margin-top:12px;background:var(--card2);">
+    <div class="sub-label">AI WIDENER Adjustment Note</div>
+    <p style="font-size:0.84rem;margin-bottom:0;">Confirmed AI WIDENER status adds approximately <strong style="color:var(--gold);">+$15–30/share</strong> to blended base IV, representing a 5–10% premium justified by the emerging data flywheel moat upgrade (B → B+ in Moat grade). If flywheel CONFIRMS (3/3 conditions met in 2–3 quarters), the moat upgrades to A− and the justified P/E terminal multiple increases by 3–5x, adding further $30–60 to IV.</p>
+  </div>
+  <div class="card" style="margin-top:8px;background:var(--card2);border-left:4px solid var(--gold);">
+    <div class="sub-label">Current Price vs Entry Zone</div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:8px;">
+      <div><div style="font-size:0.75rem;color:var(--muted);">Current Price</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--white);">~$181</div></div>
+      <div><div style="font-size:0.75rem;color:var(--muted);">MoS Entry Zone (Base)</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--gold);">$160–185</div></div>
+      <div><div style="font-size:0.75rem;color:var(--muted);">Base IV</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--blue);">$261</div></div>
+      <div><div style="font-size:0.75rem;color:var(--muted);">Discount to Base IV</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--passtext);">-31%</div></div>
+    </div>
+    <p style="font-size:0.80rem;color:var(--muted);margin-top:8px;margin-bottom:0;">At ~$181, the stock trades at a 31% discount to blended base IV — just meeting the 30% MoS threshold for Cat C. This positions it as a BUY candidate on valuation alone, but macro headwinds and Agentforce monetisation uncertainty make WATCH★★★ the appropriate verdict pending one more confirming catalyst.</p>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="t6" class="tab-content">
+  <h2 class="section-title">Four Pillar Summary</h2>
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <h4>Pillar 1 — Moat</h4>
+      <div class="pillar-grade">B+</div>
+      <div style="font-size:0.75rem;color:var(--muted);">Wide switching cost moat; data flywheel FORMING; Microsoft threat real but not disruptive yet</div>
+    </div>
+    <div class="pillar-card">
+      <h4>Pillar 2 — Financial Fortress</h4>
+      <div class="pillar-grade">B</div>
+      <div style="font-size:0.75rem;color:var(--muted);">FCF exceptional; ROIC recovering; SBC elevated; R40 = 44.7; Earnings Quality: ACCEPTABLE</div>
+    </div>
+    <div class="pillar-card">
+      <h4>Pillar 3 — Management</h4>
+      <div class="pillar-grade">B+</div>
+      <div style="font-size:0.75rem;color:var(--muted);">Strong capital returns; disciplined cost structure; Agentforce strategy credible; SBC concern</div>
+    </div>
+    <div class="pillar-card">
+      <h4>Pillar 4 — Valuation</h4>
+      <div class="pillar-grade">B</div>
+      <div style="font-size:0.75rem;color:var(--muted);">~$181 = 31% discount to base IV $261; just meeting MoS; FCF yield 7.4% adj. vs 4.27% UST</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div class="verdict-rating">WATCH <span class="mono" style="font-size:1.2rem;">★★★</span></div>
+        <div class="verdict-stars">★★★☆☆</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <span class="badge badge-cat">CATEGORY C</span>
+          <span class="badge badge-ai">🟢 AI WIDENER</span>
+          <span class="badge" style="background:#1A3050;border:1px solid var(--gold);color:var(--gold);">FLYWHEEL FORMING</span>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--muted);">Entry Zone</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:var(--gold);">$160 – $185</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--muted);">Base IV: $261 | Current: ~$181</div>
+      </div>
+    </div>
+    <div class="verdict-quote">
+      "Price is what you pay. Value is what you get. Salesforce at $181 — 39% off its peak — is paying for the worst-case Agentforce scenario. The business generated $14.4B in free cash flow and announced a $50B buyback. That's not a company in trouble. That's a company the market has mispriced on AI narrative fear."
+    </div>
+    <p style="font-size:0.85rem;">Salesforce presents one of the more compelling valuations in enterprise software after a punishing 2025–26 de-rating. The business is structurally intact: 93% recurring revenue, $72.4B RPO, expanding gross margins, and a FCF engine growing 16% per year. Agentforce at $800M ARR growing 169% YoY is not a feature — it is the early stage of a platform transition. The barriers to getting a FULL BUY are (a) the Agentforce data flywheel needs one more quarter of quantitative confirmation, and (b) the macro stagflation environment warrants a wider MoS than usual. At $160–175, this becomes a high-conviction BUY. At current $181, it's a disciplined WATCH with an active accumulation case.</p>
+  </div>
+
+  <h2 class="section-title">BUY Upgrade Conditions (5 Required, 0 Currently Met)</h2>
+  <ul class="upgrade-list">
+    <li>
+      <div class="upgrade-num">1</div>
+      <div><strong style="color:var(--white);">Price corrects to ≤$175</strong> (33% discount to blended base IV of $261), establishing clear 30%+ MoS with a buffer for macro uncertainty. <em style="color:var(--muted);">Status: Not met — current ~$181</em></div>
+    </li>
+    <li>
+      <div class="upgrade-num">2</div>
+      <div><strong style="color:var(--white);">Agentforce ARR crosses $2B with evidence of accuracy improvement</strong> — management discloses a specific metric showing agent resolution rates or task completion accuracy improving as data volume scales (e.g., "resolution rate improved from 84% to 90% as we scaled to 1M conversations"). This confirms the data flywheel (condition 2 of 3). <em style="color:var(--muted);">Status: 84% disclosed on 380K conversations — monitoring</em></div>
+    </li>
+    <li>
+      <div class="upgrade-num">3</div>
+      <div><strong style="color:var(--white);">cRPO growth accelerates to ≥18% YoY for 2 consecutive quarters</strong>, signalling that Agentforce is driving incremental enterprise commits beyond core CRM seat expansion. <em style="color:var(--muted);">Status: cRPO at 16% in Q4 FY26 — nearly there</em></div>
+    </li>
+    <li>
+      <div class="upgrade-num">4</div>
+      <div><strong style="color:var(--white);">Non-GAAP FCF margin sustains ≥35% for 2 consecutive quarters</strong>, demonstrating Agentforce monetisation is accretive to margins rather than dilutive (i.e., AI R&D investment is inflecting to returns). <em style="color:var(--muted);">Status: Non-GAAP op margin 35.5% in Q3 FY26 — close</em></div>
+    </li>
+    <li>
+      <div class="upgrade-num">5</div>
+      <div><strong style="color:var(--white);">RSI falls below 40 on the daily chart</strong>, confirming a technical washout and maximum fear environment to support a high-conviction accumulation entry with favourable R:R. <em style="color:var(--muted);">Status: RSI ~51 (daily, neutral) — not yet</em></div>
+    </li>
+  </ul>
+
+  <h2 class="section-title">Series Tracker Table</h2>
+  <div class="series-tbl">
+    <div style="overflow-x:auto;">
+      <table class="tbl" style="font-size:0.78rem;min-width:900px;">
+        <thead><tr><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Flywheel</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry Zone</th><th>Base IV</th><th>Thesis</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>Confirmed</td><td>A</td><td>A</td><td>A</td><td>B-</td><td>WATCH★★★★</td><td>$340-380</td><td>$480</td><td>Azure + Copilot flywheel; premium but justified</td></tr>
+          <tr><td class="mono">GOOGL</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>Confirmed</td><td>A</td><td>A</td><td>B+</td><td>B+</td><td>WATCH★★★★</td><td>$140-160</td><td>$210</td><td>Search + Gemini AI moat; regulatory cloud</td></tr>
+          <tr><td class="mono">META</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>Confirmed</td><td>A-</td><td>A-</td><td>B</td><td>B</td><td>WATCH★★★★</td><td>$450-520</td><td>$660</td><td>Social graph flywheel; AI infra leverage</td></tr>
+          <tr><td class="mono">AMZN</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>Confirmed</td><td>A</td><td>B+</td><td>B+</td><td>B</td><td>WATCH★★★★</td><td>$160-185</td><td>$240</td><td>AWS + Bedrock + logistics AI flywheel</td></tr>
+          <tr><td class="mono">COIN</td><td>NASDAQ</td><td>D</td><td>⚪</td><td>Feature</td><td>B</td><td>C+</td><td>B-</td><td>C</td><td>WATCH★★</td><td>$140-170</td><td>$210</td><td>Crypto exchange; regulatory risk binary</td></tr>
+          <tr><td class="mono">IONQ</td><td>NASDAQ</td><td>F</td><td>🌀</td><td>Forming</td><td>B-</td><td>C</td><td>B</td><td>C-</td><td>WATCH★★★</td><td>N/A</td><td>Revenue mult.</td><td>Quantum computing; optionality play</td></tr>
+          <tr><td class="mono">NBIS</td><td>NASDAQ</td><td>F</td><td>🌀</td><td>Forming</td><td>B</td><td>C+</td><td>B</td><td>C</td><td>WATCH★★★</td><td>N/A</td><td>Revenue mult.</td><td>AI infrastructure; GPU cloud</td></tr>
+          <tr><td class="mono">CRWD</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>Forming</td><td>A-</td><td>B+</td><td>A-</td><td>B</td><td>WATCH★★★★</td><td>$270-310</td><td>$380</td><td>Cybersecurity AI platform; Falcon flywheel</td></tr>
+          <tr><td class="mono">PANW</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>Forming</td><td>A-</td><td>B+</td><td>A-</td><td>B</td><td>WATCH★★★</td><td>$160-185</td><td>$215</td><td>Platform consolidation; AI-first security</td></tr>
+          <tr><td class="mono">FTNT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>Feature</td><td>B+</td><td>B+</td><td>B+</td><td>B+</td><td>WATCH★★★</td><td>$80-95</td><td>$115</td><td>OT/IoT security moat; hardware + cloud</td></tr>
+          <tr><td class="mono">PLTR</td><td>NASDAQ</td><td>F</td><td>🌀</td><td>Confirmed</td><td>A-</td><td>B+</td><td>B</td><td>C</td><td>WATCH★★★★</td><td>≤$100</td><td>~$87 base</td><td>AIP/Ontology AI OS; data flywheel confirmed</td></tr>
+          <tr><td class="mono">SYM</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>Forming</td><td>B+</td><td>B</td><td>B+</td><td>B</td><td>WATCH★★★</td><td>$40-44</td><td>N/A</td><td>Warehouse automation; Walmart concentration risk</td></tr>
+          <tr><td class="mono">SOFI</td><td>NASDAQ</td><td>B</td><td>⚪</td><td>Feature</td><td>B</td><td>C+</td><td>B-</td><td>C</td><td>WATCH★★★</td><td>$10-13</td><td>N/A</td><td>Fintech; Muddy Waters short — accounting hold</td></tr>
+          <tr style="background:rgba(0,161,224,0.1);"><td class="mono">CRM</td><td>NYSE</td><td>C</td><td>🟢</td><td>Forming</td><td>B+</td><td>B</td><td>B+</td><td>B</td><td>WATCH★★★</td><td>$160-185</td><td>$261</td><td>Agentforce flywheel forming; FCF yield 7.4%; buyback floor $50B</td></tr>
+          <tr><td class="mono">CUMMINSIND</td><td>NSE</td><td>C</td><td>🟢</td><td>Feature</td><td>A-</td><td>A-</td><td>A-</td><td>C</td><td>WATCH★★★</td><td>₹2,500-2,800</td><td>N/A</td><td>Power/infra solutions; negative ERP flag</td></tr>
+          <tr><td class="mono">TRAVELFOOD</td><td>NSE</td><td>C</td><td>⚪</td><td>Cosmetic</td><td>B+</td><td>A-</td><td>B+</td><td>B</td><td>WATCH★★★</td><td>≤₹1,100</td><td>₹1,420</td><td>Airport F&B monopoly; CBI risk; ROIC 42%</td></tr>
+          <tr><td class="mono">IEX</td><td>NSE</td><td>C</td><td>⚪</td><td>Cosmetic</td><td>A-</td><td>A</td><td>A-</td><td>C</td><td>WATCH★★★</td><td>₹105-115</td><td>N/A</td><td>Power exchange monopoly; market coupling risk</td></tr>
+          <tr><td class="mono">ABB India</td><td>NSE</td><td>C</td><td>🟢</td><td>Feature</td><td>A-</td><td>A-</td><td>A</td><td>C</td><td>WATCH★★★</td><td>₹4,200-4,800</td><td>N/A</td><td>Capex cycle; ROIC 76.6%; Q4 results May 8</td></tr>
+          <tr><td class="mono">JIOFIN</td><td>NSE</td><td>B</td><td>🟢</td><td>Forming</td><td>B</td><td>C+</td><td>B</td><td>B-</td><td>WATCH★★★</td><td>₹185-210</td><td>N/A</td><td>JioFinance; 450M subscriber data moat forming</td></tr>
+          <tr><td class="mono">WIPRO</td><td>NSE</td><td>C</td><td>🔴</td><td>Cosmetic</td><td>B-</td><td>B-</td><td>B</td><td>C+</td><td>WATCH★★</td><td>₹133-150</td><td>N/A</td><td>IT services; AI coding automation threat</td></tr>
+          <tr><td class="mono">UJJIVANSFB</td><td>NSE</td><td>D</td><td>🟢</td><td>Forming</td><td>B-</td><td>B-</td><td>B</td><td>B</td><td>WATCH★★★</td><td>₹42-52</td><td>N/A</td><td>MFI valley play; UBL license pending</td></tr>
+          <tr><td class="mono">ARSSBL</td><td>NSE</td><td>C</td><td>⚪</td><td>Cosmetic</td><td>C+</td><td>C</td><td>C</td><td>C</td><td>WATCH★★</td><td>₹183-220</td><td>N/A</td><td>EY forensic audit active; hold pending clean audit</td></tr>
+          <tr><td class="mono">KEI</td><td>NSE</td><td>C</td><td>⚪</td><td>Cosmetic</td><td>B</td><td>B-</td><td>B+</td><td>C</td><td>WATCH★★★</td><td>₹3,200-3,600</td><td>₹3,800</td><td>Cables; Sanand capex J-curve; ERP −4.96%</td></tr>
+          <tr><td class="mono">DIXON</td><td>NSE</td><td>B</td><td>⚪</td><td>Cosmetic</td><td>B+</td><td>B</td><td>B+</td><td>C+</td><td>WATCH★★★</td><td>₹8,500-9,500</td><td>₹10,927</td><td>PLI electronics; ERP −4.1%; PLI transition risk</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="t7" class="tab-content">
+  <h2 class="section-title">Section A — Price Structure & Multi-Timeframe Trend</h2>
+  <div class="card card-accent">
+    <table class="tbl">
+      <thead><tr><th>Timeframe</th><th>Trend</th><th>Structure</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Monthly</td><td>🔴 Downtrend</td><td>Lower highs from $364 ATH (Dec 2024); approaching long-term support</td><td><span class="signal-bear">BEARISH</span></td></tr>
+        <tr><td>Weekly</td><td>🟡 Attempting Base</td><td>52-week range $163–$296; attempting to base at $163-180 support zone</td><td><span class="signal-neu">NEUTRAL</span></td></tr>
+        <tr><td>Daily</td><td>🟢 Short-term Recovery</td><td>Bouncing from 52-week low; RSI recovering from oversold; above 20-EMA</td><td><span class="signal-bull">SHORT-TERM BULLISH</span></td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;background:var(--card2);border-radius:8px;padding:10px 14px;">
+      <strong style="color:var(--white);">Key Price Context:</strong> <span style="font-size:0.84rem;">The stock hit an ATH of $364.16 on Dec 4, 2024, and has since declined 39%. The 52-week low of $163.52 represents a major test of support (~40% below ATH). Current ~$181 is in the accumulation zone. The "SaaSpocalypse" driven by AI disruption fears has hit the entire software sector (IGV ETF down significantly), creating a sector-wide opportunity in quality names. <span class="estimated">ESTIMATED</span></span>
+    </div>
+  </div>
+
+  <h2 class="section-title">Section B — Moving Average Dashboard</h2>
+  <div class="ma-card"><div><div class="ma-label">20-Day EMA</div><div class="ma-val mono">~$176 est.</div></div><div><span class="signal-bull">Price ABOVE → BULLISH</span></div></div>
+  <div class="ma-card"><div><div class="ma-label">50-Day MA</div><div class="ma-val mono">~$221</div></div><div><span class="signal-bear">Price BELOW → BEARISH</span></div></div>
+  <div class="ma-card"><div><div class="ma-label">100-Day MA</div><div class="ma-val mono">~$230 est.</div></div><div><span class="signal-bear">Price BELOW → BEARISH</span></div></div>
+  <div class="ma-card"><div><div class="ma-label">200-Day MA</div><div class="ma-val mono">~$245</div></div><div><span class="signal-bear">Price BELOW → BEARISH</span></div></div>
+  <div class="ma-card"><div><div class="ma-label">Cross Status</div><div class="ma-val">20-EMA &lt; 50 &lt; 100 &lt; 200</div></div><div><span class="signal-bear">DEATH CROSS CONFIRMED</span></div></div>
+  <p style="font-size:0.76rem;color:var(--muted);margin-top:6px;"><span class="estimated">ESTIMATED</span> — MA values approximated from available data. Price below all major MAs is a significant technical headwind but is the <em>setup</em> for a quality long entry, not a reason to avoid.</p>
+
+  <div class="grid-2" style="margin-top:12px;">
+    <div>
+      <h2 class="section-title">Section C — Volume Analysis</h2>
+      <div class="card card-accent">
+        <p style="font-size:0.84rem;">OBV (On-Balance Volume): Estimated declining trend from Dec 2024 peak, consistent with distribution phase. However, sector-wide ETF (IGV) showed capitulation bounce in April 2026 (+14.6% in one week from 52-week low), signalling possible institutional re-entry at sector level. Significant volume events: the "SaaSpocalypse" sell-off in Q1 2026, driven by AI disruption fears, created abnormal volume spikes that typically mark institutional rotation exits — and potential re-entry points for long-term buyers. <span class="estimated">ESTIMATED</span></p>
+      </div>
+    </div>
+    <div>
+      <h2 class="section-title">Section D — Momentum</h2>
+      <div class="card card-accent">
+        <table class="tbl">
+          <tr><td>RSI (14-day)</td><td class="num mono">~51 (neutral)</td></tr>
+          <tr><td>RSI (weekly)</td><td class="num mono">~33 (oversold) <span class="tag tag-green">OPPORTUNITY</span></td></tr>
+          <tr><td>MACD (daily)</td><td class="num mono">~25.9 (above signal)</td></tr>
+          <tr><td>Stochastic</td><td class="num mono">Recovering from oversold</td></tr>
+          <tr><td>RSI divergence</td><td class="num mono">Price made lower low; RSI made higher low → Bullish divergence forming <span class="estimated">ESTIMATED</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Section E — Chart Patterns</h2>
+  <div class="card card-accent">
+    <p style="font-size:0.84rem;"><strong style="color:var(--white);">Potential Double Bottom Pattern (Forming):</strong> The $163.52 52-week low (first test) and current consolidation near $163–175 zone may represent a double bottom formation. Confirmation requires a close above the neckline at approximately $230 (the 50-DMA). Target if confirmed: $230 + ($230 - $163) = ~$297 (aligns with prior support near $300). Pattern target: ~$297. Invalidation: Close below $160. <span class="estimated">ESTIMATED</span></p>
+    <p style="font-size:0.84rem;margin-bottom:0;"><strong style="color:var(--white);">Long-Term Monthly Chart:</strong> Commentators note RSI and Stochastics at levels unseen since the COVID crash on the monthly chart — and the 200 EMA on the monthly has never been touched. This suggests the stock has reached an extreme oversold condition on a multi-year basis, setting up a potentially significant mean-reversion opportunity for long-duration holders.</p>
+  </div>
+
+  <h2 class="section-title">Section F — Trade Structure</h2>
+  <div class="card" style="border:2px solid var(--gold);">
+    <h4>PRIMARY TRIGGER: Confirmed Double Bottom + RSI Recovery</h4>
+    <div class="ladder" style="margin-top:8px;">
+      <div class="ladder-row" style="background:rgba(0,200,83,0.12);"><div class="ladder-price" style="color:var(--passtext);">$160–165</div><div>STRONG BUY ZONE — Secondary test of 52-week low + RSI weekly deeply oversold + maximum fundamental value</div></div>
+      <div class="ladder-row" style="background:rgba(255,183,93,0.10);"><div class="ladder-price" style="color:var(--gold);">$175–185</div><div>STARTER POSITION ZONE — Current price; MoS just adequate; scale in on weakness</div></div>
+      <div class="ladder-row" style="background:rgba(0,161,224,0.08);"><div class="ladder-price" style="color:var(--blue);">$221</div><div>50-DMA — Break above = momentum confirmation; adds to position</div></div>
+      <div class="ladder-row" style="background:rgba(0,161,224,0.08);"><div class="ladder-price" style="color:var(--blue);">$245</div><div>200-DMA — Reclaim = full bullish signal; break above confirms trend reversal</div></div>
+      <div class="ladder-row" style="background:rgba(255,61,87,0.10);"><div class="ladder-price" style="color:var(--red);">$155</div><div>STOP LOSS — Close below 52-week low (hard stop; thesis violation territory)</div></div>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+      <div class="metric gold"><div class="metric-label">Risk:Reward (entry $181 → T1 $261)</div><div class="metric-value">1:4.4</div><div class="metric-note">$181 entry, $155 SL, $261 T1 (base IV)</div></div>
+      <div class="metric up"><div class="metric-label">Position Size (max)</div><div class="metric-value">3–5%</div><div class="metric-note">Macro uncertainty warrants initial sizing below full position</div></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Section G — Technical Composite Score</h2>
+  <table class="tbl">
+    <thead><tr><th>Dimension</th><th>Score (/5)</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Price Trend (multi-TF)</td><td class="num mono">2/5</td><td>Downtrend on monthly/weekly; short-term recovery</td></tr>
+      <tr><td>Moving Average Position</td><td class="num mono">2/5</td><td>Below all major MAs; death cross</td></tr>
+      <tr><td>Volume / OBV</td><td class="num mono">3/5</td><td>Sector capitulation signals; IGV bounce notable</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td class="num mono">3/5</td><td>Daily RSI neutral; weekly oversold (opportunity)</td></tr>
+      <tr><td>Chart Pattern</td><td class="num mono">3/5</td><td>Potential double bottom forming; not confirmed</td></tr>
+      <tr><td>Trade Setup Quality</td><td class="num mono">4/5</td><td>Strong R:R at current price; clear SL/T1 levels</td></tr>
+      <tr style="font-weight:700;"><td>TOTAL</td><td class="num mono" style="color:var(--gold);">17/30 (57%)</td><td>Technically weak but fundamentally attractive setup</td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:8px;font-size:0.78rem;color:var(--muted);">Technical weakness is the PRIMARY reason for WATCH over BUY. A TA recovery (RSI &lt;40, price touches 200-DMA, double bottom confirmation) would add 2–3 trigger points for BUY upgrade.</div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="t8" class="tab-content">
+  <h2 class="section-title">Section A — Institutional Ownership</h2>
+  <div class="card card-accent">
+    <p style="font-size:0.84rem;">Salesforce is a widely-held NYSE large-cap with no controlling promoter. Institutional ownership is the relevant metric. Major institutional holders include Vanguard (~8%), BlackRock (~7%), Fidelity (~5%), and numerous active growth funds. Given the 39% drawdown and Michael Burry's reported purchase of software stocks in April 2026 (per CNBC), institutional positioning is shifting from distribution to accumulation — a positive signal. <span class="estimated">ESTIMATED</span></p>
+    <table class="tbl" style="margin-top:10px;">
+      <thead><tr><th>Ownership Category</th><th>Est. %</th><th>Trend</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Institutional (passive index)</td><td class="num">~35%</td><td>→ Stable</td><td><span class="signal-neu">NEUTRAL</span></td></tr>
+        <tr><td>Institutional (active growth)</td><td class="num">~30%</td><td>↓ Reducing on AI fears</td><td><span class="signal-bear">WATCH</span></td></tr>
+        <tr><td>Insider / Benioff</td><td class="num">~1.6%</td><td>→ Stable</td><td><span class="signal-neu">LOW ALIGN.</span></td></tr>
+        <tr><td>Retail / Other</td><td class="num">~33%</td><td>↑ Adding on dip</td><td><span class="signal-bull">BULLISH</span></td></tr>
+        <tr><td>Short Interest</td><td class="num">~9.5%</td><td>↑ Elevated</td><td><span class="signal-bear">SHORT SQUEEZE POTENTIAL</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.76rem;color:var(--muted);margin-top:8px;margin-bottom:0;"><span class="estimated">ESTIMATED</span> — 9.5% short interest (77.8M shares) is significantly elevated and creates potential for a short squeeze if Agentforce results beat expectations in Q4 FY26 (Feb 2026 report already showed beat) or at Q1 FY27 (June 2026 report).</p>
+  </div>
+
+  <h2 class="section-title">Section B — Free Float & Index Weight</h2>
+  <div class="grid-3">
+    <div class="metric"><div class="metric-label">Shares Outstanding (est.)</div><div class="metric-value">~818M</div><div class="metric-note"><span class="estimated">ESTIMATED</span></div></div>
+    <div class="metric"><div class="metric-label">Market Cap (~$181)</div><div class="metric-value">~$148B</div><div class="metric-note"><span class="estimated">ESTIMATED</span></div></div>
+    <div class="metric gold"><div class="metric-label">S&P 500 Weight</div><div class="metric-value">~0.52%</div><div class="metric-note">Passive buying floor via S&P 500 rebalancing</div></div>
+  </div>
+  <div class="card" style="margin-top:12px;">
+    <h3>Key Structural Observations</h3>
+    <p style="font-size:0.84rem;"><strong style="color:var(--white);">$50B Buyback Authorization:</strong> At $181/share, the company can repurchase ~276M shares — representing 34% of the current float. At $14.4B FCF/year, they can maintain this for years without debt. This provides a powerful mechanical EPS growth floor even if revenue growth disappoints. At 5% buyback yield + 10% FCF growth = 15%+ total return floor before any Agentforce premium.</p>
+    <p style="font-size:0.84rem;margin-bottom:0;"><strong style="color:var(--white);">Short Squeeze Dynamic:</strong> With 9.5% short interest and a strong earnings track record (Q4 FY26 beat by 24.94%), any Agentforce monetisation surprise could trigger a violent short squeeze. This asymmetric payoff (limited downside below $155, high upside from short covering) makes the risk-reward compelling even on a technical basis.</p>
+  </div>
+
+  <h2 class="section-title">Section E — Ownership Momentum Score</h2>
+  <div class="grid-2">
+    <div class="card card-accent">
+      <div class="sub-label">Ownership Momentum Score</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;color:var(--gold);">52 / 100</div>
+      <p style="font-size:0.80rem;color:var(--muted);margin-top:8px;margin-bottom:0;">Active institutional distribution (negative) offset by passive inflows, retail buying, and short-squeeze potential (positive). Improving from 45/100 three months ago as sector stabilises.</p>
+    </div>
+    <div class="card">
+      <div class="sub-label">Shareholding Risk Score</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;color:var(--orange);">38 / 100</div>
+      <p style="font-size:0.80rem;color:var(--muted);margin-top:8px;margin-bottom:0;">Moderate risk: elevated short interest (potential squeeze OR persistent pressure), some active fund distribution. No pledge or insider selling red flags. No promoter concentration risk. Risk is manageable.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="t9" class="tab-content">
+  <h2 class="section-title">Section A — AI Classification Dashboard</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;min-width:140px;text-align:center;">
+      <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Category</div>
+      <div style="font-size:1.4rem;font-family:'DM Serif Display',serif;color:var(--white);">C</div>
+      <div style="font-size:0.72rem;color:var(--muted);">Mature SaaS Compounder</div>
+    </div>
+    <div style="background:#0B2E14;border:1px solid var(--green);border-radius:10px;padding:14px 18px;min-width:160px;text-align:center;">
+      <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">AI Overlay</div>
+      <div style="font-size:1.2rem;font-weight:700;color:var(--passtext);">🟢 WIDENER</div>
+      <div style="font-size:0.72rem;color:var(--muted);">Agentforce + Data Cloud</div>
+    </div>
+    <div style="background:#1A2940;border:1px solid var(--blue);border-radius:10px;padding:14px 18px;min-width:160px;text-align:center;">
+      <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Data Flywheel</div>
+      <div style="font-size:1.2rem;font-weight:700;color:var(--blue);">FORMING ★★★</div>
+      <div style="font-size:0.72rem;color:var(--muted);">2 of 3 conditions met</div>
+    </div>
+    <div style="background:var(--card2);border:1px solid var(--gold);border-radius:10px;padding:14px 18px;min-width:160px;text-align:center;">
+      <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Adoption Phase</div>
+      <div style="font-size:1.2rem;font-weight:700;color:var(--gold);">Phase 2 → 3</div>
+      <div style="font-size:0.72rem;color:var(--muted);">Early Traction → Inflection</div>
+    </div>
+  </div>
+
+  <div class="card card-gold">
+    <h4>Adoption Phase Evidence — Phase 2 → 3 Transition <span class="estimated">ESTIMATED</span></h4>
+    <p style="font-size:0.84rem;">Enterprise AI adoption is clearly in Phase 2→3 transition per Dan Ives (Wedbush) and CIO survey data from April 2026: "AI adoption is moving fast from experimentation to deployment. Enterprises are actively identifying use cases, with 2026 shaping as the inflection year." Salesforce's cRPO growth of 16% YoY and Agentforce deals crossing 5,000 (3,000+ paid) by Q4 FY25 — reaching likely 8,000-10,000 deals by FY26 end — supports Phase 2→3 designation. Agentforce ARR growing at 169% YoY is the quantitative Phase 3 signal.</p>
+    <p style="font-size:0.84rem;margin-bottom:0;"><strong style="color:var(--white);">Phase 3 implication:</strong> "Winners clearly emerging. Revenue accelerating. Margins expanding rapidly. This phase generates the BIGGEST gains for patient investors." Salesforce is positioning as the clear Phase 3 winner in enterprise AI agents for revenue operations.</p>
+  </div>
+
+  <h2 class="section-title">Section B — Data Flywheel Deep-Dive</h2>
+  <div class="card card-green">
+    <h4>Question 1: What is the proprietary training data?</h4>
+    <p style="font-size:0.84rem;"><strong style="color:var(--white);">Data volume:</strong> 50+ trillion records in Data Cloud (doubled YoY). This includes CRM interaction records from 150,000+ enterprises: sales win/loss outcomes, customer service resolution data, marketing engagement patterns, and workflow decision trees — across every major industry for 20+ years.</p>
+    <p style="font-size:0.84rem;"><strong style="color:var(--white);">Uniqueness:</strong> No competitor has access to this outcome data. Specifically, Salesforce knows who the customer's customer bought from, who churned, what service resolution worked — not just the activity, but the OUTCOME. This outcome label data is the gold standard for supervised AI training.</p>
+    <p style="font-size:0.84rem;margin-bottom:0;"><strong style="color:var(--white);">Verdict:</strong> <span class="sc-pass">CONFIRMED ✓</span> — Proprietary, unique, outcome-labeled, growing at 2× per year. <span class="verified">VERIFIED via Q4 FY25 earnings call</span></p>
+  </div>
+  <div class="card card-gold">
+    <h4>Question 2: How does AI improve with more data/users?</h4>
+    <p style="font-size:0.84rem;"><strong style="color:var(--white);">Available evidence:</strong> Agentforce handled 380,000 conversations on help.salesforce.com with an 84% resolution rate, with only 2% requiring human escalation. 2.4 billion agentic work units delivered and 19 trillion tokens processed all-time (Q4 FY26).</p>
+    <p style="font-size:0.84rem;"><strong style="color:var(--white);">Gap in evidence:</strong> Salesforce has not disclosed whether the 84% resolution rate is <em>improving over time as conversation volume scales</em>. This is the critical missing data point. The 380K conversation data point is a snapshot, not a trend. We need longitudinal accuracy data to confirm the flywheel.</p>
+    <p style="font-size:0.84rem;margin-bottom:0;"><strong style="color:var(--white);">Verdict:</strong> <span class="sc-marginal">FORMING ~ </span> — Mechanism exists (Atlas Reasoning Engine trained on customer data), improvement plausible but not yet quantitatively confirmed with trend data.</p>
+  </div>
+  <div class="card card-green">
+    <h4>Question 3: Does better AI attract more users?</h4>
+    <p style="font-size:0.84rem;"><strong style="color:var(--white);">Evidence:</strong> 5,000+ Agentforce deals closed since October (3,000+ paid). Over 60% of Q4 FY26 Agentforce and Data Cloud bookings came from existing customers — signalling the flywheel loop (better AI → existing customers expand → more data → better AI). Fortune 100 penetration: nearly 50% are both AI & Data Cloud customers.</p>
+    <p style="font-size:0.84rem;margin-bottom:0;"><strong style="color:var(--white);">Verdict:</strong> <span class="sc-pass">CONFIRMED ✓</span> — Clear evidence of better AI products driving expanded customer adoption. The "skills flywheel" (3,000+ developer community building Agentforce skills) adds a second reinforcing loop. <span class="verified">VERIFIED via Q4 FY25 and Q4 FY26 earnings calls</span></p>
+  </div>
+
+  <div style="background:var(--card2);border:2px solid var(--green);border-radius:10px;padding:18px;margin-top:8px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div class="sub-label">Flywheel Strength Score</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:2.2rem;color:var(--passtext);">6.5 / 10</div>
+        <div style="color:var(--muted);font-size:0.78rem;">Moderate-Strong | FORMING ★★★</div>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div style="margin-bottom:8px;"><div style="font-size:0.75rem;color:var(--muted);margin-bottom:3px;">Data Quality Score: 3/3</div><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--green);"></div></div></div>
+        <div style="margin-bottom:8px;"><div style="font-size:0.75rem;color:var(--muted);margin-bottom:3px;">Improvement Evidence: 2/4</div><div class="progress-bar"><div class="progress-fill" style="width:50%;background:var(--gold);"></div></div></div>
+        <div><div style="font-size:0.75rem;color:var(--muted);margin-bottom:3px;">Loop Speed: 1.5/3</div><div class="progress-bar"><div class="progress-fill" style="width:50%;background:var(--blue);"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Section C — AI Value Chain Position</h2>
+  <div class="vc-row" style="border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+    <div class="vc-item"><div class="vc-num">1</div>Infrastructure<br/>(GPU/Power)</div>
+    <div class="vc-item"><div class="vc-num">2</div>Foundation Models<br/>(OpenAI/Google)</div>
+    <div class="vc-item"><div class="vc-num">3</div>AI Platforms<br/>(Middleware)</div>
+    <div class="vc-item"><div class="vc-num">4</div>Vertical AI Apps<br/>(Domain-specific)</div>
+    <div class="vc-item active"><div class="vc-num">5 ★</div>AI-Enabled Incumbents<br/>(Salesforce)</div>
+  </div>
+  <div class="card card-accent" style="margin-top:10px;">
+    <h4>Level 5 — AI-Enabled Incumbent: Best Risk/Reward</h4>
+    <p style="font-size:0.84rem;">Salesforce sits at Level 5 — the most under-appreciated opportunity in AI investing. It has 20+ years of enterprise customer relationships, outcome data, and brand trust, onto which it is layering Agentforce AI agents. Crucially, Salesforce also uses foundational models (Meta Llama, Anthropic Claude, via Model Garden) without being dependent on any single one. This is a Level 3 consumer of AI infrastructure — benefiting from commoditisation at Level 1/2 without being disrupted by it.</p>
+    <p style="font-size:0.84rem;margin-bottom:0;"><strong style="color:var(--white);">Investment horizon implication:</strong> Level 5 AI-enabled incumbents have a 7–10 year optimal holding horizon. The compounding is steady, not explosive. This is the "tortoise beats the hare" AI play — less exciting than a pure AI-native, but far lower binary risk. Position as a core strategic holding, not a speculative bet.</p>
+  </div>
+
+  <h2 class="section-title">Section D — AI Opportunity Context (US/Global)</h2>
+  <table class="tbl">
+    <thead><tr><th>AI Advantage</th><th>Relevance</th><th>Salesforce Exposure</th></tr></thead>
+    <tbody>
+      <tr><td>Enterprise AI adoption scale (Fortune 500)</td><td><span class="tag tag-green">Directly</span></td><td>150K customers; nearly 50% of Fortune 100 using AI + Data Cloud</td></tr>
+      <tr><td>AI agents market (projected $50B+ by 2030)</td><td><span class="tag tag-green">Directly</span></td><td>Agentforce: first mover in enterprise AI agents; 5,000+ deals</td></tr>
+      <tr><td>AI cost arbitrage (India engineering talent)</td><td><span class="tag tag-blue">Adjacent</span></td><td>Salesforce India R&D centre is one of its largest engineering hubs</td></tr>
+      <tr><td>AI in regulated industries (FinServ, Health)</td><td><span class="tag tag-green">Directly</span></td><td>Health & Life Sciences top performer in Q4; regulated industry strength = moat</td></tr>
+      <tr><td>Foundation model commoditisation</td><td><span class="tag tag-green">Tailwind</span></td><td>Salesforce benefits: cheaper models → lower Agentforce unit economics → higher margins</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title">Section F — AI Opportunity Score & Portfolio Role</h2>
+  <div class="grid-2">
+    <div class="card card-accent">
+      <div class="sub-label">AI Opportunity Score</div>
+      <table class="tbl" style="margin-top:8px;">
+        <tr><td>Data Flywheel Strength</td><td class="num mono">13 / 20</td></tr>
+        <tr><td>Adoption Phase Timing (2→3)</td><td class="num mono">18 / 20</td></tr>
+        <tr><td>Value Chain Position (Level 5)</td><td class="num mono">18 / 20</td></tr>
+        <tr><td>AI Structural Advantage (enterprise data)</td><td class="num mono">15 / 20</td></tr>
+        <tr><td>AI Threat Resistance (moat vs. disruption)</td><td class="num mono">15 / 20</td></tr>
+        <tr style="font-weight:700;background:rgba(0,161,224,0.1)"><td>TOTAL AI OPPORTUNITY SCORE</td><td class="num mono" style="color:var(--passtext);font-size:1.1rem;">79 / 100</td></tr>
+      </table>
+    </div>
+    <div class="card card-green">
+      <div class="sub-label">Portfolio Role: STRATEGIC AI BET</div>
+      <div style="font-size:1.0rem;color:var(--passtext);font-weight:700;margin:8px 0;">Score 79/100 → Strategic AI Bet (60–80 range)</div>
+      <p style="font-size:0.84rem;">Strong AI opportunity with some uncertainty — primarily whether the Agentforce flywheel confirms. Recommended as a starter position (2–3%) at current prices, scaling to a full position (4–5%) when flywheel confirmation is evident (BUY upgrade conditions met).</p>
+      <div style="background:var(--card);border-radius:8px;padding:10px;margin-top:8px;">
+        <div style="font-size:0.75rem;color:var(--muted);">Investment Horizon (Level 5 incumbent)</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--white);">7 – 10 Years</div>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:3px;">Do NOT apply a 12-month price target framework. Agentforce value creation is a multi-year compounding story.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-red" style="margin-top:8px;">
+    <h4>Section E — Competitive Disruption Risk Assessment</h4>
+    <table class="tbl">
+      <tr><td>Microsoft Dynamics + Copilot (bundled M365)</td><td><span class="tag tag-gold">Medium | 3-5yr</span></td><td class="num">35% of revenue at risk (mid-market)</td></tr>
+      <tr><td>ServiceNow expanding into CRM</td><td><span class="tag tag-blue">Low-Medium | 5yr</span></td><td class="num">Service Cloud adjacency</td></tr>
+      <tr><td>AI-native CRM startups</td><td><span class="tag tag-blue">Low | Enterprise</span></td><td class="num">SMB threat; enterprise = low</td></tr>
+      <tr><td>Foundation model improvements</td><td><span class="tag tag-green">Tailwind</span></td><td class="num">Cheaper Agentforce economics</td></tr>
+    </table>
+    <div style="margin-top:10px;background:var(--card2);border-radius:8px;padding:10px 14px;">
+      <div class="sub-label">Moat Resilience Score</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--passtext);">7.5 / 10</div>
+      <div style="font-size:0.78rem;color:var(--muted);">Strong moat resistant to AI disruption at the enterprise level. Switching costs, outcome data, and 20-year relationship depth are effective barriers. Primary vulnerability is Microsoft's M365 bundling in the SMB/mid-market segment — manageable but real.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><strong>DISCLAIMER:</strong> This report is produced for informational and research purposes only. It does not constitute investment advice, a recommendation to buy or sell securities, or an offer or solicitation for any financial product. Salesforce, Inc. (NYSE: CRM) is a US-listed security subject to SEC regulations. Past performance is not indicative of future results. All investments involve risk, including the possible loss of principal.</p>
+  <p style="margin-top:6px;"><strong>DATA CONFIDENCE:</strong> [VERIFIED] = sourced from official SEC filings or confirmed web search this session. [ESTIMATED] = cross-referenced, high confidence, not primary source. [UNVERIFIED] = limited source or approximation, treat with caution. Stock price ~$181 is UNVERIFIED (approximated from Macrotrends 52-week data as of April 2026); confirm independently before transacting.</p>
+  <p style="margin-top:6px;"><strong>BUFFETT QUALITY-VALUE SERIES v5.0</strong> — Report generated April 21, 2026. Framework: Macro-anchored DCF + O'Glove Earnings Quality + AI Opportunity Framework. Fonts: DM Serif Display, Plus Jakarta Sans, JetBrains Mono (Google Fonts). This report is not affiliated with or endorsed by Salesforce, Inc. or Warren Buffett.</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+  document.getElementById('t0').style.display = 'block';
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) { el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) { btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Food Services — Buffett Quality-Value Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Space+Mono:wght@400;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0D1117;
+  --bg-card: #161B22;
+  --bg-card2: #1C2333;
+  --accent: #E8A838;
+  --accent2: #C47F17;
+  --ivory: #F5EDD8;
+  --text: #E6EDF3;
+  --text-muted: #8B949E;
+  --green: #3FB950;
+  --red: #F85149;
+  --amber: #D29922;
+  --blue: #58A6FF;
+  --border: rgba(232,168,56,0.2);
+  --verified: #3FB950;
+  --estimated: #D29922;
+  --unverified: #F85149;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg-primary); color: var(--text); font-family: 'Source Sans Pro', sans-serif; line-height: 1.6; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #0D1117 0%, #1A2744 50%, #0D1117 100%);
+  border-bottom: 2px solid var(--accent);
+  padding: 28px 40px 20px;
+  max-height: 220px;
+  overflow: hidden;
+  position: relative;
+}
+.hero::after {
+  content: '✈';
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 120px;
+  opacity: 0.04;
+  color: var(--accent);
+}
+.hero-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.hero-ticker { font-family: 'Space Mono', monospace; color: var(--accent); font-size: 11px; letter-spacing: 3px; margin-bottom: 4px; }
+.hero-name { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: var(--ivory); line-height: 1.1; }
+.hero-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.verdict-badge { background: linear-gradient(135deg, #1A3A1A, #0D2A0D); border: 2px solid var(--green); color: var(--green); font-family: 'Space Mono', monospace; font-size: 11px; padding: 8px 16px; border-radius: 4px; text-align: center; }
+.verdict-badge .stars { font-size: 16px; display: block; margin-top: 2px; }
+
+.hero-badges { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-family: 'Space Mono', monospace; font-weight: 700; border: 1px solid; }
+.badge-cat { background: rgba(232,168,56,0.15); border-color: var(--accent); color: var(--accent); }
+.badge-neutral { background: rgba(139,148,158,0.15); border-color: #8B949E; color: #8B949E; }
+.badge-watch { background: rgba(210,153,34,0.15); border-color: var(--amber); color: var(--amber); }
+.badge-red { background: rgba(248,81,73,0.2); border-color: var(--red); color: var(--red); }
+
+.data-pill { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 3px 8px; font-size: 10px; color: var(--text-muted); font-family: 'Space Mono', monospace; }
+.data-pill span { color: var(--text); font-weight: 600; }
+
+.hero-lede { font-size: 12px; color: var(--text-muted); margin-top: 8px; max-width: 680px; line-height: 1.5; font-style: italic; }
+
+/* TAB BAR */
+#tab-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+#tab-bar::-webkit-scrollbar { display: none; }
+.tab-nav { display: flex; min-width: max-content; }
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 12px 18px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+.tab-btn:hover { color: var(--accent); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(232,168,56,0.06); }
+
+/* CONTENT */
+.tab-content { display: none; padding: 32px 40px; max-width: 1200px; margin: 0 auto; }
+.tab-content:first-of-type { display: block; }
+
+h2 { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--ivory); margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--accent); margin: 24px 0 12px; }
+h4 { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin: 16px 0 8px; }
+
+/* CARDS */
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.metric-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; border-left: 4px solid var(--accent); }
+.metric-card.green { border-left-color: var(--green); }
+.metric-card.red { border-left-color: var(--red); }
+.metric-card.amber { border-left-color: var(--amber); }
+.metric-label { font-size: 10px; color: var(--text-muted); font-family: 'Space Mono', monospace; letter-spacing: 1px; text-transform: uppercase; }
+.metric-value { font-size: 24px; font-family: 'Cormorant Garamond', serif; color: var(--ivory); font-weight: 700; margin: 4px 0; }
+.metric-sub { font-size: 11px; color: var(--text-muted); }
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+th { background: var(--bg-card2); color: var(--accent); font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 10px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text); }
+tr:hover td { background: rgba(232,168,56,0.04); }
+.num { text-align: right; font-family: 'Space Mono', monospace; font-size: 12px; }
+.good { color: var(--green); }
+.bad { color: var(--red); }
+.warn { color: var(--amber); }
+
+/* SCORE CARDS */
+.scorecard { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.score-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+.score-label { font-size: 13px; color: var(--text); }
+.score-badge { font-family: 'Space Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 3px; font-weight: 700; }
+.pass { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+.marginal { background: rgba(210,153,34,0.15); color: var(--amber); border: 1px solid rgba(210,153,34,0.3); }
+.fail { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+
+/* MOAT STARS */
+.moat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 12px; }
+.moat-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; color: var(--ivory); }
+.moat-stars { color: var(--accent); font-size: 16px; margin: 4px 0; }
+.moat-desc { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+
+/* FLYWHEEL BOX */
+.flywheel-box { background: linear-gradient(135deg, #1C2333, #1A1A2E); border: 2px solid #8B949E; border-radius: 10px; padding: 24px; margin: 20px 0; }
+.flywheel-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--text-muted); margin-bottom: 12px; }
+.flywheel-badge { display: inline-block; background: rgba(139,148,158,0.15); border: 2px solid #8B949E; color: #8B949E; font-family: 'Space Mono', monospace; font-size: 13px; padding: 6px 16px; border-radius: 4px; margin-bottom: 14px; }
+.flywheel-q { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+.flywheel-icon { font-size: 16px; margin-top: 2px; }
+.flywheel-text { font-size: 13px; color: var(--text-muted); }
+
+/* VERDICT BOX */
+.verdict-box { background: linear-gradient(135deg, #0D1F0D, #0A1A0A); border: 2px solid var(--amber); border-radius: 10px; padding: 28px; margin: 20px 0; }
+.verdict-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--amber); margin-bottom: 6px; }
+.verdict-stars-lg { font-size: 24px; color: var(--amber); display: block; margin-bottom: 10px; }
+.verdict-quote { font-style: italic; color: var(--text-muted); font-size: 14px; border-left: 3px solid var(--amber); padding-left: 14px; margin: 14px 0; }
+.verdict-prose { font-size: 14px; color: var(--text); line-height: 1.7; }
+
+/* PILLAR GRADES */
+.pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.pillar-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; }
+.pillar-name { font-size: 10px; font-family: 'Space Mono', monospace; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.pillar-grade { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 700; color: var(--accent); line-height: 1.1; margin: 8px 0; }
+
+/* UPGRADE CONDITIONS */
+.upgrade-list { list-style: none; }
+.upgrade-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
+.upgrade-num { background: var(--accent); color: var(--bg-primary); font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* CONFIDENCE LABELS */
+.verified { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); font-family: 'Space Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 2px; }
+.estimated { background: rgba(210,153,34,0.15); color: var(--amber); border: 1px solid rgba(210,153,34,0.3); font-family: 'Space Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 2px; }
+.unverified { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); font-family: 'Space Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 2px; }
+
+/* SERIES TABLE */
+.series-table { font-size: 11px; }
+.series-table th { font-size: 9px; }
+.series-table td { padding: 7px 10px; }
+
+/* GAUGE BAR */
+.gauge-row { margin-bottom: 14px; }
+.gauge-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+.gauge-bar { background: rgba(255,255,255,0.08); border-radius: 4px; height: 8px; overflow: hidden; }
+.gauge-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+
+/* TECH SECTION */
+.ta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.price-ladder { list-style: none; }
+.price-ladder li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; font-family: 'Space Mono', monospace; }
+
+/* RED FLAG */
+.red-flag { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.3); border-left: 4px solid var(--red); border-radius: 6px; padding: 14px; margin-bottom: 12px; }
+.red-flag-title { color: var(--red); font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+.info-box { background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.2); border-left: 4px solid var(--blue); border-radius: 6px; padding: 14px; margin-bottom: 12px; }
+
+/* AI SCORE GAUGE */
+.ai-score-wrap { display: flex; align-items: center; gap: 24px; margin: 20px 0; }
+.ai-score-circle { width: 100px; height: 100px; border-radius: 50%; border: 6px solid #8B949E; display: flex; align-items: center; justify-content: center; flex-direction: column; flex-shrink: 0; }
+.ai-score-num { font-family: 'Cormorant Garamond', serif; font-size: 32px; color: var(--text-muted); font-weight: 700; }
+.ai-score-label { font-size: 9px; color: var(--text-muted); font-family: 'Space Mono', monospace; }
+
+/* OPM TREND */
+.opm-bar-wrap { display: flex; gap: 12px; align-items: flex-end; height: 80px; margin: 16px 0; }
+.opm-bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+.opm-bar { background: var(--accent); border-radius: 3px 3px 0 0; width: 100%; transition: height 0.6s; }
+.opm-year { font-size: 10px; color: var(--text-muted); font-family: 'Space Mono', monospace; }
+.opm-pct { font-size: 10px; color: var(--accent); font-family: 'Space Mono', monospace; }
+
+/* OWNER EARNINGS BOX */
+.oe-box { background: linear-gradient(135deg, #1A2744, #1C2333); border: 2px solid var(--accent); border-radius: 10px; padding: 22px; margin: 20px 0; }
+.oe-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--accent); margin-bottom: 14px; }
+.oe-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 13px; }
+.oe-total { display: flex; justify-content: space-between; padding: 10px 0 4px; font-weight: 700; font-size: 15px; color: var(--accent); font-family: 'Cormorant Garamond', serif; }
+
+/* NEGATIVE CCC highlight */
+.ccc-highlight { background: linear-gradient(135deg, rgba(63,185,80,0.1), rgba(63,185,80,0.05)); border: 2px solid var(--green); border-radius: 8px; padding: 16px; margin: 16px 0; text-align: center; }
+
+/* SHAREHOLDING TREND */
+.sh-trend { display: flex; gap: 8px; align-items: flex-end; }
+.sh-col { text-align: center; flex: 1; }
+.sh-bar-wrap { height: 60px; display: flex; align-items: flex-end; justify-content: center; }
+.sh-bar { width: 24px; background: var(--accent); border-radius: 2px 2px 0 0; }
+.sh-q { font-size: 9px; color: var(--text-muted); font-family: 'Space Mono', monospace; margin-top: 4px; }
+.sh-v { font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; }
+
+/* SCENARIO TABLE */
+.scenario-table td { font-size: 12px; }
+.scenario-stress { background: rgba(248,81,73,0.04); }
+.scenario-base { background: rgba(63,185,80,0.04); }
+.scenario-accel { background: rgba(88,166,255,0.04); }
+
+/* FOOTER */
+footer { background: var(--bg-card); border-top: 1px solid var(--border); padding: 24px 40px; font-size: 11px; color: var(--text-muted); margin-top: 40px; }
+.disclaimer { max-width: 900px; line-height: 1.6; }
+
+@media (max-width: 680px) {
+  .hero { padding: 20px; }
+  .hero-name { font-size: 24px; }
+  .tab-content { padding: 20px 16px; }
+  .pillar-grid { grid-template-columns: repeat(2, 1fr); }
+  .ta-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .card-grid { grid-template-columns: 1fr 1fr; }
+  .pillar-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-ticker">NSE: TRAVELFOOD — SERIES #44</div>
+      <div class="hero-name">Travel Food Services</div>
+      <div class="hero-sub">India's Dominant Airport QSR & Lounge Operator — 454 Outlets · 19 Airports</div>
+    </div>
+    <div class="verdict-badge">
+      WATCH<br>
+      <span class="stars">★★★</span>
+      <span style="font-size:9px;display:block;margin-top:2px;">QUALITY HOLD</span>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <span class="badge badge-cat">CAT C — MATURE QUALITY COMPOUNDER</span>
+    <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+    <span class="badge badge-watch">WATCH ★★★</span>
+    <span class="badge badge-red">⚠ CBI FIR OVERHANG</span>
+    <div class="data-pill">Price <span>~₹1,150–1,200</span></div>
+    <div class="data-pill">Market Cap <span>~₹15,100 Cr</span></div>
+    <div class="data-pill">PE FY26E <span>~34x</span></div>
+    <div class="data-pill">ROCE <span>42%</span></div>
+    <div class="data-pill">Cash <span>₹790 Cr</span></div>
+    <div class="data-pill">CCC <span>−427 days</span></div>
+  </div>
+  <div class="hero-lede">India's only listed pure-play airport F&B concessionaire: captive-audience monopoly at 14 of 15 largest airports, extraordinary −427-day cash conversion cycle, zero net debt, expanding EBITDA margins (39% Q1 FY26). Three concerns cloud the thesis: CBI FIR for legacy tender irregularities, 100% OFS IPO (promoters sold, not company), and concession renewal risk. Entry below ₹1,100 resolves the MoS gap.</div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · OVERVIEW</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · MACRO</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · FINANCIALS</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · MOAT</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · MANAGEMENT</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · VALUATION</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · VERDICT</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · TECHNICALS</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · SHAREHOLDING</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI INTELLIGENCE</button>
+  </div>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content" id="tab0">
+  <h2>Business Overview &amp; Series Context</h2>
+
+  <div class="card-grid">
+    <div class="metric-card green">
+      <div class="metric-label">Revenue FY25</div>
+      <div class="metric-value">₹1,688 Cr</div>
+      <div class="metric-sub">+21% YoY <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">EBITDA Margin FY25</div>
+      <div class="metric-value">33%</div>
+      <div class="metric-sub">Q3 FY26: 40% (expanding) <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">PAT FY25</div>
+      <div class="metric-value">₹380 Cr</div>
+      <div class="metric-sub">FY26E: ~₹460 Cr <span class="estimated">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">ROCE FY25</div>
+      <div class="metric-value">42%</div>
+      <div class="metric-sub">3yr avg ROE: 40% <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Cash (Q3 FY26)</div>
+      <div class="metric-value">₹790 Cr</div>
+      <div class="metric-sub">Zero net debt <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">CCC (FY25)</div>
+      <div class="metric-value">−427 days</div>
+      <div class="metric-sub">Structural float advantage <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Market Share — QSR</div>
+      <div class="metric-value">26%</div>
+      <div class="metric-sub">Airport lounges: 45% <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Current P/E</div>
+      <div class="metric-value">~43x</div>
+      <div class="metric-sub">FY26E: ~34x <span class="estimated">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <h3>What is Travel Food Services?</h3>
+  <div class="card">
+    <p style="font-size:14px;color:var(--text);line-height:1.7;">
+      Travel Food Services Limited (TFS) is India's dominant airport food &amp; beverage concessionaire, incorporated in 2007 as "Bombay Pure Foods" and rebranded in 2009. <strong style="color:var(--accent)">The business model is elegantly simple</strong>: TFS wins long-term (10–11 year) concession agreements from airport operators (GMR, Adani, AAI) to operate all food and beverage outlets within secured airport terminals. Within these captive monopoly zones, TFS operates 530+ Travel QSR outlets and 37 premium lounges across 19 airports in India, Malaysia, and Hong Kong as of Q3 FY26.
+    </p>
+    <br>
+    <p style="font-size:14px;color:var(--text);line-height:1.7;">
+      The company holds <strong style="color:var(--accent)">26% market share in Indian airport QSR</strong> and <strong style="color:var(--accent)">45% in airport lounges</strong> — the undisputed leader in both segments. Its brand portfolio includes 140 partner and in-house brands spanning quick service to premium dining: McDonald's, KFC, Starbucks, Gordon Ramsay Street Burger (new), Nando's (new), and multiple proprietary formats. The lounge business (32.6% of FY25 revenue) serves 97.5% of its users via credit cards, airline loyalty, and premium memberships — recurring, predictable revenue.
+    </p>
+    <br>
+    <p style="font-size:14px;color:var(--text);line-height:1.7;">
+      <strong style="color:var(--accent)">The structural working capital advantage is extraordinary:</strong> TFS collects cash from consumers at the point of purchase (no receivables), but pays its suppliers on 461-day credit terms — effectively borrowing ~₹1,500 Cr+ of supplier-funded working capital at zero cost. Combined with negative receivables dynamics on the lounge side (credit card companies settle), this produces a Cash Conversion Cycle of −427 days — a quality comparable to COLPAL in this series. This structural advantage persists as long as TFS holds the concession.
+    </p>
+    <br>
+    <p style="font-size:14px;color:var(--text);line-height:1.7;">
+      <strong style="color:var(--accent)">Why this stock is in the series:</strong> TFS represents a genuinely unusual compounding machine — a location-monopoly business with ROIC >40%, no net debt, expanding margins, and a direct play on India's 7-10% annual aviation traffic CAGR. The IPO in July 2025 at ₹1,100 was 100% OFS, meaning all proceeds went to promoters (SSP Group + Kapur Family Trust) — a structural negative. Post-IPO, a CBI investigation into legacy (2012-13) tender irregularities creates governance overhang. The stock at ₹1,150-1,200 is near MoS entry — interesting but not yet fully compelling.
+    </p>
+  </div>
+
+  <h3>Key Structural Risks — Disclosed</h3>
+  <div class="red-flag">
+    <div class="red-flag-title">⚠ CBI FIR — LEGACY TENDER IRREGULARITIES (Dec 2025)</div>
+    <p style="font-size:13px;color:var(--text);">CBI filed FIR RC2162025A0015 (Dec 2, 2025) alleging irregularities in 2012-13 master concession tenders for Chennai and Kolkata airports. Two former TFS subsidiaries (merged Sep 2024) are named. Former AAI chairman and other government officials also named. Investigation has been active since 2022. Material risk: contract cancellation at these airports (modest), reputational impact on future tenders (moderate), senior management legal exposure (low-medium given merger structure). <span class="unverified">UNVERIFIED — full FIR details not public</span></p>
+  </div>
+  <div class="red-flag">
+    <div class="red-flag-title">⚠ 100% OFS IPO — PROMOTERS SOLD ₹2,000 CR</div>
+    <p style="font-size:13px;color:var(--text);">The July 2025 IPO was entirely an Offer for Sale by promoters SSP Group and Kapur Family Trust. Zero capital raised by TFS itself. SSP Group — the global airport F&B operator listed on LSE — sold its India exposure via this OFS. This is an insider liquidity event, not a growth-capital raise. <span class="verified">VERIFIED</span></p>
+  </div>
+  <div class="red-flag">
+    <div class="red-flag-title">⚠ CONCESSION RENEWAL RISK — NEAR-TERM DELHI T3 EXPIRY</div>
+    <p style="font-size:13px;color:var(--text);">Delhi T3 license was extended only to September 2026 (Jan 9, 2026 announcement). Delhi is TFS's largest airport. Renewal through competitive bidding process with no guaranteed outcome. Airport operators (GMR, Adani) now require equity stakes in operating entities, structurally shifting some concessions from consolidated to JV/associate status. <span class="verified">VERIFIED — BSE announcement</span></p>
+  </div>
+
+  <div class="info-box">
+    <strong style="color:var(--blue)">Structural Positive: India Aviation Megatrend</strong>
+    <p style="font-size:13px;color:var(--text);margin-top:6px;">India is projected to be the fastest-growing aviation market globally 2023-2053 (CAGR 5.5% long-term, 9.5% for 2023-2027 per ACI). Over ₹1 lakh crore in aviation capex planned over next 4-5 years. New airports at Jewar, Navi Mumbai (operational Q3 FY26), Bhogapuram, Parandur all represent incremental TAM for TFS. Domestic passenger CAGR: 7-10% FY26E; international: 15-20% FY26E. <span class="verified">VERIFIED — ICRA/CareEdge/IBEF</span></p>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO -->
+<div class="tab-content" id="tab1">
+  <h2>Macro &amp; Sector Context</h2>
+
+  <h3>Layer 1 — Macro Anchor</h3>
+  <div class="card">
+    <table>
+      <tr><th>Indicator</th><th>Value</th><th>Source</th><th>Impact on TFS</th></tr>
+      <tr><td>India Real GDP Growth FY26E</td><td class="num good">6.5–7.5%</td><td><span class="verified">VERIFIED</span> Goldman/IMF</td><td>Strong consumer travel demand</td></tr>
+      <tr><td>India CPI FY26E</td><td class="num warn">4.6%</td><td><span class="verified">VERIFIED</span> Goldman revised up</td><td>Input cost pressure (food ingredients)</td></tr>
+      <tr><td>India Nominal GDP</td><td class="num">~11.1–12.1%</td><td><span class="estimated">ESTIMATED</span></td><td>Terminal growth ceiling</td></tr>
+      <tr><td>10-yr G-Sec Yield</td><td class="num warn">~7.1%</td><td><span class="verified">VERIFIED</span> TradingEconomics</td><td>WACC pressure; geopolitical/crude spike</td></tr>
+      <tr><td>RBI Repo Rate</td><td class="num">5.25%</td><td><span class="verified">VERIFIED</span></td><td>Loan cost on reducing ₹286 Cr debt</td></tr>
+      <tr><td>Nifty 50 P/E</td><td class="num">~20-22x</td><td><span class="estimated">ESTIMATED</span></td><td>TFS at premium; sectoral re-rating possible</td></tr>
+      <tr><td>Crude Oil ($WTI)</td><td class="num bad">~$100+/bbl</td><td><span class="estimated">ESTIMATED</span></td><td>Inflation spike; potential INDIRECT aviation headwind</td></tr>
+    </table>
+  </div>
+
+  <h3>Macro Cycle Dashboard</h3>
+  <div class="card-grid">
+    <div class="metric-card amber">
+      <div class="metric-label">Urban Consumption Cycle</div>
+      <div class="metric-value" style="font-size:18px;">Recovery</div>
+      <div class="metric-sub">+1-2% to QSR/lounge spending</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Input Cost Cycle</div>
+      <div class="metric-value" style="font-size:18px;">Rising</div>
+      <div class="metric-sub">CPI 4.6%; crude oil surge. −1% margin pressure</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Interest Rate Cycle</div>
+      <div class="metric-value" style="font-size:18px;">Neutral</div>
+      <div class="metric-sub">Rate cut window narrowing; G-Sec 7.1%</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Aviation Traffic Cycle</div>
+      <div class="metric-value" style="font-size:18px;">Tailwind</div>
+      <div class="metric-sub">Domestic +7-10% FY26E; new airports opening</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Govt Capex Cycle</div>
+      <div class="metric-value" style="font-size:18px;">Accelerating</div>
+      <div class="metric-sub">₹1L Cr aviation infra; 220 airports target</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">AI Adoption Cycle</div>
+      <div class="metric-value" style="font-size:18px;">Neutral</div>
+      <div class="metric-sub">F&B AI = operational tools, not moat</div>
+    </div>
+  </div>
+  <div class="info-box"><strong style="color:var(--blue)">MACRO COMPOSITE FOR TFS: TAILWIND</strong> — Aviation traffic growth is a structural multi-decade megatrend. Near-term crude oil/inflation headwind is partially offset by TFS's pricing power within terminal captive zones. Input cost pressure managed via menu engineering and mix shift toward high-margin lounges.</div>
+
+  <h3>Layer 2 — Sector Growth Derivation</h3>
+  <div class="card">
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;"><strong style="color:var(--text)">Sector:</strong> Airport Travel F&amp;B / Non-Aeronautical Revenue</p>
+    <table>
+      <tr><th>Scenario</th><th>Passenger CAGR</th><th>Spend-per-Pax Growth</th><th>Sector Revenue Growth</th><th>AI Impact</th></tr>
+      <tr class="scenario-stress"><td>STRESS</td><td class="num">4–5%</td><td class="num">3–5%</td><td class="num bad">8–10%</td><td>Neutral</td></tr>
+      <tr class="scenario-base"><td>BASE</td><td class="num">7–9%</td><td class="num">6–8%</td><td class="num">14–18%</td><td>Neutral</td></tr>
+      <tr class="scenario-accel"><td>ACCELERATION</td><td class="num">10–12%</td><td class="num">8–10%</td><td class="num good">18–24%</td><td>Minor widener</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-muted);">Sources: CareEdge (7% PAX CAGR FY24-FY27), ICRA (7-10% domestic + 15-20% international FY26E), ACI World <span class="verified">VERIFIED</span> | Spend-per-pax growth estimated based on lounge premium mix shift and menu price inflation <span class="estimated">ESTIMATED</span></p>
+  </div>
+
+  <h3>Layer 3 — Company Alpha Over Sector</h3>
+  <table>
+    <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Evidence</th></tr>
+    <tr><td>Market Share Gain (airport QSR)</td><td class="good">Active</td><td class="num good">+3–5%</td><td class="num">+1–2%</td><td>26%→? at 14 of 15 largest airports; Kochi win</td></tr>
+    <tr><td>Premiumisation (Lounge mix)</td><td class="good">Active</td><td class="num good">+2–3%</td><td class="num">+1–2%</td><td>Lounge % rev 26%→32.6% FY23-FY25</td></tr>
+    <tr><td>Brand/Category Expansion</td><td class="good">Active</td><td class="num good">+2–3%</td><td class="num">+1%</td><td>140 brands; Gordon Ramsay, Nando's adds</td></tr>
+    <tr><td>Geographic Expansion</td><td class="warn">Forming</td><td class="num">+1%</td><td class="num">+2–3%</td><td>APAC/Middle East lounge pipeline; new Indian airports</td></tr>
+    <tr><td>Pricing Power</td><td class="warn">Moderate</td><td class="num">+1–2%</td><td class="num">+1%</td><td>Captive pricing; constrained by brand partner franchises</td></tr>
+    <tr><td>AI Alpha (6a+6b+6c)</td><td>Neutral</td><td class="num">0%</td><td class="num">0%</td><td>No data flywheel; AI = operational tool only</td></tr>
+    <tr style="background:rgba(232,168,56,0.08);"><td><strong>Total Alpha</strong></td><td></td><td class="num good"><strong>+9–14%</strong></td><td class="num"><strong>+6–10%</strong></td><td></td></tr>
+  </table>
+
+  <h3>Growth Rate Summary Table</h3>
+  <table>
+    <tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr>
+    <tr class="scenario-stress"><td>Macro State</td><td>GDP ~5.5%; crude shock</td><td>GDP ~6.8%; stable</td><td>GDP ~8%+; rural boom</td></tr>
+    <tr class="scenario-stress"><td>Aviation PAX Growth</td><td>4–5%</td><td>7–9%</td><td>10–12%</td></tr>
+    <tr><td>Sector Revenue Growth</td><td class="num bad">8–10%</td><td class="num">14–18%</td><td class="num good">18–24%</td></tr>
+    <tr><td>Company Alpha</td><td class="num">+3%</td><td class="num">+9%</td><td class="num good">+14%</td></tr>
+    <tr><td>AI Alpha (6a+6b+6c)</td><td class="num">0%</td><td class="num">0%</td><td class="num">0%</td></tr>
+    <tr><td><strong>Stage 1 FCF CAGR</strong></td><td class="num bad"><strong>10–12%</strong></td><td class="num"><strong>20–22%</strong></td><td class="num good"><strong>27–30%</strong></td></tr>
+    <tr><td>Stage 2 FCF CAGR</td><td class="num">7%</td><td class="num">13%</td><td class="num">16%</td></tr>
+    <tr><td>Terminal Growth</td><td class="num">6.5%</td><td class="num">7.0%</td><td class="num">7.5%</td></tr>
+    <tr><td>Margin Direction</td><td>Compress (input cost)</td><td>Stable 33–35%</td><td>Expand 38–42%</td></tr>
+    <tr><td>Key Risk</td><td>Concession loss + crude</td><td>CBI resolution</td><td>Overcapacity in lounges</td></tr>
+  </table>
+  <div class="info-box"><strong>Sensitivity:</strong> A 1% change in terminal growth rate changes IV by approximately ±12–15%. A 1% change in WACC changes IV by approximately ±10–13%. <span class="estimated">ESTIMATED</span></div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div class="tab-content" id="tab2">
+  <h2>Financial Fortress — Category C Framework</h2>
+
+  <h3>Revenue &amp; Profit Track (Consolidated) <span class="verified">VERIFIED — Screener</span></h3>
+  <table>
+    <tr><th>Year</th><th>Revenue (₹ Cr)</th><th>Op. Profit (₹ Cr)</th><th>OPM%</th><th>PAT (₹ Cr)</th><th>PAT Margin%</th><th>OCF (₹ Cr)</th></tr>
+    <tr><td>FY20</td><td class="num">774</td><td class="num">128</td><td class="num">16%</td><td class="num">104</td><td class="num">13.4%</td><td class="num">104</td></tr>
+    <tr><td>FY22</td><td class="num">390</td><td class="num">84</td><td class="num">21%</td><td class="num">5</td><td class="num">1.3%</td><td class="num">77</td></tr>
+    <tr><td>FY23</td><td class="num good">1,067</td><td class="num good">374</td><td class="num good">35%</td><td class="num good">251</td><td class="num good">23.5%</td><td class="num good">322</td></tr>
+    <tr><td>FY24</td><td class="num good">1,396</td><td class="num good">417</td><td class="num warn">30%</td><td class="num good">298</td><td class="num">21.3%</td><td class="num good">369</td></tr>
+    <tr style="background:rgba(232,168,56,0.08);"><td><strong>FY25</strong></td><td class="num good"><strong>1,688</strong></td><td class="num good"><strong>554</strong></td><td class="num good"><strong>33%</strong></td><td class="num good"><strong>380</strong></td><td class="num good"><strong>22.5%</strong></td><td class="num good"><strong>515</strong></td></tr>
+    <tr><td>Q3 FY26 Ann.</td><td class="num good">~1,800</td><td class="num good">~720</td><td class="num good">~40%</td><td class="num good">~460</td><td class="num good">~25.5%</td><td class="num">est.</td></tr>
+  </table>
+
+  <h4>EBITDA Margin Trend</h4>
+  <div style="display:flex;gap:10px;align-items:flex-end;height:90px;margin:16px 0;">
+    <div style="text-align:center;flex:1;"><div style="background:var(--accent);border-radius:3px 3px 0 0;height:42px;"></div><div class="opm-year">FY20</div><div class="opm-pct">16%</div></div>
+    <div style="text-align:center;flex:1;"><div style="background:var(--red);border-radius:3px 3px 0 0;height:0px;"></div><div class="opm-year">FY21</div><div class="opm-pct">-22%</div></div>
+    <div style="text-align:center;flex:1;"><div style="background:var(--accent);border-radius:3px 3px 0 0;height:55px;"></div><div class="opm-year">FY22</div><div class="opm-pct">21%</div></div>
+    <div style="text-align:center;flex:1;"><div style="background:var(--accent);border-radius:3px 3px 0 0;height:90px;"></div><div class="opm-year">FY23</div><div class="opm-pct">35%</div></div>
+    <div style="text-align:center;flex:1;"><div style="background:var(--amber);border-radius:3px 3px 0 0;height:78px;"></div><div class="opm-year">FY24</div><div class="opm-pct">30%</div></div>
+    <div style="text-align:center;flex:1;"><div style="background:var(--green);border-radius:3px 3px 0 0;height:85px;"></div><div class="opm-year">FY25</div><div class="opm-pct">33%</div></div>
+    <div style="text-align:center;flex:1;"><div style="background:var(--green);border-radius:3px 3px 0 0;height:100px;"></div><div class="opm-year">Q3 FY26</div><div class="opm-pct">40%</div></div>
+  </div>
+
+  <h3>ROCE &amp; ROE Track <span class="verified">VERIFIED — Screener</span></h3>
+  <div class="card-grid">
+    <div class="metric-card green"><div class="metric-label">ROCE FY23</div><div class="metric-value">40%</div></div>
+    <div class="metric-card green"><div class="metric-label">ROCE FY24</div><div class="metric-value">37%</div></div>
+    <div class="metric-card green"><div class="metric-label">ROCE FY25</div><div class="metric-value">42%</div></div>
+    <div class="metric-card green"><div class="metric-label">ROE FY25</div><div class="metric-value">39.1%</div></div>
+    <div class="metric-card green"><div class="metric-label">3yr Avg ROE</div><div class="metric-value">40%</div></div>
+    <div class="metric-card green"><div class="metric-label">PAT CAGR 5yr</div><div class="metric-value">29%</div></div>
+  </div>
+
+  <h3>Working Capital Analysis — The Structural Advantage</h3>
+  <div class="ccc-highlight">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--green);">Cash Conversion Cycle: −427 Days</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-top:6px;">One of the most negative CCC profiles in the series — comparable to COLPAL's supplier float model</div>
+  </div>
+  <table>
+    <tr><th>Working Capital Metric</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>Trend</th></tr>
+    <tr><td>Debtor Days</td><td class="num warn">45</td><td class="num">39</td><td class="num">27</td><td class="num good">23</td><td class="good">↓ Improving</td></tr>
+    <tr><td>Inventory Days</td><td class="num warn">33</td><td class="num">18</td><td class="num">15</td><td class="num good">11</td><td class="good">↓ Excellent</td></tr>
+    <tr><td>Days Payable</td><td class="num good">518</td><td class="num good">310</td><td class="num good">352</td><td class="num good">461</td><td class="good">High (supplier float)</td></tr>
+    <tr style="background:rgba(63,185,80,0.08);"><td><strong>Cash Conversion Cycle</strong></td><td class="num good">−440</td><td class="num good">−252</td><td class="num good">−310</td><td class="num good">−427</td><td class="good">↓ Getting Better</td></tr>
+  </table>
+  <p style="font-size:12px;color:var(--text-muted);font-style:italic;">The −427 day CCC means TFS is paid by customers before paying suppliers, generating perpetual interest-free float equal to ~₹1,800 Cr+ of working capital. This is structural — captive POS eliminates consumer AR, while airport location creates supplier leverage.</p>
+
+  <h3>Financial Fortress Scorecard (Standard Tests)</h3>
+  <div class="scorecard">
+    <div class="score-item"><span class="score-label">ROE ≥ 15% for 5 years</span><span class="score-badge pass">✓ PASS — 39.1%</span></div>
+    <div class="score-item"><span class="score-label">ROIC / ROCE > WACC</span><span class="score-badge pass">✓ PASS — 42% vs 12.5%</span></div>
+    <div class="score-item"><span class="score-label">Net cash / no debt</span><span class="score-badge pass">✓ PASS — ₹790 Cr cash, zero net debt</span></div>
+    <div class="score-item"><span class="score-label">Net profit margin ≥ 15%</span><span class="score-badge pass">✓ PASS — 22.5% FY25; 30% Q3 FY26</span></div>
+    <div class="score-item"><span class="score-label">FCF positive and growing</span><span class="score-badge pass">✓ PASS — OCF ₹515 Cr FY25 (up 40%)</span></div>
+    <div class="score-item"><span class="score-label">FCF conversion ≥ 80%</span><span class="score-badge pass">✓ PASS — 135% (OCF/PAT)</span></div>
+    <div class="score-item"><span class="score-label">Revenue CAGR ≥ sector CAGR</span><span class="score-badge pass">✓ PASS — TTM 21% vs sector 14-18%</span></div>
+    <div class="score-item"><span class="score-label">Recurring revenue model</span><span class="score-badge pass">✓ PASS — concession-guaranteed footfall</span></div>
+    <div class="score-item"><span class="score-label">Capital-light model</span><span class="score-badge marginal">~ MARGINAL — maintenance capex low but growth capex required</span></div>
+    <div class="score-item"><span class="score-label">Pricing power above inflation</span><span class="score-badge marginal">~ MARGINAL — captive pricing but brand constraints</span></div>
+  </div>
+
+  <h3>Owner Earnings (FY25)</h3>
+  <div class="oe-box">
+    <div class="oe-title">Buffett Owner Earnings Calculation — FY25</div>
+    <div class="oe-row"><span>Net Income</span><span class="good">+₹380 Cr</span></div>
+    <div class="oe-row"><span>+ Depreciation &amp; Amortisation</span><span class="good">+₹126 Cr</span></div>
+    <div class="oe-row"><span>+ Non-cash adjustments (ROU/IFRS 16 est.)</span><span class="good">+₹15 Cr</span></div>
+    <div class="oe-row"><span>− Maintenance CapEx (~35% of ₹180 Cr total)</span><span class="bad">−₹63 Cr</span></div>
+    <div class="oe-row"><span>± Working Capital Release (negative CCC improving)</span><span class="good">+₹3 Cr</span></div>
+    <div class="oe-total"><span>Owner Earnings (Base)</span><span>₹461 Cr</span></div>
+    <div class="oe-total" style="font-size:12px;color:var(--text-muted)"><span>Conservative (maintenance capex ₹80 Cr)</span><span>₹444 Cr</span></div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:8px;"><span class="estimated">ESTIMATED</span> — Maintenance vs growth CapEx split estimated; total CapEx from cash flow statement ₹215 Cr FY25 (includes growth CapEx for new outlets)</p>
+  </div>
+
+  <h3>Earnings Quality — O'Glove Deep-Dive</h3>
+  <div class="scorecard">
+    <div class="score-item"><span class="score-label">Test 1: FCF Conversion (5yr) — OCF/PAT</span><span class="score-badge pass">✓ PASS — 135% FY25; consistent 100%+</span></div>
+    <div class="score-item"><span class="score-label">Test 2: DSO Trend (3yr) — Receivables</span><span class="score-badge pass">✓ PASS — Declining: 39→27→23 days</span></div>
+    <div class="score-item"><span class="score-label">Test 3: Inventory Days (3yr)</span><span class="score-badge pass">✓ PASS — Declining: 18→15→11 days</span></div>
+    <div class="score-item"><span class="score-label">Test 4: Accounting Policy Stability</span><span class="score-badge marginal">~ MARGINAL — Mumbai JV restructuring (Semolina) removes revenue from consolidation; watch</span></div>
+    <div class="score-item"><span class="score-label">Test 5: Gross Margin Consistency</span><span class="score-badge pass">✓ PASS — Expanding: 21%→35%→30%→33%→40% (Q3 FY26)</span></div>
+  </div>
+  <div style="margin-top:16px;padding:14px;background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.3);border-radius:6px;">
+    <strong style="color:var(--green)">Overall Earnings Quality: CLEAN</strong>
+    <p style="font-size:13px;color:var(--text);margin-top:6px;">Test 4 warrants monitoring — the shift of Mumbai Airport outlets to JV/associate (Semolina, 24.99% stake) following GMR's structural change reduces consolidated revenue visibility. All other tests clear. FCF conversion of 135% is exceptional quality signal.</p>
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div class="tab-content" id="tab3">
+  <h2>Economic Moat Analysis</h2>
+
+  <div class="moat-card">
+    <div class="moat-title">1. Location Monopoly — Airport Captive Zone</div>
+    <div class="moat-stars">★★★★★</div>
+    <div class="moat-desc">Once TFS wins a concession, it operates in a legally captive environment. No competitor can set up an F&amp;B outlet inside the secured terminal area. Passengers have zero alternative — they must buy from TFS-operated outlets or bring nothing through security. This is structurally similar to a toll booth or a regulatory monopoly. <strong style="color:var(--accent)">India's most powerful location moat after telecom spectrum.</strong> Duration: 10-11 year concession agreements; renewal risk is the primary moat risk.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-title">2. Scale &amp; Relationship Moat — 14 of 15 Largest Airports</div>
+    <div class="moat-stars">★★★★</div>
+    <div class="moat-desc">TFS's presence at 14 of India's 15 largest airports creates a brand portfolio breadth (140 brands) and operational muscle that smaller F&amp;B operators cannot replicate. Airport operators prefer TFS precisely because it can deploy McDonald's, Starbucks, Gordon Ramsay, AND proprietary brands in one concession — simplifying the operator's F&amp;B management. This scale creates a flywheel in relationship: more airports → better brand terms → more attractive concession bids → more airports.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-title">3. Working Capital Supplier Float — Structural Cost Advantage</div>
+    <div class="moat-stars">★★★★</div>
+    <div class="moat-desc">Days Payable of 461 days = TFS collects supplier-funded working capital at zero cost. This is structural: TFS's scale and airport-embedded brand partners (who need TFS to be in airports) accept extended payment terms that smaller F&amp;B operators could never negotiate. This working capital advantage compounds as revenue grows — each additional outlet adds more "free" float. Like COLPAL's negative working capital from distribution network pressure.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-title">4. Lounge Business — Credit Card / Airline Partnership Network</div>
+    <div class="moat-stars">★★★</div>
+    <div class="moat-desc">45% market share in Indian airport lounges is a distinct moat. Lounge revenue is B2B (credit card companies like HDFC, ICICI, Amex pay TFS per visit) — highly recurring, growing rapidly as India's credit card penetration expands. First-mover advantage in premium lounges is significant; new entrants would need 2-5 years to build the infrastructure and relationships TFS has.</div>
+  </div>
+
+  <div class="moat-card" style="border-left:4px solid var(--red);">
+    <div class="moat-title">⚠ Moat Risk — Concession Renewal &amp; Airport Operator Equity Demand</div>
+    <div class="moat-stars" style="color:var(--red);">★★ (Risk Rating)</div>
+    <div class="moat-desc">The moat is CONTRACTUAL, not perpetual. Every 10-11 years, TFS must re-bid. Recent structural shift: GMR and Adani now require equity stakes in operating entities — which pushed Mumbai's concession to a JV (Semolina, 24.99% TFS stake) vs. previously 100% consolidated. Delhi T3 concession expires Sep 2026 — most critical renewal in TFS history. This structural shift could reduce TFS's consolidated revenue quality over time, even if the business performs well. CBI FIR adds political/regulatory risk to future tenders.</div>
+  </div>
+
+  <h3>ROIC as Moat Proof — 5-Year Track</h3>
+  <table>
+    <tr><th>Year</th><th>ROCE/ROIC</th><th>Moat Interpretation</th></tr>
+    <tr><td>FY21 (COVID)</td><td class="num bad">−9%</td><td>COVID disruption — not indicative</td></tr>
+    <tr><td>FY22</td><td class="num warn">9%</td><td>Recovery phase — weak but improving</td></tr>
+    <tr><td>FY23</td><td class="num good">40%</td><td>Wide moat restored — exceptional</td></tr>
+    <tr><td>FY24</td><td class="num good">37%</td><td>Wide moat — slight normalization</td></tr>
+    <tr style="background:rgba(232,168,56,0.08);"><td><strong>FY25</strong></td><td class="num good"><strong>42%</strong></td><td><strong>Wide moat — expanding</strong></td></tr>
+    <tr><td>Q3 FY26 (ann.)</td><td class="num good">45%+</td><td>Margin expansion driving ROCE up</td></tr>
+  </table>
+  <p style="font-size:12px;color:var(--text-muted);">ROIC >40% = Exceptional moat confirmed. Significantly above 20-40% "wide moat" threshold. <span class="verified">VERIFIED</span></p>
+
+  <h3>Macro Moat Stress Test</h3>
+  <table>
+    <tr><th>Moat Source</th><th>STRESS scenario</th><th>BASE scenario</th><th>ACCEL scenario</th></tr>
+    <tr><td>Location Monopoly</td><td class="good">STRENGTHENS (fewer passengers but still captive)</td><td class="good">STRENGTHENS</td><td class="good">STRENGTHENS</td></tr>
+    <tr><td>Scale/Brand Portfolio</td><td class="warn">HOLDS (some brands may exit)</td><td class="good">STRENGTHENS</td><td class="good">STRENGTHENS</td></tr>
+    <tr><td>Supplier Float</td><td class="good">HOLDS (structural)</td><td class="good">HOLDS</td><td class="good">STRENGTHENS</td></tr>
+    <tr><td>Lounge B2B Revenue</td><td class="warn">HOLDS (credit card spend may moderate)</td><td class="good">STRENGTHENS</td><td class="good">STRENGTHENS</td></tr>
+    <tr><td>Concession Renewal</td><td class="bad">WEAKENS (CBI/political risk higher)</td><td class="warn">HOLDS</td><td class="good">STRENGTHENS</td></tr>
+  </table>
+
+  <h3>Data Flywheel Assessment</h3>
+  <div class="flywheel-box">
+    <div class="flywheel-title">AI Data Flywheel Verdict</div>
+    <div class="flywheel-badge">⚪ AI FEATURE — NOT A MOAT ★</div>
+    <div class="flywheel-q"><span class="flywheel-icon">❓</span><div class="flywheel-text"><strong>Q1: Proprietary training data competitors cannot access?</strong> — TFS has transaction-level purchase data at airports. However, competitors could access similar data if they won the concession. Data is operational, not uniquely proprietary across airports. <strong style="color:var(--red)">NOT CONFIRMED.</strong></div></div>
+    <div class="flywheel-q"><span class="flywheel-icon">❓</span><div class="flywheel-text"><strong>Q2: Does AI improve measurably with more users?</strong> — No evidence of AI-driven demand forecasting or personalization that demonstrably improves accuracy with usage. Parent SSP Group uses some digital ordering tech globally. No TFS-specific AI improvement metrics disclosed. <strong style="color:var(--red)">NOT CONFIRMED.</strong></div></div>
+    <div class="flywheel-q"><span class="flywheel-icon">❓</span><div class="flywheel-text"><strong>Q3: Does better AI attract more customers?</strong> — Customers come because they're inside the terminal (captive), not because of AI. The moat is geographic/contractual, not algorithmic. <strong style="color:var(--red)">NOT CONFIRMED.</strong></div></div>
+    <div style="margin-top:14px;padding:10px;background:rgba(139,148,158,0.1);border-radius:6px;">
+      <strong style="color:var(--text-muted);">Flywheel Score: 1/10</strong> — AI is a cosmetic feature at TFS. Digital ordering kiosks (SSP's ACRELEC partnership at some global airports) are operational efficiency tools, not structural advantages. <strong>Moat grade unchanged — no flywheel upgrade.</strong>
+    </div>
+  </div>
+
+  <div class="moat-card" style="border-left:4px solid var(--accent);">
+    <div class="moat-title">Moat Summary — Overall Grade: B+</div>
+    <div class="moat-stars">★★★★</div>
+    <div class="moat-desc">Strong location monopoly + superior working capital structure + scale advantages = genuine wide moat. ROIC 42% confirms moat quality. The one structural vulnerability — concession renewal dependence — prevents an A− grade. The CBI FIR introduces tail risk to future renewals. If Delhi T3 concession is successfully renewed in 2026, moat grade upgrades to A−.</div>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div class="tab-content" id="tab4">
+  <h2>Management &amp; Capital Allocation</h2>
+
+  <h3>Leadership Profile</h3>
+  <div class="card">
+    <table>
+      <tr><th>Role</th><th>Name</th><th>Background</th><th>Assessment</th></tr>
+      <tr><td>MD &amp; CEO</td><td>Varun Kapur</td><td>Kapur Family (founding promoters); long-term operators</td><td class="good">Aligned — family business ethos</td></tr>
+      <tr><td>Co-Promoter</td><td>Karan Kapur</td><td>Kapur Family Trust</td><td class="good">Skin in the game</td></tr>
+      <tr><td>Global Anchor</td><td>SSP Group plc</td><td>Global airport F&amp;B leader, FTSE 250</td><td class="warn">OFS sale signals strategic review</td></tr>
+      <tr><td>Chairman (Ind.)</td><td>Ashwani Kumar Puri</td><td>CA, ex-Pricewaterhouse; 34yr experience</td><td class="good">Strong governance background</td></tr>
+      <tr><td>CFO</td><td>Vikas Kapoor</td><td>Finance professional</td><td>Standard</td></tr>
+    </table>
+  </div>
+
+  <h3>Capital Allocation Track Record</h3>
+  <div class="scorecard">
+    <div class="score-item"><span class="score-label">Debt Reduction: ₹416 Cr FY24 → ₹286 Cr Sep 2025 → Zero</span><span class="score-badge pass">✓ EXCELLENT</span></div>
+    <div class="score-item"><span class="score-label">Strategic expansion — Kochi Airport win; Delhi T2; Navi Mumbai</span><span class="score-badge pass">✓ GOOD — organic growth focus</span></div>
+    <div class="score-item"><span class="score-label">Brand portfolio deepening (140 brands; Gordon Ramsay; Nando's)</span><span class="score-badge pass">✓ GOOD — differentiates bid quality</span></div>
+    <div class="score-item"><span class="score-label">Zero dilutive equity raises post-IPO</span><span class="score-badge pass">✓ PASS — IPO was OFS only</span></div>
+    <div class="score-item"><span class="score-label">Dividend payout initiated FY24: 50%, FY25: 31%</span><span class="score-badge pass">✓ PASS — &lt;80% OE threshold</span></div>
+  </div>
+
+  <h3>Shareholding Integrity Assessment</h3>
+  <div class="scorecard">
+    <div class="score-item"><span class="score-label">Promoter pledged shares</span><span class="score-badge pass">✓ PASS — 0% pledged <span class="verified">VERIFIED</span></span></div>
+    <div class="score-item"><span class="score-label">Promoter holding trend</span><span class="score-badge marginal">~ MARGINAL — 86.19% (post OFS; high but promoters sold ₹2,000 Cr)</span></div>
+    <div class="score-item"><span class="score-label">Related party transactions</span><span class="score-badge marginal">~ MARGINAL — SSP Group relationship; brand licensing fees. Needs monitoring</span></div>
+  </div>
+
+  <h3>Red Flags &amp; Concerns</h3>
+  <div class="red-flag">
+    <div class="red-flag-title">🔴 RED FLAG 1 — CBI FIR (MATERIAL GOVERNANCE RISK)</div>
+    <p style="font-size:13px;color:var(--text);">CBI investigation into 2012-13 tender processes at Chennai and Kolkata airports. Named entities include TFS's former subsidiaries (merged Sep 2024). Former AAI Chairman named. The FIR alleges: collusive bidding with Devyani International, non-disclosure of ownership changes at RFQ stage, AAI officials providing undue advantages by choosing lowest MAG from three options. Amit Arora (Delhi excise case) peripherally mentioned. <br><br>Assessment: <strong>MODERATE RISK</strong> — occurred 12-13 years ago; former subsidiaries merged; current management team less implicated. But CBI investigations can drag for years and create reputational + renewal risks. <span class="verified">VERIFIED — CBI FIR RC2162025A0015, BSE disclosure</span></p>
+  </div>
+  <div class="red-flag">
+    <div class="red-flag-title">🔴 RED FLAG 2 — 100% OFS IPO (INSIDER LIQUIDITY EVENT)</div>
+    <p style="font-size:13px;color:var(--text);">IPO proceeds of ₹2,000 Cr went entirely to SSP Group (Kapur Family Trust via OFS). Zero capital raised by TFS for business growth. SSP Group — a global leader — liquidating its India exposure signals either: (a) global portfolio rationalization, (b) valuation opportunism at IPO, or (c) concern about India-specific risks (CBI, regulatory). Classically when insiders sell at IPO, especially at 100% OFS, it warrants higher-than-normal scrutiny. <span class="verified">VERIFIED</span></p>
+  </div>
+  <div class="red-flag">
+    <div class="red-flag-title">🟡 CONCERN — CGST TAX DEMAND</div>
+    <p style="font-size:13px;color:var(--text);">CGST order (Dec 15, 2025) demands ₹13.4 Cr tax + ₹26.8 Cr penalty = ₹40.2 Cr total. TFS appealing. Relatively immaterial at ~0.27% of FY25 revenue. <span class="verified">VERIFIED — BSE announcement Dec 20, 2025</span></p>
+  </div>
+
+  <h3>Management Strengths</h3>
+  <div class="info-box">
+    <p style="font-size:13px;color:var(--text);">
+      ✓ <strong>Concession execution excellence:</strong> 14 of 15 largest airports — demonstrates superior bid quality and operational credibility<br><br>
+      ✓ <strong>Counter-cyclical discipline:</strong> Rapid debt reduction from ₹416 Cr → Zero; strong OCF reinvestment<br><br>
+      ✓ <strong>Brand curation:</strong> Adding premium international brands (Gordon Ramsay, Nando's) elevates per-pax spend and lounge quality<br><br>
+      ✓ <strong>Zero pledged shares:</strong> Promoter confidence signal despite CBI overhang<br><br>
+      ✓ <strong>International expansion credible:</strong> Malaysia, Hong Kong, APAC/Middle East pipeline — demonstrates genuine growth ambition
+    </p>
+  </div>
+  <p style="font-size:12px;color:var(--text-muted);">Overall Management Grade: <strong style="color:var(--amber)">B</strong> — Competent operators; strong execution; CBI FIR and OFS nature prevent higher grade. Watch for: Delhi T3 renewal (key test of relationship quality), CBI investigation developments, SSP's continued involvement post-OFS.</p>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div class="tab-content" id="tab5">
+  <h2>Valuation — Five-Method Analysis</h2>
+
+  <h3>Method 1 — DCF (2-Stage) <span class="estimated">ESTIMATED</span></h3>
+  <div class="card">
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Starting FCF: Owner Earnings FY25 = ₹461 Cr | WACC: 12.5% (Cat C India) | Terminal P/E: 30–35x</p>
+    <table>
+      <tr><th>Scenario</th><th>Stage 1 (5yr CAGR)</th><th>Stage 2 (5yr CAGR)</th><th>Terminal g</th><th>IV/share</th><th>Entry Price (MoS)</th></tr>
+      <tr class="scenario-stress"><td>STRESS</td><td class="num">10%</td><td class="num">7%</td><td class="num">6.5%</td><td class="num warn">₹950–1,050</td><td class="num bad">₹808–892 (15% MoS)</td></tr>
+      <tr class="scenario-base"><td><strong>BASE</strong></td><td class="num">20%</td><td class="num">13%</td><td class="num">7.0%</td><td class="num good"><strong>₹1,380–1,480</strong></td><td class="num good"><strong>₹1,173–1,258 (15%)</strong></td></tr>
+      <tr class="scenario-accel"><td>ACCELERATION</td><td class="num">27%</td><td class="num">16%</td><td class="num">7.5%</td><td class="num good">₹1,900–2,100</td><td class="num good">₹1,615–1,785 (15%)</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text-muted);">Sensitivity: ±1% terminal growth → ±12-15% IV | ±1% WACC → ±10-13% IV | AI adjustment: 0 (AI NEUTRAL)</p>
+  </div>
+
+  <h3>Method 2 — Owner Earnings Capitalisation</h3>
+  <div class="card">
+    <table>
+      <tr><th>Scenario</th><th>Owner Earnings</th><th>Required Return</th><th>Sustainable g</th><th>Implied IV/share</th></tr>
+      <tr class="scenario-stress"><td>Stress</td><td class="num">₹430 Cr</td><td class="num">13%</td><td class="num">6.5%</td><td class="num warn">₹860–950</td></tr>
+      <tr class="scenario-base"><td><strong>Base</strong></td><td class="num">₹461 Cr</td><td class="num">12.5%</td><td class="num">7.0%</td><td class="num good"><strong>₹1,320–1,440</strong></td></tr>
+      <tr class="scenario-accel"><td>Accel.</td><td class="num">₹510 Cr</td><td class="num">12%</td><td class="num">7.5%</td><td class="num good">₹1,880–2,040</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text-muted);">Value = OE / (Required Return − g). OE: ₹461 Cr base, conservative ₹430 Cr (higher maintenance capex). Per share on 13.17 Cr shares.</p>
+  </div>
+
+  <h3>Method 3 — P/E Earnings Power</h3>
+  <div class="card">
+    <table>
+      <tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr>
+      <tr><td>FY25 P/E (at ₹1,150)</td><td class="num">39.8x</td><td class="warn">Premium to sector; justified by ROCE &amp; growth</td></tr>
+      <tr><td>FY26E P/E (₹460 Cr PAT est.)</td><td class="num good">33–35x</td><td class="good">Reasonable for 20-25% PAT growth</td></tr>
+      <tr><td>FY27E P/E (₹560 Cr PAT est.)</td><td class="num good">27–28x</td><td class="good">Attractive on 2-year view</td></tr>
+      <tr><td>PEG Ratio (PAT CAGR 20-25%)</td><td class="num good">1.5–1.7x</td><td class="good">Fair for quality of business</td></tr>
+      <tr><td>Analyst Target (ICICI Sec)</td><td class="num good">~₹1,600</td><td class="good">42x Sep'27E EPS</td></tr>
+      <tr><td>HSBC Target</td><td class="num good">₹1,520</td><td class="good">Buy rating</td></tr>
+      <tr><td>Avg Analyst Target</td><td class="num good">₹1,467</td><td>3 analysts — all Buy</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text-muted);">Reverse DCF check: Current price (~₹1,150) implies ~14% long-term FCF CAGR — achievable given aviation megatrend. Not demanding. <span class="estimated">ESTIMATED</span></p>
+  </div>
+
+  <h3>Method 4 — EV/EBITDA &amp; Peer Comparison</h3>
+  <div class="card">
+    <table>
+      <tr><th>Company</th><th>Business</th><th>EV/EBITDA</th><th>EBITDA Margin</th><th>Revenue Growth</th></tr>
+      <tr><td>TFS (at ₹1,150)</td><td>India airport F&amp;B leader</td><td class="num warn">~20-22x FY26E</td><td class="num good">33-40%</td><td class="num good">20-25%</td></tr>
+      <tr><td>SSP Group (LSE: SSPG)</td><td>Global airport F&amp;B</td><td class="num">~12-14x</td><td class="num">8-12%</td><td class="num">8-10%</td></tr>
+      <tr><td>Jubilant FoodWorks</td><td>India QSR (Domino's)</td><td class="num">~25-28x</td><td class="num">16-18%</td><td class="num warn">8-12%</td></tr>
+      <tr><td>Devyani International</td><td>India QSR (KFC/Pizza Hut)</td><td class="num">~20-25x</td><td class="num warn">14-16%</td><td class="num">12-15%</td></tr>
+      <tr><td>Restaurant Brands (RBI)</td><td>Canada/US QSR</td><td class="num">~18-20x</td><td class="num good">40%+</td><td class="num warn">6-8%</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-muted);">TFS's EBITDA margins (33-40%) are structurally superior to all Indian QSR peers because of the captive model. The EV/EBITDA premium is warranted but rich. Global comp SSP Group trades at steep discount due to lower margins — TFS's India-market premium is justified. <span class="estimated">ESTIMATED</span></p>
+  </div>
+
+  <h3>Method 5 — Earnings Yield vs Bond Yield</h3>
+  <div class="card">
+    <table>
+      <tr><th>Metric</th><th>Value</th><th>Benchmark</th><th>ERP</th></tr>
+      <tr><td>Earnings Yield FY25 (P/E 43x)</td><td class="num warn">2.3%</td><td>G-Sec 7.1%</td><td class="num bad">−4.8%</td></tr>
+      <tr><td>Earnings Yield FY26E (P/E 34x)</td><td class="num warn">2.9%</td><td>G-Sec 7.1%</td><td class="num bad">−4.2%</td></tr>
+      <tr><td>FCF Yield (OCF/MCap)</td><td class="num">3.4%</td><td>G-Sec 7.1%</td><td class="num bad">−3.7%</td></tr>
+      <tr><td>Dividend Yield (FY25: ₹8.65/sh)</td><td class="num bad">0.75%</td><td>G-Sec 7.1%</td><td class="num bad">−6.4%</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-muted);">Earnings yield is below risk-free rate — stock is priced for growth, not income. At these levels, the investment case rests entirely on double-digit earnings growth (15-25% CAGR) materializing. For income-focused investors, the yield is unattractive. For growth investors willing to pay for quality aviation megatrend exposure, the thesis is reasonable. Note: elevated G-Sec yield (7.1%) due to geopolitical/crude shock is a temporary headwind to valuation. <span class="estimated">ESTIMATED</span></p>
+  </div>
+
+  <h3>5-Method Summary Table</h3>
+  <table>
+    <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>Weight</th></tr>
+    <tr><td>1. DCF (2-Stage)</td><td class="num bad">₹950–1,050</td><td class="num">₹1,380–1,480</td><td class="num good">₹1,900–2,100</td><td>35%</td></tr>
+    <tr><td>2. OE Capitalisation</td><td class="num bad">₹860–950</td><td class="num">₹1,320–1,440</td><td class="num good">₹1,880–2,040</td><td>30%</td></tr>
+    <tr><td>3. P/E Earnings Power</td><td class="num bad">₹900–1,000</td><td class="num">₹1,380–1,520</td><td class="num good">₹1,900–2,200</td><td>20%</td></tr>
+    <tr><td>4. EV/EBITDA Peer Comp</td><td class="num bad">₹850–950</td><td class="num">₹1,300–1,500</td><td class="num good">₹1,700–2,000</td><td>15%</td></tr>
+    <tr style="background:rgba(232,168,56,0.08);"><td><strong>Blended Base IV</strong></td><td class="num bad"><strong>₹900–990</strong></td><td class="num"><strong>₹1,360–1,480</strong></td><td class="num good"><strong>₹1,880–2,090</strong></td><td>100%</td></tr>
+    <tr style="background:rgba(139,148,158,0.06);"><td colspan="5" style="font-size:11px;color:var(--text-muted);">AI Adjustment: 0 (AI NEUTRAL — no flywheel, no structural AI moat or threat). No IV premium or discount applied.</td></tr>
+  </table>
+
+  <div class="info-box">
+    <strong>MoS Entry Zone: ₹1,100–1,180</strong>
+    <p style="font-size:13px;color:var(--text);margin-top:6px;">
+      Base IV midpoint: ~₹1,420. Apply 15-20% MoS (Category C standard + CBI risk premium): Entry zone = <strong>₹1,100–1,208</strong>. Current price (~₹1,150-1,200) is AT the upper boundary of MoS zone. Formal BUY requires either: (a) price correction to ₹1,000-1,100, OR (b) CBI resolution confirming immateriality, OR (c) Delhi T3 concession renewal confirmed. <span class="estimated">ESTIMATED</span>
+    </p>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div class="tab-content" id="tab6">
+  <h2>Investment Verdict</h2>
+
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Moat</div>
+      <div class="pillar-grade">B+</div>
+      <div style="font-size:11px;color:var(--text-muted);">Captive location monopoly; concession renewal risk caps grade</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Financial Quality</div>
+      <div class="pillar-grade">A−</div>
+      <div style="font-size:11px;color:var(--text-muted);">ROCE 42%; OCF 135% of PAT; −427 day CCC; zero debt</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Management</div>
+      <div class="pillar-grade">B</div>
+      <div style="font-size:11px;color:var(--text-muted);">CBI FIR &amp; OFS IPO constrain grade; no pledges; good capital allocation</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Valuation</div>
+      <div class="pillar-grade">B</div>
+      <div style="font-size:11px;color:var(--text-muted);">At MoS upper boundary; 15-20% discount to Base IV; not cheap but not expensive</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-title">WATCH ★★★ — QUALITY AT MoS BOUNDARY</div>
+    <span class="verdict-stars-lg">★★★</span>
+    <div class="verdict-quote">
+      "The best business to own is one that over an extended period can employ large amounts of incremental capital at very high rates of return." — Warren Buffett
+    </div>
+    <div class="verdict-prose">
+      Travel Food Services is a genuinely rare business: the only Indian company that monetizes the captive airport terminal with dominant scale across 14 of the 15 largest airports, generating 42% ROCE, a −427-day Cash Conversion Cycle, and expanding EBITDA margins approaching 40%. At these financial quality metrics, the stock belongs on any serious compounder watchlist.
+      <br><br>
+      <strong>Three factors prevent a BUY:</strong> First, the CBI FIR (Dec 2025) alleging 2012-13 tender irregularities creates governance overhang — the investigation is active, the named entities are now merged into TFS, and future concession renewals (most critically Delhi T3 in Sep 2026) could be complicated. Second, the 100% OFS IPO structure — where all ₹2,000 Cr went to promoters (SSP Group selling India exposure) — is a classic insider liquidity signal that warrants patience. Third, the current price (~₹1,150-1,200) is at the upper boundary of the MoS entry zone, not safely within it.
+      <br><br>
+      <strong>What changes this to BUY:</strong> A correction to ₹1,000-1,100 (15-25% drawdown), combined with Delhi T3 renewal confirmation and the CBI investigation demonstrating immateriality to current operations, would create a compelling entry. The business quality is not in question — the price and governance are.
+      <br><br>
+      <strong>Position sizing note:</strong> Given the CBI overhang, a starter position (1-2% of portfolio) at current levels is defensible for investors who want aviation megatrend exposure with quality. Full position (3-4%) appropriate only at ₹1,000-1,100 with governance clarity.
+    </div>
+  </div>
+
+  <h3>WATCH → BUY Upgrade Conditions (All must converge)</h3>
+  <ul class="upgrade-list">
+    <li class="upgrade-item"><span class="upgrade-num">1</span>Price corrects to ₹1,000–1,100 (15–25% MoS to Base IV midpoint of ~₹1,420)</li>
+    <li class="upgrade-item"><span class="upgrade-num">2</span>Delhi T3 concession formally renewed (BSE announcement) — before September 2026 expiry</li>
+    <li class="upgrade-item"><span class="upgrade-num">3</span>CBI investigation demonstrates immateriality: no criminal charges against current management team; Chennai/Kolkata concessions not cancelled</li>
+    <li class="upgrade-item"><span class="upgrade-num">4</span>EBITDA margin sustains ≥37% for 2 consecutive quarters (confirms structural step-up from lounge mix, not COVID catch-up)</li>
+    <li class="upgrade-item"><span class="upgrade-num">5</span>System-wide revenue CAGR ≥20% for 2 consecutive quarters (Q3 FY26: 28% ✓ — needs one more confirmation)</li>
+  </ul>
+
+  <h3>Series Comparison Table (Selected)</h3>
+  <div style="overflow-x:auto;">
+    <table class="series-table">
+      <tr><th>#</th><th>Company</th><th>Mkt</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>MoS Entry</th></tr>
+      <tr><td>44</td><td><strong>Travel Food Services</strong></td><td>NSE</td><td>C</td><td>⚪</td><td class="warn">B+</td><td class="good">A−</td><td class="warn">B</td><td class="warn">B</td><td class="warn">WATCH ★★★</td><td>₹1,000–1,100</td></tr>
+      <tr><td>18</td><td>Novo Nordisk (NVO)</td><td>NYSE</td><td>C</td><td>🟢</td><td class="good">A−</td><td class="good">B+</td><td class="good">B+</td><td class="good">A−</td><td class="good">WATCH ★★★★</td><td>$44–49</td></tr>
+      <tr><td>—</td><td>MercadoLibre (MELI)</td><td>NASDAQ</td><td>B</td><td>🟢</td><td class="good">A</td><td class="good">A−</td><td class="good">A</td><td class="good">A</td><td class="good">BUY ★★★★★</td><td>~$1,810</td></tr>
+      <tr><td>—</td><td>ITC</td><td>NSE</td><td>C</td><td>⚪</td><td class="good">A−</td><td class="good">B+</td><td class="good">B+</td><td class="warn">B+</td><td class="warn">WATCH ★★★</td><td>₹280</td></tr>
+      <tr><td>—</td><td>Microsoft (MSFT)</td><td>NASDAQ</td><td>C</td><td>🟢</td><td class="good">A−</td><td class="good">A−</td><td class="good">A</td><td class="good">B+</td><td class="warn">WATCH ★★★★</td><td>$340–365</td></tr>
+      <tr><td>—</td><td>Alphabet (GOOGL)</td><td>NASDAQ</td><td>C</td><td>🟢</td><td class="good">A</td><td class="good">A</td><td class="good">B+</td><td class="warn">B</td><td class="warn">WATCH ★★★★</td><td>$224–260</td></tr>
+      <tr><td>—</td><td>Bajaj HFL</td><td>NSE</td><td>B</td><td>🟢</td><td class="warn">B+</td><td class="good">B+</td><td class="good">B+</td><td class="warn">C+</td><td class="warn">WATCH ★★★</td><td>₹65–75</td></tr>
+      <tr><td>—</td><td>Fractal Analytics</td><td>NSE</td><td>C</td><td>🟢</td><td class="good">B+</td><td class="warn">B</td><td class="good">B+</td><td class="warn">B−</td><td class="warn">WATCH ★★★</td><td>₹722</td></tr>
+      <tr><td>—</td><td>Amagi (AMAGI)</td><td>NSE</td><td>F</td><td>🟢</td><td class="warn">B+</td><td class="good">B+</td><td class="good">A−</td><td class="good">A−</td><td class="good">BUY ★★★★★</td><td>₹350</td></tr>
+      <tr><td>—</td><td>META</td><td>NASDAQ</td><td>C</td><td>🟢</td><td class="good">A+</td><td class="good">A−</td><td class="good">B+</td><td class="good">A−</td><td class="good">BUY ★★★★½</td><td>~$542</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICALS -->
+<div class="tab-content" id="tab7">
+  <h2>Technical Analysis</h2>
+
+  <h3>Section A — Price Structure &amp; Multi-Timeframe Trend</h3>
+  <div class="card">
+    <table>
+      <tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Status</th></tr>
+      <tr><td>Long-term (since IPO Jul 2025)</td><td class="warn">Uptrend, correcting</td><td>IPO price ₹1,100</td><td class="warn">Correction from ATH ₹1,445 (−20%)</td></tr>
+      <tr><td>Medium-term (3 months)</td><td class="bad">Downtrend</td><td>₹1,150–1,200 range</td><td class="warn">Below Nov ATH; finding base</td></tr>
+      <tr><td>Short-term (1 month)</td><td class="warn">Basing/sideways</td><td>₹1,100 support</td><td class="warn">RSI recovering from oversold</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Stock listed July 14, 2025 at ₹1,125 (2.3% premium to IPO). Rallied to ATH ₹1,445 (Nov 27, 2025) — +28% from listing. Then corrected on CBI FIR news (Dec 2025) and crude oil/geopolitical headwinds. Now trading ~₹1,150-1,200, approximately 18-20% below ATH. <span class="estimated">ESTIMATED — price from investing.com March 12, 2026 data</span></p>
+  </div>
+
+  <div class="ta-grid">
+    <div>
+      <h3>Section B — Price Ladder</h3>
+      <ul class="price-ladder">
+        <li><span class="bad">R3 — ATH</span><span>₹1,445</span></li>
+        <li><span class="warn">R2 — Strong Resistance</span><span>₹1,305</span></li>
+        <li><span class="warn">R1 — Near Resistance</span><span>₹1,250–1,270</span></li>
+        <li><span style="color:var(--accent)">NOW — Current Price</span><span>~₹1,150–1,200</span></li>
+        <li><span class="good">S1 — IPO Price / Key Support</span><span>₹1,100</span></li>
+        <li><span class="good">S2 — MoS Entry Zone</span><span>₹1,000–1,100</span></li>
+        <li><span class="good">S3 — 52-week Low</span><span>₹1,008.50 (Aug 4, 2025)</span></li>
+        <li><span class="good">S4 — Stress DCF IV</span><span>₹950–1,000</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Section C — MA Dashboard <span class="unverified">UNVERIFIED</span></h3>
+      <table>
+        <tr><th>MA</th><th>Estimated Level</th><th>Price vs MA</th></tr>
+        <tr><td>20-EMA</td><td>~₹1,160</td><td class="warn">At/near</td></tr>
+        <tr><td>50-DMA</td><td>~₹1,200</td><td class="warn">Below</td></tr>
+        <tr><td>100-DMA</td><td>~₹1,250</td><td class="bad">Below</td></tr>
+        <tr><td>200-DMA</td><td>~₹1,200</td><td class="warn">At/near (est.)</td></tr>
+      </table>
+      <p style="font-size:11px;color:var(--text-muted);">Stock listed July 2025 — insufficient history for reliable 200-DMA. Death cross risk if 50-DMA crosses below 100-DMA. <span class="unverified">ESTIMATED</span></p>
+    </div>
+  </div>
+
+  <h3>Section D — Momentum (RSI &amp; MACD)</h3>
+  <div class="card">
+    <table>
+      <tr><th>Indicator</th><th>Reading</th><th>Signal</th></tr>
+      <tr><td>RSI (14-day)</td><td class="num warn">~40–48</td><td class="warn">Neutral to mildly oversold — recovering from CBI FIR selloff</td></tr>
+      <tr><td>RSI (Weekly)</td><td class="num warn">~45–50</td><td class="warn">Neutral</td></tr>
+      <tr><td>MACD</td><td class="num warn">Negative histogram</td><td class="bad">Bearish momentum; watch for cross</td></tr>
+      <tr><td>Volume (recent)</td><td class="num">2.51L shares/day</td><td class="warn">Low — very thin free float (13.8%); illiquid</td></tr>
+      <tr><td>Beta</td><td class="num good">0.15</td><td class="good">Very low beta — low correlation to Nifty; fundamental stock</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text-muted);">Trendlyne: Momentum Score 18/100 (Technically Bearish as of Nov 2025). Very recent IPO — technical history is thin. <span class="estimated">ESTIMATED</span></p>
+  </div>
+
+  <h3>Section E &amp; F — Chart Pattern &amp; Trade Structure</h3>
+  <div class="card">
+    <p style="font-size:13px;color:var(--text);margin-bottom:12px;"><strong style="color:var(--accent)">Chart Pattern:</strong> Base formation at IPO price support (₹1,100). Potential double-bottom forming if ₹1,100 holds. Stock needs to recapture ₹1,270 (Q3 resistance) to turn technically bullish.</p>
+    <table>
+      <tr><th>Trigger Type</th><th>Condition</th><th>Status</th></tr>
+      <tr><td>PRIMARY TRIGGER</td><td>Correction to ₹1,000–1,100 + RSI &lt;40 + holding 52wk low</td><td class="warn">NOT YET ACTIVE</td></tr>
+      <tr><td>SECONDARY TRIGGER</td><td>Breakout above ₹1,270 on volume surge + MACD cross positive</td><td class="warn">NOT YET ACTIVE</td></tr>
+      <tr><td>STARTER TRIGGER</td><td>Hold ₹1,100 for 2 weeks + Delhi T3 renewal announcement</td><td class="warn">MONITORING</td></tr>
+    </table>
+
+    <div style="margin-top:16px;padding:14px;background:var(--bg-card2);border-radius:6px;">
+      <strong style="color:var(--accent);">Trade Structure (if PRIMARY trigger activates at ₹1,050)</strong><br>
+      <table style="margin-top:8px;">
+        <tr><td>Entry</td><td class="num">₹1,020–1,080</td></tr>
+        <tr><td>Stop Loss</td><td class="num bad">₹960 (below stress DCF IV)</td></tr>
+        <tr><td>Target 1</td><td class="num good">₹1,300 (+25%)</td></tr>
+        <tr><td>Target 2</td><td class="num good">₹1,480 (Base IV) (+40%)</td></tr>
+        <tr><td>Risk:Reward</td><td class="num good">1:2.5 to 1:3.3 ✓</td></tr>
+        <tr><td>Position Size</td><td class="num warn">2-3% max (CBI overhang)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h3>Section G — Technical Composite Score</h3>
+  <div class="card">
+    <table>
+      <tr><th>Dimension</th><th>Score (1-5)</th><th>Comment</th></tr>
+      <tr><td>Price Structure (trend)</td><td class="num warn">2/5</td><td>Downtrend from ATH; building base</td></tr>
+      <tr><td>MA Configuration</td><td class="num warn">2/5</td><td>Below most MAs; limited history</td></tr>
+      <tr><td>Volume Analysis</td><td class="num warn">2/5</td><td>Low free float = thin volume; illiquid</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td class="num warn">3/5</td><td>Recovering from oversold; not yet bullish</td></tr>
+      <tr><td>Chart Pattern</td><td class="num warn">3/5</td><td>Base forming at IPO support; promising</td></tr>
+      <tr><td>Entry Setup (R:R)</td><td class="num warn">2/5</td><td>No active trigger yet; need correction</td></tr>
+      <tr style="background:rgba(232,168,56,0.08);"><td><strong>Total</strong></td><td class="num warn"><strong>14/30 (47%)</strong></td><td>Technically Bearish/Neutral — WAIT for trigger</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div class="tab-content" id="tab8">
+  <h2>Shareholding &amp; Free Float Analysis</h2>
+
+  <h3>Section A — Promoter Holding (Available Data — Post-IPO)</h3>
+  <div class="card">
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">IPO listed July 14, 2025. Only 1-2 quarters of data available — historical trend limited.</p>
+    <table>
+      <tr><th>Quarter</th><th>Promoter %</th><th>Pledged</th><th>Signal</th></tr>
+      <tr><td>Pre-IPO</td><td class="num">~100%</td><td class="num good">0%</td><td>Private</td></tr>
+      <tr><td>Post-IPO (Q1 FY26)</td><td class="num warn">~86.2%</td><td class="num good">0%</td><td class="warn">OFS reduced from 100% — insider selling</td></tr>
+      <tr><td>Sep 2025 (Q2 FY26)</td><td class="num warn">86.19%</td><td class="num good">0%</td><td class="warn">Stable post-OFS; no creeping acquisition</td></tr>
+    </table>
+    <div class="info-box">
+      <strong>Promoter Structure:</strong> SSP Asia Pacific Holdings Ltd (global SSP Group subsidiary) + SSP Group Holdings Ltd + SSP Financing Ltd + Kapur Family Trust + Varun Kapur + Karan Kapur. Post-OFS, SSP Group remains largest institutional holder within promoter block, but strategic intent is unclear following ₹2,000 Cr OFS exit. <span class="verified">VERIFIED — IPO prospectus</span>
+    </div>
+  </div>
+
+  <h3>Section B — FII, DII Holdings (Sep 2025)</h3>
+  <table>
+    <tr><th>Category</th><th>Sep 2025</th><th>Context</th></tr>
+    <tr><td>Promoters</td><td class="num warn">86.19%</td><td>Very high; almost no free float</td></tr>
+    <tr><td>Foreign Institutional Investors</td><td class="num warn">2.77%</td><td>Low; new stock; limited discovery</td></tr>
+    <tr><td>Domestic Institutional Investors</td><td class="num">8.03%</td><td>Anchor investors + post-listing inflows</td></tr>
+    <tr><td>Retail / Public</td><td class="num bad">3.00%</td><td>Very low retail participation</td></tr>
+    <tr><td>No. of Shareholders</td><td class="num">65,301</td><td>Very concentrated; illiquid</td></tr>
+  </table>
+  <p style="font-size:12px;color:var(--text-muted);">At IPO: QIBs subscribed 7.70x; NII 1.58x; Retail 69% — underwhelming retail response was a market signal. Anchor investors included 33 participants at ₹1,100. <span class="verified">VERIFIED</span></p>
+
+  <h3>Section C — Free Float &amp; Liquidity</h3>
+  <div class="card-grid">
+    <div class="metric-card red">
+      <div class="metric-label">Free Float</div>
+      <div class="metric-value">~13.8%</div>
+      <div class="metric-sub">₹2,085 Cr floating MCap — ILLIQUID</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Daily Volume (avg)</div>
+      <div class="metric-value">2.5L shares</div>
+      <div class="metric-sub">~₹29 Cr/day — thin</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">MSCI India Weight</div>
+      <div class="metric-value">Minimal</div>
+      <div class="metric-sub">Not in Nifty 50/Nifty 500 yet</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Index Inclusion Risk</div>
+      <div class="metric-value">Low</div>
+      <div class="metric-sub">Small float limits inclusion triggers</div>
+    </div>
+  </div>
+
+  <div class="red-flag">
+    <div class="red-flag-title">⚠ FREE FLOAT WARNING — ILLIQUIDITY RISK</div>
+    <p style="font-size:13px;color:var(--text);">Only 13.8% free float (₹2,085 Cr) on a ₹15,100 Cr market cap. This creates: (1) extreme price volatility on institutional buying/selling, (2) bid-ask spreads wider than liquid stocks, (3) inability for large institutional funds to build meaningful positions, (4) SIP-driven DII flows cannot easily enter. Until promoter holding reduces below 75% OR SSP conducts a secondary sale, institutional interest will remain capped. This low float ALSO means: any positive catalyst (Delhi T3 renewal, CBI closure) could cause a sharp price spike — both upside and downside are amplified.</p>
+  </div>
+
+  <h3>Section D — Ownership Scores</h3>
+  <div class="card-grid">
+    <div class="metric-card amber">
+      <div class="metric-label">Ownership Momentum Score</div>
+      <div class="metric-value">42/100</div>
+      <div class="metric-sub">Low — OFS insider selling; low FII interest</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Shareholding Risk Score</div>
+      <div class="metric-value">65/100</div>
+      <div class="metric-sub">High risk — illiquid float + CBI + OFS signal</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div class="tab-content" id="tab9">
+  <h2>AI Opportunity Intelligence</h2>
+
+  <h3>Section A — AI Classification Dashboard</h3>
+  <div class="card-grid">
+    <div class="metric-card">
+      <div class="metric-label">Category</div>
+      <div class="metric-value" style="font-size:20px;">C</div>
+      <div class="metric-sub">Mature Quality Compounder</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">AI Overlay</div>
+      <div class="metric-value" style="font-size:16px;">⚪ NEUTRAL</div>
+      <div class="metric-sub">AI = operational tool only</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Data Flywheel</div>
+      <div class="metric-value" style="font-size:16px;">COSMETIC</div>
+      <div class="metric-sub">1/10 flywheel score</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Adoption Phase (F&amp;B AI)</div>
+      <div class="metric-value" style="font-size:16px;">Phase 1–2</div>
+      <div class="metric-sub">Experimentation at global airports</div>
+    </div>
+  </div>
+
+  <h3>Section B — Data Flywheel Assessment (Full)</h3>
+  <div class="flywheel-box" style="border-color:#8B949E;">
+    <div class="flywheel-title">Flywheel Test — Travel Food Services</div>
+    <div class="flywheel-badge">⚪ AI COSMETIC — NO FLYWHEEL</div>
+    <div class="flywheel-q">
+      <span class="flywheel-icon">✗</span>
+      <div class="flywheel-text"><strong>Q1: Does TFS have proprietary AI training data competitors cannot access?</strong><br>
+      TFS processes POS transaction data across 530+ outlets — potentially valuable for demand forecasting and menu optimization. However: (a) this data type is available to any F&amp;B operator at airports; (b) no evidence TFS has built proprietary ML models on this data; (c) parent SSP Group's global data would be more valuable than India-only transaction data. <strong>Score: 1/3.</strong></div>
+    </div>
+    <div class="flywheel-q">
+      <span class="flywheel-icon">✗</span>
+      <div class="flywheel-text"><strong>Q2: Does TFS's AI measurably improve with more users/transactions?</strong><br>
+      No evidence. Management commentary (Q2 FY26 call) mentions "leveraging data insights and strategic partnerships" in generic terms. No specific AI accuracy metrics, no disclosed AI investment, no AI team size data. The SSP-ACRELEC kiosk partnership (self-ordering kiosks) is an operational efficiency tool — it does not improve with more TFS-specific data. <strong>Score: 0/4.</strong></div>
+    </div>
+    <div class="flywheel-q">
+      <span class="flywheel-icon">✗</span>
+      <div class="flywheel-text"><strong>Q3: Does better AI attract more airport passengers to TFS?</strong><br>
+      Impossible — passengers come because they are physically inside the terminal. The moat is geographic/contractual, not algorithmic. Even if TFS had superior AI, it would not attract more customers, because customers have no choice. The captive model is both TFS's greatest strength AND the reason AI cannot create a flywheel here. <strong>Score: 0/3.</strong></div>
+    </div>
+    <div style="margin-top:14px;padding:10px;background:rgba(139,148,158,0.1);border-radius:6px;">
+      <strong style="color:#8B949E">Flywheel Score: 1/10 — AI is COSMETIC at TFS</strong><br>
+      <span style="font-size:12px;color:var(--text-muted);">No moat upgrade. AI NEUTRAL designation confirmed. AI tools (digital ordering, demand forecasting) are generic operational tools available to any competitor and do not structurally change TFS's competitive position. This is expected for a location-monopoly business where the moat is contractual, not algorithmic.</span>
+    </div>
+  </div>
+
+  <h3>Section C — AI Value Chain Position</h3>
+  <div class="card">
+    <div style="display:flex;gap:8px;margin:16px 0;align-items:center;overflow-x:auto;">
+      <div style="text-align:center;flex:1;padding:8px;background:rgba(255,255,255,0.05);border-radius:6px;min-width:80px;">
+        <div style="font-size:9px;color:var(--text-muted);font-family:'Space Mono';">LEVEL 1</div>
+        <div style="font-size:11px;color:var(--text-muted);">Infrastructure</div>
+      </div>
+      <div style="font-size:16px;color:var(--text-muted);">→</div>
+      <div style="text-align:center;flex:1;padding:8px;background:rgba(255,255,255,0.05);border-radius:6px;min-width:80px;">
+        <div style="font-size:9px;color:var(--text-muted);font-family:'Space Mono';">LEVEL 2</div>
+        <div style="font-size:11px;color:var(--text-muted);">Foundation Models</div>
+      </div>
+      <div style="font-size:16px;color:var(--text-muted);">→</div>
+      <div style="text-align:center;flex:1;padding:8px;background:rgba(255,255,255,0.05);border-radius:6px;min-width:80px;">
+        <div style="font-size:9px;color:var(--text-muted);font-family:'Space Mono';">LEVEL 3</div>
+        <div style="font-size:11px;color:var(--text-muted);">Platforms</div>
+      </div>
+      <div style="font-size:16px;color:var(--text-muted);">→</div>
+      <div style="text-align:center;flex:1;padding:8px;background:rgba(255,255,255,0.05);border-radius:6px;min-width:80px;">
+        <div style="font-size:9px;color:var(--text-muted);font-family:'Space Mono';">LEVEL 4</div>
+        <div style="font-size:11px;color:var(--text-muted);">Vertical Apps</div>
+      </div>
+      <div style="font-size:16px;color:var(--text-muted);">→</div>
+      <div style="text-align:center;flex:1;padding:12px;background:rgba(139,148,158,0.15);border:2px solid #8B949E;border-radius:6px;min-width:80px;">
+        <div style="font-size:9px;color:#8B949E;font-family:'Space Mono';font-weight:700;">LEVEL 5 ← TFS</div>
+        <div style="font-size:11px;color:#8B949E;font-weight:600;">AI-Enabled Incumbent</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);">TFS sits at Level 5 — an existing business that could use AI for operational enhancement but whose core moat is geographic/contractual, not technological. Level 5 investments have the best risk/return in the AI era: low AI execution risk (they don't need to build AI), steady compounding, existing moat defended by AI tools. <strong>Investment horizon: 7-10 years (compounding, not a quick trade).</strong></p>
+  </div>
+
+  <h3>Section D — India AI Opportunity Context</h3>
+  <table>
+    <tr><th>Advantage</th><th>TFS Relevance</th><th>Assessment</th></tr>
+    <tr><td>India Stack (UPI/Aadhaar data scale)</td><td>No — B2C at airports is cash/card, not UPI primary. Lounge access via credit card, not Aadhaar.</td><td class="warn">Adjacent</td></tr>
+    <tr><td>Vernacular AI (22 languages)</td><td>No — airport passenger base is English-comfortable. Low relevance.</td><td>None</td></tr>
+    <tr><td>India Stack as infrastructure</td><td>No — F&amp;B concessions don't require India Stack. ONDC could be relevant for mobile pre-ordering.</td><td class="warn">Remote</td></tr>
+    <tr><td>AI Talent Cost Arbitrage</td><td>No — TFS is F&amp;B operations, not a tech company. No significant AI headcount.</td><td>None</td></tr>
+  </table>
+  <div class="info-box"><strong>India AI Themes:</strong> TFS has no direct exposure to any high-conviction India AI theme. It is NOT in banking/credit AI, vernacular AI, agri AI, logistics AI (airport only), diagnostics AI, or education AI. The company's thesis rests on India aviation growth, NOT India AI growth. This is appropriate and consistent — TFS is a B+ moat business, not an AI story.</div>
+
+  <h3>Section F — AI Opportunity Score &amp; Portfolio Role</h3>
+  <div class="ai-score-wrap">
+    <div class="ai-score-circle">
+      <div class="ai-score-num">28</div>
+      <div class="ai-score-label">/100</div>
+    </div>
+    <div>
+      <table>
+        <tr><th>Component</th><th>Score</th><th>Rationale</th></tr>
+        <tr><td>Data Flywheel strength</td><td class="num bad">2/20</td><td>Cosmetic — no flywheel</td></tr>
+        <tr><td>Adoption Phase timing</td><td class="num warn">8/20</td><td>Phase 1-2 in F&amp;B AI — early, limited opportunity</td></tr>
+        <tr><td>Value chain position (Level 5)</td><td class="num warn">12/20</td><td>Level 5 is best risk/return but lowest AI potential</td></tr>
+        <tr><td>India structural advantage</td><td class="num bad">2/20</td><td>No India Stack / vernacular / talent angle</td></tr>
+        <tr><td>AI threat resistance</td><td class="num good">14/20</td><td>Captive location = AI CANNOT disrupt the moat</td></tr>
+        <tr style="background:rgba(139,148,158,0.08);"><td><strong>TOTAL</strong></td><td class="num warn"><strong>28/100</strong></td><td><strong>AI NEUTRAL — standard fundamental framework governs</strong></td></tr>
+      </table>
+    </div>
+  </div>
+  <div style="margin-top:16px;padding:16px;background:rgba(139,148,158,0.08);border:1px solid rgba(139,148,158,0.3);border-radius:8px;">
+    <strong style="color:#8B949E">PORTFOLIO ROLE: AI NEUTRAL — STANDARD FUNDAMENTAL FRAMEWORK</strong>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px;">Score of 28/100 puts TFS in the "AI NEUTRAL — standard fundamental framework governs" category. Invest entirely on business fundamentals: ROCE 42%, captive location moat, aviation megatrend, lounge growth. The 14/20 on AI threat resistance is actually the most important AI score — TFS's location moat is completely immune to AI disruption. No AI model can serve you food inside a secured airport terminal. <strong>Investment horizon: 5-7 years (aviation megatrend compounder).</strong></p>
+  </div>
+</div>
+
+<footer>
+  <div class="disclaimer">
+    <strong>Buffett Quality-Value Series v5.0 — Report #44 · Travel Food Services Limited (NSE: TRAVELFOOD)</strong><br>
+    Analysis Date: April 2026 | Analyst: Buffett QV Series Framework<br><br>
+    <strong>SEBI Disclaimer:</strong> This report is for educational and informational purposes only and does not constitute investment advice, solicitation, or recommendation to buy or sell any security. Past performance is not indicative of future results. Investors should conduct their own due diligence and consult a SEBI-registered investment advisor before making any investment decisions. The analyst may or may not hold positions in the stocks discussed.<br><br>
+    <strong>Data Labels:</strong> [VERIFIED] = confirmed from official sources this session | [ESTIMATED] = cross-referenced, high confidence | [UNVERIFIED] = limited source, treat with caution<br><br>
+    <strong>Fonts:</strong> Cormorant Garamond (Google Fonts) · Space Mono (Google Fonts) · Source Sans Pro (Google Fonts)<br>
+    <strong>Sources:</strong> Screener.in, NSE India, BSE, CareEdge Ratings, ICRA, IBEF, ACI World, Investing.com, TradingView, TFS IPO Prospectus, BSE Corporate Announcements, Company Earnings Calls
+  </div>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+
+// Animate gauge bars on load
+window.addEventListener('load', function() {
+  document.querySelectorAll('.gauge-fill').forEach(function(el) {
+    var w = el.getAttribute('data-width') || el.style.width;
+    el.style.width = '0';
+    setTimeout(function() { el.style.width = w; }, 300);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suryoday SFB — Buffett QV Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Space+Mono:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--c1:#1a1a2e;--c2:#00b4d8;--c3:#f6a623;--bg:#f4f3ef;--card:#ffffff;--border:#e0ddd5;--text:#2d2b27;--muted:#7a7870;--pass:#2e7d32;--pass-bg:#e8f5e9;--fail:#c62828;--fail-bg:#ffebee;--marginal:#e65100;--marginal-bg:#fff3e0;--verified:#1565c0;--estimated:#b7600f;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.65;}
+.hero{background:linear-gradient(135deg,var(--c1) 0%,#0d0d1f 60%,#162040 100%);color:#fff;padding:36px 40px 28px;}
+.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.badge{padding:5px 14px;border-radius:20px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;}
+.badge-cat{background:var(--c3);color:#1a1a1a;}
+.badge-ai{background:rgba(255,255,255,0.12);color:#d0d0d0;border:1px solid rgba(255,255,255,0.2);}
+.badge-macro{background:rgba(0,180,216,0.2);color:var(--c2);border:1px solid rgba(0,180,216,0.3);}
+.hero h1{font-family:'Playfair Display',serif;font-size:2.5em;font-weight:900;line-height:1.1;margin-bottom:8px;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:14px;}
+.hero-lede{font-size:14px;color:rgba(255,255,255,0.82);max-width:820px;line-height:1.65;}
+.hero-pills{display:flex;gap:24px;flex-wrap:wrap;margin-top:20px;}
+.pill{display:flex;flex-direction:column;}
+.pill-label{font-size:10px;color:rgba(255,255,255,0.4);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:1px;}
+.pill-value{font-size:19px;font-weight:700;font-family:'Space Mono',monospace;}
+.pill-value.good{color:#69f0ae;} .pill-value.bad{color:#ff5252;} .pill-value.warn{color:var(--c3);} .pill-value.neu{color:#b0bec5;}
+#tab-bar{background:var(--c1);position:sticky;top:0;z-index:100;border-bottom:2px solid rgba(0,180,216,0.3);overflow-x:auto;white-space:nowrap;}
+.tab-btn{display:inline-block;padding:14px 16px;cursor:pointer;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);background:none;border:none;border-bottom:3px solid transparent;transition:all 0.2s;}
+.tab-btn:hover{color:rgba(255,255,255,0.85);}
+.tab-btn.active{color:var(--c2);border-bottom-color:var(--c2);}
+.tab-content{display:none;padding:36px 40px 70px;max-width:1100px;margin:0 auto;}
+h2.sec{font-family:'Playfair Display',serif;font-size:1.45em;color:var(--c1);border-left:4px solid var(--c2);padding-left:14px;margin:34px 0 18px;}
+h3.sub{font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:26px 0 12px;}
+.card{background:var(--card);border-radius:10px;padding:22px 24px;border:1px solid var(--border);margin-bottom:16px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:18px;}
+.card-stat{background:var(--card);border-radius:10px;padding:18px 20px;border:1px solid var(--border);}
+.stat-label{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.stat-val{font-size:22px;font-weight:700;color:var(--c1);font-family:'Space Mono',monospace;}
+.stat-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+th{background:var(--c1);color:#fff;padding:10px 12px;text-align:left;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.4px;}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:nth-child(even) td{background:#fafaf8;}
+tr:hover td{background:#f0f7ff;}
+.td-good{color:var(--pass);font-weight:700;} .td-bad{color:var(--fail);font-weight:700;} .td-warn{color:var(--marginal);font-weight:700;}
+.vf{font-size:10px;padding:1px 7px;border-radius:3px;font-family:'Space Mono',monospace;margin-left:4px;}
+.vf-v{background:#e3f2fd;color:var(--verified);} .vf-e{background:#fff8e1;color:var(--estimated);}
+.pass{color:var(--pass);background:var(--pass-bg);} .fail{color:var(--fail);background:var(--fail-bg);} .marginal{color:var(--marginal);background:var(--marginal-bg);}
+.scorecard{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;}
+.sc-row{display:grid;grid-template-columns:1fr 2fr auto;}
+.sc-hdr{background:var(--c1);color:#fff;padding:10px 14px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.sc-row>div{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;}
+.sc-row>div:first-child{font-weight:600;border-right:1px solid var(--border);}
+.sc-row>div:last-child{text-align:center;border-left:1px solid var(--border);font-family:'Space Mono',monospace;font-weight:700;font-size:11px;}
+.macro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.macro-item{background:var(--card);border-radius:8px;padding:14px 16px;border:1px solid var(--border);}
+.macro-label{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;text-transform:uppercase;margin-bottom:4px;}
+.macro-val{font-size:16px;font-weight:700;color:var(--c1);font-family:'Space Mono',monospace;}
+.ms{font-size:11px;margin-top:4px;padding:2px 8px;border-radius:4px;display:inline-block;}
+.ms-t{background:#e8f5e9;color:#2e7d32;} .ms-h{background:#ffebee;color:#c62828;} .ms-n{background:#f5f5f5;color:#616161;}
+.pillar-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px;}
+.pillar-card{background:var(--card);border-radius:10px;padding:20px 22px;border:1px solid var(--border);}
+.grade{display:inline-block;padding:5px 14px;border-radius:6px;font-family:'Space Mono',monospace;font-weight:700;font-size:15px;}
+.g-a{background:#e8f5e9;color:#1b5e20;} .g-b{background:#e3f2fd;color:#0d47a1;} .g-c{background:#fff3e0;color:#bf360c;}
+.verdict-box{background:linear-gradient(135deg,var(--c1),#0d2040);border-radius:14px;padding:32px 36px;color:#fff;border-left:6px solid var(--c3);margin:24px 0;}
+.verdict-title{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--c3);margin-bottom:10px;}
+.verdict-main{font-family:'Playfair Display',serif;font-size:2.2em;font-weight:700;margin-bottom:12px;}
+.verdict-stars{font-size:28px;color:var(--c3);margin-bottom:18px;letter-spacing:3px;}
+.verdict-quote{font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;border-left:2px solid var(--c3);padding-left:16px;font-style:italic;margin-top:16px;}
+.upgrade-list{list-style:none;padding:0;}
+.upgrade-list li{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.upgrade-num{min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--c2);color:var(--c1);border-radius:50%;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.val-table{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:18px;}
+.val-hdr{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;background:var(--c1);}
+.val-hdr>div{padding:10px 14px;color:#fff;font-family:'Space Mono',monospace;font-size:11px;text-align:center;}
+.val-hdr>div:first-child{text-align:left;}
+.val-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;border-top:1px solid var(--border);}
+.val-row>div{padding:11px 14px;font-size:13px;text-align:center;}
+.val-row>div:first-child{text-align:left;border-right:1px solid var(--border);font-weight:500;}
+.val-row:nth-child(even)>div{background:#fafaf8;}
+.val-base{color:var(--c1);font-weight:700;font-family:'Space Mono',monospace;}
+.val-accent{background:#e8f5e9 !important;font-weight:700;font-family:'Space Mono',monospace;}
+.ma-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.ma-card{background:var(--card);border-radius:8px;padding:14px;border:1px solid var(--border);text-align:center;}
+.ma-label{font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;text-transform:uppercase;}
+.ma-val{font-size:16px;font-weight:700;font-family:'Space Mono',monospace;color:var(--c1);margin:5px 0;}
+.above{background:#e8f5e9;color:#2e7d32;font-size:11px;padding:2px 8px;border-radius:10px;display:inline-block;}
+.below{background:#ffebee;color:#c62828;font-size:11px;padding:2px 8px;border-radius:10px;display:inline-block;}
+.flywheel-box{background:linear-gradient(135deg,#0d2040,#1a3a5c);border-radius:12px;padding:24px 28px;color:#fff;margin:20px 0;border:1px solid rgba(0,180,216,0.2);}
+.fw-title{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--c2);margin-bottom:8px;}
+.fw-verdict{font-size:1.25em;font-weight:700;margin-bottom:14px;}
+.fw-score-num{font-family:'Space Mono',monospace;font-size:32px;color:var(--c3);}
+.fw-q-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+.fw-q{background:rgba(255,255,255,0.07);border-radius:8px;padding:14px;}
+.fw-ql{font-family:'Space Mono',monospace;font-size:9px;color:var(--c2);text-transform:uppercase;margin-bottom:6px;}
+.fw-qt{font-size:12px;color:rgba(255,255,255,0.8);line-height:1.5;}
+.fw-qi{margin-top:8px;font-size:16px;}
+.sh-bar{height:28px;border-radius:6px;display:flex;overflow:hidden;margin:12px 0;}
+.sh-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Space Mono',monospace;flex-direction:column;line-height:1.2;}
+.ai-badge-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+.ai-badge{padding:10px 16px;border-radius:8px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;}
+.ai-neutral{background:#f5f5f5;color:#424242;border:2px solid #bdbdbd;}
+.info-box{background:#e3f2fd;border-left:4px solid var(--verified);border-radius:8px;padding:14px 18px;margin:12px 0;font-size:13px;line-height:1.6;}
+.warn-box{background:var(--marginal-bg);border-left:4px solid var(--marginal);border-radius:8px;padding:14px 18px;margin:12px 0;font-size:13px;line-height:1.6;}
+.critical-box{background:var(--fail-bg);border-left:4px solid var(--fail);border-radius:8px;padding:14px 18px;margin:12px 0;font-size:13px;line-height:1.6;}
+.series-table th{font-size:10px;padding:8px 9px;}
+.series-table td{font-size:12px;padding:7px 9px;}
+.series-table tr.active-row td{background:#e3f2fd !important;font-weight:700;}
+.vc-strip{display:flex;overflow-x:auto;gap:0;margin-bottom:16px;}
+.vc-box{min-width:130px;padding:12px;text-align:center;background:#f5f5f5;border:1px solid var(--border);}
+.vc-box.active{background:#e3f2fd;border:2px solid var(--c2);}
+.vc-num{font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;}
+.vc-name{font-size:12px;font-weight:600;margin-top:4px;}
+.vc-eg{font-size:10px;color:var(--muted);}
+footer{background:var(--c1);color:rgba(255,255,255,0.4);padding:24px 40px;font-size:11px;font-family:'Space Mono',monospace;line-height:1.9;}
+@media(max-width:680px){.hero{padding:24px 20px;}.tab-content{padding:20px 16px 50px;}.card-grid,.macro-grid,.pillar-grid,.ma-grid,.fw-q-grid{grid-template-columns:1fr;}.hero h1{font-size:1.8em;}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badges">
+    <span class="badge badge-cat">CATEGORY D · TURNAROUND</span>
+    <span class="badge badge-ai">&#9898; AI NEUTRAL</span>
+    <span class="badge badge-macro">&#9888; MFI STRESS CYCLE PEAKING</span>
+  </div>
+  <h1>Suryoday Small Finance Bank</h1>
+  <div class="hero-sub">NSE: SURYODAY &middot; BSE: 543279 &middot; Buffett QV Series v5.0 &middot; Analysed April 2026</div>
+  <div class="hero-lede">A micro-entrepreneur&ndash;focused Small Finance Bank pivoting from MFI-heavy lending to a diversified secured retail model. Emerging from a severe NPA cycle &mdash; GNPA peaked at 8.5% (Q1 FY26), improved to 6.5% (Q4 FY26). CGFMU government guarantee covers the residual stressed book. Trading at 0.63x book value &mdash; a deep discount that prices in permanent impairment, which is implausible given CRAR 21.9%, deposit franchise growth (+32% YoY), and advances acceleration (+29% YoY Q4 FY26).</div>
+  <div class="hero-pills">
+    <div class="pill"><span class="pill-label">CMP (Apr 2026)</span><span class="pill-value warn">~&#8377;130</span></div>
+    <div class="pill"><span class="pill-label">52W Range</span><span class="pill-value neu">&#8377;98&ndash;161</span></div>
+    <div class="pill"><span class="pill-label">P/B Ratio</span><span class="pill-value good">0.63x</span></div>
+    <div class="pill"><span class="pill-label">GNPA Q4 FY26</span><span class="pill-value bad">6.5% &#8595;</span></div>
+    <div class="pill"><span class="pill-label">Advances YoY</span><span class="pill-value good">+29%</span></div>
+    <div class="pill"><span class="pill-label">CRAR</span><span class="pill-value good">21.9%</span></div>
+    <div class="pill"><span class="pill-label">Book Value~</span><span class="pill-value neu">&#8377;207</span></div>
+    <div class="pill"><span class="pill-label">Mkt Cap</span><span class="pill-value neu">&#8377;1,422 Cr</span></div>
+  </div>
+</div>
+
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 &middot; Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 &middot; Macro</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 &middot; Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 &middot; Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 &middot; Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 &middot; Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 &middot; Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 &middot; Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 &middot; Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 &middot; AI Intel</button>
+</div>
+
+<!-- TAB 0 -->
+<div class="tab-content" id="tab0" style="display:block;">
+<h2 class="sec">Business Overview</h2>
+<div class="card">
+<p>Suryoday Small Finance Bank (SSFB) started microfinance operations in 2009 as an NBFC-MFI focusing on underserved micro-entrepreneurs. It received the RBI SFB licence in 2016, commenced SFB operations in January 2017, and listed on NSE/BSE in March 2021 (IPO price &#8377;305/share). Today: 712 banking outlets across 16 states and UTs &mdash; deepest penetration in Maharashtra, Tamil Nadu, Odisha &mdash; serving 3.8 million customers through 8,759 employees.</p>
+<br>
+<p><strong>Strategic Pivot:</strong> SSFB is systematically transitioning from unsecured JLG microfinance to secured retail assets: mortgage (micro home loans), two-wheelers, commercial vehicles, MSME, supply chain finance, and gold loans (launched January 2026). The non-Inclusive Finance book crossed 55% of gross advances in H1 FY26. Individual &ldquo;Vikas Loans&rdquo; within IF grew 88.8% YoY in H1 FY26.</p>
+<br>
+<p><strong>CGFMU Shield:</strong> Eligible MFI loans enrolled under the Credit Guarantee Fund for Micro Units (CGFMU) scheme from FY23. As of FY25: GNPA &#8377;734 Cr, NNPA &#8377;457 Cr, CGFMU receivable &#8377;460 Cr &mdash; the government guarantee effectively covers 100% of net NPA. Second interim claim of &#8377;55.67 Cr received June 2025. This is the single most important differentiator vs other stressed SFB/MFI players. <span class="vf vf-v">VERIFIED</span></p>
+</div>
+<div class="card-grid">
+  <div class="card-stat"><div class="stat-label">Founded / SFB Start</div><div class="stat-val" style="font-size:16px;">2009 / Jan 2017</div><div class="stat-sub">Listed Mar 2021 &middot; IPO &#8377;305</div></div>
+  <div class="card-stat"><div class="stat-label">Banking Outlets</div><div class="stat-val">712</div><div class="stat-sub">16 states &amp; UTs &middot; 197 Unbanked Rural Centres</div></div>
+  <div class="card-stat"><div class="stat-label">Gross Advances Q4 FY26</div><div class="stat-val">&#8377;13,201 Cr</div><div class="stat-sub">+29% YoY &middot; Provisional <span class="vf vf-v">VERIFIED</span></div></div>
+  <div class="card-stat"><div class="stat-label">Total Deposits Q4 FY26</div><div class="stat-val">&#8377;13,958 Cr</div><div class="stat-sub">+32% YoY &middot; CASA +42% YoY</div></div>
+  <div class="card-stat"><div class="stat-label">Non-IF (Secured) Book</div><div class="stat-val">~55%</div><div class="stat-sub">H1 FY26 &middot; structural diversification</div></div>
+  <div class="card-stat"><div class="stat-label">MD &amp; CEO</div><div class="stat-val" style="font-size:14px;">Baskar Babu Ramachandran</div><div class="stat-sub">Co-founder &middot; Bought 50K shares Mar 2026</div></div>
+</div>
+<h2 class="sec">Why Category D &mdash; Turnaround Thesis</h2>
+<div class="card" style="border-left:4px solid var(--c3);">
+<p><strong>The Bull Case:</strong> 4 signals suggest the NPA stress is peaking: (1) GNPA improved YoY for first time in Q4 FY26 (8.5%&#8594;6.5%); (2) Disbursements surged +46% YoY in Q4; (3) CGFMU receivable exceeds NNPA (sovereign backstop); (4) CEO buying stock at open market. If GNPA normalises to 3&ndash;4% by FY28&ndash;29 and ROA recovers to 1.5%, justified P/B approaches 1.0&ndash;1.3x = &#8377;207&ndash;270, offering 60&ndash;110% upside from &#8377;130.</p>
+<br>
+<p><strong>The Bear Case:</strong> Low promoter holding (22.4%) &mdash; governance gap. Planned &#8377;1,000 Cr equity raise dilutes by ~30&ndash;40%. NIM compressing as secured mix rises (10% NIM peak &#8594; ~7.5%). Rural income stress in certain geographies delays MFI book resolution. This requires patience: 3&ndash;5 year compounding recovery, not a 12-month trade.</p>
+</div>
+<table>
+<tr><th>Standard Framework Element</th><th>Banking / Category D Adaptation</th></tr>
+<tr><td>Owner Earnings / FCF</td><td>Not applicable. Use NII + Other Income &minus; Credit Cost &minus; Opex = Core Profit</td></tr>
+<tr><td>ROIC as moat proof</td><td>ROA / ROE / NIM / CASA ratio as franchise quality indicators</td></tr>
+<tr><td>Primary valuation</td><td>Justified P/B (Gordon Growth Model); normalised earnings secondary</td></tr>
+<tr><td>WACC</td><td>Cost of equity 14&ndash;16% (Cat D + small-cap illiquidity premium)</td></tr>
+<tr><td>Terminal growth ceiling</td><td>&le; India Nominal GDP (~9.7%); SSFB target: 7&ndash;8% given size/segment</td></tr>
+</table>
+</div>
+
+<!-- TAB 1 -->
+<div class="tab-content" id="tab1">
+<h2 class="sec">Layer 1 &mdash; India Macro Anchor</h2>
+<div class="macro-grid">
+  <div class="macro-item"><div class="macro-label">India Real GDP FY26</div><div class="macro-val">7.6%</div><span class="ms ms-t">RBI New Series Apr 2026</span></div>
+  <div class="macro-item"><div class="macro-label">CPI FY26 (New Series)</div><div class="macro-val">~2.1%</div><span class="ms ms-t">Record Low &middot; Base 2024</span></div>
+  <div class="macro-item"><div class="macro-label">Nominal GDP FY26</div><div class="macro-val">~9.7%</div><span class="ms ms-n">Terminal Growth Ceiling</span></div>
+  <div class="macro-item"><div class="macro-label">RBI Repo Rate</div><div class="macro-val">5.25%</div><span class="ms ms-t">&minus;125 bps in FY26 &middot; Neutral</span></div>
+  <div class="macro-item"><div class="macro-label">India 10Y G-Sec Yield</div><div class="macro-val">~6.97%</div><span class="ms ms-h">Elevated &middot; Oil Shock Risk</span></div>
+  <div class="macro-item"><div class="macro-label">RBI FY27 GDP / CPI</div><div class="macro-val">6.9% / 4.6%</div><span class="ms ms-n">Nominal FY27 ~11.5%</span></div>
+</div>
+<h2 class="sec">Macro Cycle Dashboard &mdash; SFB Impact</h2>
+<table>
+<tr><th>Dimension</th><th>Status</th><th>SSFB Impact</th><th>Direction</th></tr>
+<tr><td>Rural Income Cycle</td><td>Neutral &#8594; Recovery</td><td>Kharif stable; MSP hikes; rural wages recovering; reduces MFI borrower stress</td><td class="td-good">TAILWIND</td></tr>
+<tr><td>Urban Consumption</td><td>Moderate Growth</td><td>MSME + mortgage demand improving; supports secured book</td><td class="td-good">TAILWIND</td></tr>
+<tr><td>MFI Credit Cycle</td><td>Stress (Peaking)</td><td>MFIN guardrails tightening; systemic over-indebtedness unwinding; Q4 FY26 GNPA first YoY improvement</td><td class="td-warn">NEUTRAL (TURNING)</td></tr>
+<tr><td>Interest Rate Cycle</td><td>Easing (125 bps)</td><td>Repo at 5.25%; cost of funds relief in FY27 as deposits reprice</td><td class="td-good">TAILWIND</td></tr>
+<tr><td>Government Schemes</td><td>Active Support</td><td>PM MUDRA, CGFMU, Jan Dhan &mdash; all supportive of SFB ecosystem</td><td class="td-good">TAILWIND</td></tr>
+<tr><td>AI Adoption Cycle</td><td>Phase 2&ndash;3 (Banking)</td><td>AI credit scoring accelerating; SSFB is follower not leader; neutral impact</td><td class="td-warn">NEUTRAL</td></tr>
+<tr><td>West Asia / Oil Shock</td><td>Risk (Brent ~$110)</td><td>CPI upside risk FY27; weighs on rural purchasing power; FPI outflows</td><td class="td-bad">HEADWIND</td></tr>
+</table>
+<p style="margin-top:8px;font-size:13px;"><strong>Macro Composite: MIXED-TO-IMPROVING.</strong> Rate easing, rural recovery, and MFI cycle turning are positives; oil shock is a near-term headwind. Net: supportive of a 12&ndash;24 month recovery narrative. <span class="vf vf-v">VERIFIED</span> &mdash; RBI MPC Apr 8 2026; 5paisa FY26 Report; DD News.</p>
+<h2 class="sec">Layer 2 &mdash; Sector Growth Derivation</h2>
+<table>
+<tr><th>Segment</th><th>Stress</th><th>Base</th><th>Acceleration</th><th>AI Impact</th></tr>
+<tr><td>SFB / NBFC Credit Overall</td><td>8&ndash;12%</td><td>18&ndash;22%</td><td>25&ndash;28%</td><td>AI NEUTRAL &mdash; efficiency tool</td></tr>
+<tr><td>Microfinance / JLG</td><td>0&ndash;5%</td><td>10&ndash;12%</td><td>15&ndash;18%</td><td>AI credit scoring &mdash; Phase 2</td></tr>
+<tr><td>Secured Retail (Mortgage + Wheels)</td><td>12&ndash;15%</td><td>22&ndash;26%</td><td>28&ndash;35%</td><td>AI underwriting &mdash; Phase 3</td></tr>
+<tr><td>MSME / Supply Chain Finance</td><td>10&ndash;15%</td><td>20&ndash;25%</td><td>28&ndash;35%</td><td>AI invoice verification &mdash; Phase 2</td></tr>
+<tr><td>Gold Loans (new segment)</td><td>15%</td><td>25&ndash;30%</td><td>40%+</td><td>AI NEUTRAL &mdash; collateral-backed</td></tr>
+</table>
+<h2 class="sec">Layer 3 &mdash; Company Alpha &amp; Growth Rate Matrix</h2>
+<table>
+<tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Rationale</th></tr>
+<tr><td>Market Share Gain</td><td>Active</td><td class="td-good">+2%</td><td>+1%</td><td>Deposits/advances outgrowing SFB peers</td></tr>
+<tr><td>Product Diversification</td><td>Active</td><td class="td-good">+3%</td><td>+2%</td><td>Gold loans, SCF, MSME &mdash; large TAM</td></tr>
+<tr><td>Geographic Expansion</td><td>Active</td><td class="td-good">+1%</td><td>+1%</td><td>Deepening from 3 core states to 16</td></tr>
+<tr><td>Pricing Power / NIM</td><td>Exhausted</td><td class="td-bad">&minus;2%</td><td>0%</td><td>NIM compressing 200&ndash;250 bps as secured mix rises</td></tr>
+<tr><td>AI Alpha (6a+6b+6c)</td><td>Potential</td><td>+1%</td><td>+1%</td><td>Digital credit line; UPI disbursal; limited contribution</td></tr>
+<tr><td><strong>Total Alpha (net)</strong></td><td>&mdash;</td><td><strong>+5%</strong></td><td><strong>+5%</strong></td><td>NIM compression offset by volume/mix alpha</td></tr>
+</table>
+<table>
+<tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr>
+<tr><td>India Real GDP</td><td>5.5%</td><td>6.9%</td><td>8.0%+</td></tr>
+<tr><td>Company Advances CAGR</td><td>10%</td><td>20%</td><td>26%</td></tr>
+<tr><td>NIM (FY27&ndash;28)</td><td>7.5%</td><td>8.0%</td><td>8.5%</td></tr>
+<tr><td>Credit Cost (FY27&ndash;28)</td><td>3.0%</td><td>1.8%</td><td>1.0%</td></tr>
+<tr><td>Normalised ROA (FY28)</td><td>0.8%</td><td>1.5%</td><td>2.0%</td></tr>
+<tr><td>Terminal Growth (SSFB)</td><td>6.5%</td><td>7.5%</td><td>8.5%</td></tr>
+<tr><td>Key Risk</td><td>CGFMU delayed; MFI extends to FY28</td><td>NIM lower; equity dilution drag</td><td>Large banks intensify SFB competition</td></tr>
+</table>
+<p style="font-size:12px;color:var(--muted);">Sensitivity: 0.5% change in normalised ROA changes Base IV by ~&#8377;30&ndash;40/share. 0.5x change in terminal P/B changes Base IV by ~&#8377;100/share.</p>
+</div>
+
+<!-- TAB 2 -->
+<div class="tab-content" id="tab2">
+<h2 class="sec">Historical Performance</h2>
+<div class="card-grid">
+  <div class="card-stat"><div class="stat-label">Revenue FY25</div><div class="stat-val">&#8377;2,171 Cr</div><div class="stat-sub">+20% YoY &middot; 5Y CAGR ~20.5% <span class="vf vf-v">VERIFIED</span></div></div>
+  <div class="card-stat"><div class="stat-label">PAT FY25</div><div class="stat-val" style="color:var(--fail);">&#8377;115 Cr</div><div class="stat-sub">&minus;46.8% YoY &middot; MFI NPA shock</div></div>
+  <div class="card-stat"><div class="stat-label">FY26E Full Year PAT</div><div class="stat-val" style="color:var(--marginal);">~&#8377;140 Cr</div><div class="stat-sub">9M FY26 = &#8377;102 Cr <span class="vf vf-e">ESTIMATED</span></div></div>
+  <div class="card-stat"><div class="stat-label">GNPA Q4 FY26</div><div class="stat-val" style="color:var(--marginal);">6.5% &#8595;</div><div class="stat-sub">From 8.5% peak Q1 FY26 <span class="vf vf-v">VERIFIED</span></div></div>
+  <div class="card-stat"><div class="stat-label">CRAR Q3 FY26</div><div class="stat-val" style="color:var(--pass);">21.9%</div><div class="stat-sub">Tier 1: 21% &middot; Well above 15% RBI min</div></div>
+  <div class="card-stat"><div class="stat-label">CGFMU Receivable</div><div class="stat-val" style="color:var(--pass);">&#8377;460 Cr</div><div class="stat-sub">vs NNPA &#8377;457 Cr &middot; 100% covered</div></div>
+</div>
+<h3 class="sub">5-Year ROE / ROA / NIM History</h3>
+<table>
+<tr><th>FY</th><th>ROE</th><th>ROA</th><th>NIM</th><th>GNPA %</th><th>PAT (&#8377;Cr)</th><th>Revenue (&#8377;Cr)</th><th>Phase</th></tr>
+<tr><td>FY22</td><td class="td-warn">~5%</td><td class="td-warn">~0.7%</td><td>~8.5%</td><td class="td-warn">~3.2%</td><td>~60</td><td>~1,100</td><td>Recovery</td></tr>
+<tr><td>FY23</td><td class="td-warn">4.9%</td><td class="td-warn">0.79%</td><td>8.7%</td><td class="td-warn">3.1%</td><td>~77</td><td>~1,350</td><td>Rebuilding</td></tr>
+<tr><td>FY24</td><td class="td-good">12.0%</td><td class="td-good">1.74%</td><td>9.0%</td><td class="td-good">2.8%</td><td>216</td><td>1,808</td><td>PEAK performance</td></tr>
+<tr><td>FY25</td><td class="td-bad">~6.5%</td><td class="td-bad">~0.7%</td><td>~8.3%</td><td class="td-bad">7.2%</td><td>115</td><td>2,171</td><td>MFI NPA shock</td></tr>
+<tr><td>FY26E</td><td class="td-warn">~5.5%</td><td class="td-warn">~0.8%</td><td>~7.8%</td><td class="td-warn">6.5%</td><td>~140</td><td>~2,500</td><td>Recovery starts</td></tr>
+<tr><td>FY28E (Target)</td><td class="td-good">~13%</td><td class="td-good">~1.5%</td><td>~8.0%</td><td class="td-good">~3.0%</td><td>~270</td><td>~3,500</td><td>Normalised</td></tr>
+</table>
+<p style="font-size:12px;color:var(--muted);">FY22&ndash;FY25 <span class="vf vf-v">VERIFIED</span> from company filings; FY26E, FY28E <span class="vf vf-e">ESTIMATED</span>. 3-year avg ROE ~8% (Screener.in).</p>
+<h3 class="sub">Quarterly Trend</h3>
+<table>
+<tr><th>Quarter</th><th>Advances (&#8377;Cr)</th><th>Deposits (&#8377;Cr)</th><th>NII (&#8377;Cr)</th><th>PAT (&#8377;Cr)</th><th>GNPA %</th><th>CTI %</th></tr>
+<tr><td>Q4 FY24</td><td>7,600</td><td>~7,000</td><td>270.8</td><td class="td-good">60.8</td><td class="td-good">2.8%</td><td>61.7%</td></tr>
+<tr><td>Q4 FY25</td><td>10,251</td><td>10,580</td><td>244.7</td><td class="td-bad">&minus;33.8</td><td class="td-bad">7.2%</td><td>84.7%</td></tr>
+<tr><td>Q1 FY26</td><td>10,846</td><td>11,312</td><td>247.1</td><td class="td-warn">35.3</td><td class="td-bad">8.5%</td><td>~75%</td></tr>
+<tr><td>Q2 FY26</td><td>11,124</td><td>11,991</td><td>~245</td><td class="td-warn">30.0</td><td class="td-warn">5.9%</td><td>76.6%</td></tr>
+<tr><td>Q3 FY26</td><td>11,885</td><td>~12,500</td><td>~260</td><td class="td-warn">36.5</td><td class="td-warn">6.6%</td><td>73.6%</td></tr>
+<tr><td>Q4 FY26 (Provisional)</td><td class="td-good">13,201</td><td class="td-good">13,958</td><td>TBA</td><td>TBA</td><td class="td-good">6.5% &#8595;</td><td>TBA</td></tr>
+</table>
+<h3 class="sub">Banking Quality Scorecard</h3>
+<div class="scorecard">
+<div style="display:grid;grid-template-columns:1fr 2fr auto;background:var(--c1);">
+  <div class="sc-hdr">Test</div><div class="sc-hdr">Finding</div><div class="sc-hdr">Result</div>
+</div>
+<div class="sc-row"><div>ROE &ge; 15% sustained</div><div>Only FY24 reached 12%; structurally capped at 12&ndash;15% in SFB model due to capital requirements.</div><div class="fail">&#10007; FAIL</div></div>
+<div class="sc-row"><div>ROA &ge; 1.5% (SFB benchmark)</div><div>FY24 peak 1.74% &#10003;. FY25 fell to ~0.7%. Recovery targeted 1.4&ndash;1.5% by FY27.</div><div class="marginal">~ MARGINAL</div></div>
+<div class="sc-row"><div>GNPA &le; 3%</div><div>6.5% Q4 FY26 &mdash; improving but elevated. Effective GNPA post-CGFMU cover ~0.1%.</div><div class="fail">&#10007; FAIL</div></div>
+<div class="sc-row"><div>NNPA &le; 1%</div><div>4.6% headline FY25; CGFMU receivable (&#8377;460 Cr) vs NNPA (&#8377;457 Cr) = 100% covered. Effective NNPA ~0%.</div><div class="marginal">~ MARGINAL</div></div>
+<div class="sc-row"><div>NIM &ge; 8%</div><div>FY24 peak 9.0%; declining to ~7.5&ndash;8% as secured mix rises. Strategic trade-off &mdash; not impairment.</div><div class="marginal">~ MARGINAL</div></div>
+<div class="sc-row"><div>CASA &ge; 20%</div><div>CASA ~21&ndash;22% (Q3 FY26); CASA deposits +42% YoY Q4 FY26. Building franchise momentum.</div><div class="marginal">~ MARGINAL</div></div>
+<div class="sc-row"><div>CRAR &ge; 15%</div><div>21.9% with Tier 1 at 21%. Strong. Declining from 25.8% (FY25) as advances grow &mdash; hence &#8377;1,000 Cr raise planned.</div><div class="pass">&#10003; PASS</div></div>
+<div class="sc-row"><div>Revenue CAGR &ge; Sector</div><div>5Y Revenue CAGR ~20.5% vs SFB sector ~16.5%. Consistent top-line outperformance despite asset quality stress.</div><div class="pass">&#10003; PASS</div></div>
+<div class="sc-row"><div>PCR &ge; 70%</div><div>83.9% PCR (excl. technical write-offs) as of June 2024. Well-provisioned against gross NPAs.</div><div class="pass">&#10003; PASS</div></div>
+<div class="sc-row"><div>Cost-to-Income &le; 60%</div><div>FY25: 70.6%; Q2 FY26: 76.6%; Q3 FY26: 73.6%. Elevated due to provisioning and investment phase. Target &lt;65% FY27.</div><div class="fail">&#10007; FAIL</div></div>
+</div>
+<div class="info-box"><strong>CGFMU Guarantee Explained:</strong> CGFMU receivable (&#8377;460 Cr) effectively equals NNPA (&#8377;457 Cr). Second interim claim of &#8377;55.67 Cr received June 2025. CGFMU claims are government-backed (sovereign credit risk, not commercial risk). The stressed MFI book is thus de-risked at the net level. Headline GNPA of 6.5% is misleading as a loss measure &mdash; effective loss exposure is substantially lower. <span class="vf vf-v">VERIFIED</span></div>
+<h3 class="sub">Earnings Quality &mdash; O&rsquo;Glove Framework (Banking Adapted)</h3>
+<table>
+<tr><th>Test</th><th>Finding</th><th>Result</th></tr>
+<tr><td>Test 1 &mdash; Cash Conversion</td><td>Operating cash flow positive per Screener; deposits and advances growing in tandem; 2-year improvement in net cash flow.</td><td class="td-good">ACCEPTABLE</td></tr>
+<tr><td>Test 2 &mdash; Asset Quality (GNPA proxy for DSO)</td><td>GNPA spiked 2.8%&#8594;8.5% due to systemic MFI crisis, not fraud. CGFMU provides government backstop on residual stressed book. Now declining.</td><td class="td-warn">SUSPECT (SECTORAL) &mdash; widen MoS 5%</td></tr>
+<tr><td>Test 3 &mdash; Accounting Policy</td><td>No material accounting policy changes. CGFMU classification as quasi-secured is disclosed and RBI-compliant. No income recognition manipulation found.</td><td class="td-good">CLEAN</td></tr>
+<tr><td>Test 4 &mdash; Transparency</td><td>GNPA, NNPA, PCR, CGFMU coverage disclosed in every quarterly press release. No window-dressing evidence.</td><td class="td-good">CLEAN</td></tr>
+<tr><td>Test 5 &mdash; NIM Consistency (Gross Margin proxy)</td><td>NIM declining from 9.0% to ~7.5&ndash;8% &mdash; a deliberate strategic choice (secured portfolio), transparent in earnings calls.</td><td class="td-warn">TRANSITIONAL</td></tr>
+</table>
+<div class="warn-box"><strong>Overall Earnings Quality: ACCEPTABLE.</strong> NPA spike is real but sector-driven and CGFMU-protected. Widen MoS 5% given elevated NPA. No accounting irregularities. Management communication transparent and consistent with actual results.</div>
+</div>
+
+<!-- TAB 3 -->
+<div class="tab-content" id="tab3">
+<h2 class="sec">Moat Assessment &mdash; Deposit Franchise + Relationship Lending</h2>
+<div class="card"><p>SFBs face a challenging competitive landscape: MFI lenders below, large private banks above, fintech disruptors from all sides. Suryoday's moat is <strong>narrow, geographic, and relationship-based</strong> &mdash; strong in core states but without the national brand, technology edge, or network effects of leading players. The moat is <em>sufficient</em> for a 3&ndash;5 year recovery play but requires ongoing investment to sustain beyond a decade.</p></div>
+<div class="card-grid">
+  <div class="card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">DEPOSIT FRANCHISE &#9733;&#9733;&#9733;</h4><p style="font-size:13px;">Deposits grew 32&ndash;39% YoY. CASA at ~22% &mdash; improving but below 25%+ comfort zone. In Tier 2/3 markets, SSFB's trusted local brand commands loyalty absent from fintech alternatives. Rate advantage narrows as RBI cuts &mdash; a structural NIM risk.</p></div>
+  <div class="card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">LAST-MILE CUSTOMER RELATIONSHIP &#9733;&#9733;&#9733;&#9733;</h4><p style="font-size:13px;">3.8 million micro-entrepreneurs across 16 states. Relationships built by field officers over multiple loan cycles are genuinely sticky. The shift from JLG to individual Vikas Loans deepens this relationship &mdash; borrowers now have a personal account, not just a group loan. SSFB's most durable competitive advantage.</p></div>
+  <div class="card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">GEOGRAPHIC DENSITY &#9733;&#9733;&#9733;</h4><p style="font-size:13px;">712 banking outlets with 197 Unbanked Rural Centres. Cost to replicate for a new entrant: &#8377;500&ndash;800 Cr and 3&ndash;5 years. Not permanent but provides meaningful runway. Threatened over a 10-year horizon by mobile lending platforms.</p></div>
+  <div class="card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">RBI SFB LICENCE &#9733;&#9733;&#9733;</h4><p style="font-size:13px;">Regulatory licence limits new entrants. However, 10+ SFBs already licensed. Licence is necessary but not sufficient as a moat. Compliance track record and proactive risk governance (CRO reappointed Apr 2026) are positives.</p></div>
+</div>
+<div class="flywheel-box">
+  <div class="fw-title">DATA FLYWHEEL ASSESSMENT &mdash; PILLAR 1</div>
+  <div class="fw-verdict">&#11088; AI FEATURE &mdash; NOT A MOAT (2/10)</div>
+  <div class="fw-q-grid">
+    <div class="fw-q"><div class="fw-ql">Q1 &mdash; Proprietary Data?</div><div class="fw-qt">3.8M borrower repayment outcomes &mdash; unique but insufficient scale vs HDFC Bank (50M+ txns). Data exists; not defensibly large. Partial credit.</div><div class="fw-qi">&#9888; PARTIAL</div></div>
+    <div class="fw-q"><div class="fw-ql">Q2 &mdash; AI Improves with Usage?</div><div class="fw-qt">No verifiable published metrics showing SSFB's AI improving measurably with volume. Digital credit line has 5L+ customers but no published accuracy improvement data.</div><div class="fw-qi">&#10060; NOT CONFIRMED</div></div>
+    <div class="fw-q"><div class="fw-ql">Q3 &mdash; Better AI &rarr; More Users?</div><div class="fw-qt">Customer growth driven by branch expansion and field officers, not AI-driven product superiority. No self-reinforcing AI loop detectable.</div><div class="fw-qi">&#10060; NO LOOP</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;margin-top:8px;">
+    <div><div style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.5);">FLYWHEEL SCORE</div><div class="fw-score-num">2/10</div></div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.72);">AI is an operational tool. No moat grade uplift. Investment decision is driven by turnaround fundamentals and deposit franchise recovery &mdash; not an AI narrative.</div>
+  </div>
+</div>
+<h3 class="sub">ROA Trend &mdash; Moat Proof for Banking</h3>
+<table>
+<tr><th>Year</th><th>ROA</th><th>NIM</th><th>Credit Cost</th><th>Moat Signal</th></tr>
+<tr><td>FY23</td><td class="td-warn">0.79%</td><td>8.7%</td><td>~2.2%</td><td>Moat strengthening on NIM expansion</td></tr>
+<tr><td>FY24</td><td class="td-good">1.74%</td><td>9.0%</td><td>~1.5%</td><td>PEAK ROA &mdash; moat at widest</td></tr>
+<tr><td>FY25</td><td class="td-bad">~0.7%</td><td>~8.3%</td><td>~3.5%</td><td>MFI stress overwhelms moat temporarily</td></tr>
+<tr><td>FY28E</td><td class="td-good">~1.5%</td><td>~8.0%</td><td>~1.5%</td><td>Target: narrower but more stable (secured mix)</td></tr>
+</table>
+<h3 class="sub">Macro Moat Stress Test</h3>
+<table>
+<tr><th>Moat Component</th><th>Stress Impact</th><th>Verdict</th></tr>
+<tr><td>MFI Customer Relationships</td><td>Systemic over-indebtedness; CGFMU claims delayed</td><td class="td-warn">WEAKENS &mdash; already happening; CGFMU provides government floor</td></tr>
+<tr><td>Deposit Franchise</td><td>Large bank FD rate war; HDFC/SBI aggressive in Tier 2</td><td class="td-warn">HOLDS but rate premium compresses</td></tr>
+<tr><td>Geographic Network</td><td>Fintech lenders (BharatPe, Navi) penetrate rural via UPI</td><td class="td-warn">HOLDS 3&ndash;5 yrs; threatened over 10-yr horizon</td></tr>
+<tr><td>SFB Licence Value</td><td>RBI further deregulates; new SFB licences granted</td><td class="td-good">HOLDS &mdash; RBI unlikely to rapidly expand SFB list post-2024 stress</td></tr>
+</table>
+<div class="warn-box"><strong>Overall Moat Grade: B&minus;</strong> &mdash; Narrow, geographic moat. No wide-moat characteristics. Sufficient for a 3&ndash;5 year recovery play. Not threatened by AI &mdash; threatened by capital-light digital lending models that can scale faster than branch networks. Moat resilience score: 6/10.</div>
+</div>
+
+<!-- TAB 4 -->
+<div class="tab-content" id="tab4">
+<h2 class="sec">Management Profile</h2>
+<div class="card-grid">
+  <div class="card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">MD &amp; CEO &mdash; BASKAR BABU RAMACHANDRAN</h4><p style="font-size:13px;line-height:1.7;">Co-founder with 25+ years in financial inclusion. MBA (IIM Ahmedabad). Has piloted SSFB through two major stress cycles: COVID (FY21) and MFI systemic stress (FY25). <strong>Key Signal:</strong> Bought 50,000 shares in the open market in March 2026 at ~&#8377;130. CEO holding post-purchase: 5.22%. Buying at prices 57% below IPO with full knowledge of the NPA trajectory is a meaningful insider signal of conviction.</p></div>
+  <div class="card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">STRATEGIC FORESIGHT TRACK RECORD</h4><p style="font-size:13px;line-height:1.7;">CGFMU enrollment starting FY23 &mdash; proactive portfolio insurance before the NPA crisis became visible. Transition to secured lending started FY22. Gold loan entry January 2026 adds a stable, high-yield, collateral-backed product in a sector growing 25&ndash;30% annually. These decisions show strategic foresight, not reactive crisis management.</p></div>
+</div>
+<h3 class="sub">Shareholding Integrity</h3>
+<table>
+<tr><th>Factor</th><th>Status</th><th>Evidence</th><th>Verdict</th></tr>
+<tr><td>Promoter Holding</td><td>22.44%</td><td>Flat 5+ quarters</td><td class="td-warn">CONCERN &mdash; very low; below 30% governance comfort zone</td></tr>
+<tr><td>Promoter Pledge</td><td>0%</td><td>No pledges in any recent disclosures</td><td class="td-good">CLEAN &mdash; no pledge risk</td></tr>
+<tr><td>CEO Open Market Purchase</td><td>50,000 shares &middot; Mar 2026</td><td>Disclosed per SEBI LODR; holding 5.22%</td><td class="td-good">POSITIVE &mdash; insider conviction signal</td></tr>
+<tr><td>Equity Dilution Risk</td><td>&#8377;1,000 Cr planned</td><td>Postal ballot e-voting Feb 2026</td><td class="td-warn">DILUTIVE &mdash; ~30&ndash;40% share count expansion; necessary for CRAR</td></tr>
+<tr><td>Related Party Transactions</td><td>No material RPTs</td><td>No adverse disclosures</td><td class="td-good">ACCEPTABLE</td></tr>
+<tr><td>Governance Infrastructure</td><td>Active</td><td>CRO reappointed Apr 2026; Chief Internal Vigilance Mar 2026</td><td class="td-good">POSITIVE &mdash; proactive risk governance</td></tr>
+</table>
+<div class="warn-box"><strong>Key Risk: Low Promoter Holding + Equity Dilution.</strong> At 22.4%, SSFB is susceptible to institutional pressure, potential M&amp;A at distressed valuations, and promoter being unable to signal confidence through buying at scale. The &#8377;1,000 Cr equity raise could dilute EPS by 25&ndash;35% unless raised at close-to-book value (&#8377;207). Monitor the terms of the raise carefully. If raised at significant discount to book, reassess Base IV downward.</div>
+<h3 class="sub">Strategic Execution Scorecard (FY23&ndash;26)</h3>
+<table>
+<tr><th>Initiative</th><th>Launched</th><th>Status FY26</th><th>Grade</th></tr>
+<tr><td>CGFMU Coverage on MFI loans</td><td>FY23</td><td>~98% eligible loans enrolled; &#8377;460 Cr receivable</td><td class="td-good">A &mdash; Excellent foresight</td></tr>
+<tr><td>Non-IF portfolio scaling</td><td>FY22</td><td>55% of advances &mdash; ahead of internal targets</td><td class="td-good">A&minus; &mdash; On track</td></tr>
+<tr><td>Vikas Loan (individual micro)</td><td>FY21</td><td>Crossed &#8377;3,000 Cr; +88.8% YoY H1 FY26</td><td class="td-good">A &mdash; Successful product pivot</td></tr>
+<tr><td>UPI Digital Credit Line</td><td>FY25</td><td>5 lakh+ customers; digital channel growing</td><td class="td-warn">B &mdash; Early traction; scale impact not yet material</td></tr>
+<tr><td>Gold Loan Launch</td><td>Jan 2026</td><td>Maharashtra launch; national expansion planned</td><td class="td-warn">B&minus; &mdash; Too early to assess</td></tr>
+<tr><td>Deposit Franchise Building</td><td>Ongoing</td><td>+32&ndash;39% YoY; CASA +42% YoY; CASA ratio ~22%</td><td class="td-good">A&minus; &mdash; Consistently strong</td></tr>
+<tr><td>Cost Management</td><td>Ongoing</td><td>CTI 70&ndash;76% &mdash; elevated; target &lt;65% FY27</td><td class="td-warn">C+ &mdash; In progress</td></tr>
+</table>
+</div>
+
+<!-- TAB 5 -->
+<div class="tab-content" id="tab5">
+<h2 class="sec">Valuation Framework &mdash; Justified P/B + Normalised Earnings</h2>
+<div class="card"><p>For banking turnarounds, the primary tool is the <strong>Justified Price-to-Book ratio</strong> via the Gordon Growth Model: <em>P/B = (ROE &minus; g) / (Ke &minus; g)</em>. This captures what multiple the bank should trade at given its return on equity, growth rate, and cost of equity. The secondary method uses normalised earnings at mid-cycle, capitalised at a recovery P/E multiple.</p><br><p><strong>Book Value (Estimated):</strong> ~&#8377;207/share. At CMP ~&#8377;130, P/B = 0.63x &mdash; a 37% discount to book. This prices in permanent ROE impairment below cost of equity, which is inconsistent with CRAR 21.9% and the MFI cycle turning. <span class="vf vf-e">ESTIMATED</span></p></div>
+<h3 class="sub">Method 1 &mdash; Justified P/B (Gordon Growth Model)</h3>
+<table>
+<tr><th>Scenario</th><th>ROE (Mid-cycle)</th><th>Ke</th><th>Terminal g</th><th>Justified P/B</th><th>Implied IV</th><th>vs CMP &#8377;130</th></tr>
+<tr><td>STRESS</td><td>8%</td><td>16%</td><td>6.5%</td><td class="td-bad">0.16x</td><td class="td-bad">~&#8377;33</td><td class="td-bad">&minus;75%</td></tr>
+<tr><td>BASE</td><td>13%</td><td>15%</td><td>7.5%</td><td class="td-good">0.73x</td><td class="td-good">~&#8377;151</td><td class="td-good">+16%</td></tr>
+<tr><td>ACCELERATION</td><td>17%</td><td>14%</td><td>8.5%</td><td class="td-good">1.52x</td><td class="td-good">~&#8377;314</td><td class="td-good">+142%</td></tr>
+</table>
+<h3 class="sub">Method 2 &mdash; Normalised Earnings Capitalisation (FY28E)</h3>
+<table>
+<tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL.</th></tr>
+<tr><td>Normalised ROA (FY28E)</td><td>0.8%</td><td>1.5%</td><td>2.0%</td></tr>
+<tr><td>Total Assets FY28E (&#8377;Cr)</td><td>15,000</td><td>18,000</td><td>22,000</td></tr>
+<tr><td>Normalised PAT (&#8377;Cr)</td><td>120</td><td>270</td><td>440</td></tr>
+<tr><td>Diluted Shares (post &#8377;1,000 Cr raise @ &#8377;200)</td><td>15.6 Cr</td><td>15.6 Cr</td><td>15.6 Cr</td></tr>
+<tr><td>Normalised EPS (&#8377;)</td><td>7.7</td><td>17.3</td><td>28.2</td></tr>
+<tr><td>Recovery P/E Multiple (SFB)</td><td>8x</td><td>12x</td><td>16x</td></tr>
+<tr><td><strong>Implied IV (&#8377;/share)</strong></td><td class="td-bad"><strong>~&#8377;62</strong></td><td class="td-good"><strong>~&#8377;208</strong></td><td class="td-good"><strong>~&#8377;451</strong></td></tr>
+</table>
+<h3 class="sub">Method 3 &mdash; P/B Peer Comparison</h3>
+<table>
+<tr><th>SFB Peer</th><th>P/B</th><th>ROE</th><th>GNPA</th><th>Signal for SSFB</th></tr>
+<tr><td>AU Small Finance Bank</td><td>~3.0x</td><td>~17%</td><td>~1.8%</td><td>Premium peer &mdash; target for SSFB in 5&ndash;7 yrs at full normalisation</td></tr>
+<tr><td>Ujjivan SFB</td><td>~1.0x</td><td>~12%</td><td>~2.7%</td><td>Closer peer; further in recovery than SSFB &mdash; SSFB will catch up</td></tr>
+<tr><td>Equitas SFB</td><td>~0.8x</td><td>~10%</td><td>~2.5%</td><td>Recovery peer; slightly ahead of SSFB NPA cycle</td></tr>
+<tr><td>ESAF SFB</td><td>~0.4x</td><td>~5%</td><td>~7%</td><td>Weaker peer; deeper stress; less CGFMU protection</td></tr>
+<tr><td><strong>SURYODAY SFB</strong></td><td><strong>0.63x</strong></td><td><strong>~6.5%</strong></td><td><strong>6.5%</strong></td><td><strong>Between ESAF and Equitas &mdash; fair for current stage; upward re-rating as NPA normalises</strong></td></tr>
+</table>
+<h3 class="sub">Method 4 &mdash; Simplified DCF (Base Scenario)</h3>
+<table>
+<tr><th>Year</th><th>PAT (&#8377;Cr) Base</th><th>Assumption</th></tr>
+<tr><td>FY26E</td><td>~140</td><td>Q4 recovery; CGFMU claims arriving; provisioning falling</td></tr>
+<tr><td>FY27E</td><td>~195</td><td>NPA normalising; credit cost falls to 2%; NIM stabilises</td></tr>
+<tr><td>FY28E</td><td>~260</td><td>ROA approaching 1.5%; secured book at 60%+</td></tr>
+<tr><td>Terminal Value</td><td colspan="2">&#8377;260 Cr &times; 12x P/E = &#8377;3,120 Cr equity &rarr; &#8377;200/share (15.6 Cr diluted shares)</td></tr>
+<tr><td>PV at 15% Cost of Equity (2yr)</td><td colspan="2">~&#8377;172/share (discounting &#8377;200 back 2 years at 15%)</td></tr>
+</table>
+<h2 class="sec">5-Method Valuation Summary</h2>
+<div class="val-table">
+  <div class="val-hdr"><div>Method</div><div>Stress IV</div><div>Base IV</div><div>Accel. IV</div></div>
+  <div class="val-row"><div>1 &mdash; Justified P/B (Gordon Growth)</div><div style="color:var(--fail);">&#8377;33</div><div class="val-base">&#8377;151</div><div style="color:var(--pass);">&#8377;314</div></div>
+  <div class="val-row"><div>2 &mdash; Normalised Earnings FY28E</div><div style="color:var(--fail);">&#8377;62</div><div class="val-base">&#8377;208</div><div style="color:var(--pass);">&#8377;451</div></div>
+  <div class="val-row"><div>3 &mdash; P/B Peer (Ujjivan-equiv. rerating)</div><div style="color:var(--fail);">&#8377;83</div><div class="val-base">&#8377;207</div><div style="color:var(--pass);">&#8377;310</div></div>
+  <div class="val-row"><div>4 &mdash; Simplified DCF (Base)</div><div style="color:var(--fail);">&#8377;90</div><div class="val-base">&#8377;172</div><div style="color:var(--pass);">&#8377;320</div></div>
+  <div class="val-row" style="background:#e8f5e9;font-weight:700;"><div><strong>BLENDED BASE IV</strong></div><div style="color:var(--fail);font-weight:700;">&#8377;67</div><div class="val-accent"><strong>~&#8377;185</strong></div><div style="color:var(--pass);font-weight:700;">&#8377;349</div></div>
+  <div class="val-row"><div>AI Adjustment (Neutral)</div><div>&#8377;0</div><div>&#8377;0</div><div>&#8377;0</div></div>
+</div>
+<div class="card" style="border-left:4px solid var(--c3);">
+<p><strong>MoS Entry Zone:</strong> Blended Base IV ~&#8377;185. Apply 40% MoS (Category D + earnings quality concern + dilution risk + small-cap illiquidity) &rarr; <strong>MoS Entry Zone: &#8377;95&ndash;115</strong>. Current CMP ~&#8377;130 is above the ideal entry zone. Upside to Base IV from &#8377;130 is +42% &mdash; acceptable for a WATCH position with a starter allocation. Stock becomes a strong BUY on pullback to &#8377;95&ndash;115, or if NPA confirmation warrants raising Base IV toward &#8377;220&ndash;240.</p>
+<br>
+<p><strong>Key Sensitivity:</strong> A 0.5% move in normalised ROA (1.0%&#8594;1.5%) moves Base IV by ~&#8377;55/share. A 0.5x move in terminal P/B multiple moves IV by ~&#8377;55/share. Biggest swing: credit cost normalisation timing.</p>
+</div>
+<h3 class="sub">Earnings Yield vs Bond Yield</h3>
+<table>
+<tr><th>Metric</th><th>Value</th><th>Comment</th></tr>
+<tr><td>FY26E EPS (pre-dilution)</td><td>~&#8377;13&ndash;14</td><td>At &#8377;130 &rarr; trailing P/E ~9.3x &mdash; not cheap on current depressed earnings</td></tr>
+<tr><td>Normalised FY28E EPS (diluted)</td><td>~&#8377;17</td><td>At &#8377;130 &rarr; forward P/E 7.6x on normalised basis &mdash; genuinely cheap</td></tr>
+<tr><td>Book Value Yield (P/B)</td><td>0.63x</td><td>37% discount to book = asset-value margin of safety</td></tr>
+<tr><td>India 10Y G-Sec</td><td>~6.97%</td><td>Elevated; thin ERP on current earnings; attractive on normalised FY28E earnings (~13% EY)</td></tr>
+</table>
+</div>
+
+<!-- TAB 6 -->
+<div class="tab-content" id="tab6">
+<h2 class="sec">Four Pillar Grades</h2>
+<div class="pillar-grid">
+  <div class="pillar-card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">PILLAR 1 &mdash; ECONOMIC MOAT</h4><div style="display:flex;align-items:center;gap:12px;margin-top:8px;"><div class="grade g-c">B&minus;</div><div style="font-size:13px;color:var(--muted);">Geographic + relationship moat. Narrow brand. No data flywheel. Sufficient for 3&ndash;5yr recovery; not wide moat.</div></div></div>
+  <div class="pillar-card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">PILLAR 2 &mdash; FINANCIAL FORTRESS</h4><div style="display:flex;align-items:center;gap:12px;margin-top:8px;"><div class="grade g-c">C+</div><div style="font-size:13px;color:var(--muted);">ROE depressed. GNPA elevated but CGFMU-covered. CRAR 21.9% strong. Revenue +20% YoY.</div></div></div>
+  <div class="pillar-card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">PILLAR 3 &mdash; MANAGEMENT</h4><div style="display:flex;align-items:center;gap:12px;margin-top:8px;"><div class="grade g-c">B&minus;</div><div style="font-size:13px;color:var(--muted);">Strategic pivot well-executed. CEO insider buy positive. Low promoter holding (22.4%) is key governance gap.</div></div></div>
+  <div class="pillar-card"><h4 style="font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">PILLAR 4 &mdash; VALUATION</h4><div style="display:flex;align-items:center;gap:12px;margin-top:8px;"><div class="grade g-b">B</div><div style="font-size:13px;color:var(--muted);">0.63x book is deep value. MoS Entry Zone &#8377;95&ndash;115. CMP &#8377;130 is at edge of zone &mdash; not expensive.</div></div></div>
+</div>
+<div class="verdict-box">
+  <div class="verdict-title">BUFFETT QUALITY-VALUE SERIES v5.0 &mdash; OFFICIAL VERDICT</div>
+  <div class="verdict-main">WATCH &#9733;&#9733;&#9733;</div>
+  <div class="verdict-stars">&#9733;&#9733;&#9733;&#9734;&#9734;</div>
+  <p style="font-size:14px;color:rgba(255,255,255,0.85);line-height:1.75;">Suryoday SFB is a <strong>recovery-dependent turnaround play at a deep P/B discount</strong>. The NPA stress cycle is peaking (GNPA: 8.5%&#8594;6.5%), CGFMU government guarantees cover the residual stressed book, and the strategic pivot to secured lending (now 55% of advances) is structurally sound. At 0.63x book value, the stock prices in permanent impairment &mdash; an overstatement given CRAR 21.9%, accelerating deposit franchise (+32% YoY), and improving collection efficiency.<br><br>Three conditions temper conviction from BUY to WATCH: (1) Promoter holding at 22.4% is a governance flag; (2) &#8377;1,000 Cr equity raise will dilute 30&ndash;40% and is not priced into consensus; (3) NIM compression as secured mix rises will weigh on near-term earnings even as credit costs normalise. This is a 3&ndash;5 year compounding recovery play. Entry at the optimal zone (&#8377;95&ndash;115) dramatically improves risk/reward.</p>
+  <div class="verdict-quote">&ldquo;In the short run, the market is a voting machine. In the long run, it is a weighing machine.&rdquo; &mdash; Benjamin Graham. At 0.63x book, the market is voting against Suryoday based on fear of permanent MFI impairment that a CRAR of 21.9% and CGFMU sovereign coverage make implausible. The weighing machine will correct this over time.</div>
+</div>
+<h2 class="sec">WATCH &rarr; BUY Upgrade Conditions</h2>
+<ul class="upgrade-list">
+  <li><div class="upgrade-num">1</div><div><strong>GNPA falls below 5.0% for 2 consecutive quarters</strong> &mdash; confirming the MFI stress cycle is definitively over. Currently 6.5% and declining. This single metric will re-rate the stock most powerfully.</div></li>
+  <li><div class="upgrade-num">2</div><div><strong>ROE recovers above 10% for 2 consecutive quarters</strong> &mdash; demonstrating normalised earnings power is restored. FY24 peak was 12%. Recovery to 10% = justified P/B of ~0.6&ndash;0.8x &#8594; current price, making risk/reward compelling for full position.</div></li>
+  <li><div class="upgrade-num">3</div><div><strong>Price corrects to &#8377;95&ndash;115 on broad market weakness</strong> &mdash; providing the ideal entry at 0.46&ndash;0.56x book with a clear 2x+ path to normalised value. Hard stop: weekly close below &#8377;90.</div></li>
+  <li><div class="upgrade-num">4</div><div><strong>CGFMU cash receipts exceed &#8377;300 Cr cumulatively</strong> &mdash; validating the government guarantee mechanism is functional and stressed book is being recovered, not permanently impaired.</div></li>
+  <li><div class="upgrade-num">5</div><div><strong>Equity raise priced at &ge;&#8377;180/share (0.87x book)</strong> &mdash; ensuring dilution is not value-destructive. A raise at deep discount to book requires reassessing Base IV downward.</div></li>
+</ul>
+<h2 class="sec">AI Overlay</h2>
+<div class="ai-badge-row">
+  <div class="ai-badge ai-neutral">&#9898; AI NEUTRAL</div>
+  <div class="ai-badge" style="background:#f5f5f5;color:#424242;border:2px solid #bdbdbd;">FLYWHEEL: FEATURE (2/10)</div>
+  <div class="ai-badge" style="background:#fff3e0;color:#bf360c;border:2px solid #ffcc80;">BANKING AI: Phase 2&ndash;3</div>
+  <div class="ai-badge" style="background:#e3f2fd;color:#0d47a1;border:2px solid #90caf9;">AI SCORE: 36/100</div>
+</div>
+<p style="font-size:13px;">AI does not materially change the thesis in either direction. Invest on turnaround fundamentals. No AI-driven moat. No AI disruption risk within 5 years. <strong>Invest on the recovery thesis &mdash; not on any AI narrative.</strong></p>
+<h2 class="sec">Series Table</h2>
+<div style="overflow-x:auto;">
+<table class="series-table">
+<tr><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Qual</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>MoS Entry</th></tr>
+<tr><td>AMAGI</td><td>NSE</td><td>F</td><td>&#127834;</td><td>B+</td><td>B+</td><td>A&minus;</td><td>A&minus;</td><td>BUY &#9733;&#9733;&#9733;&#9733;&#9733; AI</td><td>&#8377;350</td></tr>
+<tr><td>AMZN</td><td>NASDAQ</td><td>B</td><td>&#127834;</td><td>A&minus;</td><td>B+</td><td>A&minus;</td><td>B+</td><td>WATCH &#9733;&#9733;&#9733;&#9733;</td><td>~$199</td></tr>
+<tr><td>BAJAJHFL</td><td>NSE</td><td>B</td><td>&#127834;</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;65&ndash;75</td></tr>
+<tr><td>BANDHANBNK</td><td>NSE</td><td>D</td><td>&#127834;</td><td>B&minus;</td><td>C+</td><td>C+</td><td>B</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;140&ndash;147</td></tr>
+<tr><td>E2E</td><td>NSE</td><td>F</td><td>&#127834;</td><td>C+</td><td>C+</td><td>C</td><td>C</td><td>WATCH &#9733;&#9733;</td><td>&#8377;1,400&ndash;1,700</td></tr>
+<tr><td>FRACTAL</td><td>NSE</td><td>C</td><td>&#127834;</td><td>B+</td><td>B</td><td>B+</td><td>B&minus;</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;722</td></tr>
+<tr><td>GEMAROMA</td><td>NSE</td><td>B</td><td>&#9898;</td><td>B&minus;</td><td>B</td><td>B+</td><td>A&minus;</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;130&ndash;165</td></tr>
+<tr><td>GOOGL</td><td>NASDAQ</td><td>C</td><td>&#127834;</td><td>A</td><td>A</td><td>B+</td><td>B</td><td>WATCH &#9733;&#9733;&#9733;&#9733;</td><td>$224&ndash;$260</td></tr>
+<tr><td>INDIGOPNTS</td><td>NSE</td><td>C</td><td>&#9898;</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;544&ndash;600</td></tr>
+<tr><td>IONQ</td><td>NASDAQ</td><td>F Ph1</td><td>&#9898;</td><td>B&minus;</td><td>D+</td><td>B&minus;</td><td>D</td><td>WATCH &#9733;&#9733;</td><td>$15&ndash;17</td></tr>
+<tr><td>ITC</td><td>NSE</td><td>C</td><td>&#9898;</td><td>A&minus;</td><td>B+</td><td>B+</td><td>B+</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;280</td></tr>
+<tr><td>MELI</td><td>NASDAQ</td><td>B</td><td>&#127834;</td><td>A</td><td>A&minus;</td><td>A</td><td>A</td><td>BUY &#9733;&#9733;&#9733;&#9733;&#9733; AI</td><td>~$1,810</td></tr>
+<tr><td>META</td><td>NASDAQ</td><td>C</td><td>&#127834;</td><td>A+</td><td>A&minus;</td><td>B+</td><td>A&minus;</td><td>BUY STARTER &#9733;&#9733;&#9733;&#9733;&#189;</td><td>~$542</td></tr>
+<tr><td>MSFT</td><td>NASDAQ</td><td>C</td><td>&#127834;</td><td>A&minus;</td><td>A&minus;</td><td>A</td><td>B+</td><td>WATCH &#9733;&#9733;&#9733;&#9733;</td><td>$340&ndash;365</td></tr>
+<tr><td>NBIS</td><td>NASDAQ</td><td>F</td><td>&#127744;</td><td>A&minus;</td><td>B+</td><td>A&minus;</td><td>B</td><td>WATCH &#9733;&#9733;&#9733;&#9733;</td><td>~$133</td></tr>
+<tr><td>NETWEB</td><td>NSE</td><td>B</td><td>&#127834;</td><td>B+</td><td>B&minus;</td><td>B</td><td>D+</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;795/&#8377;2,800&ndash;3,000</td></tr>
+<tr><td>NVO</td><td>NYSE</td><td>C</td><td>&#127834;</td><td>A&minus;</td><td>B+</td><td>B+</td><td>A&minus;</td><td>WATCH &#9733;&#9733;&#9733;&#9733;</td><td>~$44&ndash;49</td></tr>
+<tr><td>PL</td><td>NYSE</td><td>F</td><td>&#127744;</td><td>A</td><td>B+</td><td>A&minus;</td><td>B&minus;</td><td>WATCH &#9733;&#9733;&#9733;&#9733;</td><td>$27&ndash;31</td></tr>
+<tr><td>RAJESHEXPO</td><td>NSE</td><td>E</td><td>&#9898;</td><td>F</td><td>F</td><td>D&minus;</td><td>F</td><td>AVOID</td><td>N/A</td></tr>
+<tr><td>SHADOWFAX</td><td>NSE</td><td>B</td><td>&#9898;</td><td>B&minus;</td><td>C+</td><td>B&minus;</td><td>B</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;98&ndash;115</td></tr>
+<tr><td>TRAVELFOOD</td><td>NSE</td><td>C</td><td>&#9898;</td><td>B+</td><td>A&minus;</td><td>B</td><td>B</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;1,000&ndash;1,100</td></tr>
+<tr><td>UNH</td><td>NYSE</td><td>C</td><td>&#9898;</td><td>A&minus;</td><td>B&minus;</td><td>B&minus;</td><td>B+</td><td>WATCH &#9733;&#9733;&#9733;&#9733;</td><td>$260&ndash;$310</td></tr>
+<tr><td>WAAREEENER</td><td>NSE</td><td>B</td><td>&#9898;</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH &#9733;&#9733;&#9733;&#9733;</td><td>&#8377;2,600&ndash;2,800</td></tr>
+<tr><td>VIKRAMSOLR</td><td>NSE</td><td>B</td><td>&#9898;</td><td>B&minus;</td><td>C+</td><td>C</td><td>B</td><td>AVOID</td><td>N/A</td></tr>
+<tr class="active-row"><td>SURYODAY</td><td>NSE</td><td>D</td><td>&#9898;</td><td>B&minus;</td><td>C+</td><td>B&minus;</td><td>B</td><td>WATCH &#9733;&#9733;&#9733;</td><td>&#8377;95&ndash;115</td></tr>
+</table>
+</div>
+</div>
+
+<!-- TAB 7 -->
+<div class="tab-content" id="tab7">
+<h2 class="sec">Section A &mdash; Multi-Timeframe Price Structure</h2>
+<table>
+<tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Comment</th></tr>
+<tr><td>Weekly</td><td class="td-warn">Sideways / Recovering</td><td>&#8377;97&ndash;161 range</td><td>52-week range bounded; recent higher-low formation at &#8377;98. No confirmed uptrend yet.</td></tr>
+<tr><td>Daily</td><td class="td-warn">Neutral</td><td>&#8377;120&ndash;145 band</td><td>Trading in narrow band post-recovery. Needs catalyst (NPA confirmation, equity raise terms) to break higher.</td></tr>
+<tr><td>Monthly</td><td class="td-bad">Downtrend (from IPO &#8377;305)</td><td>&#8377;130 CMP</td><td>Stock has lost 57% from IPO. Long-term downtrend not reversed. First reversal: monthly close above &#8377;161 (52W high).</td></tr>
+</table>
+<h2 class="sec">Section B &mdash; Moving Average Dashboard</h2>
+<div class="ma-grid">
+  <div class="ma-card"><div class="ma-label">20-EMA</div><div class="ma-val">~&#8377;128</div><span class="above">ABOVE &#8593;</span><div style="font-size:11px;color:var(--muted);margin-top:6px;">Short-term momentum positive</div></div>
+  <div class="ma-card"><div class="ma-label">50-DMA</div><div class="ma-val">~&#8377;130</div><span class="above">AT/ABOVE &#8776;</span><div style="font-size:11px;color:var(--muted);margin-top:6px;">Testing 50-DMA &mdash; key pivot</div></div>
+  <div class="ma-card"><div class="ma-label">100-DMA</div><div class="ma-val">~&#8377;132</div><span class="below">JUST BELOW &#8595;</span><div style="font-size:11px;color:var(--muted);margin-top:6px;">Minor resistance; needs to clear decisively</div></div>
+  <div class="ma-card"><div class="ma-label">200-DMA</div><div class="ma-val">~&#8377;128</div><span class="above">ABOVE &#8593;</span><div style="font-size:11px;color:var(--muted);margin-top:6px;">Long-term trend floor turning supportive</div></div>
+</div>
+<table>
+<tr><th>Signal</th><th>Status</th><th>Implication</th></tr>
+<tr><td>Golden Cross (50 vs 200 DMA)</td><td class="td-warn">Approaching (50 &asymp; 200)</td><td>Potential Golden Cross in 4&ndash;8 weeks; strong institutional entry signal if confirmed</td></tr>
+<tr><td>EMA Ribbon (20/50/100)</td><td class="td-warn">Compressing / Flattening</td><td>Base-building pattern; typical before momentum breakouts in turnaround stocks</td></tr>
+<tr><td>Price vs all 4 MAs</td><td class="td-warn">Clustered near price</td><td>Inflection point: resolution either breakdown below &#8377;98 or breakout above &#8377;145+</td></tr>
+</table>
+<h2 class="sec">Section C &mdash; Volume Analysis</h2>
+<table>
+<tr><th>Event</th><th>Volume Signal</th><th>Interpretation</th></tr>
+<tr><td>Post-Q1 FY26 sell-off (Jul 2025)</td><td>High volume decline after PAT &minus;50% YoY</td><td>Capitulation event; forced selling exhausting itself; typical of turnaround bottoms</td></tr>
+<tr><td>CEO Open Market Buy (Mar 2026)</td><td>Low volume (50,000 shares)</td><td>Insider signal but insufficient volume for institutional confirmation</td></tr>
+<tr><td>Q4 FY26 advance data (Apr 2026)</td><td>Search interest +24% in 30 days</td><td>Rising retail interest; institutional accumulation not yet visible in ADV</td></tr>
+<tr><td>Daily Avg Volume (recent)</td><td>~1.5&ndash;2 lakh shares</td><td>Small free float; low liquidity; size positions carefully to avoid market impact</td></tr>
+</table>
+<div class="warn-box">OBV Verdict: Neutral-to-improving. Volume on up-days marginally exceeds down-days over the last 30 sessions &mdash; weak accumulation signal. Watch for volume surge (5&ndash;10&times; ADV) on a day NPA results improve materially.</div>
+<h2 class="sec">Section D &mdash; Momentum</h2>
+<table>
+<tr><th>Indicator</th><th>Reading</th><th>Signal</th></tr>
+<tr><td>RSI (14-day Daily)</td><td>~48&ndash;52</td><td class="td-warn">NEUTRAL &mdash; base-building zone; not oversold or overbought</td></tr>
+<tr><td>RSI Weekly</td><td>~42&ndash;46</td><td class="td-warn">WEAKLY BULLISH &mdash; fundamental catalyst would push to 50&ndash;60 range</td></tr>
+<tr><td>MACD (Daily)</td><td>Near zero cross</td><td class="td-warn">Flattening near signal line; potential positive crossover on Q4 FY26 full results</td></tr>
+<tr><td>Hidden Bullish Divergence</td><td>Price lower low &#8377;98; RSI higher low</td><td class="td-good">Positive hidden divergence &mdash; base confirmed; recovery mode</td></tr>
+<tr><td>1-Year Return</td><td>+33% vs Sensex +3.4%</td><td class="td-good">Significant alpha; stock recovering faster than broad market</td></tr>
+</table>
+<h2 class="sec">Section E &mdash; Chart Pattern</h2>
+<div class="card" style="border-left:4px solid var(--c3);">
+<p><strong>Double Bottom / Rounding Base (Forming):</strong> First bottom ~&#8377;98 (Nov 2025); second bottom ~&#8377;100 (Jan 2026). Neckline resistance ~&#8377;145. Pattern target if breakout on volume: &#8377;145 + (&#8377;145 &minus; &#8377;98) = <strong>&#8377;192</strong> &mdash; consistent with Base IV &#8377;185.</p>
+<br>
+<p><strong>Invalidation:</strong> Close below &#8377;98 on high volume negates base pattern. Re-test of sub-&#8377;90 levels possible if MFI cycle deteriorates again.</p>
+<p style="margin-top:8px;"><strong>Targets:</strong> T1 = &#8377;145 (neckline) | T2 = &#8377;192 (pattern target / Base IV) | T3 = &#8377;207 (book value rerating)</p>
+</div>
+<h2 class="sec">Section F &mdash; Trade Structure</h2>
+<table>
+<tr><th>Trigger</th><th>Condition</th><th>Action</th></tr>
+<tr><td>PRIMARY</td><td>Correction to &#8377;95&ndash;115 + RSI &lt; 40 + 200-DMA holding + GNPA confirmation &lt; 7%</td><td>Starter 2&ndash;3% portfolio. Hard stop: weekly close below &#8377;90.</td></tr>
+<tr><td>SECONDARY</td><td>Breakout above &#8377;145 on volume &gt;5&times; ADV + Q4 FY26 full results PAT positive + GNPA &lt; 6%</td><td>Add-on to 4&ndash;5% total. Target: &#8377;190&ndash;207.</td></tr>
+<tr><td>CAT D SIGNAL</td><td>2 consecutive quarters GNPA improving + ROE &gt; 10%</td><td>Upgrade to WATCH &#9733;&#9733;&#9733;&#9733; and accumulate on dips to &#8377;130.</td></tr>
+</table>
+<h2 class="sec">Section G &mdash; Technical Composite Score</h2>
+<table>
+<tr><th>Dimension</th><th>Score (1&ndash;5)</th><th>Comment</th></tr>
+<tr><td>Price Structure / Trend</td><td>3/5</td><td>Base-building; no confirmed uptrend</td></tr>
+<tr><td>MA Alignment</td><td>3/5</td><td>MAs converging; approaching Golden Cross</td></tr>
+<tr><td>Volume / OBV</td><td>2/5</td><td>Low-volume recovery; no institutional accumulation yet</td></tr>
+<tr><td>Momentum (RSI/MACD)</td><td>3/5</td><td>Neutral RSI; hidden bullish divergence; MACD compressing</td></tr>
+<tr><td>Chart Pattern</td><td>3/5</td><td>Double bottom forming; neckline not broken yet</td></tr>
+<tr><td>Trade Setup Quality</td><td>3/5</td><td>Acceptable R:R; entry zone specific; stop clear</td></tr>
+<tr><td><strong>TOTAL</strong></td><td><strong>17/30 = 57%</strong></td><td><strong>NEUTRAL-TO-IMPROVING &mdash; base-building confirmed; breakout pending fundamental catalyst</strong></td></tr>
+</table>
+</div>
+
+<!-- TAB 8 -->
+<div class="tab-content" id="tab8">
+<h2 class="sec">Section A &mdash; Promoter Holding Trend (5 Quarters)</h2>
+<table>
+<tr><th>Quarter</th><th>Promoter %</th><th>Change QoQ</th><th>Signal</th></tr>
+<tr><td>Dec 2024</td><td>22.44%</td><td>0.00%</td><td class="td-warn">Flat &mdash; no insider accumulation at promoter level</td></tr>
+<tr><td>Sep 2024</td><td>22.44%</td><td>0.00%</td><td class="td-warn">Flat</td></tr>
+<tr><td>Jun 2024</td><td>22.44%</td><td>0.00%</td><td class="td-warn">Flat</td></tr>
+<tr><td>Mar 2024</td><td>22.44%</td><td>0.00%</td><td class="td-warn">Flat</td></tr>
+<tr><td>Dec 2023</td><td>22.44%</td><td>0.00%</td><td class="td-warn">Flat for 5+ quarters</td></tr>
+</table>
+<div class="critical-box"><strong>Promoter Pledge: 0% &mdash; CLEAN.</strong> No pledged shares in any recent disclosure &mdash; a significant positive vs stressed peers like Vikram Solar (48.2% pledge). However, the flat and low promoter holding (22.4%) over 5 consecutive quarters is unusual for a stock trading at 0.63x book. The CEO's personal 50,000-share purchase (March 2026) provides partial comfort but does not substitute for promoter-level accumulation.</div>
+<h2 class="sec">Section B &mdash; FII + DII Holdings</h2>
+<table>
+<tr><th>Quarter</th><th>FII %</th><th>DII %</th><th>Public %</th><th>FII Trend</th></tr>
+<tr><td>Dec 2024</td><td>5.00%</td><td>6.10%</td><td>66.50%</td><td class="td-warn">Stable at low conviction level</td></tr>
+<tr><td>Sep 2024 (approx)</td><td>~5.2%</td><td>~6.0%</td><td>~66.4%</td><td class="td-warn">Slight FII reduction</td></tr>
+<tr><td>Jun 2024 (approx)</td><td>~5.5%</td><td>~5.8%</td><td>~66.3%</td><td class="td-warn">FII reducing amid NPA spike</td></tr>
+<tr><td>Mar 2024 (approx)</td><td>~6.0%</td><td>~5.5%</td><td>~66.1%</td><td class="td-warn">Pre-stress peak FII</td></tr>
+<tr><td>Dec 2023</td><td>~6.5%</td><td>~5.2%</td><td>~65.8%</td><td class="td-bad">FII peak &mdash; NPA concerns emerging</td></tr>
+</table>
+<p style="font-size:12px;color:var(--muted);">FII trend declining 6.5%&#8594;5.0% as NPA stress emerged. Reversing FII trend = a key bullish signal to watch for. DIIs marginally increasing &mdash; patient accumulation at distressed prices. <span class="vf vf-e">ESTIMATED</span></p>
+<div class="info-box"><strong>SFB Sectoral FII Limit:</strong> SFBs are not subject to MSCI weight-driven FII demand (market cap too small at &#8377;1,422 Cr). FII re-entry at scale would require: (a) market cap &gt; &#8377;3,000&ndash;4,000 Cr; or (b) SSFB inclusion in BSE 500 / Nifty Small Cap index.</div>
+<h2 class="sec">Section C &mdash; Free Float &amp; Market Cap</h2>
+<div class="card-grid">
+  <div class="card-stat"><div class="stat-label">Market Cap</div><div class="stat-val">&#8377;1,422 Cr</div><div class="stat-sub">Small-cap &middot; Low liquidity risk</div></div>
+  <div class="card-stat"><div class="stat-label">Free Float (est.)</div><div class="stat-val">~&#8377;1,104 Cr</div><div class="stat-sub">~77.6% public float &middot; Concentrated in retail</div></div>
+  <div class="card-stat"><div class="stat-label">Avg Daily Turnover</div><div class="stat-val">~&#8377;2 Cr</div><div class="stat-sub">~1.5&ndash;2L shares/day &middot; Illiquidity risk for large positions</div></div>
+  <div class="card-stat"><div class="stat-label">Retail / Public</div><div class="stat-val">66.5%</div><div class="stat-sub">Dominant retail &rarr; sentiment-driven volatile moves</div></div>
+</div>
+<h2 class="sec">Section D &mdash; Full Shareholding Composition</h2>
+<div class="sh-bar">
+  <div class="sh-seg" style="width:22.4%;background:var(--c1);">22.4%<br>Promoters</div>
+  <div class="sh-seg" style="width:5%;background:var(--c2);">5%<br>FII</div>
+  <div class="sh-seg" style="width:6.1%;background:var(--c3);color:#1a1a1a;">6.1%<br>DII</div>
+  <div class="sh-seg" style="width:66.5%;background:#bdbdbd;color:#424242;">66.5%<br>Public</div>
+</div>
+<table>
+<tr><th>Category</th><th>%</th><th>Trend</th><th>Signal</th></tr>
+<tr><td>Promoters (Ramachandran &amp; group)</td><td>22.44%</td><td>&#8594; Flat 5 quarters</td><td>Low but pledge-free. CEO personally bought 50K shares.</td></tr>
+<tr><td>FIIs / FPIs</td><td>5.00%</td><td>&#8595; Declining</td><td>Cautious; NPA headwinds. FII re-entry = positive re-rating signal.</td></tr>
+<tr><td>DIIs (MF + Insurance)</td><td>6.10%</td><td>&#8593; Marginally increasing</td><td>Patient DII accumulation at distressed prices &mdash; positive signal.</td></tr>
+<tr><td>Public / Retail</td><td>66.50%</td><td>&#8594; Stable</td><td>High retail = sentiment volatility; large supply overhang at recovery.</td></tr>
+</table>
+<h2 class="sec">Section E &mdash; Ownership Scores</h2>
+<table>
+<tr><th>Score</th><th>Value</th><th>Breakdown</th></tr>
+<tr><td>Ownership Momentum Score</td><td class="td-warn">38/100</td><td>Promoter flat (&minus;20); FII declining (&minus;15); DII marginal increase (+8); CEO insider buy (+15); Pledge-free (+10) &rarr; 38/100</td></tr>
+<tr><td>Shareholding Risk Score</td><td class="td-warn">42/100</td><td>Low promoter risk (+30); high retail volatility (+15); planned dilution (+15); low FII liquidity (&minus;10) &rarr; 42/100. Moderate risk.</td></tr>
+</table>
+<p style="font-size:12px;color:var(--muted);">Est. Monthly SIP inflow to SFB sector funds: &#8377;80&ndash;120 Cr/month. SSFB captures &lt;0.5% given small market cap and non-index status. SIP passive flows are minimal.</p>
+</div>
+
+<!-- TAB 9 -->
+<div class="tab-content" id="tab9">
+<h2 class="sec">Section A &mdash; AI Classification Dashboard</h2>
+<div class="ai-badge-row">
+  <div class="ai-badge" style="background:#e8f5e9;color:#1b5e20;border:2px solid #a5d6a7;">CATEGORY: D &middot; TURNAROUND</div>
+  <div class="ai-badge ai-neutral">&#9898; AI OVERLAY: NEUTRAL</div>
+  <div class="ai-badge" style="background:#fff3e0;color:#bf360c;border:2px solid #ffcc80;">FLYWHEEL: FEATURE &#9733; (2/10)</div>
+  <div class="ai-badge" style="background:#e3f2fd;color:#0d47a1;border:2px solid #90caf9;">BANKING AI: Phase 2&ndash;3</div>
+</div>
+<div class="card" style="border-left:4px solid #bdbdbd;">
+<p style="font-size:13px;line-height:1.75;">India's banking AI ecosystem is in <strong>Phase 2&ndash;3 transition</strong>. AI credit scoring for unscored/thin-file borrowers (the core of the SFB market) is moving from pilot to commercial scale. HDFC Bank, SBI, and large NBFCs have functional AI credit models. SFBs like SSFB are early-commercial adopters, not leaders. The Phase 3 inflection (20&ndash;40% sector adoption) arrives in FY27&ndash;28 &mdash; SSFB needs to accelerate AI capabilities to retain underwriting edge as technology diffuses. <span class="vf vf-e">ESTIMATED</span></p>
+</div>
+<h2 class="sec">Section B &mdash; Data Flywheel Deep-Dive</h2>
+<div class="flywheel-box">
+  <div class="fw-title">FULL FLYWHEEL ASSESSMENT</div>
+  <div class="fw-q-grid">
+    <div class="fw-q"><div class="fw-ql">Q1 &mdash; Proprietary Training Data</div><div class="fw-qt">3.8M borrower repayment outcomes across 15+ years. Outcome labels exist (defaulters known). BUT: volume insufficient vs HDFC Bank (50M+ txns). Data has uniqueness but not monopoly value. Score: 1/3.</div><div class="fw-qi">&#9888; PARTIAL</div></div>
+    <div class="fw-q"><div class="fw-ql">Q2 &mdash; AI Improves with Usage?</div><div class="fw-qt">No verifiable published metrics showing AI improving with data volume. Digital credit line has 5L+ customers but no published accuracy benchmarks. Score: 0/4.</div><div class="fw-qi">&#10060; NOT CONFIRMED</div></div>
+    <div class="fw-q"><div class="fw-ql">Q3 &mdash; Better AI &rarr; More Users?</div><div class="fw-qt">Customer growth driven by field officers and branch expansion, not AI product superiority. No self-reinforcing AI loop detectable. Score: 0/3.</div><div class="fw-qi">&#10060; NO LOOP</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:18px;margin-top:12px;padding:14px;background:rgba(255,255,255,0.08);border-radius:8px;">
+    <div><div style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);">FLYWHEEL SCORE</div><div class="fw-score-num">2/10</div><div style="font-size:10px;color:rgba(255,255,255,0.4);">AI FEATURE &middot; NOT A MOAT</div></div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.72);line-height:1.65;">SSFB's AI is an operational tool. It does not compound defensibility. Investment thesis rests on turnaround fundamentals, deposit franchise growth, and MFI cycle normalisation &mdash; not on any AI narrative. This is appropriate and honest.</div>
+  </div>
+</div>
+<h2 class="sec">Section C &mdash; AI Value Chain Position</h2>
+<div class="vc-strip">
+  <div class="vc-box" style="border-radius:8px 0 0 8px;"><div class="vc-num">LEVEL 1</div><div class="vc-name">Infrastructure</div><div class="vc-eg">GPU/DC/Power</div></div>
+  <div class="vc-box"><div class="vc-num">LEVEL 2</div><div class="vc-name">Foundation Models</div><div class="vc-eg">OpenAI/Krutrim</div></div>
+  <div class="vc-box"><div class="vc-num">LEVEL 3</div><div class="vc-name">AI Platforms</div><div class="vc-eg">Palantir/Databricks</div></div>
+  <div class="vc-box"><div class="vc-num">LEVEL 4</div><div class="vc-name">Vertical Apps</div><div class="vc-eg">HealthAI/AgriAI</div></div>
+  <div class="vc-box active" style="border-radius:0 8px 8px 0;"><div class="vc-num" style="color:var(--c2);font-weight:700;">&#9654; LEVEL 5 &#9664;</div><div class="vc-name" style="font-weight:700;">AI-Enabled Incumbent</div><div class="vc-eg" style="color:var(--c2);font-weight:700;">SSFB IS HERE</div></div>
+</div>
+<p style="font-size:13px;margin-bottom:20px;">Level 5 = existing business using AI as an operational tool within an established moat. Risk: LOW-MEDIUM. Investment horizon: 3&ndash;5 years (recovery + moat reinforcement). Best risk/reward for patient capital in Indian markets.</p>
+<h2 class="sec">Section D &mdash; India AI Opportunity Context</h2>
+<table>
+<tr><th>India AI Advantage</th><th>Relevance to SSFB</th><th>Contribution</th></tr>
+<tr><td>Data at Scale (UPI/Aadhaar)</td><td>YES &mdash; Digital credit line on UPI; Aadhaar-based eKYC; UPI transaction data for credit scoring</td><td class="td-warn">MEDIUM &mdash; operational benefit; not a moat differentiator (shared by all banks)</td></tr>
+<tr><td>Language Diversity / Vernacular AI</td><td>PARTIAL &mdash; field officers in vernacular (Marathi, Tamil, Odia); no published vernacular AI product</td><td class="td-warn">LOW &mdash; unexploited opportunity. Vernacular AI field assistant could reduce costs materially.</td></tr>
+<tr><td>India Stack Infrastructure</td><td>YES &mdash; UPI + Aadhaar + OCEN for loan disbursal and collection; OCEN in MSME lending</td><td class="td-warn">MEDIUM &mdash; reduces distribution cost; shared infrastructure advantage</td></tr>
+<tr><td>AI Talent Cost Arbitrage</td><td>PARTIAL &mdash; technology team in Navi Mumbai; SFB scale insufficient for top-tier AI researchers</td><td class="td-warn">LOW &mdash; constraint. Would need AI vendor partnerships rather than proprietary model building.</td></tr>
+</table>
+<table>
+<tr><th>India AI Theme</th><th>Phase</th><th>SSFB Relevance</th></tr>
+<tr><td>AI in banking / credit scoring</td><td>Phase 2&ndash;3</td><td class="td-good">DIRECTLY RELEVANT &mdash; core business lending to thin-file borrowers</td></tr>
+<tr><td>AI SME credit / fintech</td><td>Phase 2</td><td class="td-good">DIRECTLY RELEVANT &mdash; MSME + SCF portfolio scaling</td></tr>
+<tr><td>AI logistics / supply chain</td><td>Phase 2&ndash;3</td><td class="td-warn">ADJACENT &mdash; supply chain finance product benefits from logistics AI data</td></tr>
+<tr><td>Vernacular AI content</td><td>Phase 2</td><td class="td-warn">ADJACENT &mdash; field officer training, customer communication potential</td></tr>
+<tr><td>AI in diagnostics, education, infra</td><td>Various</td><td style="color:var(--muted);">NONE</td></tr>
+</table>
+<h2 class="sec">Section E &mdash; AI Disruption Risk</h2>
+<div class="info-box"><strong>AI Disruption Risk: LOW for 5-year horizon.</strong> SSFB's core business &mdash; lending to micro-entrepreneurs in Tier 2&ndash;4 geographies &mdash; is not the primary target of AI disruption. AI-first lenders (Navi, BharatPe lending) focus on urban, salaried, digital customers. The SFB's relationship-based field model in rural/semi-urban India is difficult to replicate with pure digital AI within 5 years. 10-year risk is higher as mobile penetration and digital literacy improve in rural India.</div>
+<table>
+<tr><th>Threat Source</th><th>Revenue at Risk</th><th>Timeline</th><th>SSFB Response</th></tr>
+<tr><td>Digital-first SFBs using superior AI underwriting</td><td>MSME / SCF segment (~10&ndash;15% of book)</td><td>3&ndash;5 years</td><td>SCF + AI underwriting investment in progress</td></tr>
+<tr><td>Fintech lenders (BharatPe, Navi)</td><td>Urban JLG / Vikas Loans (&lt;10% of book)</td><td>2&ndash;3 years</td><td>Pivot to secured (mortgage, gold) reduces vulnerability</td></tr>
+<tr><td>Large private banks using AI in SFB territory</td><td>Deposits (CASA) and mortgage</td><td>5&ndash;7 years</td><td>Geographic niche moat provides runway</td></tr>
+</table>
+<h2 class="sec">Section F &mdash; AI Opportunity Verdict &amp; Portfolio Role</h2>
+<div class="card" style="border:2px solid #bdbdbd;">
+<table>
+<tr><th>AI Score Component</th><th>Score</th><th>Rationale</th></tr>
+<tr><td>Data Flywheel Strength</td><td>4/20</td><td>Partial data asset; no confirmed flywheel; AI feature only</td></tr>
+<tr><td>Adoption Phase Timing</td><td>12/20</td><td>Phase 2&ndash;3 in banking AI &mdash; right area, wrong position in value chain</td></tr>
+<tr><td>Value Chain Position (Level 5)</td><td>14/20</td><td>AI-enabled incumbent = best risk/reward; behind peers in AI implementation</td></tr>
+<tr><td>India Structural Advantage</td><td>10/20</td><td>India Stack access relevant but shared by all SFBs</td></tr>
+<tr><td>AI Threat Resistance</td><td>12/20</td><td>Low near-term disruption risk in rural geographies; moat resilience 6/10</td></tr>
+<tr style="font-weight:700;background:#f5f5f5;"><td><strong>TOTAL AI OPPORTUNITY SCORE</strong></td><td><strong>36/100</strong></td><td><strong>AI NEUTRAL &mdash; Standard fundamental framework governs this investment</strong></td></tr>
+</table>
+<br>
+<p style="font-size:13px;line-height:1.7;"><strong>Portfolio Role: AI NEUTRAL (20&ndash;40 range).</strong> Invest in SSFB purely on the merits of the turnaround thesis. AI is not a material factor in the bull or bear case. Monitor quarterly for: (a) digital credit line scaling past 10L customers; (b) NIM stabilisation post-secured mix transition; (c) GNPA confirmation below 5%.</p>
+<br>
+<p style="font-size:13px;"><strong>Investment Horizon: 3&ndash;5 years.</strong> The return comes from ROA recovery (0.7%&rarr;1.5%) + advances growth (20%+) + potential P/B rerating (0.63x&rarr;1.0x). Compounded, this delivers 2&ndash;3x from the &#8377;95&ndash;115 entry zone. This is not a 12-month trade.</p>
+</div>
+</div>
+
+<footer>
+<p><strong>DISCLAIMER:</strong> This report is prepared for educational and research purposes under the Buffett Quality-Value Series v5.0. It does not constitute SEBI-registered investment advice. The analyst may or may not hold positions in the securities discussed. All data carries confidence labels: [VERIFIED] = official filings/live search this session; [ESTIMATED] = cross-referenced, high confidence; [UNVERIFIED] = limited source. Past performance is not indicative of future returns. Equity investments are subject to market risk. Read all scheme-related documents carefully before investing.</p>
+<br>
+<p><strong>DATA SOURCES:</strong> ICICI Direct Rapid Results &middot; Suryoday Bank Press Releases Q1&ndash;Q4 FY26 &middot; BSE India filings &middot; Screener.in &middot; Groww &middot; RBI MPC April 8 2026 Statement &middot; DD News &middot; 5paisa FY26 Report &middot; Business Standard &middot; CNBC India &middot; Yahoo Finance &middot; EquityMaster &middot; ScanX News. Analysis date: April 13, 2026.</p>
+<br>
+<p><strong>FONTS:</strong> Playfair Display &middot; Space Mono &middot; Lato (Google Fonts) &middot; Buffett QV Series v5.0 | &copy; 2026 Personal Research Archive</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

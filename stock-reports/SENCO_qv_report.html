@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senco Gold — Buffett Quality-Value Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ivory:       #FBF7F0;
+    --ivory-deep:  #F2EAD9;
+    --hero-bg:     #140C04;
+    --hero-mid:    #2A1505;
+    --gold:        #C9963A;
+    --gold-light:  #E8C57A;
+    --gold-pale:   #F5E4BC;
+    --mahogany:    #6B3F2A;
+    --mahogany-d:  #3D1E10;
+    --text-dark:   #1C1410;
+    --text-body:   #3B2E22;
+    --text-muted:  #7A6652;
+    --text-pale:   #A08870;
+    --pass-bg:     #E8F4EC; --pass-fg: #1A5C32; --pass-br: #2D7A4F;
+    --warn-bg:     #FEF6E4; --warn-fg: #7A5210; --warn-br: #D4A017;
+    --fail-bg:     #FAE8E8; --fail-fg: #6B1515; --fail-br: #A52A2A;
+    --card-bg:     #FFFFFF;
+    --card-shadow: 0 2px 12px rgba(58,32,10,0.08);
+    --border:      #E0D3C0;
+    --border-light:#EFE6D8;
+    --radius:      10px;
+    --stripe-a:    #C9963A;
+    --stripe-b:    #6B3F2A;
+    --stripe-c:    #2A5934;
+    --stripe-d:    #2A3F5C;
+    --stripe-e:    #8B2535;
+    --stripe-f:    #4A2A6B;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--text-body);
+    background: var(--ivory);
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--hero-bg) 0%, var(--hero-mid) 60%, #3D1E10 100%);
+    color: #FAF0DC;
+    padding: 36px 40px 28px;
+    max-height: 220px;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,150,58,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  .hero-left { flex: 1; min-width: 260px; }
+  .hero-ticker { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--gold-light); text-transform: uppercase; margin-bottom: 6px; }
+  .hero-name { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 600; line-height: 1.1; color: #FDF5E6; letter-spacing: -0.01em; }
+  .hero-sub { font-size: 13px; color: #C4AE8A; margin-top: 4px; font-style: italic; }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; }
+  .badge-cat    { background: rgba(201,150,58,0.22); color: var(--gold-light); border: 1px solid rgba(201,150,58,0.4); }
+  .badge-ai     { background: rgba(180,180,180,0.18); color: #D0D0D0; border: 1px solid rgba(180,180,180,0.35); }
+  .badge-macro  { background: rgba(45,90,60,0.3); color: #8ED4A0; border: 1px solid rgba(45,90,60,0.5); }
+  .hero-right { text-align: right; }
+  .verdict-badge { display: inline-block; padding: 8px 18px; border-radius: 8px; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 700; background: rgba(201,150,58,0.18); border: 2px solid var(--gold); color: var(--gold-light); letter-spacing: 0.03em; }
+  .hero-pills { display: flex; gap: 12px; margin-top: 10px; justify-content: flex-end; flex-wrap: wrap; }
+  .hero-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #A89070; }
+  .hero-pill span { color: #F5E4BC; font-weight: 600; }
+
+  /* ── TAB BAR ── */
+  #tab-bar {
+    background: var(--hero-bg);
+    border-bottom: 2px solid rgba(201,150,58,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  #tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    display: inline-block;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #887060;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .tab-btn:hover { color: var(--gold-light); }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* ── LAYOUT ── */
+  .tab-content { display: none; padding: 32px 36px 60px; max-width: 1080px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* ── SECTION HEADERS ── */
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.55rem;
+    font-weight: 600;
+    color: var(--mahogany-d);
+    margin: 32px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::before { content: ''; display: block; width: 4px; height: 22px; background: var(--gold); border-radius: 2px; flex-shrink: 0; }
+
+  .sub-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--mahogany);
+    margin: 22px 0 10px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .card-stripe { height: 4px; }
+  .card-body { padding: 20px 24px; }
+  .card-header { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .card-value { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--text-dark); }
+  .card-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0; }
+  .metric-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; border-left: 4px solid var(--gold); }
+  .metric-card.pass-border { border-left-color: var(--pass-br); }
+  .metric-card.warn-border { border-left-color: var(--warn-br); }
+  .metric-card.fail-border { border-left-color: var(--fail-br); }
+  .metric-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-pale); margin-bottom: 4px; }
+  .metric-val { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 600; color: var(--text-dark); }
+  .metric-note { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+  /* ── TABLES ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+  .data-table th { background: var(--ivory-deep); font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); padding: 10px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+  .data-table td { padding: 9px 12px; border-bottom: 1px solid var(--border-light); color: var(--text-body); vertical-align: middle; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: #FFFDF8; }
+  .data-table .num { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .data-table .bold { font-weight: 600; color: var(--text-dark); }
+
+  /* ── SCORECARD ROWS ── */
+  .test-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+  .test-row:last-child { border-bottom: none; }
+  .test-badge { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; font-weight: 700; }
+  .test-badge.pass { background: var(--pass-bg); color: var(--pass-fg); }
+  .test-badge.warn { background: var(--warn-bg); color: var(--warn-fg); }
+  .test-badge.fail { background: var(--fail-bg); color: var(--fail-fg); }
+  .test-content { flex: 1; }
+  .test-title { font-weight: 600; font-size: 14px; color: var(--text-dark); }
+  .test-detail { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── CONFIDENCE PILLS ── */
+  .conf { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 600; letter-spacing: 0.05em; margin-left: 4px; vertical-align: middle; }
+  .conf-v { background: #DCF0E5; color: #1A5C32; }
+  .conf-e { background: #FEF3D9; color: #7A5210; }
+  .conf-u { background: #FADDDD; color: #6B1515; }
+
+  /* ── STAR RATINGS ── */
+  .stars { color: var(--gold); letter-spacing: 2px; font-size: 15px; }
+  .stars-empty { color: #D0C4B0; }
+
+  /* ── MOAT CARDS ── */
+  .moat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 14px; }
+  .moat-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .moat-name { font-weight: 600; font-size: 15px; color: var(--text-dark); }
+  .moat-detail { font-size: 13.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+  .moat-grade { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--mahogany); margin-top: 4px; }
+
+  /* ── FLYWHEEL BOX ── */
+  .flywheel-box { background: var(--ivory-deep); border: 2px solid var(--border); border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
+  .flywheel-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; }
+  .flywheel-verdict { display: inline-block; padding: 4px 14px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; background: #EEE8D8; color: var(--text-muted); border: 1px solid var(--border); margin-bottom: 10px; }
+  .flywheel-q { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; font-size: 14px; }
+  .flywheel-q-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── VERDICT BOX ── */
+  .verdict-box { background: var(--hero-bg); color: #FAF0DC; border-radius: 12px; padding: 28px 32px; margin: 24px 0; border: 2px solid rgba(201,150,58,0.4); }
+  .verdict-headline { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold-light); margin-bottom: 8px; }
+  .verdict-text { font-size: 15px; line-height: 1.75; color: #D4C4A8; }
+  .verdict-quote { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: #C4AE8A; margin-top: 16px; padding-left: 16px; border-left: 3px solid var(--gold); }
+
+  /* ── UPGRADE CONDITIONS ── */
+  .upgrade-list { list-style: none; padding: 0; }
+  .upgrade-list li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; background: var(--card-bg); font-size: 14px; }
+  .upgrade-num { flex-shrink: 0; width: 22px; height: 22px; background: var(--gold); color: white; border-radius: 50%; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; margin-top: 1px; }
+
+  /* ── PILLAR GRADES ── */
+  .pillar-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 16px 0; }
+  .pillar-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+  .pillar-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .pillar-grade { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 700; color: var(--mahogany); line-height: 1; }
+
+  /* ── SERIES TABLE ── */
+  .series-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 12px; }
+  .series-table th { background: var(--hero-bg); color: var(--gold-light); font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 10px; text-align: left; }
+  .series-table td { padding: 7px 10px; border-bottom: 1px solid var(--border-light); color: var(--text-body); }
+  .series-table tr.highlight-row td { background: rgba(201,150,58,0.08); font-weight: 600; }
+  .series-table tr:hover td { background: #FFFDF5; }
+
+  /* ── TECHNICAL ── */
+  .ma-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; }
+  .ma-card { padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); text-align: center; }
+  .ma-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .ma-val { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 600; }
+  .ma-status { font-size: 11px; margin-top: 3px; }
+  .above-ma { color: var(--pass-fg); } .below-ma { color: var(--fail-fg); }
+
+  .price-ladder { display: flex; flex-direction: column; gap: 0; margin: 14px 0; }
+  .pl-row { display: flex; align-items: center; gap: 12px; padding: 7px 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; border-left: 4px solid var(--border); }
+  .pl-row.current { border-left-color: var(--gold); background: rgba(201,150,58,0.07); font-weight: 600; }
+  .pl-row.resist { border-left-color: #A52A2A; }
+  .pl-row.support { border-left-color: var(--pass-br); }
+  .pl-price { width: 80px; font-weight: 600; }
+  .pl-label { color: var(--text-muted); font-size: 12px; }
+
+  .trade-box { background: var(--hero-bg); color: #FAF0DC; border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
+  .trade-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px; }
+  .trade-item { text-align: center; }
+  .trade-item-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #A89070; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .trade-item-val { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; color: #F5E4BC; }
+
+  /* ── SHAREHOLDING ── */
+  .sh-bar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin: 10px 0; }
+  .sh-seg { height: 100%; transition: width 0.5s; }
+  .sh-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12.5px; margin-top: 6px; }
+  .sh-leg-item { display: flex; align-items: center; gap: 5px; }
+  .sh-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── AI TAB ── */
+  .ai-dash { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 16px 0; }
+  .ai-dash-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; text-align: center; }
+  .ai-dash-label { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--text-pale); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .ai-dash-val { font-size: 1.15rem; font-weight: 700; font-family: 'Cormorant Garamond', serif; color: var(--text-dark); }
+
+  .ai-score-gauge { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin: 14px 0; }
+  .score-bar-bg { background: var(--ivory-deep); border-radius: 20px; height: 14px; overflow: hidden; margin: 10px 0; }
+  .score-bar-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 1s; }
+  .score-label { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+  /* ── INFO BOXES ── */
+  .info-box { background: var(--ivory-deep); border-left: 4px solid var(--gold); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 12px 0; font-size: 14px; }
+  .warn-box { background: var(--warn-bg); border-left: 4px solid var(--warn-br); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 12px 0; font-size: 14px; }
+  .risk-box { background: var(--fail-bg); border-left: 4px solid var(--fail-br); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 12px 0; font-size: 14px; }
+
+  /* ── MACRO DASHBOARD ── */
+  .macro-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 14px 0; }
+  .macro-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .macro-dim { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-pale); margin-bottom: 4px; }
+  .macro-status { font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
+  .macro-impact { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .macro-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; margin-top: 4px; }
+  .mb-tail { background: #DCF0E5; color: #1A5C32; }
+  .mb-neu  { background: #EEE8D8; color: #6B5440; }
+  .mb-head { background: #FADDDD; color: #6B1515; }
+
+  /* ── DCF / VALUATION TABLES ── */
+  .val-summary { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 16px 0; }
+  .val-summary-header { background: var(--mahogany-d); color: #FAF0DC; padding: 12px 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .val-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 0; border-bottom: 1px solid var(--border-light); }
+  .val-row:last-child { border-bottom: none; }
+  .val-cell { padding: 10px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .val-cell.head { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); background: var(--ivory-deep); }
+  .val-cell.method { font-weight: 500; color: var(--text-body); font-family: 'Lora', serif; font-size: 13.5px; }
+  .val-cell.stress { color: var(--fail-fg); }
+  .val-cell.base   { color: var(--mahogany); font-weight: 600; }
+  .val-cell.accel  { color: var(--pass-fg); }
+  .val-row.blended { background: rgba(201,150,58,0.07); }
+  .val-row.blended .val-cell { font-weight: 700; }
+
+  /* ── GROWTH TABLE ── */
+  .growth-table-wrapper { overflow-x: auto; }
+  .growth-table { min-width: 560px; width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .growth-table th { background: var(--mahogany-d); color: #F5E4BC; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 9px 12px; text-align: left; }
+  .growth-table td { padding: 9px 12px; border-bottom: 1px solid var(--border-light); }
+  .growth-table .row-label { font-weight: 600; color: var(--text-dark); font-size: 13px; }
+  .growth-table td.stress-cell { color: var(--fail-fg); font-family: 'JetBrains Mono', monospace; }
+  .growth-table td.base-cell   { color: var(--mahogany); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+  .growth-table td.accel-cell  { color: var(--pass-fg); font-family: 'JetBrains Mono', monospace; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .hero { padding: 22px 18px 18px; max-height: none; }
+    .hero-name { font-size: 1.8rem; }
+    .tab-content { padding: 20px 16px 40px; }
+    .metric-grid { grid-template-columns: repeat(2,1fr); }
+    .pillar-grid { grid-template-columns: repeat(2,1fr); }
+    .macro-grid { grid-template-columns: repeat(2,1fr); }
+    .ma-grid { grid-template-columns: repeat(2,1fr); }
+    .ai-dash { grid-template-columns: repeat(2,1fr); }
+    .trade-grid { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 600px) {
+    .hero-inner { flex-direction: column; }
+    .hero-right { text-align: left; }
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .val-row { grid-template-columns: 2fr 1fr; }
+    .val-cell.stress, .val-cell.accel { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-ticker">NSE: SENCO &nbsp;·&nbsp; Buffett Quality-Value Series &nbsp;·&nbsp; Apr 2026</div>
+      <div class="hero-name">Senco Gold & Diamonds</div>
+      <div class="hero-sub">India's 2nd most trusted jewellery brand · 85-year legacy · Eastern India monopoly expanding pan-India</div>
+      <div class="hero-badges">
+        <span class="badge badge-cat">Cat C — Mature Compounder</span>
+        <span class="badge badge-ai">⚪ AI Neutral</span>
+        <span class="badge badge-macro">◎ Macro: Neutral-Tailwind</span>
+        <span class="badge" style="background:rgba(180,80,40,0.18);color:#E8A87C;border:1px solid rgba(180,80,40,0.35);">🔔 OCF Watch</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="verdict-badge">WATCH ★★★</div>
+      <div class="hero-pills">
+        <div class="hero-pill">CMP <span>~₹326</span></div>
+        <div class="hero-pill">Mkt Cap <span>₹5,345 Cr</span></div>
+        <div class="hero-pill">P/E <span>~11x</span></div>
+        <div class="hero-pill">Entry <span>₹275–310</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TAB BAR ═══════════════════════════ -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">00 Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">01 Macro</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">02 Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">03 Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">04 Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">05 Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">06 Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">07 Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">08 Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">09 AI Intel</button>
+</div>
+
+<!-- ═══════════════════════════ TAB 0: OVERVIEW ═══════════════════════════ -->
+<div id="tab0" class="tab-content" style="display:block;">
+  <div class="section-title">Business Overview</div>
+
+  <div class="card">
+    <div class="card-stripe" style="background:var(--gold);"></div>
+    <div class="card-body">
+      <p style="font-size:15.5px; line-height:1.8; color:var(--text-body);">
+        Senco Gold Limited is the largest organised jewellery retailer in Eastern India and the second most trusted jewellery brand nationally (TRA Brand Trust Report, five consecutive years). Founded in 1938 by the Sen family of Kolkata and publicly listed in 2023, the company operates 201 showrooms as of Q4 FY26 — comprising 102 company-owned (COCO), 85 franchisee (FRN/FOCO/FOFO), 12 Sennes stores, and 2 international outlets in Dubai. Its product portfolio spans gold, diamond, silver, platinum, polki, and lab-grown diamond jewellery, with sub-brands including <em>Everlite</em> (lightweight daily-wear), <em>Gossip</em> (fashion jewellery), and <em>Senhor</em> (men's jewellery).
+      </p>
+      <p style="font-size:15.5px; line-height:1.8; color:var(--text-body); margin-top:12px;">
+        The company's core strength is its deep Eastern India presence — a region where organised retail penetration was lowest and Senco built a 40–45% market share in organised jewellery over decades. It is now executing a disciplined geographic expansion into North India (Delhi NCR, UP, Bihar, Jharkhand) and West India (Maharashtra), leveraging its hub-and-spoke franchise model to expand asset-lightly. FY26 revenue is expected to exceed ₹8,500 Cr (35% YoY growth), and the company received a CARE A+ credit rating upgrade in March 2026 — a quality milestone.
+      </p>
+    </div>
+  </div>
+
+  <div class="section-title">Key Financial Snapshot</div>
+  <div class="metric-grid">
+    <div class="metric-card pass-border">
+      <div class="metric-label">Revenue FY26E</div>
+      <div class="metric-val">₹8,500 Cr</div>
+      <div class="metric-note">+35% YoY | 5yr CAGR ~28% <span class="conf conf-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card warn-border">
+      <div class="metric-label">PAT FY26E</div>
+      <div class="metric-val">~₹500 Cr</div>
+      <div class="metric-note">Elevated from gold price gains; normalized ~₹350 Cr <span class="conf conf-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">Market Cap</div>
+      <div class="metric-val">₹5,345 Cr</div>
+      <div class="metric-note">Small-cap | SEBI classification <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">P/E (TTM)</div>
+      <div class="metric-val">~11x</div>
+      <div class="metric-note">49% discount to peer median of 22x <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-border">
+      <div class="metric-label">Op. Cash Flow</div>
+      <div class="metric-val">Negative</div>
+      <div class="metric-note">FY25 OCF = −₹221 Cr (structural WC issue) <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">Credit Rating</div>
+      <div class="metric-val">CARE A+</div>
+      <div class="metric-note">Upgraded March 2026 (from A) <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">Promoter Holding</div>
+      <div class="metric-val">64.5%</div>
+      <div class="metric-note">Stable; no pledges reported <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">Showrooms</div>
+      <div class="metric-val">201</div>
+      <div class="metric-note">Including 12 Sennes & 2 Dubai <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-border">
+      <div class="metric-label">EBITDA Margin</div>
+      <div class="metric-val">7–13%</div>
+      <div class="metric-note">Highly seasonal; Q3 FY26 = 13.3% peak <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Why Senco in This Series?</div>
+  <div class="info-box">
+    <strong>The Organised Jewellery Formalisation Thesis:</strong> India's jewellery market is undergoing a structural shift from unorganised to organised retail — organised share rose from 22% (FY19) to 36–38% (FY25) and is projected to reach 45–50% by FY30. Senco is the dominant beneficiary in Eastern India and is now capturing the national formalisation wave. Yet the stock trades at 11x P/E vs Kalyan at 40–50x and Titan at 60–70x. The discount reflects: negative OCF (structural, gold inventory driven), thin margins (2–6% PAT), and smaller scale. This report asks: is the discount warranted, or is this a deep-value entry into an under-followed regional champion?
+  </div>
+
+  <div class="warn-box">
+    <strong>⚠ Key Risk Flag:</strong> FY26 profitability is materially elevated because gold prices surged 79% YoY in Q3 FY26, boosting inventory value and creating extraordinary operating leverage. Q2 FY26 showed only 6.5% revenue growth and 7.5% SSSG, revealing the base-business pace when gold prices are less supportive. Normalized earnings are materially lower than FY26 reported figures. Investor must anchor to normalized PAT of ~₹350 Cr (FY27 base), not FY26 peak.
+  </div>
+
+  <div class="section-title">Melorra Acquisition — Strategic Significance</div>
+  <div class="info-box">
+    Senco is acquiring a 68% stake in <strong>August Jewellery Pvt Ltd (Melorra)</strong> for ₹68 Cr. Melorra is a digital-first, youth-focused jewellery brand with a strong e-commerce presence. This is a smart adjacency: Senco gains digital channel expertise, a younger customer cohort, and an online brand to complement its showroom-heavy model. The integration aligns with the omnichannel trend where brands with physical + digital coverage capture 30% larger share of consumer spending. Consideration is small (₹68 Cr vs ₹5,345 Cr market cap); downside risk is manageable.
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TAB 1: MACRO ═══════════════════════════ -->
+<div id="tab1" class="tab-content">
+  <div class="section-title">Layer 1 — Macro Anchor</div>
+
+  <div class="macro-grid">
+    <div class="macro-card">
+      <div class="macro-dim">India Real GDP (FY26)</div>
+      <div class="macro-status">7.3% <span class="conf conf-v">VERIFIED</span></div>
+      <div class="macro-impact">RBI revised upward; World Bank projects 6.5% in 2026</div>
+      <span class="macro-badge mb-tail">Tailwind</span>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">India CPI Inflation</div>
+      <div class="macro-status">~3.5–4.0%</div>
+      <div class="macro-impact">Well within RBI 4% target; benign cost environment</div>
+      <span class="macro-badge mb-tail">Tailwind</span>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">India Nominal GDP</div>
+      <div class="macro-status">~10.8–11.3%</div>
+      <div class="macro-impact">Real 7.3% + CPI 3.5–4% = Terminal growth ceiling</div>
+      <span class="macro-badge mb-tail">Ceiling ~11%</span>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">10Y G-Sec Yield</div>
+      <div class="macro-status">6.87–6.90% <span class="conf conf-v">VERIFIED</span></div>
+      <div class="macro-impact">RBI held rates April 2026; Mideast crisis pressure</div>
+      <span class="macro-badge mb-neu">Neutral</span>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">Urban Consumption</div>
+      <div class="macro-status">Recovery</div>
+      <div class="macro-impact">IT wages + real estate wealth; wedding demand strong</div>
+      <span class="macro-badge mb-tail">+1 to +3%</span>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">Rural Income Cycle</div>
+      <div class="macro-status">Neutral–Recovery</div>
+      <div class="macro-impact">MSP hikes; good monsoon FY25; supports tier II/III demand</div>
+      <span class="macro-badge mb-neu">Neutral</span>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">Gold Price Cycle</div>
+      <div class="macro-status">Elevated Volatile</div>
+      <div class="macro-impact">Gold USD 4,700–5,595/oz range Q4 FY26; 79% YoY surge</div>
+      <span class="macro-badge mb-neu">Double-edged</span>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">Interest Rate Cycle (RBI)</div>
+      <div class="macro-status">On Hold</div>
+      <div class="macro-impact">Repo rate at 5.25%; Mideast crisis prevents near-term cuts</div>
+      <span class="macro-badge mb-neu">Neutral</span>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">AI Adoption Cycle</div>
+      <div class="macro-status">Phase 4 for retail</div>
+      <div class="macro-impact">AI in jewellery retail is feature-level; no structural impact</div>
+      <span class="macro-badge mb-neu">Neutral</span>
+    </div>
+  </div>
+
+  <div class="info-box"><strong>Macro Composite for Senco Gold:</strong> Neutral-to-Tailwind. Strong GDP growth + rising wedding class + rural recovery support volume. Rising gold prices create a revenue tailwind (higher ASPs) but also dampen volume for price-sensitive buyers. The inventory cost mechanism works in Senco's favour when gold prices are rising. Organised retail formalisation (hallmarking regulations) is a sustained structural tailwind independent of macro cycles.</div>
+
+  <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+  <table class="data-table">
+    <thead><tr><th>Metric</th><th>Figure</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>India Jewellery Market Size (2025)</td><td class="num">USD 90–91 billion</td><td><span class="conf conf-e">ESTIMATED</span> Industry reports</td></tr>
+      <tr><td>Market projected (2033)</td><td class="num">USD ~150 billion</td><td><span class="conf conf-e">ESTIMATED</span> Grand View Research</td></tr>
+      <tr><td>Organised market share (FY19→FY25)</td><td class="num">22% → 36–38%</td><td><span class="conf conf-v">VERIFIED</span> Crisil</td></tr>
+      <tr><td>Organised segment revenue CAGR (FY22–25)</td><td class="num">~17–21%</td><td><span class="conf conf-e">ESTIMATED</span> Anand Rathi, company</td></tr>
+      <tr><td>Organised sector projected growth (FY26–30)</td><td class="num">15–19% (base)</td><td><span class="conf conf-e">ESTIMATED</span> Crisil, ICRA</td></tr>
+      <tr><td>Hallmarking tailwind (unorg. → org. shift)</td><td class="num">+3–5% incremental</td><td><span class="conf conf-e">ESTIMATED</span></td></tr>
+      <tr><td>AI impact on sector growth</td><td>Cosmetic/Neutral</td><td>See Tab 9</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin:10px 0 16px; font-size:14px; color:var(--text-muted);">AI is accelerating virtual try-on and personalisation features but not fundamentally altering sector growth rates. Base sector growth of 15–19% is driven by formalisation, not AI.</p>
+
+  <div class="section-title">Layer 3 — Company Alpha over Sector</div>
+  <table class="data-table">
+    <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>1. Market Share Gain</td><td>Active</td><td class="num">+2–3%</td><td class="num">+1–2%</td><td>Eastern India leader; share in North/West still small</td></tr>
+      <tr><td>2. Premiumisation</td><td>Potential</td><td class="num">+1%</td><td class="num">+1%</td><td>Diamond + LGD mix growing; 9K Cloud9 launch</td></tr>
+      <tr><td>3. Category Expansion</td><td>Active</td><td class="num">+1%</td><td class="num">+0.5%</td><td>Silver kitchenware, lifestyle, digital gold (MyDigiGold)</td></tr>
+      <tr><td>4. Geographic Expansion</td><td>Active</td><td class="num">+3–4%</td><td class="num">+1–2%</td><td>North + West India + Dubai; franchise-led = asset-light</td></tr>
+      <tr><td>5. Pricing Power</td><td>Moderate</td><td class="num">+0.5%</td><td class="num">+0.5%</td><td>Making charges; gold price passthrough; limited independent pricing</td></tr>
+      <tr><td>6. AI Alpha (6a+6b+6c)</td><td>Cosmetic</td><td class="num">0%</td><td class="num">0%</td><td>Shape of You virtual try-on; no flywheel, no market expansion via AI</td></tr>
+      <tr><td colspan="1"><strong>Total Alpha</strong></td><td>—</td><td class="num bold">+7–9%</td><td class="num bold">+3–5%</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Growth Rate Derivation — Final Output</div>
+  <div class="growth-table-wrapper">
+    <table class="growth-table">
+      <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr></thead>
+      <tbody>
+        <tr><td class="row-label">Macro State</td><td class="stress-cell">GDP ~5.5%</td><td class="base-cell">GDP ~7.3%</td><td class="accel-cell">GDP ~8.5%</td></tr>
+        <tr><td class="row-label">India Nominal GDP</td><td class="stress-cell">~10.5%</td><td class="base-cell">~11%</td><td class="accel-cell">~12%</td></tr>
+        <tr><td class="row-label">Sector Growth (organised jewellery)</td><td class="stress-cell">10–12%</td><td class="base-cell">15–18%</td><td class="accel-cell">20–22%</td></tr>
+        <tr><td class="row-label">Company Alpha</td><td class="stress-cell">+3%</td><td class="base-cell">+7%</td><td class="accel-cell">+9%</td></tr>
+        <tr><td class="row-label">AI Alpha (6a+6b+6c)</td><td class="stress-cell">0%</td><td class="base-cell">0%</td><td class="accel-cell">0%</td></tr>
+        <tr><td class="row-label">Stage 1 Revenue CAGR (FY27–31)</td><td class="stress-cell">13–15%</td><td class="base-cell">22–25%</td><td class="accel-cell">29–31%</td></tr>
+        <tr><td class="row-label">Stage 2 Revenue CAGR (FY32–36)</td><td class="stress-cell">8–9%</td><td class="base-cell">12–14%</td><td class="accel-cell">15–17%</td></tr>
+        <tr><td class="row-label">Terminal Growth</td><td class="stress-cell">6.5%</td><td class="base-cell">7.5%</td><td class="accel-cell">8.5%</td></tr>
+        <tr><td class="row-label">Margin Direction</td><td class="stress-cell">Compress</td><td class="base-cell">Stable 3.5–4.5%</td><td class="accel-cell">Expand 4–6%</td></tr>
+        <tr><td class="row-label">Key Risk</td><td class="stress-cell">Gold crash + WC crisis</td><td class="base-cell">Gold stabilisation normalises PAT</td><td class="accel-cell">Pan-India SSSG acceleration</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px; color:var(--text-muted); margin-top:10px;"><strong>Sensitivity:</strong> A 1% change in terminal growth rate changes IV by approximately ±8–10%. A 1% change in Stage 1 revenue CAGR changes IV by approximately ±5–7%.</p>
+</div>
+
+<!-- ═══════════════════════════ TAB 2: FINANCIALS ═══════════════════════════ -->
+<div id="tab2" class="tab-content">
+  <div class="section-title">Revenue & Profit History</div>
+  <table class="data-table">
+    <thead><tr><th>Year</th><th>Revenue (₹Cr)</th><th>YoY %</th><th>EBITDA (₹Cr)</th><th>EBITDA Mgn</th><th>PAT (₹Cr)</th><th>PAT Mgn</th></tr></thead>
+    <tbody>
+      <tr><td>FY22</td><td class="num">~3,200</td><td class="num">+47%</td><td class="num">~240</td><td class="num">~7.5%</td><td class="num">~60</td><td class="num">~1.9%</td></tr>
+      <tr><td>FY23</td><td class="num">~4,080</td><td class="num">+27%</td><td class="num">~318</td><td class="num">~7.8%</td><td class="num">~110</td><td class="num">~2.7%</td></tr>
+      <tr><td>FY24</td><td class="num">~5,200</td><td class="num">+28%</td><td class="num">~400</td><td class="num">~7.7%</td><td class="num">~130</td><td class="num">~2.5%</td></tr>
+      <tr><td>FY25</td><td class="num">~6,100</td><td class="num">+21%</td><td class="num">~480</td><td class="num">~7.9%</td><td class="num">~159</td><td class="num">~2.6%</td></tr>
+      <tr style="background:rgba(201,150,58,0.06);"><td><strong>FY26E</strong></td><td class="num bold">~8,500</td><td class="num bold">+35–40%</td><td class="num bold">~850</td><td class="num bold">~10%</td><td class="num bold">~500</td><td class="num bold">~5.9%</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">All figures <span class="conf conf-e">ESTIMATED</span> from published quarterly data, analyst reports (Anand Rathi), and business updates. FY26 PAT elevated by gold inventory mark-up gains.</p>
+
+  <div class="warn-box">
+    <strong>Critical PAT Distortion Warning:</strong> FY26 PAT of ~₹500 Cr reflects an extraordinary environment where gold prices surged 79% YoY in Q3 FY26, lifting inventory values and creating an operating leverage effect not seen in normal years. The normalised run-rate PAT (assuming stable gold prices) is approximately ₹320–380 Cr, based on 3.8–4.5% PAT margins on ₹8,500 Cr revenue. Valuation should be anchored to normalised figures.
+  </div>
+
+  <div class="section-title">ROE & ROIC — 5-Year Track</div>
+  <table class="data-table">
+    <thead><tr><th>Year</th><th>ROE (%)</th><th>ROIC (%)</th><th>WACC (est.)</th><th>Spread</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>FY22</td><td class="num">~12%</td><td class="num">~10%</td><td class="num">12.5%</td><td class="num fail-fg">−2.5%</td><td>Below WACC</td></tr>
+      <tr><td>FY23</td><td class="num">~19%</td><td class="num">~13.3%</td><td class="num">12.5%</td><td class="num pass-fg">+0.8%</td><td>Marginal positive</td></tr>
+      <tr><td>FY24</td><td class="num">~16%</td><td class="num">~13%</td><td class="num">12.5%</td><td class="num pass-fg">+0.5%</td><td>Marginal positive</td></tr>
+      <tr><td>FY25</td><td class="num">~8%</td><td class="num">~11%</td><td class="num">12.5%</td><td class="num fail-fg">−1.5%</td><td>Below WACC</td></tr>
+      <tr style="background:rgba(201,150,58,0.06);"><td>FY26E</td><td class="num bold">~20–22%</td><td class="num bold">~14–16%</td><td class="num">12.5%</td><td class="num pass-fg bold">+1.5–3.5%</td><td>Positive (elevated)</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">FY25 ROE weakness reflects thin PAT year; FY26 elevated. Long-run normalised ROIC: 13–15% — narrowly above WACC. <span class="conf conf-e">ESTIMATED</span></p>
+
+  <div class="section-title">Financial Fortress Scorecard</div>
+  <div class="card">
+    <div class="card-stripe" style="background:var(--gold);"></div>
+    <div class="card-body">
+      <div class="test-row">
+        <span class="test-badge warn">~</span>
+        <div class="test-content">
+          <div class="test-title">ROE ≥ 15% for 5 consecutive years</div>
+          <div class="test-detail">MARGINAL. FY23: 19%, FY24: 16%, FY25: 8% (below), FY26E: 20–22%. Average ~15%; not sustained over 5 years due to FY22/FY25 dips.</div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge warn">~</span>
+        <div class="test-content">
+          <div class="test-title">ROIC > WACC for 5 consecutive years</div>
+          <div class="test-detail">MARGINAL. ROIC oscillates 10–16%, crossing WACC (12.5%) only intermittently. Consistent value creation not yet demonstrated across full cycles.</div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge fail">✗</span>
+        <div class="test-content">
+          <div class="test-title">Net cash preferred (Net Debt negative)</div>
+          <div class="test-detail">FAIL. Senco carries working capital borrowings (gold loans via banks). Interest costs ₹59 Cr in Q3 FY26 alone. Interest coverage 6.86x (acceptable). Net debt exists but manageable given CARE A+ rating.</div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge fail">✗</span>
+        <div class="test-content">
+          <div class="test-title">Net profit margin ≥ 15%</div>
+          <div class="test-detail">FAIL. PAT margin typically 2–3%, elevated to ~6% in FY26. Jewellery retail is inherently a high-revenue, low-margin business. Gold is passthrough cost; margin is on making charges + diamond margin.</div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge fail">✗</span>
+        <div class="test-content">
+          <div class="test-title">FCF positive and growing; FCF conversion ≥ 80%</div>
+          <div class="test-detail">FAIL. Operating cash flow persistently negative (FY25: −₹221 Cr; FY24, FY23 also negative). Working capital changes of −₹524 Cr in FY25. This is structural for gold jewellery retail, not a quality signal — requires assessment on normalised basis.</div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge pass">✓</span>
+        <div class="test-content">
+          <div class="test-title">Revenue growth 5-yr CAGR ≥ sector CAGR</div>
+          <div class="test-detail">PASS. Senco 5-yr revenue CAGR ~28% significantly exceeds organised jewellery sector CAGR of ~17–21%. Consistent market share gain evident.</div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge pass">✓</span>
+        <div class="test-content">
+          <div class="test-title">Capital-light model (franchise mix)</div>
+          <div class="test-detail">PASS. 85 of 201 stores are franchisee-operated (FOFO/FOCO), reducing capital intensity. Franchise model enables geographic expansion without proportional capex.</div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge warn">~</span>
+        <div class="test-content">
+          <div class="test-title">Pricing power proven</div>
+          <div class="test-detail">MARGINAL. Gold price is passthrough (no pricing power on commodity). Pricing power exists only on making charges (labour) and diamond component. SSSG in FY26 reflects gold price inflation, not volume pricing power.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Owner Earnings Calculation</div>
+  <div class="card">
+    <div class="card-stripe" style="background:var(--stripe-b);"></div>
+    <div class="card-body">
+      <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:12px;"><em>Note: Negative OCF makes traditional owner earnings calculation non-representative. Using normalised PAT-based approach for FY26 base.</em></p>
+      <table class="data-table">
+        <thead><tr><th>Component</th><th>FY26E (Conservative)</th><th>FY26E (Base)</th></tr></thead>
+        <tbody>
+          <tr><td>Normalised Net Income (adjusted for gold gains)</td><td class="num">₹350 Cr</td><td class="num">₹420 Cr</td></tr>
+          <tr><td>+ D&A (estimated)</td><td class="num">₹80 Cr</td><td class="num">₹85 Cr</td></tr>
+          <tr><td>− Maintenance CapEx (est.)</td><td class="num">−₹60 Cr</td><td class="num">−₹70 Cr</td></tr>
+          <tr><td>± Working Capital Change (normalised)</td><td class="num">−₹200 Cr</td><td class="num">−₹150 Cr</td></tr>
+          <tr style="background:rgba(201,150,58,0.06);"><td><strong>Normalised Owner Earnings</strong></td><td class="num bold">₹170 Cr</td><td class="num bold">₹285 Cr</td></tr>
+          <tr><td>OE/Share (16.4 Cr shares)</td><td class="num">₹10.4/sh</td><td class="num">₹17.4/sh</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:12.5px; color:var(--text-muted); margin-top:8px;">Owner Earnings are materially lower than reported PAT due to persistent working capital absorption. This is the core reason for the peer valuation discount. <span class="conf conf-e">ESTIMATED</span></p>
+    </div>
+  </div>
+
+  <div class="section-title">Earnings Quality — O'Glove Framework</div>
+  <div class="card">
+    <div class="card-stripe" style="background:var(--stripe-e);"></div>
+    <div class="card-body">
+      <div class="test-row">
+        <span class="test-badge fail">✗</span>
+        <div class="test-content">
+          <div class="test-title">Test 1 — FCF Conversion (5-year)</div>
+          <div class="test-detail">FAIL. OCF/Net Income: FY25 = negative (OCF −₹221 Cr vs PAT +₹159 Cr). FCF conversion chronically below 0% across multiple years. Structural WC absorption. <span class="conf conf-v">VERIFIED</span></div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge warn">~</span>
+        <div class="test-content">
+          <div class="test-title">Test 2 — DSO Trend (3-year)</div>
+          <div class="test-detail">MARGINAL. Receivables primarily from franchisee settlements and advance schemes. Not classic trade receivables; DSO analysis less relevant for jewellery retail model. Advance collection schemes actually create negative receivables (prepaid customers). <span class="conf conf-e">ESTIMATED</span></div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge fail">✗</span>
+        <div class="test-content">
+          <div class="test-title">Test 3 — Inventory Days (3-year)</div>
+          <div class="test-detail">FAIL. Inventory turnover deteriorated to 1.57x (H1 FY26) — lowest in recent periods. Inventory days high at 160–200+ days. This is structural (need to display wide range for customer choice) but worsening is a concern for working capital. <span class="conf conf-v">VERIFIED</span></div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge warn">~</span>
+        <div class="test-content">
+          <div class="test-title">Test 4 — Accounting Policy Stability</div>
+          <div class="test-detail">MARGINAL. One screener note flags potential interest cost capitalisation. CARE A+ upgrade provides comfort. No disclosed accounting policy changes boosting earnings found. However, gold inventory accounting (FIFO vs weighted avg) can materially shift margins in high gold-price years. Monitor annually. <span class="conf conf-e">ESTIMATED</span></div>
+        </div>
+      </div>
+      <div class="test-row">
+        <span class="test-badge pass">✓</span>
+        <div class="test-content">
+          <div class="test-title">Test 5 — Gross Margin Consistency</div>
+          <div class="test-detail">PASS. EBITDA margin maintained in 7–9% band over FY22–25, consistent with industry (gold is cost passthrough; margin earned on labour + diamond). Q3 FY26 expansion to 13.3% is gold-price driven, not a quality deterioration. <span class="conf conf-v">VERIFIED</span></div>
+        </div>
+      </div>
+      <div style="margin-top:14px; padding:12px 14px; border-radius:8px; background:var(--warn-bg); border:1px solid var(--warn-br);">
+        <strong>Overall Earnings Quality: SUSPECT</strong> — Persistent negative OCF, inventory days worsening, and potential interest capitalisation require close monitoring. Applying 5% additional margin of safety per framework rules. Investor must evaluate on normalised earnings and not reported PAT.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TAB 3: MOAT ═══════════════════════════ -->
+<div id="tab3" class="tab-content">
+  <div class="section-title">Economic Moat Assessment</div>
+
+  <div class="moat-card">
+    <div class="moat-icon">🗺️</div>
+    <div>
+      <div class="moat-name">Geographic Concentration Moat — Eastern India</div>
+      <div class="moat-detail">Senco holds an estimated 40–45% market share in organised jewellery in Eastern India (WB, Odisha, Assam, Bihar, Jharkhand) — a region with historically low organised retail penetration. 85-year legacy brand with 4 generations of family ownership creates deep community trust in a sector where trust is the primary purchase criterion. This is the strongest moat source.</div>
+      <div class="moat-grade">★★★★ Strong regional moat — narrowing as company expands beyond home base</div>
+    </div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-icon">🏆</div>
+    <div>
+      <div class="moat-name">Brand Trust — "India's 2nd Most Trusted Jewellery Brand"</div>
+      <div class="moat-detail">TRA Brand Trust Report ranked Senco as India's 2nd most trusted jewellery brand for 5 consecutive years. In jewellery, brand trust drives repurchase: hallmarking + exchange policy + design variety create switching costs around trust. However, this trust is stronger in Eastern India than nationally — brand recognition fades in newer geographies where Titan/Kalyan are established.</div>
+      <div class="moat-grade">★★★ Moderate — strong regionally, developing nationally</div>
+    </div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-icon">📦</div>
+    <div>
+      <div class="moat-name">Advance Booking Scheme (Customer Float)</div>
+      <div class="moat-detail">Senco's advance schemes allow customers to pre-pay monthly instalments for jewellery, creating a form of customer float similar to Colgate's prepaid consumers. These schemes generate cash upfront, reduce credit risk, and create strong repurchase behaviour (completion of scheme = forced return to store). This creates a mild switching cost mechanism.</div>
+      <div class="moat-grade">★★★ Moderate — creates loyalty loops; provides interest-free float</div>
+    </div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-icon">🔗</div>
+    <div>
+      <div class="moat-name">Hub-and-Spoke Franchise Network</div>
+      <div class="moat-detail">Hub-and-spoke distribution from Kolkata manufacturing hub to franchise nodes creates logistics and inventory efficiency that local independent jewellers cannot match. Franchisees bear capital cost; Senco earns franchise fees + design premium + gold supply margin. Network expands asset-lightly while strengthening supply chain leverage.</div>
+      <div class="moat-grade">★★★ Moderate — durable cost and logistics advantage; replicable at cost</div>
+    </div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-icon">💎</div>
+    <div>
+      <div class="moat-name">Product Differentiation — Lightweight & Accessible</div>
+      <div class="moat-detail">Senco's focus on lightweight jewellery (ASP ₹36,600–57,900) and affordable price points via sub-brands Everlite, Gossip, and Cloud 9 (9K gold) targets working women and budget-conscious buyers. This segment is growing faster than bridal heavy jewellery, and Senco has first-mover advantage among organised players in this positioning.</div>
+      <div class="moat-grade">★★ Developing — product edge exists but replicable by Kalyan/Titan Mia</div>
+    </div>
+  </div>
+
+  <div class="section-title">ROIC as Moat Proof</div>
+  <div class="info-box">ROIC of 13–15% marginally above WACC (12.5%) indicates a <strong>narrow moat</strong> — the company earns modest economic rent but has not yet demonstrated the 15–40% ROIC range of a wide-moat compounder. The moat is real but thin outside Eastern India. As pan-India expansion matures (FY28–30), ROIC could expand as operating leverage kicks in on new geographies. For now: <strong>Narrow Moat — B− grade.</strong></div>
+
+  <div class="section-title">Macro Moat Stress Test</div>
+  <table class="data-table">
+    <thead><tr><th>Moat Source</th><th>In Stress (Gold crash + slowdown)</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr><td>Eastern India brand + trust</td><td>HOLDS — trust doesn't evaporate in downturns; discretionary spending deferred, not lost</td><td>Resilient</td></tr>
+      <tr><td>Advance schemes</td><td>WEAKENS — customers defer new schemes when income stressed; completion rates fall</td><td>Vulnerable</td></tr>
+      <tr><td>Franchise network</td><td>HOLDS — fixed cost is franchisees', not Senco's; network stays intact</td><td>Resilient</td></tr>
+      <tr><td>Working capital</td><td>WEAKENS severely — inventory lock-up balloons if sales slow; gold loan costs rise</td><td>High risk in stress</td></tr>
+      <tr><td>Brand in new geographies</td><td>WEAKENS — customers in North/West default to Tanishq/Kalyan in stress</td><td>Vulnerable</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Data Flywheel Test — AI Moat Assessment</div>
+  <div class="flywheel-box">
+    <div class="flywheel-title">AI Data Flywheel Analysis</div>
+    <div class="flywheel-verdict">🔘 AI IS COSMETIC — No Flywheel</div>
+    <div class="flywheel-q">
+      <span class="flywheel-q-icon">❓</span>
+      <div><strong>Q1: Does Senco have proprietary AI training data competitors cannot access?</strong><br>
+      <span style="color:var(--text-muted);">No. Jewellery transaction data is high-value but Titan has 10x the volume. Senco's customer database (~5M+ customers estimated) is smaller than peers. Gold pricing data is public. No unique data moat exists.</span></div>
+    </div>
+    <div class="flywheel-q">
+      <span class="flywheel-q-icon">❓</span>
+      <div><strong>Q2: Does the AI improve measurably as more customers use it?</strong><br>
+      <span style="color:var(--text-muted);">No evidence. "Shape of You" virtual try-on uses face shape matching — a standard computer vision model, not proprietary AI that improves with Senco-specific data. No metrics shared in earnings calls on AI accuracy improvement.</span></div>
+    </div>
+    <div class="flywheel-q">
+      <span class="flywheel-q-icon">❓</span>
+      <div><strong>Q3: Does better AI attract more users, completing a self-reinforcing loop?</strong><br>
+      <span style="color:var(--text-muted);">No. The virtual try-on is a convenience feature. Customers return to Senco for brand trust and design variety, not because the AI got smarter. No loop identified.</span></div>
+    </div>
+    <div style="margin-top:10px; font-family:'JetBrains Mono',monospace; font-size:13px;">Flywheel Score: <strong>0/10</strong> &nbsp;|&nbsp; Data Quality: 0/3 &nbsp;|&nbsp; Improvement Evidence: 0/4 &nbsp;|&nbsp; Loop Speed: 0/3</div>
+    <div style="margin-top:6px; font-size:13.5px; color:var(--text-muted);">AI features are cosmetic additions (virtual try-on, digital gold platform) that do not change the competitive position. See Tab 9 for full AI analysis.</div>
+  </div>
+
+  <div class="section-title">Shareholding as Moat Amplifier</div>
+  <div class="info-box">Promoter holding of 64.5% creates a tight free float of ~35.5%. With market cap of ₹5,345 Cr and free float ~₹1,900 Cr, any meaningful institutional entry will move the stock. This is a structural supply scarcity dynamic — when FII/DII conviction builds (e.g., on post-gold-cycle normalisation), the impact on price will be amplified.</div>
+</div>
+
+<!-- ═══════════════════════════ TAB 4: MANAGEMENT ═══════════════════════════ -->
+<div id="tab4" class="tab-content">
+  <div class="section-title">Management Assessment</div>
+
+  <div class="card">
+    <div class="card-stripe" style="background:var(--stripe-c);"></div>
+    <div class="card-body">
+      <div class="sub-title">Leadership — Suvankar Sen, MD & CEO</div>
+      <p style="font-size:14.5px; line-height:1.8;">Fourth-generation family leadership with ~85 years of institutional knowledge. Suvankar Sen has guided the company through: IPO in 2023 (at ₹317), post-IPO brand building, geographic expansion into North India and Dubai, digital transformation (MyDigiGold, e-commerce), and the Melorra acquisition for digital capability building. Management commentary reflects measured ambition — targeting 20%+ growth with sustainable EBITDA margins, not aggressive margin guidance that jewellery retailers often over-promise.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Promoter & Shareholding Integrity</div>
+  <div class="metric-grid">
+    <div class="metric-card pass-border">
+      <div class="metric-label">Promoter Holding</div>
+      <div class="metric-val">64.5%</div>
+      <div class="metric-note">Stable; slight increase from 64.38% QoQ <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">Promoter Pledges</div>
+      <div class="metric-val">Nil</div>
+      <div class="metric-note">No pledges reported (PASS — &lt;5% threshold) <span class="conf conf-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">Credit Rating</div>
+      <div class="metric-val">CARE A+</div>
+      <div class="metric-note">Upgraded March 2026 — strong lender confidence <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Capital Allocation Assessment</div>
+  <div class="test-row" style="border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:8px;">
+    <span class="test-badge pass">✓</span>
+    <div class="test-content">
+      <div class="test-title">Store Expansion — Franchisee-First Model</div>
+      <div class="test-detail">Management is expanding via asset-light franchisee model (FOFO/FOCO). 85 of 201 stores are franchisee-run. This preserves capital for core operations. New COCO openings are selective in high-potential markets (Delhi NCR, UP). Capital discipline evident.</div>
+    </div>
+  </div>
+  <div class="test-row" style="border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:8px;">
+    <span class="test-badge pass">✓</span>
+    <div class="test-content">
+      <div class="test-title">Melorra Acquisition — Priced Appropriately</div>
+      <div class="test-detail">₹68 Cr for 68% of Melorra (digital-first brand) = ~₹100 Cr valuation. Small, targeted, fills a genuine capability gap (digital/youth). No empire building evident. Price is disciplined for the strategic benefit.</div>
+    </div>
+  </div>
+  <div class="test-row" style="border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:8px;">
+    <span class="test-badge warn">~</span>
+    <div class="test-content">
+      <div class="test-title">Working Capital Discipline</div>
+      <div class="test-detail">MARGINAL. Inventory days at 160–200 days are high. Management targets 135 days by FY26, but H1 FY26 data shows deterioration. WC management is the core challenge of the business model — improving slowly but not yet at peer levels.</div>
+    </div>
+  </div>
+  <div class="test-row" style="border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:8px;">
+    <span class="test-badge warn">~</span>
+    <div class="test-content">
+      <div class="test-title">Key Management Departure — CSO Resignation</div>
+      <div class="test-detail">Chief Sales & Business Officer Dhaval Jeetendra Raja resigned effective April 10, 2026. This is a senior departure and warrants monitoring — particularly if it reflects strategic disagreement on geographic expansion pace or product mix. No further context available. <span class="conf conf-e">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Guidance Reliability</div>
+  <table class="data-table">
+    <thead><tr><th>Guidance Statement</th><th>Year</th><th>Actual</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>20%+ store additions annually</td><td>FY25–26</td><td>37 new stores in FY26 (reaching 201)</td><td class="pass-fg">✓ Delivered</td></tr>
+      <tr><td>FY26 revenue &gt;₹8,000 Cr</td><td>FY26</td><td>~₹8,500 Cr (35% growth) <span class="conf conf-e">ESTIMATED</span></td><td class="pass-fg">✓ Exceeded</td></tr>
+      <tr><td>International expansion (Dubai first)</td><td>FY26</td><td>2 Dubai stores operational</td><td class="pass-fg">✓ Delivered</td></tr>
+      <tr><td>CARE A+ credit rating</td><td>FY26</td><td>Achieved March 2026</td><td class="pass-fg">✓ Delivered</td></tr>
+    </tbody>
+  </table>
+  <div class="info-box"><strong>Management Grade: B</strong> — Family leadership with strong execution track record on store expansion and brand building. Core weakness is working capital management. No governance red flags. CARE A+ upgrade reflects strong lender confidence. CSO resignation is a minor watch item.</div>
+</div>
+
+<!-- ═══════════════════════════ TAB 5: VALUATION ═══════════════════════════ -->
+<div id="tab5" class="tab-content">
+  <div class="section-title">Valuation Framework Note</div>
+  <div class="info-box">Standard 5-method valuation is applied. Key adjustment: <strong>all PAT-based calculations use normalised FY26–27 earnings of ₹340–380 Cr</strong> (not FY26 reported ~₹500 Cr which is gold-price inflated). WACC: 12.5% (Cat C Indian small-cap). Terminal growth ceiling: India nominal GDP × 0.70 = ~7.7%. Earnings quality is SUSPECT → 5% additional margin of safety applied to blended IV. <span class="conf conf-e">ESTIMATED</span></div>
+
+  <div class="section-title">Method 1 — P/E Earnings Power (Primary)</div>
+  <div class="card">
+    <div class="card-stripe" style="background:var(--stripe-a);"></div>
+    <div class="card-body">
+      <table class="data-table">
+        <thead><tr><th>Metric</th><th>Stress</th><th>Base</th><th>Acceleration</th></tr></thead>
+        <tbody>
+          <tr><td>Normalised FY27E PAT</td><td class="num">₹300 Cr</td><td class="num">₹370 Cr</td><td class="num">₹480 Cr</td></tr>
+          <tr><td>EPS (16.4 Cr shares)</td><td class="num">₹18.3</td><td class="num">₹22.6</td><td class="num">₹29.3</td></tr>
+          <tr><td>Justified P/E Multiple</td><td class="num">14–16x</td><td class="num">18–20x</td><td class="num">22–25x</td></tr>
+          <tr><td>Rationale for multiple</td><td>Thin margins, neg OCF, stress environment</td><td>Mid-tier jewellery; growing brand; CARE A+</td><td>Pan-India scale achieved; margin normalised</td></tr>
+          <tr style="background:rgba(201,150,58,0.06);"><td><strong>Intrinsic Value</strong></td><td class="num bold stress">₹256–293</td><td class="num bold" style="color:var(--mahogany);">₹407–452</td><td class="num bold" style="color:var(--pass-fg);">₹645–733</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title">Method 2 — EV/EBITDA Comps</div>
+  <div class="card">
+    <div class="card-stripe" style="background:var(--stripe-b);"></div>
+    <div class="card-body">
+      <table class="data-table">
+        <thead><tr><th>Company</th><th>EV/EBITDA</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Titan (Tanishq)</td><td class="num">~45–50x</td><td>Premium brand, ROIC 19%, national scale</td></tr>
+          <tr><td>Kalyan Jewellers</td><td class="num">~20–25x</td><td>Pan-India but thinner margins</td></tr>
+          <tr><td>P N Gadgil</td><td class="num">~18–22x</td><td>Strong Maharashtra moat</td></tr>
+          <tr><td><strong>Senco Gold (current)</strong></td><td class="num bold">~8–9x</td><td>Eastern India + discount for neg OCF + small scale</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px; color:var(--text-muted); margin-top:8px;">Normalised EBITDA FY27E: ₹380–420 Cr. At 14–16x (appropriate for Senco's size + neg OCF):</p>
+      <table class="data-table" style="margin-top:8px;">
+        <thead><tr><th>Scenario</th><th>EV/EBITDA</th><th>EBITDA</th><th>EV</th><th>Per Share (EV − Net Debt ÷ 16.4Cr)</th></tr></thead>
+        <tbody>
+          <tr><td>Stress</td><td class="num">10x</td><td class="num">₹340 Cr</td><td class="num">₹3,400 Cr</td><td class="num stress">₹183</td></tr>
+          <tr><td>Base</td><td class="num">15x</td><td class="num">₹400 Cr</td><td class="num">₹6,000 Cr</td><td class="num" style="color:var(--mahogany);">₹338</td></tr>
+          <tr><td>Acceleration</td><td class="num">18x</td><td class="num">₹480 Cr</td><td class="num">₹8,640 Cr</td><td class="num" style="color:var(--pass-fg);">₹505</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title">Method 3 — DCF (Normalised FCF)</div>
+  <div class="card">
+    <div class="card-stripe" style="background:var(--stripe-c);"></div>
+    <div class="card-body">
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">Given persistently negative OCF, DCF is run on normalised owner earnings (base case: ₹285 Cr FY26E, growing at Stage 1 rates). Working capital improvement assumed as business scales.</p>
+      <table class="data-table">
+        <thead><tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Accel.</th></tr></thead>
+        <tbody>
+          <tr><td>OE FY26E (start)</td><td class="num">₹170 Cr</td><td class="num">₹285 Cr</td><td class="num">₹320 Cr</td></tr>
+          <tr><td>Stage 1 CAGR (5yr)</td><td class="num">13%</td><td class="num">20%</td><td class="num">25%</td></tr>
+          <tr><td>Stage 2 CAGR (5yr)</td><td class="num">9%</td><td class="num">13%</td><td class="num">16%</td></tr>
+          <tr><td>Terminal Growth</td><td class="num">6.5%</td><td class="num">7.5%</td><td class="num">8.5%</td></tr>
+          <tr><td>WACC</td><td class="num">13%</td><td class="num">12.5%</td><td class="num">12%</td></tr>
+          <tr style="background:rgba(201,150,58,0.06);"><td><strong>DCF IV / Share</strong></td><td class="num bold stress">₹185–220</td><td class="num bold" style="color:var(--mahogany);">₹350–410</td><td class="num bold" style="color:var(--pass-fg);">₹530–610</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box" style="margin-top:10px;">Sensitivity: ±1% terminal growth → ±₹35–45/share. ±1% WACC → ±₹30–40/share.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Method 4 — P/B (Gordon Growth Model for NBFC-like model)</div>
+  <div class="card">
+    <div class="card-stripe" style="background:var(--stripe-d);"></div>
+    <div class="card-body">
+      <p style="font-size:13.5px;">Book value per share (FY26E): ~₹130. Current P/B: 2.37x. Justified P/B at ROE 18–20%, WACC 12.5%, growth 8%: <strong>P/B = (ROE − g)/(WACC − g) = (18% − 8%)/(12.5% − 8%) = 2.2x.</strong> Current P/B is marginally above justified. At normalised ROE 15% (FY24 level): justified P/B = 1.5x → Book IV = ₹195/share. At higher ROE 20% (FY26 elevated): 2.5x → ₹325/share.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Method 5 — Earnings Yield vs G-Sec</div>
+  <div class="card">
+    <div class="card-stripe" style="background:var(--stripe-f);"></div>
+    <div class="card-body">
+      <table class="data-table">
+        <thead><tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr></thead>
+        <tbody>
+          <tr><td>Reported EPS TTM</td><td class="num">~₹29.4</td><td>Based on TTM PAT ₹485 Cr <span class="conf conf-e">ESTIMATED</span></td></tr>
+          <tr><td>Normalised EPS FY27E</td><td class="num">~₹22.6</td><td>₹370 Cr PAT normalised</td></tr>
+          <tr><td>Earnings Yield (reported)</td><td class="num">9.0%</td><td>EY = ₹29.4/₹326 = 9.0%</td></tr>
+          <tr><td>Earnings Yield (normalised)</td><td class="num">6.9%</td><td>EY = ₹22.6/₹326 = 6.9%</td></tr>
+          <tr><td>India 10Y G-Sec</td><td class="num">6.87–6.90%</td><td><span class="conf conf-v">VERIFIED</span> April 2026</td></tr>
+          <tr><td>Equity Risk Premium (reported EY)</td><td class="num pass-fg">+2.1%</td><td>Positive ERP — not overvalued on reported basis</td></tr>
+          <tr><td>Equity Risk Premium (normalised EY)</td><td class="num warn-fg">+0.0 to −0.2%</td><td>Near zero ERP on normalised earnings — marginal value</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box" style="margin-top:10px;"><strong>ERP Assessment:</strong> On reported FY26 PAT, ERP is comfortably positive (+2.1%). On normalised earnings, ERP is essentially zero — which means at current price, investors are pricing in the elevated FY26 earnings as sustainable. This is risky. Entry below ₹310 creates positive ERP on normalised basis, justifying investment.</div>
+    </div>
+  </div>
+
+  <div class="section-title">5-Method Valuation Summary</div>
+  <div class="val-summary">
+    <div class="val-summary-header">Intrinsic Value Summary — All Methods</div>
+    <div class="val-row">
+      <div class="val-cell head method">Method</div>
+      <div class="val-cell head stress">Stress IV</div>
+      <div class="val-cell head base">Base IV</div>
+      <div class="val-cell head accel">Accel. IV</div>
+    </div>
+    <div class="val-row">
+      <div class="val-cell method">1. P/E Earnings Power (primary)</div>
+      <div class="val-cell stress">₹256–293</div>
+      <div class="val-cell base">₹407–452</div>
+      <div class="val-cell accel">₹645–733</div>
+    </div>
+    <div class="val-row">
+      <div class="val-cell method">2. EV/EBITDA Comparables</div>
+      <div class="val-cell stress">₹183</div>
+      <div class="val-cell base">₹338</div>
+      <div class="val-cell accel">₹505</div>
+    </div>
+    <div class="val-row">
+      <div class="val-cell method">3. DCF (Normalised OE)</div>
+      <div class="val-cell stress">₹185–220</div>
+      <div class="val-cell base">₹350–410</div>
+      <div class="val-cell accel">₹530–610</div>
+    </div>
+    <div class="val-row">
+      <div class="val-cell method">4. P/B Gordon Growth</div>
+      <div class="val-cell stress">₹195</div>
+      <div class="val-cell base">₹310–325</div>
+      <div class="val-cell accel">₹380–420</div>
+    </div>
+    <div class="val-row">
+      <div class="val-cell method">5. Earnings Yield (normalised)</div>
+      <div class="val-cell stress">₹240</div>
+      <div class="val-cell base">₹360–390</div>
+      <div class="val-cell accel">₹500</div>
+    </div>
+    <div class="val-row blended">
+      <div class="val-cell method">Blended Base IV (avg of 5)</div>
+      <div class="val-cell stress">₹212</div>
+      <div class="val-cell base">₹370–395</div>
+      <div class="val-cell accel">₹512–554</div>
+    </div>
+    <div class="val-row" style="background:#F8F4EE;">
+      <div class="val-cell method">AI Adjustment (NEUTRAL)</div>
+      <div class="val-cell stress">₹0</div>
+      <div class="val-cell base">₹0</div>
+      <div class="val-cell accel">₹0</div>
+    </div>
+    <div class="val-row" style="background:rgba(165,42,42,0.06);">
+      <div class="val-cell method">−5% SUSPECT earnings quality adj.</div>
+      <div class="val-cell stress">−₹11</div>
+      <div class="val-cell base">−₹19</div>
+      <div class="val-cell accel">−₹26</div>
+    </div>
+    <div class="val-row blended" style="border-top:2px solid var(--gold);">
+      <div class="val-cell method" style="font-size:14px; font-family:'Cormorant Garamond',serif;">Final Adjusted Base IV</div>
+      <div class="val-cell stress" style="font-size:14px;">₹200</div>
+      <div class="val-cell base" style="font-size:14px; color:var(--mahogany);">~₹375</div>
+      <div class="val-cell accel" style="font-size:14px; color:var(--pass-fg);">~₹530</div>
+    </div>
+  </div>
+
+  <div class="section-title">Entry Zone & Margin of Safety</div>
+  <div class="metric-grid">
+    <div class="metric-card pass-border">
+      <div class="metric-label">Base IV</div>
+      <div class="metric-val">~₹375</div>
+      <div class="metric-note">Normalised; quality-adjusted</div>
+    </div>
+    <div class="metric-card warn-border">
+      <div class="metric-label">MoS Entry (20% below Base IV)</div>
+      <div class="metric-val">₹300</div>
+      <div class="metric-note">Standard Cat C margin of safety</div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">Conservative Entry Zone</div>
+      <div class="metric-val">₹275–310</div>
+      <div class="metric-note">Also near 52-week low support</div>
+    </div>
+    <div class="metric-card fail-border">
+      <div class="metric-label">Current Price</div>
+      <div class="metric-val">~₹326</div>
+      <div class="metric-note">Slightly above entry zone — wait</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TAB 6: VERDICT ═══════════════════════════ -->
+<div id="tab6" class="tab-content">
+  <div class="section-title">Four Pillar Grades</div>
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 1 — Moat</div>
+      <div class="pillar-grade">B−</div>
+      <div style="font-size:13px; color:var(--text-muted); margin-top:6px;">Narrow moat; strong in East India, developing nationally</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 2 — Financial Fortress</div>
+      <div class="pillar-grade">C+</div>
+      <div style="font-size:13px; color:var(--text-muted); margin-top:6px;">Revenue growth strong; OCF negative; thin margins; SUSPECT quality</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 3 — Management</div>
+      <div class="pillar-grade">B</div>
+      <div style="font-size:13px; color:var(--text-muted); margin-top:6px;">Reliable execution; promoter stable; CSO departure watch; CARE A+</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 4 — Valuation</div>
+      <div class="pillar-grade">B−</div>
+      <div style="font-size:13px; color:var(--text-muted); margin-top:6px;">11x P/E is cheap vs peers; current price slightly above entry zone</div>
+    </div>
+  </div>
+
+  <div class="section-title">Verdict</div>
+  <div class="verdict-box">
+    <div class="verdict-headline">WATCH ★★★</div>
+    <div class="verdict-text">
+      Senco Gold is a legitimate organised jewellery formalisation play — the dominant organised retailer in Eastern India with an 85-year trust moat, expanding nationally through an asset-light franchise model. At 11x TTM P/E vs peer median of 22x and Titan at 60–70x, the discount is real. However, three structural concerns prevent a BUY today:
+      <br><br>
+      <strong>(1) Earnings normalisation risk:</strong> FY26 PAT of ~₹500 Cr is materially elevated by gold price surge (79% YoY in Q3 FY26). Normalised PAT is ~₹350–380 Cr. At ₹326/share on normalised earnings, P/E is a less exciting 14–15x.
+      <br><br>
+      <strong>(2) Persistently negative OCF:</strong> Negative operating cash flow across FY23, FY24, FY25 is a structural quality concern. The jewellery retail model requires massive inventory, but peers (Titan) have solved this more efficiently. Until Senco demonstrates positive OCF, Owner Earnings remain depressed.
+      <br><br>
+      <strong>(3) Pan-India moat unproven:</strong> The Eastern India brand moat is real. The national brand moat is aspirational. In stressed environments, North/West India customers will default to Tanishq or Kalyan over Senco. Geographic expansion must prove itself over FY27–28 before a premium multiple is justified.
+      <br><br>
+      Current price of ₹326 is 13% above the entry zone of ₹275–310. Wait for the entry zone before committing capital. The business quality justifies a WATCH position — not yet BUY. If the stock corrects to ₹276–305 on any gold price reversal or weak quarterly result, this becomes highly compelling.
+    </div>
+    <div class="verdict-quote">"Price is what you pay. Value is what you get." — Warren Buffett. At ₹275–310, Senco's price gives access to a normalised earnings yield of 7–8% on a growing, brand-moated, formalisation-driven business. That is value.</div>
+  </div>
+
+  <div class="section-title">Watch → BUY Upgrade Conditions</div>
+  <ul class="upgrade-list">
+    <li><span class="upgrade-num">1</span><div><strong>Price corrects to ₹275–305</strong> — creating 20%+ MoS vs normalised base IV of ~₹375. This represents the primary entry trigger and the most likely near-term path to BUY.</div></li>
+    <li><span class="upgrade-num">2</span><div><strong>Positive OCF demonstrated for 2 consecutive quarters</strong> — any evidence that working capital cycle is improving (inventory days &lt;150 and OCF &gt;0) removes the primary quality concern and justifies a higher multiple.</div></li>
+    <li><span class="upgrade-num">3</span><div><strong>FY27 SSSG above 15% in non-Eastern India stores</strong> — evidence that the national brand resonance is real (not just gold-price-driven revenue inflation). Q4 FY26 SSSG of 34% is gold-price inflated; need to see volume-led SSSG above 10–12% in new geographies.</div></li>
+    <li><span class="upgrade-num">4</span><div><strong>Promoter holding increases to 65%+ for 2 consecutive quarters</strong> — insider accumulation at market prices is the strongest signal that normalised earnings are better than the market fears.</div></li>
+    <li><span class="upgrade-num">5</span><div><strong>FY27E analyst consensus PAT estimate exceeds ₹400 Cr on normalised basis</strong> — confirmation that the earnings step-change is structural (process/scale efficiency) and not merely gold-price driven.</div></li>
+  </ul>
+
+  <div class="section-title">Series Context</div>
+  <div style="overflow-x:auto;">
+    <table class="series-table">
+      <thead><tr><th>#</th><th>Ticker</th><th>Mkt</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry Zone</th><th>Base IV</th></tr></thead>
+      <tbody>
+        <tr><td>—</td><td>TRAVELFOOD</td><td>NSE</td><td>C</td><td>⚪</td><td>A-</td><td>B+</td><td>B</td><td>B</td><td>WATCH★★★</td><td>₹1,000–1,100</td><td>~₹1,420</td></tr>
+        <tr><td>—</td><td>IEX</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH★★★</td><td>₹105–115</td><td>~₹143</td></tr>
+        <tr><td>—</td><td>ABB India</td><td>NSE</td><td>C</td><td>🟢</td><td>A-</td><td>A-</td><td>A</td><td>D+</td><td>WATCH★★★</td><td>₹4,200–4,800</td><td>~₹3,850</td></tr>
+        <tr><td>—</td><td>PLTR</td><td>NASDAQ</td><td>F</td><td>🌀</td><td>A</td><td>A-</td><td>B+</td><td>C</td><td>WATCH★★★★</td><td>$85–100</td><td>~$87</td></tr>
+        <tr><td>—</td><td>JIOFIN</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>B</td><td>A-</td><td>C+</td><td>WATCH★★★</td><td>₹185–210</td><td>~₹199</td></tr>
+        <tr><td>—</td><td>WIPRO</td><td>NSE</td><td>C</td><td>🔴</td><td>C</td><td>C+</td><td>B</td><td>D+</td><td>WATCH★★</td><td>₹133–150</td><td>~₹166</td></tr>
+        <tr><td>—</td><td>KEI</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>B+</td><td>B</td><td>C</td><td>WATCH★★★</td><td>₹3,200–3,600</td><td>~₹3,800</td></tr>
+        <tr><td>—</td><td>DIXON</td><td>NSE</td><td>B</td><td>⚪</td><td>B+</td><td>B</td><td>B</td><td>C</td><td>WATCH★★★</td><td>₹8,500–9,500</td><td>~₹10,927</td></tr>
+        <tr><td>—</td><td>CUMMINSIND</td><td>NSE</td><td>C</td><td>🟢</td><td>A-</td><td>A-</td><td>A</td><td>D</td><td>WATCH★★★</td><td>₹2,500–2,800</td><td>~₹2,800</td></tr>
+        <tr><td>—</td><td>GOOGL</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A+</td><td>A</td><td>A</td><td>B</td><td>WATCH★★★★</td><td>—</td><td>~$292</td></tr>
+        <tr><td>—</td><td>MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A+</td><td>A</td><td>A</td><td>B</td><td>WATCH★★★★</td><td>$288–360</td><td>~$360</td></tr>
+        <tr><td>—</td><td>META</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A-</td><td>B+</td><td>A-</td><td>BUY★★★★½</td><td>—</td><td>—</td></tr>
+        <tr class="highlight-row"><td>—</td><td>SENCO</td><td>NSE</td><td>C</td><td>⚪</td><td>B-</td><td>C+</td><td>B</td><td>B-</td><td>WATCH★★★</td><td>₹275–310</td><td>~₹375</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TAB 7: TECHNICAL ═══════════════════════════ -->
+<div id="tab7" class="tab-content">
+  <div class="section-title">Section A — Price Structure & Multi-Timeframe Trend</div>
+  <table class="data-table">
+    <thead><tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>Weekly (Long-term)</td><td>Sideways / Recovering</td><td>₹276 support held twice</td><td>Neutral — base building</td></tr>
+      <tr><td>Daily (Medium-term)</td><td>Cautiously bullish</td><td>₹312 (50 DMA) support</td><td>Above 50 DMA → mild positive</td></tr>
+      <tr><td>Intraday</td><td>Choppy</td><td>₹325–332 range</td><td>Range-bound; watch for breakout</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Section B — Moving Average Dashboard</div>
+  <div class="ma-grid">
+    <div class="ma-card">
+      <div class="ma-label">20 EMA</div>
+      <div class="ma-val" style="color:var(--pass-fg);">~₹315</div>
+      <div class="ma-status above-ma">✓ Price above 20 EMA</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">50 DMA</div>
+      <div class="ma-val" style="color:var(--pass-fg);">₹312.99</div>
+      <div class="ma-status above-ma">✓ Price above 50 DMA</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">100 DMA</div>
+      <div class="ma-val" style="color:var(--text-muted);">~₹325</div>
+      <div class="ma-status">≈ Price near 100 DMA</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">200 DMA</div>
+      <div class="ma-val" style="color:var(--fail-fg);">₹335.66</div>
+      <div class="ma-status below-ma">✗ Price below 200 DMA</div>
+    </div>
+  </div>
+  <div class="info-box"><strong>MA Summary:</strong> Price above 50 DMA (positive) but below 200 DMA (negative). Stock is in a medium-term recovery from ₹276 lows but has not yet reclaimed the long-term trend line. The 200 DMA at ₹335.66 is the primary resistance to monitor. A sustained daily close above ₹338–340 would signal technical improvement.</div>
+
+  <div class="section-title">Section C — Volume Analysis</div>
+  <p style="font-size:14.5px; margin-bottom:10px;">Volume patterns are consistent with small-cap institutional interest. Notable events:</p>
+  <table class="data-table">
+    <thead><tr><th>Event</th><th>Period</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>Strong Q3 FY26 result (revenue +51% YoY, PAT +689%)</td><td>Feb 12, 2026</td><td>Stock hit 3-month high ₹368.40 on high volume — institutional buying on earnings beat</td></tr>
+      <tr><td>NK Securities bulk buy: 12.81 lakh shares at ₹322.9</td><td>Recent</td><td>Smart money accumulation near current price levels — mild bullish signal</td></tr>
+      <tr><td>Stock at ₹276 52-week low</td><td>Recent months</td><td>Price held; no distribution evidence at lows — bottoming behavior</td></tr>
+      <tr><td>Q4 FY26 update: revenue +46% YoY</td><td>April 2026</td><td>Stock trading at ₹326–332 on update day — market absorbing strong result without breakout; supply present at 200 DMA</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Section D — Momentum Indicators</div>
+  <div class="metric-grid">
+    <div class="metric-card warn-border">
+      <div class="metric-label">RSI (14-day) — est.</div>
+      <div class="metric-val">~48–55</div>
+      <div class="metric-note">Neutral zone; recovering from oversold at ₹276 low <span class="conf conf-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card warn-border">
+      <div class="metric-label">RSI (weekly) — est.</div>
+      <div class="metric-val">~42–48</div>
+      <div class="metric-note">Cautiously turning up; not yet bullish on weekly <span class="conf conf-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card warn-border">
+      <div class="metric-label">MACD (daily) — est.</div>
+      <div class="metric-val">Mild positive</div>
+      <div class="metric-note">MACD line crossed above signal after ₹276 bounce <span class="conf conf-e">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Section E — Chart Pattern</div>
+  <div class="info-box"><strong>Potential Pattern:</strong> Ascending base formation from ₹276 support (double/triple test), with a series of higher lows visible. If price breaks above ₹336–340 (200 DMA resistance) with volume confirmation, this could be a base breakout pattern. The upside target of such a breakout is ₹380–400 (measuring the base of ~₹60 added to breakout level). Invalidation: close below ₹295.</div>
+
+  <div class="section-title">Section F — Trade Structure</div>
+  <div class="trade-box">
+    <div style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--gold-light); font-weight:600; margin-bottom:10px;">Trade Structure — Senco Gold</div>
+    <div class="trade-grid">
+      <div class="trade-item"><div class="trade-item-label">Entry (Primary)</div><div class="trade-item-val">₹275–300</div></div>
+      <div class="trade-item"><div class="trade-item-label">Stop Loss</div><div class="trade-item-val">₹258</div></div>
+      <div class="trade-item"><div class="trade-item-label">Target 1</div><div class="trade-item-val">₹376</div></div>
+      <div class="trade-item"><div class="trade-item-label">Target 2</div><div class="trade-item-val">₹450</div></div>
+    </div>
+    <div style="margin-top:14px; display:flex; gap:20px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:12px; color:#A89070;">
+      <span>R:R (T1) = 1:3.3</span>
+      <span>R:R (T2) = 1:5.5</span>
+      <span>Position: 2–3% of portfolio max</span>
+    </div>
+    <p style="margin-top:10px; font-size:13px; color:#C4AE8A;"><strong>Secondary Trigger:</strong> Break and close above ₹340 (200 DMA) on volume &gt;2× average → chase entry up to ₹345. Target 1: ₹400.</p>
+  </div>
+
+  <div class="section-title">Section G — Technical Composite Score</div>
+  <table class="data-table">
+    <thead><tr><th>Dimension</th><th>Score (1–5)</th><th>Comment</th></tr></thead>
+    <tbody>
+      <tr><td>Trend Alignment</td><td class="num">3/5</td><td>Mixed — above 50 DMA but below 200 DMA</td></tr>
+      <tr><td>Moving Average Setup</td><td class="num">2/5</td><td>Below 200 DMA is a structural negative</td></tr>
+      <tr><td>Volume Confirmation</td><td class="num">3/5</td><td>NK Securities bulk buy; Q3 result volume positive</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td class="num">3/5</td><td>Recovering from oversold; not yet overbought</td></tr>
+      <tr><td>Chart Pattern</td><td class="num">3/5</td><td>Base forming; potential breakout setup</td></tr>
+      <tr><td>Risk-Reward Setup</td><td class="num">4/5</td><td>Good R:R if entry at ₹275–300; SL clear</td></tr>
+      <tr style="background:rgba(201,150,58,0.06);"><td><strong>Technical Composite</strong></td><td class="num bold">18/30 = 60%</td><td><strong>Neutral — wait for better setup</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════ TAB 8: SHAREHOLDING ═══════════════════════════ -->
+<div id="tab8" class="tab-content">
+  <div class="section-title">Section A — Promoter Holding Trend</div>
+  <table class="data-table">
+    <thead><tr><th>Quarter</th><th>Promoter %</th><th>Change</th><th>Pledged %</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>Q4 FY25 (Mar 25)</td><td class="num">~64.4%</td><td class="num">—</td><td class="num">Nil</td><td>Stable</td></tr>
+      <tr><td>Q1 FY26 (Jun 25)</td><td class="num">~64.4%</td><td class="num">0%</td><td class="num">Nil</td><td>Stable</td></tr>
+      <tr><td>Q2 FY26 (Sep 25)</td><td class="num">~64.4%</td><td class="num">0%</td><td class="num">Nil</td><td>Stable</td></tr>
+      <tr><td>Q3 FY26 (Dec 25)</td><td class="num">64.38%</td><td class="num">Flat</td><td class="num">Nil</td><td>Stable</td></tr>
+      <tr style="background:rgba(201,150,58,0.06);"><td><strong>Q4 FY26 (Mar 26)</strong></td><td class="num bold">64.5%</td><td class="num pass-fg">▲ +0.12%</td><td class="num">Nil</td><td class="pass-fg">Slight increase — Bullish</td></tr>
+    </tbody>
+  </table>
+  <div class="info-box">Promoter holding is stable and slightly increasing. No pledges at any quarter. The stability signals: (a) promoters are not distributing, (b) no financing stress, (c) modest confidence in business direction. Not a strong insider buy signal (no significant increase), but definitely not a sell signal.</div>
+
+  <div class="section-title">Section B — FII + DII Trend</div>
+  <table class="data-table">
+    <thead><tr><th>Category</th><th>Q2 FY26</th><th>Q3 FY26</th><th>Q4 FY26</th><th>Trend</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>FII/FPI</td><td class="num">~8.5%</td><td class="num">8.21%</td><td class="num">7.6%</td><td>Mild decline</td><td>Slight FII profit-booking or reallocation</td></tr>
+      <tr><td>DII (total)</td><td class="num">~9.5%</td><td class="num">~11%</td><td class="num">12.6%</td><td>▲ Accumulating</td><td class="pass-fg">DII building position — bullish</td></tr>
+      <tr><td>Mutual Funds</td><td class="num">~7.7%</td><td class="num">~7.1%</td><td class="num">6.53–6.59%</td><td>Declining</td><td>MF reducing allocation</td></tr>
+      <tr><td>Insurance / Others</td><td class="num">~4%</td><td class="num">~4%</td><td class="num">4.06%</td><td>Stable</td><td>Long-duration institutional holders — quality holder</td></tr>
+      <tr><td>Retail / Public</td><td class="num">~15.3%</td><td class="num">~15.3%</td><td class="num">15.3%</td><td>Stable</td><td>Neutral</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Section C — Free Float & Market Structure</div>
+  <div class="metric-grid">
+    <div class="metric-card pass-border">
+      <div class="metric-label">Market Cap</div>
+      <div class="metric-val">₹5,345 Cr</div>
+      <div class="metric-note">SEBI Small-Cap classification <span class="conf conf-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-border">
+      <div class="metric-label">Free Float</div>
+      <div class="metric-val">~₹1,898 Cr</div>
+      <div class="metric-note">35.5% of market cap; tight float = price leverage</div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">Shares Outstanding</div>
+      <div class="metric-val">~16.4 Cr</div>
+      <div class="metric-note">Total outstanding equity shares <span class="conf conf-e">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Section D — Shareholding Composition (Mar 2026)</div>
+  <div class="card">
+    <div class="card-body">
+      <div class="sh-bar">
+        <div class="sh-seg" style="width:64.5%; background:var(--mahogany-d);"></div>
+        <div class="sh-seg" style="width:7.6%; background:#4169E1;"></div>
+        <div class="sh-seg" style="width:12.6%; background:var(--pass-br);"></div>
+        <div class="sh-seg" style="width:15.3%; background:var(--text-pale);"></div>
+      </div>
+      <div class="sh-legend">
+        <div class="sh-leg-item"><div class="sh-dot" style="background:var(--mahogany-d);"></div>Promoters 64.5%</div>
+        <div class="sh-leg-item"><div class="sh-dot" style="background:#4169E1;"></div>FII 7.6%</div>
+        <div class="sh-leg-item"><div class="sh-dot" style="background:var(--pass-br);"></div>DII 12.6%</div>
+        <div class="sh-leg-item"><div class="sh-dot" style="background:var(--text-pale);"></div>Retail 15.3%</div>
+      </div>
+      <p style="font-size:12.5px; color:var(--text-muted); margin-top:10px;"><span class="conf conf-v">VERIFIED</span> as of March 2026</p>
+    </div>
+  </div>
+
+  <div class="section-title">Section E — Ownership Scores</div>
+  <div class="metric-grid">
+    <div class="metric-card pass-border">
+      <div class="metric-label">Ownership Momentum Score</div>
+      <div class="metric-val">58/100</div>
+      <div class="metric-note">DII accumulating (+bullish); FII mild retreat; MF declining (neutral)</div>
+    </div>
+    <div class="metric-card pass-border">
+      <div class="metric-label">Shareholding Risk Score</div>
+      <div class="metric-val">22/100</div>
+      <div class="metric-note">Low risk: zero pledges, stable promoters, quality institutional holders</div>
+    </div>
+    <div class="metric-card warn-border">
+      <div class="metric-label">SIP Inflow Estimate</div>
+      <div class="metric-val">~₹12–18 Cr/mo</div>
+      <div class="metric-note">Small-cap; limited Nifty 500 weight; SIP flows modest <span class="conf conf-e">ESTIMATED</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TAB 9: AI INTELLIGENCE ═══════════════════════════ -->
+<div id="tab9" class="tab-content">
+  <div class="section-title">Section A — AI Classification Dashboard</div>
+  <div class="ai-dash">
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">Category</div>
+      <div class="ai-dash-val">C — Mature</div>
+    </div>
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">AI Overlay</div>
+      <div class="ai-dash-val">⚪ NEUTRAL</div>
+    </div>
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">Data Flywheel</div>
+      <div class="ai-dash-val">Cosmetic</div>
+    </div>
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">AI Adoption Phase</div>
+      <div class="ai-dash-val">Phase 4 (retail)</div>
+    </div>
+  </div>
+
+  <div class="info-box"><strong>Summary:</strong> Senco Gold is an AI Neutral company. AI adoption in jewellery retail is at Phase 4 (mainstream features like virtual try-on, recommendation engines) — these are table-stakes competitive features, not moat-creating technologies. Senco's "Shape of You" virtual try-on is a useful customer experience tool but does not create a data flywheel or change the competitive position. The investment thesis rests entirely on fundamental quality and valuation, not AI.</div>
+
+  <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+  <div class="flywheel-box">
+    <div class="flywheel-title">Three-Question Flywheel Test</div>
+    <div class="flywheel-verdict">🔘 COSMETIC — No Flywheel Present</div>
+
+    <div class="flywheel-q">
+      <span class="flywheel-q-icon">1️⃣</span>
+      <div><strong>What is Senco's proprietary AI training data?</strong><br>
+      Transaction history of ~5M+ customers; jewellery preference data; advance scheme behaviour. However: (a) this data is similar to what any retailer collects, (b) Titan has 10x the volume, (c) no evidence that Senco uses this data to train proprietary AI models. MyDigiGold digital gold transactions add a small digital data layer. Data is not unique or at scale that creates defensibility.</div>
+    </div>
+    <div class="flywheel-q">
+      <span class="flywheel-q-icon">2️⃣</span>
+      <div><strong>Does the AI improve measurably with more data/users?</strong><br>
+      No evidence. "Shape of You" virtual try-on (AI based on face shape) is a computer vision feature — likely uses a pre-trained model fine-tuned on jewellery images. No metrics shared on accuracy improvement with usage. Recommendation engine (if any) is standard e-commerce recommendation, not Senco-specific AI that compounds.</div>
+    </div>
+    <div class="flywheel-q">
+      <span class="flywheel-q-icon">3️⃣</span>
+      <div><strong>Does better AI attract more users, creating a self-reinforcing loop?</strong><br>
+      No. Customers choose Senco because of trust, design variety, proximity, and brand heritage — not because the AI is better. The virtual try-on might reduce return rates marginally (industry data: AR/VR reduces returns by 25%) but does not drive customer acquisition in a compounding loop.</div>
+    </div>
+
+    <div style="margin-top:12px; padding:10px 14px; background:var(--ivory); border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:12.5px;">
+      Flywheel Score: 0/10 &nbsp;|&nbsp; Data Quality: 0/3 &nbsp;|&nbsp; Improvement Evidence: 0/4 &nbsp;|&nbsp; Loop Speed: 0/3
+    </div>
+  </div>
+
+  <div class="section-title">Section C — AI Value Chain Position</div>
+  <div class="card">
+    <div class="card-body">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; overflow-x:auto; padding-bottom:8px; margin-bottom:12px;">
+        <div style="text-align:center; min-width:80px; padding:8px; border-radius:6px; background:var(--ivory-deep); border:1px solid var(--border); font-size:12px; color:var(--text-muted);">L1<br>Infrastructure</div>
+        <div style="color:var(--border); font-size:18px;">→</div>
+        <div style="text-align:center; min-width:80px; padding:8px; border-radius:6px; background:var(--ivory-deep); border:1px solid var(--border); font-size:12px; color:var(--text-muted);">L2<br>Foundation Models</div>
+        <div style="color:var(--border); font-size:18px;">→</div>
+        <div style="text-align:center; min-width:80px; padding:8px; border-radius:6px; background:var(--ivory-deep); border:1px solid var(--border); font-size:12px; color:var(--text-muted);">L3<br>Platforms</div>
+        <div style="color:var(--border); font-size:18px;">→</div>
+        <div style="text-align:center; min-width:80px; padding:8px; border-radius:6px; background:var(--ivory-deep); border:1px solid var(--border); font-size:12px; color:var(--text-muted);">L4<br>Vertical Apps</div>
+        <div style="color:var(--border); font-size:18px;">→</div>
+        <div style="text-align:center; min-width:90px; padding:8px; border-radius:6px; background:rgba(201,150,58,0.12); border:2px solid var(--gold); font-size:12px; font-weight:700; color:var(--mahogany);">L5 ★<br>AI-Enabled Incumbent</div>
+      </div>
+      <p style="font-size:14px;"><strong>Senco is a Level 5 — AI-Enabled Incumbent.</strong> It is an existing branded jewellery retailer that is selectively adopting AI tools (virtual try-on, digital gold, recommendation engines). The AI enhances the customer experience at the margins but does not define the moat or value creation model. Level 5 companies have the best risk/return from AI investments — low downside (not dependent on AI working), moderate upside (efficiency gains + experience improvement). Optimal investment horizon: 7–10 years (compounding incumbent, not quick AI trade).</p>
+    </div>
+  </div>
+
+  <div class="section-title">Section D — India AI Opportunity Context</div>
+  <table class="data-table">
+    <thead><tr><th>India AI Advantage</th><th>Relevance to Senco</th><th>Benefit</th></tr></thead>
+    <tbody>
+      <tr><td>Data at Scale (UPI/Aadhaar)</td><td>Adjacent</td><td>Advance scheme customers use UPI payments; KYC via Aadhaar for digital gold. Minor benefit. Not a core moat lever.</td></tr>
+      <tr><td>Language Diversity (Vernacular AI)</td><td>None direct</td><td>Jewellery is mostly in-store; vernacular AI is not a key distribution lever for Senco's customer segment.</td></tr>
+      <tr><td>India Stack (ONDC + DigiLocker)</td><td>Developing</td><td>MyDigiGold platform builds on India Stack for digital gold storage/purchase. Small but growing revenue line.</td></tr>
+      <tr><td>AI Talent Arbitrage</td><td>None</td><td>Senco is a retailer, not a technology builder. No AI talent advantage relevant.</td></tr>
+    </tbody>
+  </table>
+
+  <table class="data-table" style="margin-top:14px;">
+    <thead><tr><th>India AI Theme</th><th>Phase</th><th>Senco Relevance</th></tr></thead>
+    <tbody>
+      <tr><td>AI in banking/credit</td><td>Phase 3</td><td>None</td></tr>
+      <tr><td>AI in logistics/supply</td><td>Phase 2–3</td><td>Adjacent — hub-and-spoke inventory routing could use AI optimisation</td></tr>
+      <tr><td>AI in retail (recommendations)</td><td>Phase 4</td><td>Directly — standard e-commerce recommendation engine; table stakes</td></tr>
+      <tr><td>AI in education</td><td>Phase 2</td><td>None</td></tr>
+      <tr><td>Data centres (infra)</td><td>Phase 3–4</td><td>None</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Section F — AI Opportunity Verdict & Portfolio Role</div>
+  <div class="ai-score-gauge">
+    <div style="font-weight:600; font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--text-dark); margin-bottom:8px;">AI Opportunity Score</div>
+    <div class="score-label"><span>0</span><span>50</span><span>100</span></div>
+    <div class="score-bar-bg">
+      <div class="score-bar-fill" style="width:30%; background:linear-gradient(90deg, var(--text-muted), #AAA);"></div>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace; font-size:1.3rem; font-weight:700; color:var(--text-muted); margin-top:6px;">30 / 100</div>
+    <table class="data-table" style="margin-top:10px;">
+      <thead><tr><th>Dimension</th><th>Max</th><th>Score</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Data Flywheel Strength</td><td>20</td><td class="num">2</td><td>Cosmetic — no proprietary flywheel</td></tr>
+        <tr><td>Adoption Phase Timing</td><td>20</td><td class="num">8</td><td>Phase 4 = mainstream; low incremental opportunity</td></tr>
+        <tr><td>Value Chain Position</td><td>20</td><td class="num">14</td><td>Level 5 incumbent = best risk/reward; but AI is not driving moat</td></tr>
+        <tr><td>India Structural Advantage</td><td>20</td><td class="num">3</td><td>Minimal; some UPI/India Stack adjacency for digital gold</td></tr>
+        <tr><td>AI Threat Resistance</td><td>20</td><td class="num">13</td><td>High resistance — jewellery trust cannot be replaced by AI</td></tr>
+        <tr style="background:rgba(201,150,58,0.06);"><td><strong>Total</strong></td><td><strong>100</strong></td><td class="num bold">30</td><td>AI Neutral — invest on fundamentals</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box" style="margin-top:16px;">
+    <strong>Portfolio Role: AI NEUTRAL — Standard Fundamental Framework Governs</strong><br><br>
+    AI neither helps nor hurts Senco Gold materially. The investment case is entirely driven by: organised jewellery formalisation thesis, Eastern India brand moat, geographic expansion into North/West India, valuation discount vs peers (11x P/E vs 40–70x for larger peers), and the normalisation of earnings as gold prices stabilise. No AI overlay adjustment to IV is applied. Investment horizon for Senco: <strong>5–7 years</strong> — the pan-India brand building story requires patience and will be measured by SSSG in new geographies, not AI adoption metrics.
+  </div>
+</div>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<div style="background:var(--hero-bg); color:#7A6050; padding:24px 36px; font-size:12px; line-height:1.8; margin-top:40px; font-family:'JetBrains Mono',monospace;">
+  <p><strong style="color:var(--gold-light);">SEBI Disclaimer:</strong> This report is prepared for educational and research purposes only and does not constitute investment advice, a solicitation, or a recommendation to buy or sell any security. The analyst holds no position in SENCO as of the date of this report. All investments in securities markets are subject to market risks. Past performance is not indicative of future results. Please read all related documents carefully before investing.</p>
+  <p style="margin-top:8px;"><strong style="color:var(--gold-light);">Data Notice:</strong> Financial data is compiled from publicly available sources including quarterly business updates, analyst reports (Anand Rathi, ICRA), screener.in, and news sources. All figures are marked [VERIFIED], [ESTIMATED], or [UNVERIFIED] as appropriate. Confidence labels reflect the quality of the underlying data source. Estimated figures should not be used as the sole basis for investment decisions.</p>
+  <p style="margin-top:8px;">Buffett Quality-Value Series v5.0 · Report Date: April 22, 2026 · Framework: Buffett Pillars + O'Glove Earnings Quality + AI Overlay v5.0 · Fonts: Cormorant Garamond, Lora, JetBrains Mono</p>
+</div>
+
+<script>
+  var TAB_BAR_TOP = 0;
+
+  window.addEventListener('load', function () {
+    var tabBar = document.getElementById('tab-bar');
+    if (tabBar) {
+      var el = tabBar, top = 0;
+      while (el) { top += el.offsetTop; el = el.offsetParent; }
+      TAB_BAR_TOP = top;
+    }
+  });
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(function (el) {
+      el.style.display = 'none';
+      el.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+    var target = document.getElementById(tabId);
+    if (target) {
+      target.style.display = 'block';
+      target.classList.add('active');
+    }
+    var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+    if (activeBtn) { activeBtn.classList.add('active'); }
+    window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

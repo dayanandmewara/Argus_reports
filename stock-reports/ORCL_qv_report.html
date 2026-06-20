@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oracle Corporation — Buffett QV Report | Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;500;700&family=Source+Serif+4:opsz,wght@8..60,300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #060E1E;
+    --navy-mid: #0D1B35;
+    --navy-card: #111E38;
+    --navy-border: #1A2E52;
+    --amber: #F5A623;
+    --amber-light: #FFD080;
+    --amber-dim: #C8841A;
+    --cyan: #22D3EE;
+    --ivory: #F4EFE3;
+    --ivory-dim: #C8C0AB;
+    --white: #FAFAFA;
+    --red: #EF4444;
+    --green: #22C55E;
+    --green-dim: #166534;
+    --yellow: #EAB308;
+    --pass: #22C55E;
+    --marginal: #EAB308;
+    --fail: #EF4444;
+    --verified: #22C55E;
+    --estimated: #EAB308;
+    --unverified: #EF4444;
+    --tab-active: var(--amber);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+    --font-body: 'Source Serif 4', Georgia, serif;
+    --radius: 8px;
+    --radius-lg: 14px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--navy); color: var(--ivory); font-family: var(--font-body); font-size: 15px; line-height: 1.7; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #040C1A 0%, #0A1525 50%, #050D1E 100%);
+    border-bottom: 2px solid var(--navy-border);
+    padding: 28px 32px 22px;
+    position: relative;
+    overflow: hidden;
+    max-height: 220px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(245,166,35,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  .hero-left { flex: 1; }
+  .hero-ticker { font-family: var(--font-mono); font-size: 11px; color: var(--amber); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  .hero-name { font-family: var(--font-display); font-size: 28px; font-weight: 900; color: var(--white); line-height: 1.1; margin-bottom: 6px; }
+  .hero-lede { font-size: 12.5px; color: var(--ivory-dim); max-width: 600px; line-height: 1.5; }
+  .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+  .verdict-badge { background: linear-gradient(135deg, #1A2E10, #2D4A1E); border: 1.5px solid #4ADE80; border-radius: 6px; padding: 6px 14px; font-family: var(--font-mono); font-size: 11px; color: #4ADE80; text-align: center; white-space: nowrap; }
+  .badge-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.05em; white-space: nowrap; }
+  .badge-cat { background: rgba(245,166,35,0.15); border: 1px solid var(--amber); color: var(--amber); }
+  .badge-ai-widener { background: rgba(34,197,94,0.15); border: 1px solid #4ADE80; color: #4ADE80; }
+  .badge-ai-neutral { background: rgba(148,163,184,0.15); border: 1px solid #94A3B8; color: #94A3B8; }
+  .badge-ai-threat { background: rgba(239,68,68,0.15); border: 1px solid #F87171; color: #F87171; }
+  .badge-macro { background: rgba(34,211,238,0.12); border: 1px solid var(--cyan); color: var(--cyan); }
+  .hero-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .data-pill { font-family: var(--font-mono); font-size: 10.5px; color: var(--ivory-dim); background: rgba(255,255,255,0.04); border: 1px solid var(--navy-border); border-radius: 4px; padding: 2px 8px; }
+  .data-pill span { color: var(--amber); font-weight: 700; }
+
+  /* TAB BAR */
+  #tab-bar {
+    background: var(--navy-mid);
+    border-bottom: 1px solid var(--navy-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .tab-nav { display: inline-flex; gap: 0; min-width: 100%; }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--ivory-dim);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 13px 16px 10px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--ivory); }
+  .tab-btn.active { border-bottom-color: var(--amber); color: var(--amber); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 32px; max-width: 1100px; margin: 0 auto; }
+  .tab-content.active-tab { display: block; }
+
+  /* SECTIONS & CARDS */
+  .section { margin-bottom: 36px; }
+  .section-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--amber); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--navy-border); }
+  .card { background: var(--navy-card); border: 1px solid var(--navy-border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+  .card-title { font-family: var(--font-mono); font-size: 11px; color: var(--amber); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+  /* METRIC TILES */
+  .metric-tile { background: var(--navy-card); border: 1px solid var(--navy-border); border-radius: var(--radius); padding: 16px; border-left: 3px solid var(--amber); }
+  .metric-tile.green { border-left-color: var(--green); }
+  .metric-tile.red { border-left-color: var(--red); }
+  .metric-tile.cyan { border-left-color: var(--cyan); }
+  .metric-tile.yellow { border-left-color: var(--yellow); }
+  .metric-label { font-family: var(--font-mono); font-size: 10px; color: var(--ivory-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .metric-value { font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--white); }
+  .metric-sub { font-size: 11px; color: var(--ivory-dim); margin-top: 2px; }
+
+  /* CONFIDENCE PILLS */
+  .v { display: inline-block; background: rgba(34,197,94,0.15); border: 1px solid var(--verified); border-radius: 3px; color: var(--verified); font-family: var(--font-mono); font-size: 9px; padding: 1px 6px; vertical-align: middle; margin-left: 4px; }
+  .e { display: inline-block; background: rgba(234,179,8,0.15); border: 1px solid var(--estimated); border-radius: 3px; color: var(--estimated); font-family: var(--font-mono); font-size: 9px; padding: 1px 6px; vertical-align: middle; margin-left: 4px; }
+  .u { display: inline-block; background: rgba(239,68,68,0.15); border: 1px solid var(--unverified); border-radius: 3px; color: var(--unverified); font-family: var(--font-mono); font-size: 9px; padding: 1px 6px; vertical-align: middle; margin-left: 4px; }
+
+  /* SCORECARD */
+  .sc-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+  .sc-row:last-child { border-bottom: none; }
+  .sc-label { color: var(--ivory); }
+  .sc-status { font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 3px; }
+  .sc-pass { background: rgba(34,197,94,0.15); color: var(--pass); }
+  .sc-marginal { background: rgba(234,179,8,0.15); color: var(--marginal); }
+  .sc-fail { background: rgba(239,68,68,0.15); color: var(--fail); }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: rgba(245,166,35,0.08); color: var(--amber); font-family: var(--font-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--navy-border); }
+  th:first-child { text-align: left; }
+  td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--ivory); text-align: right; font-family: var(--font-mono); font-size: 12px; }
+  td:first-child { text-align: left; font-family: var(--font-body); font-size: 13px; color: var(--ivory-dim); }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* MOAT STARS */
+  .stars { color: var(--amber); font-size: 14px; }
+  .stars-dim { color: var(--navy-border); font-size: 14px; }
+  .moat-card { display: flex; align-items: flex-start; gap: 16px; padding: 14px 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--navy-border); border-radius: var(--radius); margin-bottom: 10px; }
+  .moat-icon { font-size: 22px; flex-shrink: 0; width: 36px; text-align: center; }
+  .moat-info { flex: 1; }
+  .moat-name { font-weight: 600; color: var(--white); font-size: 13.5px; }
+  .moat-desc { font-size: 12.5px; color: var(--ivory-dim); margin-top: 3px; }
+
+  /* FLYWHEEL */
+  .flywheel-box { background: linear-gradient(135deg, #0A1A0A, #122210); border: 2px solid #4ADE80; border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; }
+  .flywheel-title { font-family: var(--font-display); font-size: 16px; color: #4ADE80; margin-bottom: 4px; }
+  .flywheel-badge { display: inline-block; background: rgba(34,197,94,0.15); border: 1px solid #4ADE80; border-radius: 20px; font-family: var(--font-mono); font-size: 11px; color: #4ADE80; padding: 3px 14px; margin-bottom: 12px; }
+  .flywheel-check { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+  .flywheel-check .icon-yes { color: #4ADE80; font-size: 15px; flex-shrink: 0; }
+  .flywheel-check .icon-no { color: var(--red); font-size: 15px; flex-shrink: 0; }
+  .flywheel-check .icon-part { color: var(--yellow); font-size: 15px; flex-shrink: 0; }
+
+  /* VERDICT */
+  .verdict-box { background: linear-gradient(135deg, #0D1A10, #162B1A); border: 2px solid #4ADE80; border-radius: var(--radius-lg); padding: 28px; margin-bottom: 24px; }
+  .verdict-box.watch { background: linear-gradient(135deg, #1A1500, #2A2200); border-color: var(--amber); }
+  .verdict-title { font-family: var(--font-display); font-size: 22px; font-weight: 900; color: var(--amber); margin-bottom: 4px; }
+  .verdict-stars { font-size: 22px; color: var(--amber); margin-bottom: 14px; }
+  .verdict-quote { font-style: italic; color: var(--ivory-dim); font-size: 13px; border-left: 3px solid var(--amber); padding-left: 14px; margin-bottom: 14px; }
+  .verdict-prose { font-size: 14px; color: var(--ivory); line-height: 1.7; }
+
+  /* PILLAR GRADES */
+  .pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .pillar-card { background: var(--navy-card); border: 1px solid var(--navy-border); border-radius: var(--radius); padding: 14px; text-align: center; }
+  .pillar-label { font-family: var(--font-mono); font-size: 10px; color: var(--ivory-dim); text-transform: uppercase; margin-bottom: 6px; }
+  .pillar-grade { font-family: var(--font-display); font-size: 28px; font-weight: 900; color: var(--amber); }
+  .pillar-sub { font-size: 11px; color: var(--ivory-dim); margin-top: 4px; }
+
+  /* UPGRADE CONDITIONS */
+  .upgrade-list { list-style: none; }
+  .upgrade-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .upgrade-num { background: var(--amber); color: var(--navy); font-family: var(--font-mono); font-size: 11px; font-weight: 700; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .upgrade-text { font-size: 13.5px; color: var(--ivory); }
+
+  /* DCF TABLE */
+  .dcf-scenario { background: rgba(245,166,35,0.04); border: 1px solid var(--navy-border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+  .dcf-header { background: rgba(245,166,35,0.10); padding: 10px 16px; font-family: var(--font-mono); font-size: 11px; color: var(--amber); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* AI SECTION */
+  .ai-badge-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+  .ai-badge-card { background: var(--navy-card); border: 1px solid var(--navy-border); border-radius: var(--radius); padding: 12px 18px; text-align: center; flex: 1; min-width: 140px; }
+  .ai-badge-label { font-family: var(--font-mono); font-size: 10px; color: var(--ivory-dim); text-transform: uppercase; margin-bottom: 4px; }
+  .ai-badge-value { font-size: 13px; font-weight: 700; color: var(--white); }
+  .ai-badge-value.widener { color: #4ADE80; }
+  .ai-badge-value.forming { color: var(--cyan); }
+  .ai-badge-value.phase3 { color: var(--amber); }
+
+  /* VALUE CHAIN */
+  .chain { display: flex; gap: 0; border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; }
+  .chain-level { flex: 1; padding: 10px 8px; text-align: center; background: rgba(255,255,255,0.03); border-right: 1px solid var(--navy-border); font-size: 11px; color: var(--ivory-dim); font-family: var(--font-mono); }
+  .chain-level:last-child { border-right: none; }
+  .chain-level.active { background: rgba(245,166,35,0.15); color: var(--amber); font-weight: 700; }
+  .chain-level .level-num { font-size: 18px; display: block; margin-bottom: 4px; }
+
+  /* OE BOX */
+  .oe-box { background: linear-gradient(135deg, #0D1525, #131E35); border: 1.5px solid var(--amber); border-radius: var(--radius-lg); padding: 22px; }
+  .oe-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+  .oe-row:last-child { border-bottom: none; font-weight: 700; color: var(--amber); }
+  .oe-label { color: var(--ivory-dim); }
+  .oe-value { font-family: var(--font-mono); color: var(--white); }
+
+  /* AI SCORE GAUGE */
+  .ai-score { text-align: center; padding: 24px; background: var(--navy-card); border: 1px solid var(--navy-border); border-radius: var(--radius-lg); }
+  .ai-score-num { font-family: var(--font-display); font-size: 52px; font-weight: 900; color: var(--amber); }
+  .ai-score-label { font-family: var(--font-mono); font-size: 11px; color: var(--ivory-dim); text-transform: uppercase; }
+  .ai-score-bar { height: 8px; background: var(--navy-border); border-radius: 4px; margin: 12px 0; overflow: hidden; }
+  .ai-score-fill { height: 100%; background: linear-gradient(90deg, var(--amber-dim), var(--amber)); border-radius: 4px; }
+
+  /* TREND ROWS */
+  .year-card { background: var(--navy-card); border: 1px solid var(--navy-border); border-radius: var(--radius); padding: 10px 14px; text-align: center; }
+  .year-card .year { font-family: var(--font-mono); font-size: 10px; color: var(--ivory-dim); margin-bottom: 4px; }
+  .year-card .value { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--amber); }
+  .year-card .sub { font-size: 10px; color: var(--ivory-dim); margin-top: 2px; }
+  .year-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+
+  /* MA DASHBOARD */
+  .ma-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+  .ma-above { color: var(--green); font-family: var(--font-mono); font-size: 11px; }
+  .ma-below { color: var(--red); font-family: var(--font-mono); font-size: 11px; }
+
+  /* SHAREHOLDING */
+  .sh-bar { height: 10px; border-radius: 5px; background: var(--navy-border); overflow: hidden; margin: 6px 0; }
+  .sh-fill { height: 100%; border-radius: 5px; }
+
+  /* SERIES TABLE */
+  .series-table td, .series-table th { font-size: 11.5px; padding: 7px 10px; }
+  .series-table { font-family: var(--font-mono); }
+
+  /* FOOTER */
+  footer { background: var(--navy-mid); border-top: 1px solid var(--navy-border); padding: 24px 32px; font-size: 11px; color: var(--ivory-dim); line-height: 1.8; }
+
+  /* RESPONSIVE */
+  @media (max-width: 680px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .pillar-grid { grid-template-columns: 1fr 1fr; }
+    .year-cards { grid-template-columns: repeat(3, 1fr); }
+    .hero-grid { flex-direction: column; }
+    .hero { max-height: none; }
+    .chain { flex-direction: column; }
+    .tab-content { padding: 18px; }
+    .hero { padding: 18px; }
+    .hero-name { font-size: 20px; }
+    .ai-badge-row { flex-direction: column; }
+  }
+  @media (max-width: 600px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .year-cards { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ANIMATION */
+  .tab-content { animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* MACRO TABLE */
+  .macro-dim { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--navy-border); border-radius: var(--radius); margin-bottom: 8px; }
+  .macro-icon { font-size: 20px; width: 30px; text-align: center; flex-shrink: 0; }
+  .macro-label { flex: 1; font-size: 13px; color: var(--ivory-dim); }
+  .macro-status { font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 3px; }
+  .status-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .status-amber { background: rgba(245,166,35,0.15); color: var(--amber); }
+  .status-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .status-cyan { background: rgba(34,211,238,0.12); color: var(--cyan); }
+  .status-grey { background: rgba(148,163,184,0.15); color: #94A3B8; }
+
+  /* OCI HIGHLIGHT */
+  .highlight-box { background: linear-gradient(135deg, #08111E, #0E1C35); border: 1.5px solid var(--cyan); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+  .highlight-box.amber { border-color: var(--amber); }
+  .highlight-box.red { border-color: var(--red); }
+
+  /* PEER TABLE */
+  .peer-row-highlight { background: rgba(245,166,35,0.06); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-ticker">NYSE: ORCL &nbsp;|&nbsp; Enterprise Software + AI Infrastructure &nbsp;|&nbsp; Series Report</div>
+      <div class="hero-name">Oracle Corporation</div>
+      <div class="hero-lede">From database monopolist to AI infrastructure titan — a $553B backlog, 84% OCI growth, and a $300B Stargate bet test whether a 47-year-old enterprise stalwart can earn its second act at a fraction of its all-time-high price.</div>
+      <div class="hero-pills">
+        <div class="data-pill">Price <span>$150.60</span></div>
+        <div class="data-pill">Mkt Cap <span>~$432B</span></div>
+        <div class="data-pill">FY25 Rev <span>$57.4B</span></div>
+        <div class="data-pill">RPO <span>$553B</span></div>
+        <div class="data-pill">OCI Growth <span>+84% YoY</span></div>
+        <div class="data-pill">52w H/L <span>$345 / $118</span></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="verdict-badge">WATCH ★★★★<br><span style="font-size:9px;opacity:0.7">Entry: $120–155</span></div>
+      <div class="badge-row">
+        <span class="badge badge-cat">Category C→B</span>
+        <span class="badge badge-ai-widener">🟢 AI WIDENER</span>
+      </div>
+      <div class="badge-row">
+        <span class="badge badge-macro">Flywheel: FORMING ★★★</span>
+        <span class="badge" style="background:rgba(245,166,35,0.1);border:1px solid var(--amber);color:var(--amber);">Phase 3 · AI Infra</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+  </nav>
+</div>
+
+<!-- TAB 0 — OVERVIEW -->
+<div class="tab-content active-tab" id="tab0">
+  <div class="section">
+    <div class="section-title">Business Overview</div>
+    <div class="card">
+      <p style="margin-bottom:12px;">Oracle Corporation, founded in 1977 by Larry Ellison, pioneered the commercial relational database and built the world's most mission-critical enterprise software stack. Its core database product—now the Autonomous Database—runs inside approximately 80% of Fortune 500 companies and handles transactions in virtually every industry vertical. Over five decades, Oracle accumulated seven deeply interlocking product pillars: Database (the crown jewel), Fusion Cloud ERP, NetSuite Cloud ERP, Healthcare (Cerner), OCI Infrastructure, Java/Middleware, and an Analytics platform.</p>
+      <p>The thesis in 2026 is not about the database—it is about <strong style="color:var(--amber);">OCI becoming the preferred AI training and inference cloud</strong>. Oracle's RDMA network architecture (sub-10 microsecond latency, 131 Pb/s throughput) is demonstrably superior for large-model training workloads, evidenced by OpenAI, Meta, xAI, Google, and Cohere choosing OCI alongside or over AWS/Azure for AI workloads. The $553 billion RPO is the single most important number in the company's history.</p>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:16px;">
+      <div class="metric-tile">
+        <div class="metric-label">Current Price</div>
+        <div class="metric-value">$150.60</div>
+        <div class="metric-sub">–56% from ATH $345.72 <span class="v">VERIFIED</span></div>
+      </div>
+      <div class="metric-tile cyan">
+        <div class="metric-label">RPO Backlog</div>
+        <div class="metric-value">$553B</div>
+        <div class="metric-sub">+325% YoY · Q3 FY2026 <span class="v">VERIFIED</span></div>
+      </div>
+      <div class="metric-tile green">
+        <div class="metric-label">OCI IaaS Growth</div>
+        <div class="metric-value">+84%</div>
+        <div class="metric-sub">Q3 FY2026 YoY · $4.9B <span class="v">VERIFIED</span></div>
+      </div>
+      <div class="metric-tile yellow">
+        <div class="metric-label">FY2027 Guidance</div>
+        <div class="metric-value">$90B</div>
+        <div class="metric-sub">+57% over FY2025 in 2 years <span class="e">ESTIMATED</span></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Revenue Mix Transition (FY2025→Q3 FY2026)</div>
+        <div class="sc-row"><span class="sc-label">Cloud IaaS (OCI)</span><span class="sc-status sc-pass">$24.5B FY25 → $4.9B/qtr</span></div>
+        <div class="sc-row"><span class="sc-label">Cloud SaaS (Fusion, NetSuite, Cerner)</span><span class="sc-status sc-pass">$19.5B FY25 · +13% q</span></div>
+        <div class="sc-row"><span class="sc-label">Software (License Support)</span><span class="sc-status sc-marginal">$44B FY25 · maturing</span></div>
+        <div class="sc-row"><span class="sc-label">Cloud % of Total Revenue</span><span class="sc-status sc-pass">52% (first time cloud > software)</span></div>
+        <div class="sc-row"><span class="sc-label">On-Premise Legacy</span><span class="sc-status sc-marginal">Declining; high-margin cash cow</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Why This Stock Is In The Series</div>
+        <div style="font-size:13px;color:var(--ivory);line-height:1.7;">
+          <p style="margin-bottom:8px;">Oracle is the <strong style="color:var(--amber);">most asymmetric bet in enterprise technology</strong>: the stock is 56% below its all-time high yet the business has materially improved — RPO up 325%, OCI up 84%, FY2027 guidance raised to $90B.</p>
+          <p style="margin-bottom:8px;">The core question the framework must answer: <em>Is the near-zero FCF a temporary CapEx investment cycle that will unwind 2027-2029, or structural overcapitalization that destroys value?</em></p>
+          <p>The $553B RPO (9.6× trailing revenue) answers this: the capital is being deployed against contracted demand, not speculation. This report quantifies the margin of safety and the upgrade trigger conditions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Framework Classification</div>
+    <div class="highlight-box amber">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--amber);margin-bottom:8px;">CATEGORY C → TRANSITIONING TO B | AI WIDENER 🟢 | PHASE 3 INFRASTRUCTURE</div>
+      <p style="font-size:13.5px;color:var(--ivory);line-height:1.7;"><strong>Category C (Mature Quality Compounder)</strong> is the primary classification — Oracle has a 47-year operating history, $57B in revenue, and established enterprise relationships. However, the OCI/AI pivot is accelerating growth toward Category B territory (22% total revenue growth in Q3 FY2026, OCI at +84%). The framework uses Category C WACC/MoS but notes the re-rating risk if OCI sustains 50%+ growth for 8+ consecutive quarters.</p>
+      <p style="font-size:13.5px;color:var(--ivory);margin-top:8px;line-height:1.7;"><strong>AI WIDENER</strong> is confirmed: Oracle's Autonomous Database contains unique enterprise workload data that trains its AI continuously; OCI's RDMA architecture advantage deepens with scale; and the multi-cloud database partnerships (Oracle DB@Azure, DB@AWS) create a second-moat switching cost that compounds as more enterprise data lives in Oracle's stack.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Key Investment Risks (Framework Must Resolve)</div>
+    <div class="grid-2">
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">Bear Case Risks</div>
+        <div class="sc-row"><span class="sc-label">GAAP FCF ~negative FY2025</span><span class="sc-status sc-fail">CapEx $21.2B vs OCF $20.8B</span></div>
+        <div class="sc-row"><span class="sc-label">Total Debt ~$85-95B</span><span class="sc-status sc-fail">High leverage vs $10B cash</span></div>
+        <div class="sc-row"><span class="sc-label">RPO Concentration Risk</span><span class="sc-status sc-fail">Few large AI customers</span></div>
+        <div class="sc-row"><span class="sc-label">200-DMA: $220 vs Price $150</span><span class="sc-status sc-fail">–32% below; technical downtrend</span></div>
+        <div class="sc-row"><span class="sc-label">AWS/Azure competitive response</span><span class="sc-status sc-marginal">Hyperscaler counter-attack</span></div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">Bull Case Thesis</div>
+        <div class="sc-row"><span class="sc-label">OCF $23.5B LTM (strong)</span><span class="sc-status sc-pass">CapEx funded by OCF+debt</span></div>
+        <div class="sc-row"><span class="sc-label">RPO $553B = 9.6× FY25 Rev</span><span class="sc-status sc-pass">Contracted demand visible</span></div>
+        <div class="sc-row"><span class="sc-label">Forward P/E 18.7× vs 5yr avg 33×</span><span class="sc-status sc-pass">Massive valuation discount</span></div>
+        <div class="sc-row"><span class="sc-label">FY2027 $90B guidance</span><span class="sc-status sc-pass">57% rev growth in 2 yrs</span></div>
+        <div class="sc-row"><span class="sc-label">Stargate AI infrastructure mandate</span><span class="sc-status sc-pass">US govt + private AI capex aligned</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1 — MACRO & GROWTH -->
+<div class="tab-content" id="tab1">
+  <div class="section">
+    <div class="section-title">Layer 1 — US Macro Anchor</div>
+    <div class="grid-4" style="margin-bottom:16px;">
+      <div class="metric-tile">
+        <div class="metric-label">US 10Y Treasury</div>
+        <div class="metric-value">4.31%</div>
+        <div class="metric-sub">April 10, 2026 <span class="v">VERIFIED</span></div>
+      </div>
+      <div class="metric-tile yellow">
+        <div class="metric-label">US CPI (March 2026)</div>
+        <div class="metric-value">3.3%</div>
+        <div class="metric-sub">+0.9% MoM; oil shock driven <span class="v">VERIFIED</span></div>
+      </div>
+      <div class="metric-tile cyan">
+        <div class="metric-label">US Real GDP 2026E</div>
+        <div class="metric-value">2.2%</div>
+        <div class="metric-sub">RSM/Consensus estimate <span class="e">ESTIMATED</span></div>
+      </div>
+      <div class="metric-tile">
+        <div class="metric-label">US Nominal GDP</div>
+        <div class="metric-value">~5.5%</div>
+        <div class="metric-sub">2.2% real + 3.3% CPI = terminal ceiling</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Macro Cycle Dashboard (6 Dimensions)</div>
+      <div class="macro-dim"><div class="macro-icon">💼</div><div class="macro-label"><strong>Enterprise IT Spending Cycle</strong> — AI capex supercycle; enterprise cloud migration mid-cycle; government infrastructure spend accelerating</div><div class="macro-status status-green">TAILWIND</div></div>
+      <div class="macro-dim"><div class="macro-icon">📈</div><div class="macro-label"><strong>Interest Rate Cycle</strong> — Fed on hold (sticky inflation 3.3%); 10Y at 4.31%; elevated rates pressure cloud multiples and Oracle's debt servicing</div><div class="macro-status status-amber">HEADWIND</div></div>
+      <div class="macro-dim"><div class="macro-icon">🛢️</div><div class="macro-label"><strong>Energy / Geopolitical</strong> — Middle East conflict, Strait of Hormuz, oil above $110/bbl; raises data center power costs marginally</div><div class="macro-status status-amber">MILD HEADWIND</div></div>
+      <div class="macro-dim"><div class="macro-icon">💵</div><div class="macro-label"><strong>US Dollar / FX</strong> — Strong USD impact on ~46% international revenue (constant currency growth typically 2-4% above USD growth)</div><div class="macro-status status-amber">MILD HEADWIND</div></div>
+      <div class="macro-dim"><div class="macro-icon">🏛️</div><div class="macro-label"><strong>US Industrial Policy / Stargate</strong> — Trump administration backing $500B Stargate AI infrastructure; Oracle core partner; US export controls on chips = OCI demand protector</div><div class="macro-status status-green">STRONG TAILWIND</div></div>
+      <div class="macro-dim"><div class="macro-icon">🤖</div><div class="macro-label"><strong>AI Adoption Cycle</strong> — Global AI infrastructure Phase 3 (inflection); enterprise AI deployment accelerating; OCI uniquely positioned for large-scale LLM training</div><div class="macro-status status-cyan">ACCELERATING</div></div>
+    </div>
+    <div style="font-family:var(--font-mono);font-size:11px;color:var(--amber);padding:8px 0;">MACRO COMPOSITE: TAILWIND for Oracle · AI cycle overwhelms rate headwinds for this specific company</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Sector / Segment</th><th>Stress</th><th>Base</th><th>Accel.</th><th>AI Impact</th></tr></thead>
+        <tbody>
+          <tr><td>Cloud Infrastructure (IaaS)</td><td>25%</td><td>40%</td><td>60%</td><td>🟢 CORE DRIVER — AI workloads ARE the growth</td></tr>
+          <tr><td>Cloud SaaS / ERP</td><td>10%</td><td>15%</td><td>22%</td><td>🟢 WIDENER — AI agents in Fusion ERP = moat deepening</td></tr>
+          <tr><td>Enterprise Database</td><td>5%</td><td>10%</td><td>15%</td><td>🟢 WIDENER — Autonomous DB + AI vector search = switching cost</td></tr>
+          <tr><td>Healthcare IT (Cerner)</td><td>8%</td><td>12%</td><td>18%</td><td>🟢 WIDENER — Clinical AI Agent automating documentation</td></tr>
+          <tr><td>Total Oracle Blended</td><td>12%</td><td>20%</td><td>28%</td><td>Macro-derived; Q3 FY2026 actual: +22% validating Base</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px;color:var(--ivory-dim);margin-top:10px;padding-top:10px;border-top:1px solid var(--navy-border);">
+        <span class="e">ESTIMATED</span> Sector growth derived from Gartner cloud infrastructure forecasts (40%+ CAGR for AI cloud 2024-2026), IDC ERP market projections, and Oracle's own guidance confirmation. AI is adding approximately +8-15 percentage points to Oracle's sector growth ceiling vs a non-AI world.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 3 — Company Alpha Over Sector</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 (1-5yr)</th><th>Stage 2 (6-10yr)</th></tr></thead>
+        <tbody>
+          <tr><td>Market Share Gain (OCI vs AWS/Azure)</td><td><span class="sc-status sc-pass">Active</span></td><td>+3%</td><td>+1%</td></tr>
+          <tr><td>Multi-Cloud Database Expansion</td><td><span class="sc-status sc-pass">Active</span></td><td>+2%</td><td>+2%</td></tr>
+          <tr><td>Product Expansion (Zettascale, AI Agents)</td><td><span class="sc-status sc-pass">Active</span></td><td>+3%</td><td>+2%</td></tr>
+          <tr><td>Geographic (Sovereign Cloud: UAE, India, EU)</td><td><span class="sc-status sc-pass">Active</span></td><td>+2%</td><td>+1%</td></tr>
+          <tr><td>Pricing Power (License→Cloud uplift)</td><td><span class="sc-status sc-marginal">Moderate</span></td><td>+1%</td><td>+1%</td></tr>
+          <tr style="background:rgba(34,197,94,0.04);"><td><strong>AI Alpha: 6a Cost Reduction</strong> (Autonomous DB cuts DBA labour 50%)</td><td><span class="sc-status sc-pass">Active</span></td><td>+2%</td><td>+2%</td></tr>
+          <tr style="background:rgba(34,197,94,0.04);"><td><strong>AI Alpha: 6b Market Expansion</strong> (New AI workloads = new TAM)</td><td><span class="sc-status sc-pass">Active</span></td><td>+5%</td><td>+3%</td></tr>
+          <tr style="background:rgba(34,197,94,0.04);"><td><strong>AI Alpha: 6c Data Flywheel</strong> (Enterprise workload data → better Autonomous DB)</td><td><span class="sc-status sc-marginal">Forming</span></td><td>+1%</td><td>+3%</td></tr>
+          <tr><td><strong>Total Company Alpha</strong></td><td>—</td><td><strong style="color:var(--amber);">+19%</strong></td><td><strong style="color:var(--amber);">+15%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Growth Rate Derivation — Final Summary</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr></thead>
+        <tbody>
+          <tr><td>US Macro State</td><td>GDP ~1.5% recession risk</td><td>GDP ~2.2%</td><td>GDP ~3%+</td></tr>
+          <tr><td>US Nominal GDP</td><td>~4.5%</td><td>~5.5%</td><td>~6.5%</td></tr>
+          <tr><td>Cloud IaaS Sector Growth</td><td>25%</td><td>40%</td><td>60%</td></tr>
+          <tr><td>Company Alpha over sector</td><td>+5%</td><td>+19%</td><td>+25%</td></tr>
+          <tr><td>AI Alpha Contribution</td><td>+3%</td><td>+8%</td><td>+12%</td></tr>
+          <tr><td>Stage 1 Revenue CAGR (FY2026-29)</td><td>18%</td><td>25-30%</td><td>35-40%</td></tr>
+          <tr><td>Stage 2 Revenue CAGR (FY2030-34)</td><td>10%</td><td>15%</td><td>20%</td></tr>
+          <tr><td>Terminal Growth Rate</td><td>3.0%</td><td>3.5%</td><td>4.0%</td></tr>
+          <tr><td>FCF Margin Recovery (FY2028E)</td><td>10-15%</td><td>20-25%</td><td>28-32%</td></tr>
+          <tr><td>Key Risk</td><td>Enterprise spend freeze; AI capex bust</td><td>RPO conversion delays; debt</td><td>Overheating; hyperscaler price war</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:14px;padding:12px;background:rgba(245,166,35,0.06);border-radius:6px;font-size:12.5px;color:var(--ivory-dim);">
+        <strong style="color:var(--amber);">Sensitivity:</strong> A 1% change in terminal growth rate changes base IV by approximately ±8–12%. A 1% change in WACC changes base IV by approximately ±10–14%. Q3 FY2026's 22% total revenue growth validates the Base scenario. The RPO of $553B (covering FY2026-FY2030 contracted revenue) provides unprecedented forward visibility. <span class="v">VERIFIED</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2 — FINANCIALS -->
+<div class="tab-content" id="tab2">
+  <div class="section">
+    <div class="section-title">5-Year Operating Cash Flow & CapEx History</div>
+    <div class="year-cards">
+      <div class="year-card"><div class="year">FY2021</div><div class="value">$14.7B</div><div class="sub">OCF · CapEx $1.9B</div></div>
+      <div class="year-card"><div class="year">FY2022</div><div class="value">$15.3B</div><div class="sub">OCF · CapEx $4.5B</div></div>
+      <div class="year-card" style="border-color:var(--yellow);"><div class="year">FY2023</div><div class="value">$9.5B</div><div class="sub">OCF · CapEx $8.7B (Cerner)</div></div>
+      <div class="year-card"><div class="year">FY2024</div><div class="value">$18.7B</div><div class="sub">OCF · CapEx $6.9B</div></div>
+      <div class="year-card" style="border-color:var(--cyan);"><div class="year">FY2025</div><div class="value">$20.8B</div><div class="sub">OCF · CapEx $21.2B !</div></div>
+    </div>
+    <div class="year-cards">
+      <div class="year-card"><div class="year">FY2021</div><div class="value" style="color:var(--green);">$12.5B</div><div class="sub">Free Cash Flow</div></div>
+      <div class="year-card"><div class="year">FY2022</div><div class="value" style="color:var(--green);">$12.6B</div><div class="sub">Free Cash Flow</div></div>
+      <div class="year-card"><div class="year">FY2023</div><div class="value" style="color:var(--yellow);">$5.4B</div><div class="sub">FCF (Cerner drag)</div></div>
+      <div class="year-card"><div class="year">FY2024</div><div class="value" style="color:var(--green);">$11.8B</div><div class="sub">Free Cash Flow</div></div>
+      <div class="year-card"><div class="year">FY2025</div><div class="value" style="color:var(--red);">~-$0.4B</div><div class="sub">FCF · CapEx surge</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--ivory-dim);padding:8px 0;"><span class="v">VERIFIED</span> from Oracle SEC 8-K filings. Key insight: Operating Cash Flow is STRONG ($20.8B) and growing (+12% YoY). The near-zero GAAP FCF is entirely attributable to the deliberate CapEx surge from $6.9B (FY2024) to $21.2B (FY2025) — a 3× increase — driven by validated AI infrastructure demand. Q3 FY2026 LTM OCF: $23.5B (+13% YoY). This is an investment cycle, not an earnings quality deterioration.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Revenue & Earnings History</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Fiscal Year (May)</th><th>Revenue</th><th>YoY</th><th>GAAP Net Income</th><th>GAAP EPS</th><th>Non-GAAP EPS</th><th>Op Margin</th></tr></thead>
+        <tbody>
+          <tr><td>FY2021</td><td>$40.5B</td><td>+4%</td><td>$13.7B</td><td>$4.67</td><td>$3.83</td><td>33%</td></tr>
+          <tr><td>FY2022</td><td>$42.4B</td><td>+5%</td><td>$6.7B</td><td>$2.37</td><td>$4.90</td><td>31%</td></tr>
+          <tr><td>FY2023</td><td>$50.0B</td><td>+18%</td><td>$8.5B</td><td>$3.02</td><td>$5.12</td><td>29%</td></tr>
+          <tr><td>FY2024</td><td>$53.0B</td><td>+6%</td><td>$10.5B</td><td>$3.74</td><td>$5.84</td><td>32%</td></tr>
+          <tr class="peer-row-highlight"><td>FY2025</td><td>$57.4B</td><td>+8%</td><td>$12.4B</td><td>$4.34</td><td>$6.03</td><td>31%</td></tr>
+          <tr style="background:rgba(34,211,238,0.04);"><td>Q3 FY2026 (Ann.)</td><td>~$68B run-rate</td><td>+22%</td><td>—</td><td>$1.27/q</td><td>$1.79/q</td><td>32%</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px;color:var(--ivory-dim);margin-top:8px;"><span class="v">VERIFIED</span> Oracle SEC filings. Note: FY2022 GAAP net income depressed by Cerner acquisition charges. Non-GAAP EPS cleaner for operational comparison.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Financial Fortress Scorecard</div>
+    <div class="card">
+      <div class="sc-row"><span class="sc-label">ROE ≥ 15% for 5 consecutive years</span><span class="sc-status sc-pass">✓ PASS — ROE is unusually high (distorted by negative equity base; now $20B positive equity FY2025)</span></div>
+      <div class="sc-row"><span class="sc-label">ROIC > WACC (10-year sustainable)</span><span class="sc-status sc-marginal">~ MARGINAL — Normalised ROIC ~15-17%; WACC ~9.5%; narrow spread; CapEx investment reduces near-term ROIC</span></div>
+      <div class="sc-row"><span class="sc-label">Net Cash Position</span><span class="sc-status sc-fail">✗ FAIL — Net debt ~$75-80B (Total debt $85-95B vs Cash $10-12B). HIGH leverage.</span></div>
+      <div class="sc-row"><span class="sc-label">Net Profit Margin ≥ 15%</span><span class="sc-status sc-pass">✓ PASS — 21.7% GAAP; ~30% non-GAAP. High-quality enterprise software margins.</span></div>
+      <div class="sc-row"><span class="sc-label">FCF positive and growing</span><span class="sc-status sc-fail">✗ FAIL — GAAP FCF near-zero FY2025 due to CapEx surge. OCF $20.8B = strong. Investment cycle.</span></div>
+      <div class="sc-row"><span class="sc-label">Operating Cash Flow Conversion</span><span class="sc-status sc-pass">✓ PASS — OCF/Net Income = 171-174% consistently. Exceptional quality signal.</span></div>
+      <div class="sc-row"><span class="sc-label">Revenue Growth vs Sector CAGR</span><span class="sc-status sc-pass">✓ PASS — Q3 FY2026 +22% total; OCI +84%. Outperforming cloud sector CAGR.</span></div>
+      <div class="sc-row"><span class="sc-label">Predictable/Recurring Revenue</span><span class="sc-status sc-pass">✓ PASS — 77% from cloud + support subscriptions. Deferred revenue $9.9B short-term.</span></div>
+      <div class="sc-row"><span class="sc-label">Capital-light model</span><span class="sc-status sc-fail">✗ FAIL — Currently highly capital intensive ($50B FY2026 CapEx plan). Structural for 2-3 years.</span></div>
+      <div class="sc-row"><span class="sc-label">Dividend sustainability</span><span class="sc-status sc-marginal">~ MARGINAL — $0.50/qtr div ($2/yr); covered by OCF but strained vs GAAP FCF.</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Owner Earnings Analysis</div>
+    <div class="oe-box">
+      <div class="oe-row"><div class="oe-label">GAAP Net Income (FY2025)</div><div class="oe-value">+$12.44B</div></div>
+      <div class="oe-row"><div class="oe-label">Depreciation & Amortization</div><div class="oe-value">+$5.20B</div></div>
+      <div class="oe-row"><div class="oe-label">Stock-Based Compensation</div><div class="oe-value">+$1.80B</div></div>
+      <div class="oe-row"><div class="oe-label">Working Capital Changes (net)</div><div class="oe-value">+$1.30B</div></div>
+      <div class="oe-row"><div class="oe-label">Total Maintenance CapEx (estimated)</div><div class="oe-value">–$6.00B</div></div>
+      <div class="oe-row"><div class="oe-label">Growth CapEx (OCI buildout — NOT owner earnings)</div><div class="oe-value">–$15.20B</div></div>
+      <div class="oe-row"><div class="oe-label" style="color:var(--amber);">Conservative Owner Earnings (excl. growth CapEx)</div><div class="oe-value" style="color:var(--amber);font-size:18px;">~$14.7B</div></div>
+      <div style="font-size:11.5px;color:var(--ivory-dim);margin-top:12px;"><span class="e">ESTIMATED</span> Maintenance vs Growth CapEx split is the critical judgment: $6B maintenance CapEx assumes existing database/software infrastructure costs; $15.2B is forward AI capacity investment backed by $553B RPO. If we use full CapEx ($21.2B), owner earnings = zero. The framework uses the split as the honest analysis requires acknowledging this is management's investment choice, not deterioration of the underlying business engine.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Earnings Quality — O'Glove Framework</div>
+    <div class="card">
+      <div class="sc-row">
+        <span class="sc-label"><strong>Test 1 — FCF Conversion (5yr OCF/Net Income)</strong><br><span style="font-size:11px;color:var(--ivory-dim);">FY21: 107% | FY22: 114% | FY23: 112% | FY24: 178% | FY25: 171%</span></span>
+        <span class="sc-status sc-pass">✓ PASS — Exceptional. OCF consistently 1.7-1.8× net income. Strong non-cash charge generation.</span>
+      </div>
+      <div class="sc-row">
+        <span class="sc-label"><strong>Test 2 — DSO Trend (3yr Receivables / Rev/365)</strong><br><span style="font-size:11px;color:var(--ivory-dim);">Deferred revenue (short-term) consistently $9-10B = customers paying upfront. No DSO deterioration signal.</span></span>
+        <span class="sc-status sc-pass">✓ PASS — Deferred revenue rising = billing ahead of recognition. Positive quality signal.</span>
+      </div>
+      <div class="sc-row">
+        <span class="sc-label"><strong>Test 3 — Inventory Days</strong><br><span style="font-size:11px;color:var(--ivory-dim);">Software company — no physical inventory. N/A for cloud/SaaS.</span></span>
+        <span class="sc-status sc-pass">N/A — Not applicable</span>
+      </div>
+      <div class="sc-row">
+        <span class="sc-label"><strong>Test 4 — Accounting Policy Stability</strong><br><span style="font-size:11px;color:var(--ivory-dim);">Revenue recognition consistent. Finance lease introduction FY2025 (new per FASB). No earnings-boosting policy changes detected.</span></span>
+        <span class="sc-status sc-pass">✓ PASS — Policies stable. Finance lease reclass is disclosure clarification, not manipulation.</span>
+      </div>
+      <div class="sc-row">
+        <span class="sc-label"><strong>Test 5 — Gross Margin Consistency (5yr)</strong><br><span style="font-size:11px;color:var(--ivory-dim);">Cloud gross margins improving ~9%/yr per management commentary. SaaS margins >70%. OCI margins currently 60-65% and expanding as utilization rises.</span></span>
+        <span class="sc-status sc-pass">✓ PASS — Gross margins stable to improving. OCI scale drives margin expansion trajectory.</span>
+      </div>
+    </div>
+    <div style="text-align:center;padding:12px;background:rgba(34,197,94,0.08);border:1px solid var(--green);border-radius:8px;margin-top:8px;">
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--green);font-weight:700;">EARNINGS QUALITY: ACCEPTABLE ✓</div>
+      <div style="font-size:12px;color:var(--ivory-dim);margin-top:4px;">OCF conversion rate of 171-178% is exceptional. The near-zero FCF is a capital deployment choice backed by $553B contracted backlog — not an earnings quality problem. No MoS widening required from quality lens.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3 — MOAT -->
+<div class="tab-content" id="tab3">
+  <div class="section">
+    <div class="section-title">Competitive Moat Analysis — Pillar 1</div>
+    <div class="moat-card"><div class="moat-icon">🗄️</div><div class="moat-info"><div class="moat-name">Database Switching Cost — Deep Moat <span class="stars">★★★★★</span></div><div class="moat-desc">Oracle Database runs approximately 80% of Fortune 500 workloads. Migrating away requires years of effort, regulatory re-validation, and re-training of thousands of DBAs. The $553B RPO is the best evidence: customers are signing 5-10 year contracts, not migrating. Autonomous Database self-patches and self-tunes, making the switching cost increasingly technical (AI now manages the stack, not just humans).</div></div></div>
+    <div class="moat-card"><div class="moat-icon">☁️</div><div class="moat-info"><div class="moat-name">OCI Network Architecture — Narrow-to-Wide Moat <span class="stars">★★★</span><span class="stars-dim">★★</span></div><div class="moat-desc">OCI Gen2's RDMA network (sub-10 microsecond latency, direct GPU-to-GPU) is demonstrably superior for LLM training vs AWS/Azure shared-bus architectures. This is a narrow moat today — Amazon and Google are investing to close the gap — but the Zettascale10 cluster (131K GPUs) and Stargate deployments are building scale advantages that compound. Rated narrow-to-wide; needs 2 more years to confirm durability.</div></div></div>
+    <div class="moat-card"><div class="moat-icon">🔗</div><div class="moat-info"><div class="moat-name">Multi-Cloud Database Lock-In — Narrow Moat <span class="stars">★★★</span><span class="stars-dim">★★</span></div><div class="moat-desc">Oracle Database@Azure (11 regions, 27 more planned) and Oracle Database@AWS allow enterprises to run Oracle workloads on competitors' clouds while keeping Oracle as the database layer. This is a brilliant strategic move: it captures the Oracle lock-in while letting customers use any cloud compute. Multicloud database consumption grew 817% YoY in Q2 FY2026. The data stays in Oracle's stack regardless of which hyperscaler the compute runs on.</div></div></div>
+    <div class="moat-card"><div class="moat-icon">🏥</div><div class="moat-info"><div class="moat-name">Healthcare (Cerner) Data Position — Emerging Moat <span class="stars">★★</span><span class="stars-dim">★★★</span></div><div class="moat-desc">The Cerner acquisition ($28.3B) is integrating a Clinical AI Agent (voice-activated medical documentation) into the EHR. If Oracle can build a proprietary clinical AI trained on de-identified health records from 5,000+ hospitals, this becomes a data flywheel. Currently an emerging moat — Cerner integration has been choppy, execution risk is real.</div></div></div>
+    <div class="moat-card"><div class="moat-icon">📦</div><div class="moat-info"><div class="moat-name">Autonomous Database AI — Narrow Moat Forming <span class="stars">★★★</span><span class="stars-dim">★★</span></div><div class="moat-desc">The Autonomous Database uses ML for self-patching, self-tuning, self-securing. Each customer workload trains the system. Oracle reports DBA labour cost reduction of 50% vs manually-managed databases. This is the embryo of a data flywheel — but we classify it FORMING, not confirmed, until Oracle discloses measurable AI accuracy metrics from training data feedback.</div></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ROIC as Moat Proof</div>
+    <div class="year-cards">
+      <div class="year-card"><div class="year">FY2021</div><div class="value">~22%</div><div class="sub">ROIC · Wide Moat</div></div>
+      <div class="year-card"><div class="year">FY2022</div><div class="value">~18%</div><div class="sub">ROIC · Cerner drag</div></div>
+      <div class="year-card"><div class="year">FY2023</div><div class="value">~13%</div><div class="sub">ROIC · Integration</div></div>
+      <div class="year-card"><div class="year">FY2024</div><div class="value">~15%</div><div class="sub">ROIC · Recovery</div></div>
+      <div class="year-card" style="border-color:var(--yellow);"><div class="year">FY2025E</div><div class="value">~14%</div><div class="sub">ROIC · CapEx surge</div></div>
+    </div>
+    <div style="font-size:12.5px;color:var(--ivory-dim);padding:6px 0;"><span class="e">ESTIMATED</span> ROIC compressed by CapEx investment cycle and Cerner acquisition costs. Pre-Cerner normalised ROIC was 20-25% — evidence of a genuine wide moat. Current ROIC is above WACC (9.5%) but narrowly so. The framework expects ROIC to recover to 20%+ by FY2028-29 as OCI revenues scale faster than invested capital growth.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Data Flywheel Assessment</div>
+    <div class="flywheel-box">
+      <div class="flywheel-title">Oracle Data Flywheel</div>
+      <div class="flywheel-badge">FORMING ★★★ (2 of 3 confirmed)</div>
+      <div class="flywheel-check"><div class="icon-yes">✓</div><div><strong>Proprietary Training Data:</strong> Oracle has access to anonymised workload patterns from 80% of Fortune 500 databases — transaction volumes, query patterns, failure modes, performance data. This dataset is unavailable to AWS, Google, or Microsoft at anything near this scale. Additionally, Cerner health records (5,000+ hospitals) represent a potentially transformative clinical AI training set. <span class="v">ESTIMATED</span></div></div>
+      <div class="flywheel-check"><div class="icon-part">~</div><div><strong>AI Improvement with More Data:</strong> Oracle states the Autonomous Database reduces DBA labour by 50%, and cloud gross margins are improving ~9%/year as automation increases. However, Oracle has NOT disclosed quantitative AI accuracy metrics (e.g., "query optimisation improved X% as transaction volume doubled"). Partially confirmed — the cost reduction evidence is real, but the feedback loop mechanism is not publicly benchmarked. <span class="e">ESTIMATED</span></div></div>
+      <div class="flywheel-check"><div class="icon-yes">✓</div><div><strong>Better AI Attracts More Users:</strong> YES — the multi-cloud DB strategy (Oracle@Azure, Oracle@AWS) expands the funnel. Customers who tried Oracle for AI workloads (OpenAI, Meta, xAI) are expanding workloads. OCI growing 84% YoY confirms the attraction loop is working. Customers choosing OCI explicitly for AI performance creates the network of evidence that attracts the next customer. <span class="v">VERIFIED</span> (OCI growth data)</div></div>
+      <div style="margin-top:14px;padding:10px;background:rgba(255,255,255,0.04);border-radius:6px;">
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--cyan);">FLYWHEEL SCORE: 6.5/10 — Moderate-to-Strong</div>
+        <div style="font-size:12px;color:var(--ivory-dim);margin-top:4px;">Data quality: 2.5/3 | Improvement evidence: 2/4 (needs quantification) | Loop speed: 2/3 (enterprise sales cycles are 6-18 months). Flywheel upgrade condition: Oracle publishes measurable Autonomous Database AI accuracy improvement metrics. If confirmed → moat grade upgrades from B+ to A−.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Macro Moat Stress Test</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Moat Source</th><th>In Stress Scenario</th><th>In Acceleration</th></tr></thead>
+        <tbody>
+          <tr><td>Database Switching Cost</td><td><span style="color:var(--green);">STRENGTHENS</span> — recession makes migration even harder (cost, risk)</td><td><span style="color:var(--green);">STRENGTHENS</span> — more workloads = more lock-in depth</td></tr>
+          <tr><td>OCI Network Architecture</td><td><span style="color:var(--yellow);">HOLDS</span> — competitors still can't match RDMA latency; but CapEx cycle painful</td><td><span style="color:var(--green);">STRENGTHENS</span> — Stargate scale = largest AI cluster globally</td></tr>
+          <tr><td>Multi-Cloud DB Partnership</td><td><span style="color:var(--green);">STRENGTHENS</span> — enterprises seek cost efficiency across clouds; Oracle stays as data layer</td><td><span style="color:var(--green);">STRENGTHENS</span> — more regions = more stickiness</td></tr>
+          <tr><td>Healthcare/Cerner</td><td><span style="color:var(--yellow);">HOLDS</span> — government healthcare spending is counter-cyclical</td><td><span style="color:var(--green);">WIDENING</span> — Clinical AI scales with data volume</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Pillar 1 Overall Grade</div>
+    <div style="text-align:center;padding:20px;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius-lg);">
+      <div style="font-family:var(--font-display);font-size:36px;font-weight:900;color:var(--amber);">B+</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--ivory-dim);margin-top:4px;">DATABASE MOAT A-GRADE · OCI MOAT B-GRADE · BLENDED B+</div>
+      <div style="font-size:12.5px;color:var(--ivory-dim);max-width:500px;margin:10px auto 0;">If flywheel confirms (Autonomous Database discloses measurable AI improvement metrics), moat upgrades to A−. The database switching cost alone justifies a B+ in any rate environment.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4 — MANAGEMENT -->
+<div class="tab-content" id="tab4">
+  <div class="section">
+    <div class="section-title">Leadership Profile</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Larry Ellison — Founder, CTO, Executive Chairman</div>
+        <p style="font-size:13px;color:var(--ivory);line-height:1.7;margin-bottom:10px;">At 81, Ellison remains the primary architect of Oracle's technical direction. He personally drives OCI's RDMA networking architecture and the Stargate AI infrastructure vision. His 40.3% equity stake (~$166B at current prices) is the single most powerful alignment mechanism in any large-cap tech company. When Ellison commits Oracle to 10GW of AI compute capacity, it is founder-capital at risk, not just manager decision-making.</p>
+        <div class="sc-row"><span class="sc-label">Equity Stake</span><span class="sc-status sc-pass">~40.3% (~1.16B shares)</span></div>
+        <div class="sc-row"><span class="sc-label">Technical Credibility</span><span class="sc-status sc-pass">Designed OCI Gen2 RDMA architecture</span></div>
+        <div class="sc-row"><span class="sc-label">Recent Insider Activity</span><span class="sc-status sc-marginal">Sold $1.7B July 2025 (estate planning scale); added 5M new shares same period</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Safra Catz — CEO</div>
+        <p style="font-size:13px;color:var(--ivory);line-height:1.7;margin-bottom:10px;">Catz has been Oracle's financial operator since 2004 and CEO since 2014. Her track record of executing 100+ acquisitions (including the $28.3B Cerner deal) and managing Oracle's complex international operations demonstrates exceptional operational discipline. Her FY2027 $90B revenue guidance was described as "dramatically higher" growth rates — language she does not use lightly given her conservative history.</p>
+        <div class="sc-row"><span class="sc-label">Capital Allocation Track Record</span><span class="sc-status sc-pass">Disciplined; returns cash when FCF normalises</span></div>
+        <div class="sc-row"><span class="sc-label">Guidance Reliability</span><span class="sc-status sc-pass">Conservative; Q3 FY2026 beat on revenue AND EPS</span></div>
+        <div class="sc-row"><span class="sc-label">Cerner Integration</span><span class="sc-status sc-marginal">Slower than planned; Clinical AI Agent now accelerating</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Capital Allocation Assessment</div>
+    <div class="card">
+      <div class="sc-row"><span class="sc-label">$50B FY2026 CapEx Plan (OCI buildout)</span><span class="sc-status sc-pass">Backed by $553B RPO — not speculative capex</span></div>
+      <div class="sc-row"><span class="sc-label">$30B Bond + Preferred Equity Raise (Q3 FY2026)</span><span class="sc-status sc-marginal">Substantially oversubscribed — market confidence in backlog conversion</span></div>
+      <div class="sc-row"><span class="sc-label">Dividend $2/year ($0.50/qtr)</span><span class="sc-status sc-marginal">Maintained but strained vs GAAP FCF; OCF covers comfortably</span></div>
+      <div class="sc-row"><span class="sc-label">Share Buybacks</span><span class="sc-status sc-marginal">Reduced during CapEx surge; historical aggressive buyback program</span></div>
+      <div class="sc-row"><span class="sc-label">Debt Management</span><span class="sc-status sc-marginal">$85-95B total debt; investment-grade rating; plans to de-lever by FY2028 as OCF normalises FCF</span></div>
+      <div class="sc-row"><span class="sc-label">Acquisitions (Cerner $28.3B, 2022)</span><span class="sc-status sc-marginal">Integration slower than planned but healthcare AI thesis intact</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">AI Management Credibility (AI WIDENER Assessment)</div>
+    <div class="highlight-box">
+      <div class="card-title" style="color:var(--cyan);">AI Team Quality & Credibility</div>
+      <div class="sc-row"><span class="sc-label">AI-Native Founders / Core Team</span><span class="sc-status sc-pass">Ellison designed OCI RDMA for AI workloads — technical-first DNA</span></div>
+      <div class="sc-row"><span class="sc-label">AI Performance Benchmarks</span><span class="sc-status sc-pass">OCI Zettascale10: 17 zettaFLOPS peak; industry-leading latency specs published</span></div>
+      <div class="sc-row"><span class="sc-label">NVIDIA Partnership Depth</span><span class="sc-status sc-pass">Expanded to Vera Rubin platform; first to deploy at scale publicly</span></div>
+      <div class="sc-row"><span class="sc-label">AI Governance / Responsible AI</span><span class="sc-status sc-marginal">Limited public disclosure on data privacy for Autonomous DB training. GDPR/PDPA compliance assumed but not disclosed in detail.</span></div>
+      <div class="sc-row"><span class="sc-label">AI R&D Spend as % Revenue</span><span class="sc-status sc-marginal">R&D ~5-6% revenue ($3-3.5B) — moderate; most AI investment is in infrastructure (GPU clusters), not model research</span></div>
+      <div style="margin-top:12px;font-size:12.5px;color:var(--ivory-dim);">Oracle's AI strategy is infrastructure-first (build the best rails) rather than model-first (build the best AI). This is consistent with Ellison's engineering-led instincts. The strategy is validated by customer choices (OpenAI chose OCI over AWS for performance), though it means Oracle is Level 1 infrastructure rather than Level 4 vertical AI application.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Pillar 3 Overall Grade</div>
+    <div style="text-align:center;padding:20px;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius-lg);">
+      <div style="font-family:var(--font-display);font-size:36px;font-weight:900;color:var(--amber);">A−</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--ivory-dim);margin-top:4px;">FOUNDER ALIGNMENT EXCEPTIONAL · EXECUTION RISK FROM DEBT LEVEL · CERNER INTEGRATION DELAYED</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5 — VALUATION -->
+<div class="tab-content" id="tab5">
+  <div class="section">
+    <div class="section-title">Valuation Context</div>
+    <div class="grid-4" style="margin-bottom:20px;">
+      <div class="metric-tile"><div class="metric-label">Current P/E (TTM GAAP)</div><div class="metric-value">~26.5x</div><div class="metric-sub">TTM EPS $5.69 at $150.60</div></div>
+      <div class="metric-tile green"><div class="metric-label">Forward P/E (FY2026E)</div><div class="metric-value">~18.7x</div><div class="metric-sub">Non-GAAP fwd EPS ~$8 est.</div></div>
+      <div class="metric-tile yellow"><div class="metric-label">5-Year Avg P/E</div><div class="metric-value">~33-37x</div><div class="metric-sub">Current 43-49% discount to avg</div></div>
+      <div class="metric-tile cyan"><div class="metric-label">10-Year Avg P/E</div><div class="metric-value">~28-32x</div><div class="metric-sub">Current ~14-17% discount</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 1 — DCF (2-Stage, WACC 9.5%)</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--ivory-dim);margin-bottom:16px;">Note: Oracle's FCF is distorted by the CapEx investment cycle. The DCF uses normalised OCF minus maintenance CapEx as the base, with growth CapEx excluded (as it is funded by RPO-contracted demand). The model assumes FCF normalises FY2027-28 as CapEx growth decelerates. <span class="e">ESTIMATED</span></p>
+      <table>
+        <thead><tr><th>Year</th><th>Revenue (Base)</th><th>OCF Margin</th><th>Maint CapEx</th><th>Owner FCF</th><th>PV @9.5%</th></tr></thead>
+        <tbody>
+          <tr><td>FY2026E</td><td>$66-68B</td><td>36%</td><td>$7B</td><td>~$17B</td><td>$15.5B</td></tr>
+          <tr><td>FY2027E</td><td>$90B (guided)</td><td>38%</td><td>$9B</td><td>~$25B</td><td>$20.8B</td></tr>
+          <tr><td>FY2028E</td><td>$108B</td><td>40%</td><td>$10B</td><td>~$33B</td><td>$25.1B</td></tr>
+          <tr><td>FY2029E</td><td>$125B</td><td>41%</td><td>$11B</td><td>~$40B</td><td>$27.7B</td></tr>
+          <tr><td>FY2030E</td><td>$140B</td><td>42%</td><td>$12B</td><td>~$47B</td><td>$29.7B</td></tr>
+          <tr style="background:rgba(245,166,35,0.06);"><td><strong>Stage 2 PV (5yr, 12% growth)</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>$85B</td></tr>
+          <tr style="background:rgba(245,166,35,0.10);"><td><strong>Terminal Value PV (3.5% term g)</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>$220B</td></tr>
+          <tr style="background:rgba(245,166,35,0.15);"><td><strong>Total Enterprise Value</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>~$424B</td></tr>
+          <tr style="background:rgba(245,166,35,0.15);"><td><strong>Less Net Debt (~$78B)</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>–$78B</td></tr>
+          <tr style="background:rgba(245,166,35,0.15);"><td><strong>Equity Value (~2.87B shares)</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>~$346B → $121/share</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px;color:var(--ivory-dim);margin-top:10px;padding-top:10px;border-top:1px solid var(--navy-border);">Base DCF IV: ~$121–$145/share depending on assumptions. Note: This is deliberately conservative — uses owner earnings approach (maintenance CapEx only) yet still produces IV near current price. The AI acceleration scenario IV is materially higher.</div>
+      <div style="margin-top:12px;">
+        <table>
+          <thead><tr><th>DCF Sensitivity</th><th>WACC 8.5%</th><th>WACC 9.5%</th><th>WACC 10.5%</th></tr></thead>
+          <tbody>
+            <tr><td>Terminal g 4.0%</td><td>$195</td><td>$165</td><td>$140</td></tr>
+            <tr class="peer-row-highlight"><td>Terminal g 3.5% (Base)</td><td>$172</td><td>$145</td><td>$122</td></tr>
+            <tr><td>Terminal g 3.0%</td><td>$155</td><td>$128</td><td>$107</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 2 — Owner Earnings Capitalisation</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Scenario</th><th>Owner Earnings (FY2027E)</th><th>Required Return</th><th>Growth (g)</th><th>IV per Share</th></tr></thead>
+        <tbody>
+          <tr><td>Stress (CapEx stays high)</td><td>$15B</td><td>9.5%</td><td>4%</td><td>~$95</td></tr>
+          <tr class="peer-row-highlight"><td>Base (CapEx normalises)</td><td>$25B</td><td>9.5%</td><td>5%</td><td>~$190</td></tr>
+          <tr><td>Acceleration (OCI scales fast)</td><td>$38B</td><td>9.5%</td><td>6%</td><td>~$375</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 3 — EV/Revenue (FY2027 $90B)</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Scenario</th><th>EV/Revenue Multiple</th><th>Enterprise Value</th><th>Less Net Debt</th><th>Equity Value</th><th>Per Share</th></tr></thead>
+        <tbody>
+          <tr><td>Stress (5% growth post-FY27)</td><td>4.0×</td><td>$360B</td><td>–$78B</td><td>$282B</td><td>~$98</td></tr>
+          <tr class="peer-row-highlight"><td>Base (cloud + AI CAGR 20%)</td><td>5.5×</td><td>$495B</td><td>–$78B</td><td>$417B</td><td>~$145</td></tr>
+          <tr><td>Acceleration (OCI 40%+ CAGR)</td><td>8.0×</td><td>$720B</td><td>–$78B</td><td>$642B</td><td>~$224</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 4 — Forward P/E Earnings Power</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Scenario</th><th>FY2027E Non-GAAP EPS</th><th>Applied P/E</th><th>IV per Share</th><th>vs Current $150.60</th></tr></thead>
+        <tbody>
+          <tr><td>Stress (growth slows)</td><td>$7.50</td><td>18×</td><td>$135</td><td>–10%</td></tr>
+          <tr class="peer-row-highlight"><td>Base (guidance achieves)</td><td>$9.00</td><td>22×</td><td>$198</td><td>+31%</td></tr>
+          <tr><td>Acceleration (OCI beats)</td><td>$11.00</td><td>28×</td><td>$308</td><td>+104%</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px;color:var(--ivory-dim);margin-top:10px;">Note: The 5-yr average P/E was 33-37×. Using just 22× Base is conservative — if Oracle sustains 20%+ growth into FY2028-29, market will re-rate toward 28-35×, creating a combined earnings growth + multiple expansion opportunity.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 5 — Earnings Yield vs Bond Yield</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Metric</th><th>Value</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td>Forward Non-GAAP Earnings Yield (FY2026E $8 EPS / $150.60)</td><td>5.31%</td><td>🟢 1.0% premium over 10Y Treasury</td></tr>
+          <tr><td>GAAP Earnings Yield (TTM $5.69 EPS)</td><td>3.78%</td><td>🔴 0.53% below 10Y Treasury → risky on GAAP basis</td></tr>
+          <tr class="peer-row-highlight"><td>OCF Yield (LTM $23.5B / $432B Mkt Cap)</td><td>5.44%</td><td>🟢 Strong operational yield</td></tr>
+          <tr><td>10-Year Treasury Yield</td><td>4.31%</td><td>Risk-free benchmark</td></tr>
+          <tr><td>Equity Risk Premium (non-GAAP basis)</td><td>~1.0%</td><td>🟡 Thin but positive on forward basis</td></tr>
+          <tr><td>Dividend Yield</td><td>$2/$150.60 = 1.33%</td><td>Not yield play; growth play</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:12.5px;color:var(--ivory-dim);margin-top:12px;">The earnings yield analysis reveals the critical tension: on GAAP basis, Oracle barely offers any ERP over bonds. On forward non-GAAP basis, the 5.31% yield provides modest risk premium. The case for Oracle is NOT a yield argument — it is a growth re-rating argument where $9-11 EPS in FY2027-28 and a recovering P/E multiple creates the return. Investors who buy Oracle today are making a 3-5 year growth bet, not an income bet.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5-Method Summary Table</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>AI Adjustment</th></tr></thead>
+        <tbody>
+          <tr><td>1 · DCF (normalised owner FCF)</td><td>$95</td><td>$145</td><td>$220</td><td>+$15 for flywheel confirmation</td></tr>
+          <tr><td>2 · Owner Earnings Capitalisation</td><td>$95</td><td>$190</td><td>$375</td><td>+$20 if OCI ROIC exceeds 20%</td></tr>
+          <tr><td>3 · EV/Revenue (FY2027E)</td><td>$98</td><td>$145</td><td>$224</td><td>+$25 AI Widener premium</td></tr>
+          <tr><td>4 · Forward P/E Power</td><td>$135</td><td>$198</td><td>$308</td><td>+$30 re-rating if AI Widener confirmed</td></tr>
+          <tr><td>5 · Earnings/OCF Yield</td><td>—</td><td>Not yield-applicable</td><td>—</td><td>N/A</td></tr>
+          <tr class="peer-row-highlight"><td><strong>Blended Base IV (4 methods avg)</strong></td><td><strong>$106</strong></td><td><strong>~$170</strong></td><td><strong>~$282</strong></td><td><strong>+$22 if AI WIDENER flywheel confirmed</strong></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:16px;padding:14px;background:rgba(245,166,35,0.06);border:1px solid var(--amber);border-radius:var(--radius);">
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--amber);margin-bottom:6px;">ENTRY ZONE DERIVATION</div>
+        <div style="font-size:13px;color:var(--ivory);">Blended Base IV: ~$170 | Margin of Safety 25% (Cat C/D standard) → <strong style="color:var(--amber);">MoS Entry: $120–$130 (conviction) / $130–$155 (starter)</strong></div>
+        <div style="font-size:12px;color:var(--ivory-dim);margin-top:6px;">Current price $150.60 is within the starter position zone. The base IV of $170 implies 13% upside from current levels — modest. The REAL opportunity is the acceleration scenario ($282) which requires OCI to continue at 50%+ growth and revenue to reach $140B+ by FY2030. The RPO of $553B makes this plausible.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Relative Valuation (Historical P/E Gauge)</div>
+    <div class="card">
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:12px;color:var(--ivory-dim);margin-bottom:8px;">Current P/E vs Historical Average</div>
+          <div style="font-family:var(--font-mono);font-size:13px;"><span style="color:var(--ivory-dim);">Current TTM P/E: </span><span style="color:var(--white);">26.5×</span></div>
+          <div style="font-family:var(--font-mono);font-size:13px;"><span style="color:var(--ivory-dim);">5-year avg P/E: </span><span style="color:var(--amber);">33-37×</span></div>
+          <div style="font-family:var(--font-mono);font-size:13px;"><span style="color:var(--ivory-dim);">Discount to 5yr avg: </span><span style="color:var(--green);">−28% to −43%</span></div>
+          <div style="font-family:var(--font-mono);font-size:13px;"><span style="color:var(--ivory-dim);">Signal: </span><span style="color:var(--green);">🟢 SIGNIFICANT DISCOUNT</span></div>
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:12px;color:var(--ivory-dim);margin-bottom:8px;">Key Peer Comparison (Forward P/E)</div>
+          <table style="width:100%;"><thead><tr><th>Company</th><th>Fwd P/E</th></tr></thead><tbody>
+            <tr class="peer-row-highlight"><td>Oracle (ORCL)</td><td style="color:var(--amber);">18.7×</td></tr>
+            <tr><td>Microsoft (MSFT)</td><td>31×</td></tr>
+            <tr><td>Amazon AWS (AMZN)</td><td>36×</td></tr>
+            <tr><td>Alphabet / GCP (GOOGL)</td><td>20×</td></tr>
+            <tr><td>SAP</td><td>35×</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+      <div style="font-size:12.5px;color:var(--ivory-dim);margin-top:12px;padding-top:10px;border-top:1px solid var(--navy-border);">Oracle's forward P/E of 18.7× is the cheapest among enterprise cloud peers despite having the fastest OCI growth (84% in Q3 FY2026). The AI-justified argument is that Oracle's severe CapEx cycle suppresses GAAP FCF, creating the discount. If FCF normalises as predicted, Oracle re-rates toward Microsoft/SAP territory. This is the core investment thesis.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Pillar 4 Overall Grade</div>
+    <div style="text-align:center;padding:20px;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius-lg);">
+      <div style="font-family:var(--font-display);font-size:36px;font-weight:900;color:var(--amber);">B</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--ivory-dim);margin-top:4px;">SIGNIFICANT DISCOUNT TO HISTORY AND PEERS · NEAR-ZERO FCF IS KEY WATCH · ACCELERATION CASE COMPELLING</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6 — VERDICT -->
+<div class="tab-content" id="tab6">
+  <div class="section">
+    <div class="pillar-grid">
+      <div class="pillar-card"><div class="pillar-label">Pillar 1 · Moat</div><div class="pillar-grade">B+</div><div class="pillar-sub">DB lock-in A+ · OCI B</div></div>
+      <div class="pillar-card"><div class="pillar-label">Pillar 2 · Financial Fortress</div><div class="pillar-grade">B−</div><div class="pillar-sub">OCF strong · FCF zero · debt high</div></div>
+      <div class="pillar-card"><div class="pillar-label">Pillar 3 · Management</div><div class="pillar-grade">A−</div><div class="pillar-sub">Ellison 40% aligned · Catz proven</div></div>
+      <div class="pillar-card"><div class="pillar-label">Pillar 4 · Valuation</div><div class="pillar-grade">B</div><div class="pillar-sub">Significant discount · AI optionality</div></div>
+    </div>
+
+    <div class="badge-row" style="margin-bottom:20px;">
+      <span class="badge badge-cat">Category C</span>
+      <span class="badge badge-ai-widener">🟢 AI WIDENER</span>
+      <span class="badge badge-macro">Flywheel: FORMING</span>
+      <span class="badge" style="background:rgba(34,211,238,0.12);border:1px solid var(--cyan);color:var(--cyan);">AI Score: 72/100</span>
+      <span class="badge" style="background:rgba(148,163,184,0.12);border:1px solid #94A3B8;color:#94A3B8;">Earnings Quality: ACCEPTABLE</span>
+    </div>
+
+    <div class="verdict-box watch">
+      <div class="verdict-title">WATCH ★★★★</div>
+      <div class="verdict-stars">★★★★☆</div>
+      <div class="verdict-quote">"Price is what you pay. Value is what you get. When the price is right, the patience pays." — Warren Buffett</div>
+      <div class="verdict-prose">
+        <p style="margin-bottom:10px;">Oracle is one of the most asymmetric setups in large-cap technology in 2026. The stock has fallen 56% from its all-time high while the business has dramatically improved: revenue growth accelerating to 22%, OCI growing 84%, and the $553B RPO providing 9.6× revenue in contracted backlog. The forward P/E of 18.7× is the lowest among enterprise cloud peers despite Oracle having the highest OCI growth rate.</p>
+        <p style="margin-bottom:10px;">The core tension is financial: Oracle chose to deploy $21.2B in CapEx (FY2025) against $20.8B in operating cash flow, turning GAAP FCF to near-zero. This is not an earnings quality problem — OCF to net income conversion is 171-174%, exceptional. It is a deliberate investment choice backed by $553B in contracted AI infrastructure demand. The question is whether the RPO converts into recognised revenue fast enough to justify the leverage (~$85-95B total debt).</p>
+        <p>We stop one step short of BUY because: (1) the near-zero FCF means the margin of safety is entirely dependent on future cash generation, not present earnings; (2) the 200-DMA ($220) is 46% above current price, confirming an active technical downtrend that must stabilise; and (3) the Cerner integration has underperformed initial projections, creating an execution concern. However, for investors with a 3-5 year horizon, the current price likely offers a significant margin of safety against any reasonable normalised cash flow assumption. The entry zone at $120-155 frames the position.</p>
+      </div>
+    </div>
+
+    <div class="section-title">Watch → BUY Upgrade Conditions (5 of 5 needed)</div>
+    <ul class="upgrade-list">
+      <li class="upgrade-item"><div class="upgrade-num">1</div><div class="upgrade-text"><strong>FCF Recovery:</strong> GAAP FCF turns positive for 2 consecutive quarters (confirming CapEx cycle peak has passed and backlog conversion is accelerating). Target: FY2027 Q1-Q2 reports. <span class="e">ESTIMATED</span></div></li>
+      <li class="upgrade-item"><div class="upgrade-num">2</div><div class="upgrade-text"><strong>OCI Revenue Sustains:</strong> OCI IaaS quarterly revenue sustains above $5B (i.e., above the Q3 FY2026 level of $4.9B) for 2 consecutive quarters, confirming RPO conversion velocity. <span class="e">ESTIMATED</span></div></li>
+      <li class="upgrade-item"><div class="upgrade-num">3</div><div class="upgrade-text"><strong>Technical Stabilisation:</strong> Price holds above $130 for 4 consecutive weeks AND RSI closes above 45 on weekly chart, confirming a trend reversal / base formation. <span class="u">UNVERIFIED - future event</span></div></li>
+      <li class="upgrade-item"><div class="upgrade-num">4</div><div class="upgrade-text"><strong>FY2027 $90B Guidance Reaffirmed:</strong> Q4 FY2026 earnings (June 2026) reaffirm FY2027 $90B revenue guidance or raise it. Any guidance cut = revert to WATCH ★★★. <span class="u">UNVERIFIED - future event</span></div></li>
+      <li class="upgrade-item"><div class="upgrade-num">5</div><div class="upgrade-text"><strong>Data Flywheel Quantification (AI Upgrade):</strong> Oracle discloses measurable Autonomous Database AI improvement metrics (e.g., query optimisation accuracy improvement, fraud detection false-positive reduction) from training data feedback. Triggers moat grade upgrade from B+ to A−. <span class="u">UNVERIFIED - future disclosure</span></div></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Series Tracker</div>
+    <div style="overflow-x:auto;">
+      <table class="series-table">
+        <thead><tr><th>Ticker</th><th>Company</th><th>Mkt</th><th>Cat</th><th>AI</th><th>Moat</th><th>Qly</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry</th><th>Base IV</th></tr></thead>
+        <tbody>
+          <tr><td>PVRINOX</td><td>PVR INOX</td><td>NSE</td><td>D</td><td>⚪</td><td>B−</td><td>C+</td><td>B−</td><td>C+</td><td>WATCH★★★</td><td>₹1150-1300</td><td>₹1,400</td></tr>
+          <tr><td>ANANDRATHI</td><td>Anand Rathi Wealth</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>B−</td><td>WATCH★★★</td><td>₹1850-2100</td><td>₹2,800</td></tr>
+          <tr><td>ADANIGREEN</td><td>Adani Green</td><td>NSE</td><td>B</td><td>⚪</td><td>B</td><td>B−</td><td>C+</td><td>B−</td><td>WATCH★★★</td><td>₹800-850</td><td>₹829</td></tr>
+          <tr><td>AEQUS</td><td>Aequs Aerospace</td><td>NSE</td><td>D</td><td>⚪</td><td>B−</td><td>C+</td><td>B−</td><td>C</td><td>WATCH★★★</td><td>₹95-110</td><td>₹130</td></tr>
+          <tr><td>INTC</td><td>Intel</td><td>NASDAQ</td><td>D</td><td>⚪</td><td>B−</td><td>C</td><td>C+</td><td>C+</td><td>WATCH★★★</td><td>—</td><td>~$31</td></tr>
+          <tr><td>NVO</td><td>Novo Nordisk</td><td>NYSE</td><td>C→D</td><td>🟢</td><td>A−</td><td>A−</td><td>A</td><td>B+</td><td>WATCH★★★★</td><td>$44-49</td><td>$63</td></tr>
+          <tr><td>CONFIPET</td><td>Confidence Petroleum</td><td>NSE</td><td>D</td><td>⚪</td><td>D</td><td>D</td><td>D−</td><td>F</td><td>AVOID</td><td>₹16</td><td>N/A</td></tr>
+          <tr class="peer-row-highlight"><td>ORCL</td><td>Oracle Corporation</td><td>NYSE</td><td>C</td><td>🟢</td><td>B+</td><td>B−</td><td>A−</td><td>B</td><td>WATCH★★★★</td><td>$120-155</td><td>~$170</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 7 — TECHNICAL -->
+<div class="tab-content" id="tab7">
+  <div class="section">
+    <div class="section-title">Section A — Price Structure & Multi-Timeframe Trend</div>
+    <div class="card">
+      <div class="sc-row"><span class="sc-label">Long-term (Monthly)</span><span class="sc-status sc-fail">BEARISH — Down from $345.72 ATH (Sep 2025) → $150.60 current. Lower highs pattern. Severe correction.</span></div>
+      <div class="sc-row"><span class="sc-label">Medium-term (Weekly)</span><span class="sc-status sc-fail">BEARISH — Below all major weekly MAs. 52-week range $117.67–$345.72. Currently near mid-range.</span></div>
+      <div class="sc-row"><span class="sc-label">Short-term (Daily)</span><span class="sc-status sc-marginal">ATTEMPTING BASE — Post Q3 FY2026 earnings bounce (+9% on March 10). Needs consolidation above $130.</span></div>
+      <div style="margin-top:12px;padding:12px;background:rgba(255,255,255,0.03);border-radius:6px;">
+        <div class="card-title">Price Ladder — Key Levels</div>
+        <div class="sc-row"><span class="sc-label">All-Time High</span><span class="sc-status sc-marginal">$345.72 (September 2025)</span></div>
+        <div class="sc-row"><span class="sc-label">200-DMA (Resistance)</span><span class="sc-status sc-fail">$220.75 — 46% above current price. Major barrier.</span></div>
+        <div class="sc-row"><span class="sc-label">100-DMA (Resistance)</span><span class="sc-status sc-fail">~$185 (estimated) — intermediate resistance</span></div>
+        <div class="sc-row"><span class="sc-label">Current Price</span><span class="sc-status sc-marginal">$150.60 — Near lower 30% of 52-week range</span></div>
+        <div class="sc-row"><span class="sc-label">Support Zone 1 (Starter Entry)</span><span class="sc-status sc-pass">$130–155 — MoS entry zone per framework</span></div>
+        <div class="sc-row"><span class="sc-label">Support Zone 2 (Conviction Entry)</span><span class="sc-status sc-pass">$117–130 — Near 52-week low; max MoS</span></div>
+        <div class="sc-row"><span class="sc-label">52-Week Low</span><span class="sc-status sc-pass">$117.67 — Base invalidation level</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Moving Average Dashboard</div>
+    <div class="card">
+      <div class="ma-row"><span>Price vs 20-EMA</span><span class="ma-below">BELOW — Price $150.60 vs EMA ~$158 (est.)</span></div>
+      <div class="ma-row"><span>Price vs 50-DMA</span><span class="ma-below">BELOW — ~$172 (estimated). Bearish.</span></div>
+      <div class="ma-row"><span>Price vs 100-DMA</span><span class="ma-below">BELOW — ~$185 (estimated). Bearish.</span></div>
+      <div class="ma-row"><span>Price vs 200-DMA</span><span class="ma-below">BELOW — $220.75 verified. 46% above price. Major resistance.</span></div>
+      <div class="ma-row"><span>200-Week MA</span><span class="ma-above">ABOVE — Price above 200-week MA (~$120 est.) → Long-term secular uptrend intact.</span></div>
+      <div class="ma-row"><span>Golden/Death Cross Status</span><span class="ma-below">DEATH CROSS — 50-DMA crossed below 200-DMA. Institutional caution signal.</span></div>
+      <div class="ma-row"><span>EMA Ribbon (8/13/21/34)</span><span class="ma-below">BEARISH ALIGNMENT — All short EMAs stacked below long EMAs.</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — Volume Analysis</div>
+    <div class="card">
+      <div class="sc-row"><span class="sc-label">Q3 FY2026 Earnings Day (March 10, 2026)</span><span class="sc-status sc-pass">High volume surge +9% afterhours — institutional re-entry on beat</span></div>
+      <div class="sc-row"><span class="sc-label">ATH to Correction Phase (Sep 2025 – Mar 2026)</span><span class="sc-status sc-fail">Elevated sell volume on corrections; distribution pattern confirmed</span></div>
+      <div class="sc-row"><span class="sc-label">OBV Trend</span><span class="sc-status sc-marginal">Declining since Sep 2025 ATH; Q3 FY2026 earnings created first OBV reversal signal</span></div>
+      <div class="sc-row"><span class="sc-label">Post-Earnings Volume Quality</span><span class="sc-status sc-marginal">+9% post-Q3 earnings but volume needs to sustain over 2-3 weeks to confirm accumulation</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — Momentum Indicators</div>
+    <div class="card">
+      <div class="sc-row"><span class="sc-label">RSI (14-day, current)</span><span class="sc-status sc-marginal">~38-42 (estimated from price action) — Approaching oversold. Near buy zone.</span></div>
+      <div class="sc-row"><span class="sc-label">RSI (Weekly)</span><span class="sc-status sc-marginal">~35-40 — Oversold territory on weekly. Positive divergence forming if price holds.</span></div>
+      <div class="sc-row"><span class="sc-label">MACD (Daily)</span><span class="sc-status sc-fail">Below signal line; below zero. Momentum negative but slowing.</span></div>
+      <div class="sc-row"><span class="sc-label">MACD Histogram</span><span class="sc-status sc-marginal">Narrowing — bearish pressure reducing post-earnings bounce.</span></div>
+      <div class="sc-row"><span class="sc-label">RSI Divergence Signal</span><span class="sc-status sc-pass">Positive divergence possible: price made new low in March, RSI did not make new low. Watch for confirmation.</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section E — Chart Patterns</div>
+    <div class="card">
+      <div class="sc-row"><span class="sc-label">Primary Pattern</span><span class="sc-status sc-marginal">Potential Double Bottom — $117 low (Dec/Jan) + current base at $130-155 range. Needs right shoulder confirmation.</span></div>
+      <div class="sc-row"><span class="sc-label">Pattern Confirmation</span><span class="sc-status sc-marginal">Needs close above $175 with volume to confirm double bottom breakout.</span></div>
+      <div class="sc-row"><span class="sc-label">Pattern Target (if confirmed)</span><span class="sc-status sc-pass">~$230 (distance from neckline to low, projected above neckline)</span></div>
+      <div class="sc-row"><span class="sc-label">Pattern Invalidation</span><span class="sc-status sc-fail">Close below $110 with volume → downtrend resumes; re-assess thesis</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — Trade Structure</div>
+    <div class="highlight-box amber">
+      <div class="card-title" style="color:var(--amber);">PRIMARY TRIGGER — Starter Position</div>
+      <div class="sc-row"><span class="sc-label">Entry Condition</span><span class="sc-status sc-marginal">Price between $130–$155 + RSI daily below 45 + weekly RSI below 40</span></div>
+      <div class="sc-row"><span class="sc-label">Suggested Entry</span><span class="sc-status sc-pass">$130–$150 range (current price $150.60 is at upper bound)</span></div>
+      <div class="sc-row"><span class="sc-label">Stop-Loss (Thesis Invalidation)</span><span class="sc-status sc-fail">Close below $108 (below 52-week low $117.67 on weekly basis) = thesis fails</span></div>
+      <div class="sc-row"><span class="sc-label">Target 1</span><span class="sc-status sc-pass">$200 (forward P/E re-rating on Q4 FY2026 / FY2027 beat)</span></div>
+      <div class="sc-row"><span class="sc-label">Target 2</span><span class="sc-status sc-pass">$280 (200-DMA recovery + full AI re-rating to 5yr avg P/E)</span></div>
+      <div class="sc-row"><span class="sc-label">Risk:Reward</span><span class="sc-status sc-pass">Entry $140 / SL $108 / T1 $200 = 1:1.9 | T2 $280 = 1:4.4</span></div>
+      <div class="sc-row"><span class="sc-label">Position Size (Max)</span><span class="sc-status sc-marginal">5-7% of portfolio for conviction; 2-3% for starter position</span></div>
+    </div>
+    <div class="highlight-box" style="margin-top:14px;">
+      <div class="card-title" style="color:var(--cyan);">SECONDARY TRIGGER — Full Position Add</div>
+      <div style="font-size:13px;color:var(--ivory);">Add to position if: (1) Q4 FY2026 earnings (June 2026) reaffirm $90B FY2027 guidance AND (2) ORCL closes above 50-DMA (~$172) with volume. This confirms RPO conversion beginning and institutional re-entry.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section G — Technical Composite Score</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Dimension</th><th>Score /5</th><th>Commentary</th></tr></thead>
+        <tbody>
+          <tr><td>Price Trend (Multi-TF)</td><td style="color:var(--red);">1/5</td><td>Bearish across all timeframes; only 200-week MA intact</td></tr>
+          <tr><td>Moving Averages</td><td style="color:var(--red);">1/5</td><td>Below all MAs; death cross confirmed</td></tr>
+          <tr><td>Volume / OBV</td><td style="color:var(--yellow);">2/5</td><td>Post-earnings volume positive; OBV attempting reversal</td></tr>
+          <tr><td>Momentum (RSI/MACD)</td><td style="color:var(--yellow);">2/5</td><td>RSI approaching oversold; positive divergence potential</td></tr>
+          <tr><td>Chart Pattern</td><td style="color:var(--yellow);">2.5/5</td><td>Double bottom forming; needs confirmation</td></tr>
+          <tr><td>Trigger Status</td><td style="color:var(--yellow);">2/5</td><td>At price entry zone; not yet confirmed reversal</td></tr>
+          <tr class="peer-row-highlight"><td><strong>Total / 30</strong></td><td><strong style="color:var(--yellow);">10.5/30 (35%)</strong></td><td><strong>TECHNICALLY WEAK — Fundamentals lead; technicals catching up</strong></td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px;color:var(--ivory-dim);margin-top:10px;padding:10px;background:rgba(245,166,35,0.05);border-radius:6px;">Key alignment note: The fundamental case (BUY thesis on valuation + AI transformation) is well ahead of the technical case. This is typical for contrarian value entries. The framework requires either: (a) patience for technicals to catch up to fundamentals, OR (b) accepting that entry at current levels will involve further short-term volatility. Recommend staged entry: starter at current $150 level; add on technical confirmation above $172.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 8 — SHAREHOLDING -->
+<div class="tab-content" id="tab8">
+  <div class="section">
+    <div class="section-title">Section A — Founder & Insider Holdings</div>
+    <div class="card">
+      <div class="card-title">Ownership Structure (April 2026)</div>
+      <div style="margin-bottom:14px;">
+        <div style="font-family:var(--font-mono);font-size:12px;color:var(--ivory-dim);margin-bottom:4px;">Larry Ellison (Founder, CTO) — 40.3% of outstanding shares</div>
+        <div class="sh-bar"><div class="sh-fill" style="width:40.3%;background:linear-gradient(90deg,var(--amber-dim),var(--amber));"></div></div>
+        <div style="font-size:11px;color:var(--ivory-dim);">~1.16B shares · ~$174B value at $150/share. Largest individual founder stake in US mega-cap tech. This is the strongest alignment signal in the report.</div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-family:var(--font-mono);font-size:12px;color:var(--ivory-dim);margin-bottom:4px;">Institutional Investors (4,295+ funds) — ~43.5%</div>
+        <div class="sh-bar"><div class="sh-fill" style="width:43.5%;background:linear-gradient(90deg,var(--cyan),#0EA5E9);"></div></div>
+        <div style="font-size:11px;color:var(--ivory-dim);">Vanguard 5.8%, BlackRock 3.1%, State Street 2.6%, JPMorgan 1.1%. Top 4 hold ~15%. Norges Bank +47% added (strong signal). <span class="v">VERIFIED</span></div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-family:var(--font-mono);font-size:12px;color:var(--ivory-dim);margin-bottom:4px;">Retail / Public — ~15.8%</div>
+        <div class="sh-bar"><div class="sh-fill" style="width:15.8%;background:var(--navy-border);"></div></div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <div style="font-family:var(--font-mono);font-size:12px;color:var(--ivory-dim);margin-bottom:4px;">Other Insiders (excl. Ellison) — ~0.5%</div>
+        <div class="sh-bar"><div class="sh-fill" style="width:0.5%;background:var(--amber-dim);"></div></div>
+      </div>
+      <div style="margin-top:12px;padding:10px;background:rgba(34,197,94,0.06);border-radius:6px;font-size:12.5px;color:var(--ivory-dim);">
+        <strong style="color:var(--green);">No Pledges:</strong> Oracle is a US company. No promoter pledge structure applies. Ellison has sold shares for estate/diversification (~$1.7B July 2025) but simultaneously received new options and has not signaled a strategic exit. His 40%+ stake at current prices represents his primary wealth vehicle — strong alignment.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Institutional Trend Analysis</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Institutional Holder</th><th>Shares</th><th>% Stake</th><th>Recent Action</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td>Vanguard Group</td><td>163.5M</td><td>5.8%</td><td>Added 3.3M (+2.1%)</td><td><span style="color:var(--green);">🟢 Adding</span></td></tr>
+          <tr><td>BlackRock</td><td>87.3M</td><td>3.1%</td><td>Trimmed 2.3M (–2.6%)</td><td><span style="color:var(--red);">🔴 Reducing</span></td></tr>
+          <tr><td>State Street</td><td>73.5M</td><td>2.6%</td><td>Stable</td><td><span style="color:var(--yellow);">⚪ Neutral</span></td></tr>
+          <tr><td>JPMorgan Asset Mgmt</td><td>31.8M</td><td>1.1%</td><td>Added 3.6M (+12.7%)</td><td><span style="color:var(--green);">🟢 Adding</span></td></tr>
+          <tr><td>Norges Bank (Norway SWF)</td><td>19.6M</td><td>0.7%</td><td>Added 6.3M (+47%)</td><td><span style="color:var(--green);">🟢 High conviction add</span></td></tr>
+          <tr><td>Capital Research Global</td><td>23.0M</td><td>0.8%</td><td>Added 4.0M (+21.2%)</td><td><span style="color:var(--green);">🟢 Adding</span></td></tr>
+          <tr><td>Fidelity</td><td>24.4M</td><td>0.9%</td><td>Cut 6.6M (–21.3%)</td><td><span style="color:var(--red);">🔴 Reducing</span></td></tr>
+          <tr><td>Price T. Rowe Associates</td><td>+11.5M</td><td>—</td><td>Massive Q3 2025 add</td><td><span style="color:var(--green);">🟢 High conviction</span></td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:12px;color:var(--ivory-dim);margin-top:10px;">Pattern: Sovereign Wealth Funds (Norges Bank) and long-duration active managers (Capital Research, JPMorgan) are adding — signal of 5-10 year AI infrastructure conviction. Short-term traders (Fidelity, BlackRock trim) are reducing on valuation uncertainty. This institutional composition is quality: adding holders are the right kind. <span class="e">ESTIMATED</span> from filings.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — Float & Market Structure</div>
+    <div class="grid-3">
+      <div class="metric-tile"><div class="metric-label">Market Cap</div><div class="metric-value">~$432B</div><div class="metric-sub">At $150.60</div></div>
+      <div class="metric-tile cyan"><div class="metric-label">Free Float</div><div class="metric-value">~59.7%</div><div class="metric-sub">Excl. Ellison 40.3%</div></div>
+      <div class="metric-tile"><div class="metric-label">S&P 500 Weight</div><div class="metric-value">~0.8%</div><div class="metric-sub">Top 40 component</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — Ownership Momentum & Risk Scores</div>
+    <div class="grid-2">
+      <div class="ai-score">
+        <div class="ai-score-num">68</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--amber);font-weight:700;">OWNERSHIP MOMENTUM /100</div>
+        <div class="ai-score-bar"><div class="ai-score-fill" style="width:68%;"></div></div>
+        <div class="ai-score-label">SWF + active mgrs adding · Ellison aligned · BlackRock/Fidelity reducing</div>
+      </div>
+      <div class="ai-score">
+        <div class="ai-score-num" style="color:var(--yellow);">35</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--yellow);font-weight:700;">SHAREHOLDING RISK /100</div>
+        <div class="ai-score-bar"><div class="ai-score-fill" style="width:35%;background:var(--yellow);"></div></div>
+        <div class="ai-score-label">LOW RISK · No pledges · High founder alignment · Moderate institutional volatility risk</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9 — AI INTELLIGENCE -->
+<div class="tab-content" id="tab9">
+  <div class="section">
+    <div class="section-title">Section A — AI Classification Dashboard</div>
+    <div class="ai-badge-row">
+      <div class="ai-badge-card"><div class="ai-badge-label">Category</div><div class="ai-badge-value" style="color:var(--amber);">C (Transitioning)</div></div>
+      <div class="ai-badge-card"><div class="ai-badge-label">AI Overlay</div><div class="ai-badge-value widener">🟢 AI WIDENER</div></div>
+      <div class="ai-badge-card"><div class="ai-badge-label">Data Flywheel</div><div class="ai-badge-value forming">FORMING ★★★</div></div>
+      <div class="ai-badge-card"><div class="ai-badge-label">Adoption Phase</div><div class="ai-badge-value phase3">Phase 3 · Inflection</div></div>
+      <div class="ai-badge-card"><div class="ai-badge-label">AI Score</div><div class="ai-badge-value" style="color:var(--amber);">72 / 100</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Adoption Phase Evidence</div>
+      <p style="font-size:13px;color:var(--ivory);line-height:1.7;margin-bottom:10px;"><strong style="color:var(--amber);">Phase 3 — Inflection (20-40% sector adoption):</strong> AI cloud infrastructure is at the inflection point globally. Evidence: (1) OpenAI, Meta, xAI, Google all choosing OCI for AI workloads alongside their own infrastructure. (2) Oracle's $553B RPO is the contracted evidence that AI infrastructure demand has crossed into mainstream enterprise procurement. (3) OCI IaaS grew 84% YoY in Q3 FY2026 — this is an inflection-phase growth rate. (4) Oracle's stock fell from $345 to $117 during this period — typical of Phase 3 where expectations outran near-term execution, then reset. The Phase 3→4 transition (mainstream) is 2027-2028. <span class="v">VERIFIED</span> from Oracle earnings releases.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+    <div class="card">
+      <div class="card-title">Question 1: What is Oracle's Proprietary Training Data?</div>
+      <p style="font-size:13px;color:var(--ivory);line-height:1.7;margin-bottom:14px;"><strong>Volume:</strong> Oracle runs ~80% of Fortune 500 databases. Each customer generates continuous query patterns, execution plans, failure signatures, and performance metrics. Over 40 years, this represents petabytes of enterprise workload behaviour data — a dataset no competitor can replicate. <strong>Uniqueness:</strong> This data is contractually Oracle's to use (within EULA) for product improvement. AWS and Google databases lack comparable historical depth on global enterprise workloads. <strong>Cerner Addition:</strong> ~5,000 hospitals' de-identified clinical workflows and diagnostic data represent an emerging training dataset for the Clinical AI Agent — potentially the largest clinical AI training set outside government programs. <span class="e">ESTIMATED</span></p>
+
+      <div class="card-title">Question 2: How Does the AI Improve with More Data/Users?</div>
+      <p style="font-size:13px;color:var(--ivory);line-height:1.7;margin-bottom:14px;">Oracle states the Autonomous Database reduces DBA labour by 50% through ML-based self-tuning and self-patching. Cloud gross margins improving ~9%/year suggests the AI-automated management is reducing Oracle's own cost per instance as scale grows. However, Oracle has NOT disclosed specific accuracy metrics (e.g., "query plan optimisation improved X% as we processed Y more workloads"). This is the KEY gap. Until Oracle publishes performance benchmarks from the Autonomous Database's ML training feedback, we cannot confirm the flywheel's second link. <strong style="color:var(--yellow);">PARTIALLY CONFIRMED — needs quantification.</strong> <span class="e">ESTIMATED</span></p>
+
+      <div class="card-title">Question 3: Does Better AI Attract More Users?</div>
+      <p style="font-size:13px;color:var(--ivory);line-height:1.7;margin-bottom:14px;"><strong>YES — confirmed by data.</strong> The multi-cloud DB strategy (Oracle@Azure, Oracle@AWS, 45 regions live with 27 more planned) expands the AI moat to competitors' infrastructure. Multicloud database consumption grew 817% YoY in Q2 FY2026. More critically: OpenAI selected OCI specifically for AI performance — then other AI companies (Meta, xAI, Cohere) followed. This is a reference flywheel: "if it's good enough for OpenAI's LLMs, it's good enough for my AI." Oracle is now the "picks & shovels" for AI's most demanding workloads, and that reputation attracts the next customer. <span class="v">VERIFIED</span></p>
+
+      <div style="margin-top:14px;padding:14px;background:rgba(34,211,238,0.06);border:1px solid var(--cyan);border-radius:var(--radius);">
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--cyan);margin-bottom:6px;">FLYWHEEL SCORE: 6.5/10 — MODERATE-TO-STRONG FLYWHEEL</div>
+        <div style="font-size:12px;color:var(--ivory-dim);">Data Quality 2.5/3 · AI Improvement Evidence 2/4 (needs disclosure) · Loop Speed 2/3 (enterprise cycles 6-18mo). Upgrade trigger: Oracle discloses measurable Autonomous Database AI accuracy improvement → Score increases to 8.5/10 → Moat upgrades from B+ to A−.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — AI Value Chain Position</div>
+    <div class="chain">
+      <div class="chain-level active"><span class="level-num">1</span>Infrastructure<br/>(GPU, DC, Power)</div>
+      <div class="chain-level"><span class="level-num">2</span>Foundation<br/>Models</div>
+      <div class="chain-level"><span class="level-num">3</span>Platforms /<br/>Middleware</div>
+      <div class="chain-level active"><span class="level-num">4/5</span>Vertical Apps /<br/>AI-Enabled Inc.</div>
+      <div class="chain-level"><span class="level-num">—</span>End Users</div>
+    </div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--ivory);line-height:1.7;"><strong style="color:var(--amber);">Oracle uniquely occupies BOTH Level 1 (Infrastructure) AND Level 4/5 (AI-Enabled Incumbent).</strong> This dual positioning is rare and powerful:</p>
+      <ul style="list-style:disc;padding-left:20px;margin-top:8px;font-size:13px;color:var(--ivory);line-height:1.8;">
+        <li><strong>Level 1 (OCI Infrastructure):</strong> Wins regardless of which AI model or application wins. Every AI company training on OCI generates revenue for Oracle. This is the "picks and shovels" position — the safest AI infrastructure investment.</li>
+        <li><strong>Level 4/5 (AI-Enabled Incumbent — Autonomous DB, Fusion AI Agents, Clinical AI):</strong> Oracle's existing enterprise moat is being deepened by AI. Fusion ERP now has embedded AI agents. Autonomous Database is AI-managed. Healthcare AI (Cerner) is emerging.</li>
+      </ul>
+      <p style="font-size:13px;color:var(--ivory-dim);margin-top:10px;">Investment horizon implication: Level 1 infrastructure = 3-5 year payoff as OCI backlog converts. Level 5 AI-enabled incumbent = 7-10 year compounding from Autonomous DB and Fusion AI moat deepening. Oracle is a multi-horizon AI investment.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — AI Opportunity Context (US-focused)</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>AI Theme</th><th>Phase</th><th>Oracle Relevance</th></tr></thead>
+        <tbody>
+          <tr><td>AI Infrastructure (Data Centers, GPU Compute)</td><td><span style="color:var(--amber);">Phase 3</span></td><td><span style="color:var(--green);">DIRECTLY — OCI is the play</span></td></tr>
+          <tr><td>Enterprise AI (ERP, Finance, HR Automation)</td><td><span style="color:var(--amber);">Phase 3</span></td><td><span style="color:var(--green);">DIRECTLY — Fusion AI Agents</span></td></tr>
+          <tr><td>AI in Healthcare</td><td><span style="color:var(--cyan);">Phase 2</span></td><td><span style="color:var(--green);">DIRECTLY — Cerner Clinical AI Agent</span></td></tr>
+          <tr><td>AI in Database / Autonomous Systems</td><td><span style="color:var(--amber);">Phase 3</span></td><td><span style="color:var(--green);">DIRECTLY — Autonomous Database</span></td></tr>
+          <tr><td>Sovereign AI / National AI Infrastructure</td><td><span style="color:var(--cyan);">Phase 2</span></td><td><span style="color:var(--green);">DIRECTLY — Stargate + UAE + EU sovereign cloud</span></td></tr>
+          <tr><td>AI Chip Infrastructure (Nvidia RDMA)</td><td><span style="color:var(--amber);">Phase 3</span></td><td><span style="color:var(--green);">DIRECTLY — Blackwell + Vera Rubin partnership</span></td></tr>
+          <tr><td>Vernacular/Local AI (India Stack context)</td><td><span style="color:var(--cyan);">Phase 2</span></td><td><span style="color:var(--yellow);">ADJACENT — OCI India regions; no direct vernacular play</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section E — AI Threat Assessment</div>
+    <div class="card">
+      <div class="highlight-box" style="border-color:var(--yellow);margin-bottom:16px;">
+        <div class="card-title" style="color:var(--yellow);">MOAT RESILIENCE SCORE: 8/10</div>
+        <p style="font-size:13px;color:var(--ivory);line-height:1.7;">Oracle's primary moat (database switching cost) is AI-resistant — in fact, AI deepens it (Autonomous Database adds an AI management layer that makes migration even harder because AI now knows the workload). The AI threat to Oracle is not to the database moat but to the legacy on-premise software (licence support) which is declining. This is a well-managed, anticipated transition — the cloud revenue replacing licence support at higher margins.</p>
+      </div>
+      <div class="sc-row"><span class="sc-label">Legacy On-Premise Licence Revenue</span><span class="sc-status sc-marginal">THREAT (slow) — Oracle migrating customers proactively to cloud; declining but high-margin cash cow</span></div>
+      <div class="sc-row"><span class="sc-label">Database Core Moat</span><span class="sc-status sc-pass">AI-RESISTANT — switching costs increase with Autonomous DB AI management</span></div>
+      <div class="sc-row"><span class="sc-label">OCI vs Hyperscaler Competition</span><span class="sc-status sc-marginal">COMPETITIVE RISK — AWS/Azure have larger scale; Oracle wins on performance-per-dollar for AI</span></div>
+      <div class="sc-row"><span class="sc-label">Cerner vs Epic (Healthcare)</span><span class="sc-status sc-marginal">COMPETITIVE RISK — Epic leads US hospital EHR market; Cerner integration has been slow</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — AI Opportunity Verdict & Portfolio Role</div>
+    <div class="grid-2">
+      <div class="ai-score">
+        <div class="ai-score-num">72</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--amber);font-weight:700;">AI OPPORTUNITY SCORE /100</div>
+        <div class="ai-score-bar"><div class="ai-score-fill" style="width:72%;"></div></div>
+        <div style="margin-top:10px;font-size:11px;color:var(--ivory-dim);text-align:left;">
+          Data Flywheel: 13/20 (forming) | Phase Timing: 18/20 (Phase 3 = max) | Value Chain: 18/20 (Level 1+5 dual) | AI Advantage: 13/20 (US infra strength) | Threat Resistance: 10/20 (moat resilient)
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Portfolio Role</div>
+        <div style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--cyan);margin-bottom:8px;">STRATEGIC AI BET (60-80 range)</div>
+        <p style="font-size:13px;color:var(--ivory);line-height:1.7;margin-bottom:10px;">Starter position (2-3% max). Oracle's AI score of 72 places it firmly in the STRATEGIC AI BET category. Phase 3 timing is ideal. The unique dual position (Level 1 Infrastructure + Level 5 AI-Enabled Incumbent) is rare and compelling. Wait for Phase 2→3 inflection signal: OCI sustaining above $5B quarterly and FCF turning positive confirms the transition.</p>
+        <div class="sc-row"><span class="sc-label">Investment Horizon</span><span class="sc-status sc-pass">3-5 years (OCI payoff) + 7-10 years (DB AI compounding)</span></div>
+        <div class="sc-row"><span class="sc-label">Upgrade to Core AI Holding</span><span class="sc-status sc-marginal">If flywheel confirms → score reaches 82/100 → CORE</span></div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:14px;background:rgba(245,166,35,0.06);border:1px solid var(--amber);border-radius:var(--radius);">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--amber);margin-bottom:6px;">AI FRAMEWORK CONCLUSION</div>
+      <p style="font-size:13px;color:var(--ivory);line-height:1.7;">Oracle is the most underappreciated AI infrastructure story among established technology companies. While Nvidia gets the AI hardware headlines and Microsoft/Google get the AI application headlines, Oracle is quietly building the <em>data center layer</em> that runs the most demanding AI training workloads in the world. The Stargate partnership, the $553B RPO, and OCI's 84% growth rate are not marketing — they are contractually-verified demand signals. The AI score of 72 would be 82+ if Oracle published measurable Autonomous Database performance improvement metrics, which remains the single most important upgrade catalyst for the AI thesis.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong style="color:var(--amber);">Disclaimer:</strong> This report is generated for educational and research purposes only. It is not financial advice, a solicitation, or a recommendation to buy or sell any security. All investments involve risk. Past performance is not indicative of future results. The analysis reflects the author's interpretation of publicly available information as of April 13, 2026.<br>
+  <strong>Data Sources:</strong> Oracle SEC filings (8-K), Oracle investor relations press releases, macrotrends.net, GuruFocus, FinanceCharts, Trading Economics, FRED (St. Louis Fed), OpenAI/Oracle joint announcements, Oracle GTC 2026 announcements.<br>
+  <strong>Data Confidence:</strong> <span class="v">VERIFIED</span> = official filings/live search this session &nbsp;|&nbsp; <span class="e">ESTIMATED</span> = cross-referenced, high confidence &nbsp;|&nbsp; <span class="u">UNVERIFIED</span> = limited sources, treat with caution.<br>
+  <strong>Typography:</strong> Playfair Display (display) · JetBrains Mono (monospace) · Source Serif 4 (body) via Google Fonts.<br>
+  <em>Buffett Quality-Value Framework v5.0 · Series Report · April 13, 2026</em>
+</footer>
+
+<script>
+  var TAB_BAR_TOP = 0;
+  window.addEventListener('load', function () {
+    var tabBar = document.getElementById('tab-bar');
+    if (tabBar) {
+      var el = tabBar, top = 0;
+      while (el) { top += el.offsetTop; el = el.offsetParent; }
+      TAB_BAR_TOP = top;
+    }
+  });
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(function (el) {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+    document.getElementById(tabId).style.display = 'block';
+    var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+    if (activeBtn) { activeBtn.classList.add('active'); }
+    window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMPDI — Buffett Quality-Value Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Rufina:ital,wght@0,400;0,700;1,400&family=Mulish:wght@300;400;500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --coal: #080B10;
+  --deep: #0F1320;
+  --surface: #161B28;
+  --card: #1D2336;
+  --card-hi: #232A3E;
+  --amber: #E8950A;
+  --amber-lt: #F5B73E;
+  --amber-dim: rgba(232,149,10,0.15);
+  --steel: #3A7FBF;
+  --steel-dim: rgba(58,127,191,0.15);
+  --mineral: #4DAA6B;
+  --mineral-dim: rgba(77,170,107,0.12);
+  --text: #D2D8E4;
+  --sub: #7A8299;
+  --muted: #3D4560;
+  --pass: #4DAA6B;
+  --fail: #E05555;
+  --warn: #E8950A;
+  --border: rgba(255,255,255,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--coal);color:var(--text);font-family:'Mulish',sans-serif;font-size:14px;line-height:1.6}
+a{color:var(--amber);text-decoration:none}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0A0D14 0%,#111826 40%,#0D1420 100%);border-bottom:1px solid var(--border);padding:36px 24px 28px;position:relative;overflow:hidden;max-height:210px}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(232,149,10,0.08) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'CMPDI';position:absolute;right:20px;bottom:-20px;font-family:'Rufina',serif;font-size:110px;color:rgba(255,255,255,0.025);pointer-events:none;letter-spacing:-4px}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start}
+.hero-left{}
+.company-eyebrow{font-family:'Space Mono',monospace;font-size:10px;color:var(--sub);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.company-name{font-family:'Rufina',serif;font-size:26px;color:#fff;line-height:1.15;margin-bottom:4px}
+.company-sub{font-family:'Mulish',sans-serif;font-size:12px;color:var(--sub);margin-bottom:14px}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;font-family:'Space Mono',monospace;letter-spacing:0.5px}
+.badge-cat{background:rgba(58,127,191,0.2);border:1px solid rgba(58,127,191,0.4);color:#5EA3E0}
+.badge-ai{background:rgba(120,120,140,0.2);border:1px solid rgba(120,120,140,0.3);color:#9BA3B0}
+.badge-macro{background:rgba(77,170,107,0.15);border:1px solid rgba(77,170,107,0.3);color:#5CBF80}
+.badge-verdict{background:rgba(232,149,10,0.2);border:1px solid rgba(232,149,10,0.5);color:var(--amber)}
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap}
+.pill{font-family:'Space Mono',monospace;font-size:10px;color:var(--sub);background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:3px 8px;border-radius:3px}
+.pill span{color:var(--amber)}
+.hero-right{text-align:right;flex-shrink:0}
+.price-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:2px;font-family:'Space Mono',monospace}
+.price-main{font-family:'Rufina',serif;font-size:40px;color:#fff;line-height:1;margin:2px 0}
+.price-sub{font-size:11px;color:var(--sub)}
+.price-entry{font-size:11px;color:var(--amber);margin-top:2px}
+
+/* TABS */
+#tab-bar{background:var(--deep);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto}
+.tabs-inner{display:flex;min-width:max-content;max-width:1100px;margin:0 auto}
+.tab-btn{padding:12px 14px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.8px;color:var(--sub);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;text-transform:uppercase}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--amber);border-bottom-color:var(--amber)}
+
+/* CONTENT */
+.tab-content{display:none;padding:24px;max-width:1100px;margin:0 auto}
+.tab-content.active{display:block}
+
+/* SECTION HEADERS */
+.section-title{font-family:'Rufina',serif;font-size:18px;color:#fff;margin-bottom:4px}
+.section-sub{font-size:12px;color:var(--sub);margin-bottom:20px}
+.divider{border:none;border-top:1px solid var(--border);margin:24px 0}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px}
+.card-hi{background:var(--card-hi)}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:680px){.metric-grid{grid-template-columns:repeat(2,1fr)}}
+.metric{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--muted);border-radius:6px;padding:12px}
+.metric.pass{border-left-color:var(--pass)}
+.metric.warn{border-left-color:var(--warn)}
+.metric.fail{border-left-color:var(--fail)}
+.metric-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:1.5px;font-family:'Space Mono',monospace;margin-bottom:4px}
+.metric-val{font-family:'Rufina',serif;font-size:22px;color:#fff}
+.metric-note{font-size:10px;color:var(--sub);margin-top:2px}
+
+/* CONFIDENCE LABELS */
+.v{display:inline-block;font-size:9px;font-family:'Space Mono',monospace;padding:1px 5px;border-radius:2px;font-weight:700;vertical-align:middle;margin-left:4px}
+.v-v{background:rgba(77,170,107,0.2);color:#5CBF80;border:1px solid rgba(77,170,107,0.3)}
+.v-e{background:rgba(232,149,10,0.2);color:var(--amber);border:1px solid rgba(232,149,10,0.3)}
+.v-u{background:rgba(224,85,85,0.2);color:#E07777;border:1px solid rgba(224,85,85,0.3)}
+
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px}
+.data-table th{background:var(--card-hi);color:var(--sub);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:8px 10px;text-align:right;border-bottom:1px solid var(--border)}
+.data-table th:first-child{text-align:left}
+.data-table td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right;color:var(--text)}
+.data-table td:first-child{text-align:left;color:var(--sub);font-family:'Space Mono',monospace;font-size:10px}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,0.02)}
+.num-hi{color:var(--pass);font-weight:700}
+.num-warn{color:var(--warn);font-weight:700}
+.num-fail{color:var(--fail)}
+
+/* SCORECARD */
+.scorecard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:600px){.scorecard-grid{grid-template-columns:1fr}}
+.test-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px;display:flex;gap:10px;align-items:flex-start}
+.test-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.test-body{}
+.test-name{font-size:11px;font-weight:700;color:var(--text)}
+.test-detail{font-size:10px;color:var(--sub);margin-top:2px}
+.test-badge{display:inline-block;font-size:9px;font-family:'Space Mono',monospace;font-weight:700;padding:2px 7px;border-radius:3px;margin-top:4px}
+.tb-pass{background:rgba(77,170,107,0.15);color:#5CBF80;border:1px solid rgba(77,170,107,0.3)}
+.tb-warn{background:rgba(232,149,10,0.15);color:var(--amber);border:1px solid rgba(232,149,10,0.3)}
+.tb-fail{background:rgba(224,85,85,0.15);color:#E07777;border:1px solid rgba(224,85,85,0.3)}
+
+/* MOAT STARS */
+.moat-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+.moat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.moat-name{font-weight:700;font-size:13px;color:#fff}
+.moat-stars{color:var(--amber);font-size:14px;letter-spacing:2px}
+.moat-desc{font-size:12px;color:var(--sub);line-height:1.5}
+.moat-threat{font-size:11px;color:#E07777;margin-top:4px}
+
+/* VERDICT BOX */
+.verdict-box{background:linear-gradient(135deg,#141A25 0%,#0F1420 100%);border:2px solid var(--amber);border-radius:10px;padding:20px;margin-bottom:20px}
+.verdict-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.verdict-title{font-family:'Rufina',serif;font-size:28px;color:#fff;margin-bottom:4px}
+.verdict-stars{color:var(--amber);font-size:22px;margin-bottom:10px}
+.verdict-prose{font-size:13px;color:var(--text);line-height:1.7}
+.verdict-quote{font-family:'Rufina',serif;font-style:italic;color:var(--sub);font-size:13px;margin-top:14px;padding-left:12px;border-left:2px solid var(--amber)}
+
+/* UPGRADE CONDITIONS */
+.upgrade-list{list-style:none;margin-top:12px}
+.upgrade-list li{display:flex;gap:10px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;font-size:12px}
+.uc-num{background:var(--amber);color:#000;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;flex-shrink:0;align-self:flex-start;margin-top:1px}
+.uc-text{color:var(--text)}
+
+/* PILLAR GRADES */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:600px){.pillar-grid{grid-template-columns:repeat(2,1fr)}}
+.pillar-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
+.pillar-name{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:1.5px;font-family:'Space Mono',monospace;margin-bottom:8px}
+.pillar-grade{font-family:'Rufina',serif;font-size:36px;color:var(--amber);line-height:1}
+.pillar-note{font-size:10px;color:var(--sub);margin-top:4px}
+
+/* SERIES TABLE */
+.series-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:16px}
+.series-table th{background:var(--card-hi);color:var(--sub);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:8px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+.series-table td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}
+.series-table tr.active-row td{background:rgba(232,149,10,0.07);color:#fff}
+.series-table tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* MACRO DASHBOARD */
+.macro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:600px){.macro-grid{grid-template-columns:1fr 1fr}}
+.macro-dim{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px}
+.macro-dim-label{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:1.5px;font-family:'Space Mono',monospace;margin-bottom:4px}
+.macro-dim-status{font-size:13px;font-weight:700}
+.macro-dim-note{font-size:10px;color:var(--sub);margin-top:2px}
+.status-tail{color:var(--pass)}
+.status-neu{color:var(--warn)}
+.status-head{color:var(--fail)}
+
+/* GROWTH TABLE */
+.growth-matrix{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px}
+.growth-matrix th{background:var(--card-hi);color:var(--sub);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:8px 10px;border:1px solid var(--border);text-align:center}
+.growth-matrix td{padding:8px 10px;border:1px solid var(--border);text-align:center;color:var(--text)}
+.growth-matrix td:first-child{text-align:left;color:var(--sub);font-family:'Space Mono',monospace;font-size:10px}
+.gm-stress{background:rgba(224,85,85,0.05)}
+.gm-base{background:rgba(232,149,10,0.05)}
+.gm-accel{background:rgba(77,170,107,0.05)}
+
+/* FLYWHEEL BOX */
+.flywheel-box{background:linear-gradient(135deg,#1A1D2A,#131620);border:1px solid rgba(120,120,140,0.3);border-radius:8px;padding:16px;margin-bottom:16px}
+.flywheel-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--sub);text-transform:uppercase;margin-bottom:8px}
+.flywheel-badge{display:inline-block;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:4px 12px;border-radius:4px;background:rgba(120,120,140,0.2);border:1px solid rgba(120,120,140,0.4);color:#9BA3B0;margin-bottom:10px}
+.flywheel-q{font-size:12px;color:var(--text);margin-bottom:4px;padding-left:14px;position:relative}
+.flywheel-q::before{content:'✗';position:absolute;left:0;color:var(--fail);font-size:10px;top:1px}
+.flywheel-q.ok::before{content:'✓';color:var(--pass)}
+
+/* AI SCORE GAUGE */
+.ai-score-bar{height:8px;background:var(--muted);border-radius:4px;overflow:hidden;margin:8px 0}
+.ai-score-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--amber),var(--steel))}
+
+/* TECH LEVELS */
+.level-row{display:flex;gap:0;margin:16px 0}
+.level-box{flex:1;padding:8px 6px;text-align:center;font-size:10px;font-family:'Space Mono',monospace;border:1px solid var(--border);color:var(--sub)}
+.level-box:first-child{border-radius:6px 0 0 6px}
+.level-box:last-child{border-radius:0 6px 6px 0}
+.level-box.active-level{background:rgba(232,149,10,0.15);border-color:var(--amber);color:var(--amber);font-weight:700}
+.level-num{font-size:16px;font-weight:900;display:block;margin-bottom:2px}
+
+/* SHAREHOLDING BARS */
+.sh-bar-wrap{margin-bottom:12px}
+.sh-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:3px}
+.sh-bar-label span{color:var(--text);font-weight:600}
+.sh-bar{height:6px;background:var(--muted);border-radius:3px;overflow:hidden}
+.sh-bar-fill{height:100%;border-radius:3px}
+
+/* OE BOX */
+.oe-box{background:linear-gradient(135deg,rgba(232,149,10,0.08),transparent);border:1px solid rgba(232,149,10,0.25);border-radius:8px;padding:16px;margin-bottom:16px}
+.oe-title{font-family:'Rufina',serif;font-size:15px;color:var(--amber-lt);margin-bottom:10px}
+.oe-calc{font-family:'Space Mono',monospace;font-size:11px;color:var(--text);line-height:2}
+.oe-line{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.oe-total{border-top:1px solid var(--amber);color:var(--amber);font-weight:700;margin-top:4px}
+
+/* VALUATION SUMMARY */
+.val-summary{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px}
+.val-summary th{background:var(--card-hi);color:var(--sub);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:8px;border:1px solid var(--border);text-align:center}
+.val-summary td{padding:8px;border:1px solid var(--border);text-align:center;color:var(--text)}
+.val-summary td:first-child{text-align:left;color:var(--sub);font-family:'Space Mono',monospace;font-size:10px}
+.val-blended{background:rgba(232,149,10,0.07);font-weight:700}
+.val-blended td{color:var(--amber)}
+
+/* DCF TABLE */
+.dcf-wrap{overflow-x:auto;margin-bottom:16px}
+.dcf-table{width:100%;border-collapse:collapse;font-size:11px;min-width:600px}
+.dcf-table th{background:var(--card-hi);color:var(--sub);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:6px 8px;border:1px solid var(--border)}
+.dcf-table td{padding:6px 8px;border:1px solid var(--border);text-align:right;color:var(--text);font-family:'Space Mono',monospace;font-size:10px}
+.dcf-table td:first-child{text-align:left}
+
+/* IPO TECH BOX */
+.ipo-base-box{background:linear-gradient(135deg,rgba(232,149,10,0.06),transparent);border:1px solid rgba(232,149,10,0.2);border-radius:8px;padding:16px;margin-bottom:16px}
+.ipo-base-title{font-family:'Rufina',serif;font-size:15px;color:var(--amber-lt);margin-bottom:10px}
+.price-ladder{display:grid;grid-template-columns:auto 1fr auto;gap:4px;align-items:center;font-size:11px;margin-bottom:12px}
+.pl-level{font-family:'Space Mono',monospace;color:var(--sub)}
+.pl-bar{height:3px;background:var(--muted);border-radius:2px;position:relative}
+.pl-bar-fill{position:absolute;left:0;top:0;height:100%;border-radius:2px}
+.pl-label{color:var(--text);text-align:right}
+
+/* FOOTER */
+footer{background:var(--deep);border-top:1px solid var(--border);padding:20px 24px;font-size:10px;color:var(--sub);line-height:1.7;max-width:1100px;margin:0 auto}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="company-eyebrow">NSE: CMPDI &nbsp;·&nbsp; Buffett QV Series v5.0 &nbsp;·&nbsp; April 18, 2026</div>
+      <div class="company-name">Central Mine Planning & Design Institute Ltd</div>
+      <div class="company-sub">Mini Ratna Category-I · Subsidiary of Coal India Ltd · Ranchi, Jharkhand</div>
+      <div class="badge-row">
+        <span class="badge badge-cat">CAT C — MATURE COMPOUNDER</span>
+        <span class="badge badge-ai">⚪ AI NEUTRAL</span>
+        <span class="badge badge-macro">🌿 MACRO TAILWIND</span>
+        <span class="badge badge-verdict">WATCH ★★★★</span>
+      </div>
+      <div class="hero-pills">
+        <span class="pill">ROCE <span>48.5%</span></span>
+        <span class="pill">ROE <span>36.7%</span></span>
+        <span class="pill">PAT Margin <span>31.7%</span></span>
+        <span class="pill">Debt <span>≈ Zero</span></span>
+        <span class="pill">Market Share <span>61%</span></span>
+        <span class="pill">Entry <span>₹155–170</span></span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="price-label">Last Close</div>
+      <div class="price-main">₹180.87</div>
+      <div class="price-sub">Apr 17, 2026 <span class="v v-e">ESTIMATED</span></div>
+      <div class="price-entry">IPO Price ₹172 · ATH ₹187.85</div>
+      <div style="margin-top:6px;font-size:10px;color:var(--sub)">Base IV ₹208 · MoS Entry ₹155–170</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro</button>
+    <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+    <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intel</button>
+  </div>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="t0" class="tab-content" style="display:block">
+  <div class="section-title">Business Overview</div>
+  <div class="section-sub">The Technical Brain of India's Coal Economy</div>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:20px">
+    <p style="font-size:13px;line-height:1.8;color:var(--text)">
+      CMPDI is the <strong style="color:#fff">knowledge monopolist</strong> at the heart of India's ₹70,000+ crore coal mining ecosystem. Incorporated in 1974 as a wholly-owned subsidiary of Coal India Limited (CIL), CMPDI does not mine coal — it <em>enables</em> others to mine coal scientifically, legally, and efficiently. The company provides end-to-end consultancy across the entire mining lifecycle: geological exploration, mine planning &amp; design, environmental management, geomatics/geospatial services, and specialised laboratory services.
+    </p>
+    <p style="font-size:13px;line-height:1.8;color:var(--text);margin-top:10px">
+      Its moat is built on <strong style="color:var(--amber)">50 years of proprietary geological data</strong> — the largest coal and lignite data repository in India — coupled with regulatory credibility: a CMPDI mine plan is the <em>legal prerequisite</em> for mine operationalisation under Indian mining law. No new private or foreign entrant can replicate this institutional standing within a decade.
+    </p>
+    <p style="font-size:13px;line-height:1.8;color:var(--text);margin-top:10px">
+      The company recently listed on NSE/BSE (March 30, 2026) via a 100% OFS by Coal India. The weak listing (−7% on Day 1, dipping to ₹152.22) created an <strong style="color:var(--amber)">IPO base formation</strong> between ₹152–172. The stock has since broken above the IPO price of ₹172, reaching ₹187.85 ATH before consolidating at ₹180.87. This is the technical setup that prompted this analysis.
+    </p>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric pass">
+      <div class="metric-label">ROCE (FY25)</div>
+      <div class="metric-val">48.5%</div>
+      <div class="metric-note">Exceptional for any sector</div>
+    </div>
+    <div class="metric pass">
+      <div class="metric-label">ROE (FY25)</div>
+      <div class="metric-val">36.7%</div>
+      <div class="metric-note">3yr avg 33.7% — VERIFIED</div>
+    </div>
+    <div class="metric pass">
+      <div class="metric-label">PAT Margin</div>
+      <div class="metric-val">31.7%</div>
+      <div class="metric-note">FY25 — ₹667 Cr PAT</div>
+    </div>
+    <div class="metric pass">
+      <div class="metric-label">Net Debt</div>
+      <div class="metric-val">≈ Zero</div>
+      <div class="metric-note">Borrowings ₹1 Cr only</div>
+    </div>
+    <div class="metric pass">
+      <div class="metric-label">Revenue CAGR (3yr)</div>
+      <div class="metric-val">20%</div>
+      <div class="metric-note">FY22–FY25</div>
+    </div>
+    <div class="metric pass">
+      <div class="metric-label">PAT CAGR (3yr)</div>
+      <div class="metric-val">33%</div>
+      <div class="metric-note">FY22–FY25 — VERIFIED</div>
+    </div>
+    <div class="metric warn">
+      <div class="metric-label">Debtor Days</div>
+      <div class="metric-val">164</div>
+      <div class="metric-note">Improving (was 246 in FY22)</div>
+    </div>
+    <div class="metric warn">
+      <div class="metric-label">Current P/E</div>
+      <div class="metric-val">19.4×</div>
+      <div class="metric-note">₹180.87 ÷ ₹9.33 EPS</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px">Revenue Mix &amp; Business Segments</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0">
+    <div class="card">
+      <div style="font-size:10px;color:var(--sub);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:6px">GEOLOGICAL EXPLORATION</div>
+      <div style="font-family:'Rufina',serif;font-size:26px;color:var(--amber)">~46%</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Largest exploratory drill fleet in India. Converts unexplored terrain into proven reserves.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:10px;color:var(--sub);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:6px">MINE PLANNING & DESIGN</div>
+      <div style="font-family:'Rufina',serif;font-size:26px;color:var(--amber)">~21%</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">Planned Asia's largest coal mine (85 MTPA). 900+ mine project reports prepared.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:10px;color:var(--sub);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:6px">ENV / GEOMATICS / INFRA</div>
+      <div style="font-family:'Rufina',serif;font-size:26px;color:var(--amber)">~32%</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">ESG compliance, satellite monitoring, LiDAR, UAV surveys. Fastest growing segment.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px">Why In The Series — The IPO Base Thesis</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:12px">
+    <p style="font-size:12px;color:var(--text);line-height:1.7">
+      <strong style="color:var(--amber)">The Opportunity:</strong> CMPDI listed at a 7% discount to IPO price (₹160 vs ₹172) on March 30, 2026, with retail subscribed only 0.35× due to PSU/coal ESG concerns. The weak listing created a textbook <em>IPO base</em> formation (₹152–172 range, ~18 trading days). The stock subsequently broke above the IPO price and hit ₹187.85 ATH before pulling back to ₹180.87. A board meeting is scheduled April 21, 2026 — almost certainly for Q4 &amp; FY26 full year results, a near-term catalyst. 
+    </p>
+    <p style="font-size:12px;color:var(--text);line-height:1.7;margin-top:8px">
+      <strong style="color:var(--amber)">The Risk:</strong> 9-month FY26 PAT of ₹425 Cr, if Q4 FY26 does not deliver strongly (~₹220+ Cr), full year FY26 could show an earnings DECLINE from FY25's ₹667 Cr peak. This is the key binary risk going into April 21. Entry in the ₹155–170 zone (post-results correction if disappointing) is preferred over chasing at ₹180+.
+    </p>
+    <p style="font-size:12px;color:var(--text);line-height:1.7;margin-top:8px">
+      <strong style="color:var(--amber)">The Structural Angle:</strong> India's National Critical Mineral Mission (NCMM, 2025) and coking coal's designation as a "Critical and Strategic Mineral" (Jan 2026) opens a multi-year diversification opportunity for CMPDI beyond coal — expanding into lithium, copper, cobalt, bauxite, graphite exploration. This could be the next growth engine if non-CIL revenue scales from &lt;10% to 20%+ over 3–5 years.
+    </p>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px">Key Risks</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+    <div class="card" style="border-left:3px solid var(--fail)">
+      <div style="font-weight:700;font-size:12px;margin-bottom:6px;color:#fff">Client Concentration</div>
+      <div style="font-size:11px;color:var(--sub)">~88-90% revenue from Coal India. Any strategy shift by CIL directly impacts CMPDI. True monopoly risk — single client dominance.</div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--fail)">
+      <div style="font-weight:700;font-size:12px;margin-bottom:6px;color:#fff">Coal ESG Overhang</div>
+      <div style="font-size:11px;color:var(--sub)">Long-term coal demand decline (post-2035 globally) is a secular risk. India's coal use grows near-term but faces 10-15yr structural questions.</div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--warn)">
+      <div style="font-weight:700;font-size:12px;margin-bottom:6px;color:#fff">OFS Structure</div>
+      <div style="font-size:11px;color:var(--sub)">100% OFS — Coal India monetised its holding. No fresh capital for CMPDI. Promoter reducing from 100% to 85% signals potential further OFS.</div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--warn)">
+      <div style="font-weight:700;font-size:12px;margin-bottom:6px;color:#fff">FY26 Earnings Uncertainty</div>
+      <div style="font-size:11px;color:var(--sub)">9M FY26 PAT ₹425 Cr vs FY25 ₹667 Cr — Q4 must deliver ₹220+ Cr for full year to match FY25. Board meeting April 21 is key.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO -->
+<div id="t1" class="tab-content">
+  <div class="section-title">Macro &amp; Sector Context</div>
+  <div class="section-sub">Layer 1 → Layer 3 derivation for CMPDI's growth rates</div>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:20px">
+    <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--sub);letter-spacing:2px;margin-bottom:8px">LAYER 1 — INDIA MACRO ANCHOR</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;font-size:12px">
+      <div><div style="color:var(--sub);font-size:10px">Real GDP FY26</div><div style="color:#fff;font-weight:700">6.8%</div><div style="color:var(--sub);font-size:10px">RBI · VERIFIED</div></div>
+      <div><div style="color:var(--sub);font-size:10px">CPI Inflation FY26</div><div style="color:#fff;font-weight:700">2.6%</div><div style="color:var(--sub);font-size:10px">RBI · VERIFIED</div></div>
+      <div><div style="color:var(--sub);font-size:10px">Nominal GDP</div><div style="color:var(--amber);font-weight:700">9.4%</div><div style="color:var(--sub);font-size:10px">Terminal ceiling</div></div>
+      <div><div style="color:var(--sub);font-size:10px">10yr G-Sec</div><div style="color:#fff;font-weight:700">6.97%</div><div style="color:var(--sub);font-size:10px">Elevated · VERIFIED</div></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:8px">Macro Cycle Dashboard — 6 Dimensions</div>
+  <div class="macro-grid" style="margin-bottom:20px">
+    <div class="macro-dim">
+      <div class="macro-dim-label">Rural Income Cycle</div>
+      <div class="macro-dim-status status-tail">Recovery</div>
+      <div class="macro-dim-note">Positive monsoon, MSP hikes. Neutral for mining demand.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-dim-label">Urban Consumption</div>
+      <div class="macro-dim-status status-tail">Boom</div>
+      <div class="macro-dim-note">Rising electricity demand → coal demand tailwind.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-dim-label">Input Cost Cycle</div>
+      <div class="macro-dim-status status-tail">Stable</div>
+      <div class="macro-dim-note">CMPDI is cost-plus — passes through cost increases automatically.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-dim-label">RBI Rate Cycle</div>
+      <div class="macro-dim-status status-tail">Easing</div>
+      <div class="macro-dim-note">Repo at 5.25%, cutting → lower WACC → re-rating potential.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-dim-label">Govt Capex Cycle</div>
+      <div class="macro-dim-status status-tail">Expansion</div>
+      <div class="macro-dim-note">Mine auctions accelerating. NCMM launched. Budget supportive.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-dim-label">AI Adoption Cycle</div>
+      <div class="macro-dim-status status-neu">Neutral</div>
+      <div class="macro-dim-note">Mining sector: GIS/drones adopted but AI not yet transformative.</div>
+    </div>
+  </div>
+  <div style="background:rgba(77,170,107,0.08);border:1px solid rgba(77,170,107,0.2);border-radius:6px;padding:10px;font-size:12px;margin-bottom:20px">
+    <strong style="color:var(--pass)">MACRO COMPOSITE: TAILWIND</strong> — India coal demand growing 2.5% in 2026 (IEA). India is the <em>only</em> major coal producer expected to increase output in 2026. Critical mineral mission adds multi-year consultancy opportunity. RBI easing reduces discount rate. AI cycle is neutral — mining sector not yet disrupted or accelerated by AI.
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px">Layer 2 — Sector Growth: Mining Consultancy</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
+    <p style="font-size:12px;color:var(--text);line-height:1.7">Mining consultancy/services is not in the standard sector table. Closest proxies: <strong>Capital Goods</strong> (15–19% base), <strong>Specialised Engineering Services</strong> (12–16% base). CMPDI operates a cost-plus model — revenue grows as CIL capex grows, plus new mine auctions generate incremental work. India coal demand growth of 2.5% per year drives production capex; each new mine requires full CMPDI lifecycle consultancy.</p>
+    <div style="margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12px">
+      <div><div style="color:var(--sub);font-size:10px;margin-bottom:3px">Sector Base Growth</div><div style="color:#fff;font-weight:700">12–15%</div><div style="color:var(--sub);font-size:10px">Mining services CAGR</div></div>
+      <div><div style="color:var(--sub);font-size:10px;margin-bottom:3px">With Critical Minerals</div><div style="color:var(--pass);font-weight:700">+3–5%</div><div style="color:var(--sub);font-size:10px">NCMM / NMET expansion</div></div>
+      <div><div style="color:var(--sub);font-size:10px;margin-bottom:3px">AI Impact on Sector</div><div style="color:var(--warn);font-weight:700">NEUTRAL</div><div style="color:var(--sub);font-size:10px">±0% near-term</div></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:12px">Layer 3 — Company Alpha Sources</div>
+  <table class="data-table">
+    <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Mechanism</th></tr></thead>
+    <tbody>
+      <tr><td>Market Share Gain</td><td><span style="color:var(--sub)">Exhausted</span></td><td>0%</td><td>0%</td><td>Already 61% — natural ceiling</td></tr>
+      <tr><td>Premiumisation</td><td><span style="color:var(--sub)">N/A</span></td><td>0%</td><td>0%</td><td>Cost-plus, not price-discretion</td></tr>
+      <tr><td>Category Expansion</td><td><span style="color:var(--pass)">Active</span></td><td>+4%</td><td>+2%</td><td>Critical minerals, non-coal clients</td></tr>
+      <tr><td>Geographic Expansion</td><td><span style="color:var(--warn)">Potential</span></td><td>+1%</td><td>+2%</td><td>Mozambique, Tanzania, ASEAN</td></tr>
+      <tr><td>Pricing Power</td><td><span style="color:var(--pass)">Active</span></td><td>+2%</td><td>+1%</td><td>Cost-plus auto-pass-through</td></tr>
+      <tr><td>AI Alpha (6a+6b+6c)</td><td><span style="color:var(--sub)">N/A</span></td><td>0%</td><td>0%</td><td>AI neutral — no flywheel</td></tr>
+      <tr style="font-weight:700"><td>Total Alpha</td><td>—</td><td class="num-hi">+7%</td><td class="num-hi">+5%</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:12px">Growth Rate Summary Matrix</div>
+  <table class="growth-matrix">
+    <thead>
+      <tr><th>Parameter</th><th class="gm-stress">STRESS</th><th class="gm-base">BASE</th><th class="gm-accel">ACCEL.</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Macro State</td><td class="gm-stress">GDP ~5.5%</td><td class="gm-base">GDP ~6.8%</td><td class="gm-accel">GDP ~8%+</td></tr>
+      <tr><td>Sector Growth</td><td class="gm-stress">9%</td><td class="gm-base">13%</td><td class="gm-accel">17%</td></tr>
+      <tr><td>Company Alpha</td><td class="gm-stress">+3%</td><td class="gm-base">+7%</td><td class="gm-accel">+9%</td></tr>
+      <tr><td>AI Alpha (6a+6b+6c)</td><td class="gm-stress">0%</td><td class="gm-base">0%</td><td class="gm-accel">0%</td></tr>
+      <tr style="font-weight:700"><td>Stage 1 FCF CAGR</td><td class="gm-stress num-fail">10%</td><td class="gm-base num-warn">16%</td><td class="gm-accel num-hi">22%</td></tr>
+      <tr><td>Stage 2 FCF CAGR</td><td class="gm-stress">7%</td><td class="gm-base">10%</td><td class="gm-accel">13%</td></tr>
+      <tr><td>Terminal Growth</td><td class="gm-stress">5.5%</td><td class="gm-base">6.5%</td><td class="gm-accel">7.2%</td></tr>
+      <tr><td>Margin Direction</td><td class="gm-stress">Compress</td><td class="gm-base">Stable</td><td class="gm-accel">Expand</td></tr>
+      <tr><td>Key Risk</td><td class="gm-stress">CIL capex cut</td><td class="gm-base">FY26 earnings dip</td><td class="gm-accel">Minerals pivot delayed</td></tr>
+    </tbody>
+  </table>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;font-size:11px;color:var(--sub)">
+    <strong style="color:var(--text)">Sensitivity:</strong> A 1% change in terminal growth rate changes base IV by ~₹14–18. A 1% change in Stage 1 growth changes base IV by ~₹7–10. A 1% increase in WACC reduces base IV by ~₹22–28.
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="t2" class="tab-content">
+  <div class="section-title">Financial Fortress Analysis</div>
+  <div class="section-sub">FY21–FY25 | Screener.in Standalone Data — VERIFIED</div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:12px">5-Year P&amp;L Trend</div>
+  <table class="data-table">
+    <thead><tr><th>Metric (₹ Cr)</th><th>FY21</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th></tr></thead>
+    <tbody>
+      <tr><td>Revenue</td><td>1,489</td><td>1,208</td><td>1,386</td><td>1,733</td><td class="num-hi">2,103</td></tr>
+      <tr><td>Operating Profit</td><td>415</td><td>359</td><td>383</td><td>727</td><td class="num-hi">841</td></tr>
+      <tr><td>OPM %</td><td>28%</td><td>30%</td><td>28%</td><td class="num-hi">42%</td><td>40%</td></tr>
+      <tr><td>Net Profit</td><td>317</td><td>282</td><td>297</td><td>503</td><td class="num-hi">667</td></tr>
+      <tr><td>PAT Margin %</td><td>21.3%</td><td>23.3%</td><td>21.4%</td><td>29.0%</td><td class="num-hi">31.7%</td></tr>
+      <tr><td>EPS (post-listing, ₹)</td><td>4.43</td><td>3.94</td><td>4.15</td><td>7.03</td><td class="num-hi">9.33</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:12px">ROE &amp; ROCE Track (5yr)</div>
+  <table class="data-table">
+    <thead><tr><th>Metric</th><th>FY21</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th></tr></thead>
+    <tbody>
+      <tr><td>ROE %</td><td>~38%</td><td>~27%</td><td>~24%</td><td>~35%</td><td class="num-hi">36.7%</td></tr>
+      <tr><td>ROCE %</td><td>—</td><td class="num-hi">40%</td><td>33%</td><td class="num-hi">52%</td><td>48.5%</td></tr>
+      <tr><td>Equity Capital</td><td>143</td><td>143</td><td>143</td><td>143</td><td>143</td></tr>
+      <tr><td>Reserves (₹ Cr)</td><td>659</td><td>872</td><td>1,095</td><td>1,449</td><td class="num-hi">1,899</td></tr>
+      <tr><td>Net Worth (₹ Cr)</td><td>802</td><td>1,015</td><td>1,238</td><td>1,592</td><td class="num-hi">2,042</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:12px">Financial Fortress Scorecard</div>
+  <div class="scorecard-grid">
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">ROE ≥ 15% for 5 years</div><div class="test-detail">24–38% range — never dipped below 15%. Exceptional consistency.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">ROIC > WACC for 5 years</div><div class="test-detail">ROCE 33–52% vs WACC 13%. Consistent positive spread — wide moat confirmed.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Net Cash Position</div><div class="test-detail">Borrowings ≈ ₹1 Cr. Net cash company. Zero leverage risk.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Net Profit Margin ≥ 15%</div><div class="test-detail">21–32% range over 5 years. FY25 at 31.7% — well above threshold.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">⚠️</div><div class="test-body"><div class="test-name">FCF Conversion ≥ 80%</div><div class="test-detail">FY25: 629/667 = 94% ✓. FY24: 214/503 = 43% ✗. Volatile due to working capital swings with CIL.</div><span class="test-badge tb-warn">MARGINAL</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Revenue Growth ≥ Sector</div><div class="test-detail">3yr revenue CAGR 20% vs sector 12–15%. Outperforming sector.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Capital-Light Model</div><div class="test-detail">Fixed assets ₹247 Cr on ₹2,103 Cr revenue. Asset turnover ~8.5×. Knowledge business.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">⚠️</div><div class="test-body"><div class="test-name">Pricing Power</div><div class="test-detail">Cost-plus model = automatic pass-through. Not discretionary pricing power. Different mechanism but effective.</div><span class="test-badge tb-warn">MARGINAL</span></div></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px;margin-bottom:12px">Owner Earnings (FY25)</div>
+  <div class="oe-box">
+    <div class="oe-title">Owner Earnings Calculation — FY25</div>
+    <div class="oe-calc">
+      <div class="oe-line"><span>Net Income</span><span>₹667 Cr</span></div>
+      <div class="oe-line"><span>+ Depreciation &amp; Amortisation</span><span>₹33 Cr</span></div>
+      <div class="oe-line"><span>+ Non-cash / SBC</span><span>~₹0 Cr (PSU)</span></div>
+      <div class="oe-line"><span>− Maintenance CapEx (est.)</span><span>₹30 Cr</span></div>
+      <div class="oe-line"><span>± Working Capital Changes</span><span>~₹0 Cr (normalised)</span></div>
+      <div class="oe-line oe-total"><span>Owner Earnings (Base)</span><span>≈ ₹670 Cr</span></div>
+      <div style="margin-top:6px;font-size:10px;color:var(--sub)">Per share (71.5 Cr shares): ₹9.37 &nbsp;·&nbsp; Note: Growth CapEx (lab upgrades, new drill equipment) classified separately as ₹40–60 Cr — excluded from maintenance CapEx above.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px;margin-bottom:12px">Earnings Quality — O'Glove 5-Test Framework</div>
+  <div class="scorecard-grid">
+    <div class="test-card"><div class="test-icon">⚠️</div><div class="test-body"><div class="test-name">Test 1 — FCF Conversion (5yr)</div><div class="test-detail">FY21:14% | FY22:53% | FY23:131% | FY24:43% | FY25:94%. Highly volatile — CIL is a slow payer. FY25 recovered strongly. Overall: MARGINAL.</div><span class="test-badge tb-warn">MARGINAL</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Test 2 — DSO Trend (3yr)</div><div class="test-detail">Debtor days: 217 → 207 → 164. IMPROVING consistently. Despite high absolute level, trend is directionally clean.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Test 3 — Inventory Days</div><div class="test-detail">Consulting business — no inventory. N/A. No inventory risk.</div><span class="test-badge tb-pass">N/A — PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Test 4 — Accounting Policy</div><div class="test-detail">No accounting changes noted in RHP or recent filings. Consistent standards across 5yr period.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Test 5 — Gross Margin (5yr)</div><div class="test-detail">OPM: 28% / 30% / 28% / 42% / 40%. FY24 spike likely due to mix/volume leverage. FY25 slight moderation — acceptable. Cost-plus = structurally protected.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card" style="background:rgba(77,170,107,0.07);border-color:rgba(77,170,107,0.25)"><div class="test-icon">🟢</div><div class="test-body"><div class="test-name">Overall Earnings Quality</div><div class="test-detail">4/5 tests pass. FCF conversion is the only blemish — structurally related to CIL's slow payment cycle (not earnings manipulation). Debtor days improving. Classification: <strong>ACCEPTABLE</strong>.</div><span class="test-badge tb-pass">ACCEPTABLE</span></div></div>
+  </div>
+  <div style="font-size:11px;color:var(--sub);margin-top:8px">⚠ The high debtor days (164 days) warrant monitoring. CMPDI books revenue on accrual basis; CIL payment delays convert paper profits to working capital. Improving trend (246→164 over 3yr) is the key positive signal. No earnings quality adjustment applied to valuation.</div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="t3" class="tab-content">
+  <div class="section-title">Economic Moat Analysis</div>
+  <div class="section-sub">Pillar 1 — Competitive Advantage Durability</div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">DATA FLYWHEEL TEST — AI MOAT ASSESSMENT</div>
+    <div class="flywheel-badge">⚪ COSMETIC — AI IS A TOOL, NOT A MOAT</div>
+    <div class="flywheel-q">Proprietary training data competitors cannot access — 50yr geological data exists but is NOT being used to train AI models that improve with scale</div>
+    <div class="flywheel-q">More users → measurably better AI — CMPDI's services improve via human expertise and institutional knowledge, not algorithmic self-improvement</div>
+    <div class="flywheel-q">Better AI attracts more users (self-reinforcing loop) — GIS, drones, LiDAR are adopted tools; they do not create a compounding advantage</div>
+    <div style="margin-top:10px;font-size:11px;color:var(--sub)">Flywheel Score: 1/10. AI adds operational efficiency (drone surveys, satellite monitoring) but is not a structural competitive advantage. The moat rests on data ownership, regulatory credibility, and scale — not AI. Verdict: <strong style="color:#9BA3B0">AI COSMETIC</strong></div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-header">
+      <div class="moat-name">🗄 Geological Data Repository (50-Year Proprietary Archive)</div>
+      <div class="moat-stars">★★★★★</div>
+    </div>
+    <div class="moat-desc">CMPDI is the custodian of India's entire coal geological database — 50 years of sub-surface data, drill logs, resource evaluations. This data cannot be replicated by any new entrant in any reasonable time horizon. It underpins ALL strategic decisions in the coal sector. Rating: ★★★★★ — Irreplaceable national asset.</div>
+    <div class="moat-threat">Stress test: STRENGTHENS in any macro scenario. Data value increases as India's energy security needs grow.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-header">
+      <div class="moat-name">⚖ Regulatory Credibility &amp; Statutory Monopoly</div>
+      <div class="moat-stars">★★★★★</div>
+    </div>
+    <div class="moat-desc">A CMPDI-approved Mine Plan is the legal prerequisite for mine operationalisation under India's mining laws (MMDR Act). CMPDI holds QCI-NABET &amp; NABL accreditations — the statutory benchmark. For any miner, CMPDI approval is the "Ticket to Production." No private entrant can offer statutory equivalence without decades of NABET/NABL history.</div>
+    <div class="moat-threat">Stress test: HOLDS in any scenario. Regulatory moat is independent of coal price cycles. Could STRENGTHEN if critical mineral mining requires similar regulatory frameworks.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-header">
+      <div class="moat-name">🏗 Scale + Infrastructure (7 Regional Institutes, 8 Labs, Largest Drill Fleet)</div>
+      <div class="moat-stars">★★★★</div>
+    </div>
+    <div class="moat-desc">7 regional institutes in coal-belt states, 8 specialised laboratories, the largest exploratory drill fleet in India. This physical infrastructure takes 10-15 years and ₹500+ crore to replicate. New private entrants (FDI now 100% in mining) face this infrastructure barrier to entry.</div>
+    <div class="moat-threat">Stress test: HOLDS. Infrastructure is durable. Risk: FDI opens competition but physical moat remains a multi-year barrier.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-header">
+      <div class="moat-name">🔗 Captive Client Lock-In (Coal India)</div>
+      <div class="moat-stars">★★★</div>
+    </div>
+    <div class="moat-desc">CIL as the ~90% revenue client is both the strongest moat (guaranteed captive order flow) and the greatest risk (concentration). The PSU relationship is statutory — CIL is legally obligated to use CMPDI for technical advisory functions. This is a structural moat, not a commercial relationship that can be cancelled.</div>
+    <div class="moat-threat">Stress test: HOLDS near-term but WEAKENS if CIL diversifies to global consultancies as it scales to 1Bt+ production. Private miners (Adani, Captive block operators) represent the diversification opportunity.</div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-header">
+      <div class="moat-name">🌍 International Credibility (IMCL UK, Metchem Canada, DMT Germany partnerships)</div>
+      <div class="moat-stars">★★★</div>
+    </div>
+    <div class="moat-desc">International MOUs give CMPDI access to cutting-edge global mining technology and credibility for international projects (Mozambique, Tanzania, ASEAN). As India's coal expertise becomes exportable, this is an underappreciated growth lever.</div>
+    <div class="moat-threat">Stress test: POTENTIAL — underexplored so far. International revenue &lt;5% currently.</div>
+  </div>
+
+  <div class="divider"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:8px">MOAT SUMMARY VERDICT</div>
+      <div style="font-size:12px;color:var(--text);line-height:1.7">CMPDI possesses a <strong>narrow-to-wide moat</strong> built on institutional data, regulatory credibility, and physical infrastructure — NOT on pricing power or consumer brand. The moat is durable over a 10-year horizon but faces two headwinds: coal's long-term ESG trajectory (10yr+ risk) and the OFS structure signalling promoter intent to continue diluting.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;color:var(--steel);margin-bottom:8px">CRITICAL MINERAL OPTION VALUE</div>
+      <div style="font-size:12px;color:var(--text);line-height:1.7">NCMM (2025) + coking coal as critical mineral (Jan 2026) extends CMPDI's regulatory mandate to lithium, copper, cobalt, bauxite, graphite. The same data repository, accreditations, and drill fleet can be redeployed. If critical mineral exploration becomes 20%+ of revenue by FY30, it would partially mitigate coal concentration risk and meaningfully re-rate the moat.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="t4" class="tab-content">
+  <div class="section-title">Management Integrity &amp; Capital Allocation</div>
+  <div class="section-sub">Pillar 3 — PSU Governance Context</div>
+
+  <div style="background:rgba(224,85,85,0.06);border:1px solid rgba(224,85,85,0.2);border-radius:8px;padding:14px;margin-bottom:20px">
+    <div style="font-weight:700;color:#E07777;font-size:13px;margin-bottom:6px">⚠ PSU GOVERNANCE DISCOUNT — APPLY SYSTEMATICALLY</div>
+    <div style="font-size:12px;color:var(--text);line-height:1.7">CMPDI is a government PSU. Management has limited autonomy on capex, pricing, hiring, or diversification decisions — all require Coal India/Ministry of Coal approval. Bureaucratic decision-making cycles slow strategic pivots. Political risk on tariffs, mandate changes, or disinvestment pace adds uncertainty. This governance discount is already reflected in WACC (13% vs 12% for private Cat C) and warrants a wider margin of safety.</div>
+  </div>
+
+  <div class="scorecard-grid">
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Promoter Holding: 85%</div><div class="test-detail">Coal India retains 85% post-IPO. Strong promoter conviction. But OFS structure signals further monetisation likely.</div><span class="test-badge tb-pass">ACCEPTABLE</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Pledged Shares: 0%</div><div class="test-detail">Zero pledged promoter shares. Coal India has no leverage risk. Clean balance sheet at promoter level.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Dividend History</div><div class="test-detail">Consistent payout: 30% FY21, 0% FY22, 24% FY23, 30% FY24, 25% FY25. Average 21.8%. Healthy, not over-distributing.</div><span class="test-badge tb-pass">PASS</span></div></div>
+    <div class="test-card"><div class="test-icon">⚠️</div><div class="test-body"><div class="test-name">Capital Allocation Autonomy</div><div class="test-detail">All major capex and strategic decisions require CIL/MoC approval. Limits strategic agility on critical minerals pivot.</div><span class="test-badge tb-warn">MARGINAL</span></div></div>
+    <div class="test-card"><div class="test-icon">⚠️</div><div class="test-body"><div class="test-name">OFS Structure Signal</div><div class="test-detail">100% OFS at IPO. Government sold shares — no fresh capital to CMPDI. Signals disinvestment agenda. Further OFS possible at 75% minimum public float threshold.</div><span class="test-badge tb-warn">CAUTION</span></div></div>
+    <div class="test-card"><div class="test-icon">✅</div><div class="test-body"><div class="test-name">Headcount Efficiency</div><div class="test-detail">Total headcount fell 5% over 3yr while PAT/employee surged from ₹10L to ₹25L. Improving operational leverage without layoffs — good capital allocation.</div><span class="test-badge tb-pass">PASS</span></div></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Strengths vs Concerns</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="card" style="border-left:3px solid var(--pass)">
+      <div style="font-weight:700;color:var(--pass);margin-bottom:8px;font-size:12px">MANAGEMENT STRENGTHS</div>
+      <ul style="font-size:12px;color:var(--text);padding-left:14px;line-height:1.8">
+        <li>50yr institutional expertise in mining consultancy</li>
+        <li>ISO 9001, 37001 (Anti-Bribery), 27001 (InfoSec) certified</li>
+        <li>Consistent dividend payout respecting minority shareholders</li>
+        <li>Headcount efficiency improving (₹10L → ₹25L PAT/employee)</li>
+        <li>Zero pledges, zero debt — conservative financial management</li>
+        <li>Senior management changes April 2026 via superannuation (normal rotation)</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left:3px solid var(--fail)">
+      <div style="font-weight:700;color:var(--fail);margin-bottom:8px;font-size:12px">GOVERNANCE CONCERNS</div>
+      <ul style="font-size:12px;color:var(--text);padding-left:14px;line-height:1.8">
+        <li>No strategic autonomy — all major decisions through CIL hierarchy</li>
+        <li>IPO entirely OFS: government extracting value, not investing in growth</li>
+        <li>PSU culture may limit speed of critical minerals pivot</li>
+        <li>Related party concentration: CIL = client + promoter = conflict of interest risk</li>
+        <li>Government may mandate social/policy spending reducing commercial returns</li>
+        <li>Future OFS rounds could create periodic overhangs on stock</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="t5" class="tab-content">
+  <div class="section-title">Valuation &amp; Margin of Safety</div>
+  <div class="section-sub">Five-Method Framework | Base EPS: ₹9.33 (FY25) | WACC: 13%</div>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:20px">
+    <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--sub);letter-spacing:2px;margin-bottom:8px">KEY INPUTS</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;font-size:12px">
+      <div><div style="color:var(--sub);font-size:10px">FY25 EPS</div><div style="color:#fff;font-weight:700">₹9.33</div></div>
+      <div><div style="color:var(--sub);font-size:10px">FY26E EPS</div><div style="color:var(--warn);font-weight:700">₹8.1–8.7</div></div>
+      <div><div style="color:var(--sub);font-size:10px">FY27E EPS</div><div style="color:var(--pass);font-weight:700">₹9.8–11.0</div></div>
+      <div><div style="color:var(--sub);font-size:10px">Owner Earnings/sh</div><div style="color:#fff;font-weight:700">₹9.37</div></div>
+      <div><div style="color:var(--sub);font-size:10px">WACC</div><div style="color:#fff;font-weight:700">13%</div></div>
+      <div><div style="color:var(--sub);font-size:10px">Terminal g (base)</div><div style="color:#fff;font-weight:700">6.5%</div></div>
+      <div><div style="color:var(--sub);font-size:10px">Terminal P/E</div><div style="color:#fff;font-weight:700">18–22×</div></div>
+      <div><div style="color:var(--sub);font-size:10px">MoS Applied</div><div style="color:#fff;font-weight:700">25%</div></div>
+    </div>
+    <div style="font-size:10px;color:var(--sub);margin-top:8px">⚠ FY26 EPS estimated: 9M FY26 PAT ₹425 Cr. Q4 FY26 result (April 21 board meeting) will reset this estimate. If Q4 PAT &lt;₹215 Cr, full year FY26 will be below FY25 — a derating risk.</div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Method 1 — 2-Stage DCF</div>
+  <div class="dcf-wrap">
+    <table class="dcf-table">
+      <thead><tr><th>Year</th><th>Growth</th><th>Stress FCF/sh</th><th>Base FCF/sh</th><th>Accel FCF/sh</th><th>PV Factor (13%)</th><th>Stress PV</th><th>Base PV</th><th>Accel PV</th></tr></thead>
+      <tbody>
+        <tr><td>FY26E</td><td>Base: 10%</td><td>8.7</td><td>9.33</td><td>10.0</td><td>0.885</td><td>7.7</td><td>8.3</td><td>8.8</td></tr>
+        <tr><td>FY27E</td><td>Stage 1</td><td>9.6</td><td>10.8</td><td>12.2</td><td>0.783</td><td>7.5</td><td>8.5</td><td>9.6</td></tr>
+        <tr><td>FY28E</td><td>10/16/22%</td><td>10.5</td><td>12.5</td><td>14.9</td><td>0.693</td><td>7.3</td><td>8.7</td><td>10.3</td></tr>
+        <tr><td>FY29E</td><td></td><td>11.6</td><td>14.5</td><td>18.2</td><td>0.613</td><td>7.1</td><td>8.9</td><td>11.1</td></tr>
+        <tr><td>FY30E</td><td></td><td>12.7</td><td>16.9</td><td>22.1</td><td>0.543</td><td>6.9</td><td>9.2</td><td>12.0</td></tr>
+        <tr style="background:rgba(255,255,255,0.02)"><td>Stage 1 PV</td><td>—</td><td></td><td></td><td></td><td>—</td><td><strong>36.5</strong></td><td><strong>43.6</strong></td><td><strong>51.8</strong></td></tr>
+        <tr style="background:rgba(255,255,255,0.02)"><td>Stage 2 PV</td><td>7/10/13%</td><td></td><td></td><td></td><td>—</td><td><strong>38.0</strong></td><td><strong>51.0</strong></td><td><strong>74.0</strong></td></tr>
+        <tr style="background:rgba(255,255,255,0.02)"><td>Terminal PV</td><td>5.5/6.5/7.2%</td><td></td><td></td><td></td><td>—</td><td><strong>122</strong></td><td><strong>172</strong></td><td><strong>275</strong></td></tr>
+        <tr style="background:rgba(232,149,10,0.07);font-weight:700"><td>DCF Intrinsic Value</td><td>—</td><td></td><td></td><td></td><td>—</td><td class="num-fail">₹197</td><td class="num-warn">₹267</td><td class="num-hi">₹401</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="font-size:11px;color:var(--sub);margin-bottom:20px">Sensitivity: DCF base IV ranges ₹220–315 when WACC varies ±1% and terminal growth varies ±1%.</div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Method 2 — Owner Earnings Capitalisation</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+    <div class="card"><div style="font-size:10px;color:var(--sub);margin-bottom:4px">STRESS (g=5.5%, WACC=14%)</div><div style="font-family:'Rufina',serif;font-size:28px;color:var(--fail)">₹157</div><div style="font-size:11px;color:var(--sub)">OE ₹9.37 / (14%−5.5%)</div></div>
+    <div class="card"><div style="font-size:10px;color:var(--sub);margin-bottom:4px">BASE (g=7%, WACC=13%)</div><div style="font-family:'Rufina',serif;font-size:28px;color:var(--warn)">₹196</div><div style="font-size:11px;color:var(--sub)">OE ₹9.37 / (13%−8%)</div></div>
+    <div class="card"><div style="font-size:10px;color:var(--sub);margin-bottom:4px">ACCEL (g=8.5%, WACC=12%)</div><div style="font-family:'Rufina',serif;font-size:28px;color:var(--pass)">₹278</div><div style="font-size:11px;color:var(--sub)">OE ₹9.37 / (12%−8.5%)</div></div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Method 3 — EPV (Earnings Power Value)</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:20px;font-size:12px">
+    <div>NOPAT (FY25) = PBT ₹882 Cr × (1−24%) = ₹670 Cr</div>
+    <div style="color:var(--sub);margin:4px 0">EPV No-Growth = ₹670 Cr / WACC 13% = ₹5,154 Cr = <strong style="color:#fff">₹72/share</strong> (no-growth floor)</div>
+    <div>With ROIC/WACC growth premium: ₹72 × (ROIC/WACC) = ₹72 × (48.5/13) = ₹72 × 3.73 = <strong style="color:var(--warn)">₹268/share</strong> (growth-adjusted)</div>
+    <div style="color:var(--sub);margin-top:6px;font-size:10px">Economic Profit = (ROIC−WACC) × Invested Capital = (48.5%−13%) × ₹2,042 Cr = ₹725 Cr/yr — exceptional value creation above cost of capital.</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px">
+      <div><div style="color:var(--sub);font-size:10px">Stress EPV</div><div style="color:var(--fail);font-weight:700;font-size:16px">₹175</div></div>
+      <div><div style="color:var(--sub);font-size:10px">Base EPV</div><div style="color:var(--warn);font-weight:700;font-size:16px">₹268</div></div>
+      <div><div style="color:var(--sub);font-size:10px">Accel EPV</div><div style="color:var(--pass);font-weight:700;font-size:16px">₹350</div></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Method 4 — P/E Earnings Power</div>
+  <table class="data-table">
+    <thead><tr><th>Metric</th><th>Value</th><th>Comment</th></tr></thead>
+    <tbody>
+      <tr><td>Current P/E (FY25)</td><td>19.4×</td><td>₹180.87 ÷ ₹9.33</td></tr>
+      <tr><td>Forward P/E (FY26E)</td><td>20.8–22.3×</td><td>If FY26 EPS ₹8.1–8.7</td></tr>
+      <tr><td>Peer — EIL</td><td>~19.9×</td><td>Engineers India — similar PSU consultancy</td></tr>
+      <tr><td>Peer — RITES</td><td>~25.2×</td><td>Rail consultancy — premium for diversification</td></tr>
+      <tr><td>Fair P/E (CMPDI)</td><td>18–22×</td><td>PSU discount vs RITES, concentration risk</td></tr>
+      <tr><td>PEG Ratio</td><td>0.58×</td><td>19.4 P/E ÷ 33% PAT CAGR = undervalued on PEG</td></tr>
+      <tr><td>P/E IV (20× FY25)</td><td class="num-warn">₹187</td><td>Near fair value at current price</td></tr>
+      <tr><td>P/E IV (22× FY27E)</td><td class="num-hi">₹225</td><td>12-month forward re-rating potential</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Method 5 — Earnings Yield vs Bond Yield</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+    <div class="card"><div style="font-size:10px;color:var(--sub)">Earnings Yield</div><div style="font-family:'Rufina',serif;font-size:20px;color:var(--warn)">5.15%</div><div style="font-size:10px;color:var(--sub)">1/19.4×</div></div>
+    <div class="card"><div style="font-size:10px;color:var(--sub)">India 10yr G-Sec</div><div style="font-family:'Rufina',serif;font-size:20px;color:var(--fail)">6.97%</div><div style="font-size:10px;color:var(--sub)">VERIFIED (elevated, Iran)</div></div>
+    <div class="card"><div style="font-size:10px;color:var(--sub)">Equity Risk Premium</div><div style="font-family:'Rufina',serif;font-size:20px;color:var(--fail)">−1.82%</div><div style="font-size:10px;color:var(--sub)">Negative ERP — caution</div></div>
+    <div class="card"><div style="font-size:10px;color:var(--sub)">FCF Yield</div><div style="font-family:'Rufina',serif;font-size:20px;color:var(--warn)">4.87%</div><div style="font-size:10px;color:var(--sub)">₹629Cr ÷ ₹12,914Cr mktcap</div></div>
+  </div>
+  <div style="background:rgba(224,85,85,0.07);border:1px solid rgba(224,85,85,0.2);border-radius:6px;padding:10px;font-size:11px;margin-bottom:20px">
+    <strong style="color:#E07777">⚠ Earnings Yield Warning:</strong> At ₹180.87, the earnings yield (5.15%) is BELOW the 10yr G-sec yield (6.97%) — a negative ERP. This means the stock must deliver meaningful earnings growth to justify its price vs bonds. Normalise: if G-sec reverts to 6.0–6.5% as geopolitical tensions ease, ERP becomes +0% to +0.5% — barely adequate. Entry at ₹155–165 would bring EY to ~5.65–5.85% — still marginal but more acceptable with growth premium.
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">5-Method Summary Table</div>
+  <table class="val-summary">
+    <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adj.</th></tr></thead>
+    <tbody>
+      <tr><td>1 — DCF (2-Stage)</td><td class="num-fail">₹197</td><td class="num-warn">₹267</td><td class="num-hi">₹401</td><td>None</td></tr>
+      <tr><td>2 — OE Capitalisation</td><td class="num-fail">₹157</td><td class="num-warn">₹196</td><td class="num-hi">₹278</td><td>None</td></tr>
+      <tr><td>3 — EPV/ROIC</td><td class="num-fail">₹175</td><td class="num-warn">₹268</td><td class="num-hi">₹350</td><td>None</td></tr>
+      <tr><td>4 — P/E Earnings Power</td><td class="num-fail">₹155</td><td class="num-warn">₹210</td><td class="num-hi">₹260</td><td>None</td></tr>
+      <tr><td>5 — Earnings Yield</td><td class="num-fail">₹128</td><td class="num-warn">₹175</td><td class="num-hi">₹225</td><td>None</td></tr>
+      <tr class="val-blended"><td>Blended Base IV (avg 1–4)</td><td>₹171</td><td>₹235</td><td>₹322</td><td>⚪ Nil</td></tr>
+    </tbody>
+  </table>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+    <div class="card" style="border-left:3px solid var(--fail)"><div style="font-size:10px;color:var(--sub)">MoS Entry (25% below base)</div><div style="font-family:'Rufina',serif;font-size:22px;color:var(--fail)">₹176</div><div style="font-size:10px;color:var(--sub)">Current ₹180 ≈ at MoS entry</div></div>
+    <div class="card" style="border-left:3px solid var(--warn)"><div style="font-size:10px;color:var(--sub)">Blended Base IV (4 methods)</div><div style="font-family:'Rufina',serif;font-size:22px;color:var(--warn)">₹235</div><div style="font-size:10px;color:var(--sub)">23% upside from ₹180</div></div>
+    <div class="card" style="border-left:3px solid var(--pass)"><div style="font-size:10px;color:var(--sub)">Ideal Entry Zone</div><div style="font-family:'Rufina',serif;font-size:22px;color:var(--pass)">₹155–170</div><div style="font-size:10px;color:var(--sub)">30%+ MoS from blended base</div></div>
+  </div>
+  <div style="font-size:11px;color:var(--sub)">Note: Blended base IV uses methods 1–4 (excludes Method 5 as it is yields-only and distorted by current elevated G-sec due to Iran geopolitical spike). AI adjustment = nil (⚪ NEUTRAL). PSU governance discount already applied via WACC premium (13% vs 12% for private sector).</div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Peer Comparison</div>
+  <table class="data-table">
+    <thead><tr><th>Company</th><th>Mkt Cap</th><th>P/E</th><th>P/B</th><th>ROE</th><th>ROCE</th><th>PAT Margin</th></tr></thead>
+    <tbody>
+      <tr style="background:rgba(232,149,10,0.05)"><td><strong style="color:var(--amber)">CMPDI (NSE)</strong></td><td>₹12,914 Cr</td><td class="num-warn">19.4×</td><td>6.04×</td><td class="num-hi">36.7%</td><td class="num-hi">48.5%</td><td class="num-hi">31.7%</td></tr>
+      <tr><td>Engineers India (EIL)</td><td>~₹11,500 Cr</td><td>19.9×</td><td>4.3×</td><td>~22%</td><td>~28%</td><td>~18%</td></tr>
+      <tr><td>RITES Ltd</td><td>~₹9,083 Cr</td><td>25.2×</td><td>3.5×</td><td>~15%</td><td>~20%</td><td>~20%</td></tr>
+      <tr><td>MECL (unlisted)</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td></tr>
+    </tbody>
+  </table>
+  <div style="font-size:11px;color:var(--sub)">CMPDI trades at 19.4× P/E — at a discount to RITES (25.2×) but in line with EIL (19.9×). However, CMPDI's ROCE (48.5%) and PAT margin (31.7%) are materially superior to both peers. On a quality-adjusted basis, CMPDI deserves a P/E closer to RITES's 25× when the critical mineral option value and dominant market position are considered. At 22–24× P/E on FY27E EPS of ₹10.5, IV = ₹231–252.</div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="t6" class="tab-content">
+  <div class="section-title">Verdict &amp; Framework Synthesis</div>
+  <div class="section-sub">Four-Pillar Assessment | Buffett QV Series v5.0</div>
+
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 1 — Moat</div>
+      <div class="pillar-grade">B+</div>
+      <div class="pillar-note">Data archive + regulatory lock-in; concentrated client weakens to A−</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 2 — Financial</div>
+      <div class="pillar-grade">A−</div>
+      <div class="pillar-note">ROCE 48%, ROE 37%, debt-free; FCF conversion volatility limits to A−</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 3 — Management</div>
+      <div class="pillar-grade">B</div>
+      <div class="pillar-note">PSU governance limits autonomy; clean record, OFS overhang</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 4 — Valuation</div>
+      <div class="pillar-grade">B+</div>
+      <div class="pillar-note">At ₹180, near 25% MoS to blended base IV ₹235; EY below bond yield</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-label">Series Verdict — CMPDI</div>
+    <div class="verdict-title">WATCH ★★★★</div>
+    <div class="verdict-stars">★★★★☆</div>
+    <div class="verdict-prose">
+      CMPDI is an exceptional business — a knowledge monopolist with 50 years of irreplaceable geological data, 61% market dominance, statutory regulatory credibility, and ROCE above 48% in a near-zero-debt structure. The financial quality (A−) is among the best in the PSU universe. The IPO base breakout at ₹152–172 is technically constructive and the stock has already cleared the IPO price resistance.
+    </div>
+    <div class="verdict-prose" style="margin-top:10px">
+      However, three factors prevent a BUY verdict at ₹180.87: (1) the current price sits just at the 25% MoS entry level from blended base IV, offering modest safety margin; (2) the April 21 board meeting carries binary risk — if FY26 full year PAT disappoints (below ₹640 Cr), the stock could re-test ₹155–165; (3) the earnings yield (5.15%) is below the 10yr G-sec yield (6.97%), requiring meaningful growth to justify premium over bonds.
+    </div>
+    <div class="verdict-prose" style="margin-top:10px">
+      The critical mineral diversification thesis (NCMM + coking coal designation Jan 2026) is the multi-year re-rating catalyst. If non-CIL revenue scales to 20%+ by FY29, CMPDI deserves a RITES-like 24–25× P/E re-rating from current 19–20×. Patient investors who buy in the ₹155–170 zone at 30%+ MoS and hold through the critical minerals inflection could see substantial compounding over 5–7 years.
+    </div>
+    <div class="verdict-quote">"Price is what you pay. Value is what you get. At ₹180, you are paying fair value. At ₹155–165, you would be getting exceptional value." — Framework synthesis</div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">⬆ Upgrade Conditions to BUY ★★★★★</div>
+  <ul class="upgrade-list">
+    <li><span class="uc-num">01</span><span class="uc-text"><strong>Q4 FY26 results (April 21):</strong> Full year FY26 PAT ≥ ₹640 Cr (confirming FY25-level earnings; a decline would require re-entry below ₹165). FY26 PAT ≥ ₹700 Cr would be a strong positive surprise and could re-rate to ₹200+.</span></li>
+    <li><span class="uc-num">02</span><span class="uc-text"><strong>Price corrects to ₹155–170 zone</strong> (30%+ MoS from blended base IV ₹235), ideally post-results if disappointing. This is the ideal entry zone matching IPO base support levels.</span></li>
+    <li><span class="uc-num">03</span><span class="uc-text"><strong>Non-CIL revenue exceeds 15% of total</strong> for two consecutive quarters (from current &lt;10%). This would be the first concrete evidence of critical minerals / private miner / international diversification reducing concentration risk.</span></li>
+    <li><span class="uc-num">04</span><span class="uc-text"><strong>NMET/NCMM critical mineral exploration contract win ≥ ₹150 Cr</strong> announced. This would validate the thesis that CMPDI's capabilities extend beyond coal and justify a structural P/E re-rating toward peers like RITES (25×).</span></li>
+    <li><span class="uc-num">05</span><span class="uc-text"><strong>Debtor days fall below 130 for two consecutive quarters</strong> — would signal improved CIL payment discipline and convert FCF conversion from MARGINAL to PASS, upgrading financial quality to A and strengthening the fundamental conviction.</span></li>
+  </ul>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px">Series Comparison Table</div>
+  <div style="overflow-x:auto">
+    <table class="series-table">
+      <thead><tr><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry Zone</th></tr></thead>
+      <tbody>
+        <tr class="active-row"><td><strong>CMPDI</strong></td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>A−</td><td>B</td><td>B+</td><td>WATCH ★★★★</td><td>₹155–170</td></tr>
+        <tr><td>MELI</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>A</td><td>A−</td><td>A</td><td>A</td><td>BUY ★★★★★ AI</td><td>~$1,810</td></tr>
+        <tr><td>AMAGI</td><td>NSE</td><td>F</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>A−</td><td>BUY ★★★★★ AI</td><td>₹350</td></tr>
+        <tr><td>META</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A+</td><td>A−</td><td>B+</td><td>A−</td><td>BUY STARTER ★★★★½</td><td>~$542</td></tr>
+        <tr><td>ADBE</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>B+</td><td>A</td><td>B</td><td>A</td><td>WATCH ★★★★</td><td>~$220–240</td></tr>
+        <tr><td>HOOD</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>B</td><td>A−</td><td>B+</td><td>B</td><td>WATCH ★★★★</td><td>$60–65</td></tr>
+        <tr><td>UNH</td><td>NYSE</td><td>C</td><td>⚪</td><td>A−</td><td>B−</td><td>B−</td><td>B+</td><td>WATCH ★★★★</td><td>$260–310</td></tr>
+        <tr><td>UTIAMC</td><td>NSE</td><td>C</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>—</td><td>WATCH ★★★</td><td>₹780–950</td></tr>
+        <tr><td>ANGELONE</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>—</td><td>B</td><td>—</td><td>WATCH ★★★★</td><td>₹220–250</td></tr>
+        <tr><td>TSLA</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>—</td><td>—</td><td>—</td><td>—</td><td>WATCH ★★★★</td><td>$220–270</td></tr>
+        <tr><td>INDIGOPNTS</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH ★★★</td><td>₹544–600</td></tr>
+        <tr><td>AFCONS</td><td>NSE</td><td>C</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>—</td><td>AVOID</td><td>N/A</td></tr>
+        <tr><td>VIKRAMSOLR</td><td>NSE</td><td>B</td><td>⚪</td><td>B−</td><td>C+</td><td>C</td><td>B</td><td>AVOID</td><td>N/A</td></tr>
+        <tr><td>RAJESHEXPO</td><td>NSE</td><td>E</td><td>⚪</td><td>F</td><td>F</td><td>D−</td><td>F</td><td>AVOID</td><td>N/A</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="t7" class="tab-content">
+  <div class="section-title">Technical Analysis</div>
+  <div class="section-sub">IPO Base Framework | Listed March 30, 2026 (≈19 trading days history)</div>
+
+  <div style="background:rgba(232,149,10,0.07);border:1px solid rgba(232,149,10,0.2);border-radius:8px;padding:14px;margin-bottom:20px">
+    <div style="font-weight:700;color:var(--amber);font-size:13px;margin-bottom:6px">⚠ IMPORTANT: LIMITED TRADING HISTORY</div>
+    <div style="font-size:12px;color:var(--text);line-height:1.7">CMPDI has only ~19 trading days of secondary market history (Mar 30 – Apr 18, 2026). Standard TA indicators (50 DMA, 100 DMA, 200 DMA, OBV trends, divergences) are <strong>not meaningful</strong> at this stage. The appropriate framework for a newly listed stock is the <strong>IPO Base Analysis</strong> — adapted from William O'Neil's CAN SLIM methodology. All TA assessments below carry [ESTIMATED] confidence due to limited data.</div>
+  </div>
+
+  <div class="ipo-base-box">
+    <div class="ipo-base-title">Section A — IPO Base Formation &amp; Breakout Analysis</div>
+    <div style="font-size:12px;color:var(--text);margin-bottom:12px;line-height:1.7">
+      The <strong>IPO Base</strong> is the consolidation pattern that forms after a stock's initial trading — typically the stock falls from its IPO price, finds a floor, and consolidates before its first real breakout. The breakout above the IPO price (or the base's high) is the primary buy signal for IPO stocks.
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:10px;color:var(--sub);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:8px">PRICE LADDER — KEY LEVELS</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:grid;grid-template-columns:80px 1fr 100px;gap:8px;align-items:center;font-size:11px">
+          <div style="color:var(--pass);font-family:'Space Mono',monospace">₹187.85</div>
+          <div style="background:var(--pass);height:3px;border-radius:2px;opacity:0.7"></div>
+          <div style="color:var(--sub)">ATH — Resistance</div>
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr 100px;gap:8px;align-items:center;font-size:11px">
+          <div style="color:var(--amber);font-family:'Space Mono',monospace">₹180.87</div>
+          <div style="background:var(--amber);height:4px;border-radius:2px"></div>
+          <div style="color:var(--sub)">CMP — Current</div>
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr 100px;gap:8px;align-items:center;font-size:11px">
+          <div style="color:#9BA3B0;font-family:'Space Mono',monospace">₹172.00</div>
+          <div style="background:rgba(155,163,176,0.4);height:3px;border-radius:2px"></div>
+          <div style="color:var(--sub)">IPO Price — Key S/R</div>
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr 100px;gap:8px;align-items:center;font-size:11px">
+          <div style="color:var(--steel);font-family:'Space Mono',monospace">₹163.00</div>
+          <div style="background:var(--steel);height:2px;border-radius:2px;opacity:0.6"></div>
+          <div style="color:var(--sub)">IPO Floor (lower band)</div>
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr 100px;gap:8px;align-items:center;font-size:11px">
+          <div style="color:#E07777;font-family:'Space Mono',monospace">₹155.00</div>
+          <div style="background:#E07777;height:2px;border-radius:2px;opacity:0.5"></div>
+          <div style="color:var(--sub)">Ideal Entry Zone Top</div>
+        </div>
+        <div style="display:grid;grid-template-columns:80px 1fr 100px;gap:8px;align-items:center;font-size:11px">
+          <div style="color:#E05555;font-family:'Space Mono',monospace">₹152.22</div>
+          <div style="background:#E05555;height:2px;border-radius:2px;opacity:0.4"></div>
+          <div style="color:var(--sub)">ATL — Hard Support</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px">
+      <div>
+        <div style="color:var(--sub);font-size:10px;margin-bottom:6px;font-family:'Space Mono',monospace;letter-spacing:1px">IPO BASE METRICS</div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Base Type</span><span>IPO Base (O'Neil)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Base Low</span><span class="num-fail">₹152.22</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Base High (pivot)</span><span>₹172.00 (IPO price)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Base Depth</span><span style="color:var(--warn)">11.5%</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Base Length</span><span style="color:var(--warn)">~18 days (very young)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">Breakout Level</span><span class="num-hi">₹172+ (cleared)</span></div>
+      </div>
+      <div>
+        <div style="color:var(--sub);font-size:10px;margin-bottom:6px;font-family:'Space Mono',monospace;letter-spacing:1px">BREAKOUT ASSESSMENT</div>
+        <div style="font-size:12px;color:var(--text);line-height:1.7">
+          The stock cleared the ₹172 IPO price pivot and reached ₹187.85 ATH — a 10.4% gain from the pivot. Currently consolidating at ₹180 (~5% below ATH). The base is <strong style="color:var(--warn)">very young (18 days)</strong> — O'Neil typically looks for 6+ weeks for institutional bases. This is a high-risk setup for chasing. The preferred entry is:
+          <br><br>
+          <strong style="color:var(--amber)">Option A:</strong> Pullback to ₹163–172 (IPO price zone, test of breakout level) if Q4 results disappoint on April 21.
+          <br><br>
+          <strong style="color:var(--pass)">Option B:</strong> Second base formation post-April 21, then breakout above ₹188 on volume — the cleaner institutional entry.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Section B — Available MA Data</div>
+  <div class="card" style="margin-bottom:16px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;font-size:12px">
+      <div><div style="color:var(--sub);font-size:10px">20 EMA</div><div style="color:var(--warn)">Not reliable</div><div style="color:var(--sub);font-size:10px">&lt;20 trading days data</div></div>
+      <div><div style="color:var(--sub);font-size:10px">50 DMA</div><div style="color:var(--sub)">N/A</div><div style="color:var(--sub);font-size:10px">Needs 50 trading days</div></div>
+      <div><div style="color:var(--sub);font-size:10px">200 DMA</div><div style="color:var(--sub)">N/A</div><div style="color:var(--sub);font-size:10px">Needs 200 trading days</div></div>
+      <div><div style="color:var(--sub);font-size:10px">Price vs IPO</div><div style="color:var(--pass)">+5.2% above</div><div style="color:var(--sub);font-size:10px">₹180.87 vs ₹172</div></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Section C — Volume Analysis</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+    <div class="card"><div style="font-weight:700;font-size:12px;margin-bottom:6px">Listing Day Volume</div><div style="color:var(--sub);font-size:12px">~96.8 lakh shares traded on Day 1 (NSE) — very high volume. QIB 3.48× subscribed = institutional anchors present. Large block trades by LIC, ICICI Prudential, Goldman Sachs, BNP Paribas as anchor investors.</div></div>
+    <div class="card"><div style="font-weight:700;font-size:12px;margin-bottom:6px">Post-Listing Volume Signal</div><div style="color:var(--sub);font-size:12px">Post-listing volume data unavailable for detailed analysis. Key: if breakout above ₹187.85 ATH occurs on 2× average volume, it's the institutional entry confirmation for the next leg.</div></div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Section F — Trade Structure</div>
+  <div style="background:linear-gradient(135deg,rgba(232,149,10,0.06),transparent);border:1px solid rgba(232,149,10,0.2);border-radius:8px;padding:16px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:12px">
+      <div>
+        <div style="font-weight:700;color:var(--amber);margin-bottom:8px">SCENARIO A — POST-RESULTS CORRECTION ENTRY</div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Trigger</span><span>Q4 FY26 disappoints → ₹158–168</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Entry Zone</span><span class="num-hi">₹158–168</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Stop Loss</span><span class="num-fail">₹148 (below ATL)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Target 1</span><span>₹190 (3mo)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">Target 2 (fundamental)</span><span>₹235 (blended IV)</span></div>
+        <div style="margin-top:8px;color:var(--pass);font-weight:700">R:R from ₹163 mid: ~3.3:1</div>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--steel);margin-bottom:8px">SCENARIO B — SECOND BASE BREAKOUT</div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Trigger</span><span>Breakout above ₹188 on 2× vol</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Entry Zone</span><span>₹188–192 on breakout</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Stop Loss</span><span class="num-fail">₹170 (below IPO price)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span style="color:var(--sub)">Target 1</span><span>₹220 (6mo)</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">Target 2 (fundamental)</span><span>₹235 (blended IV)</span></div>
+        <div style="margin-top:8px;color:var(--warn);font-weight:700">R:R from ₹190: ~2.3:1 (acceptable)</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;background:rgba(224,85,85,0.07);border-radius:4px;padding:8px;font-size:11px;color:var(--sub)">
+      ⚠ <strong style="color:#E07777">DO NOT CHASE AT ₹180+:</strong> At ₹180 the stock offers limited R:R vs either scenario entry. The April 21 board meeting (3 days away) is the deciding catalyst. Current setup: watch, do not initiate. Recommended position size: 3–5% of portfolio (PSU, concentration risk, IPO stock).
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Technical Composite Score</div>
+  <table class="data-table">
+    <thead><tr><th>Dimension</th><th>Score (1–5)</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Price Structure</td><td class="num-warn">3/5</td><td>Above IPO price, below ATH — neutral setup</td></tr>
+      <tr><td>Trend (MA Dashboard)</td><td class="num-warn">2/5</td><td>N/A with 19 days history; assumed neutral</td></tr>
+      <tr><td>Volume Confirmation</td><td class="num-warn">3/5</td><td>High Day 1 vol; post-listing data insufficient</td></tr>
+      <tr><td>Momentum (RSI)</td><td class="num-warn">3/5</td><td>Reliable data insufficient; recent recovery bullish</td></tr>
+      <tr><td>Pattern Quality</td><td class="num-warn">3/5</td><td>Valid IPO base but too young; second base preferred</td></tr>
+      <tr><td>Entry Timing</td><td class="num-fail">2/5</td><td>3 days to binary catalyst (April 21); wait advised</td></tr>
+      <tr style="font-weight:700"><td>Total</td><td class="num-warn">16/30 = 53%</td><td>Neutral — wait for clarity post April 21</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="t8" class="tab-content">
+  <div class="section-title">Shareholding &amp; Free Float Analysis</div>
+  <div class="section-sub">March 2026 (Single Quarter Available — Newly Listed)</div>
+
+  <div style="background:rgba(232,149,10,0.07);border:1px solid rgba(232,149,10,0.2);border-radius:8px;padding:12px;margin-bottom:20px;font-size:12px">
+    ⚠ CMPDI has only one reported shareholding quarter (March 2026 post-listing). 5-quarter trend analysis will be possible from September 2026 onwards. All data below is from March 2026 only.
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Section A — Promoter Holding</div>
+  <div class="sh-bar-wrap">
+    <div class="sh-bar-label">Coal India Ltd (Promoter) <span>85.00%</span></div>
+    <div class="sh-bar"><div class="sh-bar-fill" style="width:85%;background:var(--amber)"></div></div>
+  </div>
+  <div style="font-size:12px;color:var(--text);margin-bottom:16px;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:6px;line-height:1.7">
+    Post-IPO promoter holding: 85% (Coal India). This is the <em>minimum</em> level for a major listed company. OFS reduced from 100% to 85%. SEBI 5-year lock-in applies to 85% holding but Coal India can conduct further OFS rounds after the lock-in period or at permissible thresholds. <strong>Watch for:</strong> Government budget announcements mentioning further disinvestment targets for CMPDI; each OFS round creates supply overhang. Zero pledged shares — clean.
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Section B — FII &amp; DII Holdings (Mar 2026)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+    <div>
+      <div class="sh-bar-wrap">
+        <div class="sh-bar-label">FIIs (Foreign Institutional) <span>1.21%</span></div>
+        <div class="sh-bar"><div class="sh-bar-fill" style="width:8.1%;background:var(--steel)"></div></div>
+      </div>
+      <div class="sh-bar-wrap">
+        <div class="sh-bar-label">DIIs (Domestic Institutional) <span>11.12%</span></div>
+        <div class="sh-bar"><div class="sh-bar-fill" style="width:74%;background:var(--mineral)"></div></div>
+      </div>
+      <div class="sh-bar-wrap">
+        <div class="sh-bar-label">Government Other <span>0.08%</span></div>
+        <div class="sh-bar"><div class="sh-bar-fill" style="width:0.5%;background:var(--sub)"></div></div>
+      </div>
+      <div class="sh-bar-wrap">
+        <div class="sh-bar-label">Public (Retail) <span>2.58%</span></div>
+        <div class="sh-bar"><div class="sh-bar-fill" style="width:17.2%;background:var(--warn)"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px">Anchor Investors (Day 1)</div>
+      <div style="font-size:11px;color:var(--sub);line-height:1.8">
+        LIC of India &nbsp;·&nbsp; ICICI Prudential MF<br>
+        Goldman Sachs &nbsp;·&nbsp; BNP Paribas Financial<br>
+        Societe Generale &nbsp;·&nbsp; Citigroup<br>
+        Nippon India MF &nbsp;·&nbsp; Edelweiss MF<br>
+        GIC of India &nbsp;·&nbsp; Baring Private Equity India
+      </div>
+      <div style="font-size:11px;color:var(--sub);margin-top:8px">Total anchor allocation: ₹469.74 Cr at ₹172/share (22 anchors). 6-month lock-in = September 2026.</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Section C — Free Float &amp; Market Structure</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+    <div class="card"><div style="font-size:10px;color:var(--sub)">Total Shares</div><div style="font-size:18px;font-weight:700;color:#fff">71.5 Cr</div></div>
+    <div class="card"><div style="font-size:10px;color:var(--sub)">Free Float (15%)</div><div style="font-size:18px;font-weight:700;color:var(--amber)">10.7 Cr sh</div></div>
+    <div class="card"><div style="font-size:10px;color:var(--sub)">Float Mkt Cap</div><div style="font-size:18px;font-weight:700;color:#fff">~₹1,937 Cr</div></div>
+    <div class="card"><div style="font-size:10px;color:var(--sub)">Total Shareholders</div><div style="font-size:18px;font-weight:700;color:#fff">90,974</div></div>
+  </div>
+  <div style="font-size:12px;color:var(--sub);padding:10px;background:var(--card);border:1px solid var(--border);border-radius:6px;line-height:1.7">
+    <strong style="color:var(--text)">Float Structure Analysis:</strong> With 85% promoter holding, the free float is only 15% (~₹1,937 Cr). This creates structural supply scarcity — any institutional buying in the float significantly moves the price. The anchor lock-in (Sept 2026) means even some of the 15% is "frozen" near-term. Post September 2026, anchor lock-in expiration could create temporary supply. DIIs at 11.12% of total (≈74% of float) are dominant holders — meaning domesttic mutual funds and insurance companies control the price action.
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Section E — Ownership Scores</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="card">
+      <div style="font-size:10px;color:var(--sub);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:8px">OWNERSHIP MOMENTUM SCORE</div>
+      <div style="font-family:'Rufina',serif;font-size:40px;color:var(--warn)">52<span style="font-size:18px">/100</span></div>
+      <div style="font-size:11px;color:var(--sub);margin-top:6px">Only 1 quarter data. Anchor quality is high (LIC, Goldman, ICICI Pru). FII at 1.21% is low — room for FII accumulation as the stock matures is a potential tailwind. DII dominance at ~74% of float is a two-edged sword: provides price stability but limits upside velocity.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:10px;color:var(--sub);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:8px">SHAREHOLDING RISK SCORE</div>
+      <div style="font-family:'Rufina',serif;font-size:40px;color:var(--warn)">42<span style="font-size:18px">/100</span></div>
+      <div style="font-size:11px;color:var(--sub);margin-top:6px">Zero pledged shares (+). Concentration at Coal India (−). Anchor lock-in expiry Sept 2026 potential supply event (−). Government disinvestment program risk (−). No MSCI India weight yet (needs minimum 3 months trading). Total risk = moderate but manageable.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="t9" class="tab-content">
+  <div class="section-title">AI Opportunity Intelligence</div>
+  <div class="section-sub">⚪ AI NEUTRAL Classification — Section A + Section F only (framework rule)</div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
+    <div class="card" style="text-align:center">
+      <div style="font-size:10px;color:var(--sub);margin-bottom:4px;font-family:'Space Mono',monospace">CATEGORY</div>
+      <div style="font-family:'Rufina',serif;font-size:24px;color:var(--steel)">C</div>
+      <div style="font-size:10px;color:var(--sub)">Mature Compounder</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:10px;color:var(--sub);margin-bottom:4px;font-family:'Space Mono',monospace">AI OVERLAY</div>
+      <div style="font-size:22px;color:#9BA3B0">⚪</div>
+      <div style="font-size:10px;color:#9BA3B0">AI NEUTRAL</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:10px;color:var(--sub);margin-bottom:4px;font-family:'Space Mono',monospace">DATA FLYWHEEL</div>
+      <div style="font-size:18px;color:var(--sub)">★</div>
+      <div style="font-size:10px;color:var(--sub)">COSMETIC (1/10)</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:10px;color:var(--sub);margin-bottom:4px;font-family:'Space Mono',monospace">AI PHASE (SECTOR)</div>
+      <div style="font-family:'Rufina',serif;font-size:24px;color:var(--warn)">1</div>
+      <div style="font-size:10px;color:var(--sub)">Phase 1: Experimentation</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Section A — AI Classification Rationale</div>
+  <div class="card" style="margin-bottom:20px">
+    <div style="font-size:12px;color:var(--text);line-height:1.8">
+      <p>CMPDI deploys several advanced digital technologies in its service delivery: <strong>Remote Sensing &amp; GIS</strong> (satellite-based mine monitoring), <strong>LiDAR</strong> (precision survey), <strong>UAV/Drones</strong> (aerial mine mapping), and <strong>Digital Photogrammetry</strong>. These represent genuine operational efficiency improvements — but they are <em>tools</em>, not AI moats.</p>
+      <br>
+      <p>The critical distinction: CMPDI's competitive advantage does <em>not</em> improve algorithmically with more usage. A new drone survey does not make the next drone survey better through machine learning. The 50-year geological data archive has <em>potential</em> to be an AI training dataset but is not currently deployed as one. India's mining sector AI adoption is firmly in <strong>Phase 1 (Experimentation)</strong> — pilot projects, no commercial-scale AI products, revenue contribution immaterial.</p>
+      <br>
+      <p><strong>AI threat assessment:</strong> Low. CMPDI's core moat (proprietary data + regulatory credibility + physical infrastructure) is AI-resistant in the near-term. Generic AI cannot replicate 50 years of sub-surface geological surveys or replace statutory approvals. However, if global mining consultancies (SRK Consulting, Wood Group, AMC Consultants) develop AI tools that dramatically speed up mine planning, CMPDI could face a medium-term challenge if it does not invest in AI capabilities.</p>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:10px">Section F — AI Opportunity Score &amp; Portfolio Role</div>
+  <div style="margin-bottom:8px;font-size:12px;color:var(--sub)">AI Opportunity Score Breakdown</div>
+  <div class="card" style="margin-bottom:16px">
+    <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:8px"><div style="font-size:12px">Data Flywheel Strength</div><div style="font-size:12px;color:var(--sub);text-align:right">3/20</div></div>
+    <div class="ai-score-bar"><div class="ai-score-fill" style="width:15%"></div></div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:8px;margin-top:10px"><div style="font-size:12px">Adoption Phase Timing</div><div style="font-size:12px;color:var(--sub);text-align:right">8/20</div></div>
+    <div class="ai-score-bar"><div class="ai-score-fill" style="width:40%"></div></div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:8px;margin-top:10px"><div style="font-size:12px">Value Chain Position</div><div style="font-size:12px;color:var(--sub);text-align:right">12/20</div></div>
+    <div class="ai-score-bar"><div class="ai-score-fill" style="width:60%"></div></div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:8px;margin-top:10px"><div style="font-size:12px">India Structural Advantage</div><div style="font-size:12px;color:var(--sub);text-align:right">6/20</div></div>
+    <div class="ai-score-bar"><div class="ai-score-fill" style="width:30%"></div></div>
+    <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:8px;margin-top:10px"><div style="font-size:12px">AI Threat Resistance</div><div style="font-size:12px;color:var(--sub);text-align:right">14/20</div></div>
+    <div class="ai-score-bar"><div class="ai-score-fill" style="width:70%"></div></div>
+    <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-weight:700;font-size:14px">TOTAL AI OPPORTUNITY SCORE</div>
+      <div style="font-family:'Rufina',serif;font-size:32px;color:var(--warn)">43<span style="font-size:16px">/100</span></div>
+    </div>
+  </div>
+
+  <div style="background:rgba(120,120,140,0.1);border:1px solid rgba(120,120,140,0.25);border-radius:8px;padding:14px">
+    <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--sub);letter-spacing:2px;margin-bottom:8px">PORTFOLIO ROLE</div>
+    <div style="font-size:16px;font-weight:700;color:#9BA3B0;margin-bottom:8px">⚪ AI NEUTRAL — STANDARD FUNDAMENTAL FRAMEWORK GOVERNS</div>
+    <div style="font-size:12px;color:var(--text);line-height:1.7">AI neither helps nor hurts CMPDI materially in the investment horizon of this analysis (3–5 years). The investment thesis rests entirely on fundamentals: dominant market position, exceptional capital returns, critical minerals diversification, and PSU valuation discount correction. The AI score of 43/100 reflects strong threat resistance (its moat is AI-proof near-term) but limited AI-driven upside.</div>
+    <div style="margin-top:10px;font-size:11px;color:var(--sub)">Investment Horizon: <strong style="color:var(--text)">3–5 years</strong> (consultancy growth story + critical minerals transition). Not a short-term trade.</div>
+    <div style="margin-top:8px;font-size:11px;color:var(--sub)">Monitoring Flag: If CMPDI announces a dedicated AI/ML initiative to build AI-powered geological interpretation tools using its 50-year data archive, this AI score would immediately jump to 65–70+ (STRATEGIC BET tier) — the data asset is latent AI optionality not yet activated.</div>
+  </div>
+</div>
+
+<footer style="max-width:1200px">
+  <p><strong>DISCLAIMER:</strong> This report is generated by the Buffett Quality-Value Series v5.0 analytical framework for research and educational purposes only. It does not constitute investment advice, a solicitation to buy or sell securities, or a recommendation. All investments involve risk. Past performance does not guarantee future results. Data sourced from publicly available sources (Screener.in, NSE/BSE filings, RHP, IEA, RBI, tradingeconomics.com) as of April 18, 2026. Confidence labels: [VERIFIED] = official source; [ESTIMATED] = cross-referenced; [UNVERIFIED] = limited source. Please consult a SEBI-registered investment advisor before making investment decisions.</p>
+  <p style="margin-top:8px">Fonts: Rufina (Display) · Mulish (Body) · Space Mono (Monospace) — Google Fonts · Report generated April 18, 2026 · Buffett QV Series v5.0 · CMPDI_qv_report.html</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

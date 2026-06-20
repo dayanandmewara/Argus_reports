@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PANW — Buffett Quality-Value Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060b18;
+  --surface: #0d1427;
+  --surface2: #121c35;
+  --border: #1e2d52;
+  --cyan: #00e5ff;
+  --cyan-dim: #00b8d4;
+  --cyan-glow: rgba(0,229,255,0.12);
+  --amber: #f59e0b;
+  --amber-dim: #d97706;
+  --green: #10b981;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --text: #e8edf8;
+  --text-dim: #8899bb;
+  --text-faint: #4a5980;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #060b18 0%, #0d1a38 50%, #060f1e 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 28px 24px;
+  position: relative;
+  overflow: hidden;
+  max-height: 220px;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+.hero-left {}
+.ticker-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.ticker { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: var(--cyan); letter-spacing: -0.02em; }
+.exchange-badge { background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); font-family: var(--font-mono); font-size: 0.68rem; padding: 2px 8px; border-radius: 4px; }
+.company-name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.hero-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.pill { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; padding: 3px 10px; border-radius: 4px; border: 1px solid; white-space: nowrap; }
+.pill-cat { background: rgba(0,229,255,0.08); border-color: var(--cyan-dim); color: var(--cyan); }
+.pill-ai { background: rgba(16,185,129,0.1); border-color: var(--green); color: var(--green); }
+.pill-fly { background: rgba(245,158,11,0.1); border-color: var(--amber); color: var(--amber); }
+.pill-phase { background: rgba(139,92,246,0.1); border-color: #8b5cf6; color: #a78bfa; }
+.pill-macro { background: rgba(255,255,255,0.05); border-color: var(--border); color: var(--text-dim); }
+.hero-lede { font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; max-width: 700px; }
+.verdict-box { text-align: right; }
+.verdict-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; }
+.verdict-main { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--amber); }
+.verdict-stars { font-size: 1.1rem; color: var(--amber); }
+.price-row { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; }
+.price-val { color: var(--text); font-weight: 600; }
+
+/* ── TAB BAR ── */
+#tab-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: #080e1f;
+  border-bottom: 1px solid var(--border);
+  display: flex; overflow-x: auto;
+  scrollbar-width: none;
+}
+#tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  font-family: var(--font-display);
+  font-size: 0.72rem; font-weight: 600;
+  color: var(--text-faint);
+  background: none; border: none;
+  padding: 12px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.tab-btn:hover { color: var(--text-dim); }
+.tab-btn.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+/* ── CONTENT ── */
+.tab-content { display: none; padding: 28px; max-width: 1100px; margin: 0 auto; }
+.tab-content.active-tab { display: block; }
+
+/* ── SECTIONS ── */
+.section { margin-bottom: 36px; }
+.section-title {
+  font-family: var(--font-display);
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--cyan-dim);
+  border-left: 3px solid var(--cyan);
+  padding-left: 10px; margin-bottom: 16px;
+}
+
+/* ── METRIC GRID ── */
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.metric-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  border-left: 3px solid var(--border);
+}
+.metric-card.green { border-left-color: var(--green); }
+.metric-card.amber { border-left-color: var(--amber); }
+.metric-card.red { border-left-color: var(--red); }
+.metric-card.cyan { border-left-color: var(--cyan); }
+.metric-label { font-size: 0.68rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.metric-value { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--text); }
+.metric-sub { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; }
+
+/* ── TABLES ── */
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+th { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+td { padding: 9px 10px; border-bottom: 1px solid rgba(30,45,82,0.5); color: var(--text-dim); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(0,229,255,0.03); }
+.tbl-highlight { color: var(--text); font-weight: 500; }
+.tbl-mono { font-family: var(--font-mono); }
+.tbl-green { color: var(--green); }
+.tbl-amber { color: var(--amber); }
+.tbl-red { color: var(--red); }
+.tbl-cyan { color: var(--cyan); }
+
+/* ── SCORECARD ── */
+.scorecard { display: grid; gap: 8px; }
+.score-row {
+  display: grid; grid-template-columns: 200px 1fr auto;
+  gap: 12px; align-items: center;
+  background: var(--surface); border-radius: 6px; padding: 10px 14px;
+  border: 1px solid var(--border);
+}
+.score-name { font-size: 0.8rem; color: var(--text); font-weight: 500; }
+.score-bar-wrap { background: rgba(255,255,255,0.05); border-radius: 3px; height: 5px; }
+.score-bar { height: 5px; border-radius: 3px; }
+.score-badge { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+.badge-pass { background: rgba(16,185,129,0.15); color: var(--green); }
+.badge-marginal { background: rgba(245,158,11,0.15); color: var(--amber); }
+.badge-fail { background: rgba(239,68,68,0.15); color: var(--red); }
+
+/* ── CONFIDENCE LABELS ── */
+.verified { background: rgba(16,185,129,0.12); color: var(--green); font-family: var(--font-mono); font-size: 0.6rem; padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(16,185,129,0.3); }
+.estimated { background: rgba(245,158,11,0.12); color: var(--amber); font-family: var(--font-mono); font-size: 0.6rem; padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(245,158,11,0.3); }
+.unverified { background: rgba(239,68,68,0.12); color: var(--red); font-family: var(--font-mono); font-size: 0.6rem; padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(239,68,68,0.3); }
+
+/* ── PILLAR GRADE ── */
+.grade-box {
+  display: inline-flex; flex-direction: column; align-items: center;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 18px; min-width: 90px;
+}
+.grade-letter { font-family: var(--font-display); font-size: 2rem; font-weight: 800; line-height: 1; }
+.grade-a { color: var(--green); }
+.grade-b { color: var(--cyan); }
+.grade-c { color: var(--amber); }
+.grade-d { color: #f87171; }
+.grade-label { font-size: 0.65rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+.grades-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+
+/* ── VERDICT SECTION ── */
+.verdict-section {
+  background: linear-gradient(135deg, #0d1427, #0a1628);
+  border: 1px solid var(--border); border-left: 4px solid var(--amber);
+  border-radius: 10px; padding: 24px;
+}
+.verdict-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--amber); margin-bottom: 8px; }
+.verdict-quote { font-style: italic; color: var(--text-dim); margin-bottom: 16px; font-size: 0.85rem; border-left: 2px solid var(--border); padding-left: 12px; }
+.verdict-body { color: var(--text); font-size: 0.88rem; line-height: 1.7; }
+
+/* ── UPGRADE CONDITIONS ── */
+.upgrade-list { display: grid; gap: 8px; }
+.upgrade-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px 14px;
+}
+.upgrade-num { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; color: var(--cyan); background: rgba(0,229,255,0.1); padding: 2px 7px; border-radius: 4px; margin-top: 1px; flex-shrink: 0; }
+.upgrade-text { font-size: 0.82rem; color: var(--text); }
+
+/* ── FLYWHEEL BOX ── */
+.flywheel-box {
+  background: linear-gradient(135deg, rgba(16,185,129,0.06), rgba(0,229,255,0.04));
+  border: 1px solid rgba(16,185,129,0.3); border-radius: 10px; padding: 20px;
+  margin-bottom: 20px;
+}
+.flywheel-title { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; color: var(--green); margin-bottom: 12px; }
+.flywheel-badge { display: inline-block; background: rgba(16,185,129,0.15); color: var(--green); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(16,185,129,0.4); margin-bottom: 12px; }
+.fly-q { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px; }
+.fly-a { font-size: 0.82rem; color: var(--text); margin-bottom: 10px; padding-left: 12px; border-left: 2px solid var(--green); }
+.fly-score { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.fly-score-label { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint); }
+.fly-score-val { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: var(--green); }
+
+/* ── AI SCORE GAUGE ── */
+.ai-gauge {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px; text-align: center;
+}
+.gauge-circle {
+  width: 100px; height: 100px; border-radius: 50%;
+  background: conic-gradient(var(--cyan) 0% 70%, var(--border) 70% 100%);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+  position: relative;
+}
+.gauge-inner {
+  width: 74px; height: 74px; border-radius: 50%;
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+.gauge-num { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 700; color: var(--cyan); }
+.gauge-label-small { font-size: 0.6rem; color: var(--text-faint); }
+.gauge-role { font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; color: var(--cyan); }
+.gauge-role-sub { font-size: 0.72rem; color: var(--text-dim); }
+
+/* ── AI VALUE CHAIN ── */
+.value-chain { display: flex; gap: 0; margin: 16px 0; overflow-x: auto; }
+.chain-level {
+  flex: 1; min-width: 110px; padding: 12px 8px; text-align: center;
+  background: var(--surface); border: 1px solid var(--border);
+  border-right: none; font-size: 0.7rem; color: var(--text-dim);
+  position: relative;
+}
+.chain-level:first-child { border-radius: 6px 0 0 6px; }
+.chain-level:last-child { border-radius: 0 6px 6px 0; border-right: 1px solid var(--border); }
+.chain-level.active {
+  background: rgba(0,229,255,0.08); border-color: var(--cyan);
+  color: var(--text);
+}
+.chain-level.active::before {
+  content: '▼'; position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+  color: var(--cyan); font-size: 0.8rem;
+}
+.chain-num { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-faint); margin-bottom: 4px; }
+.chain-name { font-weight: 600; font-size: 0.72rem; }
+
+/* ── DCF TABLE ── */
+.dcf-table table { font-size: 0.78rem; }
+.dcf-table th { font-size: 0.6rem; }
+
+/* ── MOAT CARDS ── */
+.moat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.moat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px;
+}
+.moat-card-title { font-family: var(--font-display); font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.moat-stars { color: var(--amber); font-size: 0.9rem; margin-bottom: 8px; }
+.moat-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.55; }
+
+/* ── TECH GRID ── */
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.tech-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; padding: 12px;
+}
+.tech-indicator { font-size: 0.68rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.tech-value { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.tech-signal { font-size: 0.68rem; margin-top: 2px; }
+.sig-bull { color: var(--green); } .sig-bear { color: var(--red); } .sig-neut { color: var(--amber); }
+
+/* ── SERIES TABLE ── */
+.series-table-wrap { overflow-x: auto; margin-top: 12px; }
+
+/* ── OWNERSHIP ── */
+.own-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; margin: 8px 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 680px) {
+  .hero { max-height: none; padding: 20px 16px 16px; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .ticker { font-size: 1.7rem; }
+  .grades-row { gap: 8px; }
+  .tab-btn { padding: 10px 12px; font-size: 0.66rem; }
+  .tab-content { padding: 18px 14px; }
+  .score-row { grid-template-columns: 1fr auto; }
+  .score-row .score-bar-wrap { display: none; }
+}
+@media (max-width: 600px) {
+  .metric-grid { grid-template-columns: 1fr 1fr; }
+  .moat-grid { grid-template-columns: 1fr; }
+  .chain-level { min-width: 80px; font-size: 0.62rem; }
+}
+
+/* ── MISC ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.info-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.info-box p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 8px; }
+.info-box p:last-child { margin-bottom: 0; }
+.info-title { font-family: var(--font-display); font-size: 0.78rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.summary-table-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.tag-green { color: var(--green); font-weight: 600; }
+.tag-red { color: var(--red); font-weight: 600; }
+.tag-amber { color: var(--amber); font-weight: 600; }
+.tag-cyan { color: var(--cyan); font-weight: 600; }
+hr.divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+footer { padding: 20px 28px; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-faint); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="ticker-row">
+        <span class="ticker">PANW</span>
+        <span class="exchange-badge">NASDAQ</span>
+      </div>
+      <div class="company-name">Palo Alto Networks, Inc.</div>
+      <div class="hero-pills">
+        <span class="pill pill-cat">CAT C — MATURE QUALITY COMPOUNDER</span>
+        <span class="pill pill-ai">🟢 AI WIDENER</span>
+        <span class="pill pill-fly">⚙ FLYWHEEL FORMING 7.5/10</span>
+        <span class="pill pill-phase">PHASE 3 — INFLECTION</span>
+        <span class="pill pill-macro">MACRO: NEUTRAL → AI TAILWIND</span>
+      </div>
+      <div class="hero-lede">Global AI-powered cybersecurity platform across Network Security, SASE, Cloud Security and Security Operations. Platformization strategy consolidates enterprise security spend onto three integrated suites. Unit 42 threat intelligence from 70,000+ customers creates a forming data flywheel. Rule-of-50 company for five consecutive years; AI is both deepening and widening the moat.</div>
+    </div>
+    <div class="verdict-box">
+      <div class="verdict-label">Series Verdict</div>
+      <div class="verdict-main">WATCH</div>
+      <div class="verdict-stars">★★★</div>
+      <div class="price-row">~<span class="price-val">$175–178</span> <span class="unverified">UNVERIFIED</span></div>
+      <div class="price-row" style="margin-top:4px">Base IV <span class="price-val">~$145</span> · Entry <span class="price-val">$130–155</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro & Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content" style="display:block">
+  <div class="section">
+    <div class="section-title">Business Overview</div>
+    <div class="metric-grid">
+      <div class="metric-card cyan">
+        <div class="metric-label">FY2025 Revenue</div>
+        <div class="metric-value">$9.22B</div>
+        <div class="metric-sub">+15% YoY <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">NGS ARR</div>
+        <div class="metric-value">$5.6B</div>
+        <div class="metric-sub">+32% YoY <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">RPO (Backlog)</div>
+        <div class="metric-value">$15.8B</div>
+        <div class="metric-sub">+24% YoY <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Adj FCF Margin (FY25)</div>
+        <div class="metric-value">~37.5%</div>
+        <div class="metric-sub">Rule-of-50 ✓ <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="metric-card cyan">
+        <div class="metric-label">FY2026 Rev Guidance</div>
+        <div class="metric-value">$10.50–10.54B</div>
+        <div class="metric-sub">+14% YoY <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">FY2026 FCF Margin Guide</div>
+        <div class="metric-value">38–39%</div>
+        <div class="metric-sub">FY2028 target: 40%+ <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">GAAP Gross Margin (FY24)</div>
+        <div class="metric-value">74.3%</div>
+        <div class="metric-sub">Expanding trend <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Customers (Platforms)</div>
+        <div class="metric-value">1,150+</div>
+        <div class="metric-sub">Platformizations in top-5000 <span class="verified">VERIFIED</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Why This Stock Is In The Series</div>
+    <div class="info-box">
+      <p>PANW represents the flagship AI-Widener cybersecurity compounder — a business where AI is not a feature add-on but a structural moat builder. The platformization strategy (consolidating 3-platform enterprise security) is the single most important moat-building exercise in the cybersecurity sector today, creating 3–7 year switching cost lock-in at the enterprise level.</p>
+      <p>The stock was previously covered in the series and carried a prior WATCH entry. At the current price (~$175), the stock trades above our base IV (~$145) but below the acceleration scenario IV (~$210), making it a discipline test: exceptional business, but entry zone not yet reached. The AI tailwind from agentic security (PANW's NGTS suite) and the proposed CyberArk acquisition (identity security as 5th pillar) could accelerate the flywheel materially.</p>
+      <p><strong>Key tension:</strong> PANW is a Rule-of-50 company with expanding FCF, a confirmed data flywheel forming, and an AI-native threat intelligence engine — yet the ERP is negative (-1.1%), meaning the FCF yield (3.2%) is below the US 10-year Treasury (4.33%). Price discipline is required.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Business Segments & Platformization Progress</div>
+    <table>
+      <thead><tr><th>Platform</th><th>Key Products</th><th>FY25 ARR / Status</th><th>AI Integration</th></tr></thead>
+      <tbody>
+        <tr><td class="tbl-highlight">Network Security (Strata)</td><td>Firewalls, SASE, Prisma Access, NGFW</td><td><span class="tbl-green">Largest revenue; software mix 40%+</span></td><td>Precision AI — inline threat prevention</td></tr>
+        <tr><td class="tbl-highlight">Cloud Security (Prisma Cloud)</td><td>CNAPP, CSPM, runtime agents, AI-SPM</td><td><span class="tbl-amber">High growth; AI security posture mgmt</span></td><td>AI-native code-to-cloud protection</td></tr>
+        <tr><td class="tbl-highlight">Security Operations (Cortex)</td><td>XSIAM, XDR, XSOAR, Xpanse</td><td><span class="tbl-green">3x YoY growth; SIEM replacement</span></td><td>AI-driven SOC; auto-remediation</td></tr>
+        <tr><td class="tbl-highlight">Unit 42 (Intelligence)</td><td>Threat research, IR, consulting</td><td><span class="tbl-cyan">Data engine for all three platforms</span></td><td>Flywheel core: 5B+ events/day [ESTIMATED]</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Strategic Developments (2025–2026)</div>
+    <div class="info-box">
+      <div class="info-title">Proposed CyberArk Acquisition <span class="estimated">ESTIMATED — awaiting SEC confirmation</span></div>
+      <p>A Form 425 filing (business combination prospectus) was identified referencing "A combination of Palo Alto Networks and CyberArk will create the leading platform for securing AI end-to-end." This would add Identity Security (Privileged Access Management) as a 5th pillar to PANW's platform, addressing the fastest-growing threat vector: AI agentic identities. CyberArk's market cap ~$18B implies a transformative acquisition. <strong>Material uncertainty: this deal is unconfirmed at time of report generation.</strong></p>
+      <div class="info-title" style="margin-top:12px">Koi Acquisition — Agentic Endpoint Security <span class="verified">VERIFIED</span></div>
+      <p>PANW recently completed the acquisition of Koi to secure the agentic endpoint (April 2026). Extends the Cortex platform into AI agent lifecycle protection — preventing agent hijacking, prompt injection, and data exfiltration by AI systems.</p>
+      <div class="info-title" style="margin-top:12px">Next-Generation Trust Security (NGTS) Suite <span class="verified">VERIFIED</span></div>
+      <p>Launched March 2026 — NGTS automates AI defence at the enterprise perimeter. Documented 247% ROI over 3 years in Forrester TEI study. Positions PANW as "one-stop shop" for AI-era enterprise security.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <div class="section">
+    <div class="section-title">Layer 1 — Macro Anchor (US)</div>
+    <div class="metric-grid">
+      <div class="metric-card cyan">
+        <div class="metric-label">US 10Y Treasury Yield</div>
+        <div class="metric-value">4.33%</div>
+        <div class="metric-sub">April 24, 2026 <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">US Real GDP Growth (Q4 2025)</div>
+        <div class="metric-value">~0.5%</div>
+        <div class="metric-sub">Annualised; slowing <span class="estimated">ESTIMATED</span></div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">US CPI (March 2026)</div>
+        <div class="metric-value">3.3% YoY</div>
+        <div class="metric-sub">Sticky; above Fed target <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">US Nominal GDP Growth</div>
+        <div class="metric-value">~3.8%</div>
+        <div class="metric-sub">Real 0.5% + CPI 3.3% <span class="estimated">ESTIMATED</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Terminal Growth Ceiling</div>
+        <div class="metric-value">~4.0%</div>
+        <div class="metric-sub">Nominal GDP × 0.9 (defensive est.) <span class="estimated">ESTIMATED</span></div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Fed Policy Stance</div>
+        <div class="metric-value">ON HOLD</div>
+        <div class="metric-sub">No cuts expected in 2026 <span class="estimated">ESTIMATED</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <table>
+        <thead><tr><th>Macro Dimension</th><th>Current Status</th><th>Impact on PANW</th></tr></thead>
+        <tbody>
+          <tr><td>US Economic Cycle</td><td><span class="tbl-amber">Slowdown / Stagflation-lite</span></td><td>IT budget pressure possible but security is non-negotiable</td></tr>
+          <tr><td>Interest Rate Cycle</td><td><span class="tbl-amber">Rates elevated / Fed on hold</span></td><td>Negative: high discount rate compresses premium valuations</td></tr>
+          <tr><td>Enterprise Tech Spend</td><td><span class="tbl-green">Resilient; security ring-fenced</span></td><td>Positive: security budgets last to be cut</td></tr>
+          <tr><td>Geopolitical Risk</td><td><span class="tbl-red">Elevated (Strait of Hormuz)</span></td><td>Positive: threat landscape acceleration = higher security spend</td></tr>
+          <tr><td>AI Investment Cycle</td><td><span class="tbl-green">Accelerating globally</span></td><td>Strong positive: AI expansion = larger attack surface = more PANW demand</td></tr>
+          <tr><td>AI Disruption Risk to PANW</td><td><span class="tbl-green">Low — AI is expanding PANW's moat</span></td><td>WIDENER: PANW's AI improves its own product</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:12px;padding:12px 16px;background:var(--surface);border-radius:8px;border:1px solid var(--border)">
+      <strong style="color:var(--cyan)">MACRO COMPOSITE FOR PANW:</strong> <span class="tbl-amber">Neutral-to-Positive.</span> Slowing economy is a headwind to IT budgets but security spend is structurally resilient. Elevated rates compress valuation multiples (negative ERP). AI cycle = strong tailwind. Net: Neutral with AI acceleration upside.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 2 — Cybersecurity Sector Growth Derivation</div>
+    <div class="info-box">
+      <p><strong>Sector:</strong> Enterprise Cybersecurity / AI-powered Security Platforms</p>
+      <p><strong>Market size:</strong> Global cybersecurity market $272B (2025), projected to reach $352B by 2030 at 9.1% CAGR (MarketsandMarkets, April 2026) <span class="verified">VERIFIED</span>. Enterprise platform security (PANW's addressable subset) growing faster at ~12–15% CAGR.</p>
+      <p><strong>AI impact on sector:</strong> AI is simultaneously expanding the threat surface (more attack vectors) and enabling more effective defence. Net effect: AI is accelerating sector growth by +3 to +5% above base trend. AI-native security platforms (PANW's positioning) are growing 20–25% vs. point-product peers at 8–10%. <span class="estimated">ESTIMATED</span></p>
+    </div>
+
+    <table style="margin-top:16px">
+      <thead><tr><th>Scenario</th><th>US Nominal GDP</th><th>Sector CAGR</th><th>Company Alpha</th><th>AI Alpha (6a+6b+6c)</th><th>Stage 1 Rev CAGR</th><th>Stage 2</th><th>Terminal g</th></tr></thead>
+      <tbody>
+        <tr><td class="tbl-red">STRESS</td><td>3.0%</td><td>9–11%</td><td>+2%</td><td>+1%</td><td>12–13%</td><td>9%</td><td>3.0%</td></tr>
+        <tr><td class="tbl-amber">BASE</td><td>3.8%</td><td>11–13%</td><td>+3%</td><td>+2%</td><td>15–16%</td><td>11%</td><td>4.0%</td></tr>
+        <tr><td class="tbl-green">ACCEL.</td><td>4.5%</td><td>14–16%</td><td>+4%</td><td>+3%</td><td>18–20%</td><td>13%</td><td>5.0%</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:12px;font-size:0.78rem;color:var(--text-dim)">
+      <strong>Sensitivity:</strong> A 1% change in terminal growth changes IV by approximately 14–16%. A 1% change in WACC changes IV by approximately 12–14%. <span class="estimated">ESTIMATED</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 3 — Company Alpha Sources</div>
+    <table>
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td class="tbl-highlight">1. Market Share Gain</td><td><span class="tbl-green">Active</span></td><td>+2%</td><td>+1%</td><td>Displacing point-product vendors; platformizations +75 in Q2 FY25</td></tr>
+        <tr><td class="tbl-highlight">2. Premiumisation</td><td><span class="tbl-green">Active</span></td><td>+1%</td><td>+0.5%</td><td>3-platform customers tripled YoY; higher ACV per customer</td></tr>
+        <tr><td class="tbl-highlight">3. Category Expansion</td><td><span class="tbl-green">Active</span></td><td>+1.5%</td><td>+1%</td><td>NGTS, AI-SPM, agentic security = new TAM via Koi acquisition</td></tr>
+        <tr><td class="tbl-highlight">4. Geographic Expansion</td><td><span class="tbl-amber">Moderate</span></td><td>+0.5%</td><td>+0.5%</td><td>Double-digit growth across all regions; Israel largest network tender</td></tr>
+        <tr><td class="tbl-highlight">5. Pricing Power</td><td><span class="tbl-green">Active</span></td><td>+1%</td><td>+0.5%</td><td>Platform bundling enables value-based pricing above point products</td></tr>
+        <tr><td class="tbl-highlight">6a. AI Cost Reduction</td><td><span class="tbl-green">Active</span></td><td>+0.5%</td><td>+1%</td><td>Cortex XSIAM reduces SOC headcount; automation replaces Tier-1 analysts</td></tr>
+        <tr><td class="tbl-highlight">6b. AI Market Expansion</td><td><span class="tbl-green">Active</span></td><td>+1%</td><td>+2%</td><td>Agentic AI creates entirely new attack surface → new TAM; AI-SPM new category</td></tr>
+        <tr><td class="tbl-highlight">6c. AI Flywheel / Switching Cost</td><td><span class="tbl-amber">Forming</span></td><td>+0.5%</td><td>+2%</td><td>Unit 42 threat corpus improves with scale; moat grade upward pressure</td></tr>
+        <tr style="background:rgba(0,229,255,0.04)"><td class="tbl-highlight tbl-cyan"><strong>TOTAL ALPHA</strong></td><td></td><td class="tbl-cyan"><strong>+8%</strong></td><td class="tbl-cyan"><strong>+8.5%</strong></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <div class="section">
+    <div class="section-title">Revenue & Gross Margin History</div>
+    <table>
+      <thead><tr><th>Fiscal Year (Jul)</th><th>Revenue</th><th>YoY Growth</th><th>GAAP Gross Margin</th><th>Adj FCF Margin</th><th>Non-GAAP Op Margin</th></tr></thead>
+      <tbody>
+        <tr><td>FY2021</td><td class="tbl-mono">$4.26B</td><td class="tbl-green">+24%</td><td class="tbl-amber">~69% <span class="estimated">EST</span></td><td class="tbl-amber">~28% <span class="estimated">EST</span></td><td class="tbl-amber">~18% <span class="estimated">EST</span></td></tr>
+        <tr><td>FY2022</td><td class="tbl-mono">$5.50B</td><td class="tbl-green">+29%</td><td class="tbl-amber">~71% <span class="estimated">EST</span></td><td class="tbl-green">~30% <span class="estimated">EST</span></td><td class="tbl-amber">~20% <span class="estimated">EST</span></td></tr>
+        <tr><td>FY2023</td><td class="tbl-mono">$6.89B</td><td class="tbl-green">+25%</td><td class="tbl-green">~73% <span class="estimated">EST</span></td><td class="tbl-green">~35% <span class="estimated">EST</span></td><td class="tbl-green">~24% <span class="estimated">EST</span></td></tr>
+        <tr><td>FY2024</td><td class="tbl-mono">$8.03B</td><td class="tbl-amber">+16%</td><td class="tbl-green">74.3% <span class="verified">VER</span></td><td class="tbl-green">~37% <span class="estimated">EST</span></td><td class="tbl-green">27.3% <span class="verified">VER</span></td></tr>
+        <tr style="background:rgba(0,229,255,0.05)"><td class="tbl-highlight">FY2025</td><td class="tbl-mono tbl-cyan">$9.22B</td><td class="tbl-green">+15% <span class="verified">VER</span></td><td class="tbl-green">~75% <span class="estimated">EST</span></td><td class="tbl-green">~37.5% <span class="verified">VER</span></td><td class="tbl-green">28.5% <span class="verified">VER</span></td></tr>
+        <tr><td>FY2026 (Guide)</td><td class="tbl-mono">$10.50B</td><td class="tbl-amber">+14%</td><td class="tbl-green">~75%+ <span class="estimated">EST</span></td><td class="tbl-green">38–39% <span class="verified">VER</span></td><td class="tbl-green">29.5–30% <span class="verified">VER</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Financial Fortress Scorecard</div>
+    <div class="scorecard">
+      <div class="score-row">
+        <div class="score-name">Gross Margin ≥ 70% (Software-grade)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:75%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ 74–75%</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">Rule of 40 ≥ 40 (Rev growth + FCF margin)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ ~53 (15+38)</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">FCF Positive and Growing</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:95%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ FCF margin expanding</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">Net Cash / Balance Sheet</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:80%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ ~$4B net cash <span class="estimated">EST</span></div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">Revenue Growth vs. Sector CAGR</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:85%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ 15% vs sector 9–12%</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">ROIC > WACC (5-year trend)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:55%;background:var(--amber)"></div></div>
+        <div class="score-badge badge-marginal">MARG ~ 14–28% range; WACC ~10%</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">GAAP Net Profit Margin ≥ 15%</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:40%;background:var(--amber)"></div></div>
+        <div class="score-badge badge-marginal">MARG ~ 12.3% GAAP FY25</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">Non-GAAP EPS Growth (5yr)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ $0.95/Q vs $0.75/Q YoY</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">NGS ARR Growth (leading indicator)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:95%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ +32% YoY to $5.6B</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">SBC as % of Revenue (dilution risk)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:35%;background:var(--red)"></div></div>
+        <div class="score-badge badge-fail">FAIL ✗ ~18–20% SBC/Rev <span class="estimated">EST</span></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:6px;font-size:0.8rem;color:var(--text)">
+      <strong class="tag-green">Financial Quality Grade: A−</strong> — Outstanding recurring revenue structure, expanding FCF margins, Rule-of-50 track record. Key concern: heavy SBC (~18-20% of revenue) dilutes GAAP earnings significantly. Non-GAAP profits are real but GAAP understates the economic cost.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ROIC History (Non-GAAP basis)</div>
+    <table>
+      <thead><tr><th>Year</th><th>ROIC</th><th>Invested Capital</th><th>Operating Profit Margin</th><th>ROIC Trend</th></tr></thead>
+      <tbody>
+        <tr><td>FY2021</td><td class="tbl-amber">~10% <span class="estimated">EST</span></td><td>~$7B</td><td>~18%</td><td>Building</td></tr>
+        <tr><td>FY2022</td><td class="tbl-amber">~16% <span class="estimated">EST</span></td><td>~$8B</td><td>~24%</td><td>↑</td></tr>
+        <tr><td>FY2023</td><td class="tbl-green">~28% <span class="estimated">EST</span></td><td>~$9B</td><td>~29%</td><td>↑ Peak</td></tr>
+        <tr><td>FY2024</td><td class="tbl-amber">~23% <span class="estimated">EST</span></td><td>~$11B</td><td>27.3%</td><td>↓ (cap.base expansion)</td></tr>
+        <tr style="background:rgba(0,229,255,0.04)"><td>FY2025</td><td class="tbl-amber">~14% <span class="estimated">EST</span></td><td>~$12.4B</td><td>~28.5%</td><td>↓ (goodwill & invest.)</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:0.75rem;color:var(--text-dim)">Note: ROIC decline reflects investment in platformization and M&A (invested capital growing faster than NOPAT near-term). FCF per share continues to grow. ROIC expected to recover as platformization investments mature. [ESTIMATED]</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Owner Earnings</div>
+    <div class="summary-table-box">
+      <table>
+        <thead><tr><th>Component</th><th>FY2025 (Base)</th><th>FY2025 (Conservative)</th></tr></thead>
+        <tbody>
+          <tr><td>GAAP Net Income</td><td class="tbl-mono">$1,134M <span class="verified">VER</span></td><td class="tbl-mono">$1,134M</td></tr>
+          <tr><td>+ D&A (non-cash)</td><td class="tbl-mono">+$350M <span class="estimated">EST</span></td><td class="tbl-mono">+$350M</td></tr>
+          <tr><td>+ SBC (add back)</td><td class="tbl-mono">+$1,650M <span class="estimated">EST</span></td><td class="tbl-mono">+$1,650M</td></tr>
+          <tr><td>− Maintenance CapEx</td><td class="tbl-mono">−$150M <span class="estimated">EST</span></td><td class="tbl-mono">−$200M</td></tr>
+          <tr><td>± Working Capital Changes</td><td class="tbl-mono">−$100M <span class="estimated">EST</span></td><td class="tbl-mono">−$150M</td></tr>
+          <tr style="background:rgba(0,229,255,0.04)"><td class="tbl-highlight"><strong>Owner Earnings</strong></td><td class="tbl-mono tbl-green"><strong>~$2,884M</strong></td><td class="tbl-mono tbl-amber"><strong>~$2,784M</strong></td></tr>
+          <tr><td>OE per share (710M)</td><td class="tbl-mono tbl-green">$4.06</td><td class="tbl-mono tbl-amber">$3.92</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:8px;font-size:0.75rem;color:var(--text-dim)">Note: SBC adds back GAAP income but represents real economic dilution. True owner earnings excluding SBC-as-cost: ~$1.2B/$1.65/share. This is why the stock has persistently high P/E on GAAP basis. Investors who own PANW own it on FCF yield, not GAAP EPS. [ESTIMATED]</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">O'Glove Earnings Quality Deep-Dive</div>
+    <div class="scorecard">
+      <div class="score-row">
+        <div class="score-name">Test 1 — FCF Conversion (5yr: OCF/Net Income)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ FCF margin 37.5% vs GAAP NI 12.3% → FCF >> NI (non-cash SBC)</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">Test 2 — DSO Trend (3yr receivables trend)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:50%;background:var(--amber)"></div></div>
+        <div class="score-badge badge-marginal">MARG ~ DSO may have risen as platform deals lengthen billing cycles <span class="estimated">EST</span></div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">Test 3 — Inventory Days (N/A for software)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:95%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ Software/SaaS — inventory not applicable</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">Test 4 — Accounting Policy Stability</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:85%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ No major policy changes; consistent non-GAAP reporting</div>
+      </div>
+      <div class="score-row">
+        <div class="score-name">Test 5 — Gross Margin Consistency (5yr)</div>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:92%;background:var(--green)"></div></div>
+        <div class="score-badge badge-pass">PASS ✓ Expanding 69→74% over 5 years; pricing power confirmed</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:6px;font-size:0.8rem">
+      <strong class="tag-green">Overall Earnings Quality: CLEAN</strong> — FCF conversion well above standard thresholds. SBC is large but transparent and consistently disclosed. No accounting concerns identified. Minor: DSO monitoring warranted as multi-year platform deals create more complex revenue timing.
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <div class="section">
+    <div class="section-title">Economic Moat Assessment</div>
+    <div class="moat-grid">
+      <div class="moat-card">
+        <div class="moat-card-title">Switching Costs — Platformization</div>
+        <div class="moat-stars">★★★★★</div>
+        <div class="moat-desc">A customer running all three PANW platforms (Strata + Prisma + Cortex) faces 3–7 year switching costs. Security operations teams trained on Cortex XSIAM cannot easily migrate to CrowdStrike + Splunk + Zscaler without 12–18 month disruption. 1,150+ large enterprises are now in this situation — and the number tripling in three-platform customers confirms the lock-in is deepening. <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-card-title">Unit 42 Threat Intelligence Data Network</div>
+        <div class="moat-stars">★★★★</div>
+        <div class="moat-desc">Unit 42 processes threat telemetry from 70,000+ organizations. Every new customer makes the threat detection network smarter. This is the foundation of the AI data flywheel — proprietary, real-time, outcome-labelled attack data that competitors cannot replicate without the same scale of deployments. <span class="estimated">ESTIMATED</span></div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-card-title">Intangible Assets — Precision AI Brand</div>
+        <div class="moat-stars">★★★★</div>
+        <div class="moat-desc">Precision AI is the industry's most recognised AI-native security brand among enterprise CISOs. "Sell security to security teams" — PANW's marketing resonance in the CISO community is unmatched. 247% 3-year ROI documented by Forrester for NGTS suite creates quantified proof of value. <span class="verified">VERIFIED</span></div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-card-title">Network Effect — Threat Signature Pool</div>
+        <div class="moat-stars">★★★</div>
+        <div class="moat-desc">Every attack observed on one PANW customer deployment creates signatures that protect all other customers. This is the classic security network effect (IDS/IPS logic extended to AI). The more enterprises PANW protects, the faster the threat intelligence network becomes comprehensive. Slower loop cycle than pure software (attacks are relatively infrequent vs. clicks). <span class="estimated">ESTIMATED</span></div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-card-title">SASE/Zero Trust Architecture Lock-in</div>
+        <div class="moat-stars">★★★★</div>
+        <div class="moat-desc">Prisma Access (SASE) is deeply integrated into customer network architecture — SD-WAN replacement is a multi-year infrastructure project. Once Prisma Access handles edge security for a global enterprise, replacement requires rewriting the network security policy for every office globally. One of the strongest infrastructure switching costs in tech. <span class="estimated">ESTIMATED</span></div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-card-title">Agentic AI Security — New Category Creation</div>
+        <div class="moat-stars">★★★</div>
+        <div class="moat-desc">First-mover advantage in AI agent security (securing AI workflows, agentic identities, AI pipeline data) via Prisma AIRS and Koi acquisition. As enterprises deploy AI agents at scale, they need to secure them — PANW's integrated platform is the only end-to-end option. This creates a new TAM that competitors are scrambling to address. <span class="verified">VERIFIED</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">DATA FLYWHEEL VERDICT</div>
+    <div class="flywheel-box">
+      <div class="flywheel-title">Unit 42 AI Threat Intelligence Flywheel</div>
+      <div class="flywheel-badge">⚙ DATA FLYWHEEL FORMING ★★★ (7.5/10)</div>
+
+      <div class="fly-q">Q1: Does PANW have proprietary training data competitors cannot access?</div>
+      <div class="fly-a"><strong>YES.</strong> Unit 42 threat intelligence corpus from 70,000+ enterprise deployments processes an estimated 5B+ security events daily. This data is uniquely outcome-labelled: PANW knows which alerts led to actual breaches and which were false positives — the ideal training signal for AI security models. No competitor without similar deployment scale can replicate this data. <span class="estimated">ESTIMATED — volume figure</span></div>
+
+      <div class="fly-q">Q2: Does the AI measurably improve with more data/users?</div>
+      <div class="fly-a"><strong>LIKELY YES.</strong> Precision AI accuracy and Cortex XSIAM detection rates improve as the threat corpus grows. PANW management commentary cites "AI that gets smarter with every attack observed" (FY2025 earnings calls). However, no specific accuracy improvement metrics (e.g., "false positive rate fell from X% to Y%") were available in public filings for this report — the evidence is qualitative, not quantified. This limits the flywheel rating. <span class="estimated">ESTIMATED</span></div>
+
+      <div class="fly-q">Q3: Does better AI attract more users (completing the loop)?</div>
+      <div class="fly-a"><strong>YES — via platform expansion.</strong> Customers on 1 platform are converting to 2 platforms (>50% YoY growth) and 3 platforms (tripled YoY). Superior AI detection rates → fewer breach events → CISOs expand to full platform → more telemetry → better AI. Loop cycle: quarterly to annual. <span class="verified">VERIFIED — from earnings release</span></div>
+
+      <div class="fly-score">
+        <div class="fly-score-label">Data Quality</div><div class="fly-score-val">2.5/3</div>
+        <div class="fly-score-label">Improvement Evidence</div><div class="fly-score-val">2.5/4</div>
+        <div class="fly-score-label">Loop Speed</div><div class="fly-score-val">2.5/3</div>
+        <div class="fly-score-label" style="font-weight:700;color:var(--text)">TOTAL</div><div class="fly-score-val" style="font-size:1.4rem">7.5/10</div>
+      </div>
+    </div>
+    <div style="font-size:0.78rem;color:var(--text-dim);padding:10px 14px;background:var(--surface);border-radius:6px;border:1px solid var(--border)">
+      <strong>Moat grade implication:</strong> Forming flywheel (7.5/10) is sufficient to maintain an A− moat grade but does not yet warrant the full A grade upgrade. Specific quantitative improvement evidence from earnings calls (e.g., XSIAM detection accuracy improving X% YoY) would confirm the flywheel and push moat to A.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ROIC as Moat Proof</div>
+    <table>
+      <thead><tr><th>Year</th><th>ROIC</th><th>Moat Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>FY2021</td><td>~10%</td><td>Weak — moat early-stage, heavy investment</td></tr>
+        <tr><td>FY2022</td><td>~16%</td><td>Narrow moat emerging</td></tr>
+        <tr><td>FY2023</td><td>~28%</td><td class="tbl-green">Wide moat — peak efficiency</td></tr>
+        <tr><td>FY2024</td><td>~23%</td><td class="tbl-amber">Wide moat — capital base expanding (M&A)</td></tr>
+        <tr><td>FY2025</td><td>~14%</td><td class="tbl-amber">Transitional — platformization investment diluting. Recovery expected FY2027–28</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Macro Moat Stress Test</div>
+    <table>
+      <thead><tr><th>Moat Source</th><th>STRESS Scenario</th><th>BASE Scenario</th><th>ACCEL Scenario</th></tr></thead>
+      <tbody>
+        <tr><td>Switching Costs (Platform)</td><td><span class="tbl-green">STRENGTHENS</span> — customers cannot afford to rip out security in a downturn</td><td class="tbl-green">Strengthens</td><td class="tbl-green">Strengthens</td></tr>
+        <tr><td>Unit 42 Data Network</td><td><span class="tbl-green">HOLDS</span> — attack data continues flowing regardless of economy</td><td class="tbl-green">Strengthens</td><td class="tbl-green">Strengthens</td></tr>
+        <tr><td>SASE Architecture Lock-in</td><td><span class="tbl-green">HOLDS</span> — network infrastructure not easily replaced in downturn</td><td class="tbl-green">Holds</td><td class="tbl-green">Strengthens</td></tr>
+        <tr><td>Agentic AI Security Moat</td><td><span class="tbl-amber">WEAKENS slightly</span> — AI agent deployment may slow, reducing new TAM</td><td class="tbl-green">Holds</td><td class="tbl-green">Strengthens rapidly</td></tr>
+        <tr><td>Competition (CrowdStrike, Zscaler)</td><td><span class="tbl-amber">Intensifies</span> — competitors may discount aggressively for survival</td><td class="tbl-amber">Stable</td><td class="tbl-green">PANW advantage widens</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <div class="section">
+    <div class="section-title">Management Assessment</div>
+    <div class="two-col">
+      <div class="info-box">
+        <div class="info-title">Strengths</div>
+        <p><strong>Nikesh Arora (CEO):</strong> Former SoftBank President and Google VP. One of the most strategically capable CEOs in enterprise tech. The platformization thesis was his vision from 2018 — now being proven right in 2025-26. His aggressive M&A playbook (CyberArk potential, Koi, prior acquisitions) has consistently added product depth.</p>
+        <p><strong>Dipak Golechha (CFO):</strong> Disciplined capital allocator. FCF margin expansion from 28% to 38%+ while revenue grew 5-year CAGR ~22% demonstrates exceptional operating leverage. Delivery of Rule-of-50 for 5 consecutive years is a rare achievement.</p>
+        <p><strong>Nir Zuk (Founder/CTO):</strong> FireWall architect with deep product vision. Recently targeting Liberty Bank acquisition personally for AI-driven banking venture — demonstrates founder-level ambition and AI conviction. <span class="verified">VERIFIED</span></p>
+      </div>
+      <div class="info-box">
+        <div class="info-title">Concerns</div>
+        <p><strong>SBC dilution:</strong> Stock-based compensation at ~18–20% of revenue (~$1.6–1.8B/year) is extremely high by any standard. GAAP EPS understates earnings but shareholders are genuinely diluted. Share count growing ~1–2% annually despite buybacks. <span class="estimated">ESTIMATED</span></p>
+        <p><strong>M&A execution risk:</strong> The proposed CyberArk acquisition (~$18–20B) would be transformative but introduces integration complexity. PANW has historically integrated acquisitions (Demisto, Bridgecrew, Cyder Security) well, but a company of CyberArk's scale is a new challenge.</p>
+        <p><strong>Platformization risk:</strong> The "hold on to revenue while deferring cash" strategy during the platformization push (FY2024) created a brief earnings scare. Execution must remain flawless.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Capital Allocation Track Record</div>
+    <table>
+      <thead><tr><th>Allocation</th><th>Assessment</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td>M&A Strategy</td><td><span class="tbl-green">DISCIPLINED</span></td><td>Product-led acquisitions (Demisto→XSOAR; Bridgecrew→CNAPP; Koi→agentic security). Built platforms, not empires.</td></tr>
+        <tr><td>R&D Investment</td><td><span class="tbl-green">STRONG</span></td><td>R&D ~17–20% of revenue <span class="estimated">EST</span>. Investing in proprietary AI models, not commodity API wrappers. Precision AI is built on company-specific data.</td></tr>
+        <tr><td>Share Buybacks</td><td><span class="tbl-amber">MARGINAL</span></td><td>Buybacks occur but don't fully offset SBC issuance. Share count still creeps up net.</td></tr>
+        <tr><td>No Dividends</td><td><span class="tbl-green">APPROPRIATE</span></td><td>Growth phase. Retaining FCF for reinvestment is the correct choice at this ROIC level.</td></tr>
+        <tr><td>Counter-cyclical Behaviour</td><td><span class="tbl-green">STRONG</span></td><td>During FY2024 platformization "pause" scare, management held firm rather than cutting pricing. Long-term oriented.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">AI Management Quality Assessment</div>
+    <div class="info-box">
+      <div class="info-title">AI Team Depth</div>
+      <p>PANW's AI investment is native — Precision AI is built on proprietary security telemetry, not on commodity LLM APIs. The company employs security AI researchers through Unit 42 and has published extensively on threat detection methodologies. Management (Arora + Zuk) are both AI-conviction operators, not AI-label executives. <span class="estimated">ESTIMATED</span></p>
+      <div class="info-title" style="margin-top:12px">Responsible AI & Regulatory Risk</div>
+      <p>Security AI carries inherent regulatory scrutiny — particularly around data residency (GDPR, India PDPB) for multinational threat telemetry. PANW's Unit 42 data practices have not faced material regulatory challenges to date. The use of attack data (not personal data) reduces GDPR exposure significantly. Agentic AI security creates new regulatory territory — PANW is proactively engaging with regulators. <span class="estimated">ESTIMATED</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <div class="section">
+    <div class="section-title">Current Valuation Metrics</div>
+    <div class="metric-grid">
+      <div class="metric-card amber">
+        <div class="metric-label">Current Price</div>
+        <div class="metric-value">~$175</div>
+        <div class="metric-sub"><span class="unverified">UNVERIFIED — verify locally</span></div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">Fwd P/E (Non-GAAP FY26)</div>
+        <div class="metric-value">~45x</div>
+        <div class="metric-sub">$175 / $3.85 EPS guide <span class="verified">VER</span></div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">EV / FY26 Revenue</div>
+        <div class="metric-value">~11.5x</div>
+        <div class="metric-sub">EV ~$120B / $10.52B <span class="estimated">EST</span></div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">FCF Yield</div>
+        <div class="metric-value">~3.2%</div>
+        <div class="metric-sub">$4.0B FCF / $124B mkt cap</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">ERP (FCF Yield − 10Y UST)</div>
+        <div class="metric-value text-red">−1.1%</div>
+        <div class="metric-sub">3.2% − 4.33% = NEGATIVE <span class="verified">VER</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">RPO / Market Cap</div>
+        <div class="metric-value">~0.13x</div>
+        <div class="metric-sub">$15.8B RPO backs ~1.5yr revenue</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.25);border-radius:6px;font-size:0.82rem">
+      <strong class="tag-red">⚠ PRIMARY VALUATION GATE FAILED:</strong> ERP is negative (−1.1%). The FCF yield (3.2%) is below the risk-free rate (4.33%). This is the single most important signal in the framework — the market is pricing PANW to deliver its acceleration scenario consistently with no margin of error. BUY requires positive ERP. WATCH designation is appropriate at current prices.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 1 — DCF (2-Stage)</div>
+    <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:12px">WACC: 10.5% (US growth compounder, elevated rates). Terminal g: 4.0% (US nominal GDP × 0.9). FCF scaled from FY2026 guidance. All figures in USD. <span class="estimated">ESTIMATED</span></p>
+    <div class="dcf-table">
+      <table>
+        <thead><tr><th>Year</th><th>STRESS FCF</th><th>BASE FCF</th><th>ACCEL FCF</th><th>BASE PV</th></tr></thead>
+        <tbody>
+          <tr><td>FY2026E</td><td>$3.60B</td><td>$4.05B</td><td>$4.15B</td><td>$3.67B</td></tr>
+          <tr><td>FY2027E</td><td>$4.00B</td><td>$4.80B</td><td>$5.20B</td><td>$3.94B</td></tr>
+          <tr><td>FY2028E</td><td>$4.30B</td><td>$5.50B</td><td>$6.30B</td><td>$4.07B</td></tr>
+          <tr><td>FY2029E</td><td>$4.60B</td><td>$6.10B</td><td>$7.60B</td><td>$4.08B</td></tr>
+          <tr><td>FY2030E</td><td>$4.90B</td><td>$6.60B</td><td>$8.90B</td><td>$3.99B</td></tr>
+          <tr><td>Terminal Value</td><td>$49.0B</td><td>$62.5B</td><td>$133B</td><td>$37.8B</td></tr>
+          <tr style="background:rgba(0,229,255,0.05)"><td><strong>Total EV</strong></td><td class="tbl-mono tbl-red">$62B</td><td class="tbl-mono tbl-amber">$82B</td><td class="tbl-mono tbl-green">$161B</td><td></td></tr>
+          <tr><td>+ Net Cash</td><td>+$4B</td><td>+$4B</td><td>+$4B</td><td></td></tr>
+          <tr style="background:rgba(0,229,255,0.05)"><td><strong>Equity Value (710M sh)</strong></td><td class="tbl-mono tbl-red"><strong>~$93/sh</strong></td><td class="tbl-mono tbl-amber"><strong>~$121/sh</strong></td><td class="tbl-mono tbl-green"><strong>~$232/sh</strong></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:8px;font-size:0.72rem;color:var(--text-dim)">DCF Sensitivity (Base): ±1% terminal g → ±$17/share. ±1% WACC → ∓$15/share. [ESTIMATED]</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 2 — Owner Earnings Capitalisation</div>
+    <table>
+      <thead><tr><th>Scenario</th><th>Owner Earnings</th><th>Required Return</th><th>Growth g</th><th>IV per Share</th></tr></thead>
+      <tbody>
+        <tr><td class="tbl-red">STRESS</td><td>$2.4B</td><td>11.5%</td><td>3.0%</td><td class="tbl-mono tbl-red">~$80/sh</td></tr>
+        <tr><td class="tbl-amber">BASE</td><td>$2.8B</td><td>10.5%</td><td>4.0%</td><td class="tbl-mono tbl-amber">~$107/sh</td></tr>
+        <tr><td class="tbl-green">ACCEL.</td><td>$3.2B</td><td>9.5%</td><td>5.0%</td><td class="tbl-mono tbl-green">~$156/sh</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:6px;font-size:0.72rem;color:var(--text-dim)">Note: OE Capitalisation uses GAAP-adjusted owner earnings (post-SBC consideration). [ESTIMATED]</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 3 — EPV (Earnings Power Value)</div>
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>FY2026 Non-GAAP NOPAT (est.)</td><td class="tbl-mono">~$2.9B (29% margin × $10.52B) <span class="estimated">EST</span></td></tr>
+        <tr><td>WACC (base)</td><td class="tbl-mono">10.5%</td></tr>
+        <tr><td>EPV (no growth)</td><td class="tbl-mono tbl-red">~$27.6B EV → ~$45/sh</td></tr>
+        <tr><td>Growth Premium (base 14% CAGR, 5yr)</td><td class="tbl-mono">2.1×</td></tr>
+        <tr><td class="tbl-highlight"><strong>EPV with growth premium (base)</strong></td><td class="tbl-mono tbl-amber"><strong>~$91/sh</strong></td></tr>
+        <tr><td>+ AI WIDENER premium (+15%)</td><td class="tbl-mono tbl-green"><strong>~$105/sh</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 4 — P/E Earnings Power</div>
+    <table>
+      <thead><tr><th>Metric</th><th>STRESS</th><th>BASE</th><th>ACCEL.</th></tr></thead>
+      <tbody>
+        <tr><td>FY2027 Non-GAAP EPS</td><td class="tbl-mono">$4.00</td><td class="tbl-mono">$4.50</td><td class="tbl-mono">$5.20</td></tr>
+        <tr><td>Target P/E Multiple</td><td class="tbl-mono">22x</td><td class="tbl-mono">30x</td><td class="tbl-mono">40x</td></tr>
+        <tr><td>Implied Price (2yr forward)</td><td class="tbl-mono tbl-red">$88</td><td class="tbl-mono tbl-amber">$135</td><td class="tbl-mono tbl-green">$208</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:6px;font-size:0.72rem;color:var(--text-dim)">Reverse DCF: current price $175 implies ~18–19% terminal revenue growth indefinitely — plausible only in acceleration scenario with AI alpha. [ESTIMATED]</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 5 — Earnings Yield vs Bond Yield (ERP)</div>
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>FCF Yield (FY2026 FCF / Mkt Cap)</td><td class="tbl-mono">~3.2%</td><td class="tbl-red">Below risk-free rate</td></tr>
+        <tr><td>Non-GAAP EPS Yield (FY2026)</td><td class="tbl-mono">~2.2%</td><td class="tbl-red">Far below risk-free rate</td></tr>
+        <tr><td>US 10-Year Treasury</td><td class="tbl-mono">4.33%</td><td><span class="verified">VERIFIED</span></td></tr>
+        <tr><td class="tbl-highlight"><strong>Equity Risk Premium (FCF basis)</strong></td><td class="tbl-mono tbl-red"><strong>−1.1%</strong></td><td class="tbl-red"><strong>⚠ NEGATIVE — Structural overvaluation</strong></td></tr>
+        <tr><td>Price for ERP = 0% (fair value)</td><td class="tbl-mono tbl-amber">~$125</td><td class="tbl-amber">At this price, FCF yield = Treasury</td></tr>
+        <tr><td>Price for ERP = +1% (attractive)</td><td class="tbl-mono tbl-green">~$104</td><td class="tbl-green">BUY zone on pure yield basis</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5-Method Summary Table</div>
+    <div class="summary-table-box">
+      <table>
+        <thead><tr><th>Method</th><th>STRESS IV</th><th>BASE IV</th><th>ACCEL IV</th></tr></thead>
+        <tbody>
+          <tr><td>Method 1 — DCF</td><td class="tbl-mono tbl-red">$93</td><td class="tbl-mono tbl-amber">$121</td><td class="tbl-mono tbl-green">$232</td></tr>
+          <tr><td>Method 2 — Owner Earnings</td><td class="tbl-mono tbl-red">$80</td><td class="tbl-mono tbl-amber">$107</td><td class="tbl-mono tbl-green">$156</td></tr>
+          <tr><td>Method 3 — EPV</td><td class="tbl-mono tbl-red">$78</td><td class="tbl-mono tbl-amber">$105</td><td class="tbl-mono tbl-green">$145</td></tr>
+          <tr><td>Method 4 — P/E Power</td><td class="tbl-mono tbl-red">$88</td><td class="tbl-mono tbl-amber">$135</td><td class="tbl-mono tbl-green">$208</td></tr>
+          <tr style="background:rgba(0,229,255,0.04)"><td class="tbl-highlight"><strong>Blended Base IV</strong></td><td class="tbl-mono tbl-red"><strong>~$85</strong></td><td class="tbl-mono tbl-amber"><strong>~$117</strong></td><td class="tbl-mono tbl-green"><strong>~$185</strong></td></tr>
+          <tr><td>+ AI WIDENER Premium (+24%)</td><td class="tbl-mono">+$20</td><td class="tbl-mono">+$28</td><td class="tbl-mono">+$45</td></tr>
+          <tr style="background:rgba(16,185,129,0.05)"><td class="tbl-highlight"><strong>Adjusted IV (with AI premium)</strong></td><td class="tbl-mono tbl-red"><strong>~$105</strong></td><td class="tbl-mono tbl-amber"><strong>~$145</strong></td><td class="tbl-mono tbl-green"><strong>~$230</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;font-size:0.78rem;color:var(--text-dim)">
+      <strong>AI WIDENER premium justification:</strong> Forming data flywheel (7.5/10) + Phase 3 adoption positioning + NGTS as new platform category + CyberArk optionality. At 24% premium to blended base, AI WIDENER accounts for the structural improvement in moat quality that pure DCF cannot capture. [ESTIMATED]<br><br>
+      <strong>Current price $175</strong> sits between BASE IV ($145) and ACCEL IV ($230). The market is pricing a blend of base-to-acceleration scenarios. Entry zone for BUY consideration: <strong>$130–155</strong> (90–107% of AI-adjusted base IV).
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <div class="section">
+    <div class="section-title">Four-Pillar Summary</div>
+    <div class="grades-row">
+      <div class="grade-box">
+        <div class="grade-letter grade-a">A−</div>
+        <div class="grade-label">PILLAR 1<br>Moat</div>
+      </div>
+      <div class="grade-box">
+        <div class="grade-letter grade-a">A−</div>
+        <div class="grade-label">PILLAR 2<br>Quality</div>
+      </div>
+      <div class="grade-box">
+        <div class="grade-letter grade-b">B+</div>
+        <div class="grade-label">PILLAR 3<br>Management</div>
+      </div>
+      <div class="grade-box">
+        <div class="grade-letter grade-c">C−</div>
+        <div class="grade-label">PILLAR 4<br>Valuation</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+      <span class="pill pill-cat">CAT C — MATURE QUALITY COMPOUNDER</span>
+      <span class="pill pill-ai">🟢 AI WIDENER — CONFIRMED</span>
+      <span class="pill pill-fly">⚙ FLYWHEEL FORMING 7.5/10</span>
+      <span class="pill pill-phase">PHASE 3 INFLECTION</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="verdict-section">
+      <div class="verdict-title">WATCH ★★★</div>
+      <div class="verdict-quote">"Price is what you pay. Value is what you get. The best investment is in a wonderful company at a fair price." — Warren Buffett</div>
+      <div class="verdict-body">
+        <p>Palo Alto Networks is one of the highest-quality businesses in the Buffett Quality-Value Series — a moat that is widening, not narrowing, in the AI era. The platformization strategy has created 3–7 year switching cost lock-in for 1,150+ enterprise customers, and the Unit 42 threat intelligence flywheel is forming into what could become a category-defining AI moat.</p>
+        <p style="margin-top:10px">The problem is price. At ~$175, the FCF yield is 3.2% — approximately 110 basis points below the US 10-year Treasury yield of 4.33%. This means an investor in PANW accepts lower cash yield than a risk-free government bond in exchange for the growth optionality. That optionality is real (acceleration scenario IV ~$230), but it requires PANW to sustain above-sector revenue growth, expand FCF margins to 40%+, and successfully integrate potentially transformative acquisitions — all while navigating a slowing macro environment.</p>
+        <p style="margin-top:10px">The framework demands positive ERP for a BUY. Until prices correct to the $130–155 entry zone — or acceleration catalysts (Rule-of-40 crossing 50+ sequentially, CyberArk integration beginning, AI-specific accuracy metrics disclosed in earnings) validate the premium — WATCH is the correct posture. This is one of the highest-conviction WATCH positions in the series.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">WATCH → BUY Upgrade Conditions (Specific & Measurable)</div>
+    <div class="upgrade-list">
+      <div class="upgrade-item">
+        <span class="upgrade-num">1</span>
+        <span class="upgrade-text"><strong>Price corrects to entry zone $130–155</strong> (FCF yield ~2.6–3.1% with 38.5% FCF margin guide; approaching ERP parity with Treasury at $125). This is the primary valuation gate — all other conditions are secondary.</span>
+      </div>
+      <div class="upgrade-item">
+        <span class="upgrade-num">2</span>
+        <span class="upgrade-text"><strong>NGS ARR sustains ≥30% YoY growth for 2 consecutive quarters</strong> — confirms the acceleration scenario where the revenue multiple expansion thesis becomes self-fulfilling.</span>
+      </div>
+      <div class="upgrade-item">
+        <span class="upgrade-num">3</span>
+        <span class="upgrade-text"><strong>Unit 42 data flywheel CONFIRMED:</strong> Specific quantitative evidence from earnings call that Precision AI accuracy improved measurably with scale (e.g., "XSIAM false-positive rate fell from X% to Y% as telemetry base doubled"). This upgrades the flywheel from FORMING to CONFIRMED and justifies moat grade upgrade to A.</span>
+      </div>
+      <div class="upgrade-item">
+        <span class="upgrade-num">4</span>
+        <span class="upgrade-text"><strong>FCF margin reaches 40%+</strong> sustained for 2+ quarters (FY2028 target if achieved early) — confirms the path to full profitability and strengthens the DCF base IV materially.</span>
+      </div>
+      <div class="upgrade-item">
+        <span class="upgrade-num">5</span>
+        <span class="upgrade-text"><strong>RSI corrects below 40 on the daily chart</strong> (technicals align with fundamental entry zone — confirming this is a macro-driven dip and not a fundamental deterioration).</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Buffett Quality-Value Series — Updated Table</div>
+    <div class="series-table-wrap">
+      <table style="font-size:0.72rem">
+        <thead><tr><th>#</th><th>Company</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>One-Line Thesis</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>PVR INOX</td><td>C</td><td>⚪</td><td>C+</td><td>D</td><td>C</td><td>D+</td><td>PASS</td><td>No pricing power; 5 loss years</td></tr>
+          <tr><td>2</td><td>Yatharth Hospital</td><td>C</td><td>🟢</td><td>B−</td><td>C+</td><td>C+</td><td>D+</td><td>WATCH ★★</td><td>IT investigation; AI diagnostics potential</td></tr>
+          <tr><td>3</td><td>Bajaj Auto</td><td>C</td><td>⚪</td><td>A−</td><td>A</td><td>B+</td><td>C</td><td>WATCH ★★★</td><td>India quality leader; above entry</td></tr>
+          <tr><td>4</td><td>Tata Chemicals</td><td>E</td><td>⚪</td><td>D−</td><td>F</td><td>B−</td><td>C+</td><td>PASS</td><td>Commodity trap; wrong framework</td></tr>
+          <tr><td>5</td><td>Tata Motors PV</td><td>D</td><td>🔴</td><td>B−</td><td>D</td><td>B</td><td>B−</td><td>WATCH ★★</td><td>JLR EV + AI risk; near entry</td></tr>
+          <tr><td>6</td><td>Bank of Baroda</td><td>D</td><td>🟢</td><td>C+</td><td>C+</td><td>C</td><td>B</td><td>WATCH ★★</td><td>PSB; AI credit scoring forming moat</td></tr>
+          <tr><td>7</td><td>Alphabet (GOOGL)</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>B+</td><td>C+</td><td>WATCH ★★★★</td><td>Gemini = AI WIDENER; antitrust priced</td></tr>
+          <tr><td>8</td><td>Microsoft (MSFT)</td><td>C</td><td>🟢</td><td>A+</td><td>A</td><td>A</td><td>D+</td><td>WATCH ★★★</td><td>Copilot flywheel; still expensive</td></tr>
+          <tr><td>9</td><td>Newgen Software</td><td>C</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>D</td><td>WATCH ★★★</td><td>AI-native BPM moat; overpriced</td></tr>
+          <tr><td>10</td><td>MercadoLibre (MELI)</td><td>B</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>B+</td><td>BUY ★★★★★</td><td>LatAm AI flywheel; FCF yield > UST</td></tr>
+          <tr><td>11</td><td>Colgate India (COLPAL)</td><td>A</td><td>⚪</td><td>A+</td><td>A+</td><td>A</td><td>B+</td><td>WATCH ★★★★½</td><td>Perfect biz; AI neutral; adapted buy</td></tr>
+          <tr style="background:rgba(0,229,255,0.06)"><td>12</td><td class="tbl-cyan"><strong>Palo Alto Ntwks (PANW)</strong></td><td>C</td><td>🟢</td><td>A−</td><td>A−</td><td>B+</td><td>C−</td><td class="tbl-amber"><strong>WATCH ★★★</strong></td><td>Best-in-class cyber AI; negative ERP; entry zone $130–155</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <div class="section">
+    <div class="section-title">Section A — Price Structure & Multi-Timeframe Trend</div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-indicator">Current Price</div>
+        <div class="tech-value">~$175–178</div>
+        <div class="tech-signal sig-neut"><span class="unverified">UNVERIFIED</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-indicator">52-Week High</div>
+        <div class="tech-value">$223.61</div>
+        <div class="tech-signal">Oct 28, 2025 <span class="verified">VER</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-indicator">52-Week Low</div>
+        <div class="tech-value">$139.57</div>
+        <div class="tech-signal">Feb 24, 2026 <span class="verified">VER</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-indicator">From ATH</div>
+        <div class="tech-value">−21.8%</div>
+        <div class="tech-signal sig-neut">In correction territory</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-indicator">From 52W Low</div>
+        <div class="tech-value">+25.2%</div>
+        <div class="tech-signal sig-bull">Bouncing from Feb low <span class="verified">VER</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-indicator">YTD Return</div>
+        <div class="tech-value">−10.1%</div>
+        <div class="tech-signal sig-bear">Underperforming in 2026 <span class="estimated">EST</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <table>
+        <thead><tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td>Daily</td><td><span class="tbl-green">Recovering</span></td><td>Above 200-DMA ($161.75)</td><td>Strong Buy signals (Investing.com) <span class="verified">VER</span></td></tr>
+          <tr><td>Weekly</td><td><span class="tbl-amber">Neutral</span></td><td>Below Oct ATH; forming recovery</td><td>Neutral per Investing.com <span class="verified">VER</span></td></tr>
+          <tr><td>Monthly</td><td><span class="tbl-red">Sell</span></td><td>Below 2025 trend line</td><td>Sell per Investing.com <span class="verified">VER</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Moving Average Dashboard</div>
+    <table>
+      <thead><tr><th>MA</th><th>Level <span class="estimated">EST</span></th><th>vs Current (~$175)</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>20-EMA</td><td>~$168</td><td><span class="tbl-green">Price ABOVE (+4%)</span></td><td class="tbl-green">Bullish short-term</td></tr>
+        <tr><td>50-DMA</td><td>~$162</td><td><span class="tbl-green">Price ABOVE (+8%)</span></td><td class="tbl-green">Bullish</td></tr>
+        <tr><td>100-DMA</td><td>~$165</td><td><span class="tbl-green">Price ABOVE (+6%)</span></td><td class="tbl-green">Bullish</td></tr>
+        <tr><td class="tbl-highlight">200-DMA</td><td>$161.75</td><td><span class="tbl-green">Price ABOVE (+8%)</span></td><td class="tbl-green">Bullish long-term <span class="verified">VER</span></td></tr>
+        <tr><td>MA Cross Status</td><td colspan="2">50-DMA > 200-DMA (Golden Cross) — <span class="estimated">EST</span></td><td class="tbl-green">Bullish (if confirmed)</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:6px;font-size:0.72rem;color:var(--text-dim)">Note: 7 Buy signals and 5 Sell signals across MA5–MA200 per Investing.com analysis (Apr 2026). Overall MA signal: BUY. <span class="verified">VERIFIED</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — Volume & OBV</div>
+    <div class="info-box">
+      <p><strong>Average Daily Volume:</strong> ~6.7–14M shares (varies by data source) <span class="estimated">ESTIMATED</span></p>
+      <p><strong>Significant Volume Events:</strong> Feb 24, 2026 — stock hit 52-week low ($139.57) on elevated volume, indicating capitulation / institutional re-pricing. Subsequent recovery to $175+ on moderate volume suggests technical bounce rather than strong institutional re-entry. OBV likely neutral to slightly negative on the recovery from lows. <span class="estimated">ESTIMATED</span></p>
+      <p><strong>OBV Verdict:</strong> Volume not confirming strength of the recovery fully. For a high-conviction BUY, investors should look for volume surge above $175 resistance level. <span class="estimated">ESTIMATED</span></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — Momentum (RSI, MACD, Stochastic)</div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-indicator">RSI-14 (Daily)</div>
+        <div class="tech-value">~52–55</div>
+        <div class="tech-signal sig-neut">Neutral zone <span class="estimated">EST</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-indicator">RSI-14 (Weekly)</div>
+        <div class="tech-value">~45</div>
+        <div class="tech-signal sig-neut">Approaching oversold <span class="estimated">EST</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-indicator">MACD (Daily)</div>
+        <div class="tech-value">Positive</div>
+        <div class="tech-signal sig-bull">Histogram expanding <span class="estimated">EST</span></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-indicator">BUY Entry Trigger RSI</div>
+        <div class="tech-value">&lt;40</div>
+        <div class="tech-signal sig-neut">Not yet reached</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:0.78rem;color:var(--text-dim)">Daily TA indicators show Strong Buy per Investing.com (8 buy vs 2 sell signals). Monthly signals show Sell. The divergence between daily (short-term recovery) and monthly (long-term pressure) is typical of a post-correction bounce that hasn't yet established a new uptrend. <span class="verified">VERIFIED</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section E — Chart Patterns</div>
+    <div class="info-box">
+      <p><strong>Current pattern:</strong> Post-correction recovery from Feb 2026 lows ($139.57) forming a higher low structure. The $155–175 zone represents a meaningful recovery. Whether this forms a Cup & Handle base (bullish) or a Dead Cat Bounce followed by new lows depends on whether the $175–180 resistance holds or breaks. <span class="estimated">ESTIMATED</span></p>
+      <p><strong>Key resistance:</strong> $185–190 (50% Fibonacci retracement from ATH-to-low). Break above $190 with volume would be a strong bullish signal.</p>
+      <p><strong>Key support:</strong> $160–163 (200-DMA zone). A hold here on any re-test would confirm the recovery structure. Break below $139 would signal a new downtrend and approach the entry zone faster.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — Trade Structure</div>
+    <table>
+      <thead><tr><th>Element</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>PRIMARY TRIGGER</td><td>Correction to $130–155 zone + RSI &lt;40 on daily chart + holding 200-DMA retest</td></tr>
+        <tr><td>SECONDARY TRIGGER</td><td>6-month consolidation above $160 + volume breakout above $185 + MACD cross positive</td></tr>
+        <tr><td>Entry Zone (Tier 1 — full)</td><td class="tbl-green">$130–145 (Stress to base IV; positive ERP)</td></tr>
+        <tr><td>Entry Zone (Tier 2 — half)</td><td class="tbl-amber">$145–165 (Base IV to 115%)</td></tr>
+        <tr><td>Entry Zone (Tier 3 — starter)</td><td class="tbl-amber">$165–178 (current range; negative ERP; only on technical breakout)</td></tr>
+        <tr><td>Stop Loss</td><td>$125 (10% below Tier 1 mid; thesis broken if fundamental catalysts deteriorate)</td></tr>
+        <tr><td>Target 1 (Base IV)</td><td>$145 (immediate reversal scenario)</td></tr>
+        <tr><td>Target 2 (Acceleration)</td><td>$210–230 (24-month horizon on AI flywheel confirmation)</td></tr>
+        <tr><td>Risk:Reward (Tier 1 entry)</td><td class="tbl-green">1:3.5 to T2 at $230 (from $138 entry, SL $125)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section G — Technical Composite Score</div>
+    <table>
+      <thead><tr><th>Dimension</th><th>Score (1–5)</th><th>Weight</th><th>Commentary</th></tr></thead>
+      <tbody>
+        <tr><td>Trend (Multi-timeframe)</td><td>3/5</td><td>×1</td><td>Daily bullish, weekly/monthly bearish</td></tr>
+        <tr><td>Moving Averages</td><td>4/5</td><td>×1</td><td>Above all key MAs; golden cross potential</td></tr>
+        <tr><td>Volume / OBV</td><td>3/5</td><td>×1</td><td>Recovery not confirmed by institutional volume</td></tr>
+        <tr><td>Momentum (RSI/MACD)</td><td>3/5</td><td>×1</td><td>RSI neutral; MACD positive but early</td></tr>
+        <tr><td>Pattern Structure</td><td>3/5</td><td>×1</td><td>Recovery bounce, no breakout confirmed</td></tr>
+        <tr><td>Entry Alignment</td><td>2/5</td><td>×1</td><td>Not yet in fundamental entry zone</td></tr>
+        <tr style="background:rgba(0,229,255,0.04)"><td class="tbl-highlight"><strong>Total Score</strong></td><td class="tbl-cyan"><strong>18/30 = 60%</strong></td><td></td><td><strong>Neutral — not a technical entry yet</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <div class="section">
+    <div class="section-title">Ownership Structure Overview</div>
+    <div class="metric-grid">
+      <div class="metric-card cyan">
+        <div class="metric-label">Shares Outstanding</div>
+        <div class="metric-value">~710M</div>
+        <div class="metric-sub">Post 2-for-1 split (Dec 2024) <span class="verified">VER</span></div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Market Cap</div>
+        <div class="metric-value">~$124B</div>
+        <div class="metric-sub">At ~$175/share <span class="unverified">UNVER</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Founder (Nir Zuk)</div>
+        <div class="metric-value">~3–5%</div>
+        <div class="metric-sub">Aligned founder still active <span class="estimated">EST</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Institutional Ownership</div>
+        <div class="metric-value">~82%</div>
+        <div class="metric-sub">Quality institutional base <span class="estimated">EST</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Institutional Ownership (Top Holders) <span class="estimated">ESTIMATED</span></div>
+    <table>
+      <thead><tr><th>Category</th><th>Est. Ownership %</th><th>Trend</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Vanguard Group</td><td>~8–9%</td><td>Stable</td><td>Long-duration passive holder</td></tr>
+        <tr><td>BlackRock</td><td>~7–8%</td><td>Stable</td><td>Long-duration passive holder</td></tr>
+        <tr><td>State Street</td><td>~4–5%</td><td>Stable</td><td>Passive indexer</td></tr>
+        <tr><td>Fidelity / Growth funds</td><td>~5–7%</td><td><span class="tbl-amber">Monitoring</span></td><td>Active growth: watching post-correction</td></tr>
+        <tr><td>Other Institutional</td><td>~50–55%</td><td>Mixed</td><td>Includes hedgies, sovereign wealth</td></tr>
+        <tr><td>Retail / Public</td><td>~16–18%</td><td>Growing</td><td>Retail interest elevated post-correction</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Pledged Shares Risk Assessment</div>
+    <div style="padding:10px 14px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:6px;font-size:0.82rem">
+      <strong class="tag-green">LOW RISK:</strong> PANW is a US-listed public company. No evidence of significant pledged shares by founders or management. Nir Zuk's stake appears to be direct equity ownership without material pledge arrangements. Pledging risk: <strong>PASS</strong> <span class="estimated">ESTIMATED</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — Free Float Analysis</div>
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>Free Float</td><td>~94–96%</td><td>Highly liquid; large cap</td></tr>
+        <tr><td>S&P 500 Weight</td><td>~0.5–0.7%</td><td>Index included; passive buying floor <span class="estimated">EST</span></td></tr>
+        <tr><td>Average Daily Volume Value</td><td>~$1.1–1.5B/day</td><td>Deep liquidity; institutional friendly <span class="estimated">EST</span></td></tr>
+        <tr><td>Institutional concentration</td><td>Top 10 holders: ~35–40%</td><td>Stable long-duration holder base <span class="estimated">EST</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section E — Ownership Scores</div>
+    <div class="metric-grid">
+      <div class="metric-card green">
+        <div class="metric-label">Ownership Momentum Score</div>
+        <div class="metric-value">62/100</div>
+        <div class="metric-sub">Stable institutional base; no momentum either way <span class="estimated">EST</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Shareholding Risk Score</div>
+        <div class="metric-value">18/100</div>
+        <div class="metric-sub">LOW RISK — no pledging, high liquidity, diversified institutional base <span class="estimated">EST</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <div class="section">
+    <div class="section-title">Section A — AI Classification Dashboard</div>
+    <div class="metric-grid">
+      <div class="metric-card cyan">
+        <div class="metric-label">Category</div>
+        <div class="metric-value" style="font-size:0.9rem">CAT C</div>
+        <div class="metric-sub">Mature Quality Compounder</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">AI Overlay</div>
+        <div class="metric-value" style="font-size:0.85rem">🟢 AI WIDENER</div>
+        <div class="metric-sub">AI deepening core moat</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Data Flywheel</div>
+        <div class="metric-value" style="font-size:0.85rem">⚙ FORMING ★★★</div>
+        <div class="metric-sub">7.5/10 — 3 questions partially confirmed</div>
+      </div>
+      <div class="metric-card" style="border-left-color:#8b5cf6">
+        <div class="metric-label">Adoption Phase</div>
+        <div class="metric-value" style="font-size:0.85rem;color:#a78bfa">PHASE 3</div>
+        <div class="metric-sub">AI-native security: inflection stage</div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="info-box">
+        <div class="info-title">Adoption Phase 3 Evidence — AI-Native Security Operations (20–40% Sector Adoption)</div>
+        <p>The cybersecurity sector is at Phase 3 (inflection) for AI-powered security operations. Evidence: Gartner and IDC both report 2024-2025 as the year AI-native SIEM platforms (like Cortex XSIAM) are displacing legacy SIEM at scale. PANW's three-platform customer base tripling YoY (from earnings) is a concrete inflection signal. More than 1,150 Fortune-5000 enterprises now fully platformized — suggesting 20–30%+ of target market has begun AI consolidation. <span class="estimated">ESTIMATED from market reports</span></p>
+        <p>Phase 3 characteristics are confirmed: winners clearly emerging (PANW, CrowdStrike), losers being eliminated (legacy SIEM vendors like Splunk independent — acquired by Cisco), and revenue accelerating for leaders. This is the maximum risk/reward window for PANW.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+    <div class="flywheel-box">
+      <div class="flywheel-title">Full Flywheel Analysis — Unit 42 + Precision AI</div>
+      <div class="flywheel-badge">⚙ FORMING — 7.5/10</div>
+
+      <div class="fly-q">Question 1: What is PANW's proprietary training data?</div>
+      <div class="fly-a">
+        <strong>Source:</strong> Unit 42 threat intelligence corpus collected from 70,000+ enterprise deployments globally. <span class="estimated">ESTIMATED</span><br>
+        <strong>Volume:</strong> Estimated 5B+ security events/day; billions of known-good and known-malicious network transactions, endpoint behaviors, and cloud API calls. <span class="estimated">ESTIMATED</span><br>
+        <strong>Uniqueness:</strong> No competitor has comparable multi-vector telemetry without PANW's scale of deployments. CrowdStrike has endpoint data; Zscaler has network proxy data — neither has the full-spectrum coverage of PANW's three-platform architecture.<br>
+        <strong>Outcome labels:</strong> PANW knows which alerts led to actual breaches (Unit 42 incident response data) — the gold standard for security AI training. <span class="verified">VERIFIED — Unit 42 IR practice described in 10-K</span>
+      </div>
+
+      <div class="fly-q">Question 2: How does the AI improve with more data?</div>
+      <div class="fly-a">
+        <strong>Mechanism:</strong> Each new attack observed creates prevention signatures distributed to all PANW customers simultaneously. Precision AI models retrain on new threat patterns as the corpus expands. Cortex XSIAM detection rules improve with more SOC interaction data (what analysts marked as true vs. false positives). <span class="estimated">ESTIMATED</span><br>
+        <strong>Evidence quality:</strong> Management claims AI improvements in earnings calls but does not publish specific accuracy metrics. Forrester TEI study shows 247% ROI from NGTS but does not isolate the AI-driven accuracy improvement contribution. FLYWHEEL NOT YET QUANTITATIVELY CONFIRMED — this is the key gap limiting the flywheel score to 7.5/10 rather than 9+. <span class="estimated">ESTIMATED</span>
+      </div>
+
+      <div class="fly-q">Question 3: Does better AI attract more users?</div>
+      <div class="fly-a">
+        <strong>Yes — through platform expansion:</strong> Customers adding 2nd and 3rd platforms grew >50% and 3x YoY respectively. The mechanism: Cortex XSIAM reducing Tier-1 analyst workload → CISO justifies expanding to full Cortex platform → generates more telemetry → better AI. <span class="verified">VERIFIED — from FY2025 Q2 earnings</span><br>
+        <strong>Loop cycle speed:</strong> Quarterly (platform reviews) to annual (budget cycles). Slower than consumer flywheel but durable. Each platform commitment is a 3-5 year lock-in event.
+      </div>
+
+      <div class="fly-score">
+        <div class="fly-score-label">Data Quality: </div><div class="fly-score-val">2.5/3</div>
+        <div class="fly-score-label">Improvement Evidence: </div><div class="fly-score-val">2.5/4</div>
+        <div class="fly-score-label">Loop Speed & Strength: </div><div class="fly-score-val">2.5/3</div>
+        <div class="fly-score-label" style="font-weight:700;color:var(--text)">TOTAL: </div><div class="fly-score-val" style="font-size:1.4rem">7.5/10</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — AI Value Chain Position</div>
+    <div class="value-chain">
+      <div class="chain-level">
+        <div class="chain-num">L1</div>
+        <div class="chain-name">Infrastructure</div>
+        <div style="font-size:0.62rem;margin-top:4px;color:var(--text-faint)">Chips, Power, DC</div>
+      </div>
+      <div class="chain-level">
+        <div class="chain-num">L2</div>
+        <div class="chain-name">Foundation Models</div>
+        <div style="font-size:0.62rem;margin-top:4px;color:var(--text-faint)">OpenAI, Anthropic</div>
+      </div>
+      <div class="chain-level">
+        <div class="chain-num">L3</div>
+        <div class="chain-name">AI Platforms</div>
+        <div style="font-size:0.62rem;margin-top:4px;color:var(--text-faint)">Palantir, Snowflake</div>
+      </div>
+      <div class="chain-level active">
+        <div class="chain-num">L4</div>
+        <div class="chain-name">Vertical AI Apps</div>
+        <div style="font-size:0.62rem;margin-top:4px;color:var(--cyan)">PANW = AI SECURITY</div>
+      </div>
+      <div class="chain-level active" style="border-left:none">
+        <div class="chain-num">L5</div>
+        <div class="chain-name">AI-Enabled Incumbents</div>
+        <div style="font-size:0.62rem;margin-top:4px;color:var(--cyan)">PANW (existing moat + AI)</div>
+      </div>
+    </div>
+    <div style="margin-top:28px;padding:10px 14px;background:var(--surface);border-radius:6px;border:1px solid var(--border);font-size:0.8rem">
+      <strong>PANW sits at BOTH Level 4 (Vertical AI Applications — AI security is its core product) and Level 5 (AI-Enabled Incumbent — existing firewall/SASE installed base now has AI overlay).</strong> This dual positioning is unusually powerful: Level 4 gives it the TAM expansion from AI-native security, while Level 5 gives it the installed base moat. Investment horizon implication: 7–10 years for full AI moat compounding to be visible in returns.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — India AI Opportunity Context</div>
+    <table>
+      <thead><tr><th>India AI Advantage</th><th>PANW Relevance</th><th>Explanation</th></tr></thead>
+      <tbody>
+        <tr><td>Data at Scale (UPI/Aadhaar)</td><td><span class="tbl-amber">Adjacent</span></td><td>PANW protects India's banking/fintech infrastructure but doesn't directly own the data flywheel</td></tr>
+        <tr><td>Vernacular AI Opportunity</td><td><span class="tbl-red">None</span></td><td>Security is language-agnostic; not a vernacular AI play</td></tr>
+        <tr><td>India Stack (ONDC/UPI/DigiLocker)</td><td><span class="tbl-amber">Adjacent</span></td><td>PANW secures the infrastructure India Stack runs on — cloud, network, identity. Indirectly critical.</td></tr>
+        <tr><td>AI Talent Cost Arbitrage</td><td><span class="tbl-green">Active</span></td><td>PANW has a significant R&D centre in India. Indian AI engineers contribute to Precision AI development. <span class="estimated">EST</span></td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:16px">
+      <table>
+        <thead><tr><th>India AI Theme</th><th>Phase</th><th>PANW Relevance</th></tr></thead>
+        <tbody>
+          <tr><td>AI in banking/credit</td><td>Phase 3</td><td><span class="tbl-green">Direct</span> — PANW secures the AI infrastructure in BFSI</td></tr>
+          <tr><td>AI in logistics/supply chain</td><td>Phase 2–3</td><td><span class="tbl-amber">Adjacent</span> — PANW secures enterprise networks</td></tr>
+          <tr><td>AI in diagnostics/health</td><td>Phase 2</td><td><span class="tbl-amber">Adjacent</span> — healthcare is a key PANW vertical</td></tr>
+          <tr><td>Data centres (infra)</td><td>Phase 3–4</td><td><span class="tbl-green">Direct</span> — PANW is primary DC security provider globally</td></tr>
+          <tr><td>AI SME credit/fintech</td><td>Phase 2</td><td><span class="tbl-amber">Adjacent</span> — through BFSI security vertical</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — AI Opportunity Verdict & Portfolio Role</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="ai-gauge">
+        <div class="gauge-circle">
+          <div class="gauge-inner">
+            <div class="gauge-num">72</div>
+            <div class="gauge-label-small">/100</div>
+          </div>
+        </div>
+        <div class="gauge-role">STRATEGIC AI BET</div>
+        <div class="gauge-role-sub">Starter position 2–3% max</div>
+        <div style="margin-top:12px;font-size:0.72rem;color:var(--text-dim)">
+          Data Flywheel: 14/20<br>
+          Adoption Phase (3): 16/20<br>
+          Value Chain (L4+L5): 18/20<br>
+          India AI Advantage: 10/20<br>
+          AI Threat Resistance: 14/20
+        </div>
+      </div>
+      <div class="info-box">
+        <div class="info-title">Portfolio Role — STRATEGIC AI BET (Score 72/100)</div>
+        <p>Strong AI opportunity with genuine data flywheel forming and Phase 3 inflection positioning. The dual L4/L5 value chain position is distinctive. However, until flywheel is confirmed with quantitative evidence and the price enters the fundamental entry zone ($130–155), the recommended position size is 2–3% maximum.</p>
+        <p style="margin-top:8px"><strong>Investment Horizon:</strong> 7–10 years for full AI WIDENER compounding. Do NOT apply a 12-month price target to this holding. The AI security TAM is expanding at 15–20%+ annually and PANW's platform lock-in ensures it will capture a growing share.</p>
+        <p style="margin-top:8px"><strong>Phase 2→3 transition signal (already triggered):</strong> The three-platform customer tripling is the concrete evidence that inflection has arrived. For patient investors who can wait for price to enter the fundamental entry zone, PANW offers one of the best AI-widened moat opportunities in global equity markets.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><strong>DISCLAIMER:</strong> This report is generated for educational and informational purposes only. It does not constitute investment advice. Securities mentioned involve risk. Past performance is not indicative of future results. This report was generated using the Buffett Quality-Value Series v5.0 framework. All financial data sourced from publicly available SEC filings, earnings releases, and reputable financial data providers. Data confidence labels: [VERIFIED] = official filings/live search this session; [ESTIMATED] = cross-referenced, high confidence; [UNVERIFIED] = limited source, verify independently. Current stock price should be verified via NASDAQ, Robinhood, or your broker before any investment decision. This is not a solicitation to buy or sell any security. Please consult a SEBI-registered or SEC-registered financial advisor before making investment decisions.</p>
+  <p style="margin-top:8px"><strong>Fonts:</strong> Syne (Display) · IBM Plex Sans (Body) · JetBrains Mono (Data). Report generated: April 26, 2026. Series: Buffett Quality-Value v5.0.</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

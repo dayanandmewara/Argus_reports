@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICICIAMC — Buffett Quality-Value Series v5.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E1F17;
+  --forest:#1B3A2D;
+  --gold:#C49A30;
+  --gold-light:#DFB94A;
+  --cream:#F8F4EB;
+  --cream-dark:#EDE8DC;
+  --sage:#4A7A65;
+  --sage-light:#6A9E86;
+  --rust:#8B3A2A;
+  --pass:#2E7D32;
+  --marginal:#B45309;
+  --fail:#B71C1C;
+  --verified:#1B6E3E;
+  --estimated:#7C5A00;
+  --unverified:#8B1A1A;
+  --font-display:'Cormorant Garamond',serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --font-body:'Spectral',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.7}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--forest) 0%,#0D2119 60%,#1A0A08 100%);color:var(--cream);padding:40px 32px 28px;position:relative;overflow:hidden;max-height:220px}
+.hero::before{content:'';position:absolute;top:-60px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(196,154,48,.12) 0%,transparent 70%);pointer-events:none}
+.hero-inner{max-width:1100px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.hero-left{}
+.hero-kicker{font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;color:var(--gold-light);text-transform:uppercase;margin-bottom:6px}
+.hero-name{font-family:var(--font-display);font-size:clamp(26px,4vw,44px);font-weight:700;line-height:1.1;letter-spacing:-.02em;color:#fff}
+.hero-sub{font-family:var(--font-display);font-size:14px;color:rgba(248,244,235,.6);margin-top:4px;font-style:italic}
+.hero-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:10px;padding:3px 9px;border-radius:3px;font-weight:500;letter-spacing:.06em}
+.badge-cat{background:rgba(196,154,48,.18);border:1px solid var(--gold);color:var(--gold-light)}
+.badge-ai{background:rgba(46,125,50,.22);border:1px solid #4CAF50;color:#81C784}
+.badge-verdict{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:#fff}
+.hero-right{text-align:right;flex-shrink:0}
+.hero-price{font-family:var(--font-display);font-size:32px;font-weight:700;color:var(--gold-light)}
+.hero-entry{font-family:var(--font-mono);font-size:11px;color:rgba(248,244,235,.6);margin-top:2px}
+.hero-gain{font-family:var(--font-mono);font-size:12px;color:#81C784;margin-top:2px}
+.data-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;justify-content:flex-end}
+.pill{font-family:var(--font-mono);font-size:9px;padding:2px 7px;border-radius:2px;letter-spacing:.04em}
+.pill-v{background:rgba(27,110,62,.25);color:#81C784;border:1px solid rgba(129,199,132,.3)}
+.pill-e{background:rgba(124,90,0,.25);color:#F6A623;border:1px solid rgba(246,166,35,.3)}
+
+/* TAB BAR */
+#tab-bar{position:sticky;top:0;z-index:100;background:var(--forest);border-bottom:2px solid var(--gold);overflow-x:auto;scrollbar-width:none}
+#tab-bar::-webkit-scrollbar{display:none}
+.tab-nav{display:flex;min-width:max-content;max-width:1100px;margin:0 auto}
+.tab-btn{font-family:var(--font-mono);font-size:10px;padding:11px 14px;cursor:pointer;color:rgba(248,244,235,.55);border:none;background:none;white-space:nowrap;letter-spacing:.06em;text-transform:uppercase;border-bottom:3px solid transparent;transition:all .2s}
+.tab-btn:hover{color:var(--gold-light);background:rgba(196,154,48,.08)}
+.tab-btn.active{color:var(--gold-light);border-bottom-color:var(--gold);background:rgba(196,154,48,.1)}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:28px 20px}
+.tab-content{display:none}
+
+/* SECTION HEADERS */
+.sec{margin-bottom:30px}
+.sec-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--forest);border-bottom:2px solid var(--gold);padding-bottom:6px;margin-bottom:16px;letter-spacing:-.01em}
+.sec-sub{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--forest);margin:18px 0 10px;letter-spacing:-.01em}
+
+/* CARDS & GRIDS */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:#fff;border-radius:6px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:4px solid var(--sage)}
+.card.gold{border-left-color:var(--gold)}
+.card.rust{border-left-color:var(--rust)}
+.card.forest{border-left-color:var(--forest)}
+.card-label{font-family:var(--font-mono);font-size:10px;color:var(--sage);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.card-value{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--forest)}
+.card-note{font-size:12px;color:#666;margin-top:3px}
+
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+.tbl th{background:var(--forest);color:var(--cream);font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;padding:8px 10px;text-align:left;text-transform:uppercase}
+.tbl td{padding:7px 10px;border-bottom:1px solid var(--cream-dark);vertical-align:top}
+.tbl tr:nth-child(even) td{background:rgba(27,58,45,.04)}
+.tbl tr:hover td{background:rgba(196,154,48,.06)}
+.num{font-family:var(--font-mono);font-size:12px}
+.up{color:var(--pass)}
+.dn{color:var(--fail)}
+
+/* SCORECARD */
+.score-card{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:5px;margin-bottom:8px;border:1px solid transparent}
+.score-pass{background:rgba(46,125,50,.08);border-color:rgba(46,125,50,.2)}
+.score-marginal{background:rgba(180,83,9,.07);border-color:rgba(180,83,9,.2)}
+.score-fail{background:rgba(183,28,28,.07);border-color:rgba(183,28,28,.2)}
+.score-icon{font-size:16px;flex-shrink:0}
+.score-label{font-family:var(--font-mono);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.score-desc{font-size:12px;color:#555;margin-top:1px}
+.badge-pass{background:rgba(46,125,50,.15);color:#1B5E20;border:1px solid rgba(46,125,50,.3);border-radius:3px;padding:1px 7px;font-family:var(--font-mono);font-size:9px}
+.badge-marginal{background:rgba(180,83,9,.12);color:#7C2D00;border:1px solid rgba(180,83,9,.3);border-radius:3px;padding:1px 7px;font-family:var(--font-mono);font-size:9px}
+.badge-fail{background:rgba(183,28,28,.1);color:#7F0000;border:1px solid rgba(183,28,28,.3);border-radius:3px;padding:1px 7px;font-family:var(--font-mono);font-size:9px}
+
+/* DATA LABELS */
+.dv{font-family:var(--font-mono);font-size:9px;padding:1px 6px;border-radius:2px;margin-left:4px}
+.dv-v{background:rgba(27,110,62,.15);color:var(--verified)}
+.dv-e{background:rgba(124,90,0,.15);color:var(--estimated)}
+.dv-u{background:rgba(139,26,26,.12);color:var(--unverified)}
+
+/* STAR RATINGS */
+.stars{color:var(--gold);font-size:14px;letter-spacing:1px}
+
+/* PILLAR GRADES */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.pillar-card{background:var(--forest);color:var(--cream);border-radius:6px;padding:16px;text-align:center}
+.pillar-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:rgba(248,244,235,.6);text-transform:uppercase;margin-bottom:6px}
+.pillar-grade{font-family:var(--font-display);font-size:32px;font-weight:700;color:var(--gold-light)}
+
+/* VERDICT BOX */
+.verdict-box{background:linear-gradient(135deg,var(--forest),#0D2119);border-radius:8px;padding:28px;color:var(--cream);border:2px solid var(--gold);margin:20px 0}
+.verdict-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;color:var(--gold-light);text-transform:uppercase;margin-bottom:8px}
+.verdict-main{font-family:var(--font-display);font-size:28px;font-weight:700;color:#fff;margin-bottom:12px}
+.verdict-prose{font-size:14px;color:rgba(248,244,235,.8);line-height:1.8;margin-bottom:16px}
+.verdict-quote{border-left:3px solid var(--gold);padding-left:16px;font-style:italic;font-family:var(--font-display);font-size:15px;color:rgba(248,244,235,.7);margin:16px 0}
+
+/* EXIT BOX */
+.exit-box{background:linear-gradient(135deg,#3A0E08,#1A0808);border-radius:8px;padding:28px;color:var(--cream);border:2px solid var(--gold);margin:20px 0}
+.exit-title{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--gold-light);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.exit-option{background:rgba(255,255,255,.06);border-radius:6px;padding:16px;margin-bottom:12px;border-left:4px solid var(--gold)}
+.exit-option.green{border-left-color:#4CAF50}
+.exit-option.amber{border-left-color:#FF9800}
+.exit-option.red{border-left-color:#F44336}
+.exit-opt-title{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.exit-opt-title.green{color:#81C784}
+.exit-opt-title.amber{color:#FFB74D}
+.exit-opt-title.red{color:#EF9A9A}
+.exit-opt-body{font-size:13px;color:rgba(248,244,235,.8);line-height:1.7}
+
+/* TAX BOX */
+.tax-box{background:rgba(196,154,48,.1);border:1px solid rgba(196,154,48,.3);border-radius:6px;padding:18px;margin:16px 0}
+.tax-title{font-family:var(--font-mono);font-size:11px;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+
+/* UPGRADE CONDITIONS */
+.upgrade-list{list-style:none;margin:12px 0}
+.upgrade-list li{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-radius:4px;margin-bottom:6px;background:rgba(27,58,45,.05);border:1px solid rgba(27,58,45,.1)}
+.upgrade-num{background:var(--forest);color:var(--gold-light);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;flex-shrink:0;margin-top:1px}
+.upgrade-text{font-size:13px;color:var(--ink)}
+
+/* MOAT CARDS */
+.moat-card{background:#fff;border-radius:6px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:12px}
+.moat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.moat-name{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--forest)}
+
+/* FLYWHEEL BOX */
+.flywheel-box{background:linear-gradient(135deg,rgba(27,58,45,.12),rgba(196,154,48,.08));border:2px solid var(--sage);border-radius:8px;padding:22px;margin:16px 0}
+.flywheel-title{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--forest);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.flywheel-q{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding:10px;background:rgba(255,255,255,.6);border-radius:4px}
+.flywheel-q-num{background:var(--sage);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;flex-shrink:0}
+.flywheel-q-text{font-size:13px;color:var(--ink)}
+
+/* AI DASHBOARD */
+.ai-dash{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.ai-card{border-radius:6px;padding:16px;text-align:center;border:1px solid}
+.ai-card.widener{background:rgba(46,125,50,.08);border-color:rgba(46,125,50,.3)}
+.ai-card.neutral{background:rgba(100,100,100,.08);border-color:rgba(100,100,100,.3)}
+.ai-card-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#666;margin-bottom:6px}
+.ai-card-value{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--forest)}
+
+/* SERIES TABLE */
+.series-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.series-tbl th{background:var(--forest);color:var(--gold-light);font-family:var(--font-mono);font-size:9px;padding:7px 8px;text-align:left;letter-spacing:.05em;text-transform:uppercase}
+.series-tbl td{padding:6px 8px;border-bottom:1px solid var(--cream-dark);vertical-align:middle}
+.series-tbl tr.current-row td{background:rgba(196,154,48,.1);font-weight:600}
+
+/* RESPONSIVE */
+@media(max-width:680px){.grid-3,.grid-2,.pillar-grid,.ai-dash{grid-template-columns:1fr 1fr}.hero-right{display:none}}
+@media(max-width:600px){.grid-3{grid-template-columns:1fr}.pillar-grid{grid-template-columns:1fr 1fr}.ai-dash{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-kicker">Buffett Quality-Value Series v5.0 · NSE: ICICIAMC</div>
+      <div class="hero-name">ICICI Prudential AMC</div>
+      <div class="hero-sub">India's Largest Active Equity Fund House</div>
+      <div class="hero-badges">
+        <span class="badge badge-cat">⊕ CAT C — MATURE QUALITY</span>
+        <span class="badge badge-ai">🟢 AI WIDENER</span>
+        <span class="badge badge-verdict">WATCH ★★★★</span>
+        <span class="badge badge-cat">🏛 AMC / FINANCIALISATION</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-price">₹3,500+</div>
+      <div class="hero-entry">Your IPO entry: ₹2,165</div>
+      <div class="hero-gain">↑ +61.7% unrealised gain</div>
+      <div class="data-pills">
+        <span class="pill pill-v">VERIFIED AUM ₹11T</span>
+        <span class="pill pill-v">FY26 PAT +24%</span>
+        <span class="pill pill-e">FWD P/E ~43x</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro</button>
+    <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+    <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict + EXIT</button>
+    <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intel</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content" id="t0" style="display:block">
+  <div class="sec">
+    <div class="sec-title">Business Overview</div>
+    <div class="grid-3">
+      <div class="card gold"><div class="card-label">AUM (QAAUM)</div><div class="card-value">₹11.05T</div><div class="card-note">+25.6% YoY · #2 overall, #1 active equity <span class="dv dv-v">VERIFIED</span></div></div>
+      <div class="card gold"><div class="card-label">FY26 PAT</div><div class="card-value">₹3,298 Cr</div><div class="card-note">+24.4% YoY · 5yr PAT CAGR ~22% <span class="dv dv-v">VERIFIED</span></div></div>
+      <div class="card gold"><div class="card-label">OPM (Operating)</div><div class="card-value">73%</div><div class="card-note">Stable 5 years · Best-in-class <span class="dv dv-v">VERIFIED</span></div></div>
+      <div class="card"><div class="card-label">Equity Mkt Share</div><div class="card-value">14.2%</div><div class="card-note">Largest in India · 26.7% in equity hybrids <span class="dv dv-v">VERIFIED</span></div></div>
+      <div class="card"><div class="card-label">Monthly SIP Book</div><div class="card-value">₹5,104 Cr</div><div class="card-note">+30% YoY · 17M unique customers <span class="dv dv-v">VERIFIED</span></div></div>
+      <div class="card"><div class="card-label">ROE (FY26)</div><div class="card-value">85.8%</div><div class="card-note">ROCE 111% · Near-zero debt <span class="dv dv-v">VERIFIED</span></div></div>
+    </div>
+    <div class="sec-sub">Why This Stock Is In The Series</div>
+    <p>ICICI Prudential AMC is India's purest listed proxy for the financialisation of household savings — the single most powerful structural economic shift India will see over the next two decades. As GDP per capita crosses $3,000, savings migrate from physical assets (gold, real estate) to financial instruments. AMCs are the toll-booth on this highway: they collect fees as a percentage of AUM every year, requiring no additional capital, no factories, no inventory. ICICI Pru holds the #1 position in actively managed equity — the highest-fee, highest-margin segment. This is an exceptional franchise at a full price.</p>
+    <br>
+    <p><strong>Your specific context:</strong> You entered at the IPO price of ₹2,165 (listed December 19, 2025). The stock has delivered ~62% in approximately 4 months. Tab 6 provides a dedicated exit strategy framework built around your position, tax calendar, and specific price triggers.</p>
+
+    <div class="sec-sub">Special Framework Notes</div>
+    <p>AMC businesses require specific adaptations. Owner earnings ≈ Net Profit (minimal maintenance capex). ROIC/ROE metrics are extraordinary (85%+) because the business model requires almost no invested capital — the fund AUM belongs to investors, not the company. The company earns a fee on AUM; balance sheet strength = proprietary investment corpus (~₹3,800 crore in own investments). Standard DCF is replaced with Owner Earnings Capitalisation as the primary method. The SEBI TER/BER overhaul (effective April 1, 2026) is the single most important regulatory risk to monitor.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Business Model & Revenue Drivers</div>
+    <table class="tbl">
+      <tr><th>Revenue Driver</th><th>FY26 Contribution</th><th>Trend</th><th>Risk</th></tr>
+      <tr><td>Active equity management fees</td><td class="num">~55% of revenue</td><td class="up">Growing</td><td>TER compression</td></tr>
+      <tr><td>Equity hybrid / balanced fees</td><td class="num">~20% of revenue</td><td class="up">Growing</td><td>Low — sticky</td></tr>
+      <tr><td>Debt fund fees</td><td class="num">~12% of revenue</td><td>Stable</td><td>Passive substitution</td></tr>
+      <tr><td>Passive (ETF/Index) fees</td><td class="num">~8% of revenue</td><td class="up">Growing fastest</td><td>Low margin — dilutive</td></tr>
+      <tr><td>PMS / AIF / Advisory</td><td class="num">~5% of revenue</td><td class="up">Expanding</td><td>Low — high margin</td></tr>
+    </table>
+    <p style="font-size:12px;color:#666;margin-top:8px">Note: Revenue breakdown estimated from QAAUM mix and typical AMC fee structures. <span class="dv dv-e">ESTIMATED</span></p>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO -->
+<div class="tab-content" id="t1">
+  <div class="sec">
+    <div class="sec-title">Macro & Growth Derivation</div>
+    <div class="grid-3">
+      <div class="card forest"><div class="card-label">India Real GDP</div><div class="card-value">6.5–6.8%</div><div class="card-note">RBI FY27 estimate <span class="dv dv-e">ESTIMATED</span></div></div>
+      <div class="card forest"><div class="card-label">India CPI</div><div class="card-value">~4.0%</div><div class="card-note">RBI target band 4% ±2 <span class="dv dv-e">ESTIMATED</span></div></div>
+      <div class="card forest"><div class="card-label">India Nominal GDP</div><div class="card-value">~10.5–11%</div><div class="card-note">Terminal growth ceiling <span class="dv dv-e">ESTIMATED</span></div></div>
+    </div>
+
+    <div class="sec-sub">Macro Cycle Dashboard</div>
+    <table class="tbl">
+      <tr><th>Dimension</th><th>Current Status</th><th>Impact on ICICIAMC</th></tr>
+      <tr><td>Rural Income Cycle</td><td><span style="color:var(--pass)">● Recovery</span></td><td>+: Wider SIP penetration beyond urban centres</td></tr>
+      <tr><td>Urban Consumption Cycle</td><td><span style="color:#FF9800">● Neutral–Caution</span></td><td>Neutral: IT sector softer; urban savings still high</td></tr>
+      <tr><td>Interest Rate Cycle (RBI)</td><td><span style="color:var(--pass)">● Easing Bias</span></td><td>++: Lower rates push savings from FD to MF</td></tr>
+      <tr><td>Government Capex Cycle</td><td><span style="color:var(--pass)">● Active</span></td><td>Indirect +: economic growth supports AUM growth</td></tr>
+      <tr><td>Equity Market Cycle</td><td><span style="color:#FF9800">● Correcting from peak</span></td><td>−: Nifty −14.5% in Q4 FY26 → AUM MTM impact</td></tr>
+      <tr><td>AI Adoption Cycle</td><td><span style="color:var(--pass)">● Accelerating</span></td><td>+: AI in portfolio analytics, customer acquisition</td></tr>
+    </table>
+    <p style="margin-top:8px;font-size:13px"><strong>Macro composite for ICICIAMC: TAILWIND</strong> — Rate easing + rural expansion + financialisation structural shift all favour AUM growth. Near-term headwind: Nifty correction reduces equity AUM MTM. Regulatory headwind: SEBI TER/BER compression.</p>
+
+    <div class="sec-sub">Sector Growth Derivation — Asset Management</div>
+    <table class="tbl">
+      <tr><th>Scenario</th><th>Macro</th><th>Industry AUM CAGR</th><th>Nominal GDP</th><th>Key Driver</th></tr>
+      <tr><td><strong>Stress</strong></td><td>GDP 5.5%, CPI 5%</td><td class="num">15–18%</td><td class="num">~10.5%</td><td>Markets flat; SIP holds; AUM MTM drag</td></tr>
+      <tr><td><strong>Base</strong></td><td>GDP 6.8%, CPI 4%</td><td class="num">20–25%</td><td class="num">~10.8%</td><td>Equity markets +10–12%; SIP grows 20%</td></tr>
+      <tr><td><strong>Acceleration</strong></td><td>GDP 8%, CPI 3.5%</td><td class="num">25–30%</td><td class="num">~11.5%</td><td>Bull market; ETF surge; global inflows</td></tr>
+    </table>
+    <p style="font-size:12px;color:#666">AI impact on sector: AI is <strong>accelerating</strong> India's MF sector by lowering customer acquisition cost, improving goal-based planning tools, and enabling hyper-personalised communications. AI adoption in financial services = Phase 3 (mainstream-adjacent). AI is also enabling vernacular outreach — expanding MF access to tier-2/3 India. Sector growth ceiling (terminal) = India Nominal GDP (~10.5–11%), per framework rules.</p>
+
+    <div class="sec-sub">Company Alpha Sources</div>
+    <table class="tbl">
+      <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Contribution</th><th>Stage 2</th></tr>
+      <tr><td>Market share gain (active equity)</td><td><span class="up">Active</span></td><td class="num">+2–3%</td><td class="num">+1%</td></tr>
+      <tr><td>Premiumisation (PMS/AIF/Alternates)</td><td><span class="up">Growing</span></td><td class="num">+1%</td><td class="num">+2%</td></tr>
+      <tr><td>Product expansion (iSIF, international)</td><td>Early</td><td class="num">+0.5%</td><td class="num">+1%</td></tr>
+      <tr><td>Pricing power (above-average fund performance)</td><td>Moderate</td><td class="num">+1%</td><td class="num">Neutral</td></tr>
+      <tr><td>AI alpha (6a cost, 6b TAM, 6c flywheel)</td><td><span class="up">Forming</span></td><td class="num">+1–1.5%</td><td class="num">+2%</td></tr>
+      <tr style="font-weight:600"><td>Total alpha above sector</td><td>—</td><td class="num">+5.5–8.5%</td><td class="num">+6%</td></tr>
+    </table>
+
+    <div class="sec-sub">Growth Rate Summary</div>
+    <table class="tbl">
+      <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Acceleration</th></tr>
+      <tr><td>Macro state</td><td>GDP ~5.5%</td><td>GDP ~6.8%</td><td>GDP ~8%+</td></tr>
+      <tr><td>Industry AUM CAGR</td><td class="num">15–18%</td><td class="num">20–25%</td><td class="num">25–30%</td></tr>
+      <tr><td>ICICIAMC revenue CAGR</td><td class="num">12–15%</td><td class="num">18–22%</td><td class="num">22–28%</td></tr>
+      <tr><td>PAT CAGR</td><td class="num">10–13%</td><td class="num">18–22%</td><td class="num">22–28%</td></tr>
+      <tr><td>Stage 2 PAT CAGR</td><td class="num">8–10%</td><td class="num">12–15%</td><td class="num">15–18%</td></tr>
+      <tr><td>Terminal growth</td><td class="num">7.0%</td><td class="num">7.8%</td><td class="num">8.5%</td></tr>
+      <tr><td>Margin direction</td><td>Compress (TER risk)</td><td>Stable 72–74%</td><td>Expand to 75–77%</td></tr>
+      <tr><td>Key risk</td><td>Passive substitution + TER</td><td>Equity mkt correction</td><td>Overheating valuation</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div class="tab-content" id="t2">
+  <div class="sec">
+    <div class="sec-title">Financial Fortress — 5-Year P&L</div>
+    <table class="tbl">
+      <tr><th>Metric</th><th>FY21</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>FY26</th></tr>
+      <tr><td>Revenue (₹Cr)</td><td class="num">2,230</td><td class="num">2,634</td><td class="num">2,837</td><td class="num">3,758</td><td class="num">4,977</td><td class="num">5,765</td></tr>
+      <tr><td>Revenue growth</td><td class="num">—</td><td class="num up">+18%</td><td class="num up">+8%</td><td class="num up">+32%</td><td class="num up">+32%</td><td class="num up">+16%*</td></tr>
+      <tr><td>Operating Profit (₹Cr)</td><td class="num">1,717</td><td class="num">1,993</td><td class="num">2,072</td><td class="num">2,777</td><td class="num">3,635</td><td class="num">4,171</td></tr>
+      <tr><td>OPM %</td><td class="num">77%</td><td class="num">76%</td><td class="num">73%</td><td class="num">74%</td><td class="num">73%</td><td class="num">72–73%</td></tr>
+      <tr><td>Net Profit (₹Cr)</td><td class="num">1,245</td><td class="num">1,454</td><td class="num">1,516</td><td class="num">2,050</td><td class="num">2,651</td><td class="num">3,298</td></tr>
+      <tr><td>PAT Growth</td><td class="num">—</td><td class="num up">+17%</td><td class="num up">+4%</td><td class="num up">+35%</td><td class="num up">+29%</td><td class="num up">+24%</td></tr>
+      <tr><td>Dividend Payout %</td><td class="num">75%</td><td class="num">84%</td><td class="num">84%</td><td class="num">76%</td><td class="num">81%</td><td class="num">~80%</td></tr>
+    </table>
+    <p style="font-size:11px;color:#888">*FY26 Q4 data from earnings call. Full year from Screener standalone + company announcements. <span class="dv dv-v">VERIFIED</span></p>
+
+    <div class="sec-sub">ROE Track — 5 Years</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0">
+      <div style="background:rgba(27,58,45,.07);border-radius:4px;padding:10px 16px;text-align:center;min-width:80px"><div style="font-family:var(--font-mono);font-size:9px;color:#888;margin-bottom:4px">FY21</div><div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--pass)">~73%</div></div>
+      <div style="background:rgba(27,58,45,.07);border-radius:4px;padding:10px 16px;text-align:center;min-width:80px"><div style="font-family:var(--font-mono);font-size:9px;color:#888;margin-bottom:4px">FY22</div><div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--pass)">~74%</div></div>
+      <div style="background:rgba(27,58,45,.07);border-radius:4px;padding:10px 16px;text-align:center;min-width:80px"><div style="font-family:var(--font-mono);font-size:9px;color:#888;margin-bottom:4px">FY23</div><div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--pass)">~76%</div></div>
+      <div style="background:rgba(27,58,45,.07);border-radius:4px;padding:10px 16px;text-align:center;min-width:80px"><div style="font-family:var(--font-mono);font-size:9px;color:#888;margin-bottom:4px">FY24</div><div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--pass)">~81%</div></div>
+      <div style="background:rgba(27,58,45,.07);border-radius:4px;padding:10px 16px;text-align:center;min-width:80px"><div style="font-family:var(--font-mono);font-size:9px;color:#888;margin-bottom:4px">FY25</div><div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--pass)">83%</div></div>
+      <div style="background:rgba(196,154,48,.12);border-radius:4px;padding:10px 16px;text-align:center;min-width:80px;border:1px solid var(--gold)"><div style="font-family:var(--font-mono);font-size:9px;color:#888;margin-bottom:4px">FY26</div><div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--gold)">85.8%</div></div>
+    </div>
+    <p style="font-size:12px;color:#666">ROE is structurally elevated because the AMC business model requires minimal capital. High payout ratio (~80%) = surplus capital returned, ROE remains extraordinary. 5yr ROE 77% <span class="dv dv-v">VERIFIED</span></p>
+
+    <div class="sec-sub">Financial Fortress Scorecard</div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">ROE ≥ 15% for 5 years <span class="badge-pass">PASS</span></div><div class="score-desc">5yr average ~78%; accelerating. Best-in-class among Indian listed financials.</div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">FCF Positive &amp; Growing <span class="badge-pass">PASS</span></div><div class="score-desc">OCF: ₹1,195 → ₹1,333 → ₹1,400 → ₹1,765 → ₹2,574 Cr. Consistent 5-year growth.</div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Net Profit Margin ≥ 15% <span class="badge-pass">PASS</span></div><div class="score-desc">Net margin: ~55–58% of revenue. Extraordinary for any business.</div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Capital-Light Model <span class="badge-pass">PASS</span></div><div class="score-desc">Near-zero capex needed to grow AUM. ROCE 111%. All earnings = free cash.</div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Revenue CAGR vs Sector <span class="badge-pass">PASS</span></div><div class="score-desc">3yr revenue CAGR 24% vs industry AUM CAGR 20–22%. Outperforming.</div></div></div>
+    <div class="score-card score-marginal"><span class="score-icon">~</span><div><div class="score-label">Dividend Sustainability <span class="badge-marginal">MARGINAL</span></div><div class="score-desc">Payout 80%+ of earnings is high. Sustainable given low capex needs, but leaves little for buybacks.</div></div></div>
+    <div class="score-card score-marginal"><span class="score-icon">~</span><div><div class="score-label">Revenue Predictability Under TER Norms <span class="badge-marginal">MARGINAL</span></div><div class="score-desc">SEBI BER framework (April 2026) separates expense components. Margin compression risk of 100–150bps over 2 years is live. Not catastrophic for scale leaders, but a headwind. <span class="dv dv-v">VERIFIED</span></div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Working Capital <span class="badge-pass">PASS</span></div><div class="score-desc">Negative WC days (−27 in FY25) = company receives fees before incurring costs = supplier float. Best-case WC structure.</div></div></div>
+
+    <div class="sec-sub">Earnings Quality (O'Glove Framework)</div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Test 1 — FCF Conversion (5yr) <span class="badge-pass">PASS</span></div><div class="score-desc">OCF/Net Profit: FY21 96%, FY22 92%, FY23 92%, FY24 86%, FY25 97%. Consistently above 80%. Cash earnings quality: CLEAN.</div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Test 2 — DSO Trend <span class="badge-pass">PASS</span></div><div class="score-desc">Debtor days: 11→14→14→19→17. Mild uptick in FY24 but reversed FY25. Management fee receivables are low-risk.</div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Test 3 — Inventory Days <span class="badge-pass">N/A</span></div><div class="score-desc">Not applicable — service business.</div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Test 4 — Accounting Policy <span class="badge-pass">PASS</span></div><div class="score-desc">No material policy changes noted. SEBI settlement on legacy real estate venture fund resolved. One-time items minimal. <span class="dv dv-e">ESTIMATED</span></div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Test 5 — Gross Margin Consistency <span class="badge-pass">PASS</span></div><div class="score-desc">OPM 73–77% over 5 years. Resilient to market corrections. TER compression is the only structural risk to this metric going forward.</div></div></div>
+    <div style="background:rgba(46,125,50,.1);border:1px solid rgba(46,125,50,.3);border-radius:5px;padding:12px;margin-top:10px">
+      <strong style="font-family:var(--font-mono);font-size:10px;color:var(--pass)">EARNINGS QUALITY VERDICT: CLEAN ✓</strong>
+      <p style="font-size:12px;margin-top:6px;color:#444">All 5 O'Glove tests passed or N/A. FCF conversion reliably above 80%. Reported earnings are trustworthy. No adjustment to reported numbers needed.</p>
+    </div>
+
+    <div class="sec-sub">Owner Earnings (FY26)</div>
+    <div style="background:rgba(27,58,45,.08);border:1px solid var(--sage);border-radius:6px;padding:16px;font-family:var(--font-mono);font-size:12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div>Net Profit (FY26):</div><div style="text-align:right;color:var(--forest)">+ ₹3,298 Cr</div>
+        <div>D&amp;A:</div><div style="text-align:right;color:var(--forest)">+ ₹85 Cr</div>
+        <div>Maintenance CapEx (near-zero for AMC):</div><div style="text-align:right;color:var(--fail)">− ₹30 Cr</div>
+        <div>WC Changes (negative = favourable):</div><div style="text-align:right;color:var(--forest)">+ ₹0 Cr</div>
+        <div style="border-top:1px solid var(--sage);padding-top:6px;font-weight:600">Owner Earnings (Base):</div><div style="text-align:right;border-top:1px solid var(--sage);padding-top:6px;font-weight:600;color:var(--forest)">≈ ₹3,353 Cr</div>
+        <div>Per share (490M shares):</div><div style="text-align:right;color:var(--gold)">≈ ₹68.4</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div class="tab-content" id="t3">
+  <div class="sec">
+    <div class="sec-title">Economic Moat Assessment</div>
+
+    <div class="moat-card">
+      <div class="moat-header"><span class="moat-name">Brand &amp; Trust Moat</span><span class="stars">★★★★★</span></div>
+      <p style="font-size:13px">ICICI Prudential is synonymous with equity mutual funds in India. 30-year brand heritage. JV between ICICI Bank (widest retail branch network) and Prudential (global insurance expertise). Brand recall = distribution stickiness. Once an investor starts SIP with a fund house, inertia is enormous — average SIP tenure exceeds 7 years.</p>
+    </div>
+    <div class="moat-card">
+      <div class="moat-header"><span class="moat-name">Distribution Network Moat</span><span class="stars">★★★★</span></div>
+      <p style="font-size:13px">ICICI Bank's 6,000+ branches + 15,000+ ATMs + digital banking app with 50M+ users = captive distribution advantage. Competitors cannot replicate this without a comparable bank parent. ICICI Bank cross-sells MF products to its own banking customers — a built-in, low-cost acquisition channel with no equivalent among standalone AMCs.</p>
+    </div>
+    <div class="moat-card">
+      <div class="moat-header"><span class="moat-name">Switching Cost Moat</span><span class="stars">★★★</span></div>
+      <p style="font-size:13px">Individual fund switching is easy. But the accumulation of 17M customers, each with SIP mandates running for years, creates a sticky AUM base. The folio count is what matters — once a customer has multiple folios, tax records, and gain/loss history in one AMC, migration is genuinely cumbersome. Long-standing SIP customers form an annuity-like base.</p>
+    </div>
+    <div class="moat-card">
+      <div class="moat-header"><span class="moat-name">Equity Alpha Generation</span><span class="stars">★★★½</span></div>
+      <p style="font-size:13px">14.2% equity market share is the most valuable position. Equity AUM commands 5–10x higher management fees than debt or index funds. Sustained outperformance in flagship funds (Large Cap, Value, Multi-Asset) drives organic AUM growth via reinvestment. However, this moat requires sustained fund performance — underperformance periods erode share gradually.</p>
+    </div>
+    <div class="moat-card">
+      <div class="moat-header"><span class="moat-name">Scale Economies</span><span class="stars">★★★★</span></div>
+      <p style="font-size:13px">Fixed costs (compliance, technology, fund management teams) spread over ₹11 trillion AUM = structural cost advantage. OPM of 73% on ₹5,765 crore revenue leaves ₹4,171 crore operating profit. As AUM grows, margins expand incrementally since incremental cost of managing ₹100 crore more AUM approaches zero. Scale = compounding moat.</p>
+    </div>
+
+    <div class="flywheel-box">
+      <div class="flywheel-title">🔄 Data Flywheel Assessment</div>
+      <div class="flywheel-q">
+        <div class="flywheel-q-num">1</div>
+        <div class="flywheel-q-text"><strong>Proprietary Training Data?</strong> YES — 30 years of investor behaviour data (SIP patterns, redemption triggers, goal completion rates) across 17M customers. No competitor has this exact dataset. Also holds ICICI Bank behavioural data via referral channel (KYC, spending patterns for goal-based planning). <span class="dv dv-e">ESTIMATED</span></div>
+      </div>
+      <div class="flywheel-q">
+        <div class="flywheel-q-num">2</div>
+        <div class="flywheel-q-text"><strong>Does AI improve with more users?</strong> PARTIALLY — The AMC has not publicly disclosed specific accuracy improvement metrics tied to AI usage (no earnings call evidence of "model X improved from Y% to Z% as volume doubled"). Uses AI for customer segmentation, churn prediction, and digital acquisition. But AI here is a <em>tool</em> for efficiency, not a compounding capability. <span class="dv dv-e">ESTIMATED</span></div>
+      </div>
+      <div class="flywheel-q">
+        <div class="flywheel-q-num">3</div>
+        <div class="flywheel-q-text"><strong>Better AI → More Users?</strong> WEAK — The feedback loop exists but is slow and indirect. Better personalisation → marginally better retention. But customers choose funds based on performance and brand, not AI sophistication. The flywheel spins, but slowly. Not a dominant moat driver.</div>
+      </div>
+      <div style="margin-top:12px;background:rgba(255,255,255,.5);border-radius:4px;padding:12px">
+        <strong style="font-family:var(--font-mono);font-size:10px;color:var(--sage)">DATA FLYWHEEL VERDICT: AI FEATURE (★) — NOT A MOAT</strong>
+        <br><span style="font-size:12px;color:#555">2 of 3 criteria partially met. AI is used for efficiency and personalisation but the loop does not compound the competitive position. Flywheel score: 4/10. No moat grade upgrade from flywheel. The real moat is brand + distribution + scale — AI enhances but does not structurally change it.</span>
+      </div>
+    </div>
+
+    <div class="sec-sub">ROIC as Moat Proof</div>
+    <p style="font-size:13px">ROCE 111% (FY25). This is one of the highest ROCE figures among Nifty 100 companies — a direct mathematical proof of exceptional economic moat. At these returns, every rupee reinvested creates extraordinary value. The AMC business model is capital-negative in the traditional sense: the AUM (client money) is not on the AMC's balance sheet. The company earns fees without deploying its own capital.</p>
+
+    <div class="sec-sub">Macro Moat Stress Test</div>
+    <table class="tbl">
+      <tr><th>Moat Source</th><th>In Stress Scenario</th><th>Assessment</th></tr>
+      <tr><td>Brand &amp; Trust</td><td>STRENGTHENS — flight to quality; market corrections bring inflows to established fund houses</td><td class="up">Strengthens</td></tr>
+      <tr><td>Distribution</td><td>HOLDS — ICICI Bank remains largest private bank regardless of macro</td><td>Holds</td></tr>
+      <tr><td>Switching Costs</td><td>HOLDS — existing SIP mandates run unless actively cancelled; most investors stay</td><td>Holds</td></tr>
+      <tr><td>Scale Economies</td><td>HOLDS — fixed cost base doesn't grow with AUM contraction; margins compress but don't collapse</td><td>Holds</td></tr>
+      <tr><td>Equity Alpha</td><td>WEAKENS — underperformance in bear markets leads to redemptions and market share loss</td><td class="dn">Mild Weakening</td></tr>
+    </table>
+
+    <div style="background:rgba(27,58,45,.08);border:1px solid var(--sage);border-radius:5px;padding:14px;margin-top:12px">
+      <strong style="font-family:var(--font-mono);font-size:10px;color:var(--forest)">MOAT VERDICT: B+</strong>
+      <p style="font-size:13px;margin-top:6px">Wide competitive moat driven by brand, ICICI Bank distribution, and scale. Durable for 10+ years. The key vulnerability: passive substitution (index funds growing 34% YoY) compresses equity active fee yields over time. SEBI TER compression is a regulatory headwind. Core moat is intact; it is being slowly diluted at the margins by passive growth.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div class="tab-content" id="t4">
+  <div class="sec">
+    <div class="sec-title">Management Integrity & Capital Allocation</div>
+
+    <div class="grid-2">
+      <div class="card gold">
+        <div class="card-label">Promoter Structure</div>
+        <div style="font-size:13px;margin-top:6px">JV: ICICI Bank + Prudential Corporation Holdings. Both are institutional promoters with global reputations. No individual promoter pledging. No single promoter family control. Promoter holding: <strong>87.59%</strong>. This is the best possible governance structure for an Indian AMC — dual institutional anchors, each with independent risk management frameworks. <span class="dv dv-v">VERIFIED</span></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Management Quality</div>
+        <div style="font-size:13px;margin-top:6px">Nimesh Shah (MD &amp; CEO) — 25+ year tenure, institutional credibility. Naveen Agarwal (CFO) — conservative guidance track record. Sankaran Naren (CIO) — one of India's most respected equity investors, known for contrarian value approach. Strong second-line management. No governance red flags in recent history. SEBI settlement on legacy real estate venture fund is a legacy issue, not a current concern. <span class="dv dv-e">ESTIMATED</span></div>
+      </div>
+    </div>
+
+    <div class="sec-sub">Capital Allocation Assessment</div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Dividend Policy <span class="badge-pass">PASS</span></div><div class="score-desc">Payout ratio 75–84% of PAT. Sustainable for capital-light business. FY26: ₹12.40 final + ₹14.85 interim = ~₹27.25/share dividend. Demonstrates shareholder focus.</div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">ESOP/ESUS Discipline <span class="badge-pass">PASS</span></div><div class="score-desc">0.78M ESOPs + 0.19M stock units approved in FY26. Modest relative to total shares outstanding (~490M). Not dilutive. Appropriate talent retention mechanism.</div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Promoter Pledge <span class="badge-pass">PASS — ZERO PLEDGE</span></div><div class="score-desc">No promoter pledge reported. <span class="dv dv-v">VERIFIED</span></div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Strategic Expansions <span class="badge-pass">PASS</span></div><div class="score-desc">ICICI Venture integration adds ₹4,620 Cr committed funds (AIFs). Dubai office + GIFT City Smart Navigator Fund = international diversification. These are calculated bets, not empire building.</div></div></div>
+    <div class="score-card score-marginal"><span class="score-icon">~</span><div><div class="score-label">Passive AUM Strategy <span class="badge-marginal">WATCH</span></div><div class="score-desc">Passive AUM grew 34% YoY — faster than active. Management must decide how aggressively to build the ETF/index franchise vs protecting active fee yields. Current passive market share (~9%) is below leader SBI. Strategic clarity needed. <span class="dv dv-e">ESTIMATED</span></div></div></div>
+    <div class="score-card score-pass"><span class="score-icon">✓</span><div><div class="score-label">Counter-Cyclical Behaviour <span class="badge-pass">PASS</span></div><div class="score-desc">In Q4 FY26 (Nifty −14.5%), ICICIAMC equity AUM grew +2% QoQ vs industry −0.4% — evidence of market share capture during volatility. Counter-cyclical inflows = quality of investor base.</div></div></div>
+
+    <div class="sec-sub">Management Grade: B+</div>
+    <p style="font-size:13px">Institutional dual-promoter structure provides governance stability that pure founder-led companies cannot match. Nimesh Shah's long tenure ensures consistency. Sankaran Naren's fund management philosophy is well-articulated and has delivered through multiple market cycles. The one area to watch: clarity on the passive strategy and TER compression response. No red flags. No pledges. No fraud alerts.</p>
+  </div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div class="tab-content" id="t5">
+  <div class="sec">
+    <div class="sec-title">Valuation — 5-Method Analysis</div>
+
+    <p style="font-size:13px;margin-bottom:16px">EPS basis: FY26 PAT ₹3,298 Cr ÷ 490M shares = <strong>₹67.3/share</strong>. FY27E PAT (+20%) = ₹3,958 Cr → <strong>₹80.8/share</strong>. FY28E PAT (+18%) = ₹4,670 Cr → <strong>₹95.3/share</strong>. All growth rates from macro-derived derivation table. <span class="dv dv-e">ESTIMATED</span></p>
+
+    <div class="sec-sub">Method 1 — Owner Earnings Capitalisation (Primary)</div>
+    <table class="tbl">
+      <tr><th>Scenario</th><th>FY27E OE/Share</th><th>Required Return</th><th>Stage 1 g</th><th>Terminal g</th><th>IV/Share</th></tr>
+      <tr><td>Stress</td><td class="num">₹74</td><td class="num">13%</td><td class="num">12%</td><td class="num">7.0%</td><td class="num"><strong>₹2,650</strong></td></tr>
+      <tr><td>Base</td><td class="num">₹80</td><td class="num">12%</td><td class="num">18%</td><td class="num">7.8%</td><td class="num"><strong>₹3,350–3,500</strong></td></tr>
+      <tr><td>Acceleration</td><td class="num">₹87</td><td class="num">11%</td><td class="num">22%</td><td class="num">8.5%</td><td class="num"><strong>₹4,100</strong></td></tr>
+    </table>
+
+    <div class="sec-sub">Method 2 — P/E Earnings Power</div>
+    <table class="tbl">
+      <tr><th>Scenario</th><th>EPS Basis</th><th>Justified P/E</th><th>IV/Share</th><th>Reasoning</th></tr>
+      <tr><td>Peer parity (HDFC AMC at 34–39x)</td><td class="num">FY27E ₹80.8</td><td class="num">35x</td><td class="num"><strong>₹2,828</strong></td><td>If ICICIAMC re-rates to HDFC AMC multiple</td></tr>
+      <tr><td>Base (growth premium)</td><td class="num">FY27E ₹80.8</td><td class="num">43x</td><td class="num"><strong>₹3,474</strong></td><td>24% PAT growth vs HDFC AMC 16% = premium justified</td></tr>
+      <tr><td>Premium (best case)</td><td class="num">FY27E ₹80.8</td><td class="num">50x</td><td class="num"><strong>₹4,040</strong></td><td>Bull case: all catalysts deliver; AUM grows 28%+</td></tr>
+    </table>
+
+    <div class="sec-sub">Method 3 — Earnings Yield vs Bond Yield</div>
+    <table class="tbl">
+      <tr><th>Metric</th><th>Value</th><th>Signal</th></tr>
+      <tr><td>Earnings Yield (FY26 EPS/Price ₹3,500)</td><td class="num">1.92%</td><td class="dn">Well below bond yield → Not cheap on yield</td></tr>
+      <tr><td>Forward Earnings Yield (FY27E)</td><td class="num">2.31%</td><td class="dn">India 10yr G-Sec ~6.8% → ERP negative at face value</td></tr>
+      <tr><td>India 10yr G-Sec</td><td class="num">~6.8%</td><td class="dv dv-e">ESTIMATED</td></tr>
+      <tr><td>FCF Yield (Owner Earnings ₹3,353 Cr / MCap ₹1.73L Cr)</td><td class="num">1.94%</td><td class="dn">Not a yield play — pure growth play</td></tr>
+      <tr><td>Interpretation</td><td colspan="2">At ₹3,500, ICICIAMC is priced for 20%+ earnings growth for 5+ years. If growth slows to 12%, re-rating to 35x FY27E = ₹2,828 is a real downside scenario.</td></tr>
+    </table>
+    <p style="font-size:12px;color:#666;margin-top:4px">Yield-on-cost for your position: Entry ₹2,165 × FY26 dividend ₹27.25 = 1.26% yield-on-cost. FY27E (₹33 assumed) → 1.52% yield-on-cost. Growing but not a yield story. <span class="dv dv-e">ESTIMATED</span></p>
+
+    <div class="sec-sub">Method 4 — Relative Valuation vs Peers</div>
+    <table class="tbl">
+      <tr><th>Company</th><th>P/E TTM</th><th>FY26 PAT Growth</th><th>ROE</th><th>Verdict</th></tr>
+      <tr style="background:rgba(196,154,48,.08)"><td><strong>ICICIAMC (current ~₹3,500)</strong></td><td class="num">~51x</td><td class="num up">+24%</td><td class="num">85.8%</td><td>Priced at significant premium</td></tr>
+      <tr><td>HDFCAMC</td><td class="num">~34–39x</td><td class="num up">+16%</td><td class="num">~38%</td><td>Lower growth, lower multiple</td></tr>
+      <tr><td>Nippon India AMC</td><td class="num">~30–35x</td><td class="num">~18%</td><td class="num">~32%</td><td>Cheaper; smaller scale</td></tr>
+      <tr><td>UTI AMC</td><td class="num">~22–28x</td><td class="num">~12–15%</td><td class="num">~20%</td><td>Value trap risk; weak execution</td></tr>
+    </table>
+    <p style="font-size:12px;color:#666;margin-top:4px">ICICIAMC trades at 30–50% premium to HDFC AMC. Premium justified by: (1) higher PAT growth (24% vs 16%), (2) best equity market share (14.2% vs ~13%), (3) superior ROE (85% vs 38%). But at 51x, even a modest growth slowdown = significant de-rating risk.</p>
+
+    <div class="sec-sub">Method 5 — DCF (Illustrative, 2-Stage)</div>
+    <table class="tbl">
+      <tr><th>Stage</th><th>Period</th><th>Growth (Base)</th><th>WACC</th><th>PV of FCF</th></tr>
+      <tr><td>Stage 1</td><td>FY27–FY31 (5yr)</td><td class="num">18–20%</td><td class="num">12%</td><td class="num">₹14,200 Cr</td></tr>
+      <tr><td>Stage 2</td><td>FY32–FY36 (5yr)</td><td class="num">13–15%</td><td class="num">12%</td><td class="num">₹12,800 Cr</td></tr>
+      <tr><td>Terminal</td><td>FY37+</td><td class="num">7.8%</td><td class="num">12%</td><td class="num">₹89,000 Cr</td></tr>
+      <tr style="font-weight:600"><td>Total Intrinsic Value</td><td>—</td><td>—</td><td>—</td><td class="num">~₹1,16,000 Cr → ₹2,367/share</td></tr>
+    </table>
+    <p style="font-size:12px;color:#666;margin-top:4px">DCF shows stock is trading at ~48% premium to conservative intrinsic value. This is expected for a high-quality compounder — the market pays up for certainty. Entry price ₹2,165 was at near-fair value on DCF basis — you bought at the right price. <span class="dv dv-e">ESTIMATED</span></p>
+
+    <div class="sec-sub">5-Method Summary Table</div>
+    <table class="tbl">
+      <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>Current Price</th></tr>
+      <tr><td>Owner Earnings Capitalisation</td><td class="num">₹2,650</td><td class="num">₹3,400</td><td class="num">₹4,100</td><td rowspan="5" class="num" style="vertical-align:middle;font-size:20px;font-weight:700;color:var(--gold)">₹3,500</td></tr>
+      <tr><td>P/E Earnings Power (43x FY27E)</td><td class="num">₹2,830</td><td class="num">₹3,474</td><td class="num">₹4,040</td></tr>
+      <tr><td>Earnings Yield (bond-relative)</td><td class="num">₹2,400</td><td class="num">₹2,950</td><td class="num">₹3,600</td></tr>
+      <tr><td>Relative Valuation (peer-parity)</td><td class="num">₹2,800</td><td class="num">₹3,200</td><td class="num">₹3,900</td></tr>
+      <tr><td>DCF (2-Stage)</td><td class="num">₹1,900</td><td class="num">₹2,367</td><td class="num">₹3,100</td></tr>
+      <tr style="font-weight:600"><td>Blended Base IV</td><td class="num dn">₹2,516</td><td class="num">₹3,078</td><td class="num up">₹3,748</td><td class="num"></td></tr>
+      <tr><td colspan="4" style="font-size:12px;color:var(--marginal)">⚠ At ₹3,500: trading 14% above blended base IV. Within a fair value range for quality, but margin of safety is gone. The stock is FAIRLY PRICED at current levels, not cheap.</td><td></td></tr>
+    </table>
+
+    <p style="font-size:13px;margin-top:12px"><strong>Sensitivity:</strong> A 1% change in terminal growth rate changes IV by ~₹180/share. A 1% change in WACC changes IV by ~₹220/share. The stock is most sensitive to changes in terminal growth assumptions — directly linked to India's nominal GDP trajectory and the pace of financialisation.</p>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT + EXIT -->
+<div class="tab-content" id="t6">
+  <div class="sec">
+    <div class="sec-title">Four Pillar Grades</div>
+    <div class="pillar-grid">
+      <div class="pillar-card"><div class="pillar-label">Moat</div><div class="pillar-grade">B+</div><div style="font-size:11px;color:rgba(248,244,235,.5);margin-top:4px">Wide; defensible; passive dilution risk</div></div>
+      <div class="pillar-card"><div class="pillar-label">Financial Quality</div><div class="pillar-grade">A</div><div style="font-size:11px;color:rgba(248,244,235,.5);margin-top:4px">ROE 86%, OPM 73%, CLEAN earnings</div></div>
+      <div class="pillar-card"><div class="pillar-label">Management</div><div class="pillar-grade">B+</div><div style="font-size:11px;color:rgba(248,244,235,.5);margin-top:4px">Institutional JV; zero pledge; strong CIO</div></div>
+      <div class="pillar-card"><div class="pillar-label">Valuation</div><div class="pillar-grade">C+</div><div style="font-size:11px;color:rgba(248,244,235,.5);margin-top:4px">Fair to full price; MoS gone at ₹3,500</div></div>
+    </div>
+
+    <div class="verdict-box">
+      <div class="verdict-label">Framework Verdict · ICICIAMC · April 2026</div>
+      <div class="verdict-main">WATCH ★★★★ — Exceptional Quality, Full Price</div>
+      <div class="verdict-prose">ICICI Prudential AMC is unambiguously one of India's best businesses. It is the toll-booth on India's financialisation superhighway — capital-light, recurring fee income, exceptional ROE, institutional promoters, and a growing moat via ICICI Bank distribution. FY26 delivered +24% PAT growth and the SIP book at ₹5,104 crore/month (+30%) is structural, not cyclical. The business quality warrants a premium multiple.</div>
+      <div class="verdict-prose">However, at ₹3,500, the stock is trading at ~51x TTM earnings and ~43x FY27E — above the blended base intrinsic value of ₹3,078 and at full price relative to the growth trajectory. The margin of safety that existed at your IPO entry of ₹2,165 has been fully consumed. The risk/reward for a NEW buyer is asymmetric. For an EXISTING holder, the calculus is different — see Exit Framework below.</div>
+      <div class="verdict-prose"><strong>Key risk to monitor:</strong> SEBI BER norms (April 2026) may compress operating margins by 100–150 bps over FY27–28. Passive AUM growing 34% YoY (vs active growing at ~20%) dilutes the fee yield of the blended AUM pool. If equity market share slips below 13.5%, re-rate risk is real. Nifty correction (−14.5% in Q4 FY26) depressed AUM MTM — if sustained, FY27 profit may disappoint consensus.</div>
+      <div class="verdict-quote">"Price is what you pay. Value is what you get. At ₹2,165, you got extraordinary value. At ₹3,500, you're paying a fair price for quality."</div>
+    </div>
+
+    <!-- EXIT FRAMEWORK — SPECIAL SECTION -->
+    <div class="exit-box">
+      <div class="exit-title">🎯 Exit Strategy Framework — Your IPO Position</div>
+      <p style="font-size:13px;color:rgba(248,244,235,.8);margin-bottom:20px">You entered at ₹2,165 (IPO, December 19, 2025). Today at ₹3,500+, your unrealised gain is ~₹1,335/share (~62%). The question is not "is this a good business?" (it is). The question is "what is the optimal exit strategy given valuation, tax, and opportunity cost?"</p>
+
+      <div class="exit-option green">
+        <div class="exit-opt-title green">OPTION A — HOLD &amp; LET EARNINGS CATCH UP (Hold to Dec 2026)</div>
+        <div class="exit-opt-body">
+          <strong>Logic:</strong> At ₹3,500 and FY28E EPS ₹95.3, the forward P/E compresses to 36.7x by FY28 — approaching HDFC AMC levels. If you believe 20%+ PAT growth continues for 2 more years, earnings will justify the current price without needing a higher multiple. Meanwhile, dividends compound your return. <br><br>
+          <strong>Tax benefit:</strong> Holding past December 19, 2026 (12 months from IPO) converts STCG (20%) to LTCG (12.5% above ₹1.25L threshold). Tax saving = ~₹100/share at current gain levels. On a meaningful position, this is real money. <br><br>
+          <strong>Exit trigger:</strong> If stock reaches ₹4,000–4,200 after Dec 19, 2026 → exit at LTCG. FY27E earnings at 48–50x = ₹3,878–4,040. At that point, either the valuation is stretched again or earnings have grown into the price.<br><br>
+          <strong>Stop-loss:</strong> If price falls below ₹3,100 (key technical support) AND AUM market share drops below 13.5% → exit regardless of tax. Don't let a 62% gain become a 30% gain to save ₹100/share in tax.
+        </div>
+      </div>
+
+      <div class="exit-option amber">
+        <div class="exit-opt-title amber">OPTION B — PARTIAL EXIT NOW (Book 30–40%, Hold Rest)</div>
+        <div class="exit-opt-body">
+          <strong>Logic:</strong> You have a 62% gain. At a 50x+ P/E, the stock is fully priced. Taking partial profits de-risks the position without abandoning the India financialisation thesis. Book 30–40% of your holding now (STCG, accept the 20% tax). Hold the remaining 60–70% to benefit from LTCG after Dec 19, 2026. <br><br>
+          <strong>Where to redeploy:</strong> The proceeds from partial exit can be deployed into HDFCAMC (lower P/E at 34–39x, same India financialisation thesis, cheaper entry) or held in liquid instruments awaiting a better entry on ICICIAMC itself.<br><br>
+          <strong>This option suits you if:</strong> Your position in ICICIAMC is large relative to portfolio. Concentration risk management warrants reducing at full valuation even for quality holdings. The opportunity cost of holding a fully-priced asset when cheaper alternatives exist is real.<br><br>
+          <strong>Price trigger for partial exit:</strong> If stock hits ₹3,700–3,800 in coming weeks, increase the partial exit to 50%. UBS target of ₹3,900 = approach that as a target for larger trim.
+        </div>
+      </div>
+
+      <div class="exit-option red">
+        <div class="exit-opt-title red">OPTION C — FULL EXIT (Only If These Conditions Are Met)</div>
+        <div class="exit-opt-body">
+          <strong>Full exit is warranted if ANY of the following occur:</strong><br><br>
+          ① ICICIAMC equity market share falls below 13% for 2 consecutive quarters (moat erosion confirmed)<br>
+          ② OPM (operating margin) falls below 70% due to TER compression (P&amp;L inflection to negative)<br>
+          ③ SIP book growth turns negative YoY (structural de-rating of the industry thesis)<br>
+          ④ Nifty falls to 18,000 and ICICIAMC cannot hold above ₹2,800 (suggests market pricing in severe AUM decline)<br>
+          ⑤ ICICI Bank announces a reduction in its stake below 50% (promoter de-commitment = major negative signal)<br><br>
+          <strong>None of the above are currently occurring.</strong> Full exit is not warranted based on current data. The business remains excellent; it is the valuation that is full.
+        </div>
+      </div>
+    </div>
+
+    <!-- TAX CALENDAR -->
+    <div class="tax-box">
+      <div class="tax-title">📅 Tax Optimization Calendar — ICICIAMC IPO Position</div>
+      <table class="tbl">
+        <tr><th>Date</th><th>Event</th><th>Tax Implication</th></tr>
+        <tr><td>IPO Allotment</td><td>December 19, 2025</td><td>Holding period clock starts</td></tr>
+        <tr><td>Today — Dec 18, 2026</td><td>Short-Term Capital Gain</td><td><strong>STCG 20%</strong> on gains. On ₹1,335 gain/share: tax = ₹267/share</td></tr>
+        <tr><td>December 19, 2026+</td><td>Converts to Long-Term Capital Gain</td><td><strong>LTCG 12.5%</strong> on gains above ₹1.25L exemption. On ₹1,335 gain/share: tax ≈ ₹167/share. <strong>Tax saving: ~₹100/share</strong></td></tr>
+        <tr><td>FY26 Final Dividend</td><td>₹12.40/share (Board approved April 13, 2026)</td><td>Taxable as income at slab rate</td></tr>
+      </table>
+      <p style="font-size:12px;margin-top:8px;color:#7C5A00"><strong>Rule of thumb:</strong> The LTCG tax saving of ~₹100/share is worth holding for, PROVIDED the stock doesn't fall more than ₹100/share in the waiting period. If you fear a correction toward ₹3,200–3,300, the tax saving does not justify the downside risk — exit some portion now. Tax-tail should not wag the investment dog.</p>
+    </div>
+
+    <!-- UPGRADE CONDITIONS -->
+    <div class="sec-sub">Conditions to Upgrade to BUY (New Entry or Reinvestment)</div>
+    <ul class="upgrade-list">
+      <li><div class="upgrade-num">1</div><div class="upgrade-text"><strong>Price corrects to ₹2,800–3,000</strong> (40–45x FY27E EPS of ₹80.8) — this represents a 15–20% discount to blended base IV, creating a proper margin of safety. This level also corresponds to the DCF-based fair value range.</div></li>
+      <li><div class="upgrade-num">2</div><div class="upgrade-text"><strong>Equity market share holds or gains above 14.5%</strong> for 2 consecutive quarters — confirms moat is widening, not narrowing. Justifies a higher terminal multiple.</div></li>
+      <li><div class="upgrade-num">3</div><div class="upgrade-text"><strong>OPM holds above 73% after first full year of BER norms</strong> (Q1 FY27 results, July 2026) — confirms SEBI regulatory risk is manageable and margin compression is less than feared.</div></li>
+      <li><div class="upgrade-num">4</div><div class="upgrade-text"><strong>SIP monthly inflows cross ₹7,000 crore</strong> — confirms that retail financialisation is accelerating, which would justify a higher structural growth rate and thus a higher terminal multiple.</div></li>
+      <li><div class="upgrade-num">5</div><div class="upgrade-text"><strong>HDFCAMC re-rates to 45x+ forward P/E</strong> — if HDFC AMC's multiple expands, it creates a valuation reference that makes ICICIAMC's premium more defensible at current prices.</div></li>
+    </ul>
+
+    <!-- DOWNGRADE TRIGGERS -->
+    <div class="sec-sub">Conditions to Downgrade to PASS (Exit Your Position)</div>
+    <ul class="upgrade-list">
+      <li><div class="upgrade-num" style="background:var(--rust)">!</div><div class="upgrade-text"><strong>Equity active market share falls below 13.0%</strong> for 2 consecutive quarters — moat erosion. The premium valuation is built on #1 equity position. If this slips, fair value drops to peer parity (~34–35x).</div></li>
+      <li><div class="upgrade-num" style="background:var(--rust)">!</div><div class="upgrade-text"><strong>Operating margin falls below 70%</strong> — TER/BER impact is worse than expected. At 70% OPM on current revenue, PAT would be ~10–15% lower than current consensus estimates. Rerating risk of 15–20%.</div></li>
+      <li><div class="upgrade-num" style="background:var(--rust)">!</div><div class="upgrade-text"><strong>ICICI Bank announces intention to reduce promoter stake below 51%</strong> — removes the key distribution moat. This is currently unlikely but is the most catastrophic possible scenario.</div></li>
+    </ul>
+
+    <!-- SERIES TABLE -->
+    <div class="sec-sub" style="margin-top:30px">Buffett QV Series — Active Coverage</div>
+    <div style="overflow-x:auto">
+    <table class="series-tbl">
+      <tr><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry Zone</th></tr>
+      <tr class="current-row"><td>ICICIAMC</td><td>NSE</td><td>C</td><td>🟢</td><td>B+</td><td>A</td><td>B+</td><td>C+</td><td>WATCH★★★★</td><td>₹2,800–3,000</td></tr>
+      <tr><td>MELI</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>A</td><td>A−</td><td>A</td><td>A</td><td>BUY★★★★★</td><td>~$1,810</td></tr>
+      <tr><td>META</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A+</td><td>A−</td><td>B+</td><td>A−</td><td>BUY STARTER★★★★½</td><td>~$542</td></tr>
+      <tr><td>AMAGI</td><td>NSE</td><td>F</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>A−</td><td>BUY★★★★★ AI</td><td>₹350</td></tr>
+      <tr><td>GOOGL</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>B+</td><td>B</td><td>WATCH★★★★</td><td>$224–260</td></tr>
+      <tr><td>MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A−</td><td>A−</td><td>A</td><td>B+</td><td>WATCH★★★★</td><td>$340–365</td></tr>
+      <tr><td>ITC</td><td>NSE</td><td>C</td><td>⚪</td><td>A−</td><td>B+</td><td>B+</td><td>B+</td><td>WATCH★★★</td><td>₹280</td></tr>
+      <tr><td>WAAREEENER</td><td>NSE</td><td>B</td><td>⚪</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH★★★★</td><td>₹2,600–2,800</td></tr>
+      <tr><td>TSLA</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>—</td><td>—</td><td>—</td><td>—</td><td>WATCH★★★★</td><td>$220–270</td></tr>
+      <tr><td>RAJESHEXPO</td><td>NSE</td><td>E</td><td>⚪</td><td>F</td><td>F</td><td>D−</td><td>F</td><td>AVOID</td><td>N/A</td></tr>
+      <tr><td>VIKRAMSOLR</td><td>NSE</td><td>B</td><td>⚪</td><td>B−</td><td>C+</td><td>C</td><td>B</td><td>AVOID</td><td>N/A</td></tr>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div class="tab-content" id="t7">
+  <div class="sec">
+    <div class="sec-title">Technical Analysis</div>
+    <p style="background:rgba(180,83,9,.1);border:1px solid rgba(180,83,9,.3);border-radius:4px;padding:10px;font-size:12px;margin-bottom:16px">⚠ <strong>Note:</strong> ICICIAMC listed December 19, 2025 — only ~4 months of price history. Long-term MAs (200-DMA, 200-WMA) are not yet established. Technical analysis is limited to short-term structure. Chart patterns are nascent. This section is necessarily less definitive than for mature listed companies. <span class="dv dv-e">ESTIMATED</span></p>
+
+    <div class="sec-sub">Section A — Price Structure</div>
+    <table class="tbl">
+      <tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Signal</th></tr>
+      <tr><td>Short-term (Daily)</td><td class="up">Bullish</td><td>₹3,200 support → ₹3,500 breakout</td><td>Strong recovery from ₹2,700 demand zone; broke ₹3,200 resistance convincingly</td></tr>
+      <tr><td>Medium-term (Weekly)</td><td class="up">Bullish</td><td>Base: ₹2,165–₹2,700 range established</td><td>Higher highs and higher lows since listing. New high territory.</td></tr>
+      <tr><td>Overall</td><td class="up">Bull trend</td><td>All-time high expanding</td><td>No distribution patterns yet visible — limited history</td></tr>
+    </table>
+
+    <div class="sec-sub">Section B — Moving Average Dashboard</div>
+    <table class="tbl">
+      <tr><th>MA</th><th>Level (Estimated)</th><th>Price vs MA</th><th>Signal</th></tr>
+      <tr><td>20-DMA</td><td class="num">~₹3,250–3,320</td><td class="up">Above (+5–8%)</td><td>Short-term momentum positive</td></tr>
+      <tr><td>50-DMA</td><td class="num">~₹3,100–3,200</td><td class="up">Above (+9–13%)</td><td>Medium-term trend up</td></tr>
+      <tr><td>100-DMA</td><td class="num">~₹2,900–3,000</td><td class="up">Well above</td><td>Strong uptrend since listing</td></tr>
+      <tr><td>200-DMA</td><td class="num">Not established yet</td><td>—</td><td>~4 months of data; 200-DMA will mature December 2026</td></tr>
+    </table>
+    <p style="font-size:12px;color:#888">All MA estimates are approximations based on available price data. <span class="dv dv-e">ESTIMATED</span></p>
+
+    <div class="sec-sub">Section C — Volume & OBV</div>
+    <p style="font-size:13px">Q4 FY26 results release (April 13–15, 2026): <strong>4% single-day correction to ₹3,221</strong> on results day — market reacted to QoQ PAT decline (−17% QoQ due to MTM losses). This is a classic "sell the news" on sequential data disappointment despite strong YoY numbers. The subsequent recovery to ₹3,385–3,500 zone suggests institutional support at the ₹3,100–3,200 level. Volume analysis: no signs of distribution (no high-volume declines that suggest institutional selling). <span class="dv dv-e">ESTIMATED</span></p>
+
+    <div class="sec-sub">Section D — Momentum</div>
+    <table class="tbl">
+      <tr><th>Indicator</th><th>Reading (Est.)</th><th>Signal</th></tr>
+      <tr><td>RSI (14-day)</td><td class="num">~60–65</td><td>Momentum positive but not overbought. Healthy.</td></tr>
+      <tr><td>RSI Weekly</td><td class="num">~62–68</td><td>Moderate bullish momentum. Room to run.</td></tr>
+      <tr><td>MACD</td><td>Above signal line</td><td>Bullish crossover post ₹3,200 breakout</td></tr>
+    </table>
+
+    <div class="sec-sub">Section E — Chart Patterns</div>
+    <p style="font-size:13px">Given only 4 months of data, formal chart patterns are nascent. Identifiable: (1) <strong>V-shaped recovery</strong> from ₹2,700 demand zone to ₹3,500 — completed. (2) <strong>Ascending base</strong> structure from IPO at ₹2,165 to current levels. (3) Recent <strong>breakout above ₹3,200</strong> on post-results recovery = bullish continuation signal. Target from ₹3,200 breakout: ₹3,700–3,800.</p>
+
+    <div class="sec-sub">Section F — Trade Structure (For Existing Holder)</div>
+    <div style="background:rgba(27,58,45,.08);border:1px solid var(--sage);border-radius:6px;padding:16px">
+      <table class="tbl">
+        <tr><th>Level</th><th>Price</th><th>Action</th></tr>
+        <tr><td>Current / Resistance</td><td class="num">₹3,500</td><td>At current level — evaluate partial exit (see Tab 6)</td></tr>
+        <tr><td>Target 1 (UBS)</td><td class="num">₹3,800–3,900</td><td>Trim 20–30% of remaining holding</td></tr>
+        <tr><td>Target 2 (Acceleration)</td><td class="num">₹4,000–4,200</td><td>Further trim if fundamentals confirm</td></tr>
+        <tr><td>Support (Strong)</td><td class="num">₹3,100–3,200</td><td>No action — key support zone</td></tr>
+        <tr><td>Stop-Loss / Exit Alert</td><td class="num">₹3,050</td><td>If sustained close below ₹3,050 — exit remaining on fundamental deterioration check</td></tr>
+        <tr><td>Re-entry Zone</td><td class="num">₹2,800–3,000</td><td>Strong re-entry if corrects to this zone (see upgrade conditions)</td></tr>
+      </table>
+    </div>
+
+    <div class="sec-sub">Section G — Technical Composite</div>
+    <table class="tbl">
+      <tr><th>Dimension</th><th>Score /5</th><th>Comment</th></tr>
+      <tr><td>Trend (Multi-TF)</td><td class="num up">4/5</td><td>Bullish across all available timeframes</td></tr>
+      <tr><td>MAs</td><td class="num up">4/5</td><td>Price above all established MAs</td></tr>
+      <tr><td>Volume</td><td class="num">3/5</td><td>Limited history; no major distribution signals</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td class="num up">4/5</td><td>Positive momentum, not overextended</td></tr>
+      <tr><td>Chart Pattern</td><td class="num">3/5</td><td>Limited history; V-recovery complete</td></tr>
+      <tr><td>Trade Structure R:R</td><td class="num">3/5</td><td>At ₹3,500 with ₹3,050 stop and ₹3,900 target: R:R = 1:1.1 (marginal)</td></tr>
+      <tr style="font-weight:600"><td>Technical Score</td><td class="num">21/30 = 70%</td><td>Positive but limited by 4-month history. Not a technical buy.</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div class="tab-content" id="t8">
+  <div class="sec">
+    <div class="sec-title">Shareholding & Free Float Analysis</div>
+    <p style="font-size:12px;color:#888;margin-bottom:12px">Note: Only 1 quarter of post-IPO shareholding data available (Dec 2025). Trend analysis limited. <span class="dv dv-v">VERIFIED</span></p>
+
+    <div class="sec-sub">Section A — Promoter Holding</div>
+    <table class="tbl">
+      <tr><th>Quarter</th><th>Promoter %</th><th>Pledged %</th><th>Signal</th></tr>
+      <tr><td>Dec 2025 (IPO quarter)</td><td class="num">87.59%</td><td class="num up">0.00%</td><td class="up">Perfect — dual institutional promoter, zero pledge</td></tr>
+      <tr><td>Previous quarters</td><td colspan="3" style="color:#888">Pre-IPO; not listed</td></tr>
+    </table>
+    <p style="font-size:13px">ICICI Bank holds the majority of the promoter stake, with Prudential Corporation Holdings as joint promoter. This structure is exceptional for governance — neither party has incentive to pledge shares (ICICI Bank is itself a systemically important bank). <strong>Promoter pledge risk: ZERO.</strong></p>
+
+    <div class="sec-sub">Section B — FII / DII Holdings</div>
+    <table class="tbl">
+      <tr><th>Category</th><th>Dec 2025</th><th>Trend</th><th>Commentary</th></tr>
+      <tr><td>Promoters</td><td class="num">87.59%</td><td>—</td><td>ICICI Bank + Prudential; OFS at IPO was minimal</td></tr>
+      <tr><td>FII</td><td class="num">2.65%</td><td>—</td><td>Low — expected to grow as MSCI index weight builds</td></tr>
+      <tr><td>DII (incl. MFs)</td><td class="num">6.53%</td><td>—</td><td>Strong domestic institutional interest at IPO</td></tr>
+      <tr><td>Public / Retail</td><td class="num">3.24%</td><td>—</td><td>Free float is small — structural supply scarcity</td></tr>
+    </table>
+    <p style="font-size:13px">The <strong>12.5% free float</strong> is very tight. ICICIAMC has a market cap of ~₹1.65 lakh crore. The small free float means institutional buying creates disproportionate price impact — this has amplified the 62% gain from IPO. However, it also means selldowns can be rapid. The stock's liquidity profile requires careful position sizing on exit.</p>
+
+    <div class="sec-sub">Section C — Free Float & Structural Dynamics</div>
+    <div class="grid-2">
+      <div class="card"><div class="card-label">Free Float Market Cap</div><div class="card-value">~₹20,500 Cr</div><div class="card-note">12.5% × ₹1.65L Cr market cap. Very tight.</div></div>
+      <div class="card"><div class="card-label">Shares Traded Daily</div><div class="card-value">~5.44L</div><div class="card-note">₹ ~185 Cr/day as of April 13, 2026. <span class="dv dv-v">VERIFIED</span></div></div>
+      <div class="card"><div class="card-label">MSCI Index Status</div><div class="card-value">Not yet</div><div class="card-note">May qualify for MSCI India after 3–6 months of trading history. Inclusion = FII forced buying.</div></div>
+      <div class="card"><div class="card-label">Nifty 50 / 500 Status</div><div class="card-value">BSE FinServ</div><div class="card-note">Part of BSE Financial Services index. Nifty 500 candidacy builds with market cap growth.</div></div>
+    </div>
+    <p style="font-size:13px;margin-top:12px"><strong>MSCI Inclusion Optionality:</strong> If ICICIAMC qualifies for MSCI India index (likely within 6–12 months if current market cap holds), FII mandatory buying of ~₹1,500–2,000 crore of stock would occur in a very tight free float. This is a potential near-term catalyst that could push the stock to ₹3,800–4,000 range. This is a factor favouring Option A (Hold) from the exit framework. <span class="dv dv-e">ESTIMATED</span></p>
+
+    <div class="sec-sub">Section D — Ownership Scores</div>
+    <table class="tbl">
+      <tr><th>Score</th><th>Value</th><th>Interpretation</th></tr>
+      <tr><td>Ownership Momentum Score</td><td class="num up">75/100</td><td>Strong institutional support; limited history for trend scoring</td></tr>
+      <tr><td>Shareholding Risk Score</td><td class="num up">10/100</td><td>Minimal risk — zero pledge, institutional promoters, low public float means no activist risk</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTEL -->
+<div class="tab-content" id="t9">
+  <div class="sec">
+    <div class="sec-title">AI Opportunity Intelligence</div>
+
+    <div class="sec-sub">Section A — AI Classification Dashboard</div>
+    <div class="ai-dash">
+      <div class="ai-card neutral"><div class="ai-card-label">Category</div><div class="ai-card-value">C — Mature Quality</div></div>
+      <div class="ai-card widener"><div class="ai-card-label">AI Overlay</div><div class="ai-card-value">🟢 WIDENER</div></div>
+      <div class="ai-card neutral"><div class="ai-card-label">Data Flywheel</div><div class="ai-card-value">★ Feature</div></div>
+      <div class="ai-card widener"><div class="ai-card-label">Sector AI Phase</div><div class="ai-card-value">Phase 3–4</div></div>
+    </div>
+    <p style="font-size:13px">AI in financial services (wealth management, asset management) is Phase 3–4 in India. Tools like goal-based planning, portfolio analytics, robo-advisory, fraud detection, and digital onboarding are now mainstream — not experimental. ICICIAMC is a beneficiary of this infrastructure, not a builder of it. <span class="dv dv-e">ESTIMATED</span></p>
+
+    <div class="sec-sub">Section B — Data Flywheel Deep-Dive</div>
+    <p style="font-size:13px">Verdict: <strong>AI Feature, not a compounding moat.</strong> The AMC uses customer data for personalisation and churn prevention but has not disclosed metrics showing AI model improvement with scale. The core competitive advantage is brand + ICICI Bank distribution + fund performance — not AI. AI is an operational efficiency tool here.</p>
+    <p style="font-size:13px;margin-top:8px"><strong>Flywheel Score: 4/10</strong> — Data quality: 2/3 (17M customers, proprietary behaviour data, but partially shared with ICICI Bank systems). Improvement evidence: 1/4 (no public metrics). Loop speed: 1/3 (slow feedback loop — customer behaviour changes quarterly, not daily).</p>
+
+    <div class="sec-sub">Section C — AI Value Chain Position</div>
+    <div style="background:rgba(27,58,45,.08);border-radius:6px;padding:14px;margin:12px 0">
+      <div style="display:flex;gap:0;flex-wrap:wrap">
+        <div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:rgba(27,58,45,.1);border-right:1px solid rgba(27,58,45,.2);font-family:var(--font-mono);font-size:9px;color:#888">L1<br>Infra</div>
+        <div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:rgba(27,58,45,.1);border-right:1px solid rgba(27,58,45,.2);font-family:var(--font-mono);font-size:9px;color:#888">L2<br>Foundation</div>
+        <div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:rgba(27,58,45,.1);border-right:1px solid rgba(27,58,45,.2);font-family:var(--font-mono);font-size:9px;color:#888">L3<br>Platforms</div>
+        <div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:rgba(27,58,45,.1);border-right:1px solid rgba(27,58,45,.2);font-family:var(--font-mono);font-size:9px;color:#888">L4<br>Vertical Apps</div>
+        <div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:var(--gold);color:#0E1F17;border-radius:0 4px 4px 0;font-family:var(--font-mono);font-size:9px;font-weight:700">L5<br>AI-ENABLED INCUMBENT ← HERE</div>
+      </div>
+    </div>
+    <p style="font-size:13px"><strong>Level 5 — AI-Enabled Incumbent.</strong> ICICIAMC is not an AI company. It is an exceptional incumbent using AI tools to serve its existing moat better. This is the <em>best risk-return position</em> in the AI value chain: low disruption risk, existing moat amplified by AI tools, steady compounding of returns. Investment horizon: 7–10 years. Do not expect an AI-driven re-rating — the AI story here is supportive, not transformative.</p>
+
+    <div class="sec-sub">Section D — India AI Opportunity Context</div>
+    <table class="tbl">
+      <tr><th>India AI Advantage</th><th>ICICIAMC Relevance</th><th>Assessment</th></tr>
+      <tr><td>Data at Scale (UPI/Aadhaar)</td><td>Indirectly — transaction data via ICICI Bank</td><td class="up">Adjacent benefit</td></tr>
+      <tr><td>Vernacular AI</td><td>Yes — Hindi/regional language apps for tier-2/3 SIP acquisition</td><td class="up">Active — digital growth story</td></tr>
+      <tr><td>India Stack (UPI/ONDC)</td><td>ICICIAMC offers UPI-based SIP mandates</td><td class="up">Direct infrastructure user</td></tr>
+      <tr><td>AI Talent Cost Arbitrage</td><td>Uses Indian tech teams for analytics</td><td>Indirect cost benefit</td></tr>
+    </table>
+    <p style="font-size:13px;margin-top:8px">Vernacular AI + India Stack are meaningful tailwinds for AMC customer acquisition in tier-2/3 cities. The next 100 million SIP customers will come from non-English India — vernacular interfaces powered by LLMs are lowering the barrier significantly. ICICIAMC's digital strategy is aligned with this trend.</p>
+
+    <div class="sec-sub">Section E — AI Disruption Risk</div>
+    <p style="font-size:13px"><strong>Disruption timeline: Remote (10+ years).</strong> The AMC business model (brand trust + regulated fund management + distribution) is highly resilient to AI disruption. AI can help passive funds further commoditise active management (a threat to fees), but it cannot replace ICICI Bank's 6,000-branch distribution or 30 years of brand equity. The key risk is indirect: if AI tools enable pure passive investing at near-zero cost, and retail investors shift fully to passive, active AMC fee yields compress. This is a 10+ year slow-burn risk, not an imminent threat. <strong>Moat Resilience Score: 8/10.</strong></p>
+
+    <div class="sec-sub">Section F — AI Opportunity Verdict</div>
+    <table class="tbl">
+      <tr><th>Component</th><th>Score /20</th><th>Comment</th></tr>
+      <tr><td>Data Flywheel Strength</td><td class="num">6/20</td><td>Feature-level AI; not a compounding flywheel</td></tr>
+      <tr><td>Adoption Phase Timing</td><td class="num">12/20</td><td>Phase 3–4 in financial services; sector mature, not early</td></tr>
+      <tr><td>Value Chain Position</td><td class="num">16/20</td><td>Level 5 = best risk-return; excellent defensive position</td></tr>
+      <tr><td>India Structural Advantage</td><td class="num">13/20</td><td>Vernacular + India Stack benefits real but not unique to ICICIAMC</td></tr>
+      <tr><td>AI Threat Resistance</td><td class="num">16/20</td><td>Very high resilience; core moat AI-resistant for 10+ years</td></tr>
+      <tr style="font-weight:600"><td>Total AI Opportunity Score</td><td class="num up">63/100</td><td>STRATEGIC AI BET — existing moat widened by AI tools</td></tr>
+    </table>
+    <div style="background:rgba(46,125,50,.1);border:1px solid rgba(46,125,50,.3);border-radius:5px;padding:12px;margin-top:10px">
+      <strong style="font-family:var(--font-mono);font-size:10px;color:var(--pass)">PORTFOLIO ROLE: STRATEGIC AI BET (60–80 range) — LEVEL 5 AI-ENABLED INCUMBENT</strong>
+      <p style="font-size:12px;margin-top:6px;color:#444">AI neither dramatically re-rates nor dramatically threatens this business. It is a steady widener — using AI for operational efficiency, digital acquisition, and personalisation. The financialisation thesis drives returns, not the AI story. Investment horizon: 7–10 years. Position sizing: 3–6% of portfolio appropriate for a quality compounder.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<footer style="background:var(--forest);color:rgba(248,244,235,.5);font-family:var(--font-mono);font-size:10px;padding:20px 32px;margin-top:40px;line-height:1.8">
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="color:var(--gold-light);font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Disclaimer</div>
+    This report is generated for educational and research purposes only. It does not constitute investment advice or a solicitation to buy or sell any security. SEBI Registration required for providing investment advice. Past performance is not indicative of future results. All intrinsic value estimates are approximations based on publicly available data and involve significant uncertainty. The exit strategy framework is analytical, not personalised financial advice — consult your financial advisor before making investment decisions. Data sources: Screener.in, company earnings calls (Q4 FY26), Yahoo Finance, Groww, Trendlyne, Mondaq, SEBI circulars, Multibagg AI, Whalesbook, Liquide. Data labels: [VERIFIED] = confirmed from official filings/live search | [ESTIMATED] = cross-referenced, high confidence | [UNVERIFIED] = limited source. Generated: April 21, 2026 · Buffett Quality-Value Series v5.0 · ICICIAMC_qv_report.html · Fonts: Cormorant Garamond, IBM Plex Mono, Spectral (Google Fonts).
+  </div>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function(){
+  var tabBar = document.getElementById('tab-bar');
+  if(tabBar){
+    var el = tabBar, top = 0;
+    while(el){ top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId){
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if(activeBtn){ activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

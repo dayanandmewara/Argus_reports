@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NATCO Pharma — Buffett Quality-Value Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #08101E;
+    --bg-secondary: #0F1A2E;
+    --bg-card: #162035;
+    --bg-card-alt: #1C2840;
+    --accent-violet: #7C3AED;
+    --accent-lilac: #A78BFA;
+    --accent-soft: #C4B5FD;
+    --accent-mint: #34D399;
+    --accent-amber: #FBBF24;
+    --accent-red: #F87171;
+    --accent-silver: #CBD5E1;
+    --text-primary: #EEE8FF;
+    --text-secondary: #B8B0D4;
+    --text-muted: #6A80A0;
+    --text-data: 'Space Mono', monospace;
+    --border: rgba(124,58,237,0.25);
+    --border-subtle: rgba(124,58,237,0.12);
+    --pass: #34D399;
+    --marginal: #FBBF24;
+    --fail: #F87171;
+    --shadow: 0 4px 24px rgba(0,0,0,0.45);
+    --radius: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #07111D 0%, #130F2A 45%, #0B1A30 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 22px;
+    position: relative;
+    overflow: hidden;
+    max-height: 220px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 340px; height: 340px;
+    background: radial-gradient(circle, rgba(124,58,237,0.18) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+  .ticker-label { font-family: var(--text-data); color: var(--accent-violet); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
+  .hero-name { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; color: var(--text-primary); line-height: 1.1; margin-bottom: 6px; }
+  .hero-tagline { font-family: 'Crimson Pro', serif; font-style: italic; color: var(--text-secondary); font-size: 15px; margin-bottom: 10px; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 11px; border-radius: 20px; font-size: 11.5px; font-weight: 600;
+    font-family: 'Syne', sans-serif; letter-spacing: 0.5px;
+  }
+  .badge-cat { background: rgba(124,58,237,0.25); border: 1px solid var(--accent-violet); color: var(--accent-soft); }
+  .badge-neutral { background: rgba(100,116,139,0.25); border: 1px solid #64748B; color: #94A3B8; }
+  .badge-watch { background: rgba(251,191,36,0.15); border: 1px solid var(--accent-amber); color: var(--accent-amber); }
+  .badge-macro { background: rgba(52,211,153,0.12); border: 1px solid var(--accent-mint); color: var(--accent-mint); }
+  .confidence-row { display: flex; gap: 6px; margin-top: 8px; }
+  .cpill { font-family: var(--text-data); font-size: 10px; padding: 2px 8px; border-radius: 10px; }
+  .cpill-v { background: rgba(52,211,153,0.15); border: 1px solid #34D399; color: #34D399; }
+  .cpill-e { background: rgba(251,191,36,0.15); border: 1px solid #FBBF24; color: #FBBF24; }
+  .cpill-u { background: rgba(248,113,113,0.15); border: 1px solid #F87171; color: #F87171; }
+  .verdict-block { text-align: right; }
+  .verdict-stars { font-family: 'Syne', sans-serif; font-size: 22px; color: var(--accent-amber); }
+  .verdict-label { font-family: var(--text-data); font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .price-box { font-family: var(--text-data); font-size: 24px; color: var(--text-primary); font-weight: 700; }
+  .price-sub { font-size: 11px; color: var(--text-muted); }
+  /* TAB BAR */
+  #tab-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(11,16,30,0.97);
+    border-bottom: 1px solid var(--border-subtle);
+    backdrop-filter: blur(12px);
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  #tab-bar::-webkit-scrollbar { display: none; }
+  .tab-inner { display: inline-flex; min-width: 100%; }
+  .tab-btn {
+    display: inline-block; padding: 12px 18px; cursor: pointer;
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+    color: var(--text-muted); border: none; background: none;
+    border-bottom: 2px solid transparent; transition: all 0.2s;
+    white-space: nowrap; letter-spacing: 0.3px;
+  }
+  .tab-btn:hover { color: var(--accent-soft); }
+  .tab-btn.active { color: var(--accent-soft); border-bottom-color: var(--accent-violet); }
+  /* CONTENT */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .section { padding: 32px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase; color: var(--accent-violet);
+    margin-bottom: 20px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .section-h2 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; }
+  /* CARDS */
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+  }
+  .card-top { border-top: 3px solid var(--accent-violet); }
+  .card-mint { border-top: 3px solid var(--accent-mint); }
+  .card-amber { border-top: 3px solid var(--accent-amber); }
+  .card-red { border-top: 3px solid var(--accent-red); }
+  .card-silver { border-top: 3px solid var(--accent-silver); }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+  .card-value { font-family: var(--text-data); font-size: 22px; color: var(--text-primary); font-weight: 700; }
+  .card-sub { font-family: var(--text-data); font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  /* METRIC CARDS */
+  .metric-card {
+    background: var(--bg-card-alt); border-radius: 8px; padding: 14px 16px;
+    border-left: 3px solid var(--accent-violet);
+  }
+  .metric-card.positive { border-left-color: var(--accent-mint); }
+  .metric-card.warning { border-left-color: var(--accent-amber); }
+  .metric-card.negative { border-left-color: var(--accent-red); }
+  .metric-label { font-family: var(--text-data); font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .metric-value { font-family: var(--text-data); font-size: 18px; color: var(--text-primary); font-weight: 700; }
+  .metric-sub { font-family: var(--text-data); font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    font-family: 'Syne', sans-serif; font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);
+    padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left;
+    background: var(--bg-card);
+  }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border-subtle); font-family: var(--text-data); font-size: 13px; color: var(--text-secondary); }
+  tr:hover td { background: rgba(124,58,237,0.06); }
+  .tbl-accent { color: var(--accent-soft); }
+  .tbl-mint { color: var(--accent-mint); }
+  .tbl-amber { color: var(--accent-amber); }
+  .tbl-red { color: var(--accent-red); }
+  /* SCORECARD */
+  .score-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 14px; border-radius: 6px; margin-bottom: 6px;
+    background: var(--bg-card-alt); border: 1px solid var(--border-subtle);
+  }
+  .score-label { font-family: 'Crimson Pro', serif; font-size: 15px; color: var(--text-secondary); }
+  .score-pass { font-family: var(--text-data); font-size: 12px; font-weight: 700; color: var(--pass); }
+  .score-marginal { font-family: var(--text-data); font-size: 12px; font-weight: 700; color: var(--marginal); }
+  .score-fail { font-family: var(--text-data); font-size: 12px; font-weight: 700; color: var(--fail); }
+  /* PILLAR GRADES */
+  .pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  .pillar-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px; text-align: center;
+  }
+  .pillar-name { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+  .pillar-grade { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--accent-lilac); }
+  /* VERDICT BOX */
+  .verdict-box {
+    background: linear-gradient(135deg, #0D0920 0%, #1A1035 100%);
+    border: 2px solid var(--accent-violet); border-radius: 14px;
+    padding: 32px; margin-bottom: 24px;
+  }
+  .verdict-main { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--accent-amber); margin-bottom: 8px; }
+  .verdict-quote { font-family: 'Crimson Pro', serif; font-style: italic; font-size: 18px; color: var(--accent-soft); opacity: 0.85; border-left: 3px solid var(--accent-violet); padding-left: 16px; margin: 16px 0; }
+  /* UPGRADE CONDITIONS */
+  .upgrade-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--bg-card-alt); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 14px; margin-bottom: 10px;
+  }
+  .upgrade-num {
+    width: 28px; height: 28px; min-width: 28px; border-radius: 50%;
+    background: rgba(124,58,237,0.25); border: 1px solid var(--accent-violet);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--text-data); font-size: 12px; font-weight: 700; color: var(--accent-soft);
+  }
+  .upgrade-text { font-family: 'Crimson Pro', serif; font-size: 15px; color: var(--text-secondary); }
+  /* MOAT STARS */
+  .moat-star { color: var(--accent-amber); }
+  .moat-star-empty { color: var(--text-muted); }
+  /* FLYWHEEL */
+  .flywheel-box {
+    background: linear-gradient(135deg, #0D1525 0%, #1A1035 100%);
+    border: 2px solid #4B5563; border-radius: 12px; padding: 24px;
+    text-align: center; margin-bottom: 20px;
+  }
+  .flywheel-badge {
+    display: inline-block; padding: 8px 20px; border-radius: 20px;
+    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+    background: rgba(75,85,99,0.3); border: 1px solid #6B7280; color: #9CA3AF;
+    margin-bottom: 12px;
+  }
+  /* DCF TABLE */
+  .dcf-scenario { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .scenario-card {
+    border-radius: 8px; padding: 16px; text-align: center; border: 1px solid var(--border-subtle);
+  }
+  .scenario-stress { background: rgba(248,113,113,0.08); }
+  .scenario-base { background: rgba(124,58,237,0.12); border-color: var(--accent-violet); }
+  .scenario-accel { background: rgba(52,211,153,0.08); }
+  .scenario-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .scenario-iv { font-family: var(--text-data); font-size: 24px; font-weight: 700; }
+  .scenario-mos { font-family: var(--text-data); font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  /* TECH BARS */
+  .tech-bar-bg { background: rgba(124,58,237,0.12); border-radius: 4px; height: 6px; overflow: hidden; margin-top: 6px; }
+  .tech-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent-violet), var(--accent-lilac)); transition: width 0.3s; }
+  /* SHAREHOLDING TREND VISUAL */
+  .sh-trend { display: flex; gap: 4px; align-items: flex-end; height: 40px; margin-top: 8px; }
+  .sh-bar { flex: 1; border-radius: 3px 3px 0 0; background: var(--accent-violet); opacity: 0.7; min-width: 8px; }
+  /* PHASE INDICATOR */
+  .phase-indicator { display: flex; gap: 8px; margin: 12px 0; }
+  .phase-dot {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--text-data); font-size: 11px; font-weight: 700;
+    border: 2px solid var(--border);
+  }
+  .phase-dot.active { background: var(--accent-violet); border-color: var(--accent-violet); color: white; }
+  .phase-dot.done { background: rgba(124,58,237,0.3); border-color: var(--accent-violet); color: var(--accent-lilac); }
+  /* OE BOX */
+  .oe-box {
+    background: linear-gradient(135deg, #0D1B0F 0%, #111D26 100%);
+    border: 1px solid rgba(52,211,153,0.3); border-radius: 10px; padding: 20px;
+  }
+  /* GLOVE BADGE */
+  .glove-badge {
+    display: inline-block; padding: 6px 18px; border-radius: 20px;
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+    background: rgba(52,211,153,0.15); border: 1px solid var(--accent-mint);
+    color: var(--accent-mint);
+  }
+  /* AI SCORE */
+  .ai-score-circle {
+    width: 90px; height: 90px; border-radius: 50%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; margin: 0 auto 12px;
+    background: conic-gradient(var(--accent-violet) 0% 28%, rgba(124,58,237,0.15) 28% 100%);
+    position: relative;
+  }
+  .ai-score-inner {
+    width: 74px; height: 74px; border-radius: 50%;
+    background: var(--bg-card); display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: absolute;
+  }
+  .ai-score-num { font-family: var(--text-data); font-size: 22px; font-weight: 700; color: var(--text-primary); }
+  .ai-score-denom { font-family: var(--text-data); font-size: 10px; color: var(--text-muted); }
+  /* MACRO CYCLE CARDS */
+  .macro-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; border-radius: 6px; margin-bottom: 6px;
+    background: var(--bg-card-alt); border: 1px solid var(--border-subtle);
+  }
+  .macro-dim { font-family: 'Crimson Pro', serif; font-size: 15px; color: var(--text-secondary); }
+  .macro-status { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 10px; border-radius: 10px; }
+  .ms-neutral { background: rgba(100,116,139,0.2); color: #94A3B8; }
+  .ms-tailwind { background: rgba(52,211,153,0.15); color: #34D399; }
+  .ms-headwind { background: rgba(248,113,113,0.15); color: #F87171; }
+  .ms-recovery { background: rgba(251,191,36,0.15); color: #FBBF24; }
+  /* PROGRESS BAR for AI */
+  .prog-bar { background: var(--bg-card-alt); border-radius: 4px; height: 8px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 4px; }
+  /* 5-level AI chain */
+  .chain-levels { display: flex; gap: 0; align-items: stretch; margin: 16px 0; }
+  .chain-level {
+    flex: 1; padding: 14px 8px; text-align: center; font-family: var(--text-data); font-size: 10px;
+    border: 1px solid var(--border-subtle); color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .chain-level:first-child { border-radius: 8px 0 0 8px; }
+  .chain-level:last-child { border-radius: 0 8px 8px 0; }
+  .chain-level.active {
+    background: rgba(124,58,237,0.2); border-color: var(--accent-violet); color: var(--accent-soft);
+    position: relative;
+  }
+  .chain-level-num { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  /* SEPARATOR */
+  .sep { border: none; border-top: 1px solid var(--border-subtle); margin: 24px 0; }
+  /* FOOTNOTE */
+  .footnote { font-family: var(--text-data); font-size: 11px; color: var(--text-muted); line-height: 1.6; padding: 16px; background: var(--bg-card); border-radius: 6px; margin-top: 24px; border: 1px solid var(--border-subtle); }
+  /* ROE/ROIC colored year cards */
+  .yr-card {
+    border-radius: 7px; padding: 12px 14px; border: 1px solid var(--border-subtle);
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .yr-label { font-family: var(--text-data); font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+  .yr-value { font-family: var(--text-data); font-size: 18px; font-weight: 700; }
+  .yr-fail { background: rgba(248,113,113,0.1); color: #F87171; }
+  .yr-marginal { background: rgba(251,191,36,0.1); color: #FBBF24; }
+  .yr-pass { background: rgba(52,211,153,0.1); color: #34D399; }
+  .yr-strong { background: rgba(124,58,237,0.15); color: #A78BFA; }
+  /* TAG line */
+  .tag-label {
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;
+  }
+  /* responsive */
+  @media (max-width: 700px) {
+    .hero { padding: 20px; max-height: none; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .section { padding: 20px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .pillar-grid { grid-template-columns: 1fr 1fr; }
+    .dcf-scenario { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .hero-name { font-size: 22px; }
+    .pillar-grid { grid-template-columns: 1fr 1fr; }
+  }
+  /* ALPHA SUMMARY TABLE */
+  .alpha-row { display: flex; gap: 12px; align-items: center; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; background: var(--bg-card-alt); }
+  .alpha-source { flex: 2; font-family: 'Crimson Pro', serif; font-size: 15px; }
+  .alpha-status { flex: 1; font-family: var(--text-data); font-size: 11px; }
+  .alpha-s1 { flex: 0.8; font-family: var(--text-data); font-size: 13px; text-align: right; color: var(--accent-mint); }
+  .alpha-s2 { flex: 0.8; font-family: var(--text-data); font-size: 13px; text-align: right; color: var(--accent-lilac); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="ticker-label">NSE: NATCOPHARM · BSE: 524816 · Buffett Quality-Value Series v5.0</div>
+      <div class="hero-name">NATCO Pharma Limited</div>
+      <div class="hero-tagline">Hyderabad's Para-IV Jackpot Artist: Chasing High-Value Generics in a Post-Revlimid World</div>
+      <div class="badge-row">
+        <span class="badge badge-cat">Cat C — Mature Quality Compounder</span>
+        <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+        <span class="badge badge-watch">WATCH ★★★★</span>
+        <span class="badge badge-macro">↗ Macro Tailwind</span>
+      </div>
+      <div class="confidence-row">
+        <span class="cpill cpill-v">[VERIFIED] FY25 financials</span>
+        <span class="cpill cpill-v">[VERIFIED] FY26 guidance/9M</span>
+        <span class="cpill cpill-e">[ESTIMATED] FY27-28 projections</span>
+        <span class="cpill cpill-e">[ESTIMATED] Technical levels</span>
+      </div>
+    </div>
+    <div class="verdict-block">
+      <div class="price-box">₹1,190</div>
+      <div class="price-sub">~22 May 2026 · Mkt Cap ₹21,300 Cr</div>
+      <div class="verdict-stars" style="margin-top:10px;">★★★★☆</div>
+      <div class="verdict-label">WATCH · VERIFY LIVE PRICE</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-inner">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro &amp; Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intelligence</button>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 0 OVERVIEW ═══════════════ -->
+<div id="tab0" class="tab-content active">
+  <div class="section">
+    <div class="section-title">Company Overview</div>
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="card card-top">
+        <div class="card-title">Business Profile</div>
+        <p style="font-size:15px; color:var(--text-secondary); line-height:1.7;">
+          Founded 1981 in Hyderabad, NATCO Pharma is a vertically integrated pharmaceutical company specialising in <strong style="color:var(--accent-soft)">para-IV / first-to-file (FTF) generics</strong> in regulated markets (US, Canada, Europe) and branded specialty generics domestically. The company self-manufactures APIs for key molecules, giving it cost advantages in complex molecules. Its portfolio spans oncology (Revlimid, Pomalidomide, Velcade), cardiology, diabetology, and gastroenterology. With 30+ US ANDA filings and an aggressive para-IV pipeline, NATCO's CEO Rajeev Nannapaneni openly calls the strategy "chasing jackpots" — betting on high-value limited-competition launches.
+        </p>
+      </div>
+      <div class="card card-top">
+        <div class="card-title">Why This Stock Is Interesting</div>
+        <p style="font-size:15px; color:var(--text-secondary); line-height:1.7;">
+          The thesis is a <strong style="color:var(--accent-amber)">post-Revlimid trough into a semaglutide ramp</strong>. FY26/27 represent the earnings nadir as generic Revlimid (lenalidomide) competition intensifies; revenues are guided down 20%, profits down 30%. The stock has already fallen 57% from its ATH (₹1,638 → ₹660) and recovered 82% to current ₹1,190. The next jackpot — <em>generic semaglutide (Ozempic)</em> with sole FTF exclusivity on two strengths and US patent settlements — is a potentially transformative revenue event in FY27-28. With ₹2,500 Cr net cash, Adcock Ingram platform, and an honest management team, NATCO offers optionality — but the current price has already priced in most of the recovery.
+        </p>
+      </div>
+    </div>
+    <div class="grid-4">
+      <div class="metric-card positive">
+        <div class="metric-label">FY25 Revenue</div>
+        <div class="metric-value">₹4,784 Cr</div>
+        <div class="metric-sub">+16% YoY · All-time high</div>
+      </div>
+      <div class="metric-card positive">
+        <div class="metric-label">FY25 PAT</div>
+        <div class="metric-value">₹1,883 Cr</div>
+        <div class="metric-sub">+36% YoY · NPM 45.2%</div>
+      </div>
+      <div class="metric-card warning">
+        <div class="metric-label">FY26 PAT Guidance</div>
+        <div class="metric-value">₹1,280 Cr</div>
+        <div class="metric-sub">−32% YoY · Post-Revlimid cliff</div>
+      </div>
+      <div class="metric-card positive">
+        <div class="metric-label">Net Cash Position</div>
+        <div class="metric-value">₹2,500 Cr</div>
+        <div class="metric-sub">Post Adcock deal · Debt-free</div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Series Rationale — Why Analyse This Stock</div>
+    <div class="card">
+      <p style="font-size:15px; color:var(--text-secondary); line-height:1.8;">
+        NATCO's "jackpot" model is a genuine anomaly within the Buffett framework — it produces ROIC of 30%+ during supercycles but can collapse to near-zero earnings in trough years (FY22: PAT ₹170 Cr vs FY25: ₹1,883 Cr). Analysing it through the four-pillar lens reveals a company with <em>high-quality episodic moat</em> (para-IV legal expertise), a <em>fortress balance sheet</em> built during feast years, and <em>credible management</em> that compounds through the cycle. The challenge: valuation is always a moving target because normalised earnings are hard to define. The framework's strength here is identifying the earnings floor (base business without jackpots), pricing the semaglutide option, and disciplining entry to a genuine MoS zone — currently ~₹920-1,000.
+      </p>
+    </div>
+    <div class="grid-3" style="margin-top:16px;">
+      <div class="card" style="border-left:3px solid var(--accent-violet);">
+        <div class="tag-label">Business Segments (FY25)</div>
+        <table>
+          <tr><td>Export Formulations (US/EU)</td><td class="tbl-accent" style="text-align:right;">~55%</td></tr>
+          <tr><td>Domestic Formulations</td><td class="tbl-accent" style="text-align:right;">~18%</td></tr>
+          <tr><td>API (Bulk Drugs)</td><td class="tbl-accent" style="text-align:right;">~12%</td></tr>
+          <tr><td>International (Ex-US)</td><td class="tbl-accent" style="text-align:right;">~10%</td></tr>
+          <tr><td>Crop Health Sciences</td><td class="tbl-amber" style="text-align:right;">~5% (demerging)</td></tr>
+        </table>
+      </div>
+      <div class="card" style="border-left:3px solid var(--accent-mint);">
+        <div class="tag-label">Pipeline Highlights</div>
+        <table>
+          <tr><td>Semaglutide (Ozempic generic)</td><td class="tbl-mint" style="text-align:right;">FTF · FY27</td></tr>
+          <tr><td>Pomalidomide (US)</td><td class="tbl-mint" style="text-align:right;">Launched</td></tr>
+          <tr><td>Risdiplam (India)</td><td class="tbl-amber" style="text-align:right;">Legal challenge</td></tr>
+          <tr><td>Erdafitinib</td><td class="tbl-mint" style="text-align:right;">USFDA tentative ✓</td></tr>
+          <tr><td>NRC-2694-A (NCE)</td><td class="tbl-amber" style="text-align:right;">Phase 2 trial</td></tr>
+        </table>
+      </div>
+      <div class="card" style="border-left:3px solid var(--accent-amber);">
+        <div class="tag-label">Framework Adaptation Notes</div>
+        <ul style="list-style:none; font-size:14px; color:var(--text-secondary);">
+          <li style="padding:5px 0; border-bottom:1px solid var(--border-subtle);">● Normalise earnings to base business + option pricing for para-IV jackpots</li>
+          <li style="padding:5px 0; border-bottom:1px solid var(--border-subtle);">● FY22 & FY26/27 are trough years — not indicative of moat quality</li>
+          <li style="padding:5px 0; border-bottom:1px solid var(--border-subtle);">● Owner earnings < net income due to heavy growth CapEx; use CFO as anchor</li>
+          <li style="padding:5px 0;">● CHS demerger in progress — strip out from enterprise value</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 1 MACRO & GROWTH ═══════════════ -->
+<div id="tab1" class="tab-content">
+  <div class="section">
+    <div class="section-title">Macro Cycle Dashboard</div>
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div>
+        <div class="section-h2" style="font-size:15px; margin-bottom:12px;">India Macro Anchors <span style="font-family:var(--text-data); font-size:12px; color:var(--text-muted); font-weight:400;">[VERIFIED]</span></div>
+        <div class="grid-2" style="margin-bottom:12px;">
+          <div class="metric-card positive">
+            <div class="metric-label">10yr G-Sec Yield</div>
+            <div class="metric-value">7.0–7.1%</div>
+            <div class="metric-sub">Elevated; oil/geopolitical pressure</div>
+          </div>
+          <div class="metric-card positive">
+            <div class="metric-label">Real GDP FY26E</div>
+            <div class="metric-value">7.6%</div>
+            <div class="metric-sub">Revised up; G20 fastest</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">India Nominal GDP</div>
+            <div class="metric-value">~8.5%</div>
+            <div class="metric-sub">Real 7.6% + CPI ~4.5%</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Terminal Growth Ceiling</div>
+            <div class="metric-value">≤ 8.5%</div>
+            <div class="metric-sub">Nominal GDP absolute cap</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-h2" style="font-size:15px; margin-bottom:12px;">Macro Cycle Status</div>
+        <div class="macro-item"><span class="macro-dim">Rural Income Cycle</span><span class="macro-status ms-neutral">NEUTRAL</span></div>
+        <div class="macro-item"><span class="macro-dim">Urban Consumption</span><span class="macro-status ms-neutral">NEUTRAL</span></div>
+        <div class="macro-item"><span class="macro-dim">Input Cost Cycle (API, solvents)</span><span class="macro-status ms-recovery">RECOVERY</span></div>
+        <div class="macro-item"><span class="macro-dim">RBI Rate Cycle</span><span class="macro-status ms-recovery">CAUTIOUS EASING</span></div>
+        <div class="macro-item"><span class="macro-dim">Govt Capex / PLI Pharma</span><span class="macro-status ms-tailwind">TAILWIND</span></div>
+        <div class="macro-item"><span class="macro-dim">AI Adoption Cycle (Pharma)</span><span class="macro-status ms-neutral">NEUTRAL</span></div>
+        <div style="margin-top:10px; padding:10px 14px; background:var(--bg-card); border-radius:6px; border:1px solid var(--border-subtle);">
+          <span style="font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:var(--accent-mint);">MACRO COMPOSITE: TAILWIND</span>
+          <span style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-left:12px;">AI Cycle Impact: NEUTRAL</span>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Sector Growth Derivation — Pharma Exports / API</div>
+    <div class="card">
+      <p style="font-size:14px; color:var(--text-secondary); margin-bottom:12px;">
+        India pharma exports: $30.47 Bn in FY25; market projected at $68.4 Bn in 2025 growing at CAGR ~11% to 2034. ~$125 Bn global drug sales facing patent expiry 2024-26 — structural tailwind for Indian FTF specialists. China+1 supply diversification accelerates API demand. PLI pharma budget up 28.8% in FY26.
+        <br><em style="color:var(--accent-soft);">"AI is neutral to this sector's base growth (+0pp over 5 years for generics manufacturers)."</em>
+      </p>
+      <table>
+        <thead><tr><th>Scenario</th><th>Macro State</th><th>Sector Growth</th><th>Macro Adjustment</th><th>Adjusted Sector</th></tr></thead>
+        <tbody>
+          <tr><td class="tbl-red">STRESS</td><td>GDP ~5.5%</td><td>6–9%</td><td>+2% (China+1)</td><td class="tbl-red">8–10%</td></tr>
+          <tr><td class="tbl-accent">BASE</td><td>GDP ~7.6%</td><td>10–14%</td><td>+2% (patent cliff)</td><td class="tbl-accent">12–15%</td></tr>
+          <tr><td class="tbl-mint">ACCEL</td><td>GDP ~8%+</td><td>15–18%</td><td>+2% (biosimilars)</td><td class="tbl-mint">16–20%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Company Alpha Over Sector (6 Sources)</div>
+    <div class="alpha-row" style="background:rgba(124,58,237,0.08); font-weight:700; font-family:'Syne',sans-serif; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted);">
+      <div style="flex:2;">Source</div><div style="flex:1;">Status</div><div style="flex:0.8; text-align:right;">Stage 1 α</div><div style="flex:0.8; text-align:right;">Stage 2 α</div>
+    </div>
+    <div class="alpha-row"><div class="alpha-source">Market Share Gain (FTF/Para-IV niche)</div><div class="alpha-status" style="color:var(--accent-mint);">Active</div><div class="alpha-s1">+2%</div><div class="alpha-s2">+3%</div></div>
+    <div class="alpha-row"><div class="alpha-source">Premiumisation</div><div class="alpha-status" style="color:var(--text-muted);">N/A (generics)</div><div class="alpha-s1" style="color:var(--text-muted);">+0%</div><div class="alpha-s2" style="color:var(--text-muted);">+0%</div></div>
+    <div class="alpha-row"><div class="alpha-source">Product/Pipeline Expansion (Semaglutide, NCEs)</div><div class="alpha-status" style="color:var(--accent-mint);">Active</div><div class="alpha-s1">+3%</div><div class="alpha-s2">+5%</div></div>
+    <div class="alpha-row"><div class="alpha-source">Geographic Expansion (Adcock, Brazil, Canada)</div><div class="alpha-status" style="color:var(--accent-amber);">Potential</div><div class="alpha-s1">+2%</div><div class="alpha-s2">+3%</div></div>
+    <div class="alpha-row"><div class="alpha-source">Pricing Power (vs generics erosion)</div><div class="alpha-status" style="color:var(--accent-red);">Exhausted</div><div class="alpha-s1" style="color:var(--accent-red);">−1%</div><div class="alpha-s2" style="color:var(--text-muted);">+0%</div></div>
+    <div class="alpha-row"><div class="alpha-source">AI Alpha (6a: cost | 6b: market | 6c: flywheel)</div><div class="alpha-status" style="color:var(--text-muted);">Cosmetic</div><div class="alpha-s1" style="color:var(--text-muted);">+0%</div><div class="alpha-s2" style="color:var(--text-muted);">+0%</div></div>
+    <div class="alpha-row" style="background:rgba(124,58,237,0.12); font-weight:700;"><div class="alpha-source" style="font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--accent-soft);">Total Alpha</div><div class="alpha-status">—</div><div class="alpha-s1" style="font-size:15px;">+6%</div><div class="alpha-s2" style="font-size:15px;">+11%</div></div>
+    <hr class="sep">
+    <div class="section-title">Growth Rate Summary Table — 3 Scenarios</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th class="tbl-red">STRESS</th><th class="tbl-accent">BASE</th><th class="tbl-mint">ACCEL</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Macro State</td><td class="tbl-red">GDP ~5.5%</td><td class="tbl-accent">GDP ~7.6%</td><td class="tbl-mint">GDP ~8%+</td></tr>
+          <tr><td>Sector Growth (Pharma Export)</td><td class="tbl-red">8–10%</td><td class="tbl-accent">12–15%</td><td class="tbl-mint">16–20%</td></tr>
+          <tr><td>Company Alpha</td><td class="tbl-red">+3%</td><td class="tbl-accent">+6%</td><td class="tbl-mint">+11%</td></tr>
+          <tr><td>Stage 1 FCF CAGR (FY27–31)</td><td class="tbl-red">5%</td><td class="tbl-accent">11%</td><td class="tbl-mint">18%</td></tr>
+          <tr><td>Stage 2 FCF CAGR (FY32+)</td><td class="tbl-red">4%</td><td class="tbl-accent">7%</td><td class="tbl-mint">10%</td></tr>
+          <tr><td>Terminal Growth Rate</td><td class="tbl-red">3.5%</td><td class="tbl-accent">5.0%</td><td class="tbl-mint">6.5%</td></tr>
+          <tr><td>Margin Direction</td><td class="tbl-red">Compress (25–30%)</td><td class="tbl-accent">Stable → Expand (32–40%)</td><td class="tbl-mint">Expand (40–50%)</td></tr>
+          <tr><td>Key Risk</td><td class="tbl-red">Semaglutide delay; FDA 483s</td><td class="tbl-accent">Revlimid erosion managed</td><td class="tbl-mint">FTF exclusivity triggers</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top:16px; background: rgba(124,58,237,0.07);">
+      <div class="card-title">Sensitivity Checks</div>
+      <p style="font-family:var(--text-data); font-size:12px; color:var(--text-secondary);">
+        • A 1% change in terminal growth rate changes intrinsic value by approximately <strong style="color:var(--accent-soft);">12–15%</strong><br>
+        • A 1% change in Stage 1 FCF growth rate changes intrinsic value by approximately <strong style="color:var(--accent-soft);">6–8%</strong><br>
+        • FY26/27 earnings visibility is low — investors must price the trough, not the cycle peak
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 2 FINANCIALS ═══════════════ -->
+<div id="tab2" class="tab-content">
+  <div class="section">
+    <div class="section-title">5-Year ROE &amp; ROIC Trend [VERIFIED]</div>
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div>
+        <div class="tag-label" style="margin-bottom:8px;">Return on Equity (ROE)</div>
+        <div class="grid-3">
+          <div class="yr-card yr-marginal"><div class="yr-label">FY21</div><div class="yr-value">~12%</div></div>
+          <div class="yr-card yr-fail"><div class="yr-label">FY22</div><div class="yr-value">~5%</div></div>
+          <div class="yr-card yr-marginal"><div class="yr-label">FY23</div><div class="yr-value">~18%</div></div>
+          <div class="yr-card yr-pass"><div class="yr-label">FY24</div><div class="yr-value">23.7%</div></div>
+          <div class="yr-card yr-strong"><div class="yr-label">FY25</div><div class="yr-value">25.2%</div></div>
+        </div>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:8px;">WACC benchmark: 12.5% | Industry avg: ~12%</div>
+      </div>
+      <div>
+        <div class="tag-label" style="margin-bottom:8px;">Return on Invested Capital (ROIC)</div>
+        <div class="grid-3">
+          <div class="yr-card yr-marginal"><div class="yr-label">FY21</div><div class="yr-value">~15%</div></div>
+          <div class="yr-card yr-fail"><div class="yr-label">FY22</div><div class="yr-value">~8%</div></div>
+          <div class="yr-card yr-pass"><div class="yr-label">FY23</div><div class="yr-value">~20%</div></div>
+          <div class="yr-card yr-pass"><div class="yr-label">FY24</div><div class="yr-value">~28%</div></div>
+          <div class="yr-card yr-strong"><div class="yr-label">FY25</div><div class="yr-value">~31%</div></div>
+        </div>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:8px;">FY21–22 below WACC: Revlimid delay. FY23–25 exceptional.</div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Financial Fortress Scorecard</div>
+    <div class="grid-2">
+      <div>
+        <div class="score-item"><span class="score-label">ROE ≥ 15% for 5 consecutive years</span><span class="score-marginal">~ MARGINAL</span></div>
+        <div class="score-item"><span class="score-label">ROIC &gt; WACC (12.5%) for 5 years</span><span class="score-marginal">~ MARGINAL</span></div>
+        <div class="score-item"><span class="score-label">Net cash preferred (no net debt)</span><span class="score-pass">✓ PASS</span></div>
+        <div class="score-item"><span class="score-label">Net profit margin ≥ 15%</span><span class="score-marginal">~ MARGINAL (failed FY22)</span></div>
+        <div class="score-item"><span class="score-label">FCF positive + growing</span><span class="score-pass">✓ PASS</span></div>
+        <div class="score-item"><span class="score-label">Owner earnings ≥ net income</span><span class="score-marginal">~ MARGINAL</span></div>
+      </div>
+      <div>
+        <div class="score-item"><span class="score-label">Pricing power proven (FTF exclusivity)</span><span class="score-marginal">~ MARGINAL (episodic)</span></div>
+        <div class="score-item"><span class="score-label">Revenue CAGR ≥ sector CAGR (12%)</span><span class="score-pass">✓ PASS (19.6%)</span></div>
+        <div class="score-item"><span class="score-label">Predictable / recurring revenue</span><span class="score-fail">✗ FAIL (jackpot model)</span></div>
+        <div class="score-item"><span class="score-label">Capital-light (high ROIC, low reinvest)</span><span class="score-marginal">~ MARGINAL (CapEx rising)</span></div>
+        <div class="score-item"><span class="score-label">Dividend payout &lt; 80% of owner earnings</span><span class="score-pass">✓ PASS (~14% payout ratio)</span></div>
+        <div class="score-item"><span class="score-label">Balance sheet strength / current ratio</span><span class="score-pass">✓ PASS (5.59x current ratio)</span></div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Owner Earnings Calculation — FY25 [ESTIMATED]</div>
+    <div class="oe-box">
+      <div class="grid-2">
+        <div>
+          <table>
+            <tr><td>Net Income</td><td class="tbl-accent" style="text-align:right;">₹1,883 Cr</td></tr>
+            <tr><td>+ D&amp;A</td><td class="tbl-accent" style="text-align:right;">+ ₹235 Cr</td></tr>
+            <tr><td>+ Non-cash items (CHS impairment)</td><td class="tbl-accent" style="text-align:right;">+ ₹50 Cr</td></tr>
+            <tr><td>− Maintenance CapEx (est. ~25% of total ₹1,400 Cr)</td><td class="tbl-amber" style="text-align:right;">− ₹350 Cr</td></tr>
+            <tr><td>± Working Capital changes</td><td class="tbl-accent" style="text-align:right;">+ ₹30 Cr</td></tr>
+            <tr style="border-top:1px solid var(--accent-mint);"><td><strong>Owner Earnings (Base)</strong></td><td class="tbl-mint" style="text-align:right;"><strong>₹1,848 Cr</strong></td></tr>
+            <tr><td><em>Conservative estimate</em></td><td style="text-align:right; color:var(--text-muted);">₹1,500 Cr</td></tr>
+          </table>
+        </div>
+        <div>
+          <div style="font-family:var(--text-data); font-size:12px; color:var(--text-muted); line-height:1.8;">
+            <div>CFO FY25: <span style="color:var(--accent-mint);">₹1,662 Cr</span> (up 37% YoY)</div>
+            <div>FCF Conversion: <span style="color:var(--accent-mint);">88.3%</span> (CFO/PAT)</div>
+            <div>Total CapEx FY25: <span style="color:var(--accent-amber);">₹1,400 Cr</span> (Growth-heavy)</div>
+            <div>Growth CapEx est: <span style="color:var(--text-muted);">~₹1,050 Cr (75%)</span></div>
+            <div>Net Cash: <span style="color:var(--accent-mint);">₹2,500–3,800 Cr</span></div>
+            <div style="margin-top:8px; color:var(--accent-soft); font-style:italic;">CapEx/Revenue is rising as Natco invests for next-gen pipeline. Owner earnings will mean-revert up as growth CapEx moderates post semaglutide build-out.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">O'Glove Earnings Quality — 5 Tests</div>
+    <div class="grid-3" style="margin-bottom:16px;">
+      <div class="card card-mint">
+        <div class="card-title">Test 1 — FCF Conversion</div>
+        <div style="font-family:var(--text-data); font-size:28px; color:var(--accent-mint);">88.3%</div>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted);">CFO / PAT · threshold ≥80%</div>
+        <div class="score-pass" style="margin-top:8px;">✓ PASS</div>
+      </div>
+      <div class="card card-mint">
+        <div class="card-title">Test 2 — DSO Trend</div>
+        <div style="font-family:'Crimson Pro', serif; font-size:15px; color:var(--text-secondary); margin-top:6px;">Export-heavy with partner model. AR growth in line with revenue. No red flags.</div>
+        <div class="score-pass" style="margin-top:8px;">✓ PASS <span style="font-family:var(--text-data); font-size:10px; color:var(--text-muted);">[ESTIMATED]</span></div>
+      </div>
+      <div class="card card-mint">
+        <div class="card-title">Test 3 — Inventory Days</div>
+        <div style="font-family:'Crimson Pro', serif; font-size:15px; color:var(--text-secondary); margin-top:6px;">Inventory turns ~0.95x; pharma standard. No revenue slowdown with inventory buildup.</div>
+        <div class="score-pass" style="margin-top:8px;">✓ PASS</div>
+      </div>
+      <div class="card card-mint">
+        <div class="card-title">Test 4 — Accounting Stability</div>
+        <div style="font-family:'Crimson Pro', serif; font-size:15px; color:var(--text-secondary); margin-top:6px;">CHS impairment ₹50 Cr disclosed transparently. R&amp;D expensed immediately (conservative). No policy changes to inflate earnings.</div>
+        <div class="score-pass" style="margin-top:8px;">✓ PASS</div>
+      </div>
+      <div class="card card-mint">
+        <div class="card-title">Test 5 — Gross Margin Consistency</div>
+        <div style="font-family:var(--text-data); font-size:13px; color:var(--text-secondary); margin-top:6px;">
+          FY21: 75% → FY22: 71% → FY23: 77% → FY24: 82% → FY25: 84%
+        </div>
+        <div class="score-pass" style="margin-top:8px;">✓ PASS (improving)</div>
+      </div>
+      <div class="card card-mint" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+        <div class="card-title">Overall O'Glove Rating</div>
+        <div class="glove-badge" style="margin-top:12px;">✓ CLEAN</div>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:8px;">5/5 Tests: PASS<br>No MoS adjustment required</div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">5-Year Financial Summary [VERIFIED / ESTIMATED]</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Year</th><th>Revenue (₹ Cr)</th><th>EBITDA (₹ Cr)</th><th>EBITDA %</th><th>PAT (₹ Cr)</th><th>NPM %</th><th>CFO (₹ Cr)</th><th>YoY Rev</th></tr></thead>
+        <tbody>
+          <tr><td>FY21</td><td>₹2,156</td><td>₹606</td><td class="tbl-amber">30%</td><td>₹442</td><td>20%</td><td>~₹500</td><td class="tbl-amber">+6.6%</td></tr>
+          <tr><td>FY22</td><td>₹1,945</td><td>₹263</td><td class="tbl-red">14%</td><td>₹170</td><td class="tbl-red">9%</td><td>~₹280</td><td class="tbl-red">−10%</td></tr>
+          <tr><td>FY23</td><td>₹2,707</td><td>₹935</td><td class="tbl-amber">35%</td><td>₹715</td><td>26%</td><td>~₹820</td><td class="tbl-mint">+39%</td></tr>
+          <tr><td>FY24</td><td>₹4,127</td><td>₹1,751</td><td class="tbl-mint">44%</td><td>₹1,388</td><td class="tbl-mint">34.7%</td><td>₹1,212</td><td class="tbl-mint">+52%</td></tr>
+          <tr><td>FY25</td><td>₹4,784</td><td>₹2,550</td><td class="tbl-strong">53.3%</td><td>₹1,883</td><td class="tbl-strong">45.2%</td><td>₹1,662</td><td class="tbl-mint">+16%</td></tr>
+          <tr><td>FY26 Guidance</td><td class="tbl-amber">₹4,000–4,300</td><td class="tbl-amber">~₹1,350</td><td class="tbl-amber">~32%</td><td class="tbl-amber">₹1,280–1,300</td><td class="tbl-amber">~30–32%</td><td>—</td><td class="tbl-red">−10 to −17%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:8px;">[VERIFIED] FY21–FY25 consolidated. FY26 guidance from management earnings call May 2025; 9M FY26 PAT ₹1,150 Cr confirmed [VERIFIED].</p>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 3 MOAT ═══════════════ -->
+<div id="tab3" class="tab-content">
+  <div class="section">
+    <div class="section-title">Economic Moat Analysis — Grade: B−</div>
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="card card-top">
+        <div class="card-title">Para-IV / FTF Filing Expertise</div>
+        <div style="font-size:20px; color:var(--accent-amber);">★★★★</div>
+        <p style="font-size:14px; color:var(--text-secondary); margin-top:8px; line-height:1.7;">Natco's core moat is its deep expertise in para-IV patent challenges — complex legal, regulatory, and technical processes that create near-zero competition during 180-day exclusivity windows. Revlimid (₹2,000+ Cr in peak quarters), upcoming semaglutide FTF with sole exclusivity on two strengths — this is a <em>high-quality but episodic</em> moat. Not durable enough for A-grade, but genuinely wide during exclusivity windows.</p>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:8px;">Macro stress test: <span style="color:var(--accent-amber);">HOLDS — FDA scrutiny of Chinese API makers actually strengthens NATCO's position</span></div>
+      </div>
+      <div class="card card-top">
+        <div class="card-title">Domestic Oncology Franchise</div>
+        <div style="font-size:20px; color:var(--accent-amber);">★★★</div>
+        <p style="font-size:14px; color:var(--text-secondary); margin-top:8px; line-height:1.7;">NATCO holds strong branded generic positions in oncology, with products like Xpreza, Hepcinat (Sofosbuvir), Natdox, and Velcade generics commanding market share in niche therapeutic areas. Regulatory registrations create meaningful switching costs. 67-68% market share in some respiratory drugs. Domestic formulations ~₹400 Cr stable recurring base.</p>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:8px;">Macro stress test: <span style="color:var(--accent-mint);">STRENGTHENS — India healthcare spend growing, oncology demand structural</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">API Backward Integration</div>
+        <div style="font-size:20px; color:var(--accent-amber);">★★★</div>
+        <p style="font-size:14px; color:var(--text-secondary); margin-top:8px; line-height:1.7;">Self-manufacturing of APIs for key molecules (lenalidomide, sofosbuvir, semaglutide API being explored) gives NATCO structural cost advantages versus pure formulation players. Captive API reduces import dependency and improves gross margins (now 84%). USFDA-inspected Manali API facility — received NAI/VAI status in Nov 2025.</p>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:8px;">Macro stress test: <span style="color:var(--accent-mint);">STRENGTHENS — China+1 tailwind makes Indian API moat more valuable</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Regulatory &amp; Legal Domain Expertise</div>
+        <div style="font-size:20px; color:var(--accent-amber);">★★★</div>
+        <p style="font-size:14px; color:var(--text-secondary); margin-top:8px; line-height:1.7;">World precedent: Natco obtained India's first compulsory license (Bayer's Nexavar, 2012) — establishing legal precedent that strengthens future para-IV challenges. Deep USFDA ANDA filing expertise, experienced regulatory affairs team, and proven US patent litigation capabilities. This knowledge base took decades to build and cannot be replicated quickly.</p>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:8px;">Macro stress test: <span style="color:var(--text-muted);">NEUTRAL — regulatory knowledge ages but continuously renewed by new filings</span></div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Data Flywheel Assessment</div>
+    <div class="flywheel-box">
+      <div class="flywheel-badge">COSMETIC — 0 / 3 Criteria Met</div>
+      <div style="font-family:'Syne', sans-serif; font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Pharma R&amp;D is IP-driven, not data-flywheel-driven. AI in drug discovery exists industry-wide but not at NATCO at scale.</div>
+      <div class="grid-3">
+        <div style="padding:12px; background:rgba(248,113,113,0.08); border-radius:8px; border:1px solid rgba(248,113,113,0.2);">
+          <div style="font-family:var(--text-data); font-size:10px; color:var(--text-muted); margin-bottom:6px;">CRITERION 1</div>
+          <div style="font-family:'Crimson Pro',serif; font-size:14px; color:var(--text-secondary);">Proprietary AI training data competitors can't replicate</div>
+          <div style="font-family:var(--text-data); font-size:11px; color:var(--accent-red); margin-top:6px;">✗ FAIL — Clinical data is compound-specific, not scalable AI asset</div>
+        </div>
+        <div style="padding:12px; background:rgba(248,113,113,0.08); border-radius:8px; border:1px solid rgba(248,113,113,0.2);">
+          <div style="font-family:var(--text-data); font-size:10px; color:var(--text-muted); margin-bottom:6px;">CRITERION 2</div>
+          <div style="font-family:'Crimson Pro',serif; font-size:14px; color:var(--text-secondary);">More users / data measurably improves AI accuracy</div>
+          <div style="font-family:var(--text-data); font-size:11px; color:var(--accent-red); margin-top:6px;">✗ FAIL — No user network powering AI improvements</div>
+        </div>
+        <div style="padding:12px; background:rgba(248,113,113,0.08); border-radius:8px; border:1px solid rgba(248,113,113,0.2);">
+          <div style="font-family:var(--text-data); font-size:10px; color:var(--text-muted); margin-bottom:6px;">CRITERION 3</div>
+          <div style="font-family:'Crimson Pro',serif; font-size:14px; color:var(--text-secondary);">Better AI attracts more users — self-reinforcing loop</div>
+          <div style="font-family:var(--text-data); font-size:11px; color:var(--accent-red); margin-top:6px;">✗ FAIL — No self-reinforcing AI loop exists</div>
+        </div>
+      </div>
+      <div style="font-family:var(--text-data); font-size:12px; color:var(--text-muted); margin-top:12px;">Flywheel Score: 0/10 | Moat grade impact: None (no upgrade)</div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">ROIC Trend as Moat Evidence</div>
+    <div class="card">
+      <p style="font-family:'Crimson Pro', serif; font-size:15px; color:var(--text-secondary); margin-bottom:12px;">ROIC reflects NATCO's episodic moat clearly — not the smooth compounding of a Cat A company, but powerful surges during para-IV exclusivity. The FY22 trough (8%) during Revlimid delays, followed by 20% → 28% → 31% as Revlimid ramps, is characteristic of a "narrow-wide episodic moat." The correct investment approach is to buy during trough years when ROIC temporarily dips below WACC.</p>
+      <div style="display:flex; gap:8px; align-items:flex-end; height:80px; margin:12px 0;">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent-amber); width:100%; height:38px; border-radius:3px 3px 0 0; opacity:0.7;"></div>
+          <div style="font-family:var(--text-data); font-size:9px; color:var(--text-muted);">FY21<br>15%</div>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent-red); width:100%; height:20px; border-radius:3px 3px 0 0; opacity:0.7;"></div>
+          <div style="font-family:var(--text-data); font-size:9px; color:var(--accent-red);">FY22<br>8%</div>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent-mint); width:100%; height:50px; border-radius:3px 3px 0 0; opacity:0.7;"></div>
+          <div style="font-family:var(--text-data); font-size:9px; color:var(--text-muted);">FY23<br>20%</div>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent-mint); width:100%; height:70px; border-radius:3px 3px 0 0; opacity:0.6;"></div>
+          <div style="font-family:var(--text-data); font-size:9px; color:var(--text-muted);">FY24<br>28%</div>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent-violet); width:100%; height:78px; border-radius:3px 3px 0 0; opacity:0.85;"></div>
+          <div style="font-family:var(--text-data); font-size:9px; color:var(--accent-soft);">FY25<br>31%</div>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent-amber); width:100%; height:40px; border-radius:3px 3px 0 0; opacity:0.6;"></div>
+          <div style="font-family:var(--text-data); font-size:9px; color:var(--accent-amber);">FY26E<br>~15%</div>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <div style="background:var(--accent-red); width:100%; height:30px; border-radius:3px 3px 0 0; opacity:0.5; border:1px dashed var(--accent-red);"></div>
+          <div style="font-family:var(--text-data); font-size:9px; color:var(--text-muted);">FY27E<br>~12%</div>
+        </div>
+      </div>
+      <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted);">WACC: 12.5% — FY22 and FY26/27E are trough years when moat appears weak but remains structurally intact [ESTIMATED]</div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div class="card-title">Moat Verdict</div>
+      <div style="font-family:'Syne', sans-serif; font-size:32px; font-weight:800; color:var(--accent-lilac);">B−</div>
+      <p style="font-family:'Crimson Pro', serif; font-size:16px; color:var(--text-secondary); margin-top:8px;">Genuinely wide moat during FTF exclusivity windows; narrow but real in base business (domestic franchise, API integration, regulatory expertise). The "episodic" nature of the para-IV moat — powerful bursts, quieter periods — means this is not a Cat A structural premium compounder but a high-quality Cat C business with recurring jackpot potential.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 4 MANAGEMENT ═══════════════ -->
+<div id="tab4" class="tab-content">
+  <div class="section">
+    <div class="section-title">Management Quality — Grade: B+</div>
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="card card-mint">
+        <div class="card-title">Strengths</div>
+        <ul style="list-style:none; font-family:'Crimson Pro', serif; font-size:15px; color:var(--text-secondary); line-height:2;">
+          <li>✓ CEO Rajeev Nannapaneni: candid, transparent, consistent guidance → outperforms</li>
+          <li>✓ "Conservative guidance, exceeded repeatedly" — reliable floor for investors [VERIFIED]</li>
+          <li>✓ Zero promoter pledge — no financial stress signal</li>
+          <li>✓ Strategic foresight: semaglutide settlement secured, Adcock Ingram platform</li>
+          <li>✓ FY24 buyback ₹250 Cr at depressed prices → excellent capital return timing</li>
+          <li>✓ R&amp;D expensed immediately (conservative; builds long-term asset quietly)</li>
+          <li>✓ CHS impairment ₹50 Cr: management admitted error, demerging — accountability</li>
+        </ul>
+      </div>
+      <div class="card card-amber">
+        <div class="card-title">Concerns</div>
+        <ul style="list-style:none; font-family:'Crimson Pro', serif; font-size:15px; color:var(--text-secondary); line-height:2;">
+          <li>⚠ Earnings lumpiness: intentional, but unsuitable for visibility-seeking investors</li>
+          <li>⚠ CHS (Crop Health Sciences) was capital misallocation — now being demerged</li>
+          <li>⚠ eGenesis (CRISPR xenotransplantation) investment: very high risk, outside core pharma</li>
+          <li>⚠ Kothur API site: USFDA observation ongoing — regulatory tail risk</li>
+          <li>⚠ Promoter selling: 49.62% → 49.42% over 18 months — minor, not alarming</li>
+          <li>⚠ FY27-28 pipeline timing uncertain — window between Revlimid fade &amp; semaglutide ramp</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="metric-card positive">
+        <div class="metric-label">Promoter Pledging</div>
+        <div class="metric-value">0.0%</div>
+        <div class="metric-sub">No pledge — clean signal</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Promoter Holding</div>
+        <div class="metric-value">49.42%</div>
+        <div class="metric-sub">Slight drift (−0.2% over 18m)</div>
+      </div>
+      <div class="metric-card positive">
+        <div class="metric-label">Dividend Payout</div>
+        <div class="metric-value">~14%</div>
+        <div class="metric-sub">Low payout → high reinvestment</div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Capital Allocation Track Record</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Action</th><th>Year</th><th>Amount</th><th>Assessment</th></tr></thead>
+        <tbody>
+          <tr><td>FY24 Buyback</td><td>FY24</td><td>₹250 Cr</td><td class="tbl-mint">✓ Excellent timing (pre-rally)</td></tr>
+          <tr><td>Adcock Ingram Acquisition (35.75%)</td><td>FY26</td><td>~₹2,000 Cr</td><td class="tbl-amber">7-9% EPS accretive; SA platform strategic</td></tr>
+          <tr><td>CHS (Crop Health Sciences)</td><td>FY21-25</td><td>~₹300 Cr</td><td class="tbl-red">✗ Capital misallocation; demerging Oct-Nov 2026</td></tr>
+          <tr><td>eGenesis CRISPR investment</td><td>FY25</td><td>Small</td><td class="tbl-amber">⚠ Very high-risk; venture bet, not core</td></tr>
+          <tr><td>Cellogen/Eyestem (Cell therapy)</td><td>FY25-26</td><td>Small</td><td class="tbl-amber">Long-dated R&amp;D optionality; not near-term</td></tr>
+          <tr><td>Regular Interim Dividends</td><td>FY24-26</td><td>₹6-10/share annually</td><td class="tbl-mint">✓ Consistent; payout ratio disciplined</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Management Integrity Assessment</div>
+    <div class="card" style="background:linear-gradient(135deg, #0D1525 0%, #151029 100%); border:1px solid rgba(124,58,237,0.3);">
+      <p style="font-family:'Crimson Pro', serif; font-size:16px; color:var(--text-secondary); line-height:1.8; margin-bottom:12px;">
+        NATCO's management stands out for extraordinary transparency. CEO Rajeev Nannapaneni has publicly described the company as "not delivering 10% quarter-on-quarter growth... because we chase jackpots." This candour is unusual in Indian pharma — most managements present volatility as smooth compounding. The fact that management <em>warns of downsides as clearly as they celebrate jackpots</em> (FY26 guidance: −20%/−30%) builds institutional trust.
+      </p>
+      <p style="font-family:'Crimson Pro', serif; font-size:16px; color:var(--text-secondary); line-height:1.8;">
+        The shift from distribution to front-end presence (Canada, Brazil, Adcock South Africa) represents a clear, executed long-term vision for reducing US para-IV dependency. The CHS misallocation and its frank acknowledgment — followed by demerger — is actually a <em>positive signal</em> for capital discipline. However, the CRISPR investment (eGenesis) warrants monitoring as a bet well outside NATCO's circle of competence.
+      </p>
+      <div style="margin-top:16px; padding:12px 16px; background:rgba(52,211,153,0.08); border-radius:8px; border:1px solid rgba(52,211,153,0.2);">
+        <span style="font-family:'Syne', sans-serif; font-size:12px; font-weight:700; color:var(--accent-mint);">MANAGEMENT GRADE: B+ — Credible, transparent, strategic; minor capital allocation blemishes</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 5 VALUATION ═══════════════ -->
+<div id="tab5" class="tab-content">
+  <div class="section">
+    <div class="section-title">Valuation Methodology — Cat C Standard 5 Methods</div>
+    <div class="card" style="background:rgba(124,58,237,0.07); margin-bottom:20px;">
+      <div class="grid-4">
+        <div><div class="metric-label">WACC</div><div class="metric-value" style="font-family:var(--text-data);">12.5%</div><div class="metric-sub">Cat C, volatile FCF</div></div>
+        <div><div class="metric-label">Terminal P/E</div><div class="metric-value" style="font-family:var(--text-data);">18–20x</div><div class="metric-sub">Cat C standard</div></div>
+        <div><div class="metric-label">MoS Required</div><div class="metric-value" style="font-family:var(--text-data);">20%</div><div class="metric-sub">Cat C standard</div></div>
+        <div><div class="metric-label">Earnings Base</div><div class="metric-value" style="font-family:var(--text-data);">FY28E</div><div class="metric-sub">Post-trough recovery</div></div>
+      </div>
+    </div>
+    <!-- METHOD 1 DCF -->
+    <div class="card card-top" style="margin-bottom:16px;">
+      <div class="card-title">Method 1 — DCF (2-Stage, Trough-to-Recovery)</div>
+      <p style="font-size:14px; color:var(--text-secondary); margin-bottom:12px;">FY26/27 are trough years; DCF starts from trough FCF base and models recovery as semaglutide, Pomalidomide, and Adcock ramp.</p>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Year</th><th>FCF (₹ Cr)</th><th>Growth</th><th>Discount (12.5%)</th><th>PV (₹ Cr)</th></tr></thead>
+          <tbody>
+            <tr><td>FY26E</td><td class="tbl-amber">₹700</td><td>Trough</td><td>0.889</td><td>₹623</td></tr>
+            <tr><td>FY27E</td><td class="tbl-amber">₹500</td><td>−28%</td><td>0.790</td><td>₹395</td></tr>
+            <tr><td>FY28E</td><td class="tbl-accent">₹850</td><td>+70% (semaglutide)</td><td>0.702</td><td>₹597</td></tr>
+            <tr><td>FY29E</td><td class="tbl-accent">₹1,050</td><td>+24%</td><td>0.624</td><td>₹655</td></tr>
+            <tr><td>FY30E</td><td class="tbl-mint">₹1,250</td><td>+19%</td><td>0.555</td><td>₹694</td></tr>
+            <tr><td>FY31E</td><td class="tbl-mint">₹1,400</td><td>+12%</td><td>0.493</td><td>₹690</td></tr>
+            <tr><td>Stage 1 PV Sum</td><td colspan="3"></td><td class="tbl-mint">₹3,654 Cr</td></tr>
+            <tr><td>Terminal Value (FY31 FCF × 19x Terminal P/E)</td><td colspan="3"></td><td class="tbl-accent">₹26,600 Cr → PV ₹13,130 Cr</td></tr>
+            <tr style="border-top:1px solid var(--accent-violet);"><td><strong>Total Enterprise IV</strong></td><td colspan="3"></td><td class="tbl-mint"><strong>₹16,784 Cr</strong></td></tr>
+            <tr><td>+ Net Cash</td><td colspan="3"></td><td>₹2,500 Cr</td></tr>
+            <tr><td><strong>Equity IV</strong></td><td colspan="3"></td><td class="tbl-accent"><strong>₹19,284 Cr</strong></td></tr>
+            <tr><td><strong>Per Share (179 Mn shares)</strong></td><td colspan="3"></td><td class="tbl-strong"><strong>₹1,077</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- METHOD 2 OE -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Method 2 — Owner Earnings Capitalisation</div>
+      <div class="grid-2">
+        <div>
+          <table>
+            <tr><td>FY28E OE (recovery, base)</td><td class="tbl-accent">₹1,350 Cr</td></tr>
+            <tr><td>Required Return (g=5.5% | rr=12.5%)</td><td>7.0% net</td></tr>
+            <tr><td>Capitalised Value</td><td class="tbl-accent">₹19,286 Cr</td></tr>
+            <tr><td>Per share (excl cash)</td><td>₹1,077</td></tr>
+            <tr><td>+ Cash/share</td><td>₹140</td></tr>
+            <tr><td><strong>OE IV</strong></td><td class="tbl-mint"><strong>₹1,217</strong></td></tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr><td><em>Conservative (OE ₹1,100 Cr)</em></td><td class="tbl-amber">₹1,017</td></tr>
+            <tr><td><em>Accel (OE ₹1,750 Cr)</em></td><td class="tbl-mint">₹1,530</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- METHOD 3 EPV -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Method 3 — ROIC/EPV (Earnings Power Value — Trough Floor)</div>
+      <div class="grid-2">
+        <div>
+          <table>
+            <tr><td>FY26E EBIT (est)</td><td>₹1,100 Cr</td></tr>
+            <tr><td>NOPAT (tax 18%)</td><td>₹902 Cr</td></tr>
+            <tr><td>EPV = NOPAT / WACC</td><td class="tbl-amber">₹7,216 Cr</td></tr>
+            <tr><td>Per share</td><td>₹403</td></tr>
+            <tr><td>+ Cash</td><td>₹140</td></tr>
+            <tr><td><strong>EPV (trough floor)</strong></td><td class="tbl-red"><strong>₹543</strong></td></tr>
+          </table>
+        </div>
+        <div style="font-family:var(--text-data); font-size:12px; color:var(--text-muted); line-height:1.8; padding:12px;">
+          EPV represents the <em>zero-growth trough floor</em> — what the business is worth if no new jackpots ever materialise. The large gap between EPV (₹543) and current price (₹1,190) reflects the market is pricing future pipeline value, which is reasonable given semaglutide FTF catalysts.
+        </div>
+      </div>
+    </div>
+    <!-- METHOD 4 PE POWER -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Method 4 — P/E Earnings Power</div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Metric</th><th>Value</th><th>Assessment</th></tr></thead>
+          <tbody>
+            <tr><td>Current P/E (trailing FY25)</td><td class="tbl-amber">~11.4x</td><td>Deceptively cheap — FY25 was peak cycle</td></tr>
+            <tr><td>Forward P/E (FY26 EPS ~₹72)</td><td class="tbl-accent">~16.5x</td><td>Approaching fair value for quality</td></tr>
+            <tr><td>5yr avg P/E (normalised, ex-outliers)</td><td>~15–17x</td><td>Historical reference for base business</td></tr>
+            <tr><td>PEG (Base 11% growth)</td><td class="tbl-accent">~1.5x</td><td>Reasonable for growth-recovery story</td></tr>
+            <tr><td>Normalised P/E on FY28E EPS ₹90</td><td>₹90 × 18x = ₹1,620</td><td class="tbl-mint">Base recovery IV</td></tr>
+            <tr><td>Reverse DCF: implied growth at ₹1,190</td><td class="tbl-accent">~9% long-term</td><td>Achievable with semaglutide ramp</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- METHOD 5 EY -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Method 5 — Earnings Yield vs Bond Yield</div>
+      <div class="grid-3">
+        <div class="metric-card warning">
+          <div class="metric-label">FY26 Earnings Yield</div>
+          <div class="metric-value">6.0%</div>
+          <div class="metric-sub">₹72 EPS / ₹1,200 price</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">India 10yr G-Sec</div>
+          <div class="metric-value">7.1%</div>
+          <div class="metric-sub">Current yield [VERIFIED]</div>
+        </div>
+        <div class="metric-card warning">
+          <div class="metric-label">ERP Spread (FY26)</div>
+          <div class="metric-value">−1.1%</div>
+          <div class="metric-sub">Negative → not compelling value NOW</div>
+        </div>
+        <div class="metric-card positive">
+          <div class="metric-label">FY28 Earnings Yield</div>
+          <div class="metric-value">7.6%</div>
+          <div class="metric-sub">₹90 EPS / ₹1,200 price</div>
+        </div>
+        <div class="metric-card positive">
+          <div class="metric-label">ERP Spread (FY28)</div>
+          <div class="metric-value">+0.5%</div>
+          <div class="metric-sub">Thin positive spread → approaching fair value</div>
+        </div>
+        <div class="metric-card positive">
+          <div class="metric-label">Bond Crossover Year</div>
+          <div class="metric-value">FY28</div>
+          <div class="metric-sub">Earnings yield > G-Sec yield in recovery</div>
+        </div>
+      </div>
+    </div>
+    <!-- 5-METHOD SUMMARY -->
+    <hr class="sep">
+    <div class="section-title">5-Method Summary Table</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Method</th><th class="tbl-red">Stress IV</th><th class="tbl-accent">Base IV</th><th class="tbl-mint">Accel IV</th><th>AI Adj.</th></tr></thead>
+        <tbody>
+          <tr><td>DCF (2-Stage)</td><td class="tbl-red">₹800</td><td class="tbl-accent">₹1,077</td><td class="tbl-mint">₹1,450</td><td style="color:var(--text-muted);">None</td></tr>
+          <tr><td>Owner Earnings Cap</td><td class="tbl-red">₹950</td><td class="tbl-accent">₹1,217</td><td class="tbl-mint">₹1,530</td><td style="color:var(--text-muted);">None</td></tr>
+          <tr><td>ROIC/EPV (Floor)</td><td class="tbl-red">₹543</td><td class="tbl-amber">₹830</td><td class="tbl-accent">₹1,100</td><td style="color:var(--text-muted);">None</td></tr>
+          <tr><td>P/E Earnings Power</td><td class="tbl-red">₹900</td><td class="tbl-accent">₹1,350</td><td class="tbl-mint">₹1,620</td><td style="color:var(--text-muted);">None</td></tr>
+          <tr><td>Earnings Yield</td><td class="tbl-red">₹820</td><td class="tbl-accent">₹1,080</td><td class="tbl-mint">₹1,350</td><td style="color:var(--text-muted);">None</td></tr>
+          <tr style="border-top:2px solid var(--accent-violet);"><td><strong>Blended Base IV</strong></td><td class="tbl-red"><strong>₹803</strong></td><td class="tbl-accent"><strong>₹1,181</strong></td><td class="tbl-mint"><strong>₹1,410</strong></td><td></td></tr>
+          <tr><td>AI NEUTRAL</td><td colspan="4" style="color:var(--text-muted); font-style:italic;">No AI premium/discount applicable</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dcf-scenario" style="margin-top:16px;">
+      <div class="scenario-card scenario-stress">
+        <div class="scenario-label" style="color:var(--accent-red);">Stress IV</div>
+        <div class="scenario-iv" style="color:var(--accent-red);">₹803</div>
+        <div class="scenario-mos">MoS Entry: ₹642</div>
+      </div>
+      <div class="scenario-card scenario-base">
+        <div class="scenario-label" style="color:var(--accent-soft);">Base IV</div>
+        <div class="scenario-iv" style="color:var(--accent-soft);">₹1,181</div>
+        <div class="scenario-mos">MoS Entry (×0.80): <strong>₹945</strong></div>
+      </div>
+      <div class="scenario-card scenario-accel">
+        <div class="scenario-label" style="color:var(--accent-mint);">Accel IV</div>
+        <div class="scenario-iv" style="color:var(--accent-mint);">₹1,410</div>
+        <div class="scenario-mos">MoS Entry (×0.80): ₹1,128</div>
+      </div>
+    </div>
+    <div class="card" style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.3); margin-top:8px;">
+      <div class="card-title">Current Price vs MoS Entry</div>
+      <p style="font-family:var(--text-data); font-size:13px; color:var(--text-secondary);">
+        Current price ~₹1,190 is <strong style="color:var(--accent-amber);">+26% above the Base IV MoS entry of ₹945</strong>. The stock is approaching the Base IV of ₹1,181 itself. This indicates fair value — not cheap, not expensive — but with semaglutide upside option embedded. Wait for MoS zone entry at ₹920–1,000.
+      </p>
+    </div>
+    <hr class="sep">
+    <div class="section-title">DCF Sensitivity Table</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>WACC / Terminal g</th><th>3.5%</th><th>5.0%</th><th>6.5%</th></tr></thead>
+        <tbody>
+          <tr><td>11.0%</td><td>₹1,150</td><td class="tbl-mint">₹1,380</td><td class="tbl-mint">₹1,690</td></tr>
+          <tr><td>12.5%</td><td>₹980</td><td class="tbl-accent">₹1,077</td><td class="tbl-accent">₹1,280</td></tr>
+          <tr><td>14.0%</td><td class="tbl-red">₹820</td><td class="tbl-red">₹930</td><td class="tbl-amber">₹1,060</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 6 VERDICT ═══════════════ -->
+<div id="tab6" class="tab-content">
+  <div class="section">
+    <div class="section-title">Four-Pillar Grade Summary</div>
+    <div class="pillar-grid">
+      <div class="pillar-card">
+        <div class="pillar-name">Economic Moat</div>
+        <div class="pillar-grade">B−</div>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:6px;">Episodic Para-IV franchise; real but not durable</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-name">Financial Fortress</div>
+        <div class="pillar-grade" style="color:var(--accent-mint);">B+</div>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:6px;">Net cash; O'Glove CLEAN; marginal predictability</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-name">Management</div>
+        <div class="pillar-grade" style="color:var(--accent-mint);">B+</div>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:6px;">Transparent; credible; minor blemishes</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-name">Valuation</div>
+        <div class="pillar-grade" style="color:var(--accent-amber);">C+</div>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:6px;">Approaching fair value; 26% above MoS zone</div>
+      </div>
+    </div>
+    <div class="verdict-box">
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+        <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+        <span class="badge badge-cat">Cat C · Mature Quality Compounder</span>
+        <span style="font-family:var(--text-data); font-size:12px; color:var(--text-muted); padding-top:4px;">Base IV: ₹1,181 | MoS Entry: ₹945</span>
+      </div>
+      <div class="verdict-main">WATCH ★★★★</div>
+      <p style="font-family:'Crimson Pro', serif; font-size:16px; color:var(--text-secondary); margin-bottom:16px;">
+        Excellent quality company at the wrong price. NATCO's para-IV franchise, fortress balance sheet, and credible management tick three pillars convincingly. The valuation pillar fails: at ₹1,190 the stock has already recovered 82% from its Apr 2025 trough, trading at a 26% premium to the Base MoS entry zone. The post-Revlimid trough (FY26/27) and semaglutide ramp (FY28) are well-known narratives — the market has priced the optionality. Patient investors should wait for ₹920-1,000 to build a position with margin of safety.
+      </p>
+      <div class="verdict-quote">
+        "Price is what you pay. Value is what you get." — The gap between the two is what determines the quality of your investment, not the quality of the business alone.
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Upgrade Conditions (5 Specific, Measurable Triggers)</div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">1</div>
+      <div class="upgrade-text"><strong style="color:var(--accent-soft);">Price corrects to ₹920–1,000</strong> — representing 20% MoS discount to Blended Base IV of ₹1,181. This zone aligns with prior 52W support and 200-DMA level. <em>Deploy Tier 1 (40–50% of intended position) on entry into this zone.</em></div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">2</div>
+      <div class="upgrade-text"><strong style="color:var(--accent-soft);">RSI (14) falls below 42 on daily chart</strong> — confirming oversold conditions and providing technical confluence with fundamental entry zone. Do not chase above RSI 55 without fundamental catalyst.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">3</div>
+      <div class="upgrade-text"><strong style="color:var(--accent-soft);">USFDA grants final approval for generic semaglutide</strong> (8mg/3ml or 2mg/3ml FTF strengths) — confirming the next jackpot. At this point, consider adding Tier 2 (30–35%) regardless of price level given size of the opportunity.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">4</div>
+      <div class="upgrade-text"><strong style="color:var(--accent-soft);">Q1 FY28 quarterly PAT recovers above ₹350 Cr</strong> — confirming post-Revlimid earnings floor and new base business run-rate. Validates that management's "H2 FY26 as new base" thesis is correct.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">5</div>
+      <div class="upgrade-text"><strong style="color:var(--accent-soft);">Adcock Ingram delivers ≥₹150 Cr EBITDA contribution</strong> in first full year — confirming synergy realisation and platform value. This unlocks geographic diversification narrative and supports higher normalised earnings.</div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">Series Tracker</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Pillar</th><th>Grade</th><th>AI Column</th><th>Key Risk</th></tr></thead>
+        <tbody>
+          <tr><td>Economic Moat</td><td class="tbl-amber">B−</td><td style="color:var(--text-muted);">⚪ NEUTRAL</td><td>Para-IV competition; FDA 483 at Kothur</td></tr>
+          <tr><td>Financial Fortress</td><td class="tbl-mint">B+</td><td style="color:var(--text-muted);">⚪ NEUTRAL</td><td>Earnings lumpiness; FY27 PAT trough</td></tr>
+          <tr><td>Management</td><td class="tbl-mint">B+</td><td style="color:var(--text-muted);">⚪ NEUTRAL</td><td>CHS misallocation; CRISPR bet</td></tr>
+          <tr><td>Valuation</td><td class="tbl-amber">C+</td><td style="color:var(--text-muted);">—</td><td>Current price above MoS zone</td></tr>
+          <tr style="background:rgba(124,58,237,0.1);"><td><strong>Composite</strong></td><td class="tbl-accent"><strong>WATCH ★★★★</strong></td><td style="color:#94A3B8;"><strong>⚪ NEUTRAL</strong></td><td><strong>MoS Entry: ₹920–1,000</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 7 TECHNICAL ═══════════════ -->
+<div id="tab7" class="tab-content">
+  <div class="section">
+    <div class="section-title">A — Price Structure &amp; Multi-Timeframe Trend</div>
+    <div class="grid-4" style="margin-bottom:16px;">
+      <div class="metric-card warning">
+        <div class="metric-label">Current Price</div>
+        <div class="metric-value">~₹1,190</div>
+        <div class="metric-sub">VERIFY LIVE — NSE/BSE app</div>
+      </div>
+      <div class="metric-card negative">
+        <div class="metric-label">All-Time High</div>
+        <div class="metric-value">₹1,638</div>
+        <div class="metric-sub">12 Sep 2024 (−27% from ATH)</div>
+      </div>
+      <div class="metric-card positive">
+        <div class="metric-label">52W Low</div>
+        <div class="metric-value">₹789</div>
+        <div class="metric-sub">Apr 2025 (+51% recovery)</div>
+      </div>
+      <div class="metric-card positive">
+        <div class="metric-label">52W High</div>
+        <div class="metric-value">₹1,226</div>
+        <div class="metric-sub">Near current price (−3%)</div>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-size:14px; color:var(--text-secondary);">
+        The stock experienced a dramatic <strong style="color:var(--accent-red);">57% peak-to-trough crash</strong> (₹1,638 → ₹660) driven by the Q3 FY25 earnings shock (PAT −38% YoY) as Revlimid competition intensified. From the April 2025 low, the stock has recovered <strong style="color:var(--accent-mint);">+82%</strong> as investors priced in the semaglutide FTF thesis and FY26 base rebound. Current price is near the 52-week high — the stock is in a strong recovery trend but extended in the near term.
+      </p>
+    </div>
+    <hr class="sep">
+    <div class="section-title">B — Moving Average Dashboard</div>
+    <div class="grid-4" style="margin-bottom:16px;">
+      <div class="metric-card positive">
+        <div class="metric-label">50 DMA</div>
+        <div class="metric-value">₹1,070</div>
+        <div class="metric-sub">+11% above DMA → Bullish</div>
+      </div>
+      <div class="metric-card positive">
+        <div class="metric-label">200 DMA</div>
+        <div class="metric-value">₹940</div>
+        <div class="metric-sub">+27% above DMA → Strong Bullish</div>
+      </div>
+      <div class="metric-card positive">
+        <div class="metric-label">Golden Cross</div>
+        <div class="metric-value">✓ YES</div>
+        <div class="metric-sub">50 DMA crossed above 200 DMA</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">200-Week MA</div>
+        <div class="metric-value">~₹820</div>
+        <div class="metric-sub">Long-term support [ESTIMATED]</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">MA Ribbon Visual</div>
+      <div style="display:flex; flex-direction:column; gap:8px; margin:12px 0;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); width:70px;">Current</div>
+          <div style="flex:1; background:var(--bg-card-alt); border-radius:4px; height:6px; overflow:hidden;">
+            <div style="width:100%; height:100%; background:var(--accent-violet); border-radius:4px;"></div>
+          </div>
+          <div style="font-family:var(--text-data); font-size:12px; color:var(--accent-soft); width:60px; text-align:right;">₹1,190</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); width:70px;">20 EMA</div>
+          <div style="flex:1; background:var(--bg-card-alt); border-radius:4px; height:6px; overflow:hidden;">
+            <div style="width:94%; height:100%; background:var(--accent-lilac); border-radius:4px;"></div>
+          </div>
+          <div style="font-family:var(--text-data); font-size:12px; color:var(--accent-lilac); width:60px; text-align:right;">~₹1,150</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); width:70px;">50 DMA</div>
+          <div style="flex:1; background:var(--bg-card-alt); border-radius:4px; height:6px; overflow:hidden;">
+            <div style="width:87%; height:100%; background:var(--accent-mint); border-radius:4px;"></div>
+          </div>
+          <div style="font-family:var(--text-data); font-size:12px; color:var(--accent-mint); width:60px; text-align:right;">₹1,070</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); width:70px;">200 DMA</div>
+          <div style="flex:1; background:var(--bg-card-alt); border-radius:4px; height:6px; overflow:hidden;">
+            <div style="width:77%; height:100%; background:var(--accent-amber); border-radius:4px;"></div>
+          </div>
+          <div style="font-family:var(--text-data); font-size:12px; color:var(--accent-amber); width:60px; text-align:right;">₹940</div>
+        </div>
+      </div>
+      <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted);">All MAs confirmed bullish stacking: Price &gt; 20EMA &gt; 50DMA &gt; 200DMA [ESTIMATED — verify on TradingView]</div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">D — Momentum Indicators</div>
+    <div class="grid-3" style="margin-bottom:16px;">
+      <div class="metric-card positive">
+        <div class="metric-label">RSI (14-day)</div>
+        <div class="metric-value">~56</div>
+        <div class="metric-sub">Neutral-bullish; not overbought</div>
+      </div>
+      <div class="metric-card positive">
+        <div class="metric-label">MACD Signal</div>
+        <div class="metric-value">Bullish</div>
+        <div class="metric-sub">MACD above signal line [EST]</div>
+      </div>
+      <div class="metric-card warning">
+        <div class="metric-label">Near 52W High</div>
+        <div class="metric-value">₹1,226</div>
+        <div class="metric-sub">Resistance zone — potential pause</div>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-size:14px; color:var(--text-secondary);">
+        RSI ~56 is not extreme — there's room to run. However, the stock faces meaningful resistance at the 52-week high zone (₹1,226). A breakout above ₹1,240 on volume would signal the next leg toward ₹1,400+. A rejection could pull back to ₹1,050–1,100 (50 DMA support). <strong style="color:var(--accent-amber);">Key watch: Does RSI break above 60 on next move?</strong>
+      </p>
+    </div>
+    <hr class="sep">
+    <div class="section-title">E &amp; F — Chart Pattern &amp; Trade Structure (for BUY scenario)</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Chart Pattern</div>
+        <p style="font-size:14px; color:var(--text-secondary); line-height:1.7;">
+          V-bottom recovery from Apr 2025 trough is evolving into a potential <strong style="color:var(--accent-soft);">Cup-and-Handle</strong> formation. The "cup" depth is the ATH (₹1,638) → trough (₹660) → right rim at ₹1,226. A handle formation at ₹1,050–1,226 followed by breakout above ₹1,240 would be a highly constructive signal. Volume confirmation on breakout is mandatory.
+        </p>
+      </div>
+      <div class="card card-top">
+        <div class="card-title">Trade Structure (BUY Entry at Upgrade Condition 1)</div>
+        <table>
+          <tr><td>Entry Zone</td><td class="tbl-mint">₹920–1,000</td></tr>
+          <tr><td>Stop Loss</td><td class="tbl-red">₹845 (below 200 DMA buffer)</td></tr>
+          <tr><td>Target 1</td><td class="tbl-amber">₹1,150 (50 DMA area)</td></tr>
+          <tr><td>Target 2 (Base IV)</td><td class="tbl-mint">₹1,350</td></tr>
+          <tr><td>Target 3 (Semaglutide FTF)</td><td class="tbl-accent">₹1,700+</td></tr>
+          <tr><td>Risk:Reward (T2)</td><td class="tbl-mint">3.9:1 ✓ (&gt;2.5 required)</td></tr>
+        </table>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">G — Technical Composite Score</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Dimension</th><th>Score (/5)</th><th>Commentary</th></tr></thead>
+        <tbody>
+          <tr><td>Trend (Price vs MAs)</td><td class="tbl-mint">5/5</td><td>Above all key MAs; golden cross active</td></tr>
+          <tr><td>Momentum (RSI / MACD)</td><td class="tbl-accent">3/5</td><td>RSI ~56 neutral; not extremes</td></tr>
+          <tr><td>Volume / OBV</td><td class="tbl-amber">3/5</td><td>Volume confirming recovery; watch for breakout vol</td></tr>
+          <tr><td>Chart Pattern</td><td class="tbl-accent">4/5</td><td>Cup-and-Handle forming; right rim at 52W high</td></tr>
+          <tr><td>Support/Resistance</td><td class="tbl-amber">3/5</td><td>Near resistance at 52W high; support well below</td></tr>
+          <tr><td>Risk:Reward (at current price)</td><td class="tbl-red">2/5</td><td>Current price = poor R:R; wait for MoS zone</td></tr>
+          <tr style="border-top:1px solid var(--accent-violet);"><td><strong>Total</strong></td><td class="tbl-accent"><strong>20/30 = 67%</strong></td><td>Bullish trend; extended. WAIT for better entry.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top:12px; background:rgba(251,191,36,0.06);">
+      <p style="font-family:var(--text-data); font-size:12px; color:var(--accent-amber);">⚠ IMPORTANT: All technical levels are ESTIMATED. Verify all price data on NSE app, Screener.in, or TradingView before making any trading decisions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 8 SHAREHOLDING ═══════════════ -->
+<div id="tab8" class="tab-content">
+  <div class="section">
+    <div class="section-title">A — Promoter Trend (5 Quarters)</div>
+    <div class="grid-4" style="margin-bottom:16px;">
+      <div class="metric-card">
+        <div class="metric-label">Sep-24</div>
+        <div class="metric-value">49.62%</div>
+        <div class="metric-sub">Pledge: 0%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Dec-24</div>
+        <div class="metric-value">49.62%</div>
+        <div class="metric-sub">Pledge: 0%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Mar-25</div>
+        <div class="metric-value">49.56%</div>
+        <div class="metric-sub">Pledge: 0%</div>
+      </div>
+      <div class="metric-card warning">
+        <div class="metric-label">Apr-26 (Latest)</div>
+        <div class="metric-value">49.42%</div>
+        <div class="metric-sub">Slight drift; 0% pledge</div>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-size:14px; color:var(--text-secondary);">
+        Promoter holding has drifted slightly from 49.62% → 49.42% over ~18 months — a reduction of ~0.20%. This is <strong style="color:var(--accent-amber);">minor and likely ESOP/market transactions</strong>, not a distress signal. The 0% pledging record is exceptional — promoters have no financial stress requiring share pledging. The family management (Rajeev Nannapaneni is from the founding family) ensures alignment. Any pledge above 5% would warrant immediate reassessment.
+      </p>
+    </div>
+    <hr class="sep">
+    <div class="section-title">B — FII &amp; DII Trend</div>
+    <div style="overflow-x:auto; margin-bottom:16px;">
+      <table>
+        <thead><tr><th>Quarter</th><th>FII %</th><th>DII %</th><th>MF %</th><th>Retail %</th><th>FII Trend</th></tr></thead>
+        <tbody>
+          <tr><td>Sep-24</td><td>17.51%</td><td>6.75%</td><td>~2.5%</td><td>~26%</td><td class="tbl-mint">↑</td></tr>
+          <tr><td>Dec-24</td><td>17.94%</td><td>5.57%</td><td>~2.3%</td><td>~27%</td><td class="tbl-mint">↑ Peak</td></tr>
+          <tr><td>Mar-25</td><td>17.49%</td><td>5.65%</td><td>~2.1%</td><td>~27%</td><td class="tbl-amber">↓ slight</td></tr>
+          <tr><td>Apr-26</td><td>17.37%</td><td>3.74%</td><td>2.2%</td><td>~29%</td><td class="tbl-amber">↓ slight</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">FII Commentary</div>
+        <p style="font-size:14px; color:var(--text-secondary);">FII at 17.37% — slight decline from Dec-24 peak (17.94%). FIIs are modestly trimming post-rally. Still a significant holder base. FII sectoral limit utilisation for pharma is typically healthy with headroom available for further accumulation.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">DII Commentary</div>
+        <p style="font-size:14px; color:var(--text-secondary);">DII has declined from 6.75% to 3.74% — mutual funds have been reducing positions as price recovered from trough. However, MF holding alone has slightly increased (2.11% → 2.20%) suggesting select funds are accumulating while others take profit. Net DII reduction is a mild negative signal.</p>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">C — Market Cap, Free Float &amp; Index Context</div>
+    <div class="grid-4">
+      <div class="metric-card positive">
+        <div class="metric-label">Market Cap</div>
+        <div class="metric-value">₹21,300 Cr</div>
+        <div class="metric-sub">~$2.5 Bn</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Free Float</div>
+        <div class="metric-value">~50.6%</div>
+        <div class="metric-sub">₹10,777 Cr free float</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Shares Outstanding</div>
+        <div class="metric-value">179.1 Mn</div>
+        <div class="metric-sub">Declined 2.65% (buyback effect)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Index Inclusion</div>
+        <div class="metric-value">Nifty 500</div>
+        <div class="metric-sub">Not in Nifty 50; limited SIP inflows</div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">E — Ownership Momentum Score</div>
+    <div class="grid-2">
+      <div class="card" style="text-align:center;">
+        <div class="card-title">Ownership Momentum Score</div>
+        <div style="font-family:var(--text-data); font-size:42px; font-weight:700; color:var(--accent-amber);">47</div>
+        <div style="font-family:var(--text-data); font-size:12px; color:var(--text-muted);">/ 100 — CAUTIOUS</div>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:8px;">Slight promoter dilution, DII reduction partially offset by 0% pledge, stable FII base, and rising retail interest.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="card-title">Shareholding Risk Score</div>
+        <div style="font-family:var(--text-data); font-size:42px; font-weight:700; color:var(--accent-mint);">18</div>
+        <div style="font-family:var(--text-data); font-size:12px; color:var(--text-muted);">/ 100 — LOW RISK</div>
+        <p style="font-size:13px; color:var(--text-secondary); margin-top:8px;">0% pledge, no block deal history, stable >49% promoter ownership = low shareholding structural risk.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 9 AI INTELLIGENCE ═══════════════ -->
+<div id="tab9" class="tab-content">
+  <div class="section">
+    <div class="section-title">A — AI Classification Dashboard</div>
+    <div class="grid-4" style="margin-bottom:20px;">
+      <div class="card" style="text-align:center; border:1px solid var(--accent-violet);">
+        <div class="card-title">Category</div>
+        <div style="font-family:'Syne', sans-serif; font-size:20px; font-weight:800; color:var(--accent-lilac);">Cat C</div>
+        <div style="font-family:var(--text-data); font-size:10px; color:var(--text-muted); margin-top:4px;">Mature Quality Compounder</div>
+      </div>
+      <div class="card" style="text-align:center; border:1px solid #64748B;">
+        <div class="card-title">AI Overlay</div>
+        <div style="font-family:'Syne', sans-serif; font-size:20px; font-weight:800; color:#94A3B8;">⚪ NEUTRAL</div>
+        <div style="font-family:var(--text-data); font-size:10px; color:var(--text-muted); margin-top:4px;">No structural AI moat change</div>
+      </div>
+      <div class="card" style="text-align:center; border:1px solid #4B5563;">
+        <div class="card-title">Data Flywheel</div>
+        <div style="font-family:'Syne', sans-serif; font-size:20px; font-weight:800; color:#6B7280;">COSMETIC</div>
+        <div style="font-family:var(--text-data); font-size:10px; color:var(--text-muted); margin-top:4px;">0/3 criteria met</div>
+      </div>
+      <div class="card" style="text-align:center; border:1px solid var(--accent-amber);">
+        <div class="card-title">AI Adoption Phase</div>
+        <div style="font-family:'Syne', sans-serif; font-size:20px; font-weight:800; color:var(--accent-amber);">Phase 1</div>
+        <div style="font-family:var(--text-data); font-size:10px; color:var(--text-muted); margin-top:4px;">Basic operational AI tools</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <p style="font-size:15px; color:var(--text-secondary); line-height:1.7;">
+        NATCO Pharma's relationship with AI is limited to <strong style="color:var(--accent-soft);">Phase 1: operational efficiency tools</strong> — standard ERP/supply chain AI, quality control automation, and documentation management. The company has not announced any AI partnerships, AI-native drug discovery programmes, or proprietary AI R&D platforms. Its "deep tech" bets (eGenesis CRISPR, Cellogen CAR-T, Eyestem stem cell therapy) are biology-based, not AI-native. India Stack (UPI/Aadhaar) has minimal relevance to NATCO's pharma manufacturing and export business model. <em>AI Overlay: NEUTRAL — no structural competitive change in either direction.</em>
+      </p>
+    </div>
+    <hr class="sep">
+    <div class="section-title">B — Data Flywheel Deep-Dive</div>
+    <div class="grid-3">
+      <div style="padding:16px; background:rgba(248,113,113,0.07); border-radius:8px; border:1px solid rgba(248,113,113,0.2);">
+        <div style="font-family:var(--text-data); font-size:10px; color:var(--accent-red); margin-bottom:8px;">Q1 — PROPRIETARY TRAINING DATA?</div>
+        <p style="font-size:14px; color:var(--text-secondary); line-height:1.7;">NATCO generates compound-specific clinical trial data, bio-equivalence study data, and ANDA filing knowledge. However, this data is molecule-specific (each new para-IV filing requires building new knowledge) — it does not accumulate into a generalised AI training asset that improves with scale. Competitors cannot access it, but NATCO cannot leverage it across molecules either.</p>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--accent-red); margin-top:8px;">Score: 1/3 — Partial credit (proprietary but not AI-scalable)</div>
+      </div>
+      <div style="padding:16px; background:rgba(248,113,113,0.07); border-radius:8px; border:1px solid rgba(248,113,113,0.2);">
+        <div style="font-family:var(--text-data); font-size:10px; color:var(--accent-red); margin-bottom:8px;">Q2 — MORE USERS → BETTER AI?</div>
+        <p style="font-size:14px; color:var(--text-secondary); line-height:1.7;">NATCO has no "user" base in the AI sense — it sells through B2B partners (Teva, Mylan, Lupin) who absorb its generics. There is no mechanism by which more customers improve NATCO's pharma AI capabilities. This criterion requires a product with network learning, which a regulated generics manufacturer fundamentally lacks.</p>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--accent-red); margin-top:8px;">Score: 0/3 — No improvement mechanism</div>
+      </div>
+      <div style="padding:16px; background:rgba(248,113,113,0.07); border-radius:8px; border:1px solid rgba(248,113,113,0.2);">
+        <div style="font-family:var(--text-data); font-size:10px; color:var(--accent-red); margin-bottom:8px;">Q3 — BETTER AI → MORE USERS?</div>
+        <p style="font-size:14px; color:var(--text-secondary); line-height:1.7;">NATCO wins customers through para-IV FTF victories, API quality, and competitive pricing — not through AI capabilities. A self-reinforcing AI loop does not exist. Better AI at NATCO today would reduce manufacturing defects (cost saving) but would not attract more customers or improve competitive positioning versus peers.</p>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--accent-red); margin-top:8px;">Score: 0/3 — No feedback loop</div>
+      </div>
+    </div>
+    <div style="font-family:var(--text-data); font-size:12px; color:var(--text-muted); margin-top:12px; padding:12px; background:var(--bg-card); border-radius:6px;">
+      Flywheel Score: <strong style="color:var(--accent-red);">1/10</strong> | Data quality: 1/3 | Improvement evidence: 0/4 | Loop speed: 0/3
+    </div>
+    <hr class="sep">
+    <div class="section-title">C — AI Value Chain Position</div>
+    <div class="chain-levels">
+      <div class="chain-level">
+        <div class="chain-level-num">1</div>
+        Infrastructure<br>(GPU/Cloud)
+      </div>
+      <div class="chain-level">
+        <div class="chain-level-num">2</div>
+        Foundation<br>Models
+      </div>
+      <div class="chain-level">
+        <div class="chain-level-num">3</div>
+        Platforms<br>(MLOps/APIs)
+      </div>
+      <div class="chain-level">
+        <div class="chain-level-num">4</div>
+        Vertical<br>AI Apps
+      </div>
+      <div class="chain-level active">
+        <div class="chain-level-num">5</div>
+        AI-Enabled<br>Incumbent ✓
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <p style="font-size:14px; color:var(--text-secondary);">
+        <strong style="color:var(--accent-soft);">Level 5 — AI-Enabled Incumbent:</strong> NATCO uses AI as an operational efficiency tool within its established pharma manufacturing business. At Level 5, AI enhances existing processes (quality control, documentation, regulatory submissions) rather than creating new product lines. Investment implications: modest cost reduction benefits; no structural moat deepening; investment thesis remains anchored to core para-IV / API business fundamentals. <strong>Horizon: 7–10 years</strong> (consistent with Cat C long-term compounder thesis).
+      </p>
+    </div>
+    <hr class="sep">
+    <div class="section-title">D — India AI Opportunity Assessment</div>
+    <div class="grid-2">
+      <div>
+        <div class="score-item"><span class="score-label">India Stack Data Access (UPI/Aadhaar)</span><span class="score-fail">No — pharma manufacturing irrelevant</span></div>
+        <div class="score-item"><span class="score-label">Vernacular AI Benefit</span><span class="score-fail">No — regulated markets target</span></div>
+        <div class="score-item"><span class="score-label">India Stack Infra Leverage</span><span class="score-fail">No — product sold to MNCs/US</span></div>
+        <div class="score-item"><span class="score-label">AI Talent Cost Arbitrage</span><span class="score-marginal">Partial — could use for R&amp;D efficiency [POTENTIAL]</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">India AI Theme — Pharma Relevance</div>
+        <table>
+          <tr><td>AI Drug Discovery (India)</td><td class="tbl-amber">Phase 2 — emerging</td></tr>
+          <tr><td>AI in Generic ANDA filings</td><td class="tbl-amber">Phase 1 — basic tools</td></tr>
+          <tr><td>AI Quality Control (pharma mfg)</td><td class="tbl-mint">Phase 3 — maturing</td></tr>
+          <tr><td>Natco relevance</td><td class="tbl-accent">LOW — operational only</td></tr>
+        </table>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="section-title">F — AI Opportunity Score</div>
+    <div class="grid-2">
+      <div class="card" style="text-align:center;">
+        <div class="ai-score-circle">
+          <div class="ai-score-inner">
+            <div class="ai-score-num">28</div>
+            <div class="ai-score-denom">/100</div>
+          </div>
+        </div>
+        <div style="font-family:'Syne', sans-serif; font-size:14px; font-weight:700; color:#94A3B8; margin-bottom:6px;">NEUTRAL</div>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted);">Portfolio Role: NEUTRAL (20–40 range)</div>
+      </div>
+      <div>
+        <table>
+          <thead><tr><th>Component</th><th>Score</th><th>Max</th></tr></thead>
+          <tbody>
+            <tr><td>Data Flywheel</td><td class="tbl-red">1</td><td>/20</td></tr>
+            <tr><td>Adoption Phase Timing</td><td class="tbl-amber">8</td><td>/20</td></tr>
+            <tr><td>Value Chain Position (L5)</td><td class="tbl-amber">9</td><td>/20</td></tr>
+            <tr><td>India Structural Advantage</td><td class="tbl-red">3</td><td>/20</td></tr>
+            <tr><td>AI Threat Resistance</td><td class="tbl-mint">7</td><td>/20</td></tr>
+            <tr style="border-top:1px solid var(--accent-violet);"><td><strong>Total</strong></td><td class="tbl-amber"><strong>28</strong></td><td><strong>/100</strong></td></tr>
+          </tbody>
+        </table>
+        <div style="font-family:var(--text-data); font-size:11px; color:var(--text-muted); margin-top:10px;">AI threat resistance is strong (7/20) — AI does not disrupt small-molecule generic pharma; if anything, AI in drug discovery helps identify new targets for para-IV launches. Investment horizon: 7–10 years.</div>
+      </div>
+    </div>
+    <hr class="sep">
+    <div class="footnote">
+      <strong>SEBI Disclaimer:</strong> This report is generated for research and educational purposes only by the Buffett Quality-Value Series framework. It does not constitute investment advice. NATCO Pharma (NSE: NATCOPHARM | BSE: 524816) is a SEBI-listed entity. All investment decisions must be made after independent due diligence and in consultation with a SEBI-registered investment advisor. Past performance is not indicative of future results.<br><br>
+      <strong>Data Notice:</strong> Financial data sourced from verified filings, management earnings calls, and publicly available sources. Price-sensitive metrics (current P/E, RSI, moving averages, current price) require live verification via NSE/BSE apps, Screener.in, or TradingView as they change continuously. Projections marked [ESTIMATED] are analyst estimates and may differ materially from actual outcomes. Report generated: 25 May 2026.<br><br>
+      <strong>Font Credits:</strong> Syne (Bonjour Monde), Space Mono (Colophon Foundry), Crimson Pro (Jacques Le Bailly) — Google Fonts. Icons: Unicode standard.
+    </div>
+  </div>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

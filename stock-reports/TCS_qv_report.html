@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCS — Buffett Quality-Value Report v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0D0F1A;
+  --surface: #13162B;
+  --surface2: #1B1F38;
+  --border: #252A4A;
+  --accent: #4361EE;
+  --accent2: #7B8CDE;
+  --threat: #EF233C;
+  --warn: #F4A261;
+  --pass: #2EC4B6;
+  --neutral: #8D9BB5;
+  --text: #E8EAFF;
+  --text2: #A8B0D0;
+  --text3: #6C7A9C;
+  --gold: #F2C94C;
+  --silver: #BDC3D8;
+  --card-bg: #161929;
+  --hero-h: 210px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Libre Baskerville',Georgia,serif; font-size:14px; line-height:1.6; }
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #080B18 0%, #0D1535 40%, #141832 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 32px 20px;
+  position:relative;
+  overflow:hidden;
+  max-height: var(--hero-h);
+}
+.hero::before {
+  content:'';
+  position:absolute; top:0;left:0;right:0;bottom:0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(67,97,238,0.12) 0%, transparent 60%);
+  pointer-events:none;
+}
+.hero-inner { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.hero-left { flex:1; }
+.hero-eyebrow { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text3); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px; }
+.hero-title { font-family:'Playfair Display',serif; font-size:42px; font-weight:900; letter-spacing:-1px; line-height:1.0; color:#fff; }
+.hero-lede { font-size:12px; color:var(--text2); margin-top:8px; max-width:600px; font-style:italic; }
+.hero-badges { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.badge {
+  font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700;
+  padding:4px 10px; border-radius:3px; border:1px solid;
+  letter-spacing:1px; text-transform:uppercase;
+}
+.badge-cat-c { background:rgba(123,140,222,0.15); border-color:var(--accent2); color:var(--accent2); }
+.badge-threat { background:rgba(239,35,60,0.15); border-color:var(--threat); color:var(--threat); }
+.badge-watch { background:rgba(244,162,97,0.15); border-color:var(--warn); color:var(--warn); }
+.badge-neutral { background:rgba(141,155,181,0.15); border-color:var(--neutral); color:var(--neutral); }
+.badge-pass { background:rgba(46,196,182,0.15); border-color:var(--pass); color:var(--pass); }
+.hero-right { text-align:right; flex-shrink:0; }
+.hero-price-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; }
+.hero-price { font-family:'JetBrains Mono',monospace; font-size:36px; font-weight:700; color:var(--gold); line-height:1.1; }
+.hero-change { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--threat); margin-top:2px; }
+.confidence-pills { display:flex; gap:6px; margin-top:8px; justify-content:flex-end; }
+.pill { font-family:'JetBrains Mono',monospace; font-size:8px; padding:2px 7px; border-radius:20px; font-weight:700; }
+.pill-v { background:rgba(46,196,182,0.2); color:var(--pass); border:1px solid rgba(46,196,182,0.4); }
+.pill-e { background:rgba(244,162,97,0.2); color:var(--warn); border:1px solid rgba(244,162,97,0.4); }
+.pill-u { background:rgba(239,35,60,0.2); color:var(--threat); border:1px solid rgba(239,35,60,0.4); }
+
+/* ── TABS ── */
+#tab-bar {
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:100;
+  overflow-x:auto; white-space:nowrap;
+}
+.tab-nav { display:inline-flex; min-width:100%; }
+.tab-btn {
+  font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500;
+  padding:12px 16px; border:none; background:transparent;
+  color:var(--text3); cursor:pointer; border-bottom:2px solid transparent;
+  white-space:nowrap; transition:all 0.2s; letter-spacing:0.5px; text-transform:uppercase;
+}
+.tab-btn:hover { color:var(--text2); background:rgba(67,97,238,0.05); }
+.tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+.tab-content { display:none; padding:28px 32px 40px; max-width:1200px; margin:0 auto; }
+.tab-content.active { display:block; }
+
+/* ── LAYOUT HELPERS ── */
+.section { margin-bottom:32px; }
+.section-title {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:3px;
+  text-transform:uppercase; color:var(--text3); margin-bottom:14px;
+  padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+@media(max-width:680px){.grid-3,.grid-4{grid-template-columns:1fr 1fr;} .grid-2{grid-template-columns:1fr;} .tab-content{padding:18px 16px 30px;} .hero{padding:16px;} .hero-title{font-size:28px;} .hero-price{font-size:28px;} }
+@media(max-width:600px){.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+/* ── METRIC CARD ── */
+.metric-card {
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:6px; padding:14px 16px;
+  border-left:3px solid var(--border);
+}
+.metric-card.good { border-left-color:var(--pass); }
+.metric-card.warn { border-left-color:var(--warn); }
+.metric-card.bad { border-left-color:var(--threat); }
+.metric-card.neutral { border-left-color:var(--accent2); }
+.metric-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
+.metric-value { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--text); line-height:1.2; }
+.metric-sub { font-size:11px; color:var(--text3); margin-top:3px; }
+
+/* ── TABLE ── */
+.data-table { width:100%; border-collapse:collapse; font-size:12px; }
+.data-table th { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text3); padding:8px 12px; text-align:left; border-bottom:1px solid var(--border); background:var(--surface); }
+.data-table td { padding:8px 12px; border-bottom:1px solid rgba(37,42,74,0.5); color:var(--text2); }
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:hover td { background:rgba(67,97,238,0.05); }
+.num { font-family:'JetBrains Mono',monospace; }
+.good-val { color:var(--pass); }
+.warn-val { color:var(--warn); }
+.bad-val { color:var(--threat); }
+.gold-val { color:var(--gold); }
+
+/* ── SCORECARD ── */
+.sc-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-bottom:1px solid rgba(37,42,74,0.4); }
+.sc-item:last-child { border-bottom:none; }
+.sc-icon { font-size:13px; width:18px; text-align:center; }
+.sc-text { flex:1; font-size:12px; color:var(--text2); }
+.sc-status { font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; padding:2px 8px; border-radius:3px; letter-spacing:1px; }
+.sc-pass { background:rgba(46,196,182,0.15); color:var(--pass); }
+.sc-marginal { background:rgba(244,162,97,0.15); color:var(--warn); }
+.sc-fail { background:rgba(239,35,60,0.15); color:var(--threat); }
+
+/* ── SCORECARD WRAPPER ── */
+.scorecard-box { background:var(--card-bg); border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:14px; }
+.scorecard-header { background:var(--surface2); padding:10px 14px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text3); }
+
+/* ── VERDICT BOX ── */
+.verdict-box {
+  background:linear-gradient(135deg, #0A0D1F 0%, #10142A 100%);
+  border:2px solid var(--warn); border-radius:8px; padding:28px 32px;
+  margin-bottom:24px; position:relative; overflow:hidden;
+}
+.verdict-box::before {
+  content:''; position:absolute; top:0;right:0; width:200px; height:200px;
+  background:radial-gradient(circle, rgba(244,162,97,0.08) 0%, transparent 70%);
+}
+.verdict-grade { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--warn); margin-bottom:8px; }
+.verdict-stars { font-size:28px; margin-bottom:10px; }
+.verdict-title { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--text); margin-bottom:12px; }
+.verdict-quote { font-style:italic; color:var(--text2); font-size:13px; line-height:1.7; border-left:3px solid var(--warn); padding-left:14px; }
+
+/* ── PILLAR GRADE ── */
+.pillar-grades { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.pg-card { background:var(--card-bg); border:1px solid var(--border); border-radius:6px; padding:16px; text-align:center; }
+.pg-label { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+.pg-grade { font-family:'Playfair Display',serif; font-size:32px; font-weight:900; }
+.grade-a { color:#2EC4B6; }
+.grade-b { color:#4361EE; }
+.grade-c { color:#F4A261; }
+.grade-d { color:#EF233C; }
+
+/* ── FLYWHEEL BOX ── */
+.flywheel-box {
+  border:2px solid var(--border); border-radius:8px; padding:20px 24px;
+  background:var(--card-bg); margin-bottom:20px;
+}
+.flywheel-badge { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; padding:4px 12px; border-radius:3px; display:inline-block; margin-bottom:8px; letter-spacing:1px; }
+.fw-cosmetic { background:rgba(141,155,181,0.15); color:var(--neutral); border:1px solid rgba(141,155,181,0.4); }
+.fw-feature { background:rgba(244,162,97,0.15); color:var(--warn); border:1px solid rgba(244,162,97,0.4); }
+.fw-forming { background:rgba(67,97,238,0.15); color:var(--accent2); border:1px solid rgba(67,97,238,0.4); }
+.fw-confirmed { background:rgba(46,196,182,0.15); color:var(--pass); border:1px solid rgba(46,196,182,0.4); }
+
+/* ── AI TABS ── */
+.ai-dashboard { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.ai-badge-card { background:var(--card-bg); border:1px solid var(--border); border-radius:6px; padding:14px; text-align:center; }
+.ai-badge-label { font-family:'JetBrains Mono',monospace; font-size:8px; color:var(--text3); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px; }
+.ai-badge-value { font-size:11px; font-weight:700; font-family:'JetBrains Mono',monospace; }
+
+/* ── UPGRADE CONDITIONS ── */
+.upgrade-item { display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:var(--card-bg); border:1px solid var(--border); border-radius:5px; margin-bottom:8px; }
+.upgrade-num { background:var(--accent); color:#fff; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.upgrade-text { font-size:12px; color:var(--text2); line-height:1.6; }
+
+/* ── SENSITIVITY TABLE ── */
+.sensitivity-note { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--warn); padding:6px 0; }
+
+/* ── MOAT CARD ── */
+.moat-card { background:var(--card-bg); border:1px solid var(--border); border-radius:6px; padding:14px 16px; margin-bottom:10px; }
+.moat-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.moat-name { font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text2); }
+.moat-stars { color:var(--gold); font-size:13px; }
+.moat-body { font-size:12px; color:var(--text3); line-height:1.6; }
+
+/* ── PROGRESS BAR ── */
+.progress-bar-wrap { background:var(--surface2); border-radius:4px; height:8px; overflow:hidden; margin:4px 0; }
+.progress-bar { height:100%; border-radius:4px; }
+
+/* ── TAG ── */
+.tag { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:9px; padding:2px 7px; border-radius:3px; margin-right:4px; margin-bottom:3px; }
+.tag-verified { background:rgba(46,196,182,0.12); color:var(--pass); }
+.tag-estimated { background:rgba(244,162,97,0.12); color:var(--warn); }
+
+/* ── 5yr cards ── */
+.yr-cards { display:flex; gap:8px; overflow-x:auto; }
+.yr-card { flex-shrink:0; background:var(--card-bg); border:1px solid var(--border); border-radius:5px; padding:10px 14px; min-width:100px; }
+.yr-card-year { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text3); margin-bottom:3px; }
+.yr-card-val { font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:700; }
+
+/* ── SCENARIO GRID ── */
+.scenario-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px; }
+.scenario-card { background:var(--card-bg); border:1px solid var(--border); border-radius:6px; padding:14px; }
+.scenario-label { font-family:'JetBrains Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:var(--text3); margin-bottom:8px; }
+.scenario-iv { font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700; }
+
+/* ── TECH SCORE ── */
+.tech-score-bar { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.tech-score-label { font-size:11px; color:var(--text2); width:180px; flex-shrink:0; }
+.tech-score-num { font-family:'JetBrains Mono',monospace; font-size:11px; width:30px; text-align:right; flex-shrink:0; }
+
+/* ── OE BOX ── */
+.oe-box { background:linear-gradient(135deg, #0E1225 0%, #131830 100%); border:1px solid var(--accent2); border-radius:6px; padding:18px 20px; }
+.oe-title { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent2); margin-bottom:12px; }
+.oe-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid rgba(37,42,74,0.5); font-size:12px; }
+.oe-row:last-child { border-bottom:none; border-top:1px solid var(--accent2); margin-top:4px; padding-top:8px; font-weight:700; color:var(--gold); }
+.oe-row-label { color:var(--text2); }
+.oe-row-val { font-family:'JetBrains Mono',monospace; color:var(--text); }
+
+/* ── SHAREHOLDING BAR ── */
+.sh-bar { display:flex; height:14px; border-radius:4px; overflow:hidden; margin-bottom:12px; }
+.sh-seg { display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:8px; font-weight:700; color:rgba(255,255,255,0.9); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HERO ══════════════ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Buffett Quality-Value Series v5.0 · NSE: TCS · IT Services</div>
+      <div class="hero-title">Tata Consultancy Services</div>
+      <div class="hero-lede">India's IT bellwether at decade-low P/E — but structural AI disruption clouds the recovery story. Quality fortress, existential headwind.</div>
+      <div class="hero-badges">
+        <span class="badge badge-cat-c">Cat C · Mature Compounder</span>
+        <span class="badge badge-threat">🔴 AI THREAT</span>
+        <span class="badge badge-watch">WATCH ★★★</span>
+        <span class="badge badge-neutral">Macro: Neutral–Tailwind</span>
+        <span class="badge" style="background:rgba(239,35,60,0.1);border-color:#EF233C;color:#EF233C;">Horizon: 3–5yr</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-price-label">NSE Price · May 2026</div>
+      <div class="hero-price">₹2,393</div>
+      <div class="hero-change">▼ −30.4% (52-week)</div>
+      <div class="confidence-pills">
+        <span class="pill pill-v">VERIFIED</span>
+        <span class="pill pill-e">ESTIMATED</span>
+        <span class="pill pill-u">UNVERIFIED</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB BAR ══════════════ -->
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="tab-overview" onclick="switchTab('tab-overview')">0 Overview</button>
+    <button class="tab-btn" data-tab="tab-macro" onclick="switchTab('tab-macro')">1 Macro &amp; Growth</button>
+    <button class="tab-btn" data-tab="tab-financials" onclick="switchTab('tab-financials')">2 Financials</button>
+    <button class="tab-btn" data-tab="tab-moat" onclick="switchTab('tab-moat')">3 Moat</button>
+    <button class="tab-btn" data-tab="tab-mgmt" onclick="switchTab('tab-mgmt')">4 Management</button>
+    <button class="tab-btn" data-tab="tab-valuation" onclick="switchTab('tab-valuation')">5 Valuation</button>
+    <button class="tab-btn" data-tab="tab-verdict" onclick="switchTab('tab-verdict')">6 Verdict</button>
+    <button class="tab-btn" data-tab="tab-technical" onclick="switchTab('tab-technical')">7 Technical</button>
+    <button class="tab-btn" data-tab="tab-shareholding" onclick="switchTab('tab-shareholding')">8 Shareholding</button>
+    <button class="tab-btn" data-tab="tab-ai" onclick="switchTab('tab-ai')">9 AI Intelligence</button>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 0: OVERVIEW ══════════════ -->
+<div id="tab-overview" class="tab-content active">
+  <div class="section">
+    <div class="section-title">Business Overview</div>
+    <div class="grid-2">
+      <div>
+        <p style="color:var(--text2);font-size:13px;line-height:1.8;margin-bottom:14px;">
+          Tata Consultancy Services (TCS), founded 1968, is India's largest IT services company and the world's second-largest by market capitalisation among pure-play IT firms. Headquartered in Mumbai, TCS employs ~607,000 people across 55 countries, serving 1,200+ active clients in BFSI, Retail, Manufacturing, Telecom, Life Sciences, and Public Services. <span class="tag tag-verified">VERIFIED</span>
+        </p>
+        <p style="color:var(--text2);font-size:13px;line-height:1.8;margin-bottom:14px;">
+          Revenue is geographically distributed: North America (~52%), Europe (~32%), India (~7%), and Rest of World (~9%). The business is divided across IT Services (consulting, app development, digital), Business Process Services (BPS), and Products & Platforms (Ignio AI platform, TCS BaNCS). In FY25, TCS crossed the $30 billion annual revenue milestone. <span class="tag tag-verified">VERIFIED</span>
+        </p>
+        <p style="color:var(--text2);font-size:13px;line-height:1.8;">
+          TCS operates a "4D" model — Design, Deploy, Data, Digitise — and has repositioned itself around the "Growth &amp; Transformation" (G&amp;T) deal segment, which commands higher margins and stickier revenue than traditional Application Development &amp; Maintenance (ADM). G&amp;T deals now represent ~50%+ of new TCV. <span class="tag tag-estimated">ESTIMATED</span>
+        </p>
+      </div>
+      <div>
+        <div class="scorecard-box">
+          <div class="scorecard-header">Key Stats · FY2025</div>
+          <table class="data-table">
+            <tr><td>Revenue (₹ Cr)</td><td class="num good-val">2,55,324</td></tr>
+            <tr><td>Revenue ($)</td><td class="num good-val">$30.2 Bn</td></tr>
+            <tr><td>Net Profit (₹ Cr)</td><td class="num good-val">48,553</td></tr>
+            <tr><td>EPS (₹)</td><td class="num good-val">134.9</td></tr>
+            <tr><td>Operating Margin</td><td class="num warn-val">25.0% (FY25)</td></tr>
+            <tr><td>TCV FY25</td><td class="num good-val">$39.4 Bn</td></tr>
+            <tr><td>Market Cap (₹ Cr)</td><td class="num">8,66,315</td></tr>
+            <tr><td>Employees</td><td class="num">607,354</td></tr>
+            <tr><td>Net Cash (₹ Cr)</td><td class="num good-val">~45,922</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Series Rationale &amp; Framework Adaptation</div>
+    <div class="scorecard-box">
+      <div class="scorecard-header">Category C + AI Threat — Why These Badges</div>
+      <div style="padding:14px 16px;">
+        <div class="sc-item">
+          <div class="sc-icon">📐</div>
+          <div class="sc-text"><strong>Cat C — Mature Quality Compounder:</strong> ROIC consistently 50–70% (negative net working capital drives this optically), FCF positive and growing, moat through switching costs and scale economics, revenue growth 6–10% (below Cat B's >25% threshold). Durable but growth moderating.</div>
+          <div class="sc-status sc-pass">CONFIRMED</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-icon">🔴</div>
+          <div class="sc-text"><strong>AI Threat Overlay:</strong> IT Services is the most directly disrupted sector in the framework. GenAI coding tools (GitHub Copilot, Cursor, Claude Code) and autonomous agent platforms are compressing the billable-headcount model. TCS clients are demanding 20–30% price reductions on maintenance work citing AI productivity. TCV growth is slowing and headcount is being cut for the first time since 2015.</div>
+          <div class="sc-status sc-fail">ASSIGNED</div>
+        </div>
+        <div class="sc-item">
+          <div class="sc-icon">⚙️</div>
+          <div class="sc-text"><strong>No framework adaptation needed:</strong> Standard Cat C with AI THREAT applies. MoS widened by 30%. Additional 15% IV discount applied on top of MoS. Terminal P/E anchored at 18–20x (low end of Cat C range). DCF runs full. No EPV-as-floor adjustment since business remains FCF positive.</div>
+          <div class="sc-status sc-marginal">ADJUSTED</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Why This Stock Is Interesting · Why It's Challenging</div>
+    <div class="grid-2">
+      <div class="scorecard-box" style="border-left:3px solid var(--pass);">
+        <div class="scorecard-header">What Makes TCS Interesting</div>
+        <div style="padding:12px 16px;font-size:12px;color:var(--text2);line-height:1.8;">
+          <p>→ Trades at 17.8x trailing P/E — lowest in a decade. Historical P/E never sustainably below 20x in past 10 years.</p>
+          <p style="margin-top:8px;">→ $39.4B TCV in FY25 — order book remains robust despite macro uncertainty.</p>
+          <p style="margin-top:8px;">→ Dividend yield of ~4.6% at current price — approaching bond-yield parity, creating a natural floor.</p>
+          <p style="margin-top:8px;">→ Deep net cash position (~₹45,922 Cr), zero net debt — fortress balance sheet provides resilience.</p>
+          <p style="margin-top:8px;">→ Counter-positioning: incumbents who learn to sell AI-augmented services can extract higher-margin project work as basic maintenance gets commoditized.</p>
+        </div>
+      </div>
+      <div class="scorecard-box" style="border-left:3px solid var(--threat);">
+        <div class="scorecard-header">What Makes TCS Challenging</div>
+        <div style="padding:12px 16px;font-size:12px;color:var(--text2);line-height:1.8;">
+          <p>→ Revenue growth slowed to 6% in FY25 (INR terms), Q1 FY26 only 1.3%. De-acceleration is real.</p>
+          <p style="margin-top:8px;">→ Operating margin fell from 26.3% → 24.2% (Q4 FY25). AI investment is a cost headwind now.</p>
+          <p style="margin-top:8px;">→ 12,261 layoffs announced in FY26 — a structural signal that the headcount-revenue link is breaking.</p>
+          <p style="margin-top:8px;">→ FIIs consistently reducing exposure: 12.68% (Dec'24) → 12.04% (Mar'25) → 11.47% (Jun'25) — smart money exiting.</p>
+          <p style="margin-top:8px;">→ AI coding assistants (GitHub Copilot, Cursor, Claude) are directly substituting entry/mid-level developer work — TCS's most margin-accretive offshore talent.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 1: MACRO & GROWTH ══════════════ -->
+<div id="tab-macro" class="tab-content">
+  <div class="section">
+    <div class="section-title">Layer 1 · Macro Cycle Dashboard</div>
+    <table class="data-table" style="margin-bottom:16px;">
+      <thead><tr><th>Macro Dimension</th><th>Status</th><th>TCS Impact</th><th>±%</th></tr></thead>
+      <tbody>
+        <tr><td>India Real GDP FY26E (RBI)</td><td class="num good-val">7.6% <span class="tag tag-verified">V</span></td><td class="good-val">Boom — domestic TCV positive</td><td class="num good-val">+1%</td></tr>
+        <tr><td>India CPI (Jun 2025)</td><td class="num good-val">~1% <span class="tag tag-verified">V</span></td><td class="good-val">Low input cost, wage pressure easing</td><td class="num good-val">+1%</td></tr>
+        <tr><td>India Nominal GDP FY26E</td><td class="num">8.0% <span class="tag tag-verified">V</span></td><td>Terminal growth ceiling (domestic)</td><td class="num">—</td></tr>
+        <tr><td>10yr G-Sec Yield (India)</td><td class="num warn-val">~6.48% <span class="tag tag-verified">V</span></td><td class="warn-val">ERP squeeze — TCS EY 5.6% < bond yield</td><td class="num bad-val">−2%</td></tr>
+        <tr><td>Nifty P/E</td><td class="num warn-val">~21x <span class="tag tag-estimated">E</span></td><td>Market fairly valued; IT lagging</td><td class="num">⚪</td></tr>
+        <tr><td>US IT Budget Cycle</td><td class="num warn-val">CAUTIOUS <span class="tag tag-estimated">E</span></td><td class="bad-val">Tariffs, macro uncertainty → defer OPEX</td><td class="num bad-val">−2%</td></tr>
+        <tr><td>RBI Rate Cycle</td><td class="num good-val">EASING <span class="tag tag-estimated">E</span></td><td class="good-val">Positive for Indian client budgets</td><td class="num good-val">+1%</td></tr>
+        <tr><td>AI Adoption Cycle (IT Sector)</td><td class="num bad-val">THREAT <span class="tag tag-verified">V</span></td><td class="bad-val">Direct structural pressure on headcount model</td><td class="num bad-val">−3 to −5%</td></tr>
+      </tbody>
+    </table>
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:5px;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;">
+      <span style="color:var(--warn);">Macro Composite: </span><span style="color:var(--text);">NEUTRAL-TO-TAILWIND (India domestic) + HEADWIND (US/UK client budgets + AI disruption)</span><br>
+      <span style="color:var(--warn);">AI Cycle Impact: </span><span style="color:var(--threat);">🔴 THREAT — AI is subtracting 3–5pp from sector base growth over 5 years</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 2 · IT Services Sector Growth Derivation</div>
+    <table class="data-table" style="margin-bottom:14px;">
+      <thead><tr><th>Scenario</th><th>Sector Base</th><th>AI Adjustment</th><th>Net Sector CAGR</th></tr></thead>
+      <tbody>
+        <tr><td>STRESS (US recession, AI replaces 30% ADM)</td><td class="num">6–8%</td><td class="num bad-val">−3%</td><td class="num bad-val">3–5%</td></tr>
+        <tr><td>BASE (Soft landing, AI replaces 15% ADM)</td><td class="num">9–11%</td><td class="num warn-val">−2%</td><td class="num warn-val">7–9%</td></tr>
+        <tr><td>ACCEL (Tech spending revival, TCS wins AI deals)</td><td class="num">12–14%</td><td class="num warn-val">−1%</td><td class="num good-val">11–13%</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;">"AI is disrupting this sector's base growth by −2 to −5pp over 5 years, with the disruption accelerating as agentic AI enters production workflows." <span class="tag tag-estimated">E</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 3 · Company Alpha Over Sector</div>
+    <table class="data-table" style="margin-bottom:14px;">
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr></thead>
+      <tbody>
+        <tr><td>Market share gain</td><td class="warn-val">Potential (from mid-tier exits)</td><td class="num warn-val">+0 to +0.5%</td><td class="num">0%</td></tr>
+        <tr><td>Premiumisation (G&T deals)</td><td class="good-val">Active (G&T now ~50% TCV)</td><td class="num good-val">+1–1.5%</td><td class="num good-val">+1–2%</td></tr>
+        <tr><td>Category/product expansion (BaNCS, Ignio)</td><td class="warn-val">Potential (sub-scale SaaS)</td><td class="num warn-val">+0.5%</td><td class="num warn-val">+0.5–1%</td></tr>
+        <tr><td>Geographic expansion</td><td class="warn-val">Exhausted (already 55 countries)</td><td class="num">0%</td><td class="num">0%</td></tr>
+        <tr><td>Pricing power above inflation</td><td class="bad-val">Exhausted (clients demanding 20–30% cuts)</td><td class="num bad-val">−1 to −2%</td><td class="num bad-val">−1%</td></tr>
+        <tr><td>6a: AI Cost Reduction (WisdomNext, Co-pilots)</td><td class="warn-val">Replicable by Infosys/Wipro</td><td class="num warn-val">0%</td><td class="num">0%</td></tr>
+        <tr><td>6b: AI Market Expansion (new enterprise AI mandates)</td><td class="warn-val">Potential — 580+ AI engagements but early</td><td class="num warn-val">+0.5%</td><td class="num good-val">+1–2%</td></tr>
+        <tr><td>6c: AI Flywheel</td><td class="bad-val">FEATURE (not self-reinforcing)</td><td class="num">0%</td><td class="num">0%</td></tr>
+        <tr style="background:rgba(67,97,238,0.05);"><td><strong>Total Company Alpha</strong></td><td></td><td class="num warn-val"><strong>+0.5 to +1%</strong></td><td class="num warn-val"><strong>+1 to +2%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Growth Rate Summary Table (3 Scenarios)</div>
+    <table class="data-table">
+      <thead><tr><th>Parameter</th><th class="bad-val">STRESS</th><th class="warn-val">BASE</th><th class="good-val">ACCEL</th></tr></thead>
+      <tbody>
+        <tr><td>Macro State</td><td>US recession, GDP 5.5%</td><td>Soft landing, GDP 7%</td><td>Tech revival, GDP 8%+</td></tr>
+        <tr><td>Sector growth (IT Services)</td><td class="num bad-val">3–5%</td><td class="num warn-val">7–9%</td><td class="num good-val">11–13%</td></tr>
+        <tr><td>Company alpha</td><td class="num bad-val">−1%</td><td class="num warn-val">+1%</td><td class="num good-val">+2%</td></tr>
+        <tr><td>AI alpha (6b market expansion)</td><td class="num bad-val">0%</td><td class="num warn-val">+0.5%</td><td class="num good-val">+1–2%</td></tr>
+        <tr><td>Stage 1 Revenue CAGR (FY26–30)</td><td class="num bad-val">3–4%</td><td class="num warn-val">7–8%</td><td class="num good-val">11–12%</td></tr>
+        <tr><td>Stage 1 FCF CAGR</td><td class="num bad-val">2–3%</td><td class="num warn-val">7–8%</td><td class="num good-val">10–11%</td></tr>
+        <tr><td>Stage 2 FCF CAGR (FY31–35)</td><td class="num bad-val">2%</td><td class="num warn-val">5%</td><td class="num good-val">7%</td></tr>
+        <tr><td>Terminal growth</td><td class="num">3.5%</td><td class="num">4.5%</td><td class="num">5%</td></tr>
+        <tr><td>Margin direction</td><td class="bad-val">Compress (AI cost burden)</td><td class="warn-val">Stable 24–25%</td><td class="good-val">Expand to 26–27%</td></tr>
+        <tr><td>Key risk</td><td class="bad-val">AI replaces 30%+ ADM revenue</td><td class="warn-val">Pricing pressure on maintenance</td><td class="good-val">AI deal ramp slower than expected</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;padding:10px 14px;background:var(--card-bg);border:1px solid var(--border);border-radius:5px;">
+      <p class="sensitivity-note">⚡ Sensitivity: A 1% change in terminal growth rate changes IV by approximately 12–15%.</p>
+      <p class="sensitivity-note">⚡ Sensitivity: A 1% change in Stage 1 growth changes IV by approximately 6–8%.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 2: FINANCIALS ══════════════ -->
+<div id="tab-financials" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">ROE &amp; ROIC — 5-Year Trend <span class="tag tag-verified">VERIFIED</span></div>
+    <div class="yr-cards" style="margin-bottom:16px;">
+      <div class="yr-card"><div class="yr-card-year">FY21</div><div class="yr-card-val good-val">ROE 38%</div></div>
+      <div class="yr-card"><div class="yr-card-year">FY22</div><div class="yr-card-val good-val">ROE 41%</div></div>
+      <div class="yr-card"><div class="yr-card-year">FY23</div><div class="yr-card-val good-val">ROE 44%</div></div>
+      <div class="yr-card"><div class="yr-card-year">FY24</div><div class="yr-card-val good-val">ROE 47%</div></div>
+      <div class="yr-card"><div class="yr-card-year">FY25</div><div class="yr-card-val good-val">ROE 42%</div></div>
+    </div>
+    <div class="yr-cards" style="margin-bottom:16px;">
+      <div class="yr-card"><div class="yr-card-year">FY21 ROIC</div><div class="yr-card-val good-val">~50%</div></div>
+      <div class="yr-card"><div class="yr-card-year">FY22 ROIC</div><div class="yr-card-val good-val">~55%</div></div>
+      <div class="yr-card"><div class="yr-card-year">FY23 ROIC</div><div class="yr-card-val good-val">~60%</div></div>
+      <div class="yr-card"><div class="yr-card-year">FY24 ROIC</div><div class="yr-card-val good-val">~68%</div></div>
+      <div class="yr-card"><div class="yr-card-year">FY25 ROIC</div><div class="yr-card-val good-val">~70%</div></div>
+    </div>
+    <p style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;">ROIC >40% for 5 consecutive years = EXCEPTIONAL MOAT SIGNAL. However the high ROIC is partly structural — TCS collects advance payments from clients (negative working capital) reducing invested capital base artificially. True economic ROIC ~35–40%.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Financial Fortress Scorecard <span class="tag tag-verified">VERIFIED</span></div>
+    <div class="scorecard-box">
+      <div class="scorecard-header">Cat C Standard Scorecard — 11 Tests</div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">ROE ≥15% for 5 consecutive years (38–47% range)</div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">ROIC > WACC for 5 consecutive years (ROIC ~70% vs WACC 12.5%)</div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Net cash: ₹45,922 Cr net cash position (zero net debt)</div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Net profit margin ≥15% (FY25: 19.0%)</div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">FCF positive and growing — FY25 FCF: ~₹44,500 Cr; CFO: ₹48,900 Cr</div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">FCF conversion ≥80% — CFO/Net Income: 100.7% (Q3 FY25 105.3%)</div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">~</div><div class="sc-text">Pricing power proven: losing ground — clients demanding 20–30% price cuts on automation. G&T deals partially offset.</div><div class="sc-status sc-marginal">MARGINAL</div></div>
+      <div class="sc-item"><div class="sc-icon">~</div><div class="sc-text">Revenue CAGR ≥ macro-derived sector CAGR (TCS 6% vs sector 7–9% base). Underperforming in FY25–26.</div><div class="sc-status sc-marginal">MARGINAL</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Predictable/recurring revenue — 96%+ revenue from existing clients (top 10 clients stable 10yr)</div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Capital-light model — low CapEx/Revenue ratio (~1.7%), high ROIC</div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Dividend payout: ₹109/share FY25 (includes special dividend). Payout well within 80% of owner earnings.</div><div class="sc-status sc-pass">PASS</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Owner Earnings (FY2025) <span class="tag tag-estimated">ESTIMATED</span></div>
+    <div class="oe-box">
+      <div class="oe-title">Owner Earnings Calculation — FY2025 (₹ Crore)</div>
+      <div class="oe-row"><div class="oe-row-label">Net Income</div><div class="oe-row-val">+ 48,553</div></div>
+      <div class="oe-row"><div class="oe-row-label">Depreciation &amp; Amortisation</div><div class="oe-row-val">+ 8,200</div></div>
+      <div class="oe-row"><div class="oe-row-label">Non-cash / SBC adjustments</div><div class="oe-row-val">+ 1,800</div></div>
+      <div class="oe-row"><div class="oe-row-label">Less: Maintenance CapEx (est. 70% of total)</div><div class="oe-row-val">− 3,080</div></div>
+      <div class="oe-row"><div class="oe-row-label">Less: Working Capital Changes</div><div class="oe-row-val">− 1,200</div></div>
+      <div class="oe-row"><div class="oe-row-label"><strong>OWNER EARNINGS (Conservative)</strong></div><div class="oe-row-val">₹ 54,273</div></div>
+      <div style="margin-top:8px;font-size:11px;color:var(--text3);">Owner Earnings per share: ≈ <span style="color:var(--gold);font-family:'JetBrains Mono',monospace;">₹149.9</span> (vs EPS ₹134.9 → OE premium confirms earnings quality)</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">O'Glove Earnings Quality Framework <span class="tag tag-verified">VERIFIED</span></div>
+    <div class="grid-2">
+      <div class="scorecard-box">
+        <div class="scorecard-header">Test 1 — FCF Conversion (5yr)</div>
+        <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">CFO/Net Income: 100.7% average over 5 years. Q3 FY25: 105.3%. Well above 80% threshold.</div><div class="sc-status sc-pass">PASS</div></div>
+      </div>
+      <div class="scorecard-box">
+        <div class="scorecard-header">Test 2 — DSO Trend (3yr)</div>
+        <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">DSO flat to slightly improving. Advance client payments characteristic of large enterprise contracts. No red flag. <span class="tag tag-estimated">E</span></div><div class="sc-status sc-pass">PASS</div></div>
+      </div>
+      <div class="scorecard-box">
+        <div class="scorecard-header">Test 3 — Inventory Days (3yr)</div>
+        <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Services business — minimal inventory. Not applicable in traditional sense. WIP (unbilled revenue) stable. N/A designation.</div><div class="sc-status sc-pass">N/A</div></div>
+      </div>
+      <div class="scorecard-box">
+        <div class="scorecard-header">Test 4 — Accounting Policy Stability</div>
+        <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">No material policy changes over past 3 years. Revenue recognition (Ind AS 115) consistently applied. No aggressive capitalisation observed. <span class="tag tag-estimated">E</span></div><div class="sc-status sc-pass">PASS</div></div>
+      </div>
+      <div class="scorecard-box">
+        <div class="scorecard-header">Test 5 — Gross Margin Consistency</div>
+        <div class="sc-item"><div class="sc-icon">~</div><div class="sc-text">Gross margin ~39.7% (recent). Operating margin compressed from 26.3% (FY24) → 24.2% (Q4 FY25). AI investment and wage inflation are headwinds. Trend requires monitoring. <span class="tag tag-verified">V</span></div><div class="sc-status sc-marginal">MARGINAL</div></div>
+      </div>
+      <div class="scorecard-box">
+        <div class="scorecard-header">Overall Quality Badge</div>
+        <div style="padding:14px;text-align:center;">
+          <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--pass);">CLEAN</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:6px;">4 PASS · 1 MARGINAL · 0 FAIL · 1 N/A<br>No earnings quality adjustment required.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 3: MOAT ══════════════ -->
+<div id="tab-moat" class="tab-content">
+  <div class="section">
+    <div class="section-title">Moat Sources — Detailed Assessment</div>
+    <div class="moat-card">
+      <div class="moat-header"><div class="moat-name">Switching Costs</div><div class="moat-stars">★★★★</div></div>
+      <div class="moat-body">TCS is deeply embedded in mission-critical systems (banking cores, supply chains, ERP landscapes) that are extremely painful to rip out. Average client relationship: 12+ years. Top 10 clients represent ~38% of revenue with average tenure of 20+ years. In macro stress: HOLDS — switching costs do not evaporate in a recession. However, AI lowers the cost of partial re-implementation for greenfield projects. <span class="tag tag-estimated">E</span></div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-header"><div class="moat-name">Scale Economics &amp; Talent Network</div><div class="moat-stars">★★★</div></div>
+      <div class="moat-body">607,000 employees across 55 countries — operational scale is hard to replicate. TCS's training infrastructure (TCS iON) processes 10M+ learners annually. However, AI reduces the moat value of human-capital scale since AI tools can substitute many roles. In macro stress: WEAKENS — AI accelerates scale moat erosion as smaller players can punch above their weight using AI agents. <span class="tag tag-estimated">E</span></div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-header"><div class="moat-name">Intangible Assets (IP &amp; Brand)</div><div class="moat-stars">★★★</div></div>
+      <div class="moat-body">TCS BaNCS (banking platform) serves 450+ financial institutions globally. Ignio AI Platform. WisdomNext™ 2.0 with agentic capabilities. Brand equity with Tier-1 enterprise buyers (Fortune 500 CIOs trust TCS implicitly for delivery). In macro stress: HOLDS — brand is slowest-moving moat element. <span class="tag tag-verified">V</span></div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-header"><div class="moat-name">Delivery Model &amp; Efficient Scale</div><div class="moat-stars">★★★</div></div>
+      <div class="moat-body">Global Delivery Model (GDM) optimized over 50+ years. Best-in-class employee pyramid management, attrition control, and near-zero-defect delivery metrics. However, this moat is being eroded by AI tools that flatten the pyramid (fewer junior developers needed per project). In macro stress: WEAKENS — AI disrupts the pyramid model most severely in stress scenarios. <span class="tag tag-estimated">E</span></div>
+    </div>
+    <div class="moat-card" style="border-left:3px solid var(--threat);">
+      <div class="moat-header"><div class="moat-name">Habit Lock-in / Data Advantage</div><div class="moat-stars">★★</div></div>
+      <div class="moat-body">Unlike Cat A consumer companies (Nestle, Marico), TCS does not benefit from habit lock-in at the consumer level. Data lock-in exists at the enterprise system level but is being challenged by portable AI solutions that sit on top of any data source. This moat element is WEAKENING under AI pressure. <span class="tag tag-estimated">E</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">DATA FLYWHEEL VERDICT</div>
+    <div class="flywheel-box">
+      <div class="flywheel-badge fw-feature">★ FEATURE (1/3)</div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:10px;">Flywheel Score: 3 / 10</h3>
+      <div class="grid-3" style="margin-bottom:14px;">
+        <div class="metric-card bad"><div class="metric-label">Q1 — Proprietary Training Data</div><div class="metric-value bad-val">✗</div><div class="metric-sub">Client data owned by clients, not TCS. No unique proprietary dataset.</div></div>
+        <div class="metric-card warn"><div class="metric-label">Q2 — AI Improves with More Users</div><div class="metric-value warn-val">~</div><div class="metric-sub">WisdomNext improves with more client deployments but competitors can replicate with OSS models.</div></div>
+        <div class="metric-card bad"><div class="metric-label">Q3 — Better AI Attracts More Users</div><div class="metric-value bad-val">✗</div><div class="metric-sub">No self-reinforcing network effect confirmed. AI tools add value but don't compound defensibility.</div></div>
+      </div>
+      <p style="font-size:12px;color:var(--text3);line-height:1.7;">TCS's AI tools (WisdomNext, Ignio, Agentic AI frameworks) add delivery efficiency but do not create a self-reinforcing data flywheel. Client data remains with the client. Competitors (Infosys, Accenture) have equivalent capabilities. This is AI-as-Feature, not AI-as-Moat. <strong style="color:var(--warn);">Moat grade NOT upgraded.</strong> Moat grade: <strong style="color:var(--accent2);">B+</strong></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Moat Macro Stress Test Summary</div>
+    <table class="data-table">
+      <thead><tr><th>Moat Element</th><th>Stress Scenario</th><th>AI Scenario</th><th>Grade</th></tr></thead>
+      <tbody>
+        <tr><td>Switching Costs</td><td class="warn-val">HOLDS</td><td class="warn-val">HOLDS (slowly weakening)</td><td class="num good-val">B+</td></tr>
+        <tr><td>Scale Economics</td><td class="warn-val">HOLDS</td><td class="bad-val">WEAKENS (AI flattens pyramid)</td><td class="num warn-val">B</td></tr>
+        <tr><td>Brand/IP</td><td class="good-val">STRENGTHENS</td><td class="warn-val">HOLDS</td><td class="num warn-val">B</td></tr>
+        <tr><td>GDM Efficiency</td><td class="warn-val">HOLDS</td><td class="bad-val">WEAKENS</td><td class="num warn-val">B−</td></tr>
+        <tr><td>Habit/Data Lock-in</td><td class="warn-val">HOLDS</td><td class="bad-val">WEAKENS</td><td class="num warn-val">C+</td></tr>
+        <tr style="background:rgba(67,97,238,0.05);"><td><strong>Overall Moat Grade</strong></td><td><strong class="warn-val">HOLDS IN STRESS</strong></td><td><strong class="bad-val">DEGRADES UNDER AI</strong></td><td class="num" style="font-size:18px;font-family:'Playfair Display',serif;color:var(--accent2);font-weight:700;">B+</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 4: MANAGEMENT ══════════════ -->
+<div id="tab-mgmt" class="tab-content">
+  <div class="section">
+    <div class="section-title">Management Strengths</div>
+    <div class="scorecard-box">
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text"><strong>Promoter (Tata Sons): 71.77%</strong> — Zero pledge. Tata Sons is a legacy institution, not a predatory promoter. Capital allocation aligned with long-term wealth creation. <span class="tag tag-verified">V</span></div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text"><strong>Dividend discipline:</strong> ₹109/share FY25 (incl. special dividend). Consistent return of capital — ₹474 Bn returned to shareholders via dividends in FY25. <span class="tag tag-verified">V</span></div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text"><strong>No pledging, no related-party concerns:</strong> Pledged shares = 0%. No governance red flags in 5+ year period. <span class="tag tag-verified">V</span></div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text"><strong>Capital allocation excellence:</strong> Net cash growing, buybacks disciplined, no empire-building M&A. ROE consistently >40% reflects efficient capital use. <span class="tag tag-estimated">E</span></div><div class="sc-status sc-pass">PASS</div></div>
+      <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text"><strong>CEO K Krithivasan:</strong> 30+ years at TCS, engineer-by-background, operationally focused. Transparent about AI disruption risks — did not spin the layoff narrative. <span class="tag tag-verified">V</span></div><div class="sc-status sc-pass">PASS</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Management Concerns</div>
+    <div class="scorecard-box" style="border:1px solid rgba(239,35,60,0.3);">
+      <div class="sc-item"><div class="sc-icon">~</div><div class="sc-text"><strong>AI transformation credibility:</strong> WisdomNext and Ignio are real but not AI-native (founded as AI-first). R&D as % of revenue is not disclosed separately — estimated below industry leaders like Accenture at 12–15%. <span class="tag tag-estimated">E</span></div><div class="sc-status sc-marginal">MARGINAL</div></div>
+      <div class="sc-item"><div class="sc-icon">~</div><div class="sc-text"><strong>Guidance reliability:</strong> TCS guided 8-10% growth in FY26 but delivered 1.3% in Q1. Deal wins collapsed from $12Bn+ to $9.4Bn in one quarter. Forward guidance has structural credibility risk under AI disruption. <span class="tag tag-verified">V</span></div><div class="sc-status sc-marginal">MARGINAL</div></div>
+      <div class="sc-item"><div class="sc-icon">~</div><div class="sc-text"><strong>AI talent strategy unclear:</strong> Laid off 12,000 mid-level employees while claiming to hire AI talent. The net hiring pipeline for AI-native engineers is not publicly quantified. <span class="tag tag-verified">V</span></div><div class="sc-status sc-marginal">MARGINAL</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Management Grade Summary</div>
+    <div class="grid-3">
+      <div class="metric-card good"><div class="metric-label">Pledged Shares</div><div class="metric-value good-val">0%</div><div class="metric-sub">PASS — zero pledge</div></div>
+      <div class="metric-card good"><div class="metric-label">Promoter Trend</div><div class="metric-value good-val">71.77%</div><div class="metric-sub">Stable for 8+ quarters</div></div>
+      <div class="metric-card warn"><div class="metric-label">Management Grade</div><div class="metric-value warn-val" style="font-family:'Playfair Display',serif;font-size:28px;font-weight:900;">A−</div><div class="metric-sub">Strong legacy, AI transition unclear</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 5: VALUATION ══════════════ -->
+<div id="tab-valuation" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Method 1 — DCF (2-Stage) · Cat C · WACC 12.5% <span class="tag tag-estimated">ESTIMATED</span></div>
+    <table class="data-table" style="margin-bottom:12px;">
+      <thead><tr><th>Year</th><th>FCF (₹ Cr) — Base</th><th>FCF (₹ Cr) — Stress</th><th>FCF (₹ Cr) — Accel</th><th>PV Factor (12.5%)</th><th>PV Base</th></tr></thead>
+      <tbody>
+        <tr><td>FY26</td><td class="num">48,060</td><td class="num bad-val">45,800</td><td class="num good-val">49,500</td><td class="num">0.889</td><td class="num">42,700</td></tr>
+        <tr><td>FY27</td><td class="num">51,905</td><td class="num bad-val">47,100</td><td class="num good-val">54,700</td><td class="num">0.790</td><td class="num">41,010</td></tr>
+        <tr><td>FY28</td><td class="num">56,057</td><td class="num bad-val">48,500</td><td class="num good-val">60,500</td><td class="num">0.702</td><td class="num">39,350</td></tr>
+        <tr><td>FY29</td><td class="num">60,542</td><td class="num bad-val">49,900</td><td class="num good-val">66,900</td><td class="num">0.624</td><td class="num">37,800</td></tr>
+        <tr><td>FY30</td><td class="num">65,385</td><td class="num bad-val">51,400</td><td class="num good-val">73,900</td><td class="num">0.554</td><td class="num">36,220</td></tr>
+        <tr style="background:rgba(67,97,238,0.05);"><td><strong>Stage 1 PV Sum</strong></td><td class="num"><strong>2,81,949</strong></td><td></td><td></td><td></td><td class="num good-val"><strong>1,97,080</strong></td></tr>
+        <tr><td>Terminal Value (FY35, 20x NP)</td><td class="num">18,68,000</td><td class="num bad-val">13,20,000</td><td class="num good-val">22,40,000</td><td class="num">0.308</td><td class="num">5,75,340</td></tr>
+        <tr><td>Net Cash Add-back</td><td></td><td></td><td></td><td></td><td class="num good-val">45,922</td></tr>
+        <tr style="background:rgba(67,97,238,0.08);"><td><strong>Total Equity Value (₹ Cr)</strong></td><td></td><td></td><td></td><td></td><td class="num good-val"><strong>8,18,342</strong></td></tr>
+        <tr style="background:rgba(242,201,76,0.05);"><td><strong>IV per share (362 Cr shares)</strong></td><td class="num warn-val"><strong>₹2,263 (stress)</strong></td><td></td><td class="num good-val"><strong>₹2,895 (accel)</strong></td><td></td><td class="num gold-val"><strong>₹2,261 (base)</strong></td></tr>
+      </tbody>
+    </table>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div style="background:var(--card-bg);border:1px solid var(--border);padding:10px;border-radius:5px;font-size:11px;">
+        <strong style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--text3);">WACC SENSITIVITY</strong>
+        <table style="width:100%;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;">
+          <tr><td style="color:var(--text3);">WACC \ Terminal g</td><td>3.5%</td><td>4.5%</td><td>5.0%</td></tr>
+          <tr><td>11.5%</td><td class="good-val">₹2,580</td><td class="good-val">₹2,740</td><td class="good-val">₹2,850</td></tr>
+          <tr><td><strong>12.5%</strong></td><td>₹2,100</td><td class="gold-val"><strong>₹2,261</strong></td><td>₹2,380</td></tr>
+          <tr><td>13.5%</td><td class="bad-val">₹1,730</td><td class="bad-val">₹1,860</td><td class="bad-val">₹1,940</td></tr>
+        </table>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);padding:10px;border-radius:5px;font-size:11px;">
+        <strong style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--text3);">STAGE 1 GROWTH SENSITIVITY</strong>
+        <table style="width:100%;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;">
+          <tr><td style="color:var(--text3);">Stage 1 CAGR</td><td>4%</td><td>7%</td><td>11%</td></tr>
+          <tr><td>IV per share</td><td class="bad-val">₹1,980</td><td class="warn-val">₹2,261</td><td class="good-val">₹2,680</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 2 — Owner Earnings Capitalisation</div>
+    <div class="metric-card neutral">
+      <div class="metric-label">Owner Earnings / (Required Return − g) | g = 4.5%</div>
+      <div class="metric-value">₹2,300</div>
+      <div class="metric-sub">OE: ₹54,273 Cr / (12.5% − 4.5%) = ₹6,78,413 Cr equity value → +₹45,922 net cash = ₹7,24,335 Cr / 362 Cr shares = ₹2,301/share. Stress: ₹1,990 | Accel: ₹2,720</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 3 — ROIC / EPV</div>
+    <div class="metric-card neutral">
+      <div class="metric-label">NOPAT/WACC × Growth Premium</div>
+      <div class="metric-value">₹1,820</div>
+      <div class="metric-sub">EPV = NOPAT (₹49,788 Cr) / WACC (12.5%) = ₹3,98,304 Cr → × growth premium 1.2x = ₹4,77,965 Cr → +net cash = ₹5,23,887 Cr / 362 shares = ₹1,447. This is the stress floor — no growth credited. With moat premium: ₹1,820. AI THREAT: no moat upgrade. Stress IV: ₹1,450 | Accel: ₹2,100</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 4 — P/E Earnings Power</div>
+    <div class="grid-3" style="margin-bottom:14px;">
+      <div class="metric-card warn"><div class="metric-label">Current trailing P/E</div><div class="metric-value warn-val">17.8x</div><div class="metric-sub">vs 5yr avg 28–30x — 40% discount</div></div>
+      <div class="metric-card warn"><div class="metric-label">Forward P/E (FY26E EPS ₹145)</div><div class="metric-value warn-val">16.5x</div><div class="metric-sub">Cheap on trailing basis</div></div>
+      <div class="metric-card warn"><div class="metric-label">PEG (normalized growth 8%)</div><div class="metric-value warn-val">2.2x</div><div class="metric-sub">Elevated — growth too low for legacy multiple</div></div>
+    </div>
+    <div class="metric-card neutral">
+      <div class="metric-label">P/E Earnings Power IV (AI THREAT: terminal P/E 20x vs historical 28x)</div>
+      <div class="metric-value">₹2,900</div>
+      <div class="metric-sub">FY26E EPS ₹145 × 20x = ₹2,900 (base). ×18x stress = ₹2,610. ×22x accel = ₹3,190. Note: historical 28–30x P/E structurally de-rated by AI threat overlay.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 5 — Earnings Yield vs Bond Yield</div>
+    <div class="grid-3" style="margin-bottom:12px;">
+      <div class="metric-card bad"><div class="metric-label">TCS Earnings Yield</div><div class="metric-value bad-val">5.63%</div><div class="metric-sub">At ₹2,393 price</div></div>
+      <div class="metric-card warn"><div class="metric-label">10yr G-Sec Yield</div><div class="metric-value warn-val">6.48%</div><div class="metric-sub">Risk-free rate</div></div>
+      <div class="metric-card bad"><div class="metric-label">ERP (Equity Risk Premium)</div><div class="metric-value bad-val">−0.85%</div><div class="metric-sub">NEGATIVE — bonds more attractive at CMP</div></div>
+    </div>
+    <div class="metric-card bad">
+      <div class="metric-label">FCF Yield at CMP ₹2,393</div>
+      <div class="metric-value bad-val">5.13%</div>
+      <div class="metric-sub">FCF ₹44,500 Cr / Market Cap ₹8,66,315 Cr = 5.13%. Below the 10yr G-Sec yield of 6.48%. TCS must trade at ₹1,960–2,050 for EY to equal G-Sec yield (P/E ~14.5x). Yield-on-cost table: Yr 1: 4.6%, Yr 3: 5.3%, Yr 5: 6.2%, Yr 7: 7.1% (improving). Bond crossover: Year 4–5.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5-Method Summary Table</div>
+    <table class="data-table" style="margin-bottom:14px;">
+      <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Threat Adj.</th></tr></thead>
+      <tbody>
+        <tr><td>1. DCF (2-Stage)</td><td class="num bad-val">₹2,100</td><td class="num warn-val">₹2,261</td><td class="num good-val">₹2,895</td><td class="num bad-val">−15%</td></tr>
+        <tr><td>2. Owner Earnings Cap.</td><td class="num bad-val">₹1,990</td><td class="num warn-val">₹2,301</td><td class="num good-val">₹2,720</td><td class="num bad-val">−15%</td></tr>
+        <tr><td>3. ROIC/EPV</td><td class="num bad-val">₹1,450</td><td class="num warn-val">₹1,820</td><td class="num good-val">₹2,100</td><td class="num bad-val">−10%</td></tr>
+        <tr><td>4. P/E Earnings Power</td><td class="num bad-val">₹2,610</td><td class="num warn-val">₹2,900</td><td class="num good-val">₹3,190</td><td class="num bad-val">−15% (P/E de-rated)</td></tr>
+        <tr><td>5. Earnings Yield</td><td class="num bad-val">₹1,960</td><td class="num warn-val">₹2,079</td><td class="num good-val">₹2,300</td><td class="num bad-val">Already in</td></tr>
+        <tr style="background:rgba(67,97,238,0.05);"><td><strong>Blended Base IV</strong></td><td class="num bad-val"><strong>₹2,022</strong></td><td class="num gold-val"><strong>₹2,272</strong></td><td class="num good-val"><strong>₹2,641</strong></td><td></td></tr>
+        <tr style="background:rgba(239,35,60,0.05);"><td><strong>AI Threat Adj. IV (−15%)</strong></td><td class="num bad-val"><strong>₹1,719</strong></td><td class="num warn-val"><strong>₹1,931</strong></td><td class="num warn-val"><strong>₹2,245</strong></td><td></td></tr>
+        <tr style="background:rgba(242,201,76,0.08);"><td><strong>MoS Entry Zone (×0.80)</strong></td><td></td><td class="num gold-val"><strong>₹1,545 – ₹1,800</strong></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <div style="background:rgba(239,35,60,0.08);border:1px solid rgba(239,35,60,0.3);border-radius:5px;padding:12px 16px;font-size:12px;color:var(--text2);">
+      <strong style="color:var(--threat);">🔴 AI THREAT DISCOUNT:</strong> AI THREAT overlay warrants a 15% IV haircut + widened MoS from 20% → 25–30%. This is not pessimism — it reflects the framework's explicit instruction for THREAT stocks. Current price ₹2,393 is ~24% ABOVE the base MoS entry zone of ₹1,931. This positions TCS firmly in WATCH territory.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Relative Valuation — Own History <span class="tag tag-verified">VERIFIED</span></div>
+    <div class="grid-3">
+      <div class="metric-card warn"><div class="metric-label">Current P/E</div><div class="metric-value warn-val">17.8x</div><div class="metric-sub">vs 5yr avg 28–30x</div></div>
+      <div class="metric-card warn"><div class="metric-label">Discount to 5yr avg P/E</div><div class="metric-value warn-val">−40%</div><div class="metric-sub">🟡 Deep value signal vs history</div></div>
+      <div class="metric-card bad"><div class="metric-label">Assessment</div><div class="metric-value bad-val" style="font-size:13px;">Structurally De-rated</div><div class="metric-sub">AI THREAT justifies P/E below own history. 28x P/E NOT recoverable without AI pivot proof.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 6: VERDICT ══════════════ -->
+<div id="tab-verdict" class="tab-content">
+
+  <div class="pillar-grades">
+    <div class="pg-card"><div class="pg-label">Pillar 1 · Moat</div><div class="pg-grade grade-b">B+</div><div style="font-size:10px;color:var(--text3);margin-top:4px;">Switching costs strong; AI eroding scale moat</div></div>
+    <div class="pg-card"><div class="pg-label">Pillar 2 · Financials</div><div class="pg-grade grade-a">A−</div><div style="font-size:10px;color:var(--text3);margin-top:4px;">Fortress balance sheet; margins under pressure</div></div>
+    <div class="pg-card"><div class="pg-label">Pillar 3 · Management</div><div class="pg-grade grade-a">A−</div><div style="font-size:10px;color:var(--text3);margin-top:4px;">Honest capital allocation; AI credibility gap</div></div>
+    <div class="pg-card"><div class="pg-label">Pillar 4 · Valuation</div><div class="pg-grade grade-c">C+</div><div style="font-size:10px;color:var(--text3);margin-top:4px;">Above MoS entry zone despite decade-low P/E</div></div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-grade">Buffett Quality-Value Series · May 2026</div>
+    <div class="verdict-stars">★★★</div>
+    <div class="verdict-title">WATCH — Strong Quality, Price Above Entry Zone</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <span class="badge badge-cat-c">Cat C</span>
+      <span class="badge badge-threat">🔴 AI THREAT</span>
+      <span class="badge" style="background:rgba(67,97,238,0.1);border-color:var(--accent2);color:var(--accent2);">Horizon: 3–5yr (shortened)</span>
+    </div>
+    <div class="verdict-quote">
+      "The business is extraordinary; the price is not yet extraordinary. TCS owns a 50-year delivery moat, a pristine balance sheet, and earns ₹149 in owner earnings per share. Yet AI is not a passing headwind — it is a structural renegotiation of what IT services are worth. At ₹2,393, you are paying roughly fair value for a business whose competitive position faces a multi-year degradation risk. The framework demands patience: wait for the stock to come to you, not the other way around."
+      <br><br>
+      <em style="font-size:11px;color:var(--text3);">— Buffett Quality-Value Framework | AI THREAT Overlay Applied</em>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Upgrade Conditions — All 5 Must Be Specific &amp; Measurable</div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">1</div>
+      <div class="upgrade-text"><strong>Price corrects to ₹1,800–₹1,931</strong> (MoS entry zone — 20–25% below current level). Equivalent to ~13.5–14x FY26E EPS of ₹135, creating compelling valuation asymmetry.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">2</div>
+      <div class="upgrade-text"><strong>Two consecutive quarters of USD CC revenue growth exceeding 9%</strong> — demonstrating that AI deal wins (G&T segment) are offsetting ADM erosion and the business has re-accelerated.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">3</div>
+      <div class="upgrade-text"><strong>AI/GenAI annualized revenue disclosed and exceeds $4 billion</strong> (>13% of total) with management confirmation of improving gross margins on AI engagements vs traditional ADM.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">4</div>
+      <div class="upgrade-text"><strong>FII holding stabilizes or increases for 2 consecutive quarters</strong> (currently declining: 12.68% → 12.04% → 11.47%). Smart-money accumulation must precede retail entry.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">5</div>
+      <div class="upgrade-text"><strong>Operating margin recovers above 26% for 2 consecutive quarters</strong> (currently 24.2% in Q4 FY25), confirming AI investment costs have been absorbed and pricing power in G&T deals is materializing.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Series Tracker</div>
+    <table class="data-table">
+      <thead><tr><th>Ticker</th><th>Company</th><th>Category</th><th>AI</th><th>Verdict</th><th>IV (Base)</th><th>Entry Zone</th><th>Date</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="num" style="color:var(--gold);">TCS</td>
+          <td>Tata Consultancy Services</td>
+          <td>C — Mature Compounder</td>
+          <td class="bad-val">🔴 THREAT</td>
+          <td class="warn-val">WATCH ★★★</td>
+          <td class="num">₹1,931</td>
+          <td class="num gold-val">₹1,545–1,800</td>
+          <td class="num">May 2026</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 7: TECHNICAL ══════════════ -->
+<div id="tab-technical" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">(A) Price Structure &amp; Multi-Timeframe Trend <span class="tag tag-estimated">ESTIMATED</span></div>
+    <div class="grid-3">
+      <div class="metric-card bad"><div class="metric-label">52-Week High</div><div class="metric-value bad-val">~₹4,585</div><div class="metric-sub">Reached Jun–Aug 2024</div></div>
+      <div class="metric-card warn"><div class="metric-label">Current Price (CMP)</div><div class="metric-value warn-val">₹2,393</div><div class="metric-sub">−47.8% from 52-wk high</div></div>
+      <div class="metric-card warn"><div class="metric-label">52-Week Low (Est.)</div><div class="metric-value warn-val">~₹2,100</div><div class="metric-sub">Near multi-year support zone</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--text2);line-height:1.7;padding:12px;background:var(--card-bg);border-radius:5px;border:1px solid var(--border);">
+      <strong>Trend Assessment:</strong> TCS is in a confirmed primary downtrend on daily, weekly, and monthly timeframes. The stock has underperformed both Nifty 50 (+12.49% 1yr) and Nifty IT (+11.75% 1yr) by a wide margin. Structurally bearish setup until price reclaims the 200-DMA. Monthly candles show consistent distribution (high volume on down days). The ~₹2,100–2,200 level is a strong multi-year support zone (2021 consolidation area).
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(B) Moving Average Dashboard <span class="tag tag-estimated">ESTIMATED</span></div>
+    <table class="data-table">
+      <thead><tr><th>MA Level</th><th>Est. Price (₹)</th><th>CMP vs MA</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>20-EMA (Daily)</td><td class="num">~2,420</td><td class="num bad-val">BELOW</td><td class="bad-val">Short-term bearish</td></tr>
+        <tr><td>50-DMA</td><td class="num">~2,600</td><td class="num bad-val">BELOW</td><td class="bad-val">Medium-term bearish</td></tr>
+        <tr><td>100-DMA</td><td class="num">~2,900</td><td class="num bad-val">BELOW</td><td class="bad-val">Medium-long bearish</td></tr>
+        <tr><td>200-DMA</td><td class="num">~3,400</td><td class="num bad-val">BELOW (−30%)</td><td class="bad-val">Long-term bearish; resistance</td></tr>
+        <tr><td>200-Week MA</td><td class="num">~2,150</td><td class="num warn-val">APPROACHING</td><td class="warn-val">Critical long-term support</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:var(--threat);font-family:'JetBrains Mono',monospace;">Death Cross confirmed (50-DMA crossed below 200-DMA). EMA ribbon fully bearish. No Golden Cross in sight until price recovers >₹3,200.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(C) Volume Events (3 months) <span class="tag tag-estimated">ESTIMATED</span></div>
+    <div style="padding:12px;background:var(--card-bg);border-radius:5px;border:1px solid var(--border);font-size:12px;color:var(--text2);line-height:1.7;">
+      Volume pattern shows consistent distribution — high volume on down-moves, low volume on up-moves (bear market structure). The Q1 FY26 results (1.3% growth, deal wins collapse) triggered a high-volume sell-off. No capitulation spike yet (which would signal a bottom). OBV (On-Balance Volume) in a sustained downtrend, tracking price decline.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(D) RSI, MACD &amp; Oscillators <span class="tag tag-estimated">ESTIMATED</span></div>
+    <div class="grid-3">
+      <div class="metric-card warn"><div class="metric-label">RSI (14-Day)</div><div class="metric-value warn-val">~38</div><div class="metric-sub">Approaching oversold (below 40). Watch for Cat C buy signal per framework.</div></div>
+      <div class="metric-card warn"><div class="metric-label">RSI (Weekly)</div><div class="metric-value warn-val">~35</div><div class="metric-sub">Weekly RSI oversold — long-term dip signal</div></div>
+      <div class="metric-card bad"><div class="metric-label">MACD (Daily)</div><div class="metric-value bad-val">NEGATIVE</div><div class="metric-sub">MACD below signal line; histogram negative and expanding. No bullish divergence yet.</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(E) Chart Patterns <span class="tag tag-estimated">ESTIMATED</span></div>
+    <div style="padding:12px;background:var(--card-bg);border-radius:5px;border:1px solid var(--border);font-size:12px;color:var(--text2);line-height:1.7;">
+      <strong>Pattern identified: Extended Downtrend with Potential Double-Bottom Formation</strong><br>
+      TCS appears to be forming a potential double-bottom pattern around the ₹2,100–₹2,200 zone (tested twice in 2025). A decisive close above ₹2,600 (neckline resistance) with 2x average volume would confirm the pattern and provide a technical entry signal. Until then, the trend remains down. No cup-and-handle or bull flag observed at current structure. Head-and-shoulders pattern completed on the break below ₹3,200 in late 2024.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(F) Trade Structure — Cat C Framework Entry</div>
+    <div class="grid-3">
+      <div class="metric-card warn"><div class="metric-label">Entry Zone</div><div class="metric-value warn-val">₹1,800–₹2,100</div><div class="metric-sub">200-Week MA + MoS entry convergence</div></div>
+      <div class="metric-card bad"><div class="metric-label">Stop Loss</div><div class="metric-value bad-val">₹1,650</div><div class="metric-sub">Below multi-year structural support. R:R = 1:2.8</div></div>
+      <div class="metric-card good"><div class="metric-label">Targets (12–18mo)</div><div class="metric-value good-val">T1: ₹2,600 · T2: ₹3,000</div><div class="metric-sub">T1 at neckline; T2 at 200-DMA. R:R ≥1:2.5 ✓</div></div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:var(--text3);padding:10px;background:var(--card-bg);border-radius:5px;border:1px solid var(--border);">
+      <strong>Position Size:</strong> Given AI THREAT overlay, maximum position = 3–4% of portfolio. Cat C without AI risk warrants 5–7%. Trigger required: RSI daily falls below 40 AND weekly RSI below 35 AND price tests ₹2,100 with declining volume (exhaustion pattern).
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(G) Technical Composite Score</div>
+    <div class="tech-score-bar"><div class="tech-score-label">Price Structure (trend)</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:20%;background:var(--threat);"></div></div><div class="tech-score-num bad-val">1/5</div></div>
+    <div class="tech-score-bar"><div class="tech-score-label">MA Dashboard</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:20%;background:var(--threat);"></div></div><div class="tech-score-num bad-val">1/5</div></div>
+    <div class="tech-score-bar"><div class="tech-score-label">Volume / OBV</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:40%;background:var(--warn);"></div></div><div class="tech-score-num warn-val">2/5</div></div>
+    <div class="tech-score-bar"><div class="tech-score-label">RSI / Oscillators</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:60%;background:var(--warn);"></div></div><div class="tech-score-num warn-val">3/5</div></div>
+    <div class="tech-score-bar"><div class="tech-score-label">Chart Patterns</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:40%;background:var(--warn);"></div></div><div class="tech-score-num warn-val">2/5</div></div>
+    <div class="tech-score-bar"><div class="tech-score-label">Trade Setup Quality</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:40%;background:var(--warn);"></div></div><div class="tech-score-num warn-val">2/5</div></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;margin-top:10px;padding:10px;background:var(--card-bg);border-radius:5px;border:1px solid var(--border);">
+      Technical Composite: <span style="color:var(--threat);">11/30 = 37%</span> — BEARISH. Do not buy technically. Fundamental entry zone has not yet arrived. Technical bottom likely in the ₹2,100–₹2,200 zone.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 8: SHAREHOLDING ══════════════ -->
+<div id="tab-shareholding" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">(A) Promoter Trend — 5 Quarters <span class="tag tag-verified">VERIFIED</span></div>
+    <div class="yr-cards" style="margin-bottom:14px;">
+      <div class="yr-card"><div class="yr-card-year">Jun 2024</div><div class="yr-card-val good-val">71.77%</div></div>
+      <div class="yr-card"><div class="yr-card-year">Sep 2024</div><div class="yr-card-val good-val">71.77%</div></div>
+      <div class="yr-card"><div class="yr-card-year">Dec 2024</div><div class="yr-card-val good-val">71.77%</div></div>
+      <div class="yr-card"><div class="yr-card-year">Mar 2025</div><div class="yr-card-val good-val">71.77%</div></div>
+      <div class="yr-card"><div class="yr-card-year">Jun 2025</div><div class="yr-card-val good-val">71.77%</div></div>
+    </div>
+    <div class="metric-card good">
+      <div class="metric-label">Pledge Status</div>
+      <div class="metric-value good-val">0% Pledged</div>
+      <div class="metric-sub">PASS — Tata Sons holds 71.77% via direct equity. No pledge. No governance risk from promoter.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(B) FII &amp; DII Trend — 5 Quarters <span class="tag tag-verified">VERIFIED</span></div>
+    <table class="data-table" style="margin-bottom:12px;">
+      <thead><tr><th>Category</th><th>Jun 2024</th><th>Sep 2024</th><th>Dec 2024</th><th>Mar 2025</th><th>Jun 2025</th><th>Trend</th></tr></thead>
+      <tbody>
+        <tr><td>FII</td><td class="num">13.2%</td><td class="num">12.8%</td><td class="num warn-val">12.68%</td><td class="num warn-val">12.04%</td><td class="num bad-val">11.47%</td><td class="bad-val">📉 EXITING</td></tr>
+        <tr><td>DII (excl. MF)</td><td class="num">5.9%</td><td class="num">6.1%</td><td class="num">6.59%</td><td class="num good-val">6.56%</td><td class="num good-val">6.87%</td><td class="good-val">📈 ACCUMULATING</td></tr>
+        <tr><td>Mutual Funds</td><td class="num">4.0%</td><td class="num">4.1%</td><td class="num">4.32%</td><td class="num good-val">5.00%</td><td class="num good-val">5.13%</td><td class="good-val">📈 ADDING</td></tr>
+        <tr><td>Retail &amp; Others</td><td class="num">4.5%</td><td class="num">4.6%</td><td class="num">4.64%</td><td class="num">4.64%</td><td class="num">4.75%</td><td class="warn-val">→ STABLE</td></tr>
+      </tbody>
+    </table>
+    <div style="background:var(--card-bg);border:1px solid var(--border);padding:12px;border-radius:5px;font-size:12px;color:var(--text2);line-height:1.7;">
+      <strong style="color:var(--threat);">Key Signal:</strong> FIIs have reduced holdings by 1.7+ percentage points over 5 quarters — the equivalent of selling ~₹15,000+ Cr of stock. This is consistent outflow, not rotation. Simultaneously, domestic MFs (SIP-driven) are absorbing the selling. The tug-of-war: FIIs are pricing in structural AI disruption; MFs are riding the dividend yield support. Verdict: FII exit is a headwind flag. Upgrade condition #4 requires FII stabilization before BUY.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(C) Market Cap, Free Float &amp; Index Weights</div>
+    <div class="grid-4">
+      <div class="metric-card neutral"><div class="metric-label">Market Cap</div><div class="metric-value">₹8,66,315 Cr</div><div class="metric-sub">~$104 Bn USD</div></div>
+      <div class="metric-card neutral"><div class="metric-label">Free Float</div><div class="metric-value">28.23%</div><div class="metric-sub">~₹2,44,520 Cr</div></div>
+      <div class="metric-card neutral"><div class="metric-label">Nifty 50 Weight</div><div class="metric-value">~4.2%</div><div class="metric-sub">3rd largest constituent</div></div>
+      <div class="metric-card neutral"><div class="metric-label">Sectoral FII Cap</div><div class="metric-value">100%</div><div class="metric-sub">Headroom: ~88.5% remaining</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(D) Shareholding Composition — Current</div>
+    <div class="sh-bar">
+      <div class="sh-seg" style="width:71.77%;background:#2EC4B6;">Promoter 71.8%</div>
+      <div class="sh-seg" style="width:11.47%;background:#4361EE;">FII 11.5%</div>
+      <div class="sh-seg" style="width:6.87%;background:#F4A261;">DII 6.9%</div>
+      <div class="sh-seg" style="width:5.13%;background:#7B8CDE;">MF 5.1%</div>
+      <div class="sh-seg" style="width:4.75%;background:#252A4A;">Retail 4.8%</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(E) Ownership Momentum Score &amp; Risk Score</div>
+    <div class="grid-2">
+      <div class="metric-card warn">
+        <div class="metric-label">Ownership Momentum Score</div>
+        <div class="metric-value warn-val">42 / 100</div>
+        <div class="metric-sub">FII exit (−30 pts) drags down DII/MF accumulation (+42 pts) + promoter stability (+30 pts)</div>
+      </div>
+      <div class="metric-card warn">
+        <div class="metric-label">Shareholding Risk Score</div>
+        <div class="metric-value warn-val">35 / 100</div>
+        <div class="metric-sub">Low risk overall: zero pledge, stable promoter, institutional backing. Main risk: continued FII exit accelerating.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 9: AI INTELLIGENCE ══════════════ -->
+<div id="tab-ai" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">(A) AI Classification Dashboard</div>
+    <div class="ai-dashboard">
+      <div class="ai-badge-card"><div class="ai-badge-label">Category</div><div class="ai-badge-value" style="color:var(--accent2);">CAT C</div></div>
+      <div class="ai-badge-card" style="border-color:rgba(239,35,60,0.4);"><div class="ai-badge-label">AI Overlay</div><div class="ai-badge-value" style="color:var(--threat);">🔴 AI THREAT</div></div>
+      <div class="ai-badge-card"><div class="ai-badge-label">Flywheel</div><div class="ai-badge-value" style="color:var(--warn);">★ FEATURE</div></div>
+      <div class="ai-badge-card"><div class="ai-badge-label">AI Phase</div><div class="ai-badge-value" style="color:var(--warn);">Phase 2</div></div>
+    </div>
+    <div style="background:var(--card-bg);border:1px solid rgba(239,35,60,0.3);padding:14px;border-radius:5px;font-size:12px;color:var(--text2);line-height:1.7;">
+      <strong style="color:var(--threat);">Adoption Phase Evidence (Phase 2 — Active Disruption):</strong> AI coding tools (GitHub Copilot, Cursor, Claude Code) are in active production use at TCS clients. TCS clients are negotiating 20–30% price reductions on maintenance contracts. 12,000 FY26 layoffs confirm the disruption is structural. 580 AI engagements at TCS = real but sub-scale ($2–3B annualized, est. &lt;10% of revenue). <span class="tag tag-verified">V</span> <span class="tag tag-estimated">E</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(B) Data Flywheel Deep-Dive</div>
+    <div class="flywheel-box" style="border-color:rgba(239,35,60,0.3);">
+      <div class="flywheel-badge fw-feature">★ FEATURE — 3/10</div>
+      <div class="grid-3" style="margin:12px 0;">
+        <div class="metric-card bad">
+          <div class="metric-label">Data Quality /3</div>
+          <div class="metric-value bad-val">0 / 3</div>
+          <div class="metric-sub">Client data ownership: 0. Client contracts prohibit TCS from training proprietary models on client data. Competitors have identical access (zero uniqueness advantage).</div>
+        </div>
+        <div class="metric-card warn">
+          <div class="metric-label">Improvement Evidence /4</div>
+          <div class="metric-value warn-val">2 / 4</div>
+          <div class="metric-sub">WisdomNext improves with deployment scale but uses open-source model fine-tuning. Evidence: 150+ sector-specific Agentic AI solutions built. Some learning captured in tooling.</div>
+        </div>
+        <div class="metric-card bad">
+          <div class="metric-label">Loop Speed /3</div>
+          <div class="metric-value bad-val">1 / 3</div>
+          <div class="metric-sub">No confirmed self-reinforcing loop. Better AI tools attract clients but don't structurally prevent defection to Accenture/Infosys using identical tools. Loop speed: SLOW.</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text3);">Flywheel Conclusion: TCS's AI capability is real but not self-reinforcing. The tools they build for one client (e.g., Agentic AI for BFSI) are deployable at any competitor. There is no proprietary training corpus, no unique data advantage, and no confirmed network effect. This is a Feature classification, not a Flywheel.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(C) AI Value Chain Position</div>
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:18px 20px;overflow-x:auto;">
+      <div style="display:flex;gap:0;min-width:600px;">
+        <div style="flex:1;padding:12px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:4px 0 0 4px;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:1px;margin-bottom:4px;">LEVEL 1</div>
+          <div style="font-size:11px;color:var(--text2);">Infrastructure</div>
+          <div style="font-size:9px;color:var(--text3);margin-top:4px;">NVIDIA, AWS, Azure</div>
+        </div>
+        <div style="flex:1;padding:12px 10px;background:var(--surface2);border:1px solid var(--border);border-left:none;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:1px;margin-bottom:4px;">LEVEL 2</div>
+          <div style="font-size:11px;color:var(--text2);">Foundation Models</div>
+          <div style="font-size:9px;color:var(--text3);margin-top:4px;">Anthropic, OpenAI, Google</div>
+        </div>
+        <div style="flex:1;padding:12px 10px;background:var(--surface2);border:1px solid var(--border);border-left:none;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:1px;margin-bottom:4px;">LEVEL 3</div>
+          <div style="font-size:11px;color:var(--text2);">Platforms</div>
+          <div style="font-size:9px;color:var(--text3);margin-top:4px;">Microsoft, Salesforce</div>
+        </div>
+        <div style="flex:1;padding:12px 10px;background:var(--surface2);border:1px solid var(--border);border-left:none;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:1px;margin-bottom:4px;">LEVEL 4</div>
+          <div style="font-size:11px;color:var(--text2);">Vertical Apps</div>
+          <div style="font-size:9px;color:var(--text3);margin-top:4px;">AI-native SaaS, Fintech</div>
+        </div>
+        <div style="flex:1;padding:12px 10px;background:rgba(239,35,60,0.15);border:2px solid var(--threat);border-left:none;border-radius:0 4px 4px 0;text-align:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--threat);letter-spacing:1px;margin-bottom:4px;">LEVEL 5 ← TCS</div>
+          <div style="font-size:11px;color:var(--text);font-weight:700;">AI-Enabled Incumbent</div>
+          <div style="font-size:9px;color:var(--threat);margin-top:4px;">Traditional IT + AI overlay</div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text3);margin-top:12px;line-height:1.6;"><strong style="color:var(--threat);">Level 5 Investment Implications:</strong> Level 5 incumbents face the most structural risk — they are being disrupted FROM ABOVE (Levels 1–4 encroaching into their domain) rather than disrupting others. Horizon: 3–5yr (shortened). Moat: weak AI moat (Feature). Risk: HIGH. The bull case is that Level 5 incumbents who successfully integrate AI tools can operate at higher margins with fewer people — essentially becoming leaner but stronger. The bear case is that AI enables Level 4 players to disintermediate TCS entirely.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(D) India AI Structural Advantage Assessment</div>
+    <table class="data-table">
+      <thead><tr><th>Advantage</th><th>Relevant?</th><th>TCS Application</th></tr></thead>
+      <tbody>
+        <tr><td>India Stack Data Access (UPI/Aadhaar)</td><td class="warn-val">PARTIAL</td><td>TCS works with BFSI clients on Aadhaar-linked services but does not own the data pipeline. Benefit passes through to clients.</td></tr>
+        <tr><td>Vernacular AI Benefit (85% non-English India)</td><td class="good-val">YES</td><td>TCS's domestic India business (7% of revenue) benefits from multilingual AI. TCS has Ignio with vernacular capabilities. Limited scale impact.</td></tr>
+        <tr><td>India Stack Infrastructure Leverage</td><td class="warn-val">PARTIAL</td><td>TCS builds on UPI/ONDC infrastructure for client integrations but does not monetize the Stack itself.</td></tr>
+        <tr><td>AI Talent Cost Arbitrage</td><td class="good-val">YES — CORE</td><td>India-based AI engineers at 3–4x cost advantage vs US. TCS's AI talent pool is a genuine structural advantage vs Accenture. This is the key investment thesis for AI transition.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(E) Disruption Risk — AI THREAT Analysis <span class="tag tag-verified">VERIFIED</span></div>
+    <div class="scorecard-box" style="border:1px solid rgba(239,35,60,0.4);">
+      <div class="scorecard-header" style="background:rgba(239,35,60,0.1);color:var(--threat);">Disruption Timeline: MEDIUM (3–5 Years)</div>
+      <div class="sc-item"><div class="sc-icon">⏱️</div><div class="sc-text"><strong>Revenue streams at risk:</strong> ADM (Application Development &amp; Maintenance) — estimated 40–45% of revenue — is the most directly at risk. Coding assistants automate 30–50% of ADM tasks. BPS (15%) at risk from AI automation of back-office processes. Consulting / G&T (40%) — less at risk, potentially a growth area.</div><div class="sc-status sc-fail">HIGH RISK</div></div>
+      <div class="sc-item"><div class="sc-icon">🛡️</div><div class="sc-text"><strong>Credible response plan:</strong> Yes, partially. WisdomNext 2.0, Agentic AI solutions, Google Cloud partnership, NVIDIA partnership. BUT: These are defensive plays, not offensive AI-native revenue streams. No disclosed AI-specific gross margin improvement.</div><div class="sc-status sc-marginal">PARTIAL</div></div>
+      <div class="sc-item"><div class="sc-icon">👁️</div><div class="sc-text"><strong>Competitors taking share:</strong> Accenture is 2 years ahead in AI-led deals. Indian mid-tier (Coforge, Mphasis) are more agile. However, TCS's scale gives it the capital to invest. $39.4B TCV suggests clients are still betting on TCS.</div><div class="sc-status sc-marginal">PARTIAL</div></div>
+      <div style="padding:12px 14px;background:rgba(239,35,60,0.05);border-top:1px solid rgba(239,35,60,0.2);">
+        <strong style="color:var(--threat);">Moat Resilience Score: 5.5 / 10</strong>
+        <p style="font-size:11px;color:var(--text3);margin-top:4px;line-height:1.6;">Switching costs provide a 3–5yr buffer. Beyond that, if TCS does not successfully pivot 25%+ of revenue to AI-native/agentic engagements, the moat degrades meaningfully. The 2–3 year window is the critical decision period for management.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">(F) AI Opportunity Score</div>
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div>
+        <div class="tech-score-bar"><div class="tech-score-label">Data Flywheel</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:15%;background:var(--threat);"></div></div><div class="tech-score-num bad-val">3/20</div></div>
+        <div class="tech-score-bar"><div class="tech-score-label">Adoption Phase Timing</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:55%;background:var(--warn);"></div></div><div class="tech-score-num warn-val">11/20</div></div>
+        <div class="tech-score-bar"><div class="tech-score-label">Value Chain Position (L5)</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:35%;background:var(--warn);"></div></div><div class="tech-score-num warn-val">7/20</div></div>
+        <div class="tech-score-bar"><div class="tech-score-label">India Structural Advantage</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:55%;background:var(--warn);"></div></div><div class="tech-score-num warn-val">11/20</div></div>
+        <div class="tech-score-bar"><div class="tech-score-label">AI Threat Resistance</div><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:20%;background:var(--threat);"></div></div><div class="tech-score-num bad-val">4/20</div></div>
+      </div>
+      <div>
+        <div class="metric-card bad" style="height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+          <div class="metric-label">AI Opportunity Score</div>
+          <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:var(--threat);line-height:1;">36</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--warn);margin-top:6px;">/100</div>
+          <div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--threat);padding:6px 14px;background:rgba(239,35,60,0.1);border-radius:3px;">MONITOR (20–40)</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:6px;">Portfolio Role: MONITOR<br>Horizon: 3–5yr (shortened by THREAT)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<div style="background:var(--surface);border-top:1px solid var(--border);padding:20px 32px;margin-top:20px;">
+  <p style="font-size:10px;color:var(--text3);line-height:1.8;font-family:'JetBrains Mono',monospace;">
+    <strong style="color:var(--text2);">DISCLAIMER:</strong> This report is produced under the Buffett Quality-Value Series v5.0 analytical framework and is intended for educational and research purposes only. It does not constitute investment advice, a recommendation to buy or sell any security, or solicitation of any investment. All financial decisions carry risk. Past performance is not indicative of future results. Market prices, financial data, and business conditions may have changed since the date of this report (May 2026). <strong>SEBI Notice:</strong> This is not a SEBI-registered research report. Consult a registered investment advisor before making financial decisions. Data labelled [VERIFIED] sourced from official filings/live searches; [ESTIMATED] cross-referenced; [UNVERIFIED] limited source — treat with caution. · Fonts: Playfair Display, JetBrains Mono, Libre Baskerville via Google Fonts.
+  </p>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

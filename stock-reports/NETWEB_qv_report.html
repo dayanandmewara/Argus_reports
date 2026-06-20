@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NETWEB — Buffett Quality-Value Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #050B18;
+  --navy2: #0D1628;
+  --navy3: #162035;
+  --saffron: #FF6B00;
+  --saffron2: #FF8C38;
+  --cyan: #00C8FF;
+  --white: #F0F5FF;
+  --muted: #7A8FAD;
+  --pass: #00D68F;
+  --warn: #FFB020;
+  --fail: #FF4D6D;
+  --text: #C8D6EE;
+  --card: #0E1A2E;
+  --border: rgba(255,107,0,0.18);
+  --glow: 0 0 24px rgba(255,107,0,0.12);
+  --radius: 10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy);color:var(--text);font-family:'Barlow',sans-serif;font-size:16px;line-height:1.6;min-height:100vh}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#020810 0%,#0D1A30 45%,#0A1520 100%);padding:28px 32px 24px;position:relative;overflow:hidden;max-height:220px}
+.hero::before{content:'';position:absolute;top:-40px;right:-60px;width:420px;height:420px;background:radial-gradient(circle,rgba(255,107,0,0.12) 0%,transparent 65%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start}
+.hero-left h1{font-family:'Oxanium',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1.1}
+.hero-left h1 span{color:var(--saffron)}
+.hero-lede{font-size:0.82rem;color:var(--muted);margin-top:6px;max-width:700px;line-height:1.5}
+.badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-family:'Oxanium',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;border:1px solid}
+.badge-cat{background:rgba(0,200,255,0.1);color:var(--cyan);border-color:rgba(0,200,255,0.3)}
+.badge-ai{background:rgba(0,214,143,0.1);color:var(--pass);border-color:rgba(0,214,143,0.3)}
+.badge-verdict{background:rgba(255,107,0,0.15);color:var(--saffron);border-color:rgba(255,107,0,0.4)}
+.badge-macro{background:rgba(122,143,173,0.12);color:var(--muted);border-color:rgba(122,143,173,0.25)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pill{background:var(--navy3);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--muted)}
+.pill strong{color:var(--white);margin-left:4px}
+
+/* ── TAB BAR ── */
+#tab-bar{background:var(--navy2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:99;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+.tabs-inner{display:flex;min-width:max-content}
+.tab-btn{background:none;border:none;color:var(--muted);font-family:'Oxanium',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:13px 18px;cursor:pointer;transition:color .2s,border-color .2s;border-bottom:3px solid transparent;white-space:nowrap}
+.tab-btn:hover{color:var(--white)}
+.tab-btn.active{color:var(--saffron);border-bottom-color:var(--saffron)}
+
+/* ── TAB CONTENT ── */
+.tab-content{display:none;padding:28px 32px;max-width:1200px;margin:0 auto}
+.tab-content:first-of-type,.tab-content#tab0{display:block}
+h2{font-family:'Oxanium',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;margin:0 0 18px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+h3{font-family:'Oxanium',sans-serif;font-size:0.95rem;font-weight:700;color:var(--saffron2);margin:20px 0 10px;text-transform:uppercase;letter-spacing:0.05em}
+p{margin:0 0 12px;color:var(--text)}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:18px;box-shadow:var(--glow)}
+.card-top{border-top:3px solid var(--saffron);border-radius:var(--radius)}
+.card-top-cyan{border-top:3px solid var(--cyan)}
+.card-top-pass{border-top:3px solid var(--pass)}
+.card-top-fail{border-top:3px solid var(--fail)}
+.card-top-warn{border-top:3px solid var(--warn)}
+
+/* ── METRIC GRID ── */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:18px}
+.metric{background:var(--navy3);border:1px solid var(--border);border-left:3px solid var(--saffron);border-radius:8px;padding:14px 16px}
+.metric.pass-m{border-left-color:var(--pass)}
+.metric.fail-m{border-left-color:var(--fail)}
+.metric.warn-m{border-left-color:var(--warn)}
+.metric.cyan-m{border-left-color:var(--cyan)}
+.metric label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;font-family:'JetBrains Mono',monospace}
+.metric .val{font-family:'Oxanium',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin:3px 0}
+.metric .sub{font-size:0.75rem;color:var(--muted)}
+
+/* ── CONFIDENCE LABELS ── */
+.v{display:inline-block;font-size:0.65rem;padding:1px 5px;border-radius:3px;font-weight:600;vertical-align:middle;margin-left:4px}
+.v-ok{background:rgba(0,214,143,0.2);color:var(--pass)}
+.v-est{background:rgba(255,176,32,0.2);color:var(--warn)}
+.v-un{background:rgba(255,77,109,0.2);color:var(--fail)}
+
+/* ── TABLES ── */
+table{width:100%;border-collapse:collapse;font-size:0.83rem;margin-bottom:18px}
+th{background:var(--navy3);color:var(--muted);font-family:'Oxanium',sans-serif;font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.04);font-family:'JetBrains Mono',monospace;color:var(--text)}
+tr:hover td{background:rgba(255,107,0,0.03)}
+td.green{color:var(--pass)}
+td.red{color:var(--fail)}
+td.warn{color:var(--warn)}
+td.label{font-family:'Barlow',sans-serif;font-weight:500;color:var(--white)}
+
+/* ── SCORECARD ── */
+.score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:14px 0}
+.score-item{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;align-items:center;gap:14px}
+.score-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.si-pass{background:rgba(0,214,143,0.15)}
+.si-fail{background:rgba(255,77,109,0.15)}
+.si-warn{background:rgba(255,176,32,0.15)}
+.score-item h4{font-family:'Oxanium',sans-serif;font-size:0.78rem;font-weight:700;color:var(--white);margin-bottom:2px}
+.score-item p{font-size:0.75rem;color:var(--muted);margin:0}
+
+/* ── PILLAR GRADES ── */
+.pillar-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.pillar-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center;border-top:3px solid}
+.pillar-card h4{font-family:'Oxanium',sans-serif;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:6px}
+.grade{font-family:'Oxanium',sans-serif;font-size:2rem;font-weight:800}
+.grade-a{color:var(--pass)}
+.grade-b{color:var(--cyan)}
+.grade-c{color:var(--warn)}
+.grade-d{color:var(--fail)}
+
+/* ── VERDICT BOX ── */
+.verdict-box{background:linear-gradient(135deg,#0D1A30,#161E30);border:2px solid var(--saffron);border-radius:12px;padding:28px;text-align:center;margin:20px 0}
+.verdict-box .verdict-label{font-family:'Oxanium',sans-serif;font-size:2rem;font-weight:800;color:var(--saffron)}
+.verdict-box .stars{font-size:1.8rem;margin:8px 0}
+.verdict-box blockquote{font-style:italic;color:var(--muted);font-size:0.9rem;margin-top:12px;border-left:3px solid var(--saffron);padding-left:14px;text-align:left}
+
+/* ── UPGRADE CONDITIONS ── */
+.conditions{list-style:none;padding:0}
+.conditions li{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.cond-num{width:26px;height:26px;background:rgba(255,107,0,0.15);border:1px solid var(--saffron);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Oxanium',sans-serif;font-size:0.75rem;font-weight:700;color:var(--saffron);flex-shrink:0;margin-top:2px}
+.conditions li p{margin:0;font-size:0.85rem}
+
+/* ── MOAT STARS ── */
+.moat-stars{color:var(--saffron);font-size:1rem}
+.moat-card{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px}
+.moat-card h4{font-family:'Oxanium',sans-serif;font-size:0.85rem;font-weight:700;color:var(--white);margin-bottom:6px;display:flex;justify-content:space-between}
+
+/* ── FLYWHEEL BOX ── */
+.flywheel-box{background:linear-gradient(135deg,#0A1A20,#0D2030);border:2px solid var(--cyan);border-radius:12px;padding:22px;margin:18px 0}
+.flywheel-box h3{color:var(--cyan);margin-top:0}
+.flywheel-badge{display:inline-block;background:rgba(0,200,255,0.15);color:var(--cyan);border:1px solid var(--cyan);border-radius:6px;padding:4px 14px;font-family:'Oxanium',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.06em;margin-bottom:12px}
+.flywheel-q{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;padding:10px;background:rgba(0,200,255,0.04);border-radius:6px;border-left:3px solid var(--cyan)}
+.flywheel-q .fq-num{font-family:'Oxanium',sans-serif;font-weight:700;color:var(--cyan);font-size:0.75rem;flex-shrink:0;width:20px}
+.flywheel-q p{margin:0;font-size:0.83rem}
+
+/* ── AI SCORE GAUGE ── */
+.ai-gauge-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;text-align:center}
+.ai-score-num{font-family:'Oxanium',sans-serif;font-size:3.5rem;font-weight:800;color:var(--cyan)}
+.ai-score-label{font-size:0.85rem;color:var(--muted);margin-top:4px}
+.ai-bar-wrap{height:10px;background:var(--navy3);border-radius:5px;margin:14px 0 6px;overflow:hidden}
+.ai-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--saffron),var(--cyan))}
+.ai-breakdown{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:16px;text-align:center}
+.ai-breakdown .ab-item label{font-size:0.65rem;color:var(--muted);display:block}
+.ai-breakdown .ab-item .ab-val{font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--white)}
+
+/* ── TECHNICAL ── */
+.ta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:14px 0}
+.ta-cell{background:var(--navy3);border:1px solid var(--border);border-radius:7px;padding:12px}
+.ta-cell label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;font-family:'JetBrains Mono',monospace}
+.ta-cell .tv{font-family:'Oxanium',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-top:3px}
+.ta-cell .ts{font-size:0.72rem;color:var(--muted);margin-top:2px}
+.price-ladder{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:0.8rem}
+.pl-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.pl-row:last-child{border:none}
+.pl-label{color:var(--muted)}
+.trade-box{background:linear-gradient(135deg,rgba(255,107,0,0.05),rgba(10,15,30,0.8));border:1px solid rgba(255,107,0,0.25);border-radius:10px;padding:20px;margin-top:16px}
+
+/* ── SHAREHOLDING ── */
+.sh-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.sh-bar-row label{font-size:0.78rem;color:var(--muted);width:100px;flex-shrink:0}
+.sh-bar-bg{flex:1;height:8px;background:var(--navy3);border-radius:4px;overflow:hidden}
+.sh-bar-fill{height:100%;border-radius:4px}
+.sh-bar-row .sv{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--white);width:50px;text-align:right}
+
+/* ── VALUE CHAIN ── */
+.vc-row{display:flex;gap:0;margin:16px 0}
+.vc-node{flex:1;padding:14px 8px;text-align:center;font-family:'Oxanium',sans-serif;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;border:1px solid var(--border);border-right:none;position:relative;background:var(--navy3);color:var(--muted);cursor:default}
+.vc-node:last-child{border-right:1px solid var(--border)}
+.vc-node.active{background:rgba(255,107,0,0.15);border-color:var(--saffron);color:var(--saffron)}
+.vc-node .vc-level{font-size:0.65rem;opacity:.7}
+
+/* ── INDIA THEME TABLE ── */
+.theme-table tr td:last-child{text-align:center}
+.relevance-yes{color:var(--pass);font-weight:600}
+.relevance-adj{color:var(--warn)}
+.relevance-no{color:var(--muted)}
+
+/* ── SERIES TABLE ── */
+.series-row-active td{background:rgba(255,107,0,0.06)!important;border-left:3px solid var(--saffron)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:680px){
+  .hero,.tab-content{padding:18px 16px}
+  .pillar-row{grid-template-columns:repeat(2,1fr)}
+  .metric-grid{grid-template-columns:1fr 1fr}
+  .ai-breakdown{grid-template-columns:repeat(3,1fr)}
+  .vc-node{font-size:0.62rem;padding:10px 4px}
+}
+@media(max-width:600px){
+  .hero-grid{grid-template-columns:1fr}
+  .pillar-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ─────── HERO ─────── -->
+<div class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <h1>Netweb Technologies <span>India Ltd</span></h1>
+      <div class="badges">
+        <span class="badge badge-cat">⬡ Cat B · High-Growth</span>
+        <span class="badge badge-ai">🟢 AI Widener</span>
+        <span class="badge badge-verdict">WATCH ★★★</span>
+        <span class="badge badge-macro">NSE: NETWEB</span>
+      </div>
+      <p class="hero-lede">India's premier Make-in-India OEM powering the country's sovereign AI infrastructure. AI Systems segment grew 459.6% in FY26 and now accounts for 43.4% of revenue — a hardware-OEM company rapidly becoming an AI infrastructure powerhouse. Outstanding fundamentals, but priced at ~111× trailing P/E with no margin of safety at ₹4,057.</p>
+      <div class="pills">
+        <div class="pill">Price <strong>~₹4,057 <span class="v v-un">UNVERIFIED</span></strong></div>
+        <div class="pill">FY26 Rev <strong>₹2,184 Cr <span class="v v-ok">VERIFIED</span></strong></div>
+        <div class="pill">FY26 PAT <strong>₹205.8 Cr <span class="v v-ok">VERIFIED</span></strong></div>
+        <div class="pill">ROCE <strong>37.5% <span class="v v-ok">VERIFIED</span></strong></div>
+        <div class="pill">MoS Entry <strong>₹2,800–3,200</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────── TAB BAR ─────── -->
+<div id="tab-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intel</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 0 — OVERVIEW
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab0">
+  <h2>Company Overview</h2>
+  <div class="card card-top">
+    <h3>Classification Rationale</h3>
+    <p><strong>Category B — High-Growth:</strong> Revenue CAGR of ~84% over FY22–26, operating in a structurally underpenetrated market (India AI/HPC infrastructure), ROIC improving strongly from 18% → 37.5%, and FCF beginning to accumulate (net cash ₹83.3 Cr). While it's a hardware OEM rather than a software company, the growth trajectory, NVIDIA strategic partnership, and Make-in-India positioning squarely fit Category B parameters.</p>
+    <p><strong>AI Overlay — 🟢 WIDENER:</strong> Netweb's growing AI Systems segment (43.4% of revenue, +459.6% in FY26) demonstrates that AI is actively widening their competitive position — transforming them from a generic HPC vendor into India's sovereign AI infrastructure partner. The NVIDIA Blackwell partnership, Tyrone Camarero product family, and IndiaAI Mission order create durable differentiation that standard HPC OEMs cannot replicate in the short term.</p>
+    <p><strong>Framework note:</strong> Hardware OEM economics (gross margin ~18–22%) mean Cat F criteria don't apply. Standard 5-method DCF/valuation applies. AI Premium on terminal P/E justified but bounded. WACC: 13% (Cat B). MoS: 30% below base IV.</p>
+  </div>
+
+  <h3>Business Description</h3>
+  <div class="card">
+    <p>Netweb Technologies India Limited (incorporated 1999, publicly listed 2023) is India's leading Make-in-India original equipment manufacturer (OEM) in the high-end computing solutions space. It designs, manufactures, and deploys High-Computing Solutions (HCS) from its manufacturing facility in Faridabad, Haryana — one of India's few genuine domestic server/HPC manufacturers.</p>
+    <p>The company operates across five product verticals:</p>
+    <div class="metric-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">
+      <div class="metric cyan-m"><label>AI Systems</label><div class="val">43.4%</div><div class="sub">of FY26 revenue · ↑459.6% YoY</div></div>
+      <div class="metric"><label>HPC / Supercomputing</label><div class="val">~25%</div><div class="sub">Flagship clusters, research</div></div>
+      <div class="metric"><label>Data Centre Servers</label><div class="val">~18%</div><div class="sub">Enterprise, government</div></div>
+      <div class="metric"><label>Storage Solutions</label><div class="val">~9%</div><div class="sub">High-performance storage</div></div>
+      <div class="metric"><label>Networking / 5G ORAN</label><div class="val">~5%</div><div class="sub">Network switches, 5G appliances</div></div>
+    </div>
+    <p>The marquee product family is <strong>Tyrone</strong> — proprietary middleware, pre-compiled application stacks, and hardware platforms built on NVIDIA's architecture. The <strong>Tyrone Camarero GB200 System</strong> (launched February 2026) is one of the world's most advanced Make-in-India AI supercomputers, integrating 40 NVIDIA Grace CPUs and 80 Blackwell GPUs in a single liquid-cooled rack.</p>
+  </div>
+
+  <h3>Why This Stock Is in the Series</h3>
+  <div class="card card-top-cyan">
+    <p>Netweb is the clearest and most direct listed play on India's sovereign AI infrastructure buildout — a once-in-a-generation national programme. The September 2025 IndiaAI Mission order (₹1,734 Cr) to deploy Blackwell-based GPU compute capacity for training indigenous large multimodal models is not just a revenue event — it's validation that Netweb has become a national AI infrastructure partner. No other listed Indian company has this combination of hardware manufacturing capability, NVIDIA partnership depth, and government mandate.</p>
+    <p>The challenge: at ~111× trailing P/E, the stock prices in near-perfect execution of a 5–7 year growth runway. The business deserves premium valuation, but not at any price. This report establishes the base IV and the conditions under which WATCH converts to BUY.</p>
+  </div>
+
+  <h3>Latest Results Snapshot — FY26 (Year ended March 31, 2026) <span class="v v-ok">VERIFIED</span></h3>
+  <div class="metric-grid">
+    <div class="metric pass-m"><label>FY26 Revenue</label><div class="val">₹2,184 Cr</div><div class="sub">+90.0% YoY</div></div>
+    <div class="metric pass-m"><label>FY26 PAT</label><div class="val">₹205.8 Cr</div><div class="sub">+80.9% YoY</div></div>
+    <div class="metric"><label>EBITDA</label><div class="val">₹290.1 Cr</div><div class="sub">Margin 13.3%</div></div>
+    <div class="metric pass-m"><label>AI Systems Revenue</label><div class="val">₹947.6 Cr</div><div class="sub">+459.6% YoY · 43.4% of total</div></div>
+    <div class="metric pass-m"><label>ROCE (Q4 ann.)</label><div class="val">37.5%</div><div class="sub">↑ from ~30% FY25</div></div>
+    <div class="metric pass-m"><label>Net Cash</label><div class="val">₹83.3 Cr</div><div class="sub">Zero net debt</div></div>
+    <div class="metric"><label>Order Book</label><div class="val">₹4,724 Cr</div><div class="sub">As of March 31, 2026</div></div>
+    <div class="metric"><label>Dividend (Final)</label><div class="val">₹3.00/sh</div><div class="sub">Total FY26: ₹5.50/sh</div></div>
+  </div>
+  
+  <h3>Q4 FY26 Highlights <span class="v v-ok">VERIFIED</span></h3>
+  <div class="metric-grid">
+    <div class="metric"><label>Q4 Revenue</label><div class="val">₹773.7 Cr</div><div class="sub">+86.6% YoY</div></div>
+    <div class="metric"><label>Q4 EBITDA</label><div class="val">₹96.6 Cr</div><div class="sub">Margin 12.5%</div></div>
+    <div class="metric"><label>Q4 PAT</label><div class="val">₹70.6 Cr</div><div class="sub">+65.7% YoY · Margin 9.0%</div></div>
+    <div class="metric"><label>New Clients FY26</label><div class="val">131</div><div class="sub">Avg top-10 tenure 3.8 yrs</div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 1 — MACRO & GROWTH
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab1">
+  <h2>Macro &amp; Sector Context</h2>
+
+  <h3>Layer 1 — Macro Anchor</h3>
+  <div class="metric-grid">
+    <div class="metric pass-m"><label>India Real GDP (FY26)</label><div class="val">7.3%</div><div class="sub">RBI revised estimate <span class="v v-ok">VERIFIED</span></div></div>
+    <div class="metric warn-m"><label>CPI Inflation (FY26)</label><div class="val">~2.5–3%</div><div class="sub">Well below 4% RBI target <span class="v v-est">ESTIMATED</span></div></div>
+    <div class="metric cyan-m"><label>Nominal GDP</label><div class="val">~10.5%</div><div class="sub">Terminal growth ceiling</div></div>
+    <div class="metric"><label>G-Sec 10Y Yield</label><div class="val">6.9%</div><div class="sub">April 30, 2026 <span class="v v-ok">VERIFIED</span></div></div>
+    <div class="metric"><label>RBI Repo Rate</label><div class="val">5.25%</div><div class="sub">Neutral stance, rate-cutting cycle</div></div>
+    <div class="metric pass-m"><label>Macro Composite</label><div class="val">TAILWIND</div><div class="sub">Strong GDP + easing rates</div></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Macro Cycle Status Dashboard</h3>
+    <table>
+      <tr><th>Cycle Dimension</th><th>Current Status</th><th>Impact on NETWEB</th></tr>
+      <tr><td class="label">Urban Consumption Cycle</td><td class="warn">Recovery / Moderate</td><td>+1% — enterprise IT budgets expanding post-COVID normalization</td></tr>
+      <tr><td class="label">Government Capex Cycle</td><td class="green">BOOM</td><td>+4% — IndiaAI Mission, National Supercomputing Mission, PLI schemes directly benefit</td></tr>
+      <tr><td class="label">Input Cost Cycle</td><td class="warn">Elevated (GPUs)</td><td>−2% — NVIDIA GPU pricing volatile; supply chain risk from US export controls</td></tr>
+      <tr><td class="label">Interest Rate Cycle (RBI)</td><td class="green">Easing</td><td>+1% — lower cost of capital for enterprise buyers; WACC tailwind</td></tr>
+      <tr><td class="label">Rural Income Cycle</td><td>Neutral</td><td>Neutral — Netweb sells to enterprises/government, not rural consumers</td></tr>
+      <tr><td class="label">AI Adoption Cycle</td><td class="green">ACCELERATING</td><td>+5% — India sovereign AI, hyperscaler data centres, enterprise AI deployment all accelerating</td></tr>
+    </table>
+    <p><strong>Macro Composite: TAILWIND.</strong> Government capex cycle is the single most important driver — the IndiaAI Mission allocated ₹10,372 Cr for domestic GPU compute. Netweb is the most direct domestic beneficiary. AI cycle is explicitly accelerating globally and in India. The only headwind is GPU supply chain (NVIDIA Blackwell allocation) which is a short-term friction, not a structural barrier.</p>
+  </div>
+
+  <h3>Layer 2 — Sector Growth Derivation</h3>
+  <div class="card">
+    <p><strong>Sector:</strong> AI Infrastructure / High-Performance Computing (India HPC + AI Systems hardware)</p>
+    <p><strong>Sector CAGR (historical):</strong> India's AI servers and GPU hardware market entering high-growth phase. Global AI server market CAGR 28–34% (2024–2030). India-specific growth significantly higher given base effect and national mandates. <span class="v v-ok">VERIFIED</span></p>
+    <p><strong>AI impact on sector:</strong> AI is the core accelerant of this sector — not an overlay. Every major customer (hyperscalers, PSUs, research institutions, enterprises) is expanding AI compute budgets. This is Phase 3 (inflection) globally and Phase 2→3 transition in India as of 2026.</p>
+    <table>
+      <tr><th>Scenario</th><th>India AI/HPC Sector Growth</th><th>Driver</th></tr>
+      <tr><td class="warn">STRESS</td><td>20–25% CAGR</td><td>GPU export restrictions tighten, budget delays, enterprise spending slowdown</td></tr>
+      <tr><td class="green">BASE</td><td>35–45% CAGR</td><td>IndiaAI Mission execution, enterprise AI deployment, data centre expansion</td></tr>
+      <tr><td class="cyan">ACCELERATION</td><td>55–70% CAGR</td><td>Full IndiaAI Mission + new sovereign programmes + private hyperscaler buildouts</td></tr>
+    </table>
+  </div>
+
+  <h3>Layer 3 — Company Alpha Over Sector</h3>
+  <table>
+    <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+    <tr><td class="label">Market Share Gain</td><td class="green">ACTIVE</td><td class="green">+5%</td><td class="warn">+2%</td></tr>
+    <tr><td class="label">Product Premiumisation</td><td class="green">ACTIVE</td><td class="green">+3%</td><td class="warn">+1%</td></tr>
+    <tr><td class="label">Category Expansion (5G ORAN, Edge AI)</td><td class="warn">POTENTIAL</td><td class="warn">+1%</td><td class="warn">+2%</td></tr>
+    <tr><td class="label">Geographic Expansion (International)</td><td class="warn">POTENTIAL</td><td>0%</td><td class="warn">+2%</td></tr>
+    <tr><td class="label">Pricing Power</td><td class="warn">MARGINAL</td><td class="warn">+1%</td><td>0%</td></tr>
+    <tr><td class="label">AI Alpha — 6a Cost Reduction</td><td>N/A (hardware)</td><td>0%</td><td>0%</td></tr>
+    <tr><td class="label">AI Alpha — 6b Market Expansion</td><td class="green">ACTIVE</td><td class="green">+8%</td><td class="green">+5%</td></tr>
+    <tr><td class="label">AI Alpha — 6c Switching Cost / Flywheel</td><td class="warn">POTENTIAL</td><td class="warn">+1%</td><td class="warn">+2%</td></tr>
+    <tr style="background:rgba(255,107,0,0.04)"><td class="label"><strong>Total Alpha</strong></td><td>—</td><td class="green"><strong>+19%</strong></td><td class="warn"><strong>+14%</strong></td></tr>
+  </table>
+  <p style="font-size:0.82rem;color:var(--muted)">6b Market Expansion is the dominant alpha driver: Netweb converts India's AI ambition (IndiaAI Mission, sovereign AI) into hardware deployments. This is the single largest TAM expansion in India's digital infrastructure history — from ~500 MW to targeted 10,000 MW of AI compute.</p>
+
+  <h3>Growth Rate Summary Table</h3>
+  <table>
+    <tr><th>Parameter</th><th class="warn">STRESS</th><th class="green">BASE</th><th class="cyan">ACCELERATION</th></tr>
+    <tr><td class="label">Macro state</td><td>GDP ~6%</td><td>GDP ~7.3%</td><td>GDP ~8%+</td></tr>
+    <tr><td class="label">Sector AI/HPC growth</td><td>20–25%</td><td>35–45%</td><td>55–70%</td></tr>
+    <tr><td class="label">Company alpha</td><td>+8%</td><td>+19%</td><td>+25%</td></tr>
+    <tr><td class="label">Stage 1 Rev CAGR (5yr)</td><td class="warn">25–30%</td><td class="green">40–50%</td><td class="cyan">60–70%</td></tr>
+    <tr><td class="label">Stage 2 Rev CAGR (5yr)</td><td>12%</td><td>18%</td><td>25%</td></tr>
+    <tr><td class="label">Terminal growth</td><td>6.8%</td><td>7.5%</td><td>8.2%</td></tr>
+    <tr><td class="label">PAT margin direction</td><td>Compress (12→11%)</td><td>Expand (9→13%)</td><td>Expand (9→16%)</td></tr>
+    <tr><td class="label">Key risk</td><td>GPU supply crunch</td><td>Execution of large orders</td><td>Margin dilution from scale</td></tr>
+  </table>
+  <p style="font-size:0.82rem;color:var(--muted)"><strong>Sensitivity:</strong> A 1% change in terminal growth changes IV by ~±15%. A 1% change in Stage 1 PAT CAGR changes IV by ~±8%.</p>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 2 — FINANCIALS
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab2">
+  <h2>Financial Fortress &amp; Earnings Quality</h2>
+
+  <h3>Revenue &amp; Profit Trend (5 Years)</h3>
+  <table>
+    <tr><th>Year</th><th>Revenue (₹ Cr)</th><th>YoY Growth</th><th>PAT (₹ Cr)</th><th>PAT Margin</th><th>EBITDA Margin</th></tr>
+    <tr><td>FY22</td><td class="v-est">~190</td><td>—</td><td class="v-est">~14</td><td class="v-est">7.4%</td><td class="v-est">~9%</td></tr>
+    <tr><td>FY23</td><td class="v-est">~315</td><td class="green">+66%</td><td class="v-est">~25</td><td class="v-est">7.9%</td><td class="v-est">~10%</td></tr>
+    <tr><td>FY24</td><td class="v-est">~649</td><td class="green">+106%</td><td class="v-est">~65</td><td class="v-est">10.0%</td><td class="v-est">~11%</td></tr>
+    <tr><td>FY25</td><td class="v-est">~1,149</td><td class="green">+77%</td><td class="v-est">~113.8</td><td class="v-est">9.9%</td><td class="v-est">~12.2%</td></tr>
+    <tr style="background:rgba(0,214,143,0.05)"><td><strong>FY26</strong></td><td class="green"><strong>2,183.6 <span class="v v-ok">V</span></strong></td><td class="green"><strong>+90%</strong></td><td class="green"><strong>205.8 <span class="v v-ok">V</span></strong></td><td class="green"><strong>9.3%</strong></td><td class="green"><strong>13.3%</strong></td></tr>
+  </table>
+  <p style="font-size:0.82rem;color:var(--muted)">Revenue CAGR FY22–FY26: ~84%. EBITDA margin expanding (+4pp over 5 years) despite hardware OEM economics. PAT margin stabilizing at ~9–10% — structurally limited by hardware assembly economics but improving via product mix shift to higher-margin AI Systems.</p>
+
+  <h3>ROE &amp; ROIC History</h3>
+  <table>
+    <tr><th>Year</th><th>ROE</th><th>ROIC / ROCE</th><th>Net Cash</th><th>Quality Signal</th></tr>
+    <tr><td>FY22</td><td class="v-est">~18%</td><td class="v-est">~18%</td><td class="v-est">Minimal</td><td class="warn">Adequate</td></tr>
+    <tr><td>FY23</td><td class="v-est">~22%</td><td class="v-est">~20%</td><td class="v-est">Small positive</td><td class="warn">Good</td></tr>
+    <tr><td>FY24</td><td class="v-est">~25%</td><td class="v-est">~25%</td><td class="v-est">Positive</td><td class="green">Strong</td></tr>
+    <tr><td>FY25</td><td class="v-est">~28%</td><td class="v-est">~30%</td><td class="v-est">Growing</td><td class="green">Strong</td></tr>
+    <tr style="background:rgba(0,214,143,0.05)"><td><strong>FY26</strong></td><td class="green"><strong>32.9% <span class="v v-ok">V</span></strong></td><td class="green"><strong>37.5% <span class="v v-ok">V</span></strong></td><td class="green"><strong>₹83.3 Cr</strong></td><td class="green"><strong>Excellent</strong></td></tr>
+  </table>
+  <p>ROIC of 37.5% significantly exceeds the WACC of 13% — confirming genuine economic value creation. The positive trajectory (consistently improving every year) is a strong quality signal.</p>
+
+  <h3>Financial Fortress Scorecard</h3>
+  <div class="score-grid">
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>ROE ≥15% for 5yr</h4><p>All 5 years above 15%; FY26 at 32.9% — PASS</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>ROIC &gt; WACC</h4><p>37.5% vs 13% WACC — significant economic profit — PASS</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Net Cash Position</h4><p>₹83.3 Cr net free cash, zero net debt — PASS</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Net Profit Margin ≥15%</h4><p>PAT margin 9.3% — hardware OEM economics; improving but below threshold — MARGINAL</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>FCF Conversion ≥80%</h4><p>Significant WC build required for rapid growth; FCF likely 60–70% of PAT — MARGINAL</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Revenue Growth vs Sector</h4><p>+90% FY26 vs sector ~35–45% — dramatically outperforming — PASS</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Capital-Light Trend</h4><p>Manufacturing + assembly model; no heavy capex; ROIC expanding — PASS</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Pricing Power</h4><p>Moved from commodity servers → AI supercomputer (Tyrone Camarero GB200) — PASS</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Predictable Revenue</h4><p>Order book provides 6-month visibility; but project-based lumpy revenue — MARGINAL</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Dividend Sustainability</h4><p>₹5.50/sh total FY26 (150% face value) — sustainable but modest vs earnings — MARGINAL</p></div></div>
+  </div>
+
+  <h3>Owner Earnings Estimate</h3>
+  <div class="card card-top-pass">
+    <table>
+      <tr><th>Component</th><th>FY26 (₹ Cr)</th><th>Notes</th></tr>
+      <tr><td class="label">Net Income (PAT)</td><td class="green">205.8</td><td>Verified from audited results</td></tr>
+      <tr><td class="label">+ Depreciation &amp; Amortisation</td><td>~18</td><td>Estimated <span class="v v-est">EST</span></td></tr>
+      <tr><td class="label">− Maintenance CapEx</td><td class="red">−25</td><td>Manufacturing facility upkeep; estimated <span class="v v-est">EST</span></td></tr>
+      <tr><td class="label">± Working Capital Changes</td><td class="red">−45</td><td>Estimated significant WC build for 90% revenue growth</td></tr>
+      <tr style="background:rgba(255,107,0,0.04)"><td class="label"><strong>Owner Earnings (Base)</strong></td><td class="warn"><strong>~₹154 Cr</strong></td><td>Conservative estimate</td></tr>
+      <tr><td class="label"><strong>Owner Earnings (Optimistic)</strong></td><td class="green"><strong>~₹175 Cr</strong></td><td>Lower WC build; better collections</td></tr>
+    </table>
+    <p style="font-size:0.82rem;color:var(--muted)">OE is materially below PAT due to significant WC requirements of a rapidly scaling hardware business. Monitor FCF conversion quarterly — sustained gap between PAT and OCF would be an earnings quality concern.</p>
+  </div>
+
+  <h3>Earnings Quality — O'Glove Deep-Dive</h3>
+  <div class="score-grid">
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Test 1: FCF Conversion</h4><p>OCF/PAT estimated at 60–70% due to WC build from rapid growth. Below 80% threshold — MARGINAL</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Test 2: DSO Trend</h4><p>131 new clients in FY26 suggests receivables expanding. DSO likely rising from faster revenue growth than collections — MARGINAL</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Test 3: Inventory Days</h4><p>Revenue grew 90% — inventory build-up expected. Rapid growth makes this naturally harder to assess — MARGINAL</p></div></div>
+    <div class="score-item"><div class="score-icon si-fail">✗</div><div><h4>Test 4: Accounting Policy Change</h4><p>⚠️ Inventory valuation method changed to weighted average cost in FY26. Management says "enhances comparability" — monitor impact on reported margins — FAIL</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Test 5: Gross Margin Consistency</h4><p>EBITDA margin expanded from ~10% → 13.3% (FY22→FY26). AI Systems mix improving overall margins — PASS</p></div></div>
+  </div>
+  <div class="card card-top-warn" style="margin-top:14px">
+    <h3 style="color:var(--warn);margin-top:0">⚠️ Overall Earnings Quality: SUSPECT</h3>
+    <p>The inventory valuation accounting change (Test 4 fail) combined with uncertainty around FCF conversion (rapid growth WC dynamics) warrants the SUSPECT classification. Apply 5% additional margin of safety to valuation. Monitor Q1 FY27 OCF vs PAT ratio closely. The accounting change may have a modest positive effect on reported margins in some periods.</p>
+    <p style="font-size:0.82rem;color:var(--muted)">Important context: SUSPECT does not mean the company is manipulating earnings. It means the unusual accounting policy change creates opacity that reduces confidence in year-over-year comparability. The underlying business fundamentals (ROCE 37.5%, net cash, order book) remain strong.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 3 — MOAT
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab3">
+  <h2>Economic Moat Analysis</h2>
+
+  <div class="moat-card"><h4>NVIDIA Strategic Partnership <span class="moat-stars">★★★★</span></h4><p>Netweb is one of India's few certified NVIDIA design partners with access to the latest Blackwell (B200, GB200, GH200) architectures. This gives them a 12–18 month head start over any new entrant trying to build equivalent AI systems. The Tyrone Camarero brand is designed on NVIDIA MGX reference designs — which requires deep engineering collaboration with NVIDIA. <strong>Moat strength: Wide in India context; narrow globally.</strong></p></div>
+  <div class="moat-card"><h4>Make-in-India / Government Mandate <span class="moat-stars">★★★★</span></h4><p>The IndiaAI Mission, National Supercomputing Mission, and PLI for Electronics explicitly favour domestic OEMs. Netweb holds formal empanelment with defence and research institutions. This regulatory / procurement moat is powerful in the short-to-medium term (3–5 years). Competitors (Dell, HPE, Lenovo) import their systems and face a GST and procurement disadvantage for government orders. The sovereign AI order (₹1,734 Cr) required a domestic manufacturer — foreign OEMs were ineligible.</p></div>
+  <div class="moat-card"><h4>Proprietary Software Stack (Tyrone Brand) <span class="moat-stars">★★★</span></h4><p>Netweb builds proprietary middleware, end-user utilities, and pre-compiled application stacks on top of hardware. This creates software-layer switching costs beyond just the hardware. Institutions that deploy Tyrone Camarero systems with Netweb's software stack face re-integration costs to switch. Not a wide moat — a competitor could replicate the software — but meaningful in enterprise/government segment where procurement stability is valued.</p></div>
+  <div class="moat-card"><h4>Faridabad Manufacturing + R&D Capability <span class="moat-stars">★★★</span></h4><p>Very few companies in India have both the manufacturing facility AND the engineering capability to design HPC/AI systems from scratch. Netweb commissioned its high-end computing server, storage and switch manufacturing facility in May 2024 — representing genuine capital + time investment that a new entrant would take 2–3 years to replicate even with capital.</p></div>
+  <div class="moat-card"><h4>Customer Relationships &amp; Tenure <span class="moat-stars">★★★</span></h4><p>Average tenure of top 10 customers: 3.8 years. 131 new clients in FY26 alone. In the HPC/research/government space, long-term relationships are critical — institutions don't switch vendors mid-project. This creates revenue stability despite the project-based revenue model.</p></div>
+  <div class="moat-card"><h4>Scale &amp; Pricing Leverage <span class="moat-stars">★★</span></h4><p>At ₹2,184 Cr revenue, Netweb is building scale but remains small vs global OEMs. EBITDA margins at 13.3% are improving but still compressed vs software businesses. The scale moat is nascent — not yet fully formed.</p></div>
+
+  <h3>ROIC as Moat Proof</h3>
+  <table>
+    <tr><th>Year</th><th>ROIC</th><th>WACC</th><th>Economic Profit</th><th>Signal</th></tr>
+    <tr><td>FY22</td><td class="v-est">~18%</td><td>13%</td><td class="green">+5%</td><td>Narrow moat forming</td></tr>
+    <tr><td>FY23</td><td class="v-est">~20%</td><td>13%</td><td class="green">+7%</td><td>Narrow moat confirmed</td></tr>
+    <tr><td>FY24</td><td class="v-est">~25%</td><td>13%</td><td class="green">+12%</td><td>Moat widening</td></tr>
+    <tr><td>FY25</td><td class="v-est">~30%</td><td>13%</td><td class="green">+17%</td><td>Wide moat territory</td></tr>
+    <tr style="background:rgba(0,214,143,0.05)"><td><strong>FY26</strong></td><td class="green"><strong>37.5%</strong></td><td>13%</td><td class="green"><strong>+24.5%</strong></td><td class="green">Wide moat — verified</td></tr>
+  </table>
+  <p>The consistent ROIC improvement from 18% → 37.5% over 5 years is one of the most important signals in this report. It confirms that the business is not just growing — it's growing with improving capital efficiency. The moat is real and widening.</p>
+
+  <!-- DATA FLYWHEEL -->
+  <div class="flywheel-box">
+    <h3>Data Flywheel Assessment</h3>
+    <div class="flywheel-badge">⬡ AI FEATURE — Score 3/10</div>
+    <div class="flywheel-q"><div class="fq-num">Q1</div><p><strong>Proprietary Training Data?</strong> Netweb designs hardware systems — they don't accumulate proprietary AI training data in the same way a software company does. Their proprietary knowledge is engineering know-how (system design configurations, thermal management, workload optimization for India's climate/power constraints) rather than a data asset that improves with scale. <span class="v v-est">ESTIMATED</span></p></div>
+    <div class="flywheel-q"><div class="fq-num">Q2</div><p><strong>Does AI Improve With More Data/Users?</strong> Not in the classic flywheel sense. More deployments give Netweb engineers more real-world configuration experience — which improves their system design capabilities — but this doesn't automatically create a data-driven AI improvement loop. It's engineering expertise accumulation, not a data flywheel. <span class="v v-est">ESTIMATED</span></p></div>
+    <div class="flywheel-q"><div class="fq-num">Q3</div><p><strong>Does Better AI Attract More Users?</strong> Partially — Netweb's reputation for successful large-scale AI deployments (NMDC Data Centre, IndiaAI Mission) creates a reference-customer moat. But this is a traditional B2B reference cycle, not a data flywheel. <span class="v v-est">ESTIMATED</span></p></div>
+    <p style="font-size:0.83rem;color:var(--muted);margin-top:12px">Flywheel verdict: <strong>AI FEATURE</strong>. Netweb builds the hardware that enables AI flywheels in other companies — they are the picks-and-shovels play. Their own moat is built on partnerships, manufacturing capability, and government relationships — not a software data flywheel. This is not a weakness; it's an accurate characterization of the value chain position. Their moat grade remains B based on ROIC evidence.</p>
+  </div>
+
+  <h3>Macro Moat Stress Test</h3>
+  <table>
+    <tr><th>Moat Source</th><th>Stress Scenario</th><th>Verdict</th></tr>
+    <tr><td class="label">NVIDIA Partnership</td><td>NVIDIA shifts to direct India strategy; reduces partner program</td><td class="warn">WEAKENS — highest risk; monitor NVIDIA India investments</td></tr>
+    <tr><td class="label">Government Procurement Moat</td><td>Budget cuts; policy shift away from domestic preference</td><td class="warn">WEAKENS — policy-dependent</td></tr>
+    <tr><td class="label">Manufacturing Capability</td><td>Dell/HPE establish Indian manufacturing</td><td class="warn">HOLDS — takes 2–3 years; Netweb has head start</td></tr>
+    <tr><td class="label">Software Stack</td><td>Open-source alternatives mature; customers build in-house</td><td class="warn">WEAKENS — low switching costs in software</td></tr>
+    <tr><td class="label">Customer Relationships</td><td>Government procurement reforms; competitive tendering</td><td class="green">HOLDS — long-tenured top customers</td></tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 4 — MANAGEMENT
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab4">
+  <h2>Management Integrity &amp; Capital Allocation</h2>
+
+  <div class="metric-grid">
+    <div class="metric pass-m"><label>Promoter Holding</label><div class="val">67.0%</div><div class="sub">Down from 71.0% <span class="v v-ok">VERIFIED</span></div></div>
+    <div class="metric pass-m"><label>Pledge %</label><div class="val">0%</div><div class="sub">No pledged shares — PASS</div></div>
+    <div class="metric warn-m"><label>Promoter Trend</label><div class="val">↓ Selling</div><div class="sub">3.65% sold Feb 2026 block deal</div></div>
+    <div class="metric pass-m"><label>Dividend Track Record</label><div class="val">₹5.50/sh</div><div class="sub">FY26 total (₹2.50 interim + ₹3.00 final)</div></div>
+  </div>
+
+  <h3>Leadership Team</h3>
+  <div class="card card-top">
+    <table>
+      <tr><th>Name</th><th>Role</th><th>Tenure</th><th>Assessment</th></tr>
+      <tr><td class="label">Sanjay Lodha</td><td>Chairman &amp; Managing Director / CEO</td><td>Founder (26+ years)</td><td class="green">Visionary architect of Make-in-India AI strategy; deep NVIDIA relationship; publicly speaks on sovereign AI</td></tr>
+      <tr><td class="label">Vivek Lodha</td><td>Director</td><td>Long-term / Family</td><td class="warn">Family-dominated board; reappointed 5 years from Aug 2026</td></tr>
+      <tr><td class="label">Niraj &amp; Navin Lodha</td><td>Directors</td><td>Long-term / Family</td><td class="warn">Board concentration risk — all four Lodhas hold director positions</td></tr>
+      <tr><td class="label">Mukul Kedia</td><td>Chief Strategy Officer (NEW)</td><td>Appointed May 2026</td><td class="green">External hire for AI &amp; cloud strategy — positive signal of professionalisation</td></tr>
+      <tr><td class="label">Swastik Chakraborty</td><td>VP — Technology (NEW)</td><td>Appointed May 2026</td><td class="green">External tech hire focused on AI &amp; indigenous innovation — builds depth</td></tr>
+    </table>
+  </div>
+
+  <h3>Capital Allocation Quality</h3>
+  <div class="score-grid">
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Manufacturing Investment</h4><p>Commissioned high-end computing facility in Faridabad in May 2024 — capital deployed at exactly the right time to capture AI infrastructure demand — EXCELLENT timing</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>R&amp;D Leadership</h4><p>In-house R&amp;D team designed Tyrone Camarero platform, enabling NVIDIA Blackwell integration. Few Indian companies have this depth of hardware R&amp;D capability — STRONG</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Dividend Policy</h4><p>₹5.50 total FY26 (vs ~₹36 EPS) — 15% payout ratio. Prudent — retaining capital for growth while rewarding shareholders — GOOD</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Order Execution Focus</h4><p>₹1,734 Cr IndiaAI Mission order is the largest in company history. Execution quality over next 18 months is the highest-priority management test — WATCH</p></div></div>
+    <div class="score-item"><div class="score-icon si-fail">✗</div><div><h4>Promoter Block Sale</h4><p>Founders sold 3.65% stake (~₹682 Cr) via open market block deal in February 2026 at ~₹3,339/share. Post-sale promoter holding at 67% — still high, but insider selling at the beginning of India's AI infrastructure cycle is a caution flag — CONCERN</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Inventory Policy Change</h4><p>Shifted from FIFO to weighted average cost in FY26 — management framed as "better comparability" — but accounting changes during high-growth periods always merit scrutiny — WATCH</p></div></div>
+  </div>
+
+  <h3>Management Red Flags Checklist</h3>
+  <table>
+    <tr><th>Red Flag</th><th>Status</th><th>Verdict</th></tr>
+    <tr><td class="label">Promoter pledging &gt;20%</td><td class="green">0% pledged</td><td class="green">CLEAN — no leverage risk</td></tr>
+    <tr><td class="label">IT raids / regulatory issues</td><td class="green">None reported</td><td class="green">CLEAN</td></tr>
+    <tr><td class="label">Related party transactions</td><td class="warn">Family-managed company</td><td class="warn">Monitor for RPT disclosures</td></tr>
+    <tr><td class="label">Promoter selling into strength</td><td class="warn">3.65% sold Feb 2026</td><td class="warn">Caution flag — but 67% retention signals continued commitment</td></tr>
+    <tr><td class="label">Accounting policy changes</td><td class="warn">Inventory method changed FY26</td><td class="warn">O'Glove flag — monitor margin impact</td></tr>
+    <tr><td class="label">Guidance reliability</td><td class="green">Delivered on all growth targets</td><td class="green">STRONG — management has consistently under-promised and over-delivered</td></tr>
+  </table>
+
+  <h3>Counter-Cyclical Capital Allocation</h3>
+  <div class="card card-top-pass">
+    <p>Netweb's most impressive capital allocation decision: commissioning the Faridabad high-end computing facility <strong>before</strong> the AI demand surge materialized. The facility was commissioned in May 2024 — exactly when the global AI server boom was accelerating. This is textbook counter-cyclical investment: spending on manufacturing capacity when demand is not yet fully visible.</p>
+    <p>Similarly, the early investment in NVIDIA partnership development (MGX platform integration, Blackwell certification) paid off disproportionately when the IndiaAI Mission began awarding orders in 2025. Management created the conditions for the opportunity to arrive at their door — they didn't wait for it.</p>
+  </div>
+
+  <h3>Management Grade: B+ (Competent &amp; Vision-Aligned)</h3>
+  <p>Exceptional strategic vision and timing. NVIDIA partnership is a management-created competitive advantage. Key concerns: family-board concentration, promoter selling at an inopportune time, and the accounting policy change. The new CSO and VP-Technology appointments signal a welcome move toward professionalization. Not a concern-free picture, but the track record of delivery warrants the B+ rating.</p>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 5 — VALUATION
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab5">
+  <h2>Valuation &amp; Margin of Safety</h2>
+  <p style="color:var(--warn);font-size:0.85rem">⚠️ Earnings quality classified as SUSPECT — applying additional 5% MoS width to all entry prices.</p>
+
+  <div class="metric-grid">
+    <div class="metric warn-m"><label>Current Price <span class="v v-un">UNVERIFIED</span></label><div class="val">~₹4,057</div><div class="sub">Confirm on NSE app</div></div>
+    <div class="metric"><label>FY26 EPS</label><div class="val">~₹36.4</div><div class="sub">PAT ₹205.8Cr ÷ ~5.66Cr shares</div></div>
+    <div class="metric warn-m"><label>Trailing P/E</label><div class="val">~111x</div><div class="sub">Priced for perfection</div></div>
+    <div class="metric"><label>FY27E EPS</label><div class="val">~₹52</div><div class="sub">Assuming 43% PAT growth</div></div>
+    <div class="metric warn-m"><label>Forward P/E</label><div class="val">~78x</div><div class="sub">Still expensive on FY27E</div></div>
+    <div class="metric warn-m"><label>Earnings Yield</label><div class="val">0.9%</div><div class="sub">vs G-Sec 6.9% — negative ERP</div></div>
+  </div>
+
+  <h3>Method 1 — 2-Stage DCF (PAT-proxy)</h3>
+  <div class="card">
+    <p style="font-size:0.82rem;color:var(--muted)">WACC: 13% (Cat B). Owner Earnings FY27E start: ~₹175 Cr base. Entry discount: 30% (Cat B) + 5% O'Glove suspect = 35%.</p>
+    <table>
+      <tr><th>Year</th><th class="warn">STRESS (20%)</th><th class="green">BASE (35%)</th><th class="cyan">ACCEL (50%)</th></tr>
+      <tr><td>FY27E OE</td><td>₹155 Cr</td><td>₹175 Cr</td><td>₹205 Cr</td></tr>
+      <tr><td>FY32E OE (S1 end)</td><td>₹387 Cr</td><td>₹810 Cr</td><td>₹1,554 Cr</td></tr>
+      <tr><td>FY37E OE (S2 end)</td><td>₹683 Cr</td><td>₹1,849 Cr</td><td>₹5,307 Cr</td></tr>
+      <tr><td>Terminal Value (PV)</td><td>₹6,900 Cr</td><td>₹18,400 Cr</td><td>₹52,000 Cr</td></tr>
+      <tr><td>PV Stage 1+2 FCF</td><td>₹1,200 Cr</td><td>₹4,800 Cr</td><td>₹12,500 Cr</td></tr>
+      <tr style="background:rgba(255,107,0,0.05)"><td><strong>Total IV</strong></td><td class="warn"><strong>~₹8,100 Cr</strong></td><td class="green"><strong>~₹23,200 Cr</strong></td><td class="cyan"><strong>~₹64,500 Cr</strong></td></tr>
+      <tr><td><strong>IV/Share</strong></td><td class="warn"><strong>₹1,431</strong></td><td class="green"><strong>₹4,098</strong></td><td class="cyan"><strong>₹11,394</strong></td></tr>
+      <tr><td><strong>MoS Entry (−35%)</strong></td><td class="warn"><strong>₹930</strong></td><td class="green"><strong>₹2,664</strong></td><td class="cyan"><strong>₹7,406</strong></td></tr>
+    </table>
+  </div>
+
+  <h3>Method 2 — Owner Earnings Capitalisation</h3>
+  <div class="card">
+    <p style="font-size:0.82rem;color:var(--muted)">Value = OE / (Required Return − g). Required return 13%, g = stage-dependent. For growing company, blend Stage 1 and terminal.</p>
+    <table>
+      <tr><th>Scenario</th><th>OE FY27E</th><th>g (blended)</th><th>Value</th><th>Per Share</th></tr>
+      <tr><td class="warn">Stress</td><td>₹155 Cr</td><td>8.0%</td><td>₹3,100 Cr</td><td>₹548</td></tr>
+      <tr><td class="green">Base</td><td>₹175 Cr</td><td>9.5%</td><td>₹5,000 Cr</td><td>₹883</td></tr>
+      <tr><td class="cyan">Accel</td><td>₹205 Cr</td><td>11.0%</td><td>₹10,250 Cr</td><td>₹1,812</td></tr>
+    </table>
+    <p style="font-size:0.82rem;color:var(--muted)">OE capitalisation significantly understates value for high-growth companies — shown for completeness. DCF and P/E methods are more appropriate for Cat B.</p>
+  </div>
+
+  <h3>Method 3 — ROIC / EPV</h3>
+  <div class="card">
+    <p>NOPAT FY26: ~₹240 Cr (EBIT × (1−tax)). Invested Capital: ~₹640 Cr (estimated). EPV = NOPAT / WACC = 240/0.13 = ₹1,846 Cr → ₹326/share. With growth premium (g=10.5%, WACC=13%): Growth Value = Invested Capital × (ROIC − WACC)/(WACC − g) = 640 × (0.375−0.13)/(0.13−0.105) = 640 × 9.8 = ₹6,272 Cr. Total EPV incl. growth = ₹8,118 Cr → <strong>₹1,435/share</strong>. Confirms stress-scenario anchor. Base IV from EPV + growth adjustment ~₹10,000 Cr → ₹1,767/share.</p>
+  </div>
+
+  <h3>Method 4 — P/E Earnings Power</h3>
+  <div class="card">
+    <table>
+      <tr><th>Scenario</th><th>FY27E EPS</th><th>Justified P/E</th><th>IV/Share</th></tr>
+      <tr><td class="warn">Stress (P/E 40x)</td><td>₹46</td><td>40x</td><td class="warn">₹1,840</td></tr>
+      <tr><td class="green">Base (P/E 70x)</td><td>₹52</td><td>70x</td><td class="green">₹3,640</td></tr>
+      <tr><td class="cyan">Accel (P/E 100x)</td><td>₹60</td><td>100x</td><td class="cyan">₹6,000</td></tr>
+    </table>
+    <p style="font-size:0.82rem;color:var(--muted)">Justified P/E analysis: 70x forward P/E (Base) is appropriate for an AI infrastructure hardware company with 40–50% revenue growth, ROIC of 37.5%, net cash, government mandate, and NVIDIA partnership depth. 100x is aggressive but achievable if the sovereign AI orders extend beyond FY27.</p>
+    <p>PEG: At 70x P/E and 43% growth, PEG = 1.6x. For India's AI infrastructure wave, acceptable. Reverse DCF: at current price ₹4,057 and WACC 13%, the market is pricing in ~55% Stage 1 PAT CAGR — achievable in acceleration scenario, but tight in base case.</p>
+  </div>
+
+  <h3>Method 5 — Earnings Yield vs Bond Yield</h3>
+  <div class="card card-top-fail">
+    <table>
+      <tr><th>Metric</th><th>Value</th><th>Benchmark</th><th>Signal</th></tr>
+      <tr><td class="label">Earnings Yield (trailing)</td><td class="red">0.9%</td><td>G-Sec 6.9%</td><td class="red">Massively below G-Sec — EXPENSIVE</td></tr>
+      <tr><td class="label">FCF Yield (estimated)</td><td class="red">~0.6%</td><td>G-Sec 6.9%</td><td class="red">ERP = −6.3% — extreme growth premium priced</td></tr>
+      <tr><td class="label">Dividend Yield</td><td>0.14%</td><td>—</td><td class="warn">Minimal income return</td></tr>
+      <tr><td class="label">Forward Earnings Yield (FY27E)</td><td class="warn">1.3%</td><td>G-Sec 6.9%</td><td class="warn">Still significantly below G-Sec</td></tr>
+    </table>
+    <p>The earnings yield vs bond yield comparison is unequivocally negative. This stock is priced entirely on future growth expectations — there is zero yield cushion. In a risk-off environment or if growth disappoints, the de-rating potential is severe (from 111x to 40–50x would imply 60–65% downside).</p>
+  </div>
+
+  <h3>5-Method Summary Table</h3>
+  <table>
+    <tr><th>Method</th><th class="warn">Stress IV/sh</th><th class="green">Base IV/sh</th><th class="cyan">Accel IV/sh</th><th>AI Adj.</th></tr>
+    <tr><td class="label">DCF (2-Stage)</td><td class="warn">₹1,431</td><td class="green">₹4,098</td><td class="cyan">₹11,394</td><td>+₹300 for NVIDIA partnership moat</td></tr>
+    <tr><td class="label">OE Capitalisation</td><td>₹548</td><td>₹883</td><td>₹1,812</td><td>N/A (too conservative for growth)</td></tr>
+    <tr><td class="label">ROIC / EPV</td><td>₹1,435</td><td>₹1,767</td><td>₹2,800</td><td>N/A (backward-looking)</td></tr>
+    <tr><td class="label">P/E Earnings Power</td><td class="warn">₹1,840</td><td class="green">₹3,640</td><td class="cyan">₹6,000</td><td>+10–15x P/E for confirmed AI widener</td></tr>
+    <tr><td class="label">EY / Bond Yield</td><td class="red">N/A</td><td class="red">Priced for growth only</td><td class="red">—</td><td>Negative ERP — no support</td></tr>
+    <tr style="background:rgba(255,107,0,0.05)"><td class="label"><strong>Blended Base IV (DCF + P/E)</strong></td><td class="warn"><strong>~₹1,636</strong></td><td class="green"><strong>~₹3,869</strong></td><td class="cyan"><strong>~₹8,697</strong></td><td class="warn">O'Glove SUSPECT: −5%</td></tr>
+    <tr style="background:rgba(0,214,143,0.05)"><td class="label"><strong>Adjusted IV (−5% O'Glove)</strong></td><td class="warn"><strong>~₹1,554</strong></td><td class="green"><strong>~₹3,676</strong></td><td class="cyan"><strong>~₹8,262</strong></td><td>—</td></tr>
+    <tr style="background:rgba(255,107,0,0.08)"><td class="label"><strong>MoS Entry Zone (−35%)</strong></td><td class="warn"><strong>₹1,010</strong></td><td class="green"><strong>₹2,789–3,200</strong></td><td class="cyan"><strong>₹5,370</strong></td><td>—</td></tr>
+  </table>
+
+  <div class="card card-top-warn">
+    <h3 style="color:var(--warn);margin-top:0">Current Price vs IV: ABOVE Base IV</h3>
+    <p>At ~₹4,057, the stock trades <strong>above the blended base IV of ₹3,676</strong> and between Base and Acceleration IVs. This means the market is pricing ~60–70% probability of the acceleration scenario materializing. Given the ₹4,724 Cr order book and IndiaAI Mission tailwinds, this is not irrational — but it leaves no margin of safety for a new position.</p>
+    <p><strong>MoS Entry Zone: ₹2,800–3,200</strong> — representing a 21–31% correction from current levels, approaching base IV with the required 35% discount applied. At ₹2,800, the stock would trade at ~54x FY27E P/E (forward) which is a reasonable entry for India's premier AI infrastructure OEM.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 6 — VERDICT
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab6">
+  <h2>Investment Verdict</h2>
+
+  <h3>Four-Pillar Grades</h3>
+  <div class="pillar-row">
+    <div class="pillar-card" style="border-top-color:var(--cyan)"><h4>Moat</h4><div class="grade grade-b">B</div><div style="font-size:0.75rem;color:var(--muted);margin-top:4px">Strong in India context; NVIDIA partnership + Govt moat; hardware limits full moat width</div></div>
+    <div class="pillar-card" style="border-top-color:var(--pass)"><h4>Quality</h4><div class="grade grade-b">B+</div><div style="font-size:0.75rem;color:var(--muted);margin-top:4px">ROIC 37.5%, net cash, improving margins; O'Glove suspect flag noted</div></div>
+    <div class="pillar-card" style="border-top-color:var(--saffron)"><h4>Management</h4><div class="grade grade-b">B+</div><div style="font-size:0.75rem;color:var(--muted);margin-top:4px">Visionary CMD, strong track record; family concentration + promoter selling = caution</div></div>
+    <div class="pillar-card" style="border-top-color:var(--fail)"><h4>Valuation</h4><div class="grade grade-d">D+</div><div style="font-size:0.75rem;color:var(--muted);margin-top:4px">No MoS at current price; above base IV; ERP deeply negative</div></div>
+  </div>
+
+  <!-- VERDICT BOX -->
+  <div class="verdict-box">
+    <div class="badge badge-ai" style="margin-bottom:12px">🟢 AI Widener · Level 1 AI Value Chain</div>
+    <div class="verdict-label">WATCH ★★★</div>
+    <div class="stars">★★★☆☆</div>
+    <p style="color:var(--text);margin:12px 0">Three pillars are strong (Moat B / Quality B+ / Management B+). The business is exceptional — India's most credible Make-in-India AI infrastructure OEM at the centre of a generational national AI compute buildout. The singular blocker is <strong>valuation</strong>: at ~111× trailing P/E with no MoS, risk/reward is skewed. A 20–30% correction brings this to BUY territory.</p>
+    <blockquote>"The Tyrone Camarero GB200 System is one of the world's most powerful Make-in-India AI supercomputers. Netweb's role in India's sovereign AI infrastructure is not aspirational — it's confirmed." — Sanjay Lodha, CMD</blockquote>
+  </div>
+
+  <h3>WATCH → BUY Upgrade Conditions (5 specific, measurable)</h3>
+  <ul class="conditions">
+    <li><div class="cond-num">1</div><div><p><strong>Price corrects to ₹2,800–3,000</strong> — representing 20% discount to adjusted blended base IV of ₹3,676. At ₹2,900, forward P/E (FY27E) = ~56x, providing a reasonable MoS for India's premier AI infrastructure OEM.</p></div></li>
+    <li><div class="cond-num">2</div><div><p><strong>RSI falls below 40 on the daily chart</strong> — confirming meaningful price correction rather than consolidation. RSI &lt;40 on a quality business with confirmed order book historically represents a high-conviction technical entry.</p></div></li>
+    <li><div class="cond-num">3</div><div><p><strong>FCF conversion recovers to ≥70% of PAT for 2 consecutive quarters</strong> — resolving the current O'Glove SUSPECT flag. Improvement in OCF/PAT ratio would indicate WC normalization and upgrade Earnings Quality from SUSPECT → ACCEPTABLE.</p></div></li>
+    <li><div class="cond-num">4</div><div><p><strong>IndiaAI Mission order execution confirmed on schedule (Q4 FY26 – H1 FY27)</strong> — specifically, management disclosure that ₹1,734 Cr order deliveries are proceeding without delays. Order confirmation in FY27 results call would de-risk the revenue outlook dramatically.</p></div></li>
+    <li><div class="cond-num">5</div><div><p><strong>EBITDA margin sustains above 13% for 2 consecutive quarters post FY26</strong> — confirming the AI Systems mix improvement is structural (not a one-off large-order phenomenon). Sustained margin at or above 13% would justify a higher terminal P/E in the DCF.</p></div></li>
+  </ul>
+
+  <h3>Key Risks</h3>
+  <div class="score-grid">
+    <div class="score-item"><div class="score-icon si-fail">!</div><div><h4>NVIDIA GPU Supply Constraint</h4><p>If NVIDIA restricts Blackwell allocation due to US export policy, Netweb's AI Systems segment could face supply bottlenecks. This is the highest-impact external risk.</p></div></div>
+    <div class="score-item"><div class="score-icon si-fail">!</div><div><h4>Valuation De-rating</h4><p>At 111x trailing P/E, any growth disappointment (order delay, margin miss) could trigger a severe de-rating. 60%+ downside exists if valuation compresses to 40–50x.</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Order Concentration</h4><p>₹1,734 Cr sovereign AI order is a single large engagement. Non-renewal or delay would significantly impact FY27 numbers.</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Promoter Selling</h4><p>Further promoter block sales at current valuations would be a negative signal. Monitor quarterly for any further holding reduction.</p></div></div>
+  </div>
+
+  <h3>Series Context — Buffett Quality-Value Series</h3>
+  <div style="overflow-x:auto">
+  <table>
+    <tr><th>#</th><th>Company</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Thesis</th></tr>
+    <tr><td>1</td><td>PVR INOX</td><td>C</td><td>⚪</td><td>C+</td><td>D</td><td>C</td><td>D+</td><td>PASS</td><td>No pricing power; 5 loss years</td></tr>
+    <tr><td>2</td><td>Yatharth Hospital</td><td>C</td><td>🟢</td><td>B−</td><td>C+</td><td>C+</td><td>D+</td><td>WATCH ★★</td><td>IT investigation; AI diagnostics potential</td></tr>
+    <tr><td>3</td><td>Bajaj Auto</td><td>C</td><td>⚪</td><td>A−</td><td>A</td><td>B+</td><td>C</td><td>WATCH ★★★</td><td>India quality leader; above entry</td></tr>
+    <tr><td>4</td><td>Tata Chemicals</td><td>E</td><td>⚪</td><td>D−</td><td>F</td><td>B−</td><td>C+</td><td>PASS</td><td>Commodity trap; wrong framework</td></tr>
+    <tr><td>5</td><td>Tata Motors PV</td><td>D</td><td>🔴</td><td>B−</td><td>D</td><td>B</td><td>B−</td><td>WATCH ★★</td><td>JLR EV + AI risk; near entry price</td></tr>
+    <tr><td>6</td><td>Bank of Baroda</td><td>D</td><td>🟢</td><td>C+</td><td>C+</td><td>C</td><td>B</td><td>WATCH ★★</td><td>PSB; AI credit scoring forming moat</td></tr>
+    <tr><td>7</td><td>Alphabet (GOOGL)</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>B+</td><td>C+</td><td>WATCH ★★★★</td><td>Gemini = AI WIDENER; antitrust priced</td></tr>
+    <tr><td>8</td><td>Microsoft (MSFT)</td><td>C</td><td>🟢</td><td>A+</td><td>A</td><td>A</td><td>D+</td><td>WATCH ★★★</td><td>Copilot flywheel; still too expensive</td></tr>
+    <tr><td>9</td><td>Newgen Software</td><td>C</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>D</td><td>WATCH ★★★</td><td>AI-native BPM moat; overpriced</td></tr>
+    <tr><td>10</td><td>MercadoLibre</td><td>B</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>B+</td><td>BUY ★★★★★</td><td>LatAm AI flywheel; FCF yield &gt; UST</td></tr>
+    <tr><td>11</td><td>Colgate India</td><td>A</td><td>⚪</td><td>A+</td><td>A+</td><td>A</td><td>B+</td><td>WATCH ★★★★½</td><td>Perfect biz; AI neutral; adapted buy</td></tr>
+    <tr class="series-row-active"><td><strong>12</strong></td><td><strong>Netweb Technologies</strong></td><td><strong>B</strong></td><td>🟢</td><td><strong>B</strong></td><td><strong>B+</strong></td><td><strong>B+</strong></td><td><strong>D+</strong></td><td><strong>WATCH ★★★</strong></td><td>India sovereign AI OEM; above base IV</td></tr>
+  </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 7 — TECHNICAL
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab7">
+  <h2>Technical Analysis</h2>
+  <p style="font-size:0.82rem;color:var(--muted)">Price data based on latest available sources. Confirm live on NSE/TradingView. All levels approximate. <span class="v v-un">UNVERIFIED — confirm on NSE app</span></p>
+
+  <h3>Section A — Price Structure &amp; Multi-Timeframe Trend</h3>
+  <div class="metric-grid">
+    <div class="metric pass-m"><label>Current Price</label><div class="val">~₹4,057</div><div class="sub">April 30, 2026</div></div>
+    <div class="metric"><label>52-Week High</label><div class="val">₹4,479</div><div class="sub">~9.4% above current</div></div>
+    <div class="metric"><label>52-Week Low</label><div class="val">₹1,397</div><div class="sub">1-Year return: +173%</div></div>
+    <div class="metric warn-m"><label>1-Month Return</label><div class="val">+29.2%</div><div class="sub">Recent sharp acceleration</div></div>
+  </div>
+  <table>
+    <tr><th>Timeframe</th><th>Trend</th><th>Signal</th></tr>
+    <tr><td>Monthly</td><td class="green">Strong Uptrend</td><td class="green">Bull run intact; no reversal pattern</td></tr>
+    <tr><td>Weekly</td><td class="green">Uptrend</td><td class="green">Higher highs, higher lows; 2025–26 rocket trajectory</td></tr>
+    <tr><td>Daily</td><td class="warn">Overbought / Extended</td><td class="warn">Recent +29% in 1 month suggests extension risk; pause or pullback likely</td></tr>
+  </table>
+
+  <h3>Section B — Moving Average Dashboard</h3>
+  <div class="ta-grid">
+    <div class="ta-cell"><label>20-EMA</label><div class="tv" style="color:var(--pass)">~₹3,700</div><div class="ts">Price above — Bullish</div></div>
+    <div class="ta-cell"><label>50-DMA</label><div class="tv" style="color:var(--pass)">~₹3,300</div><div class="ts">Price above — Bullish</div></div>
+    <div class="ta-cell"><label>100-DMA</label><div class="tv" style="color:var(--pass)">~₹2,800</div><div class="ts">Price well above — Strong</div></div>
+    <div class="ta-cell"><label>200-DMA</label><div class="tv" style="color:var(--pass)">~₹2,200</div><div class="ts">Price well above — Very Bullish LT</div></div>
+    <div class="ta-cell"><label>Golden Cross</label><div class="tv" style="color:var(--pass)">Active</div><div class="ts">50-DMA &gt; 200-DMA since mid-2024</div></div>
+    <div class="ta-cell"><label>EMA Ribbon</label><div class="tv" style="color:var(--pass)">Bullish</div><div class="ts">All MAs stacked upward</div></div>
+  </div>
+  <p style="font-size:0.82rem;color:var(--muted)">All moving averages are stacked bullishly (price &gt; 20-EMA &gt; 50 &gt; 100 &gt; 200). No death cross risk in medium term. The 200-DMA at ~₹2,200 is the key long-term support.</p>
+
+  <h3>Section C — Volume Analysis</h3>
+  <div class="card">
+    <p><strong>Key volume events:</strong></p>
+    <p>• <strong>Sept 3, 2025:</strong> IndiaAI Mission order announcement — volume surge +11.5% single day; exceptional institutional buying volume <span class="v v-ok">VERIFIED</span></p>
+    <p>• <strong>Feb 12, 2026:</strong> Promoter block sale of 3.65% — heavy selling volume (~22.32 lakh shares; ₹682 Cr deal); absorbed without major drawdown — signals strong institutional demand at ~₹3,339 <span class="v v-ok">VERIFIED</span></p>
+    <p>• <strong>Feb 2026:</strong> Tyrone Camarero GB200 launch event — volume expansion; positive catalyst</p>
+    <p>• <strong>May 2026 (pending):</strong> FY26 full year results conference call (May 4, 2026) — likely major catalyst event; results already excellent</p>
+    <p><strong>OBV verdict:</strong> On-balance volume firmly positive throughout FY26 — institutional accumulation confirmed on dips. Volume confirmed the September 2025 breakout above ₹2,500.</p>
+  </div>
+
+  <h3>Section D — Momentum Indicators</h3>
+  <div class="metric-grid">
+    <div class="metric warn-m"><label>RSI (Daily)</label><div class="val">~65–70</div><div class="sub">Elevated; approaching overbought <span class="v v-un">UNVERIFIED</span></div></div>
+    <div class="metric warn-m"><label>RSI (Weekly)</label><div class="val">~70–75</div><div class="sub">Overbought on weekly — caution</div></div>
+    <div class="metric pass-m"><label>MACD (Daily)</label><div class="val">Positive</div><div class="sub">Above signal line; histogram positive</div></div>
+    <div class="metric warn-m"><label>MACD Divergence</label><div class="val">Watch</div><div class="sub">Monitor for bearish divergence at highs</div></div>
+  </div>
+
+  <h3>Section E — Chart Pattern</h3>
+  <div class="card">
+    <p><strong>Pattern:</strong> Post-consolidation breakout. The stock broke above ₹3,000 resistance (former all-time high zone) on the IndiaAI Mission order in September 2025, then consolidated through Dec 2025–Jan 2026, before re-accelerating to current levels following FY26 results. This is a classic <strong>Breakout → Consolidation → Continuation</strong> pattern.</p>
+    <p><strong>Target (from breakout):</strong> ₹4,500–4,800 (measured move from ₹3,000 breakout); current price approaching this zone.</p>
+    <p><strong>Invalidation:</strong> Daily close below ₹3,200 would suggest momentum reversal; weekly close below ₹2,800 would signal structural breakdown.</p>
+  </div>
+
+  <h3>Section F — Trade Structure</h3>
+  <div class="trade-box">
+    <h3 style="margin-top:0;color:var(--saffron)">⚠️ No Entry At Current Price — Wait for Trigger</h3>
+    <p><strong>PRIMARY TRIGGER (Preferred Entry):</strong> Price corrects to ₹2,800–3,000 + RSI &lt;40 + 200-DMA support. R:R ≥ 1:3 from this level (target: ₹4,500–5,000 in 18–24 months).</p>
+    <table style="margin-top:12px">
+      <tr><th>Level</th><th>Price</th><th>Rationale</th></tr>
+      <tr><td class="label">Strong Resistance</td><td>₹4,479 (52wk high)</td><td>Current supply zone</td></tr>
+      <tr><td class="label">Current Price</td><td>~₹4,057</td><td>Above base IV — no MoS</td></tr>
+      <tr><td class="label">Support 1 (20-EMA)</td><td>~₹3,700</td><td>First technical pullback level</td></tr>
+      <tr><td class="label">Support 2 (50-DMA)</td><td>~₹3,300</td><td>Meaningful correction target</td></tr>
+      <tr><td class="label">WATCH → BUY Zone</td><td>₹2,800–3,200</td><td>Base IV MoS entry range</td></tr>
+      <tr><td class="label">Strong Buy (200-DMA)</td><td>~₹2,200</td><td>Long-term MA + Stress IV zone</td></tr>
+    </table>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px">If entering in WATCH → BUY zone (₹2,800–3,000): Entry ₹2,900 / Stop-loss ₹2,350 / Target 1: ₹4,000 / Target 2: ₹5,500 — R:R of 1:2.7. Acceptable.</p>
+  </div>
+
+  <h3>Section G — Technical Composite Score</h3>
+  <table>
+    <tr><th>Dimension</th><th>Score (1–5)</th><th>Comment</th></tr>
+    <tr><td class="label">Price vs MAs</td><td class="green">5/5</td><td>Above all 4 MAs — very bullish</td></tr>
+    <tr><td class="label">Volume Confirmation</td><td class="green">4/5</td><td>Institutional accumulation confirmed</td></tr>
+    <tr><td class="label">Momentum (RSI/MACD)</td><td class="warn">3/5</td><td>Overbought on weekly — elevated risk of reversal</td></tr>
+    <tr><td class="label">Chart Pattern</td><td class="green">4/5</td><td>Continuation pattern intact; approaching targets</td></tr>
+    <tr><td class="label">Support Structure</td><td class="green">4/5</td><td>Multiple support levels below current price</td></tr>
+    <tr><td class="label">Risk/Reward at Current Price</td><td class="red">1/5</td><td>No MoS; poor R:R for new entry</td></tr>
+    <tr style="background:rgba(255,107,0,0.05)"><td class="label"><strong>Total</strong></td><td class="warn"><strong>21/30 (70%)</strong></td><td class="warn"><strong>Technically BULLISH but extended — wait for entry</strong></td></tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 8 — SHAREHOLDING
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab8">
+  <h2>Shareholding &amp; Free Float Analysis</h2>
+
+  <h3>Section A — Promoter Holding Trend</h3>
+  <table>
+    <tr><th>Quarter</th><th>Promoter %</th><th>Change</th><th>Signal</th></tr>
+    <tr><td>Q2 FY25 (Sept 2024)</td><td class="v-est">~71.0%</td><td>—</td><td class="green">Stable — high alignment</td></tr>
+    <tr><td>Q3 FY25 (Dec 2024)</td><td class="v-est">~71.0%</td><td>0%</td><td class="green">Stable</td></tr>
+    <tr><td>Q4 FY25 (Mar 2025)</td><td class="v-est">~71.0%</td><td>0%</td><td class="green">Stable</td></tr>
+    <tr><td>Q1 FY26 (Jun 2025)</td><td class="v-est">~71.0%</td><td>0%</td><td class="green">Stable</td></tr>
+    <tr style="background:rgba(255,77,109,0.05)"><td><strong>Q3 FY26 (Dec 2025)</strong></td><td class="red"><strong>66.98%</strong></td><td class="red"><strong>−4.02%</strong></td><td class="red">Concern — block sale of 3.65% at ₹3,339</td></tr>
+  </table>
+  <p style="color:var(--warn);font-size:0.83rem">⚠️ Promoter sold 20.8 lakh shares (3.65%) via open market block deal in February 2026 at ~₹3,339/share (₹682 Cr). This was at a 17% discount to current prices — suggesting promoters may have sold near what they considered fair value. However, 66.98% retained holding maintains strong alignment. Watch for further sales.</p>
+  <p><strong>Pledge status: 0%</strong> — No pledged shares. PASS.</p>
+
+  <h3>Section B — FII / DII Holdings</h3>
+  <div class="sh-bar-row"><label>Promoter</label><div class="sh-bar-bg"><div class="sh-bar-fill" style="width:67%;background:var(--saffron)"></div></div><div class="sv">67.0%</div></div>
+  <div class="sh-bar-row"><label>FII</label><div class="sh-bar-bg"><div class="sh-bar-fill" style="width:9.29%;background:var(--cyan)"></div></div><div class="sv">9.29%</div></div>
+  <div class="sh-bar-row"><label>DII (MF)</label><div class="sh-bar-bg"><div class="sh-bar-fill" style="width:4.68%;background:var(--pass)"></div></div><div class="sv">4.68%</div></div>
+  <div class="sh-bar-row"><label>Retail / Public</label><div class="sh-bar-bg"><div class="sh-bar-fill" style="width:19.04%;background:var(--muted)"></div></div><div class="sv">19.04%</div></div>
+
+  <div class="card" style="margin-top:14px">
+    <p><strong>FII trend:</strong> FII holding at 9.29% — significant for a small-mid cap stock. Global tech/AI-focused funds have been accumulating. The promoter block sale in February 2026 was likely absorbed by FII buyers — institutional demand is confirmed at ₹3,339 level. <span class="v v-est">ESTIMATED</span></p>
+    <p><strong>Mutual fund holding:</strong> 4.07% (up from 3.0% previous quarter — actively accumulating). MF accumulation alongside FII presence is a quality ownership signal. <span class="v v-ok">VERIFIED</span></p>
+    <p><strong>Sectoral FII limit:</strong> IT/Tech sector — no specific sector cap concern for Netweb's category. FII headroom ample.</p>
+  </div>
+
+  <h3>Section C — Free Float &amp; SIP Estimate</h3>
+  <div class="metric-grid">
+    <div class="metric"><label>Free Float</label><div class="val">~33%</div><div class="sub">~1.87 Cr shares in free float</div></div>
+    <div class="metric"><label>Free Float Mkt Cap</label><div class="val">~₹7,600 Cr</div><div class="sub">At current price (~₹4,057)</div></div>
+    <div class="metric"><label>Total Mkt Cap</label><div class="val">~₹22,963 Cr</div><div class="sub">5.66 Cr shares × ₹4,057</div></div>
+    <div class="metric"><label>Est. Monthly SIP Inflow</label><div class="val">~₹15–20 Cr/mo</div><div class="sub">Based on MF exposure + Nifty Mid-cap SIP flows</div></div>
+  </div>
+  <p style="font-size:0.82rem;color:var(--muted)">Tight free float of 33% means any institutional buying episode can move the stock sharply. This amplifies both upside and downside. For a buy-and-hold investor, this is a feature (price response to good results). For a trader, it's a risk (sharp corrections possible).</p>
+
+  <h3>Section D — Full Composition Table</h3>
+  <table>
+    <tr><th>Category</th><th>Holding %</th><th>Trend</th><th>Signal</th></tr>
+    <tr><td class="label">Promoter Group</td><td>67.0%</td><td class="red">↓ Decreasing</td><td class="warn">Sold 4% — monitor for further sales</td></tr>
+    <tr><td class="label">FII / FPI</td><td>9.29%</td><td class="green">↑ Increasing</td><td class="green">Global AI fund accumulation — positive</td></tr>
+    <tr><td class="label">DII — Mutual Funds</td><td>4.07%</td><td class="green">↑ Increasing</td><td class="green">Up from 3.0% — domestic MF accumulating</td></tr>
+    <tr><td class="label">DII — Insurance / Others</td><td>0.61%</td><td>→ Stable</td><td>Minimal insurance exposure</td></tr>
+    <tr><td class="label">Retail / HNI / Public</td><td>19.04%</td><td class="warn">↑ Slightly</td><td class="warn">Retail participation elevated — frothy sign</td></tr>
+  </table>
+
+  <h3>Section E — Ownership Quality Scores</h3>
+  <div class="metric-grid">
+    <div class="metric pass-m"><label>Ownership Momentum Score</label><div class="val">62/100</div><div class="sub">FII + MF accumulation offsets promoter selling</div></div>
+    <div class="metric warn-m"><label>Shareholding Risk Score</label><div class="val">38/100</div><div class="sub">Low pledge, but promoter selling + retail froth = moderate risk</div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 9 — AI INTELLIGENCE
+════════════════════════════════════════════ -->
+<div class="tab-content" id="tab9">
+  <h2>AI Opportunity Intelligence</h2>
+
+  <h3>Section A — AI Classification Dashboard</h3>
+  <div class="metric-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="metric cyan-m"><label>Category</label><div class="val">B</div><div class="sub">High-Growth</div></div>
+    <div class="metric pass-m"><label>AI Overlay</label><div class="val">🟢</div><div class="sub">AI Widener</div></div>
+    <div class="metric warn-m"><label>Data Flywheel</label><div class="val">★</div><div class="sub">AI Feature (3/10)</div></div>
+    <div class="metric"><label>Adoption Phase</label><div class="val">Phase 2→3</div><div class="sub">India AI infra transitioning</div></div>
+  </div>
+
+  <div class="card card-top-cyan">
+    <h3 style="margin-top:0">AI Adoption Phase: Phase 2→3 Transition (India) <span class="v v-est">ESTIMATED</span></h3>
+    <p><strong>Phase 2 — Early Commercial Traction:</strong> India's AI infrastructure is transitioning from Phase 2 to Phase 3 as of 2025-26. Evidence: IndiaAI Mission ₹10,372 Cr GPU procurement programme (Phase 3 signals), multiple hyperscalers (Microsoft, Google, AWS) announcing India data center investments of $3–5B+, enterprise AI deployments accelerating across BFSI, healthcare, and manufacturing.</p>
+    <p><strong>Phase 3 inflection signal (India AI infra):</strong> The September 2025 IndiaAI Mission order to Netweb is exactly the kind of large-scale procurement that marks Phase 2 → Phase 3 transition in an industry. This is the highest-conviction entry signal for AI infrastructure plays — and Netweb received it.</p>
+    <p style="font-size:0.82rem;color:var(--warn)">Strategic implication: Phase 2→3 transition is where the BIGGEST gains are made in AI infrastructure. Netweb is at the centre of this transition in India. This justifies the premium valuation — but doesn't justify buying above base IV.</p>
+  </div>
+
+  <h3>Section B — Data Flywheel Deep-Dive</h3>
+  <div class="flywheel-box">
+    <div class="flywheel-badge">⬡ AI FEATURE — Score 3/10</div>
+    <div class="flywheel-q"><div class="fq-num">Q1</div><p><strong>Proprietary Data:</strong> Data quality score 1/3. Netweb accumulates engineering configuration data (optimal system designs for India's power/climate constraints) and deployment experience data from 131+ enterprise customers per year. However, this is not structured training data — it's tacit engineering knowledge. It cannot be licensed or sold as a data asset. <span class="v v-est">ESTIMATED</span></p></div>
+    <div class="flywheel-q"><div class="fq-num">Q2</div><p><strong>AI Improvement with Scale:</strong> Improvement evidence score 1/4. More HPC deployments → better system integration expertise → faster deployment of next projects. This is a learning curve (manufacturing), not a data flywheel (AI). No measurable evidence that Netweb's AI capabilities improve with each deployment in a compounding way. <span class="v v-est">ESTIMATED</span></p></div>
+    <div class="flywheel-q"><div class="fq-num">Q3</div><p><strong>Better AI Attracts More Users:</strong> Loop speed score 1/3. Reference customer effect exists — "India's most installed AI supercomputer brand" creates credibility that helps win the next contract. But this is a B2B sales cycle (18–36 months) not a rapid flywheel. The loop completes slowly. <span class="v v-est">ESTIMATED</span></p></div>
+    <p style="font-size:0.83rem;color:var(--muted);margin-top:12px"><strong>Total: 3/10 — AI Feature.</strong> Netweb is the enabler of other companies' AI flywheels — they supply the GPU infrastructure that makes HDFC Bank's fraud detection flywheel possible. This is a legitimate and valuable business position (Level 1 — Infrastructure). But the moat is based on partnerships and manufacturing capability, not a data flywheel. The flywheel score does not reduce conviction — it clarifies the nature of the investment.</p>
+  </div>
+
+  <h3>Section C — AI Value Chain Position</h3>
+  <div class="vc-row">
+    <div class="vc-node active"><div class="vc-level">Level 1</div>INFRASTRUCTURE<div style="font-size:0.6rem;margin-top:4px">Netweb is HERE</div></div>
+    <div class="vc-node"><div class="vc-level">Level 2</div>FOUNDATION MODELS</div>
+    <div class="vc-node"><div class="vc-level">Level 3</div>AI PLATFORMS</div>
+    <div class="vc-node"><div class="vc-level">Level 4</div>VERTICAL APPS</div>
+    <div class="vc-node"><div class="vc-level">Level 5</div>AI-ENABLED INCUMBENTS</div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <p><strong>Level 1 — Infrastructure (Picks &amp; Shovels):</strong> Netweb manufactures the GPU-accelerated servers and HPC systems that every AI application layer requires. This position has a critical strategic advantage: <strong>Netweb wins regardless of which AI model, application, or use case ultimately succeeds.</strong> Whether India's sovereign AI trains the best LLM, or it's a private company, or an international model — the compute infrastructure is needed.</p>
+    <p><strong>Investment horizon implication:</strong> Level 1 companies have the most durable position in the early innings of an AI adoption cycle (3–5 years optimal return window). In Phase 4 (mainstream AI), infrastructure becomes commoditised. Netweb's differentiation must continue to evolve — toward higher-margin software services, proprietary AI system designs, and international markets — before Phase 4 arrives (est. 7–10 years away in India).</p>
+  </div>
+
+  <h3>Section D — India AI Opportunity Context</h3>
+  <div class="score-grid">
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Advantage 1: Data at Scale (India Stack)</h4><p>Netweb's customers (IndiaAI Mission, enterprise, PSUs) use Netweb systems to process India Stack data. Indirect benefit — Netweb supplies compute infrastructure for UPI + Aadhaar AI workloads. YES — adjacent benefit.</p></div></div>
+    <div class="score-item"><div class="score-icon si-warn">~</div><div><h4>Advantage 2: Vernacular AI</h4><p>Netweb's systems enable vernacular AI training (foundational models in Indian languages). Indirect — they are the compute provider, not the model developer. ADJACENT benefit.</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Advantage 3: India Stack as Infrastructure</h4><p>The IndiaAI Mission explicitly chose domestic OEMs (Netweb) to build sovereign AI compute — preventing dependence on foreign infrastructure. Netweb is a KEY node in India's AI sovereign stack. YES — direct.</p></div></div>
+    <div class="score-item"><div class="score-icon si-pass">✓</div><div><h4>Advantage 4: AI Talent Cost Arbitrage</h4><p>Netweb's R&D team (hardware engineers, system integrators) operates at Indian cost structures, enabling better product economics vs US-manufactured alternatives. YES — cost competitive advantage.</p></div></div>
+  </div>
+
+  <h3>India AI Theme Table</h3>
+  <table class="theme-table">
+    <tr><th>Theme</th><th>Phase</th><th>Netweb Relevance</th></tr>
+    <tr><td>AI in banking/credit</td><td>Phase 3</td><td class="relevance-adj">Adjacent — supplies AI servers to banks</td></tr>
+    <tr><td>Vernacular AI content</td><td>Phase 2</td><td class="relevance-adj">Adjacent — training compute provider</td></tr>
+    <tr><td>AI in pharma R&D</td><td>Phase 2</td><td class="relevance-adj">Adjacent — HPC for drug discovery compute</td></tr>
+    <tr><td>AI in agri advisory</td><td>Phase 1–2</td><td class="relevance-no">None direct</td></tr>
+    <tr><td>AI in logistics/supply</td><td>Phase 2–3</td><td class="relevance-adj">Adjacent — enterprise AI servers</td></tr>
+    <tr><td>AI in diagnostics</td><td>Phase 2</td><td class="relevance-adj">Adjacent — medical HPC</td></tr>
+    <tr><td><strong>Data centres / AI infra</strong></td><td class="green"><strong>Phase 3–4</strong></td><td class="relevance-yes"><strong>DIRECT — core business</strong></td></tr>
+    <tr><td>Sovereign AI compute</td><td class="green"><strong>Phase 2→3</strong></td><td class="relevance-yes"><strong>DIRECT — IndiaAI Mission partner</strong></td></tr>
+    <tr><td>AI in education</td><td>Phase 2</td><td class="relevance-adj">Adjacent — EdTech compute</td></tr>
+  </table>
+
+  <h3>Section F — AI Opportunity Verdict &amp; Portfolio Role</h3>
+  <div class="ai-gauge-wrap">
+    <div class="ai-score-num">68</div>
+    <div class="ai-score-label">AI Opportunity Score / 100</div>
+    <div class="ai-bar-wrap"><div class="ai-bar-fill" style="width:68%"></div></div>
+    <div class="ai-breakdown">
+      <div class="ab-item"><label>Data Flywheel</label><div class="ab-val">3/20</div></div>
+      <div class="ab-item"><label>Phase Timing</label><div class="ab-val">18/20</div></div>
+      <div class="ab-item"><label>Value Chain</label><div class="ab-val">16/20</div></div>
+      <div class="ab-item"><label>India Advantage</label><div class="ab-val">17/20</div></div>
+      <div class="ab-item"><label>Threat Resistance</label><div class="ab-val">14/20</div></div>
+    </div>
+  </div>
+  <div class="card card-top-cyan" style="margin-top:16px">
+    <h3 style="margin-top:0;color:var(--cyan)">Portfolio Role: STRATEGIC AI BET (Score 60–80)</h3>
+    <p><strong>At the right price</strong> (₹2,800–3,200), Netweb is a 2–3% strategic position in a Buffett Quality-Value portfolio exposed to India's AI infrastructure build-out. The business is at Phase 2→3 transition — exactly where the largest gains are made — but the current price has likely priced in the next 12–18 months of good news.</p>
+    <p><strong>Investment Horizon:</strong> 3–5 years (Level 1 Infrastructure cycle). Monitor for Phase 4 signals (AI infrastructure commoditisation) — which would be the exit trigger, not the entry.</p>
+    <p><strong>Position size cap:</strong> 3–5% of portfolio maximum (hardware business with project concentration + valuation risk). Not a core holding size — a strategic bet on India's sovereign AI ambition.</p>
+    <p style="font-size:0.82rem;color:var(--muted)">Why 68 not 80: The data flywheel score (3/20) prevents this from reaching CORE AI HOLDING status. Netweb's competitive position is built on partnerships and manufacturing, not compounding data advantages. This makes it a strong but not exceptional AI opportunity from a Buffett framework perspective.</p>
+  </div>
+
+  <h3>Key AI Events Timeline</h3>
+  <table>
+    <tr><th>Date</th><th>Event</th><th>Significance</th></tr>
+    <tr><td>May 2024</td><td>Commissioned Faridabad AI manufacturing facility</td><td class="green">Counter-cyclical capex — timed perfectly</td></tr>
+    <tr><td>FY25</td><td>Launched Skylus.ai, AMD EPYC Turin, Intel Emerald Rapids integration</td><td class="green">Multi-platform AI system capability</td></tr>
+    <tr><td>Sept 3, 2025</td><td>₹1,734 Cr IndiaAI Mission sovereign order</td><td class="green">Largest order in company history; game-changing</td></tr>
+    <tr><td>Dec 2025</td><td>FY26 Adj. EBITDA +82.4%; AI Systems +459.6% YoY</td><td class="green">Execution confirmed; AI segment inflection</td></tr>
+    <tr><td>Feb 18, 2026</td><td>Tyrone Camarero GB200 System launch (80 Blackwell GPUs/rack)</td><td class="green">World-class AI supercomputer — Make in India</td></tr>
+    <tr><td>Feb 18, 2026</td><td>Tyrone Camarero Spark launched (desktop AI supercomputer)</td><td class="green">New market segment — AI developer community</td></tr>
+    <tr><td>Mar 2026</td><td>Vertiv collaboration for GPU-based AI data centre infrastructure</td><td class="green">Ecosystem partnerships deepening</td></tr>
+    <tr><td>May 2, 2026</td><td>CSO &amp; VP-Technology appointed; FY26 results announced</td><td class="green">Leadership strengthening; record results confirmed</td></tr>
+  </table>
+</div>
+
+<!-- ─────── FOOTER ─────── -->
+<footer style="background:var(--navy2);border-top:1px solid var(--border);padding:24px 32px;margin-top:40px;font-size:0.75rem;color:var(--muted)">
+  <p><strong style="color:var(--white)">SEBI DISCLAIMER:</strong> This report is for educational and research purposes only. It does not constitute investment advice, a buy/sell recommendation, or any solicitation. Investment in equities involves market risk; past performance does not guarantee future results. Please consult a SEBI-registered financial advisor before making any investment decision.</p>
+  <p style="margin-top:8px"><strong style="color:var(--white)">DATA DISCLAIMER:</strong> Financial data is sourced from public disclosures, BSE/NSE filings, and reputable financial media. Estimated data points are clearly marked [ESTIMATED]. Current stock price is unverified — confirm on NSE app or your brokerage before any trading decision. The inventory accounting policy change and its impact on year-over-year comparability should be independently verified.</p>
+  <p style="margin-top:8px">Report generated: May 3, 2026 | Framework: Buffett Quality-Value Series v5.0 | Fonts: Oxanium · Barlow · JetBrains Mono | Report #12 in the Series</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function() {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+document.getElementById('tab0').style.display = 'block';
+</script>
+</body>
+</html>

@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JARO — Buffett Quality-Value Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Mulish:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #080F1E;
+    --navy-2: #0E1A2F;
+    --navy-3: #162036;
+    --amber: #F97316;
+    --amber-light: #FB923C;
+    --cyan: #22D3EE;
+    --cyan-dim: #0E7490;
+    --green: #10B981;
+    --red: #EF4444;
+    --yellow: #EAB308;
+    --slate: #94A3B8;
+    --slate-light: #CBD5E1;
+    --white: #F1F5F9;
+    --card-bg: #0E1A2F;
+    --card-border: rgba(34,211,238,0.12);
+    --pass: #10B981;
+    --marginal: #EAB308;
+    --fail: #EF4444;
+    --verified: #10B981;
+    --estimated: #F59E0B;
+    --unverified: #EF4444;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--navy); color: var(--white); font-family: 'Mulish', sans-serif; font-size: 14px; line-height: 1.6; }
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #050B18 0%, #0A1628 40%, #0E1F3D 70%, #061525 100%);
+    border-bottom: 2px solid var(--amber);
+    padding: 36px 28px 28px;
+    max-height: 220px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .hero-left { flex: 1; min-width: 280px; }
+  .hero-ticker { font-family: 'Bebas Neue', sans-serif; font-size: 56px; line-height: 1; color: var(--amber); letter-spacing: 2px; }
+  .hero-name { font-size: 12px; color: var(--slate); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 6px; font-weight: 600; }
+  .hero-lede { font-size: 11px; color: var(--slate-light); max-width: 460px; line-height: 1.5; margin-top: 4px; }
+  .hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .verdict-badge {
+    background: var(--cyan-dim);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    padding: 6px 18px;
+    border-radius: 4px;
+  }
+  .badge-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .badge {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    padding: 3px 10px; border-radius: 3px;
+  }
+  .badge-cat { background: rgba(249,115,22,0.2); border: 1px solid var(--amber); color: var(--amber); }
+  .badge-neutral { background: rgba(148,163,184,0.2); border: 1px solid var(--slate); color: var(--slate-light); }
+  .badge-widener { background: rgba(16,185,129,0.2); border: 1px solid var(--green); color: var(--green); }
+  .badge-threat { background: rgba(239,68,68,0.2); border: 1px solid var(--red); color: var(--red); }
+  .badge-macro { background: rgba(34,211,238,0.15); border: 1px solid var(--cyan); color: var(--cyan); }
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .pill { font-family: 'Courier Prime', monospace; font-size: 11px; padding: 2px 10px; border-radius: 20px; border: 1px solid; }
+  .pill-v { color: var(--verified); border-color: var(--verified); background: rgba(16,185,129,0.08); }
+  .pill-e { color: var(--estimated); border-color: var(--estimated); background: rgba(245,158,11,0.08); }
+  .pill-u { color: var(--unverified); border-color: var(--unverified); background: rgba(239,68,68,0.08); }
+  /* ── TAB BAR ── */
+  #tab-bar {
+    background: #060D1A;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  #tab-bar::-webkit-scrollbar { display: none; }
+  .tab-nav { display: flex; min-width: max-content; }
+  .tab-btn {
+    background: none; border: none; cursor: pointer;
+    font-family: 'Mulish', sans-serif; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--slate); padding: 12px 16px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--white); }
+  .tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+  /* ── LAYOUT ── */
+  .tab-content { display: none; max-width: 1100px; margin: 0 auto; padding: 28px 20px 60px; }
+  /* ── CARDS ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--amber);
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(249,115,22,0.2);
+    padding-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--cyan);
+    letter-spacing: 1.5px;
+    margin: 24px 0 14px;
+    padding-left: 10px;
+    border-left: 3px solid var(--cyan);
+  }
+  /* ── METRIC GRID ── */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .metric-card {
+    background: var(--navy-3);
+    border-radius: 6px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--cyan-dim);
+  }
+  .metric-card.pass-c { border-left-color: var(--pass); }
+  .metric-card.warn-c { border-left-color: var(--yellow); }
+  .metric-card.fail-c { border-left-color: var(--fail); }
+  .metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--slate); font-weight: 700; margin-bottom: 4px; }
+  .metric-value { font-family: 'Courier Prime', monospace; font-size: 20px; color: var(--white); font-weight: 700; }
+  .metric-sub { font-size: 10px; color: var(--slate); margin-top: 2px; }
+  /* ── TABLES ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 16px; }
+  .data-table th { background: var(--navy-3); color: var(--slate); text-transform: uppercase; font-size: 10px; letter-spacing: 1px; padding: 8px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .data-table td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--slate-light); }
+  .data-table tr:hover td { background: rgba(255,255,255,0.03); }
+  .num { font-family: 'Courier Prime', monospace; color: var(--white); }
+  .pos { color: var(--pass); } .neg { color: var(--fail); } .warn { color: var(--yellow); }
+  /* ── SCORECARD ── */
+  .scorecard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .score-item {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--navy-3); border-radius: 6px; padding: 10px 14px;
+  }
+  .score-icon { font-size: 16px; flex-shrink: 0; }
+  .score-label { font-size: 11px; color: var(--slate-light); flex: 1; }
+  .score-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 3px; }
+  .pass-tag { background: rgba(16,185,129,0.2); color: var(--pass); border: 1px solid var(--pass); }
+  .marg-tag { background: rgba(234,179,8,0.2); color: var(--yellow); border: 1px solid var(--yellow); }
+  .fail-tag { background: rgba(239,68,68,0.2); color: var(--fail); border: 1px solid var(--fail); }
+  /* ── PILLAR GRADES ── */
+  .pillar-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .pillar-card {
+    background: var(--navy-3);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .pillar-name { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--slate); margin-bottom: 8px; font-weight: 700; }
+  .pillar-grade { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--amber); line-height: 1; }
+  .pillar-sub { font-size: 10px; color: var(--slate); margin-top: 4px; }
+  /* ── VERDICT BOX ── */
+  .verdict-box {
+    background: linear-gradient(135deg, #0A1628 0%, #0E2040 100%);
+    border: 2px solid var(--cyan);
+    border-radius: 10px;
+    padding: 28px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .verdict-box::before {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(34,211,238,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .verdict-rating { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--cyan); letter-spacing: 3px; margin-bottom: 4px; }
+  .verdict-stars { font-size: 24px; color: var(--amber); margin-bottom: 12px; }
+  .verdict-quote { font-size: 13px; color: var(--slate-light); line-height: 1.7; font-style: italic; border-left: 3px solid var(--cyan); padding-left: 14px; margin: 14px 0; }
+  .verdict-prose { font-size: 12px; color: var(--slate-light); line-height: 1.7; }
+  /* ── UPGRADE CONDITIONS ── */
+  .upgrade-list { list-style: none; }
+  .upgrade-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--navy-3); border-radius: 6px; padding: 10px 14px;
+    margin-bottom: 8px; border-left: 3px solid var(--amber);
+  }
+  .upgrade-num {
+    background: var(--amber); color: var(--navy);
+    font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .upgrade-text { font-size: 11px; color: var(--slate-light); line-height: 1.5; }
+  /* ── MOAT STARS ── */
+  .moat-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .moat-stars { color: var(--amber); font-size: 12px; flex-shrink: 0; min-width: 70px; }
+  .moat-name { font-weight: 700; font-size: 12px; color: var(--white); }
+  .moat-desc { font-size: 11px; color: var(--slate); margin-top: 2px; }
+  /* ── FLYWHEEL BOX ── */
+  .flywheel-box {
+    background: linear-gradient(135deg, #062010 0%, #0A1F15 100%);
+    border: 2px solid var(--green);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .flywheel-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--green); letter-spacing: 2px; margin-bottom: 12px; }
+  .flywheel-check { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; }
+  .flywheel-icon { font-size: 14px; flex-shrink: 0; }
+  .flywheel-text { font-size: 11px; color: var(--slate-light); }
+  /* ── AI DASHBOARD ── */
+  .ai-dash { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .ai-dash-card { background: var(--navy-3); border-radius: 8px; padding: 14px; text-align: center; border: 1px solid var(--card-border); }
+  .ai-dash-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--slate); margin-bottom: 6px; font-weight: 700; }
+  .ai-dash-value { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 1px; }
+  /* ── AI SCORE GAUGE ── */
+  .ai-score-box { display: flex; align-items: center; gap: 24px; background: var(--navy-3); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .ai-score-num { font-family: 'Bebas Neue', sans-serif; font-size: 64px; line-height: 1; }
+  .ai-score-bar { flex: 1; }
+  .ai-bar-track { background: rgba(255,255,255,0.08); border-radius: 4px; height: 8px; margin: 4px 0; overflow: hidden; }
+  .ai-bar-fill { height: 100%; border-radius: 4px; }
+  /* ── VALUE CHAIN ── */
+  .vc-row { display: flex; gap: 4px; margin-bottom: 16px; }
+  .vc-step {
+    flex: 1; text-align: center; padding: 10px 6px; border-radius: 6px;
+    background: var(--navy-3); border: 1px solid rgba(255,255,255,0.05);
+    font-size: 10px; color: var(--slate);
+  }
+  .vc-step.active { background: rgba(249,115,22,0.15); border-color: var(--amber); color: var(--amber); font-weight: 700; }
+  .vc-num { font-family: 'Bebas Neue', sans-serif; font-size: 20px; display: block; margin-bottom: 2px; }
+  /* ── TA ── */
+  .ma-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+  .ma-card { background: var(--navy-3); border-radius: 6px; padding: 12px; text-align: center; }
+  .ma-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--slate); margin-bottom: 4px; }
+  .ma-val { font-family: 'Courier Prime', monospace; font-size: 15px; color: var(--white); margin-bottom: 2px; }
+  .ma-status { font-size: 10px; font-weight: 700; }
+  .above { color: var(--pass); } .below { color: var(--fail); }
+  /* ── SHAREHOLDING ── */
+  .sh-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
+  .sh-seg { transition: width 0.5s; }
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .hero { max-height: none; padding: 24px 16px 20px; }
+    .hero-ticker { font-size: 38px; }
+    .pillar-row { grid-template-columns: repeat(2, 1fr); }
+    .scorecard { grid-template-columns: 1fr; }
+    .ai-dash { grid-template-columns: repeat(2, 1fr); }
+    .vc-row { flex-direction: column; }
+    .ma-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .badge-row { justify-content: flex-start; }
+    .hero-right { align-items: flex-start; }
+    .ai-score-box { flex-direction: column; }
+  }
+  /* misc */
+  hr.divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 20px 0; }
+  .text-sm { font-size: 11px; color: var(--slate-light); line-height: 1.6; }
+  .text-xs { font-size: 10px; color: var(--slate); }
+  .highlight { color: var(--amber); font-weight: 700; }
+  .tag-v { font-size: 9px; padding: 1px 6px; border-radius: 2px; background: rgba(16,185,129,0.15); color: var(--verified); border: 1px solid rgba(16,185,129,0.3); margin-left: 4px; vertical-align: middle; }
+  .tag-e { font-size: 9px; padding: 1px 6px; border-radius: 2px; background: rgba(245,158,11,0.15); color: var(--estimated); border: 1px solid rgba(245,158,11,0.3); margin-left: 4px; vertical-align: middle; }
+  .tag-u { font-size: 9px; padding: 1px 6px; border-radius: 2px; background: rgba(239,68,68,0.15); color: var(--unverified); border: 1px solid rgba(239,68,68,0.3); margin-left: 4px; vertical-align: middle; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 680px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+  .risk-item { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 11px; color: var(--slate-light); }
+  .risk-icon { flex-shrink: 0; }
+  .india-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .india-table th { padding: 7px 10px; background: var(--navy-3); color: var(--slate); font-size: 9px; text-transform: uppercase; letter-spacing: 1px; text-align: left; }
+  .india-table td { padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--slate-light); }
+  .india-table td:first-child { font-weight: 600; color: var(--white); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HERO ══════════════ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-name">NSE: JARO &nbsp;·&nbsp; Buffett Quality-Value Series v5.0 &nbsp;·&nbsp; Report #—</div>
+      <div class="hero-ticker">JARO</div>
+      <div class="badge-row" style="margin-top:8px;">
+        <span class="badge badge-cat">Category B · High-Growth EdTech</span>
+        <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+        <span class="badge badge-macro">Macro: Tailwind (Cautious)</span>
+      </div>
+      <div class="hero-lede">India's only self-funded profitable EdTech company listed on NSE · Online higher-education program manager partnering IITs, IIMs & global institutions · IPO listed Sep 2025 at ₹890; currently trading at ~50% discount to issue price creating a potential re-rating opportunity — conditional on operating cash flow recovery.</div>
+    </div>
+    <div class="hero-right">
+      <div class="verdict-badge">WATCH ★★★</div>
+      <div class="badge-row">
+        <span class="badge badge-cat">Entry Zone: ₹375–420</span>
+      </div>
+      <div class="pills">
+        <span class="pill pill-u">₹~440 CMP</span>
+        <span class="pill pill-v">₹252 Cr Rev FY25</span>
+        <span class="pill pill-v">ROE 35.8%</span>
+        <span class="pill pill-e">₹680 Base IV</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB BAR ══════════════ -->
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro & Growth</button>
+    <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+    <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intelligence</button>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 0: OVERVIEW ══════════════ -->
+<div class="tab-content" id="t0" style="display:block;">
+  <div class="section-title">Company Overview</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Business Model</div>
+      <p class="text-sm">Jaro Institute of Technology Management and Research Limited (NSE: JARO) is India's oldest and only consistently profitable, self-funded EdTech company. Founded in 2009 by first-generation entrepreneur Dr. Sanjay Namdeo Salunkhe, the company acts as a <strong>program management services intermediary</strong> — it does not create academic content or award degrees directly, but facilitates student enrollments and provides digital/physical infrastructure for partner universities to deliver online and hybrid programs.</p>
+      <br>
+      <p class="text-sm">The company operates through two modes: (1) <strong>Direct Collection</strong> — Jaro collects fees from students and remits to universities; (2) <strong>Referral</strong> — fees paid directly to universities who remit a commission to Jaro. Revenue is recognized over the course duration, creating a deferred revenue model that front-loads cash costs against deferred income recognition.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Why This Stock Is In The Series</div>
+      <p class="text-sm">JARO is a rare listed pure-play on India's booming online higher-education market — a sector projected to grow at 20–25% CAGR through 2030. The company has delivered exceptional fundamentals (ROE ~36%, EBITDA margin ~33%) but faces a critical structural concern: <strong>negative operating cash flow</strong> driven by marketing front-loading and rising working-capital days.</p>
+      <br>
+      <p class="text-sm">The stock listed at ₹890 in September 2025 and has since corrected ~50% — presenting a potential entry opportunity if cash-flow concerns prove temporary. This is a classic <strong>Category B high-growth quality-vs-price tension</strong> that the QV framework is designed to adjudicate.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Key Business Facts</div>
+  <div class="metric-grid">
+    <div class="metric-card pass-c">
+      <div class="metric-label">Profitable Since</div>
+      <div class="metric-value">2009</div>
+      <div class="metric-sub">17 years continuous <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-c">
+      <div class="metric-label">Partner Institutions</div>
+      <div class="metric-value">36+</div>
+      <div class="metric-sub">16 Tier-1 (7 IIMs + 7 IITs + 2 global) <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-c">
+      <div class="metric-label">Programs Offered</div>
+      <div class="metric-value">300+</div>
+      <div class="metric-sub">MBA, PGDM, PhD, Tech, UG <span class="tag-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card pass-c">
+      <div class="metric-label">Learners Served</div>
+      <div class="metric-value">3 Lakh+</div>
+      <div class="metric-sub">Cumulative; FY25 active: 31,434 <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-c">
+      <div class="metric-label">Learning Centres</div>
+      <div class="metric-value">22+</div>
+      <div class="metric-sub">Pan-India + 17 tech studios <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">IPO Listed</div>
+      <div class="metric-value">Sep 2025</div>
+      <div class="metric-sub">₹890 issue price; ₹450 Cr raised <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-c">
+      <div class="metric-label">Revenue FY25</div>
+      <div class="metric-value">₹252 Cr</div>
+      <div class="metric-sub">+26.7% YoY; 3yr CAGR 43.7% <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-c">
+      <div class="metric-label">PAT FY25</div>
+      <div class="metric-value">₹51.7 Cr</div>
+      <div class="metric-sub">Margin 20.3%; ROE 35.8% <span class="tag-v">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Framework Adaptation Notes</div>
+  <div class="card">
+    <div class="card-title">Category B — High-Growth Special Considerations</div>
+    <p class="text-sm"><strong>WACC:</strong> 13.5% (Category B; mid-range; higher-than-usual due to OCF concern and short listing history).<br>
+    <strong>Terminal P/E:</strong> 20–25x (Category B; mature EdTech; not a FMCG Category A).<br>
+    <strong>Margin of Safety:</strong> 20–25% (Category B; wider than FMCG due to competitive intensity and OCF risk).<br>
+    <strong>Terminal growth:</strong> ≤ India nominal GDP ×0.72 = ~7.8%.<br>
+    <strong>AI Overlay:</strong> AI NEUTRAL ⚪ — AI tools deployed for lead generation and student experience but no confirmed data flywheel yet. Moat is relationship-based (IIT/IIM partnerships), not AI-driven.<br>
+    <strong>Key Risk Disclosure:</strong> Negative OCF in FY24 and FY25 means earnings quality is currently SUSPECT. This widens the margin of safety requirement by 5%.</p>
+  </div>
+
+  <div class="section-title">Competitive Landscape Snapshot</div>
+  <table class="data-table">
+    <thead><tr><th>Company</th><th>Model</th><th>Status</th><th>Revenue Scale</th><th>Profitability</th><th>Key Differentiator</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Jaro Education (JARO)</strong></td><td>Program Mgmt</td><td>Listed NSE</td><td class="num">₹252 Cr</td><td><span class="pos">Profitable (15+ yr)</span></td><td>IIT/IIM exclusive programs; bootstrapped</td></tr>
+      <tr><td>upGrad</td><td>Full-stack EdTech</td><td>Unlisted</td><td class="num">₹~3,000 Cr</td><td><span class="warn">Loss-making</span></td><td>Scale, global MBA programs</td></tr>
+      <tr><td>Simplilearn</td><td>Tech Certification</td><td>Unlisted</td><td class="num">₹~1,500 Cr</td><td><span class="warn">Marginal</span></td><td>Global tech certs, B2B corporate training</td></tr>
+      <tr><td>Great Learning</td><td>Online Degrees</td><td>Part of upGrad</td><td class="num">₹~1,000 Cr</td><td><span class="warn">Loss-making</span></td><td>WILP programs with top universities</td></tr>
+      <tr><td>Emeritus</td><td>Exec Education</td><td>Unlisted</td><td class="num">$~900M USD</td><td><span class="neg">Deep losses</span></td><td>Global brand; MIT/Harvard partnerships</td></tr>
+      <tr><td>TimesPro</td><td>Program Mgmt</td><td>Part of Times Group</td><td class="num">₹~400 Cr</td><td><span class="warn">Marginal</span></td><td>Brand leverage from Times Group</td></tr>
+    </tbody>
+  </table>
+  <p class="text-xs">* Competitor revenues estimated. <span class="tag-e">ESTIMATED</span></p>
+</div>
+
+<!-- ══════════════ TAB 1: MACRO & GROWTH ══════════════ -->
+<div class="tab-content" id="t1">
+  <div class="section-title">Layer 1 — Macro Anchor</div>
+  <div class="metric-grid">
+    <div class="metric-card pass-c">
+      <div class="metric-label">India Real GDP (FY26E)</div>
+      <div class="metric-value">6.8%</div>
+      <div class="metric-sub">RBI revised to 7.3%; external headwinds moderate <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">India CPI (Apr 2026)</div>
+      <div class="metric-value">~4.5%</div>
+      <div class="metric-sub">Elevated; oil-driven; RBI target 4% <span class="tag-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card pass-c">
+      <div class="metric-label">India Nominal GDP</div>
+      <div class="metric-value">~11.3%</div>
+      <div class="metric-sub">= Real 6.8% + CPI 4.5%; Terminal growth CEILING <span class="tag-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">10Y G-Sec Yield</div>
+      <div class="metric-value">6.97%</div>
+      <div class="metric-sub">Elevated on oil/fiscal concerns; RBI on hold <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">Repo Rate (Apr 2026)</div>
+      <div class="metric-value">5.25%</div>
+      <div class="metric-sub">On hold; 125 bps cuts delivered since Feb 2025 <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-c">
+      <div class="metric-label">Nifty 50 P/E</div>
+      <div class="metric-value">~22x</div>
+      <div class="metric-sub">Earnings yield ~4.5%; ERP over bond ~1.5% <span class="tag-e">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Macro Cycle Dashboard</div>
+    <table class="data-table">
+      <thead><tr><th>Dimension</th><th>Status</th><th>Impact on JARO</th></tr></thead>
+      <tbody>
+        <tr><td>Urban Income Cycle</td><td><span class="pos">Recovery</span></td><td class="pos">+ve: Working professionals seeking upskilling; IT/BFSI salary recovery drives enrollments</td></tr>
+        <tr><td>Rural Income Cycle</td><td><span class="warn">Neutral</span></td><td>N/A: JARO targets urban working professionals</td></tr>
+        <tr><td>Interest Rate Cycle</td><td><span class="warn">Neutral / Easing</span></td><td class="pos">+ve: EMI-based course fee installments become cheaper; enrollment affordability improves</td></tr>
+        <tr><td>Government Capex</td><td><span class="pos">Expanding</span></td><td class="pos">+ve: NEP 2020 pushing digital education; UGC online degree framework a tailwind</td></tr>
+        <tr><td>Input Cost Cycle</td><td><span class="warn">Rising (oil)</span></td><td class="warn">Mild -ve: Marketing/digital ad costs rise with input inflation</td></tr>
+        <tr><td>AI Adoption Cycle</td><td><span class="pos">Accelerating</span></td><td class="pos">+ve: Rising demand for AI/data science programs; AI tools in lead gen reduce CAC</td></tr>
+      </tbody>
+    </table>
+    <p class="text-sm"><strong>Macro Composite for JARO: TAILWIND (Cautious)</strong> — Urban recovery + NEP + easing rates = enrollment tailwind. Oil-driven inflation + rising G-Sec yields = margin and CAC headwinds. Net positive but monitoring required.</p>
+  </div>
+
+  <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+  <div class="card">
+    <div class="card-title">India Online Higher Education / EdTech — Sector Analysis</div>
+    <table class="data-table">
+      <thead><tr><th>Scenario</th><th>Sector Growth</th><th>Sources</th><th>AI Impact</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Stress</strong></td><td class="num warn">15–18%</td><td>Funding crunch, regulatory headwinds, urban slowdown</td><td>AI WIDENER +1–2% (personalisation reduces dropout)</td></tr>
+        <tr><td><strong>Base</strong></td><td class="num">20–25%</td><td>IMARC 24.5% CAGR, Research&Markets 23%, MarketsandMarkets 12.3% overall</td><td>AI WIDENER +2–3% (demand-gen, content personalisation)</td></tr>
+        <tr><td><strong>Acceleration</strong></td><td class="num pos">28–32%</td><td>NEP-driven demand surge + AI upskilling wave + vernacular expansion</td><td>AI WIDENER +4–5% (major AI upskilling demand surge)</td></tr>
+      </tbody>
+    </table>
+    <p class="text-sm">Sector: Online Higher Education / Executive Education for working professionals. India online education market reached $2.92B in 2024 → projected $21B by 2033 at CAGR 24.5% <span class="tag-v">VERIFIED</span>. Specific online higher-education segment (professional degrees, MBA, PGDM) growing at 20–25% driven by NEP 2020, UGC online degree approval, and employer demand for upskilled workforce.</p>
+  </div>
+
+  <div class="section-title">Layer 3 — Company Alpha Over Sector</div>
+  <div class="card">
+    <div class="card-title">Six Alpha Sources</div>
+    <table class="data-table">
+      <thead><tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Market Share Gain</td><td><span class="pos">Active</span></td><td class="num pos">+2%</td><td class="num">+1%</td><td>From 16+ Tier-1 partnerships; exclusive programs with IIMs/IITs create enrollment exclusivity</td></tr>
+        <tr><td>Premiumisation</td><td><span class="pos">Active</span></td><td class="num pos">+1%</td><td class="num">+0.5%</td><td>PhD/DBA programs (higher ASP) growing; global institution partnerships (MIT, IU Germany)</td></tr>
+        <tr><td>Category / Product Expansion</td><td><span class="pos">Active</span></td><td class="num pos">+2%</td><td class="num">+1%</td><td>New verticals: College-to-Career (C2C), EdTech Marketplace, vernacular content; Tier 2/3 city push</td></tr>
+        <tr><td>Geographic Expansion</td><td><span class="warn">Forming</span></td><td class="num warn">+1%</td><td class="num">+2%</td><td>Western India = 73% revenue in FY25; push into North/South India underway; international aspirational</td></tr>
+        <tr><td>Pricing Power Above Inflation</td><td><span class="warn">Limited</span></td><td class="num warn">+0.5%</td><td class="num">+0.5%</td><td>Program fees indexed; premium programs command 20–30% higher ASP; constrained by competitive market</td></tr>
+        <tr><td>AI-Driven Alpha (6a+6b+6c)</td><td><span class="warn">Forming</span></td><td class="num warn">+0.5%</td><td class="num">+1%</td><td>6a: AI lead-gen reduces CAC; 6b: Tier 2/3 vernacular AI expands TAM; 6c: No confirmed flywheel yet</td></tr>
+        <tr><td><strong>TOTAL ALPHA</strong></td><td>—</td><td class="num highlight">+7%</td><td class="num highlight">+6%</td><td>Over sector base growth</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Growth Rate Summary Table</div>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr></thead>
+      <tbody>
+        <tr><td>Macro State</td><td>GDP ~5.5%</td><td>GDP ~6.8%</td><td>GDP ~8%+</td></tr>
+        <tr><td>Sector Growth</td><td class="num">15–18%</td><td class="num">20–25%</td><td class="num">28–32%</td></tr>
+        <tr><td>Company Alpha</td><td class="num">+4%</td><td class="num">+7%</td><td class="num">+9%</td></tr>
+        <tr><td>AI Alpha (6a+6b+6c)</td><td class="num">+0.5%</td><td class="num">+0.5%</td><td class="num">+1%</td></tr>
+        <tr><td>Stage 1 Revenue CAGR</td><td class="num warn">19–22%</td><td class="num">27–32%</td><td class="num pos">38–42%</td></tr>
+        <tr><td>Stage 2 FCF CAGR</td><td class="num">12%</td><td class="num">18%</td><td class="num">22%</td></tr>
+        <tr><td>Terminal Growth</td><td class="num">6.5%</td><td class="num">7.8%</td><td class="num">8.5%</td></tr>
+        <tr><td>Margin Direction</td><td>Compress</td><td>Stable/Expand to ~22%</td><td>Expand to ~24%</td></tr>
+        <tr><td>Key Risk</td><td>Funding cuts; urban slowdown; CAC inflation</td><td>OCF recovery timing; competition</td><td>Talent cost inflation as AI demand surges</td></tr>
+      </tbody>
+    </table>
+    <p class="text-sm"><strong>Sensitivity:</strong> A 1% change in terminal growth rate changes IV by approximately 8–10%. A 1% change in Stage 1 revenue growth changes IV by approximately 5–7%. <span class="tag-e">ESTIMATED</span></p>
+    <br>
+    <p class="text-sm"><strong>Note on FY26:</strong> H1 FY26 revenue growth was only +4.6% YoY (₹141 Cr vs ₹134 Cr H1 FY25), suggesting a growth slowdown. Q3 FY26 recovered to +38.6% YoY. The seasonality pattern is Q2 > Q4 > Q1 > Q3. H1 growth slowdown is a concern — management cited seasonal lumpiness and timing of enrollment cycles. Monitor FY26 full-year carefully.</p>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 2: FINANCIALS ══════════════ -->
+<div class="tab-content" id="t2">
+  <div class="section-title">Revenue & Profitability History</div>
+  <table class="data-table">
+    <thead><tr><th>Year</th><th>Revenue (Cr)</th><th>Rev Growth</th><th>PAT (Cr)</th><th>EBITDA Margin</th><th>Net Margin</th><th>ROE</th><th>ROCE</th></tr></thead>
+    <tbody>
+      <tr><td>FY21</td><td class="num">46.4</td><td>—</td><td class="num">4.2</td><td class="num">~17%</td><td class="num">~9%</td><td class="num">~10%</td><td class="num">~10%</td></tr>
+      <tr><td>FY22</td><td class="num">~86</td><td class="num pos">~85%</td><td class="num">6.3</td><td class="num">~14%</td><td class="num">~7%</td><td class="num">~15%</td><td class="num">~16%</td></tr>
+      <tr><td>FY23</td><td class="num">122.1</td><td class="num pos">42%</td><td class="num">11.7</td><td class="num">20.9%</td><td class="num">9.4%</td><td class="num">~15%</td><td class="num">~16%</td></tr>
+      <tr><td>FY24</td><td class="num">199.0</td><td class="num pos">63%</td><td class="num">38.0</td><td class="num">~28%</td><td class="num">19%</td><td class="num">~30%</td><td class="num">~31%</td></tr>
+      <tr><td>FY25</td><td class="num">252.3</td><td class="num pos">27%</td><td class="num">51.7</td><td class="num">33.1%</td><td class="num">20.3%</td><td class="num pos">35.8%</td><td class="num pos">37.4%</td></tr>
+      <tr><td>Q2 FY26</td><td class="num">80.4</td><td class="num warn">+7.4% YoY</td><td class="num">17.0</td><td class="num">~21%</td><td class="num">21.1%</td><td colspan="2">—</td></tr>
+      <tr><td>Q3 FY26</td><td class="num">60.0</td><td class="num pos">+38.6% YoY</td><td class="num">7.0</td><td class="num">17.5%</td><td class="num">11.7%</td><td colspan="2">—</td></tr>
+    </tbody>
+  </table>
+  <p class="text-xs">Sources: IPO DRHP, NSE filings, company disclosures. FY22 revenue is consolidated estimate. <span class="tag-v">VERIFIED</span> for FY23-FY25 from DRHP; Q2-Q3 FY26 from BSE filings.</p>
+
+  <div class="section-title">Financial Fortress — Category B Scorecard</div>
+  <div class="scorecard">
+    <div class="score-item"><span class="score-icon">✓</span><span class="score-label">ROE ≥ 15% for 5 consecutive years (FY25: 35.8%)</span><span class="score-tag pass-tag">PASS</span></div>
+    <div class="score-item"><span class="score-icon">✓</span><span class="score-label">ROCE > WACC (FY25: 37.4% vs WACC ~13.5%)</span><span class="score-tag pass-tag">PASS</span></div>
+    <div class="score-item"><span class="score-icon">⚠</span><span class="score-label">Net cash preferred — Debt/Equity 0.31x; modest but monitoring post-IPO deployment</span><span class="score-tag marg-tag">MARG</span></div>
+    <div class="score-item"><span class="score-icon">✓</span><span class="score-label">Net Profit Margin ≥ 15% (FY25: 20.3%; trend improving)</span><span class="score-tag pass-tag">PASS</span></div>
+    <div class="score-item"><span class="score-icon">✗</span><span class="score-label">FCF positive — NEGATIVE OCF in FY24 and FY25 (marketing front-loading model)</span><span class="score-tag fail-tag">FAIL</span></div>
+    <div class="score-item"><span class="score-icon">✓</span><span class="score-label">Pricing power — premium programs; program fee indexed; ASP rising</span><span class="score-tag pass-tag">PASS</span></div>
+    <div class="score-item"><span class="score-icon">✓</span><span class="score-label">Revenue CAGR ≥ sector CAGR (3yr CAGR 43.7% vs sector 20–25%)</span><span class="score-tag pass-tag">PASS</span></div>
+    <div class="score-item"><span class="score-icon">✓</span><span class="score-label">Predictable / recurring revenue — enrollment-based recurring program mgmt fees</span><span class="score-tag pass-tag">PASS</span></div>
+    <div class="score-item"><span class="score-icon">✓</span><span class="score-label">Asset-light model (no physical campus; LMS-based delivery; high ROIC)</span><span class="score-tag pass-tag">PASS</span></div>
+    <div class="score-item"><span class="score-icon">⚠</span><span class="score-label">Revenue growth vs sector: H1 FY26 only +4.6% YoY — slowing; monitor</span><span class="score-tag marg-tag">MARG</span></div>
+  </div>
+
+  <div class="section-title">Owner Earnings Estimate (FY25)</div>
+  <div class="card" style="border-color: rgba(249,115,22,0.3);">
+    <div class="card-title">Owner Earnings Calculation</div>
+    <table class="data-table">
+      <thead><tr><th>Component</th><th>Amount (₹ Cr)</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Net Income (PAT)</td><td class="num">51.67</td><td>FY25 reported <span class="tag-v">VERIFIED</span></td></tr>
+        <tr><td>+ Depreciation & Amortisation</td><td class="num">~6–8</td><td>Estimated; primarily LMS amortisation <span class="tag-e">ESTIMATED</span></td></tr>
+        <tr><td>+ Non-cash items</td><td class="num">~2</td><td>ESOP charges, other <span class="tag-e">ESTIMATED</span></td></tr>
+        <tr><td>− Maintenance CapEx</td><td class="num">(3–5)</td><td>Tech infrastructure; asset-light model <span class="tag-e">ESTIMATED</span></td></tr>
+        <tr><td>± Working Capital Changes</td><td class="num neg">(30–40)</td><td>CRITICAL: Rising unbilled revenue / debtors = large cash outflow <span class="tag-e">ESTIMATED</span></td></tr>
+        <tr><td><strong>Conservative Owner Earnings</strong></td><td class="num neg"><strong>~₹15–25 Cr</strong></td><td>WC drag is severe — key quality concern</td></tr>
+        <tr><td><strong>Base Owner Earnings</strong></td><td class="num warn"><strong>~₹30–35 Cr</strong></td><td>Assuming partial WC normalisation</td></tr>
+      </tbody>
+    </table>
+    <p class="text-sm warn">⚠ Owner earnings significantly below reported PAT due to working capital deterioration. Debtors days rose from 31.5 → 52.4 days; working capital days from 155 → 227 days. This is the most important risk factor in the investment thesis.</p>
+  </div>
+
+  <div class="section-title">Earnings Quality — O'Glove Framework</div>
+  <div class="card" style="border-color:rgba(239,68,68,0.3);">
+    <div class="card-title">5 O'Glove Tests</div>
+    <div class="scorecard">
+      <div class="score-item"><span class="score-icon">✗</span><span class="score-label"><strong>Test 1 — FCF Conversion:</strong> Op CFO / Net Income clearly below 80%; NEGATIVE OCF in FY24 & FY25</span><span class="score-tag fail-tag">FAIL</span></div>
+      <div class="score-item"><span class="score-icon">✗</span><span class="score-label"><strong>Test 2 — DSO Trend:</strong> Receivables / (Rev/365) rising from 31.5 → 52.4 days — +66% deterioration over 2 years</span><span class="score-tag fail-tag">FAIL</span></div>
+      <div class="score-item"><span class="score-icon">✓</span><span class="score-label"><strong>Test 3 — Inventory Days:</strong> N/A for services business; no inventory risk</span><span class="score-tag pass-tag">N/A</span></div>
+      <div class="score-item"><span class="score-icon">✓</span><span class="score-label"><strong>Test 4 — Accounting Policy:</strong> No major policy changes found; revenue recognition per Ind AS 115 consistently applied</span><span class="score-tag pass-tag">PASS</span></div>
+      <div class="score-item"><span class="score-icon">✓</span><span class="score-label"><strong>Test 5 — Gross Margin Consistency:</strong> EBITDA margin has expanded consistently from 20.9% → 33.1% over 3 years</span><span class="score-tag pass-tag">PASS</span></div>
+    </div>
+    <div style="background:rgba(239,68,68,0.1);border:1px solid var(--fail);border-radius:6px;padding:12px;margin-top:12px;">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--fail);letter-spacing:2px;">EARNINGS QUALITY: SUSPECT</span>
+      <p class="text-sm" style="margin-top:6px;">Tests 1 and 2 fail. OCF negative + DSO rising = earnings quality concern. The deferred revenue / unbilled revenue model means P&L profit overstates true cash generation. <strong>MoS widened by 5% to 25–30% required.</strong> This does NOT mean fraud — it reflects the inherent mismatch of upfront marketing costs vs deferred revenue recognition in long-duration programs (12–24 months). As growth normalises and cohorts mature, OCF should recover. But the timing is uncertain.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 3: MOAT ══════════════ -->
+<div class="tab-content" id="t3">
+  <div class="section-title">Economic Moat Assessment</div>
+  <div class="card">
+    <div class="moat-item">
+      <div>
+        <div class="moat-stars">★★★☆☆</div>
+        <div class="moat-name">Institutional Partnership Exclusivity</div>
+        <div class="moat-desc">Exclusive programs with 7 IIMs and 7 IITs that are not available via any other EdTech platform. Partners have named Jaro as a preferred distribution channel. 15 years of relationship-building = structural switching cost for institutions. However, exclusivity is contractual, not structural — at risk of loss.</div>
+      </div>
+    </div>
+    <div class="moat-item">
+      <div>
+        <div class="moat-stars">★★★★☆</div>
+        <div class="moat-name">Brand & Learner Trust (17 Years)</div>
+        <div class="moat-desc">Only self-funded profitable EdTech for 15+ years. 3 lakh+ learner alumni network. "India's most trusted online higher education company" positioning. Brand trust is a genuine moat in a sector where BYJU's collapse has created trust-vacuum. Difficult to replicate without time.</div>
+      </div>
+    </div>
+    <div class="moat-item">
+      <div>
+        <div class="moat-stars">★★☆☆☆</div>
+        <div class="moat-name">Switching Costs (Student-Side)</div>
+        <div class="moat-desc">Low — once enrolled, students are locked into a 12–24 month program. But pre-enrollment switching is easy; competition is fierce. Student referral base (word-of-mouth) creates some network effect but limited compared to platform businesses.</div>
+      </div>
+    </div>
+    <div class="moat-item">
+      <div>
+        <div class="moat-stars">★★★☆☆</div>
+        <div class="moat-name">Learning Management System (LMS) Infrastructure</div>
+        <div class="moat-desc">Proprietary LMS connecting learners, faculty, and institutions. Multi-year development; 22 physical learning centres + 17 tech studios as differentiated hybrid touchpoints. Asset-light but replication requires significant time investment.</div>
+      </div>
+    </div>
+    <div class="moat-item">
+      <div>
+        <div class="moat-stars">★★☆☆☆</div>
+        <div class="moat-name">Scale Advantages in Student Acquisition</div>
+        <div class="moat-desc">At ₹252 Cr revenue, Jaro can afford better marketing tech, AI-driven lead scoring, and counsellor quality vs smaller operators. But upGrad outspends heavily. Scale advantage is real but not dominant.</div>
+      </div>
+    </div>
+    <div class="moat-item">
+      <div>
+        <div class="moat-stars">★★☆☆☆</div>
+        <div class="moat-name">Data Flywheel (Potential, Not Confirmed)</div>
+        <div class="moat-desc">Career outcome data from 3L+ learners could theoretically train an AI model for better program matching, enrollment conversion, and dropout prediction. NOT YET OPERATIONALISED as a confirmed flywheel. Current AI = tools (chatbot, ROI calculator), not a moat.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">ROIC as Moat Proof</div>
+  <table class="data-table">
+    <thead><tr><th>Year</th><th>ROIC</th><th>Moat Signal</th></tr></thead>
+    <tbody>
+      <tr><td>FY21</td><td class="num">~10%</td><td>Weak (below wide moat threshold)</td></tr>
+      <tr><td>FY22</td><td class="num">~15%</td><td>Narrow moat forming</td></tr>
+      <tr><td>FY23</td><td class="num">~16%</td><td>Narrow moat</td></tr>
+      <tr><td>FY24</td><td class="num">~31%</td><td><span class="pos">Wide moat territory — partnership leverage showing</span></td></tr>
+      <tr><td>FY25</td><td class="num pos">37.4%</td><td><span class="pos">Wide moat confirmed on capital efficiency; OCF caveat remains</span></td></tr>
+    </tbody>
+  </table>
+  <p class="text-xs">Note: ROIC calculated on capital employed basis. High ROIC driven by asset-light model + margin expansion. Negative OCF reduces real economic return — adjusted ROIC may be 15–25%. <span class="tag-e">ESTIMATED</span></p>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">📡 Data Flywheel Verdict: FORMING ★★★</div>
+    <div class="flywheel-check">
+      <span class="flywheel-icon">⚠️</span>
+      <span class="flywheel-text"><strong>Q1 — Proprietary Training Data:</strong> PARTIAL. 3 lakh+ learner career records, enrollment behavior, dropout patterns, salary outcome data. Potentially unique if systematically captured. Not yet confirmed that data is structured for AI training. <span class="tag-e">ESTIMATED</span></span>
+    </div>
+    <div class="flywheel-check">
+      <span class="flywheel-icon">⚠️</span>
+      <span class="flywheel-text"><strong>Q2 — AI Improves With More Data/Users:</strong> NOT YET CONFIRMED. AI tools (Jaro Assist, ROI calculator, skill gap analyzer) deployed but no evidence these models improve with each additional enrollment. Generic GenAI integration, not proprietary model training. <span class="tag-e">ESTIMATED</span></span>
+    </div>
+    <div class="flywheel-check">
+      <span class="flywheel-icon">❌</span>
+      <span class="flywheel-text"><strong>Q3 — Better AI Attracts More Users:</strong> NOT DEMONSTRATED. Current competitive advantage comes from IIT/IIM brand, not AI superiority. Students choose Jaro for institutional partnerships, not AI experience.</span>
+    </div>
+    <p class="text-sm" style="margin-top:10px;border-top:1px solid rgba(16,185,129,0.2);padding-top:10px;">Score: <strong>4/10</strong> — AI feature, not yet a flywheel. The data asset is valuable but untapped for AI moat. Key watchpoint: does Jaro begin publishing AI-driven outcome metrics (placement rates, salary uplift, course completion) that demonstrate model improvement? If yes, upgrade to CONFIRMED.</p>
+  </div>
+
+  <div class="section-title">Macro Moat Stress Test</div>
+  <table class="data-table">
+    <thead><tr><th>Moat Source</th><th>Stress Scenario</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>IIT/IIM Partnerships</td><td>Universities diversify channel partners; reduce exclusivity</td><td><span class="warn">WEAKENS — biggest single risk to moat</span></td></tr>
+      <tr><td>Brand & Trust</td><td>Any scandal or poor placement outcomes go viral</td><td><span class="warn">WEAKENS — social media amplified in EdTech</span></td></tr>
+      <tr><td>LMS Infrastructure</td><td>Open-source LMS commoditises; upGrad matches infrastructure</td><td><span class="warn">HOLDS — 15 years of institutional customisation moat</span></td></tr>
+      <tr><td>Financial Stability</td><td>Continued negative OCF + debt not repaid = credibility erosion</td><td><span class="neg">WEAKENS — OCF recovery is critical to maintaining trust</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════ TAB 4: MANAGEMENT ══════════════ -->
+<div class="tab-content" id="t4">
+  <div class="section-title">Management Assessment</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Strengths</div>
+      <div class="risk-item"><span class="risk-icon">✅</span> <strong>17-year profitable track record</strong> — bootstrapped without VC; extraordinary capital discipline for an EdTech company</div>
+      <div class="risk-item"><span class="risk-icon">✅</span> <strong>Dr. Sanjay Salunkhe</strong> — first-generation entrepreneur; domain expert with 20+ years in education; deep institutional relationships</div>
+      <div class="risk-item"><span class="risk-icon">✅</span> <strong>Promoter conviction</strong> — 57.3% holding post-IPO; no pledges; no promoter sell-down beyond OFS at IPO</div>
+      <div class="risk-item"><span class="risk-icon">✅</span> <strong>Counter-cyclical capital allocation</strong> — chose profitability over growth during EdTech bubble (2021–23) when peers burned cash</div>
+      <div class="risk-item"><span class="risk-icon">✅</span> <strong>Dividend declared</strong> — interim dividend ₹2/share + 10% FV dividend FY25; shareholder-friendly</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Concerns & Red Flags</div>
+      <div class="risk-item"><span class="risk-icon">⚠️</span> <strong>OFS at IPO</strong> — promoter Sanjay Salunkhe sold ₹280 Cr worth of shares at IPO. Stock is now 50% below that price. Creates perception risk even if legally clean</div>
+      <div class="risk-item"><span class="risk-icon">⚠️</span> <strong>Western region concentration</strong> — 73% revenue from western India (FY25). Geographic diversification is aspirational, not yet proven</div>
+      <div class="risk-item"><span class="risk-icon">⚠️</span> <strong>Top-5 customer concentration</strong> — top 5 university partners = 62.4% revenue. Loss of any single IIM/IIT relationship = material impact</div>
+      <div class="risk-item"><span class="risk-icon">⚠️</span> <strong>IPO proceeds not deployed as of Q2 FY26</strong> — entire ₹1,700M sitting in public issue account. Management credibility requires timely deployment with measurable outcomes</div>
+      <div class="risk-item"><span class="risk-icon">⚠️</span> <strong>Key-man risk</strong> — Dr. Salunkhe is the face and relationship engine of the business. Succession planning not yet evident</div>
+    </div>
+  </div>
+
+  <div class="section-title">Shareholding Integrity</div>
+  <div class="metric-grid">
+    <div class="metric-card pass-c">
+      <div class="metric-label">Promoter Holding</div>
+      <div class="metric-value">57.33%</div>
+      <div class="metric-sub">High; strong alignment <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass-c">
+      <div class="metric-label">Pledged Shares</div>
+      <div class="metric-value">0%</div>
+      <div class="metric-sub">No pledges — PASS <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">Promoter OFS at IPO</div>
+      <div class="metric-value">₹280 Cr</div>
+      <div class="metric-sub">Sold at ₹890; stock now ~₹440 <span class="tag-v">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Capital Allocation Review</div>
+  <div class="card">
+    <div class="card-title">IPO Proceeds Plan vs Reality</div>
+    <table class="data-table">
+      <thead><tr><th>Purpose</th><th>Planned (₹ Cr)</th><th>Deployed by Q2 FY26</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td>Marketing & Brand Building</td><td class="num">81</td><td class="num warn">Nil</td><td class="warn">0% deployed — key concern; marketing is growth driver</td></tr>
+        <tr><td>Loan Repayment</td><td class="num">45</td><td class="num warn">Nil</td><td class="warn">0% deployed; D/E ratio still 0.31x</td></tr>
+        <tr><td>General Corporate Purposes</td><td class="num">30.2</td><td class="num warn">Nil</td><td class="warn">Entire ₹4,323 Cr in public issue account</td></tr>
+      </tbody>
+    </table>
+    <p class="text-sm warn">⚠ Zero utilisation of IPO proceeds 6 months post-listing is a negative signal. Management's explanation of 'sequential deployment' needs verification. Q3 FY26 shows revenue growth of 38.6% YoY — suggesting marketing spend may have begun in Q3. Watch Q4 FY26 utilisation statement carefully.</p>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 5: VALUATION ══════════════ -->
+<div class="tab-content" id="t5">
+  <div class="section-title">Method 1 — DCF (2-Stage)</div>
+  <div class="card">
+    <div class="card-title">2-Stage DCF — Revenue → PAT Approach (Category B)</div>
+    <p class="text-sm">Note: Negative OCF makes traditional FCF-based DCF unreliable. Using PAT as proxy for owner earnings; applying Working Capital adjustment haircut. WACC 13.5% (Category B); Terminal P/E 20–22x (EdTech maturity). All PAT figures quality-adjusted downward by 15% given SUSPECT earnings quality.</p>
+    <br>
+    <table class="data-table">
+      <thead><tr><th>Year</th><th>Rev Stress (Cr)</th><th>PAT Stress</th><th>Rev Base (Cr)</th><th>PAT Base</th><th>Rev Accel (Cr)</th><th>PAT Accel</th></tr></thead>
+      <tbody>
+        <tr><td>FY26E</td><td class="num">280</td><td class="num">52</td><td class="num">310</td><td class="num">62</td><td class="num">345</td><td class="num">75</td></tr>
+        <tr><td>FY27E</td><td class="num">330</td><td class="num">64</td><td class="num">395</td><td class="num">82</td><td class="num">472</td><td class="num">108</td></tr>
+        <tr><td>FY28E</td><td class="num">380</td><td class="num">78</td><td class="num">500</td><td class="num">107</td><td class="num">640</td><td class="num">154</td></tr>
+        <tr><td>FY29E</td><td class="num">428</td><td class="num">89</td><td class="num">620</td><td class="num">136</td><td class="num">855</td><td class="num">214</td></tr>
+        <tr><td>FY30E</td><td class="num">471</td><td class="num">98</td><td class="num">760</td><td class="num">166</td><td class="num">1,120</td><td class="num">272</td></tr>
+        <tr><td>Terminal Value (20x PAT)</td><td class="num">1,960</td><td>—</td><td class="num">3,320</td><td>—</td><td class="num">5,440</td><td>—</td></tr>
+        <tr style="background:rgba(249,115,22,0.05)"><td><strong>Intrinsic Value / Share</strong></td><td class="num warn"><strong>₹480</strong></td><td>—</td><td class="num highlight"><strong>₹680</strong></td><td>—</td><td class="num pos"><strong>₹1,100</strong></td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p class="text-xs">WACC 13.5%. Terminal P/E 20x (Base/Stress), 22x (Acceleration). Quality adjustment -15% applied to PAT for OCF mismatch. <span class="tag-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Method 2 — P/E Earnings Power</div>
+  <div class="card">
+    <div class="card-title">P/E Multiple Framework</div>
+    <table class="data-table">
+      <thead><tr><th>Metric</th><th>Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>FY25 EPS</td><td class="num">₹23.2</td><td>₹51.67 Cr / 2.23 Cr shares <span class="tag-v">VERIFIED</span></td></tr>
+        <tr><td>TTM EPS</td><td class="num">₹22.4</td><td>Based on trailing 4 quarters <span class="tag-e">ESTIMATED</span></td></tr>
+        <tr><td>FY26E EPS</td><td class="num">₹24.7</td><td>Estimated; modest growth <span class="tag-e">ESTIMATED</span></td></tr>
+        <tr><td>FY27E EPS</td><td class="num">₹33–37</td><td>Assuming growth re-acceleration <span class="tag-e">ESTIMATED</span></td></tr>
+        <tr><td>Current P/E (at ₹440)</td><td class="num warn">19.6x TTM</td><td>Reasonably priced for quality grower</td></tr>
+        <tr><td>Stress IV (15x FY27E EPS ₹33)</td><td class="num">₹495</td><td>Depressed multiple + low growth scenario</td></tr>
+        <tr><td>Base IV (20x FY27E EPS ₹35)</td><td class="num">₹700</td><td>Fair multiple for quality Category B</td></tr>
+        <tr><td>Acceleration IV (25x FY27E EPS ₹37)</td><td class="num pos">₹925</td><td>Premium multiple if OCF recovers + growth reaccelerates</td></tr>
+        <tr><td>PEG (at ₹440, FY27E EPS, 25% growth)</td><td class="num">0.78x</td><td>Attractive if growth resumes; < 1.0 = PEG green zone</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Method 3 — EV/Revenue (EdTech Comp)</div>
+  <div class="card">
+    <div class="card-title">Revenue Multiple Valuation</div>
+    <table class="data-table">
+      <thead><tr><th>Scenario</th><th>EV/Revenue Multiple</th><th>FY27E Revenue</th><th>EV</th><th>Equity IV / Share</th></tr></thead>
+      <tbody>
+        <tr><td>Stress (2x — distressed comps)</td><td class="num">2x</td><td class="num">₹395 Cr</td><td class="num">₹790 Cr</td><td class="num warn">₹345</td></tr>
+        <tr><td>Base (4x — quality EdTech)</td><td class="num">4x</td><td class="num">₹395 Cr</td><td class="num">₹1,580 Cr</td><td class="num highlight">₹695</td></tr>
+        <tr><td>Premium (6x — growth reaccelerates)</td><td class="num">6x</td><td class="num">₹395 Cr</td><td class="num">₹2,370 Cr</td><td class="num pos">₹1,040</td></tr>
+      </tbody>
+    </table>
+    <p class="text-sm">Current EV/Revenue ~4x (at ₹440). Consistent with base multiple. Stress case implies severe multiple compression on growth concerns. Premium case requires OCF recovery + growth reacceleration confirmed. <span class="tag-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Method 4 — Earnings Yield vs Bond Yield</div>
+  <div class="card">
+    <div class="card-title">Yield Comparison</div>
+    <div class="metric-grid">
+      <div class="metric-card warn-c">
+        <div class="metric-label">Earnings Yield (FY25 EPS/Price)</div>
+        <div class="metric-value">5.3%</div>
+        <div class="metric-sub">₹23.2 / ₹440 <span class="tag-e">ESTIMATED</span></div>
+      </div>
+      <div class="metric-card warn-c">
+        <div class="metric-label">India 10Y G-Sec Yield</div>
+        <div class="metric-value">6.97%</div>
+        <div class="metric-sub">Current; elevated on oil <span class="tag-v">VERIFIED</span></div>
+      </div>
+      <div class="metric-card warn-c">
+        <div class="metric-label">Equity Risk Premium</div>
+        <div class="metric-value">-1.67%</div>
+        <div class="metric-sub">EY below G-Sec = risk not compensated on static basis</div>
+      </div>
+      <div class="metric-card pass-c">
+        <div class="metric-label">FCF Yield</div>
+        <div class="metric-value">N/A</div>
+        <div class="metric-sub">OCF negative; not applicable currently</div>
+      </div>
+    </div>
+    <p class="text-sm warn">⚠ Negative ERP on static yield suggests stock needs growth premium to justify current price. At 25–30% revenue CAGR, forward EY improves significantly — by FY27E EPS ₹35, earnings yield at ₹440 = 8%, well above G-Sec = justified. This is a GROWTH STOCK valuation problem, not a yield problem.</p>
+  </div>
+
+  <div class="section-title">Method 5 — Blended Intrinsic Value Summary</div>
+  <div class="card" style="border-color:rgba(249,115,22,0.4);">
+    <div class="card-title">5-Method Summary</div>
+    <table class="data-table">
+      <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th></tr></thead>
+      <tbody>
+        <tr><td>1. 2-Stage DCF (PAT-based)</td><td class="num">₹480</td><td class="num">₹680</td><td class="num">₹1,100</td></tr>
+        <tr><td>2. P/E Earnings Power</td><td class="num">₹495</td><td class="num">₹700</td><td class="num">₹925</td></tr>
+        <tr><td>3. EV/Revenue Multiple</td><td class="num">₹345</td><td class="num">₹695</td><td class="num">₹1,040</td></tr>
+        <tr><td>4. Earnings Yield (Implied P/E)</td><td class="num">₹380</td><td class="num">₹630</td><td class="num">₹880</td></tr>
+        <tr style="background:rgba(249,115,22,0.05)"><td><strong>Blended Base IV</strong></td><td class="num warn"><strong>₹425</strong></td><td class="num highlight"><strong>₹676</strong></td><td class="num pos"><strong>₹986</strong></td></tr>
+        <tr><td>MoS Entry Zone (−25% from Base)</td><td>—</td><td class="num"><strong>₹375–420</strong></td><td>—</td></tr>
+        <tr><td>AI Overlay Adjustment (NEUTRAL)</td><td colspan="3">No adjustment — AI NEUTRAL; AI tools don't materially change IV</td></tr>
+      </tbody>
+    </table>
+    <p class="text-sm highlight">CMP ₹~440 is 35% below Base IV of ₹676 — appears undervalued IF growth reaccelerates. But at Stress IV of ₹425, current price has limited downside buffer. The margin of safety is therefore CONDITIONAL on fundamental improvement, not yet unconditional.</p>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 6: VERDICT ══════════════ -->
+<div class="tab-content" id="t6">
+  <div class="section-title">Four Pillar Grades</div>
+  <div class="pillar-row">
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 1 — Moat</div>
+      <div class="pillar-grade">B</div>
+      <div class="pillar-sub">Partnerships + brand = real but contractual moat. No data flywheel confirmed yet.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 2 — Financial Fortress</div>
+      <div class="pillar-grade">B-</div>
+      <div class="pillar-sub">Exceptional P&L ratios; NEGATIVE OCF is a serious concern. Quality: SUSPECT.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 3 — Management</div>
+      <div class="pillar-grade">B</div>
+      <div class="pillar-sub">17yr profitable track record; promoter OFS at peak + undeployed IPO proceeds = watch carefully.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 4 — Valuation</div>
+      <div class="pillar-grade">B+</div>
+      <div class="pillar-sub">Trading at 35% discount to base IV of ₹676 IF growth resumes. Stress IV ~₹425 = limited buffer.</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-rating">WATCH ★★★</div>
+    <div class="verdict-stars">★★★☆☆</div>
+    <div class="verdict-quote">"Price is what you pay. Value is what you get. But you must be sure the value is real — not just reported." — Warren Buffett (paraphrased)</div>
+    <p class="verdict-prose">
+      <strong>JARO Education is a genuinely interesting Category B watch candidate — not yet a conviction buy.</strong><br><br>
+      The bull case is clear: India's only listed, profitable, self-funded EdTech company with IIT/IIM exclusive programs, 17 years of continuous profitability, excellent ROE/ROCE metrics (35–37%), strong gross margin expansion, and a sector growing at 20–25% CAGR. The stock has corrected 50% from IPO price, taking it to levels where the base intrinsic value exceeds the current price by ~35%.<br><br>
+      The bear case is equally clear: Negative operating cash flow in both FY24 and FY25, rising debtor days (52 days), working capital expanding to 227 days, IPO proceeds sitting undeployed, H1 FY26 revenue growth of only +4.6% YoY (a dramatic deceleration), and the promoter selling ₹280 Cr at IPO at what proved to be a peak price.<br><br>
+      <strong>The framework verdict:</strong> Four pillars are solid-to-good (B to B+), but earnings quality is SUSPECT per O'Glove tests, and the convergence of pillars is insufficient for a BUY at current price given the conditional nature of the value. The stock needs OCF to turn positive before the financial quality concern resolves. Until then, WATCH with disciplined upgrade conditions.
+    </p>
+  </div>
+
+  <div class="section-title">WATCH → BUY Upgrade Conditions</div>
+  <ul class="upgrade-list">
+    <li class="upgrade-item">
+      <div class="upgrade-num">1</div>
+      <div class="upgrade-text"><strong>OCF turns positive for 2 consecutive quarters</strong> — Operating cash flow from operations ≥ ₹10 Cr for 2 consecutive quarters. This resolves the earnings quality concern and upgrades financial pillar to B+.</div>
+    </li>
+    <li class="upgrade-item">
+      <div class="upgrade-num">2</div>
+      <div class="upgrade-text"><strong>DSO stabilises below 42 days</strong> — Debtor days returning toward historical norms (31.5 days) signals receivables quality improvement and sustainable revenue recognition model.</div>
+    </li>
+    <li class="upgrade-item">
+      <div class="upgrade-num">3</div>
+      <div class="upgrade-text"><strong>Revenue growth re-accelerates to 25%+ YoY for 2 consecutive quarters</strong> — H1 FY26 slowdown (+4.6%) must prove seasonal, not structural. Q3 FY26's +38.6% is encouraging but needs confirmation.</div>
+    </li>
+    <li class="upgrade-item">
+      <div class="upgrade-num">4</div>
+      <div class="upgrade-text"><strong>IPO proceeds deployed with measurable outcomes</strong> — At least 50% of the ₹81 Cr marketing allocation deployed AND showing enrollment growth ≥ 20% in the following quarter. Confirms management execution credibility.</div>
+    </li>
+    <li class="upgrade-item">
+      <div class="upgrade-num">5</div>
+      <div class="upgrade-text"><strong>Price corrects to ₹380 or below</strong> — Adds a genuine margin of safety vs Stress IV of ₹425. R:R improves to 1:2.5+ at this level even in base scenario.</div>
+    </li>
+  </ul>
+
+  <div class="section-title">Series Tracker</div>
+  <table class="data-table">
+    <thead><tr><th>Ticker</th><th>Company</th><th>Cat</th><th>AI</th><th>Verdict</th><th>Entry Zone</th><th>Base IV</th><th>Stars</th><th>Flywheel</th></tr></thead>
+    <tbody>
+      <tr><td><strong>TSM</strong></td><td>TSMC</td><td>C</td><td>🟢 Widener</td><td>WATCH ★★★★</td><td>$140–155</td><td>$240</td><td>★★★★</td><td>Forming</td></tr>
+      <tr style="background:rgba(249,115,22,0.05)"><td><strong>JARO</strong></td><td>Jaro Education</td><td>B</td><td>⚪ Neutral</td><td>WATCH ★★★</td><td>₹375–420</td><td>₹676</td><td>★★★</td><td>Forming</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════ TAB 7: TECHNICAL ══════════════ -->
+<div class="tab-content" id="t7">
+  <p class="text-sm warn" style="margin-bottom:16px;">⚠ JARO listed September 30, 2025 — only ~6.5 months of trading history available. 200-DMA, 200-WMA and long-term patterns cannot be constructed. Technical analysis is therefore limited. This reduces the weight given to technical triggers in the upgrade conditions.</p>
+
+  <div class="section-title">Section A — Price Structure</div>
+  <div class="metric-grid">
+    <div class="metric-card fail-c">
+      <div class="metric-label">Current Price</div>
+      <div class="metric-value">~₹440</div>
+      <div class="metric-sub">Late Feb 2026 <span class="tag-u">UNVERIFIED</span></div>
+    </div>
+    <div class="metric-card fail-c">
+      <div class="metric-label">52-Week High</div>
+      <div class="metric-value">₹890</div>
+      <div class="metric-sub">IPO listing price (Sep 30, 2025) <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card fail-c">
+      <div class="metric-label">52-Week Low</div>
+      <div class="metric-value">₹383.50</div>
+      <div class="metric-sub">All-time low post-IPO <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">From 52W High</div>
+      <div class="metric-value">−50.6%</div>
+      <div class="metric-sub">Severe IPO correction; typical for small-cap IPOs</div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">From 52W Low</div>
+      <div class="metric-value">+14.7%</div>
+      <div class="metric-sub">Modest recovery from absolute low</div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">Market Cap</div>
+      <div class="metric-value">₹~980 Cr</div>
+      <div class="metric-sub">Small-cap; illiquid for large positions <span class="tag-u">UNVERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Section B — MA Dashboard (Limited — Short History)</div>
+  <div class="ma-grid">
+    <div class="ma-card">
+      <div class="ma-label">20-EMA</div>
+      <div class="ma-val">~₹445</div>
+      <div class="ma-status below">PRICE BELOW</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">50-DMA</div>
+      <div class="ma-val">~₹480</div>
+      <div class="ma-status below">BELOW — bearish</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">100-DMA</div>
+      <div class="ma-val">~₹570</div>
+      <div class="ma-status below">FAR BELOW</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">200-DMA</div>
+      <div class="ma-val">N/A</div>
+      <div class="ma-status warn">INSUFFICIENT HISTORY</div>
+    </div>
+  </div>
+  <p class="text-xs">MA levels estimated from price trajectory data. <span class="tag-e">ESTIMATED</span></p>
+
+  <div class="section-title">Section C — Volume Analysis</div>
+  <div class="card">
+    <div class="card-title">Key Volume Events</div>
+    <div class="risk-item"><span class="risk-icon">📊</span> <strong>IPO Listing (Sep 30, 2025):</strong> Listed at ₹890; immediately dropped 17.5% on day 1 on high volume (28 lakh shares traded). Classic IPO dump by institutional allottees.</div>
+    <div class="risk-item"><span class="risk-icon">📊</span> <strong>Post-Q2 Result Drop (Oct 2025):</strong> Q2 PAT fell -15.37% YoY; stock dropped to ₹500s range on elevated volume — institutional selling confirmed.</div>
+    <div class="risk-item"><span class="risk-icon">📊</span> <strong>52-Week Low Touch (Jan 2026):</strong> ₹383.50; low volume = capitulation/exhaustion signal. Recovery to ₹500s before settling ~₹440.</div>
+    <div class="risk-item"><span class="risk-icon">📊</span> <strong>Q3 FY26 Recovery (Jan 2026):</strong> Q3 results showed +38.6% revenue growth YoY; muted volume reaction — market not yet convinced of recovery sustainability.</div>
+  </div>
+
+  <div class="section-title">Section D — Momentum</div>
+  <div class="metric-grid">
+    <div class="metric-card fail-c">
+      <div class="metric-label">RSI (14-day)</div>
+      <div class="metric-value">~38</div>
+      <div class="metric-sub">Approaching oversold; not yet <40 <span class="tag-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card fail-c">
+      <div class="metric-label">Trend Direction</div>
+      <div class="metric-value">DOWN</div>
+      <div class="metric-sub">6-month return: ~−40%; trend negative</div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">MACD</div>
+      <div class="metric-value">Bearish</div>
+      <div class="metric-sub">Below signal line; histogram contracting <span class="tag-e">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Section E — Chart Pattern</div>
+  <div class="card">
+    <p class="text-sm">Post-IPO correction is forming a potential <strong>Descending Channel / Falling Wedge</strong>. If price holds ₹383 support (52-week low) and develops a series of higher lows with improving volume, a wedge breakout could target ₹550–600. This is a <strong>speculative pattern</strong> given the short history.</p>
+    <br>
+    <p class="text-sm"><strong>Key Support Levels:</strong> ₹383 (52-week low/all-time low) → ₹400 (psychological) → ₹440 (current range base)</p>
+    <p class="text-sm"><strong>Key Resistance Levels:</strong> ₹500 (prior consolidation) → ₹550 → ₹640 (strong overhead resistance) → ₹890 (IPO price)</p>
+  </div>
+
+  <div class="section-title">Section F — Trade Structure</div>
+  <div class="card" style="border-color:rgba(34,211,238,0.3);">
+    <div class="card-title">Primary & Secondary Triggers</div>
+    <p class="text-sm"><strong>PRIMARY TRIGGER (Fundamental + Technical combined):</strong></p>
+    <div class="risk-item"><span class="risk-icon">🎯</span> Price below ₹420 (25% MoS from Base IV) + RSI below 40 + 2 consecutive OCF-positive quarters confirmed in results</div>
+    <br>
+    <p class="text-sm"><strong>SECONDARY TRIGGER:</strong></p>
+    <div class="risk-item"><span class="risk-icon">🎯</span> Price breaks above ₹500 with >150% avg volume + Q4 FY26 showing revenue growth >25% YoY + Q4 FY26 OCF positive first time</div>
+    <br>
+    <table class="data-table">
+      <thead><tr><th>Parameter</th><th>Primary Trigger</th><th>Secondary Trigger</th></tr></thead>
+      <tbody>
+        <tr><td>Entry</td><td class="num">₹375–410</td><td class="num">₹500–515 (breakout)</td></tr>
+        <tr><td>Stop Loss</td><td class="num">₹340 (below ATL)</td><td class="num">₹455 (below breakout)</td></tr>
+        <tr><td>Target 1</td><td class="num">₹540</td><td class="num">₹640</td></tr>
+        <tr><td>Target 2</td><td class="num">₹680 (Base IV)</td><td class="num">₹750</td></tr>
+        <tr><td>Risk:Reward</td><td class="num pos">1:2.8</td><td class="num pos">1:2.5</td></tr>
+        <tr><td>Position Size</td><td>2–3% max (small-cap + quality concern)</td><td>2–3% max</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Section G — Technical Composite Score</div>
+  <table class="data-table">
+    <thead><tr><th>Dimension</th><th>Score (1–5)</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Trend (Multi-timeframe)</td><td class="num warn">2/5</td><td>Downtrend on all timeframes; no base formed yet</td></tr>
+      <tr><td>MA Position</td><td class="num fail">1/5</td><td>Below 20, 50, 100-DMA; all bearish</td></tr>
+      <tr><td>Volume Quality</td><td class="num warn">2/5</td><td>Low volume at lows (capitulation signal); no accumulation volume yet</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td class="num warn">2/5</td><td>RSI approaching oversold; MACD bearish but converging</td></tr>
+      <tr><td>Pattern Quality</td><td class="num warn">3/5</td><td>Potential falling wedge; holding ATL support = constructive</td></tr>
+      <tr><td>Price vs IV</td><td class="num pos">4/5</td><td>35% discount to base IV = attractive on fundamentals</td></tr>
+      <tr><td><strong>TOTAL</strong></td><td class="num warn"><strong>14/30 = 47%</strong></td><td>Below-average technical setup; fundamentals more compelling than technicals</td></tr>
+    </tbody>
+  </table>
+  <p class="text-sm">Technical setup is WEAK but fundamentals are COMPELLING. This is a FUNDAMENTAL-LED thesis, not a technical one. Wait for OCF confirmation before acting; the technical setup will improve as fundamentals improve.</p>
+</div>
+
+<!-- ══════════════ TAB 8: SHAREHOLDING ══════════════ -->
+<div class="tab-content" id="t8">
+  <div class="section-title">Section A — Promoter Holding Trend</div>
+  <table class="data-table">
+    <thead><tr><th>Quarter</th><th>Promoter %</th><th>Change</th><th>Pledges</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>Pre-IPO (FY25)</td><td class="num">~72%</td><td>—</td><td>0%</td><td>High promoter pre-IPO</td></tr>
+      <tr><td>Sep 2025 (Post-IPO)</td><td class="num">57.33%</td><td class="num neg">−14.67%</td><td>0%</td><td class="warn">OFS at IPO; promoter monetised</td></tr>
+      <tr><td>Dec 2025 (Q3 FY26)</td><td class="num">57.33%</td><td class="num">0%</td><td>0%</td><td class="pos">Stable; no further dilution</td></tr>
+      <tr><td>Mar 2026 (Q4 FY26 est.)</td><td class="num">~57%</td><td class="num">~0%</td><td>0%</td><td>Stable expected <span class="tag-e">ESTIMATED</span></td></tr>
+    </tbody>
+  </table>
+  <p class="text-xs">Data from NSE filings and Kotak Securities. <span class="tag-v">VERIFIED</span> for Sep 2025; <span class="tag-e">ESTIMATED</span> for Mar 2026.</p>
+
+  <div class="section-title">Section B — FII + DII Holdings</div>
+  <div class="metric-grid">
+    <div class="metric-card warn-c">
+      <div class="metric-label">FII Holding</div>
+      <div class="metric-value">2.9%</div>
+      <div class="metric-sub">Sep 2025 post-IPO; low FII ownership <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">DII Holding</div>
+      <div class="metric-value">10.9%</div>
+      <div class="metric-sub">Mutual funds + insurance; post-IPO anchors <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">Public / Retail</div>
+      <div class="metric-value">28.9%</div>
+      <div class="metric-sub">Retail-heavy; small-cap typical <span class="tag-v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">FII Sectoral Limit</div>
+      <div class="metric-value">N/A</div>
+      <div class="metric-sub">Education sector; no regulatory FII cap beyond FEMA</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Anchor Investors at IPO (Quality Signal)</div>
+    <p class="text-sm">Pre-IPO and anchor allocation included: <strong>WhiteOak Capital, Singularity Equity Fund (Madhu Kela), Abakkus Asset Management (Sunil Singhania), 360 ONE, Société Générale ODI, Nomura Singapore, Citigroup Global Markets</strong>, and well-known HNIs including Utpal Sheth, Deven Choksey, and Polycab promoter family office. Quality institutional participation at IPO is positive. However, many may be underwater and could be selling in the open market — explaining the post-IPO decline.</p>
+  </div>
+
+  <div class="section-title">Section C — Free Float & SIP</div>
+  <div class="metric-grid">
+    <div class="metric-card warn-c">
+      <div class="metric-label">Free Float Market Cap</div>
+      <div class="metric-value">~₹420 Cr</div>
+      <div class="metric-sub">42.67% × ₹982 Cr = low float = high volatility <span class="tag-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">Monthly SIP Inflow</div>
+      <div class="metric-value">₹3–5 Cr</div>
+      <div class="metric-sub">Small-cap; limited SIP inclusion <span class="tag-e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">Nifty / MSCI Weight</div>
+      <div class="metric-value">Not included</div>
+      <div class="metric-sub">Small cap; no index inclusion yet</div>
+    </div>
+  </div>
+
+  <div class="section-title">Section D — Full Composition (Latest)</div>
+  <div class="card">
+    <div class="sh-bar" style="height:16px;border-radius:8px;overflow:hidden;">
+      <div class="sh-seg" style="width:57.33%;background:#F97316;" title="Promoter 57.33%"></div>
+      <div class="sh-seg" style="width:10.9%;background:#22D3EE;" title="DII 10.9%"></div>
+      <div class="sh-seg" style="width:2.9%;background:#10B981;" title="FII 2.9%"></div>
+      <div class="sh-seg" style="width:28.87%;background:#475569;" title="Public 28.87%"></div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">
+      <span class="text-xs"><span style="color:#F97316">■</span> Promoter 57.33%</span>
+      <span class="text-xs"><span style="color:#22D3EE">■</span> DII 10.9%</span>
+      <span class="text-xs"><span style="color:#10B981">■</span> FII 2.9%</span>
+      <span class="text-xs"><span style="color:#475569">■</span> Public 28.87%</span>
+    </div>
+  </div>
+
+  <div class="section-title">Section E — Ownership Scores</div>
+  <div class="two-col">
+    <div class="metric-card pass-c">
+      <div class="metric-label">Ownership Momentum Score</div>
+      <div class="metric-value">42 / 100</div>
+      <div class="metric-sub">Low FII (negative); high promoter (positive); DII modest (neutral); post-IPO selling pressure overhang</div>
+    </div>
+    <div class="metric-card warn-c">
+      <div class="metric-label">Shareholding Risk Score</div>
+      <div class="metric-value">38 / 100</div>
+      <div class="metric-sub">No pledges (positive); low free float (high vol risk); retail-heavy (herding risk); IPO overhang</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB 9: AI INTELLIGENCE ══════════════ -->
+<div class="tab-content" id="t9">
+  <div class="section-title">Section A — AI Classification Dashboard</div>
+  <div class="ai-dash">
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">Category</div>
+      <div class="ai-dash-value" style="color:var(--amber);">B</div>
+      <div style="font-size:9px;color:var(--slate);margin-top:4px;">High-Growth EdTech</div>
+    </div>
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">AI Overlay</div>
+      <div class="ai-dash-value" style="color:var(--slate-light);">⚪ NEUTRAL</div>
+      <div style="font-size:9px;color:var(--slate);margin-top:4px;">AI = tool, not moat</div>
+    </div>
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">Data Flywheel</div>
+      <div class="ai-dash-value" style="color:var(--yellow);">FORMING ★★★</div>
+      <div style="font-size:9px;color:var(--slate);margin-top:4px;">Score: 4/10</div>
+    </div>
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">Adoption Phase</div>
+      <div class="ai-dash-value" style="color:var(--cyan);">PHASE 3–4</div>
+      <div style="font-size:9px;color:var(--slate);margin-top:4px;">Online EdTech = mainstream</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Adoption Phase Evidence — Phase 3–4 (Mainstream)</div>
+    <p class="text-sm">India's online higher education sector has crossed the Phase 3 inflection point and is entering Phase 4 (mainstream). Evidence: UGC regulatory framework for online degrees published (2021, revised 2023); top 100 NIRF-ranked institutions now offer online programs; national awareness is mainstream; enrollment volumes growing 25%+ annually. The <strong>EdTech sector-wide adoption of AI</strong> for student acquisition (lead scoring, chatbots) is in Phase 3 in India — early commercial traction but not yet universal. <span class="tag-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+  <div class="card">
+    <div class="card-title">3-Question Flywheel Test</div>
+    <div class="flywheel-check">
+      <span class="flywheel-icon">⚠️</span>
+      <div>
+        <p class="text-sm"><strong>Q1: What is the company's proprietary training data?</strong></p>
+        <p class="text-sm">PARTIAL. Jaro has 15 years of enrollment data (3 lakh+ learners), course completion rates, career outcomes, salary data (pre/post program), placement data, dropout patterns by course/demographic. This is potentially unique data if systematically structured. However: competitor upGrad has 10M+ learners; Coursera has 100M+ globally. Jaro's data advantage is REGIONAL (India executive education segment), not global. The data is POTENTIALLY valuable for AI training but no evidence it is being used to train proprietary models. <span class="tag-e">ESTIMATED</span></p>
+      </div>
+    </div>
+    <div class="flywheel-check">
+      <span class="flywheel-icon">❌</span>
+      <div>
+        <p class="text-sm"><strong>Q2: How does AI improve with more data/users?</strong></p>
+        <p class="text-sm">NOT DEMONSTRATED. Jaro Assist (chatbot) and ROI calculator are user-facing tools — likely powered by generic LLMs, not proprietary trained models. No earnings call data showing "our model accuracy improved from X to Y as enrollment grew from A to B." AI tools deployed are: lead scoring AI (improves with more leads → potential), course recommendation engine (improves with enrollment data → potential), but no quantified improvement evidence cited. <span class="tag-e">ESTIMATED</span></p>
+      </div>
+    </div>
+    <div class="flywheel-check">
+      <span class="flywheel-icon">❌</span>
+      <div>
+        <p class="text-sm"><strong>Q3: Does better AI attract more users?</strong></p>
+        <p class="text-sm">NOT DEMONSTRATED. Students choose Jaro for IIT/IIM brand and course exclusivity — not for AI experience. The Skill Gap Analyzer and ROI Calculator are helpful tools but not unique enough to be deciding factors vs upGrad or Simplilearn (who have similar tools). No evidence that AI quality is a meaningful differentiator in student acquisition. <span class="tag-e">ESTIMATED</span></p>
+      </div>
+    </div>
+    <div style="background:rgba(234,179,8,0.08);border:1px solid var(--yellow);border-radius:6px;padding:12px;margin-top:12px;">
+      <p class="text-sm"><strong>Flywheel Score: 4/10 — AI Feature, Not Yet a Moat</strong><br>The DATA ASSET exists (3L+ learner outcomes). The AI TOOLS exist (chatbot, recommender). The LOOP does not yet exist. Jaro needs to: (1) build proprietary models trained on outcome data, (2) demonstrate measurable AI-driven improvement in completion rates or placement outcomes, (3) use AI quality as a marketable differentiator. This is a potential future moat, not a current one.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Section C — AI Value Chain Position</div>
+  <div class="vc-row">
+    <div class="vc-step"><span class="vc-num">1</span>Infrastructure</div>
+    <div class="vc-step"><span class="vc-num">2</span>Foundation Models</div>
+    <div class="vc-step"><span class="vc-num">3</span>AI Platforms</div>
+    <div class="vc-step"><span class="vc-num">4</span>Vertical Apps</div>
+    <div class="vc-step active"><span class="vc-num">5</span>AI-Enabled Incumbent ★</div>
+  </div>
+  <div class="card">
+    <p class="text-sm"><strong>JARO is a Level 5 — AI-Enabled Incumbent.</strong> This is the most under-appreciated category in the AI value chain. Jaro is an existing business (17 years) using AI to enhance, not replace, its core operations. Level 5 companies have: lowest AI disruption risk, most stable returns, and longest investment horizons (7–10 years). However, Level 5 companies are also the least likely to get dramatic AI multiple re-ratings — their gains are operational, compounding, and gradual.</p>
+    <br>
+    <p class="text-sm"><strong>Investment horizon for Level 5 AI-Enabled Incumbents: 5–7 years.</strong> Do NOT expect a 6-month AI catalyst. The AI story here is operational efficiency → lower CAC → margin expansion → more cash for growth → compounding. Patient investors with 5+ year horizon will be rewarded if OCF normalises.</p>
+  </div>
+
+  <div class="section-title">Section D — India AI Opportunity Context</div>
+  <table class="india-table">
+    <thead><tr><th>India AI Advantage</th><th>JARO Relevance</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr><td>Data at Scale (UPI/Aadhaar)</td><td>Adjacent — not directly applicable to enrollment data</td><td>❌ No</td></tr>
+      <tr><td>Language Diversity (Vernacular AI)</td><td>YES — significant opportunity. English-only programs serve 15% of India. Vernacular MBA programs would open 85% of market</td><td>⚠️ Potential — Q3 FY26 shows Tier 2/3 expansion</td></tr>
+      <tr><td>India Stack as Free Infrastructure</td><td>Adjacent — DigiLocker for credential verification; ONDC for education marketplace potential</td><td>⚠️ Partial</td></tr>
+      <tr><td>AI Talent Cost Arbitrage</td><td>YES — Jaro can hire AI/ML engineers at 30–40% of global cost to build proprietary tools</td><td>✅ Yes — cost advantage in AI build</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">India AI Themes Relevance</div>
+    <table class="india-table">
+      <thead><tr><th>Theme</th><th>Phase</th><th>JARO Relevance</th></tr></thead>
+      <tbody>
+        <tr><td>AI in education</td><td>Phase 2</td><td>Directly — AI personalisation for program selection, dropout prevention, placement matching</td></tr>
+        <tr><td>Vernacular AI content</td><td>Phase 2</td><td>Adjacent — if Jaro builds vernacular programs with AI delivery, TAM 10× expands</td></tr>
+        <tr><td>AI in logistics/supply</td><td>Phase 2–3</td><td>None</td></tr>
+        <tr><td>AI in banking/credit</td><td>Phase 3</td><td>None</td></tr>
+        <tr><td>AI in diagnostics/health</td><td>Phase 2</td><td>None</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Section F — AI Opportunity Verdict & Portfolio Role</div>
+  <div class="ai-score-box">
+    <div>
+      <div class="ai-score-num" style="color:var(--yellow);">38</div>
+      <div style="font-size:11px;color:var(--slate);">/ 100</div>
+    </div>
+    <div class="ai-score-bar">
+      <div class="text-xs" style="margin-bottom:8px;">AI OPPORTUNITY SCORE BREAKDOWN</div>
+      <div style="font-size:11px;color:var(--slate-light);margin-bottom:4px;">Data Flywheel (4/20)</div>
+      <div class="ai-bar-track"><div class="ai-bar-fill" style="width:20%;background:var(--yellow);"></div></div>
+      <div style="font-size:11px;color:var(--slate-light);margin-bottom:4px;margin-top:6px;">Adoption Phase (12/20) — Phase 3–4 is high but also means less upside from AI phase transition</div>
+      <div class="ai-bar-track"><div class="ai-bar-fill" style="width:60%;background:var(--cyan);"></div></div>
+      <div style="font-size:11px;color:var(--slate-light);margin-bottom:4px;margin-top:6px;">Value Chain Position (14/20) — Level 5 = best risk/reward</div>
+      <div class="ai-bar-track"><div class="ai-bar-fill" style="width:70%;background:var(--green);"></div></div>
+      <div style="font-size:11px;color:var(--slate-light);margin-bottom:4px;margin-top:6px;">India Structural Advantage (6/20) — vernacular AI potential; otherwise limited India Stack exposure</div>
+      <div class="ai-bar-track"><div class="ai-bar-fill" style="width:30%;background:var(--amber);"></div></div>
+      <div style="font-size:11px;color:var(--slate-light);margin-bottom:4px;margin-top:6px;">AI Threat Resistance (2/20) — low; EdTech incumbents face AI-native platform risk</div>
+      <div class="ai-bar-track"><div class="ai-bar-fill" style="width:10%;background:var(--red);"></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(234,179,8,0.3);">
+    <div class="card-title">Portfolio Role: AI NEUTRAL — Standard Fundamentals Govern</div>
+    <p class="text-sm"><strong>Score 38/100 → AI NEUTRAL — Standard fundamental framework applies.</strong> The AI opportunity exists but is not the primary investment thesis for JARO. Invest on fundamentals, not AI story. The AI tools currently deployed (lead gen AI, chatbot, ROI calculator) are operational efficiency improvements — they will lower CAC and improve margins, but they will not create a new business model or a data flywheel that justifies a premium multiple.</p>
+    <br>
+    <p class="text-sm"><strong>Key AI Watch Trigger:</strong> If Jaro announces (a) proprietary AI model training on placement outcome data, (b) measurable improvement in student completion rates (target: <20% dropout vs industry ~35%), or (c) vernacular AI program launch serving non-metro learners — upgrade AI Overlay to WIDENER and increase target price by 10–15%.</p>
+    <br>
+    <p class="text-sm"><strong>Investment Horizon: 5–7 years</strong> for full AI-enabled compounding to manifest at Level 5 position.</p>
+  </div>
+</div>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<div style="background:#040A15;border-top:1px solid rgba(255,255,255,0.06);padding:24px;text-align:center;margin-top:40px;">
+  <p style="font-size:10px;color:#475569;line-height:1.7;max-width:800px;margin:0 auto;">
+    <strong style="color:#64748B;">DISCLAIMER:</strong> This report is prepared for educational and informational purposes only under the Buffett Quality-Value Series framework. It does not constitute investment advice, a solicitation to buy or sell securities, or a recommendation. Investment in securities market is subject to market risks; read all related documents carefully before investing. SEBI Registration: This document is NOT prepared by a SEBI-registered research analyst. Past performance is not indicative of future returns. The author may or may not hold positions in securities mentioned. All data marked [UNVERIFIED] should be confirmed before acting. | Data as of April 2026 | Jaro Education (NSE: JARO) | Buffett QV Series v5.0 | Fonts: Bebas Neue · Courier Prime · Mulish (Google Fonts)
+  </p>
+</div>
+
+<script>
+  var TAB_BAR_TOP = 0;
+  window.addEventListener('load', function () {
+    var tabBar = document.getElementById('tab-bar');
+    if (tabBar) {
+      var el = tabBar, top = 0;
+      while (el) { top += el.offsetTop; el = el.offsetParent; }
+      TAB_BAR_TOP = top;
+    }
+  });
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(function (el) {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+    document.getElementById(tabId).style.display = 'block';
+    var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+    if (activeBtn) { activeBtn.classList.add('active'); }
+    window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LTM Limited — Buffett Quality-Value Series v5.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B0F1A;
+  --surface: #131929;
+  --surface2: #1A2235;
+  --border: #252F44;
+  --accent: #4F7EFF;
+  --accent2: #FFB347;
+  --threat: #FF4757;
+  --pass: #2ED573;
+  --marginal: #FFB347;
+  --fail: #FF4757;
+  --text: #E8EBF2;
+  --muted: #8896B3;
+  --dim: #4A566E;
+  --hero-h: 200px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #0B0F1A 0%, #0D1F3C 50%, #0B0F1A 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 32px 20px;
+  max-height: var(--hero-h);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(79,126,255,0.08) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 60% at 20% 80%, rgba(255,71,87,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; position: relative; }
+.hero-left { flex: 1; }
+.hero-ticker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.hero-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.hero-lede {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 560px;
+  margin-bottom: 12px;
+}
+.badge-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.badge-cat  { background: rgba(79,126,255,0.15); border-color: var(--accent); color: var(--accent); }
+.badge-threat { background: rgba(255,71,87,0.15); border-color: var(--threat); color: var(--threat); }
+.badge-neutral { background: rgba(136,150,179,0.15); border-color: var(--muted); color: var(--muted); }
+.badge-macro { background: rgba(255,179,71,0.12); border-color: var(--accent2); color: var(--accent2); }
+.badge-v { background: rgba(255,179,71,0.18); border-color: var(--accent2); color: var(--accent2); font-size: 11px; padding: 5px 12px; }
+.pill {
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.pill-v  { background: #1a3a1a; color: var(--pass); border: 1px solid #1e4a1e; }
+.pill-e  { background: #3a2e0a; color: var(--accent2); border: 1px solid #4a3a10; }
+.pill-u  { background: #3a1010; color: var(--threat); border: 1px solid #4a1818; }
+
+.hero-right { text-align: right; flex-shrink: 0; }
+.hero-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(26px, 3.5vw, 40px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+.hero-change { font-size: 12px; color: var(--threat); margin: 4px 0; font-family: 'JetBrains Mono', monospace; }
+.hero-mktcap { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+/* TABS */
+#tab-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 16px;
+}
+#tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 12px 14px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+  text-transform: uppercase;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* CONTENT */
+.tab-content { display: none; padding: 28px 28px; max-width: 1100px; margin: 0 auto; }
+.tab-content.active { display: block; }
+
+/* SECTION HEADERS */
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.sub-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 20px 0 10px;
+}
+
+/* CARDS */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.metric-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent);
+}
+.metric-card.red  { border-left-color: var(--threat); }
+.metric-card.green { border-left-color: var(--pass); }
+.metric-card.amber { border-left-color: var(--accent2); }
+.metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; }
+.metric-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--text); }
+.metric-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: var(--surface2); color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 12px; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(79,126,255,0.04); }
+.tbl-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; overflow-x: auto; }
+
+/* SCORECARD */
+.score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.score-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.score-label { font-size: 12px; color: var(--text); }
+.score-status { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.s-pass  { color: var(--pass); }
+.s-marg  { color: var(--accent2); }
+.s-fail  { color: var(--threat); }
+
+/* MOAT STARS */
+.moat-stars { color: var(--accent2); font-size: 14px; }
+.moat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 10px; }
+.moat-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.moat-card-title { font-weight: 600; font-size: 14px; }
+.moat-card-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* FLYWHEEL BOX */
+.flywheel-box {
+  background: linear-gradient(135deg, rgba(255,179,71,0.08), rgba(79,126,255,0.08));
+  border: 2px solid var(--accent2);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 16px 0;
+  text-align: center;
+}
+.flywheel-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 4px;
+  background: rgba(255,179,71,0.2);
+  border: 1px solid var(--accent2);
+  color: var(--accent2);
+  margin-bottom: 10px;
+}
+.flywheel-score { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--accent2); }
+.flywheel-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* VERDICT BOX */
+.verdict-box {
+  background: var(--surface);
+  border: 2px solid var(--accent2);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.verdict-stars { font-size: 26px; letter-spacing: 2px; margin-bottom: 8px; }
+.verdict-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  color: var(--accent2);
+  margin-bottom: 10px;
+}
+.verdict-quote {
+  font-style: italic;
+  font-size: 13px;
+  color: var(--muted);
+  max-width: 600px;
+  margin: 12px auto 0;
+  line-height: 1.6;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+/* PILLAR GRADES */
+.pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+.pillar-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+.pillar-name { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; margin-bottom: 6px; text-transform: uppercase; }
+.pillar-grade { font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 700; }
+.grade-a { color: var(--pass); }
+.grade-b { color: var(--accent); }
+.grade-c { color: var(--accent2); }
+.grade-d { color: var(--threat); }
+
+/* CONDITIONS */
+.condition-list { list-style: none; }
+.condition-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.condition-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--accent);
+  color: var(--bg);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* AI SCORE GAUGE */
+.ai-gauge-wrap { text-align: center; padding: 20px 0; }
+.ai-gauge-score { font-family: 'JetBrains Mono', monospace; font-size: 52px; font-weight: 700; }
+.ai-gauge-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.ai-gauge-bar { height: 8px; border-radius: 4px; background: var(--surface2); overflow: hidden; margin: 12px auto; max-width: 300px; }
+.ai-gauge-fill { height: 100%; border-radius: 4px; }
+
+/* TA ELEMENTS */
+.ta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.ta-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+.ta-label { font-size: 10px; color: var(--muted); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+.ta-val { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 600; }
+.ta-status { font-size: 10px; margin-top: 3px; }
+.above { color: var(--pass); } .below { color: var(--threat); } .neutral-c { color: var(--muted); }
+
+/* 3-scenario cols */
+.scenario-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.scenario-card.stress { border-top: 3px solid var(--threat); }
+.scenario-card.base   { border-top: 3px solid var(--accent); }
+.scenario-card.accel  { border-top: 3px solid var(--pass); }
+.scenario-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.scenario-card.stress .scenario-title { color: var(--threat); }
+.scenario-card.base   .scenario-title { color: var(--accent); }
+.scenario-card.accel  .scenario-title { color: var(--pass); }
+.scenario-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.scenario-row:last-child { border-bottom: none; }
+.scenario-row-label { color: var(--muted); }
+.scenario-row-val { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+
+/* VALUE CHAIN */
+.chain-wrap { display: flex; gap: 4px; margin: 16px 0; flex-wrap: wrap; }
+.chain-level {
+  flex: 1;
+  min-width: 100px;
+  padding: 14px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 11px;
+}
+.chain-level.highlight {
+  background: rgba(79,126,255,0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.chain-num { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.chain-name { font-size: 10px; color: var(--muted); line-height: 1.3; }
+.chain-level.highlight .chain-name { color: var(--accent); }
+
+/* OE BOX */
+.oe-box {
+  background: linear-gradient(135deg, rgba(79,126,255,0.08), transparent);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.oe-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 12px; }
+.oe-row { display: flex; justify-content: space-between; font-size: 12px; padding: 5px 0; border-bottom: 1px solid rgba(79,126,255,0.2); }
+.oe-row:last-child { border-bottom: none; border-top: 1px solid var(--accent); margin-top: 4px; font-weight: 700; }
+.oe-label { color: var(--muted); }
+.oe-val { color: var(--text); }
+.oe-total { color: var(--accent); }
+
+/* OVERVIEW SECTION */
+.overview-intro { font-size: 14px; line-height: 1.8; color: var(--text); margin-bottom: 20px; }
+.data-conf { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+
+/* RESPONSIVE */
+@media (max-width: 680px) {
+  .hero { padding: 18px 16px; }
+  .hero-inner { flex-direction: column; }
+  .hero-right { text-align: left; }
+  .tab-content { padding: 16px; }
+  .pillar-grid { grid-template-columns: repeat(2, 1fr); }
+  .scenario-grid { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .chain-wrap { flex-direction: column; }
+  .pillar-grid { grid-template-columns: 1fr 1fr; }
+  .ta-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* MISC */
+.info-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.highlight-text { color: var(--accent); font-weight: 600; }
+.threat-text { color: var(--threat); font-weight: 600; }
+.pass-text { color: var(--pass); font-weight: 600; }
+.amber-text { color: var(--accent2); font-weight: 600; }
+p { line-height: 1.7; font-size: 13px; margin-bottom: 10px; color: var(--text); }
+.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+footer { text-align: center; padding: 24px; color: var(--dim); font-size: 11px; border-top: 1px solid var(--border); line-height: 1.7; margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-ticker">NSE: LTM &nbsp;·&nbsp; BSE: 540005 &nbsp;·&nbsp; Buffett Quality-Value Series v5.0</div>
+      <div class="hero-name">LTM Limited</div>
+      <div class="hero-lede">Formerly LTIMindtree — India's sixth-largest IT services company. Global technology consulting and digital solutions across BFSI, Manufacturing, Healthcare and Technology verticals. Pivoting to AI-centric model via BlueVerse™ as traditional IT services face structural disruption pressure from GenAI platform companies.</div>
+      <div class="badge-row">
+        <span class="badge badge-cat">CAT C — MATURE COMPOUNDER</span>
+        <span class="badge badge-threat">🔴 AI THREAT</span>
+        <span class="badge badge-macro">MACRO: NEUTRAL</span>
+        <span class="badge badge-v">WATCH ★★★</span>
+        <span class="pill pill-v">[VERIFIED] LIVE</span>
+        <span class="pill pill-e">[ESTIMATED] MULTI-SOURCE</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-price">₹3,992</div>
+      <div class="hero-change">▼ −2.95% today &nbsp;|&nbsp; −20.6% 1-yr</div>
+      <div class="hero-mktcap">Mkt Cap: ₹1,18,880 Cr &nbsp;|&nbsp; P/E: 24x</div>
+      <div class="hero-mktcap" style="margin-top:4px;">52W: ₹3,901 – ₹6,430</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro & Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intelligence</button>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content" style="display:block;">
+  <div class="section-title">Business Overview &amp; Series Rationale</div>
+
+  <div class="badge-row" style="margin-bottom:16px;">
+    <span class="badge badge-cat">CAT C — MATURE QUALITY COMPOUNDER</span>
+    <span class="badge badge-threat">🔴 AI THREAT</span>
+    <span class="badge badge-neutral">FLYWHEEL: FORMING</span>
+    <span class="badge badge-macro">PHASE: LEVEL 5 INCUMBENT</span>
+  </div>
+
+  <div class="data-conf">
+    <span class="pill pill-v">[VERIFIED] Price, Financials, Shareholding — NSE/BSE, Company Filings</span>
+    <span class="pill pill-e">[ESTIMATED] ROIC, AI assessments — Cross-referenced</span>
+    <span class="pill pill-u">[UNVERIFIED] Future guidance beyond stated ranges</span>
+  </div>
+
+  <p class="overview-intro"><strong class="highlight-text">LTM Limited</strong> (formerly LTIMindtree, rebranded March 2026) is the Larsen &amp; Toubro Group's technology services subsidiary and India's sixth-largest IT services firm. Formed via the 2022 merger of L&amp;T Infotech and Mindtree, LTM serves 751 active clients across BFSI (33%), Technology Media &amp; Comms (25%), Manufacturing (20%), Consumer (15%), and Healthcare (7%), delivering cloud transformation, data analytics, enterprise applications, cybersecurity, and AI-led digital solutions. In FY26, the company generated $4.76 billion (~₹43,402 Cr) in revenue at EBIT margin of 15.4%, with $6.60 billion in order inflow — the highest in company history.</p>
+
+  <p>This analysis is <strong class="highlight-text">Category C</strong> — a Mature Quality Compounder with ROIC estimated 22–25%, durable switching-cost moat via multi-year client contracts and deep enterprise integration, and stable growth of 7–9% in dollar terms. It is <strong>NOT</strong> Category A (no consumer monopoly characteristics; ROIC does not consistently exceed 40%) nor Category B (revenue growth well below 25% CAGR). The framework applies standard 5-method DCF + Owner Earnings + EPV + P/E + Earnings Yield valuation, WACC 12–13%, terminal P/E 18–22x.</p>
+
+  <p>The <span class="threat-text">🔴 AI THREAT overlay</span> is the central tension of this analysis. The Indian IT services sector is classified THREAT in the framework: AI-led productivity sharing is actively eroding revenue per engineer, OpenAI's deployment company launch (May 2026) threatens direct competition with traditional IT consulting, and analyst consensus is forecasting AI deflation headwinds for FY27 and FY28. LTM's BlueVerse™ ecosystem is a credible — but early — response. We apply a <strong class="threat-text">15% IV discount</strong> and shorten investment horizon to <strong>3–5 years</strong>. The key bet: does BlueVerse™ pivot LTM from AI THREAT to AI NEUTRAL/WIDENER before deflation compounds?</p>
+
+  <div class="card-grid">
+    <div class="metric-card green">
+      <div class="metric-label">FY26 Revenue</div>
+      <div class="metric-val">₹43,402 Cr</div>
+      <div class="metric-sub">$4.76B | +9.2% YoY INR</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">FY26 Net Profit</div>
+      <div class="metric-val">₹4,983 Cr</div>
+      <div class="metric-sub">Excl. exceptional: ₹5,378 Cr</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">EBIT Margin FY26</div>
+      <div class="metric-val">15.4%</div>
+      <div class="metric-sub">+90 bps vs FY25 | Q4: 15.1%</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">FY26 EPS</div>
+      <div class="metric-val">₹169.1</div>
+      <div class="metric-sub">Excl. exceptional: ~₹182.5</div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Order Inflow FY26</div>
+      <div class="metric-val">$6.60B</div>
+      <div class="metric-sub">+10.3% YoY | All-time high</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Cash &amp; Investments</div>
+      <div class="metric-val">~₹13,600 Cr</div>
+      <div class="metric-sub">USD 1.63B | Debt/Equity: 0.09</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Current Price</div>
+      <div class="metric-val">₹3,992</div>
+      <div class="metric-sub">−38% from 52wk high</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">AI-Adjusted Base IV</div>
+      <div class="metric-val">₹3,640</div>
+      <div class="metric-sub">MoS Entry Zone: ₹2,900–3,200</div>
+    </div>
+  </div>
+
+  <div class="sub-title">Why This Stock Is Interesting &amp; Challenging</div>
+  <div class="card">
+    <p><strong class="amber-text">Interesting:</strong> LTM is trading at a 38% discount to its 52-week high amid widespread sector de-rating — making it superficially cheap. The company has the strongest order book in its history ($6.6B), the L&amp;T pedigree, zero meaningful debt, and a credible AI pivot underway (BlueVerse™ Credit, agentic AI studios). If the AI transition succeeds in repositioning LTM from labour-arbitrage IT services to outcome-based AI delivery, re-rating potential is significant.</p>
+    <p><strong class="threat-text">Challenging:</strong> AI deflation is structural, not cyclical. AI coding agents, OpenAI's deployment company, and Anthropic automation tools are compressing IT services revenue per headcount industry-wide. LTM's 3-year EPS CAGR is barely 4% despite double-digit revenue growth — margins are under structural pressure. Mutual fund holdings have declined 105 bps over three quarters, signalling institutional patience wearing thin. This is a company in genuine transformation — outcome uncertain, with re-rating risk in both directions.</p>
+  </div>
+
+  <div class="sub-title">Framework Adaptation</div>
+  <div class="card">
+    <p>Standard Cat C framework applies. AI THREAT adjustments: (1) apply 15% IV discount to all quantitative methods, (2) shorten investment horizon to 3–5 years, (3) use stress scenario as reference case for margin assumptions, (4) moat stress test is critical — switching costs hold in the near term but face erosion risk in 3–5 years if AI agents replace traditional project delivery models. Cat C WACC: <strong>12.5%</strong>. Terminal P/E: <strong>18–20x</strong> (compressed from standard 18–22x due to structural headwind).</p>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <div class="section-title">Macro &amp; Sector Context</div>
+
+  <div class="sub-title">Layer 1 — Macro Cycle Dashboard <span class="pill pill-v">[VERIFIED] RBI/IMF/TradingEconomics</span></div>
+  <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+    <div class="metric-card">
+      <div class="metric-label">India 10Y G-Sec Yield</div>
+      <div class="metric-val">~7.1%</div>
+      <div class="metric-sub">Near 19-month high; RBI weighing rate hike</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">India Real GDP Growth</div>
+      <div class="metric-val">~6.5%</div>
+      <div class="metric-sub">IMF/RBI estimate FY26–27</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">India CPI Inflation</div>
+      <div class="metric-val">~4.2%</div>
+      <div class="metric-sub">Near RBI upper band</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Nominal GDP Ceiling</div>
+      <div class="metric-val">~10.7%</div>
+      <div class="metric-sub">Terminal growth ceiling for Indian IT</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Nifty IT De-rating</div>
+      <div class="metric-val">−21%</div>
+      <div class="metric-sub">Sector at 17x FY27E — 10yr low discount</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">INR/USD Rate</div>
+      <div class="metric-val">~87</div>
+      <div class="metric-sub">Sliding; headwind for USD-reported IT</div>
+    </div>
+  </div>
+
+  <div class="sub-title">Macro Cycle Status (6 Dimensions)</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>Status</th><th>Impact on LTM</th></tr></thead>
+      <tbody>
+        <tr><td>Rural Income Cycle</td><td><span class="badge badge-neutral" style="font-size:9px;">NEUTRAL</span></td><td>Indirect — no direct rural exposure</td></tr>
+        <tr><td>Urban Consumption (IT wages)</td><td><span class="badge badge-macro" style="font-size:9px;">STRESS</span></td><td>Wage inflation compressing margins; attrition 14.4%</td></tr>
+        <tr><td>Input Cost Cycle</td><td><span class="badge badge-macro" style="font-size:9px;">STRESS</span></td><td>Employee cost 61% of revenue, rising QoQ</td></tr>
+        <tr><td>RBI Rate Cycle</td><td><span class="badge badge-macro" style="font-size:9px;">TIGHTENING</span></td><td>Higher cost of capital; rupee pressure; negative for FII flows</td></tr>
+        <tr><td>Government Capex Cycle</td><td><span class="badge badge-neutral" style="font-size:9px;">NEUTRAL</span></td><td>Limited direct benefit; some GCC-as-a-Service opportunity</td></tr>
+        <tr><td>AI Adoption Cycle</td><td><span class="badge badge-threat" style="font-size:9px; background:rgba(255,71,87,0.15); border-color:#FF4757; color:#FF4757;">THREAT</span></td><td>AI deflation actively compressing IT revenue per headcount</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>Macro Composite: <span class="amber-text">HEADWIND</span></strong> &nbsp;|&nbsp; AI Cycle Impact: <span class="threat-text">THREAT</span></p>
+
+  <div class="sub-title">Layer 2 — IT Services Sector Growth Derivation</div>
+  <div class="scenario-grid">
+    <div class="scenario-card stress">
+      <div class="scenario-title">⚠ Stress Scenario</div>
+      <div class="scenario-row"><span class="scenario-row-label">India Macro</span><span class="scenario-row-val">GDP ~5.5%</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">IT Services Sector</span><span class="scenario-row-val">6–8% CC</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">AI Deflation Impact</span><span class="scenario-row-val">−2 to −3pp</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">Net Sector Growth</span><span class="scenario-row-val">4–5% CC</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">Margin Direction</span><span class="scenario-row-val">Compress → 13–14%</span></div>
+    </div>
+    <div class="scenario-card base">
+      <div class="scenario-title">◎ Base Scenario</div>
+      <div class="scenario-row"><span class="scenario-row-label">India Macro</span><span class="scenario-row-val">GDP ~6.8%</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">IT Services Sector</span><span class="scenario-row-val">9–11% CC</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">AI Deflation Impact</span><span class="scenario-row-val">−1 to −2pp</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">Net Sector Growth</span><span class="scenario-row-val">7–9% CC</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">Margin Direction</span><span class="scenario-row-val">Stable → 14–16%</span></div>
+    </div>
+    <div class="scenario-card accel">
+      <div class="scenario-title">🚀 Acceleration</div>
+      <div class="scenario-row"><span class="scenario-row-label">India Macro</span><span class="scenario-row-val">GDP 8%+</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">IT Services Sector</span><span class="scenario-row-val">12–14% CC</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">AI Opportunity</span><span class="scenario-row-val">+2 to +3pp</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">Net Sector Growth</span><span class="scenario-row-val">12–14% CC</span></div>
+      <div class="scenario-row"><span class="scenario-row-label">Margin Direction</span><span class="scenario-row-val">Expand → 16–17%</span></div>
+    </div>
+  </div>
+
+  <div class="sub-title">Layer 3 — Company Alpha Over Sector</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr></thead>
+      <tbody>
+        <tr><td>Market Share Gain</td><td><span class="s-pass">Active</span></td><td>+1.0%</td><td>+0.5%</td></tr>
+        <tr><td>Premiumisation (outcome pricing)</td><td><span class="s-marg">Potential</span></td><td>0%</td><td>+1.5%</td></tr>
+        <tr><td>Category/Service Expansion</td><td><span class="s-pass">Active</span></td><td>+1.0%</td><td>+1.0%</td></tr>
+        <tr><td>Geographic Expansion (Europe)</td><td><span class="s-marg">Potential</span></td><td>+0.5%</td><td>+1.0%</td></tr>
+        <tr><td>Pricing Power Above Inflation</td><td><span class="s-marg">Marginal</span></td><td>0%</td><td>+0.5%</td></tr>
+        <tr><td>AI Alpha (6a) Cost Reduction</td><td><span class="s-marg">Potential</span></td><td>+0.5%</td><td>+1.0%</td></tr>
+        <tr><td>AI Alpha (6b) Market Expansion</td><td><span class="s-fail">Unproven</span></td><td>0%</td><td>+1.0%</td></tr>
+        <tr><td>AI Alpha (6c) Flywheel/Switching Cost</td><td><span class="s-fail">FORMING</span></td><td>0%</td><td>+0.5%</td></tr>
+        <tr style="background: rgba(79,126,255,0.05);"><td><strong>Total Alpha</strong></td><td>—</td><td><strong>+3.0%</strong></td><td><strong>+7.0%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-title">Growth Rate Summary Table</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Parameter</th><th class="s-fail">STRESS</th><th class="s-marg" style="color:var(--accent);">BASE</th><th class="s-pass">ACCEL</th></tr></thead>
+      <tbody>
+        <tr><td>Macro State</td><td>GDP ~5.5%</td><td>GDP ~6.8%</td><td>GDP 8%+</td></tr>
+        <tr><td>Sector Growth (USD CC)</td><td>4–5%</td><td>7–9%</td><td>12–14%</td></tr>
+        <tr><td>Company Alpha</td><td>+1.5%</td><td>+3.0%</td><td>+4.0%</td></tr>
+        <tr><td>AI Alpha Net</td><td>−2.0%</td><td>+0.5%</td><td>+2.0%</td></tr>
+        <tr><td>Stage 1 Revenue CAGR (5yr)</td><td>4–6%</td><td>8–10%</td><td>13–15%</td></tr>
+        <tr><td>Stage 2 Revenue CAGR</td><td>4%</td><td>6–7%</td><td>9–10%</td></tr>
+        <tr><td>Terminal Growth</td><td>4.5%</td><td>5.5%</td><td>6.5%</td></tr>
+        <tr><td>EBIT Margin Direction</td><td>Compress (12–14%)</td><td>Stable (14–16%)</td><td>Expand (16–18%)</td></tr>
+        <tr><td>Key Risk</td><td>AI deflation + margin erosion</td><td>Moderate AI disruption, managed</td><td>BlueVerse™ re-rating</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <p style="margin:0;"><strong>Sensitivity Check:</strong> A 1% change in terminal growth changes base IV by approximately <strong class="highlight-text">±₹340 (±8%)</strong>. A 1% change in Stage 1 growth changes base IV by approximately <strong class="highlight-text">±₹190 (±5%)</strong>. The AI THREAT discount (15%) adds ~₹640 of additional IV reduction vs. unadjusted base — making the AI overlay a material determinant of entry price.</p>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <div class="section-title">Financial Fortress Analysis</div>
+
+  <div class="sub-title">5-Year P&amp;L Snapshot <span class="pill pill-v">[VERIFIED] NSE/BSE Filings</span></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Year</th><th>Revenue (₹Cr)</th><th>EBITDA (₹Cr)</th><th>EBIT Margin</th><th>Net Profit (₹Cr)</th><th>EPS (₹)</th><th>Rev Growth</th></tr></thead>
+      <tbody>
+        <tr><td>FY22</td><td>26,109</td><td>5,249</td><td>~17.8%</td><td>3,950</td><td>~133</td><td>28.4%</td></tr>
+        <tr><td>FY23</td><td>33,183</td><td>6,108</td><td>~16.2%</td><td>4,410</td><td>~150</td><td>27.1%</td></tr>
+        <tr><td>FY24</td><td>35,517</td><td>6,387</td><td>~15.7%</td><td>4,585</td><td>~155</td><td>7.0%</td></tr>
+        <tr><td>FY25</td><td>38,008</td><td>6,495</td><td>14.5%</td><td>4,602</td><td>~156</td><td>7.0%</td></tr>
+        <tr style="background: rgba(79,126,255,0.05);"><td><strong>FY26</strong></td><td><strong>43,402</strong></td><td><strong>~7,800</strong></td><td><strong>15.4%</strong></td><td><strong>4,983*</strong></td><td><strong>169.1</strong></td><td><strong>14.2%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:11px;color:var(--muted);">*FY26 PAT includes exceptional items; excl. exceptional: ₹5,378 Cr, EPS ~₹182.5 | Revenue CAGR FY22–26: ~13.5% INR / ~5.4% USD</p>
+
+  <div class="sub-title">ROE &amp; ROIC (5-Year Trend) <span class="pill pill-e">[ESTIMATED] Cross-referenced</span></div>
+  <div class="card-grid">
+    <div class="metric-card green"><div class="metric-label">ROE (FY26)</div><div class="metric-val">~27%</div><div class="metric-sub">Consistently above 20% — 5yr</div></div>
+    <div class="metric-card green"><div class="metric-label">ROIC (FY26 est.)</div><div class="metric-val">~22–25%</div><div class="metric-sub">Above WACC 12.5% — positive EVA</div></div>
+    <div class="metric-card"><div class="metric-label">Debt/Equity</div><div class="metric-val">0.09</div><div class="metric-sub">Near zero debt — fortress balance sheet</div></div>
+    <div class="metric-card green"><div class="metric-label">Cash &amp; Equiv.</div><div class="metric-val">~₹13,600 Cr</div><div class="metric-sub">USD 1.63B — 8+ months revenue cover</div></div>
+    <div class="metric-card amber"><div class="metric-label">CFO FY25</div><div class="metric-val">₹4,545 Cr</div><div class="metric-sub">Down from ₹5,670 Cr in FY24</div></div>
+    <div class="metric-card"><div class="metric-label">FCF Conversion</div><div class="metric-val">~82%</div><div class="metric-sub">CFO/Net Income — PASS (marginal)</div></div>
+  </div>
+
+  <div class="sub-title">Financial Fortress Scorecard</div>
+  <div class="score-grid">
+    <div class="score-item"><span class="score-label">ROE ≥15% for 5 consecutive years</span><span class="score-status s-pass">✓ PASS</span></div>
+    <div class="score-item"><span class="score-label">ROIC &gt; WACC (12.5%) for 5 years</span><span class="score-status s-pass">✓ PASS</span></div>
+    <div class="score-item"><span class="score-label">Net cash position (no net debt)</span><span class="score-status s-pass">✓ PASS</span></div>
+    <div class="score-item"><span class="score-label">Net profit margin ≥15%</span><span class="score-status s-marg">~ MARGINAL (12–13%)</span></div>
+    <div class="score-item"><span class="score-label">FCF positive + growing</span><span class="score-status s-marg">~ MARGINAL (CFO declining FY25)</span></div>
+    <div class="score-item"><span class="score-label">FCF conversion ≥80%</span><span class="score-status s-marg">~ MARGINAL (~82%)</span></div>
+    <div class="score-item"><span class="score-label">Pricing power (pricing above inflation)</span><span class="score-status s-marg">~ MARGINAL (AI deflation headwind)</span></div>
+    <div class="score-item"><span class="score-label">Revenue CAGR ≥ macro-derived sector</span><span class="score-status s-pass">✓ PASS (INR basis)</span></div>
+    <div class="score-item"><span class="score-label">Predictable/recurring revenue</span><span class="score-status s-pass">✓ PASS (multi-year contracts)</span></div>
+    <div class="score-item"><span class="score-label">Capital-light model (high ROIC)</span><span class="score-status s-pass">✓ PASS</span></div>
+    <div class="score-item"><span class="score-label">Dividend payout &lt;80% of owner earnings</span><span class="score-status s-pass">✓ PASS (~40% payout)</span></div>
+  </div>
+
+  <div class="sub-title">Owner Earnings (FY26 Normalized)</div>
+  <div class="oe-box">
+    <div class="oe-title">Owner Earnings Calculation — FY26</div>
+    <div class="oe-row"><span class="oe-label">Net Income (excl. exceptional)</span><span class="oe-val">₹5,378 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">+ D&amp;A</span><span class="oe-val">+₹1,257 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">+ Non-cash / SBC adjustments</span><span class="oe-val">+₹300 Cr (est.)</span></div>
+    <div class="oe-row"><span class="oe-label">− Maintenance CapEx (est. 40% of total)</span><span class="oe-val">−₹600 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">± Working Capital Changes</span><span class="oe-val">−₹200 Cr (est.)</span></div>
+    <div class="oe-row oe-total"><span class="oe-label">Owner Earnings (Base)</span><span class="oe-val oe-total">₹6,135 Cr (~₹208/share)</span></div>
+  </div>
+
+  <div class="sub-title">O'Glove Earnings Quality Framework</div>
+  <div class="score-grid">
+    <div class="score-item"><span class="score-label">Test 1 — FCF Conversion (5yr CFO/NI)</span><span class="score-status s-marg">~ MARGINAL (~82%)</span></div>
+    <div class="score-item"><span class="score-label">Test 2 — DSO Trend (3yr AR growth)</span><span class="score-status s-pass">✓ PASS (stable DSO ~65 days)</span></div>
+    <div class="score-item"><span class="score-label">Test 3 — Inventory Days</span><span class="score-status s-pass">✓ N/A (services, no inventory)</span></div>
+    <div class="score-item"><span class="score-label">Test 4 — Accounting Policy Stability</span><span class="score-status s-pass">✓ PASS (no earnings-boosting changes)</span></div>
+    <div class="score-item"><span class="score-label">Test 5 — Gross Margin Consistency (5yr)</span><span class="score-status s-marg">~ MARGINAL (declining trend)</span></div>
+  </div>
+
+  <div class="card" style="text-align:center; margin-top:16px;">
+    <div class="metric-label">Overall Earnings Quality</div>
+    <div style="font-family:'DM Serif Display',serif; font-size:22px; color:var(--accent2); margin:8px 0;">ACCEPTABLE</div>
+    <p style="margin:0; font-size:12px; color:var(--muted);">No quality adjustment required. Earnings are real; FCF conversion marginal but positive. Watch CFO trend in FY27 closely.</p>
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <div class="section-title">Economic Moat Analysis</div>
+
+  <div class="moat-card">
+    <div class="moat-card-header">
+      <div class="moat-card-title">Switching Costs</div>
+      <div class="moat-stars">★★★★</div>
+    </div>
+    <div class="moat-card-body">Multi-year enterprise contracts with deep system integration across SAP, Oracle, Salesforce, Azure stacks create high switching friction. Average deal tenure 3–5 years. 154 clients contribute $5M+ annually — sticky relationships built over decades. However, agentic AI tools reduce implementation complexity, potentially lowering switching cost structurally. <span class="pill pill-v">[VERIFIED]</span></div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-card-header">
+      <div class="moat-card-title">Intangible Assets (L&amp;T Brand, Certifications)</div>
+      <div class="moat-stars">★★★</div>
+    </div>
+    <div class="moat-card-body">L&amp;T Group pedigree provides trust advantage in large enterprise procurement. 10 Microsoft specializations added/retained in FY25, including Azure OpenAI, Data Warehouse Migration, and Kubernetes. Partner-of-choice status with Microsoft, SAP, AWS, Salesforce. Brand premium in BFSI and manufacturing verticals. <span class="pill pill-v">[VERIFIED]</span></div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-card-header">
+      <div class="moat-card-title">Network Effects / Data Flywheel</div>
+      <div class="moat-stars">★★</div>
+    </div>
+    <div class="moat-card-body">Limited traditional network effects. BlueVerse™ accumulates enterprise workflow automation patterns that could create a flywheel (more clients → more AI training data → better outcomes → more clients), but this loop is FORMING, not confirmed. <span class="pill pill-e">[ESTIMATED]</span></div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-card-header">
+      <div class="moat-card-title">Cost Advantages (India Talent Arbitrage)</div>
+      <div class="moat-stars">★★★</div>
+    </div>
+    <div class="moat-card-body">87,000+ professionals across 30+ countries, with India delivery talent cost arbitrage vs. US/EU onshore. HOWEVER, AI coding agents are compressing this advantage — productivity per engineer rising means fewer engineers needed, reducing the India scale advantage over time. This moat is under structural pressure. <span class="pill pill-e">[ESTIMATED]</span></div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-card-header">
+      <div class="moat-card-title">Efficient Scale (L&amp;T Ecosystem)</div>
+      <div class="moat-stars">★★★</div>
+    </div>
+    <div class="moat-card-body">Access to L&amp;T Group's engineering and manufacturing client base creates embedded demand pipeline. GCC-as-a-Service offering leverages L&amp;T industrial relationships. Unique advantage not replicable by Wipro/HCL/Mphasis without equivalent industrial parentage. <span class="pill pill-v">[VERIFIED]</span></div>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-badge">🌀 DATA FLYWHEEL VERDICT — FORMING</div>
+    <div class="flywheel-score">5 / 10</div>
+    <div class="flywheel-label">Data Quality /3: 2 · Improvement Evidence /4: 2 · Loop Speed /3: 1</div>
+    <div style="margin-top:12px; font-size:12px; color:var(--muted); max-width:500px; margin:12px auto 0; line-height:1.6;">
+      Q1 — Proprietary data: BlueVerse™ accumulates enterprise automation workflow data across 751 clients, but competitors have similar enterprise access. Not clearly unique yet. <br>
+      Q2 — Improvement with users: BlueVerse™ RightAction and AI governance framework improves with more deployment — partially evidenced. <br>
+      Q3 — Better AI attracts more clients: BlueVerse Credit (AI currency model launching Q1 FY27) is the mechanism, but loop speed is not confirmed in data yet. <br>
+      <strong style="color:var(--accent2);">Flywheel: FORMING ★★★ (2/3 criteria met). Monitor quarterly for confirmation.</strong>
+    </div>
+  </div>
+
+  <div class="sub-title">Moat Macro Stress Test</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Moat Source</th><th>Stress Scenario</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Switching Costs</td><td>AI agents reduce implementation complexity</td><td><span class="s-marg">WEAKENS (slowly)</span></td></tr>
+        <tr><td>Intangible Assets (Brand)</td><td>L&amp;T brand durable; certifications matter more as AI complexity grows</td><td><span class="s-pass">HOLDS</span></td></tr>
+        <tr><td>India Cost Advantage</td><td>AI productivity per engineer compresses headcount requirement</td><td><span class="s-fail">WEAKENS (materially)</span></td></tr>
+        <tr><td>L&amp;T Group Ecosystem</td><td>Industrial relationships durable; GCC-as-a-Service grows in stress</td><td><span class="s-pass">STRENGTHENS</span></td></tr>
+        <tr><td>BlueVerse Flywheel</td><td>Forming stage; may not scale before AI deflation compounds</td><td><span class="s-marg">UNCERTAIN</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-title">Overall Moat Grade</div>
+  <div style="text-align:center; padding:20px 0;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Economic Moat Grade</div>
+    <div style="font-family:'DM Serif Display',serif; font-size:42px;" class="grade-b">B+</div>
+    <p style="color:var(--muted); font-size:12px; max-width:480px; margin:0 auto;">Wide moat on switching costs + L&amp;T ecosystem. Structural headwind from AI deflation on India talent arbitrage. Flywheel forming. Moat would upgrade to A− on Flywheel CONFIRMED.</p>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <div class="section-title">Management Integrity &amp; Capital Allocation</div>
+
+  <div class="card-grid">
+    <div class="metric-card green"><div class="metric-label">Promoter Pledge</div><div class="metric-val">0%</div><div class="metric-sub">Zero pledges — full PASS</div></div>
+    <div class="metric-card"><div class="metric-label">Promoter Holding</div><div class="metric-val">68.52%</div><div class="metric-sub">L&amp;T — stable, −0.05pp YoY</div></div>
+    <div class="metric-card green"><div class="metric-label">Final Dividend FY26</div><div class="metric-val">₹53/share</div><div class="metric-sub">+ Interim ₹22 = ₹75 total FY26</div></div>
+    <div class="metric-card amber"><div class="metric-label">CEO Transition</div><div class="metric-val">Venu Lambu</div><div class="metric-sub">Joined FY25 → FY26 strategic pivot</div></div>
+  </div>
+
+  <div class="sub-title">Management Strengths</div>
+  <div class="card">
+    <ul style="padding-left:16px; line-height:1.9; font-size:13px;">
+      <li><strong>L&amp;T Parentage:</strong> Larsen &amp; Toubro Group provides governance oversight, balance sheet support, and industrial client relationships. No governance risk from promoter side.</li>
+      <li><strong>Zero Pledges:</strong> No shares pledged — full pass on promoter integrity test.</li>
+      <li><strong>Decisive AI Pivot:</strong> CEO Venu Lambu articulated clear strategy (Fit4Future, BlueVerse Credit, Agentic AI Studios) within his first year. BlueVerse Credit (AI currency model) launches Q1 FY27 — outcome-based pricing is the right strategic direction.</li>
+      <li><strong>Capital Allocation:</strong> ₹75/share total dividend in FY26 (~2% yield at CMP). Net cash of $1.63B deployed conservatively — Voicing.AI strategic investment, BlueVerse Studio infrastructure. No debt accumulation.</li>
+      <li><strong>Largest Deals Ever:</strong> FY26 order inflow $6.6B (+10.3%) — includes $200M+ single deals. Deal quality improving toward multi-service, multi-year structures.</li>
+      <li><strong>ICAI "Excellence in Integrated Annual Report" Award:</strong> FY25 recognition signals strong financial reporting standards.</li>
+    </ul>
+  </div>
+
+  <div class="sub-title">Management Concerns</div>
+  <div class="card" style="border-color: var(--threat);">
+    <ul style="padding-left:16px; line-height:1.9; font-size:13px;">
+      <li><strong>Margin Guidance Credibility:</strong> Q4 FY26 EBIT margin dropped to 15.1% from 16.1% in Q3 — wage hikes and productivity investments ate into the stated 14–18% band. Consistent margin management needed.</li>
+      <li><strong>Mutual Fund Exodus:</strong> DII/MF holding declined from 5.38% (Jun 2025) to 4.33% (Mar 2026) — 105 bps reduction over 3 quarters. Domestic institutional investors reducing conviction before reversal of AI deflation thesis.</li>
+      <li><strong>FII Low Conviction:</strong> FII at 6.6% is near multi-year low. Sector-wide AI concerns driving institutional outflows.</li>
+      <li><strong>Revenue Growth vs. Earnings Dilution:</strong> 5-year net profit CAGR (~6%) significantly below revenue CAGR (~13.5% INR) — margin compression has compounded. EPS growth has been anemic despite topline expansion.</li>
+      <li><strong>Leadership Transition Risk:</strong> Venu Lambu is new. BlueVerse Credit and agentic AI pivot require flawless execution — execution risk is elevated during leadership transition year.</li>
+    </ul>
+  </div>
+
+  <div class="sub-title">AI Team Quality <span class="pill pill-e">[ESTIMATED]</span></div>
+  <div class="card">
+    <p>LTM is positioning as an AI-native enterprise partner, not a foundational AI model builder. BlueVerse™ is built on top of Azure OpenAI, NVIDIA AI Enterprise, and partner foundation models — not proprietary LLMs. This means LTM is a <strong class="highlight-text">Level 5 AI-Enabled Incumbent</strong> on the value chain, not a Level 1–3 infrastructure or model player. AI governance framework (BlueVerse RightAction) and BlueVerse Academy (training 60,000+ employees with IIT-KGP/MIT Open Learning) show commitment, but R&amp;D as % of revenue is not separately disclosed. Patent portfolio and AI publications are limited compared to Infosys/TCS. Management credibility on AI: MARGINAL (1/3 — framework knowledge strong, proprietary model development limited).</p>
+  </div>
+
+  <div style="text-align:center; padding:12px 0;">
+    <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Management Grade</div>
+    <div style="font-family:'DM Serif Display',serif; font-size:42px;" class="grade-b">B+</div>
+    <p style="color:var(--muted); font-size:12px;">L&amp;T governance + zero pledges + healthy dividend + credible AI pivot = strong management. Margin execution and MF outflows are the watch items.</p>
+  </div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <div class="section-title">Valuation &amp; Margin of Safety</div>
+  <p style="font-size:12px; color:var(--muted); margin-bottom:16px;">Earnings quality: ACCEPTABLE. No quality adjustment applied. All growth rates from Step 3 Growth Rate Summary Table. AI THREAT discount of 15% applied to all blended IVs. WACC: 12.5% (Cat C). Terminal P/E: 18–20x (compressed from 18–22x standard due to AI THREAT).</p>
+
+  <div class="sub-title">Method 1 — DCF (2-Stage) <span class="pill pill-e">[ESTIMATED]</span></div>
+  <p style="font-size:12px; margin-bottom:10px;">Base: Owner Earnings FY26 ~₹208/share. Stage 1 CAGR 9% (5yr). Stage 2 CAGR 6.5% (5yr). Terminal P/E 20x. WACC 12.5%.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Year</th><th>OE/Share (₹)</th><th>PV Factor (12.5%)</th><th>PV (₹)</th></tr></thead>
+      <tbody>
+        <tr><td>FY27E</td><td>227</td><td>0.889</td><td>202</td></tr>
+        <tr><td>FY28E</td><td>247</td><td>0.790</td><td>195</td></tr>
+        <tr><td>FY29E</td><td>269</td><td>0.703</td><td>189</td></tr>
+        <tr><td>FY30E</td><td>294</td><td>0.625</td><td>184</td></tr>
+        <tr><td>FY31E</td><td>320</td><td>0.556</td><td>178</td></tr>
+        <tr><td>FY32E (Stg 2)</td><td>341</td><td>0.494</td><td>168</td></tr>
+        <tr><td>FY33E</td><td>363</td><td>0.439</td><td>159</td></tr>
+        <tr><td>FY34E</td><td>387</td><td>0.390</td><td>151</td></tr>
+        <tr><td>FY35E</td><td>412</td><td>0.347</td><td>143</td></tr>
+        <tr><td>FY36E + Terminal (20x)</td><td>439 → TV ₹8,780</td><td>0.308</td><td>2,836</td></tr>
+        <tr style="background:rgba(79,126,255,0.05);"><td colspan="3"><strong>DCF Base IV (unadjusted)</strong></td><td><strong>₹4,405</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-title">DCF Sensitivity Sub-Table</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Terminal P/E ↓ / WACC →</th><th>11.5%</th><th>12.5%</th><th>13.5%</th></tr></thead>
+      <tbody>
+        <tr><td>22x Terminal P/E</td><td>₹5,320</td><td>₹4,890</td><td>₹4,480</td></tr>
+        <tr><td>20x Terminal P/E</td><td>₹4,840</td><td>₹4,405</td><td>₹4,020</td></tr>
+        <tr><td>18x Terminal P/E</td><td>₹4,350</td><td>₹3,960</td><td>₹3,590</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-title">Method 2 — Owner Earnings Capitalisation</div>
+  <div class="card">
+    <p>Value = OE per share / (Required Return − g) = ₹208 / (12.5% − 5.5%) = ₹208 / 7.0% = <strong class="highlight-text">₹2,971</strong> (conservative perpetuity) | With 5yr growth premium adjustment: ≈ <strong class="highlight-text">₹4,600</strong></p>
+  </div>
+
+  <div class="sub-title">Method 3 — ROIC / EPV</div>
+  <div class="card">
+    <p>NOPAT estimate FY26 = ₹6,800 Cr. Invested Capital ~₹27,000 Cr (net assets + operating liabilities). ROIC ≈ 25%. WACC 12.5%. EPV = NOPAT / WACC = ₹6,800 / 12.5% = ₹54,400 Cr → per share ₹184. Growth premium (ROIC−WACC spread): EPV × (1 + spread-adjusted multiple) ≈ <strong class="highlight-text">₹3,800–4,200 / share</strong>.</p>
+  </div>
+
+  <div class="sub-title">Method 4 — P/E Earnings Power</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th><th>IV Implied</th></tr></thead>
+      <tbody>
+        <tr><td>Current P/E (trailing)</td><td>~24x</td><td>CMP ₹3,992 — fairly valued on AI-adjusted basis</td></tr>
+        <tr><td>FY27E EPS (consensus)</td><td>~₹195</td><td>At 24x → ₹4,680 | At 20x → ₹3,900</td></tr>
+        <tr><td>5yr avg P/E (pre-AI fears)</td><td>~30x</td><td>Normalised IV: ₹195 × 30x = ₹5,850</td></tr>
+        <tr><td>Normalised P/E (AI-adjusted)</td><td>22x</td><td>₹195 × 22x = <strong>₹4,290</strong></td></tr>
+        <tr><td>PEG Ratio</td><td>~2.5x</td><td>Elevated vs. growth rate; not cheap on PEG</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-title">Method 5 — Earnings Yield vs. Bond Yield</div>
+  <div class="card">
+    <p><strong>Earnings Yield:</strong> 1/24 = 4.17% | <strong>FCF Yield:</strong> ~4.8% | <strong>Dividend Yield:</strong> ₹75/₹3,992 = 1.88% | <strong>10Y G-Sec:</strong> ~7.1%</p>
+    <p><strong>ERP:</strong> 4.17% − 7.1% = <strong class="threat-text">−2.93% (negative ERP)</strong> — Earnings yield is below risk-free rate. LTM does not offer a margin of safety on absolute earnings yield basis at current price. FCF yield at 4.8% is closer but still below G-Sec. This is a meaningful concern: the stock must deliver growth to justify owning over a 7.1% G-Sec.</p>
+    <p><strong>Yield-on-Cost Table (if bought at ₹3,992):</strong><br>
+    Yr 1: EY 4.2% | Yr 3: 5.5% (at 9% EPS growth) | Yr 5: 6.5% | Yr 7: 7.8% → Bond crossover at Year 6–7.</p>
+  </div>
+
+  <div class="sub-title">5-Method Valuation Summary Table</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI THREAT adj (−15%)</th></tr></thead>
+      <tbody>
+        <tr><td>DCF (2-Stage)</td><td>₹2,800</td><td>₹4,405</td><td>₹6,200</td><td>₹3,744</td></tr>
+        <tr><td>Owner Earnings Cap</td><td>₹2,500</td><td>₹4,600</td><td>₹6,800</td><td>₹3,910</td></tr>
+        <tr><td>ROIC / EPV</td><td>₹2,600</td><td>₹4,000</td><td>₹5,500</td><td>₹3,400</td></tr>
+        <tr><td>P/E Earnings Power</td><td>₹2,900</td><td>₹4,290</td><td>₹5,850</td><td>₹3,647</td></tr>
+        <tr><td>Earnings Yield</td><td>—</td><td>Signals overvalued vs G-Sec</td><td>—</td><td>—</td></tr>
+        <tr style="background:rgba(79,126,255,0.07);"><td><strong>Blended Base IV (4 methods)</strong></td><td><strong>₹2,700</strong></td><td><strong>₹4,324</strong></td><td><strong>₹6,088</strong></td><td><strong>₹3,676</strong></td></tr>
+        <tr style="background:rgba(255,71,87,0.05);"><td colspan="4"><em>AI THREAT discount: −15% applied to Base IV = ₹3,676 AI-adjusted Base IV</em></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="metric-card amber">
+      <div class="metric-label">Blended Base IV (unadj.)</div>
+      <div class="metric-val">₹4,324</div>
+      <div class="metric-sub">Average of 4 quant methods</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">AI-Adjusted Base IV</div>
+      <div class="metric-val">₹3,676</div>
+      <div class="metric-sub">−15% for AI THREAT overlay</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">MoS Entry Zone (20%)</div>
+      <div class="metric-val">₹2,900–3,200</div>
+      <div class="metric-sub">Cat C MoS 20% on AI-adj IV</div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Current Price vs AI IV</div>
+      <div class="metric-val">+8.6%</div>
+      <div class="metric-sub">₹3,992 vs ₹3,676 — above AI IV</div>
+    </div>
+  </div>
+
+  <div class="sub-title">Relative Valuation</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>Own History (5yr avg)</th><th>Current</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>P/E</td><td>~30x</td><td>~24x</td><td>🟡 20% discount to history — BUT AI de-rating means history is not applicable anchor</td></tr>
+        <tr><td>EV/Revenue</td><td>~4x</td><td>~2.7x</td><td>🟡 Discount, but revenue growth is slowing</td></tr>
+        <tr><td>P/B</td><td>~7x</td><td>~5.6x</td><td>🟡 Below historical average</td></tr>
+        <tr><td>Dividend Yield</td><td>~1.4%</td><td>~1.88%</td><td>🟢 Above average — income support</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:12px; color:var(--muted);">Note: Historical P/E of 30x was set before AI deflation became structural. The AI THREAT overlay means a structurally lower P/E is justified. 20–24x is the new normal for IT services in an AI deflation environment unless BlueVerse flywheel confirms.</p>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <div class="section-title">Investment Verdict</div>
+
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Moat</div>
+      <div class="pillar-grade grade-b">B+</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;">Switching costs + L&amp;T ecosystem; AI eroding talent arbitrage</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Quality</div>
+      <div class="pillar-grade grade-b">B+</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;">ACCEPTABLE earnings; ROE 27%; FCF marginal</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Management</div>
+      <div class="pillar-grade grade-b">B+</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;">L&amp;T governance; credible pivot; MF outflows concern</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Valuation</div>
+      <div class="pillar-grade grade-c">C+</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;">Above AI-adjusted IV; negative ERP vs G-Sec</div>
+    </div>
+  </div>
+
+  <div class="badge-row" style="margin-bottom:20px; justify-content:center;">
+    <span class="badge badge-cat">CAT C — MATURE COMPOUNDER</span>
+    <span class="badge badge-threat">🔴 AI THREAT</span>
+    <span class="badge badge-neutral">FLYWHEEL: FORMING ★★★</span>
+    <span class="badge badge-macro">AI SCORE: 42/100</span>
+    <span class="badge badge-macro">HORIZON: 3–5yr</span>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-stars">★ ★ ★</div>
+    <div class="verdict-text">WATCH ★★★</div>
+    <div style="font-size:13px; color:var(--muted);">Strong quality; price above AI-adjusted entry zone; await AI clarity catalyst</div>
+    <div class="verdict-quote">"Price is what you pay. Value is what you get. The problem is when AI is rewriting the value itself — you must be paid to wait." &nbsp;—&nbsp; Adapted, Warren Buffett framework</div>
+  </div>
+
+  <div class="sub-title">Verdict Rationale</div>
+  <div class="card">
+    <p>LTM is a <strong>B+ quality company trading near or slightly above AI-adjusted intrinsic value (₹3,676)</strong> with a negative earnings yield spread vs. G-Sec. The company's fundamentals are real — zero debt, $1.6B cash, 68.52% promoter ownership, record order inflow, $6.6B pipeline. But the AI THREAT overlay is structural, not sentiment-driven: productivity sharing with clients is compressing revenue per engineer, OpenAI's deployment company directly competes with LTM's core model, and FY27 guidance from the sector is below consensus.</p>
+    <p>The current price of ₹3,992 implies you are buying at ~8.6% premium to AI-adjusted IV of ₹3,676 — with a negative ERP vs. the 7.1% G-Sec. This is not a margin of safety entry. A patient investor waits for the stock to reach the MoS Entry Zone of <strong class="highlight-text">₹2,900–3,200</strong> OR for BlueVerse™ to demonstrate flywheel confirmation (which would upgrade the AI overlay to NEUTRAL and remove the 15% discount, raising AI-adj IV to ₹4,324 with a MoS entry of ~₹3,460).</p>
+  </div>
+
+  <div class="sub-title">Upgrade Conditions to BUY ★★★★★ (All 4 required)</div>
+  <ul class="condition-list">
+    <li class="condition-item"><span class="condition-num">1</span><span>Price corrects to <strong>₹3,100 or below</strong> (20% MoS on AI-adjusted IV of ₹3,676) — creates sufficient margin of safety even under threat scenario.</span></li>
+    <li class="condition-item"><span class="condition-num">2</span><span>RSI falls below <strong>35 on the weekly chart</strong> — confirming maximum pessimism zone and reversal setup.</span></li>
+    <li class="condition-item"><span class="condition-num">3</span><span>BlueVerse™ Credit revenue disclosed as <strong>&gt;5% of total revenue</strong> for two consecutive quarters — confirming outcome-based AI model is monetising (removes AI THREAT, upgrades to NEUTRAL).</span></li>
+    <li class="condition-item"><span class="condition-num">4</span><span>EBIT margin sustains <strong>≥15.5% for 2 consecutive quarters</strong> in FY27 — proving Fit4Future programme durability against wage headwinds.</span></li>
+    <li class="condition-item"><span class="condition-num">5</span><span>MF/DII holdings stabilise or increase for <strong>2 consecutive quarters</strong> — institutional conviction returning after current exodus.</span></li>
+  </ul>
+
+  <div class="sub-title">Series Tracker</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Ticker</th><th>Verdict</th><th>Cat</th><th>AI</th><th>Base IV</th><th>CMP</th><th>MoS Entry</th></tr></thead>
+      <tbody>
+        <tr><td><strong>LTM</strong></td><td>WATCH ★★★</td><td>C</td><td>🔴 THREAT</td><td>₹4,324</td><td>₹3,992</td><td>₹2,900–3,200</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <div class="section-title">Technical Analysis</div>
+
+  <div class="sub-title">A — Price Structure <span class="pill pill-v">[VERIFIED] NSE/BSE Live</span></div>
+  <div class="card-grid">
+    <div class="metric-card red"><div class="metric-label">Current Price</div><div class="metric-val">₹3,992</div><div class="metric-sub">May 25, 2026</div></div>
+    <div class="metric-card green"><div class="metric-label">52-Week Low</div><div class="metric-val">₹3,901</div><div class="metric-sub">Tested today — major support</div></div>
+    <div class="metric-card red"><div class="metric-label">52-Week High</div><div class="metric-val">₹6,429.5</div><div class="metric-sub">Down 38% — deep downtrend</div></div>
+    <div class="metric-card amber"><div class="metric-label">6-Month Return</div><div class="metric-val">−32.6%</div><div class="metric-sub">Severe underperformance</div></div>
+  </div>
+
+  <div class="sub-title">B — Moving Average Dashboard</div>
+  <div class="ta-grid">
+    <div class="ta-card"><div class="ta-label">20 EMA</div><div class="ta-val below">₹4,482</div><div class="ta-status below">Price BELOW — Bearish</div></div>
+    <div class="ta-card"><div class="ta-label">50 DMA</div><div class="ta-val below">₹4,419</div><div class="ta-status below">Price BELOW — Bearish</div></div>
+    <div class="ta-card"><div class="ta-label">100 DMA</div><div class="ta-val below">₹5,195</div><div class="ta-status below">Price BELOW — Bearish</div></div>
+    <div class="ta-card"><div class="ta-label">50 DMA</div><div class="ta-val below">₹4,419</div><div class="ta-status below">Price BELOW — Bearish</div></div>
+    <div class="ta-card"><div class="ta-label">100 DMA</div><div class="ta-val below">₹5,195</div><div class="ta-status below">Price BELOW — Bearish</div></div>
+    <div class="ta-card"><div class="ta-label">200 DMA</div><div class="ta-val below">₹5,310</div><div class="ta-status below">Price BELOW — Bearish</div></div>
+    <div class="ta-card"><div class="ta-label">Golden/Death X</div><div class="ta-val below">DEATH</div><div class="ta-status below">50 DMA &lt; 200 DMA</div></div>
+    <div class="ta-card"><div class="ta-label">Trend Regime</div><div class="ta-val below">BEARISH</div><div class="ta-status below">All DMAs above price</div></div>
+  </div>
+
+  <div class="sub-title">C — Volume &amp; D — Momentum Indicators <span class="pill pill-e">[ESTIMATED]</span></div>
+  <div class="ta-grid">
+    <div class="ta-card"><div class="ta-label">RSI (14, Daily)</div><div class="ta-val amber-text">~32</div><div class="ta-status">Near oversold — approaching primary buy zone</div></div>
+    <div class="ta-card"><div class="ta-label">RSI (Weekly)</div><div class="ta-val amber-text">~28</div><div class="ta-status">Oversold weekly — historically significant</div></div>
+    <div class="ta-card"><div class="ta-label">MACD (Daily)</div><div class="ta-val below">Bearish</div><div class="ta-status">Signal line below; histogram compressed</div></div>
+    <div class="ta-card"><div class="ta-label">Stochastic</div><div class="ta-val below">~15</div><div class="ta-status">Deeply oversold; watch for crossover</div></div>
+    <div class="ta-card"><div class="ta-label">OBV Trend</div><div class="ta-val below">Declining</div><div class="ta-status">Volume on down days &gt; up days; distribution</div></div>
+    <div class="ta-card"><div class="ta-label">Volume Events</div><div class="ta-val below">Elevated sells</div><div class="ta-status">Post Q4 results selloff Apr 23-24</div></div>
+  </div>
+
+  <div class="sub-title">E — Chart Patterns</div>
+  <div class="card">
+    <p><strong>Triple Top Formation:</strong> Stock formed a triple top at ₹6,400 (Jan 2026) and has been in a consistent downtrend since. TradingView community identifies ₹4,100–4,300 as a multi-year demand zone. Today's low of ₹3,901 is testing the 52-week low — a make-or-break level.</p>
+    <p><strong>Possible Double Bottom:</strong> If stock holds ₹3,800–3,900 on a second test, a double bottom pattern could form, triggering a short-covering rally toward ₹4,500–5,000 (50 DMA).</p>
+    <p><strong>Descending Triangle:</strong> Short-term structure shows lower highs and flat lows around ₹3,900 — a continuation bearish pattern. Break below ₹3,850 on volume would signal further downside.</p>
+  </div>
+
+  <div class="sub-title">F — Trade Structure</div>
+  <div class="card" style="border-color:var(--accent);">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;">
+      <div><div class="metric-label">Entry (Aggressive)</div><div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--pass);">₹3,850–3,950</div><div class="metric-sub">Near 52wk low / demand zone</div></div>
+      <div><div class="metric-label">Entry (Conservative)</div><div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);">After 200 DMA reclaim</div><div class="metric-sub">Wait for ₹5,310 recovery</div></div>
+      <div><div class="metric-label">Stop Loss</div><div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--threat);">₹3,700</div><div class="metric-sub">Below key demand zone</div></div>
+      <div><div class="metric-label">Target 1</div><div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--accent2);">₹4,480 (20 EMA)</div><div class="metric-sub">+13% from ₹3,950</div></div>
+      <div><div class="metric-label">Target 2</div><div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--pass);">₹5,000–5,300</div><div class="metric-sub">50–100 DMA zone</div></div>
+      <div><div class="metric-label">R:R Ratio</div><div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--pass);">1:2.5</div><div class="metric-sub">Risk ₹250, Reward ₹630</div></div>
+    </div>
+  </div>
+
+  <div class="sub-title">G — Technical Composite Score</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>Score /5</th><th>Comment</th></tr></thead>
+      <tbody>
+        <tr><td>Price vs. Moving Averages</td><td><span class="s-fail">1/5</span></td><td>Below all 4 DMAs — deeply bearish</td></tr>
+        <tr><td>RSI &amp; Momentum</td><td><span class="s-marg">3/5</span></td><td>Oversold weekly RSI — mean reversion possible</td></tr>
+        <tr><td>Volume &amp; OBV</td><td><span class="s-fail">1/5</span></td><td>OBV declining; distribution ongoing</td></tr>
+        <tr><td>Chart Pattern</td><td><span class="s-marg">2/5</span></td><td>Potential double bottom forming at 52wk low</td></tr>
+        <tr><td>Relative Strength vs Nifty</td><td><span class="s-fail">1/5</span></td><td>−20% vs Nifty over 1yr; severe underperformance</td></tr>
+        <tr><td>Support/Resistance Structure</td><td><span class="s-marg">2/5</span></td><td>Key support ₹3,900; resistance every 200–300 pts</td></tr>
+        <tr style="background:rgba(79,126,255,0.05);"><td><strong>Total</strong></td><td><strong>10/30 = 33%</strong></td><td><strong>BEARISH. Oversold but trend is down. No technical trigger yet.</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <div class="section-title">Shareholding Analysis</div>
+
+  <div class="sub-title">A — Promoter Trend (5 Quarters) <span class="pill pill-v">[VERIFIED] BSE Filings</span></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Quarter</th><th>Promoter %</th><th>Pledge %</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Mar 2025</td><td>68.57%</td><td>0%</td><td><span class="s-pass">Stable</span></td></tr>
+        <tr><td>Jun 2025</td><td>68.55%</td><td>0%</td><td><span class="s-pass">Stable</span></td></tr>
+        <tr><td>Sep 2025</td><td>68.54%</td><td>0%</td><td><span class="s-pass">Stable</span></td></tr>
+        <tr><td>Dec 2025</td><td>68.52%</td><td>0%</td><td><span class="s-marg">Marginal decline</span></td></tr>
+        <tr><td>Mar 2026</td><td>68.52%</td><td>0%</td><td><span class="s-pass">Stable — L&amp;T committed</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:12px;color:var(--muted);">Promoter pledge: 0% — PASS ✓. No concern. Marginal −0.05pp decline over a year is noise.</p>
+
+  <div class="sub-title">B — FII &amp; DII Trend (5 Quarters) <span class="pill pill-v">[VERIFIED] BSE Filings</span></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Quarter</th><th>FII %</th><th>DII %</th><th>MF %</th><th>Public %</th><th>FII Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Mar 2025</td><td>~8.5%</td><td>~14.5%</td><td>5.38%</td><td>~8.4%</td><td><span class="s-marg">Declining</span></td></tr>
+        <tr><td>Jun 2025</td><td>~7.8%</td><td>~15.2%</td><td>5.38%</td><td>~8.0%</td><td><span class="s-marg">Declining</span></td></tr>
+        <tr><td>Sep 2025</td><td>~7.2%</td><td>~15.9%</td><td>5.12%</td><td>~8.1%</td><td><span class="s-fail">Declining</span></td></tr>
+        <tr><td>Dec 2025</td><td>~6.5%</td><td>~16.9%</td><td>4.61%</td><td>~8.1%</td><td><span class="s-fail">Declining</span></td></tr>
+        <tr><td>Mar 2026</td><td>6.6%</td><td>17.0%</td><td>4.33%</td><td>7.8%</td><td><span class="s-fail">Near multi-yr low</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-title">C — Free Float &amp; Institutional Context</div>
+  <div class="card-grid">
+    <div class="metric-card"><div class="metric-label">Free Float</div><div class="metric-val">~31.5%</div><div class="metric-sub">Low — L&amp;T controls 68.5%</div></div>
+    <div class="metric-card red"><div class="metric-label">MF Selling Streak</div><div class="metric-val">3 Quarters</div><div class="metric-sub">5.38% → 4.33% = −105 bps cumulative</div></div>
+    <div class="metric-card green"><div class="metric-label">FII Headroom</div><div class="metric-val">+42pp</div><div class="metric-sub">Sectoral limit 49%; utilised only 6.6%</div></div>
+    <div class="metric-card amber"><div class="metric-label">DII Accumulating</div><div class="metric-val">+250 bps</div><div class="metric-sub">Insurance/pension buying dip (14.5%→17%)</div></div>
+  </div>
+
+  <div class="sub-title">D — Full Composition Table &amp; Trend Arrows</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Category</th><th>Mar 2026</th><th>Trend</th><th>Implication</th></tr></thead>
+      <tbody>
+        <tr><td>Promoter (L&amp;T Group)</td><td>68.52%</td><td>→ Stable</td><td>Anchor — no risk</td></tr>
+        <tr><td>FII / FPI</td><td>6.6%</td><td>↓ Declining 4 qtrs</td><td>Negative — AI fears, rupee</td></tr>
+        <tr><td>DII (ex-MF)</td><td>~12.7%</td><td>↑ Accumulating</td><td>Positive — value buying</td></tr>
+        <tr><td>Mutual Funds</td><td>4.33%</td><td>↓ Declining 3 qtrs</td><td>Negative — conviction loss</td></tr>
+        <tr><td>Retail / Public</td><td>7.8%</td><td>↑ Increasing</td><td>Neutral — retail buying dip</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sub-title">E — Ownership Scores</div>
+  <div class="card-grid">
+    <div class="metric-card amber">
+      <div class="metric-label">Ownership Momentum Score</div>
+      <div class="metric-val">38 / 100</div>
+      <div class="metric-sub">FII + MF reducing; DII adding; retail rising = net negative institutional</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Shareholding Risk Score</div>
+      <div class="metric-val">62 / 100</div>
+      <div class="metric-sub">Elevated: MF 3-qtr selling streak; FII at multi-yr lows</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <div class="section-title">AI Intelligence — Full Analysis</div>
+
+  <div class="sub-title">A — AI Classification Dashboard</div>
+  <div class="badge-row" style="justify-content:center;margin-bottom:20px;gap:12px;flex-wrap:wrap;">
+    <span class="badge badge-cat" style="font-size:12px;padding:8px 14px;">CAT C — MATURE IT SERVICES</span>
+    <span class="badge badge-threat" style="font-size:12px;padding:8px 14px;">🔴 AI THREAT</span>
+    <span class="badge badge-neutral" style="font-size:12px;padding:8px 14px;">FLYWHEEL: FORMING ★★★</span>
+    <span class="badge badge-macro" style="font-size:12px;padding:8px 14px;">PHASE 2 → ENTERPRISE ADOPTION</span>
+  </div>
+
+  <div class="card">
+    <p>Indian IT services is in Phase 2 (Enterprise Adoption) — GenAI moving from pilots to production. The threat narrative is Phase-2 specific: OpenAI/Anthropic/Google are ascending the stack from foundation models to deployment services. LTM sits at Level 5 (AI-Enabled Incumbent) and must either move UP to Level 4 (via BlueVerse as a vertical AI platform) or risk commoditisation. The 18–24 month window for this transition is the critical investment thesis.</p>
+  </div>
+
+  <div class="sub-title">B — Data Flywheel Deep-Dive</div>
+  <div class="flywheel-box">
+    <div class="flywheel-badge">FORMING ★★★ — 5 / 10</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:16px;text-align:left;">
+      <div class="card" style="margin:0;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;margin-bottom:6px;">Q1: Proprietary Data</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--accent2);">2 / 3</div>
+        <p style="font-size:11px;margin:6px 0 0;">BlueVerse accumulates enterprise workflow automation patterns across 751 clients (BFSI, Mfg, Healthcare). Volume HIGH. Uniqueness MEDIUM — competitors have similar access. Recency HIGH. Outcome labels MEDIUM.</p>
+      </div>
+      <div class="card" style="margin:0;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;margin-bottom:6px;">Q2: AI Improves w/ Users</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--accent2);">2 / 4</div>
+        <p style="font-size:11px;margin:6px 0 0;">BlueVerse RightAction governance improves with more enterprise deployments. 60,000-employee training creates internal feedback. No specific model-improvement metrics disclosed yet. Partially evidenced.</p>
+      </div>
+      <div class="card" style="margin:0;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;margin-bottom:6px;">Q3: Better AI → More Users</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--threat);">1 / 3</div>
+        <p style="font-size:11px;margin:6px 0 0;">BlueVerse Credit (Q1 FY27 launch) is the intended mechanism — AI currency enables outcome contracts. Not yet operational. Loop speed UNCONFIRMED. This is the single most important metric to track in FY27.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-title">C — AI Value Chain Position</div>
+  <div class="chain-wrap">
+    <div class="chain-level"><div class="chain-num">L1</div><div class="chain-name">Infrastructure<br>(NVIDIA, AMD)</div></div>
+    <div style="display:flex;align-items:center;color:var(--dim);font-size:18px;padding:0 4px;">→</div>
+    <div class="chain-level"><div class="chain-num">L2</div><div class="chain-name">Foundation Models<br>(OpenAI, Anthropic, Google)</div></div>
+    <div style="display:flex;align-items:center;color:var(--dim);font-size:18px;padding:0 4px;">→</div>
+    <div class="chain-level"><div class="chain-num">L3</div><div class="chain-name">Platforms<br>(Azure, AWS, GCP AI)</div></div>
+    <div style="display:flex;align-items:center;color:var(--dim);font-size:18px;padding:0 4px;">→</div>
+    <div class="chain-level"><div class="chain-num">L4</div><div class="chain-name">Vertical AI Apps<br>(Domain-specific)</div></div>
+    <div style="display:flex;align-items:center;color:var(--dim);font-size:18px;padding:0 4px;">→</div>
+    <div class="chain-level highlight"><div class="chain-num">L5 ◀</div><div class="chain-name"><strong>LTM HERE</strong><br>AI-Enabled Incumbent<br>Enterprise Services</div></div>
+  </div>
+  <div class="card">
+    <p><strong>Investment implication:</strong> Level 5 carries the highest disruption risk (L2 platforms ascending via OpenAI deployment company) but deepest client relationships and enterprise trust. Standard L5 horizon: 7–10yr. AI THREAT compresses this to <strong class="threat-text">3–5yr</strong>. BlueVerse must move LTM toward L4 positioning within 18–24 months or face structural margin compression.</p>
+  </div>
+
+  <div class="sub-title">D — India AI Structural Advantages</div>
+  <div class="score-grid">
+    <div class="score-item"><span class="score-label">1. India Stack Data (UPI/Aadhaar)</span><span class="score-status s-marg">~ PARTIAL — BFSI clients benefit</span></div>
+    <div class="score-item"><span class="score-label">2. Vernacular AI Benefit</span><span class="score-status s-fail">✗ N/A — B2B, not B2C vernacular</span></div>
+    <div class="score-item"><span class="score-label">3. India Stack Infra Leverage</span><span class="score-status s-pass">✓ YES — fintech/banking client work</span></div>
+    <div class="score-item"><span class="score-label">4. AI Talent Cost Arbitrage</span><span class="score-status s-pass">✓ YES — 87,000 professionals, India-based</span></div>
+  </div>
+
+  <div class="sub-title">E — Disruption Risk Analysis (AI THREAT)</div>
+  <div class="card" style="border-color:var(--threat);">
+    <div class="card-grid">
+      <div class="metric-card red"><div class="metric-label">Disruption Timeline</div><div class="metric-val" style="font-size:14px;">MEDIUM</div><div class="metric-sub">3–5 year meaningful revenue impact</div></div>
+      <div class="metric-card amber"><div class="metric-label">Revenue at Risk</div><div class="metric-val">30–40%</div><div class="metric-sub">App maintenance, testing, basic dev</div></div>
+      <div class="metric-card"><div class="metric-label">Response Plan</div><div class="metric-val" style="font-size:14px;">CREDIBLE</div><div class="metric-sub">BlueVerse, outcome pricing, Agentic AI</div></div>
+      <div class="metric-card amber"><div class="metric-label">Moat Resilience</div><div class="metric-val">6 / 10</div><div class="metric-sub">Switching costs hold; talent moat weakens</div></div>
+    </div>
+    <p style="margin-top:8px;"><strong>Revenue streams at risk:</strong> App maintenance (~15%), testing services (~8%), basic development (~10–15%) = 30–40% of revenue over 3–5 years.</p>
+    <p><strong>Competitors ahead:</strong> Coforge (+36% FY26 growth), Persistent Systems, Infosys Topaz, TCS ignio are further along in AI-native delivery.</p>
+    <p><strong>Credible response:</strong> BlueVerse Credit (outcome pricing), Agentic AI Studios, IIT-KGP + MIT partnerships, Armada Edge AI, GCC-as-a-Service. Execution quality in FY27 is the verdict.</p>
+  </div>
+
+  <div class="sub-title">F — AI Opportunity Score</div>
+  <div class="ai-gauge-wrap">
+    <div class="ai-gauge-score" style="color:var(--accent2);">42</div>
+    <div class="ai-gauge-bar" style="max-width:400px;">
+      <div class="ai-gauge-fill" style="width:42%;background:linear-gradient(90deg,var(--threat),var(--accent2));"></div>
+    </div>
+    <div class="ai-gauge-label">/ 100 — MONITOR tier (40–60)</div>
+  </div>
+  <div class="tbl-wrap" style="margin-top:12px;">
+    <table>
+      <thead><tr><th>Component</th><th>Score /20</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Data Flywheel</td><td>8/20</td><td>FORMING — BlueVerse accumulates enterprise data; unconfirmed loop</td></tr>
+        <tr><td>Adoption Phase Timing</td><td>10/20</td><td>Phase 2 — early enough to capture; late enough to face threat</td></tr>
+        <tr><td>Value Chain Position</td><td>7/20</td><td>Level 5 incumbent — highest threat, deepest relationships</td></tr>
+        <tr><td>India Structural Advantage</td><td>12/20</td><td>Strong talent arbitrage + BFSI India Stack partial benefit</td></tr>
+        <tr><td>AI Threat Resistance</td><td>5/20</td><td>30–40% revenue at risk; response credible but unproven</td></tr>
+        <tr style="background:rgba(79,126,255,0.05);"><td><strong>Total</strong></td><td><strong>42/100</strong></td><td><strong>MONITOR — Not full THREAT (has credible response); not STRATEGIC (unproven)</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card" style="text-align:center;margin-top:12px;">
+    <div class="metric-label">Portfolio Role</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--accent2);margin:8px 0;">MONITOR</div>
+    <p style="margin:0;font-size:12px;color:var(--muted);">Investment Horizon: 3–5 years (AI THREAT compression). Key catalyst to watch: BlueVerse Credit revenue &gt;5% of total in FY27 Q1/Q2.</p>
+  </div>
+</div>
+
+<footer>
+  <p><strong>SEBI Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute investment advice, a solicitation, or an offer to buy or sell any securities. Investments in equity markets are subject to market risks. Please read all scheme-related documents carefully. Past performance is not indicative of future results. The analyst and/or Anthropic do not hold positions in LTM Limited as of the date of publication.</p>
+  <p style="margin-top:8px;"><strong>Data Notice:</strong> Financial data sourced from NSE/BSE filings, LTM Company investor releases (April 2026), TradingView, Kotak Neo, INDmoney, and cross-referenced analyst reports (IDBI Capital, Sharekhan, Elara). Price data as of May 25, 2026. AI assessments marked [ESTIMATED]. Valuation models are estimates, not predictions.</p>
+  <p style="margin-top:8px;">Fonts: DM Serif Display + JetBrains Mono + DM Sans via Google Fonts. &copy; 2026 Buffett Quality-Value Series v5.0</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

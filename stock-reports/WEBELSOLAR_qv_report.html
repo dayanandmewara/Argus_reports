@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Websol Energy System — Buffett Quality-Value Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --midnight: #080D1A;
+  --navy: #0F1829;
+  --navy-card: #141E30;
+  --navy-light: #1A2540;
+  --orange: #FF6B2B;
+  --orange-dim: #CC4E18;
+  --amber: #FFB344;
+  --chrome: #C0C8D8;
+  --chrome-dim: #8A95A8;
+  --green: #2ECC71;
+  --red: #E74C3C;
+  --yellow: #F1C40F;
+  --text: #E8EDF5;
+  --text-muted: #7A8BA8;
+  --border: rgba(192,200,216,0.12);
+  --border-bright: rgba(255,107,43,0.3);
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--midnight); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.65; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #080D1A 0%, #0F1829 50%, #1A1005 100%);
+  padding: 32px 24px 24px;
+  position: relative;
+  border-bottom: 2px solid var(--orange);
+  max-height: 220px;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,107,43,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-grid { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 12px; }
+.hero-left h1 { font-family: var(--font-display); font-size: 2.4rem; color: var(--orange); letter-spacing: -1px; line-height: 1; }
+.hero-left .lede { font-size: 0.9rem; color: var(--chrome-dim); margin-top: 6px; max-width: 560px; }
+.hero-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; font-family: var(--font-mono); letter-spacing: 0.5px; white-space: nowrap; }
+.badge-cat-d { background: rgba(255,179,68,0.15); border: 1px solid var(--amber); color: var(--amber); }
+.badge-neutral { background: rgba(192,200,216,0.12); border: 1px solid var(--chrome-dim); color: var(--chrome); }
+.badge-avoid { background: rgba(231,76,60,0.2); border: 1px solid var(--red); color: var(--red); font-size: 0.8rem; }
+.badge-verified { background: rgba(46,204,113,0.12); border: 1px solid var(--green); color: var(--green); }
+.badge-estimated { background: rgba(241,196,15,0.12); border: 1px solid var(--yellow); color: var(--yellow); }
+.badge-unverified { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.4); color: var(--red); }
+.verdict-box-hero { text-align: right; }
+.verdict-hero-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--chrome-dim); text-transform: uppercase; letter-spacing: 1px; }
+.verdict-hero-val { font-family: var(--font-display); font-size: 1.6rem; color: var(--red); line-height: 1; }
+
+/* TAB BAR */
+#tab-bar {
+  background: var(--navy);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tab-nav { display: flex; min-width: max-content; }
+.tab-btn {
+  background: none; border: none; color: var(--text-muted);
+  font-family: var(--font-body); font-size: 0.78rem; font-weight: 600;
+  padding: 13px 16px; cursor: pointer; border-bottom: 3px solid transparent;
+  transition: all 0.2s; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); background: rgba(255,107,43,0.06); }
+
+/* CONTENT */
+.tab-content { display: none; padding: 28px 24px; max-width: 1200px; margin: 0 auto; }
+
+/* CARDS */
+.card {
+  background: var(--navy-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(90deg, var(--orange), var(--amber));
+}
+.card-red::before { background: linear-gradient(90deg, var(--red), #c0392b); }
+.card-green::before { background: linear-gradient(90deg, var(--green), #27ae60); }
+.card-amber::before { background: linear-gradient(90deg, var(--amber), #e67e22); }
+.card-chrome::before { background: linear-gradient(90deg, var(--chrome), var(--chrome-dim)); }
+
+.card-title { font-family: var(--font-display); font-size: 1.05rem; color: var(--orange); margin-bottom: 14px; }
+.section-title { font-family: var(--font-display); font-size: 1.3rem; color: var(--text); margin: 24px 0 14px; }
+.sub-title { font-size: 0.85rem; font-weight: 600; color: var(--chrome); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+
+/* GRIDS */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media(max-width:680px){ .grid-4,.grid-3 { grid-template-columns:1fr 1fr; } .grid-2{grid-template-columns:1fr;} }
+@media(max-width:600px){ .grid-4,.grid-3,.grid-2{grid-template-columns:1fr;} }
+
+/* METRIC CELLS */
+.metric { padding: 12px 14px; background: var(--navy-light); border-radius: 6px; border-left: 3px solid var(--orange); }
+.metric.warn { border-left-color: var(--red); }
+.metric.good { border-left-color: var(--green); }
+.metric.neutral { border-left-color: var(--chrome-dim); }
+.metric-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; font-family: var(--font-mono); }
+.metric-val { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 500; color: var(--text); margin-top: 2px; }
+.metric-val.red { color: var(--red); }
+.metric-val.green { color: var(--green); }
+.metric-val.orange { color: var(--orange); }
+.metric-val.amber { color: var(--amber); }
+.metric-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+th { background: var(--navy-light); color: var(--chrome); font-weight: 600; padding: 10px 12px; text-align: left; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+tr:hover td { background: rgba(255,255,255,0.025); }
+.td-num { font-family: var(--font-mono); text-align: right; }
+.td-green { color: var(--green); font-family: var(--font-mono); }
+.td-red { color: var(--red); font-family: var(--font-mono); }
+.td-orange { color: var(--orange); font-family: var(--font-mono); }
+.td-amber { color: var(--amber); font-family: var(--font-mono); }
+.table-wrap { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; overflow-x: auto; }
+
+/* SCORECARD */
+.score-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.score-item:last-child { border-bottom: none; }
+.score-badge { min-width: 64px; text-align: center; padding: 3px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; }
+.pass { background: rgba(46,204,113,0.15); color: var(--green); border: 1px solid rgba(46,204,113,0.3); }
+.marginal { background: rgba(241,196,15,0.15); color: var(--yellow); border: 1px solid rgba(241,196,15,0.3); }
+.fail { background: rgba(231,76,60,0.15); color: var(--red); border: 1px solid rgba(231,76,60,0.3); }
+.score-text { font-size: 0.83rem; color: var(--text); }
+
+/* PILLAR GRADES */
+.pillar-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 16px 0; }
+@media(max-width:600px){ .pillar-grid { grid-template-columns:1fr 1fr; } }
+.pillar-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+.pillar-name { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.pillar-grade { font-family: var(--font-display); font-size: 2.2rem; }
+
+/* VERDICT BOX */
+.verdict-main {
+  background: linear-gradient(135deg, #1a0505 0%, #200808 100%);
+  border: 2px solid var(--red);
+  border-radius: 10px;
+  padding: 28px;
+  text-align: center;
+  margin: 20px 0;
+}
+.verdict-stars { font-size: 2.5rem; margin-bottom: 8px; }
+.verdict-label { font-family: var(--font-display); font-size: 2rem; color: var(--red); }
+.verdict-quote { font-style: italic; color: var(--chrome-dim); font-size: 0.9rem; margin-top: 12px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+
+/* ALERT */
+.alert { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.4); border-radius: 6px; padding: 14px 16px; margin: 14px 0; }
+.alert-title { font-weight: 600; color: var(--red); margin-bottom: 4px; font-size: 0.9rem; }
+.alert-body { font-size: 0.84rem; color: var(--chrome-dim); }
+
+/* INFO */
+.info { background: rgba(255,179,68,0.08); border: 1px solid rgba(255,179,68,0.3); border-radius: 6px; padding: 14px 16px; margin: 14px 0; }
+.info-title { font-weight: 600; color: var(--amber); margin-bottom: 4px; font-size: 0.9rem; }
+
+/* FLYWHEEL BOX */
+.flywheel-box {
+  background: var(--navy-card);
+  border: 2px solid var(--chrome-dim);
+  border-radius: 10px;
+  padding: 22px;
+  margin: 16px 0;
+}
+.flywheel-verdict { font-family: var(--font-display); font-size: 1.5rem; color: var(--chrome); margin-bottom: 8px; }
+.flywheel-score { font-family: var(--font-mono); font-size: 1rem; color: var(--chrome-dim); }
+
+/* MOAT STARS */
+.moat-stars { color: var(--amber); font-size: 1.1rem; }
+
+/* UPGRADE CONDITIONS */
+.upgrade-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.upgrade-num { min-width: 28px; height: 28px; background: var(--navy-light); border: 1px solid var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.75rem; color: var(--orange); }
+.upgrade-text { font-size: 0.85rem; color: var(--text); line-height: 1.5; }
+
+/* TECH GAUGE */
+.tech-composite { background: var(--navy-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.gauge-bar { height: 10px; background: var(--navy-light); border-radius: 5px; overflow: hidden; margin-top: 4px; }
+.gauge-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--orange), var(--amber)); }
+
+/* PRICE LADDER */
+.price-level { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
+.price-level.entry { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); }
+.price-level.current { background: rgba(255,107,43,0.1); border: 1px solid rgba(255,107,43,0.3); }
+.price-level.target { background: rgba(255,179,68,0.1); border: 1px solid rgba(255,179,68,0.3); }
+.price-level.danger { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); }
+.price-label { font-size: 0.72rem; color: var(--text-muted); min-width: 120px; text-transform: uppercase; letter-spacing: 0.5px; }
+.price-val { font-family: var(--font-mono); font-weight: 500; font-size: 0.95rem; }
+
+/* SHAREHOLDING BAR */
+.sh-bar-wrap { display: flex; height: 12px; border-radius: 6px; overflow: hidden; width: 100%; margin: 8px 0; }
+.sh-segment { height: 100%; }
+
+/* AI PHASE */
+.phase-row { display: flex; gap: 0; margin: 12px 0; }
+.phase-cell { flex: 1; padding: 10px 6px; text-align: center; font-size: 0.7rem; border: 1px solid var(--border); }
+.phase-cell:first-child { border-radius: 6px 0 0 6px; }
+.phase-cell:last-child { border-radius: 0 6px 6px 0; }
+.phase-cell.active { background: rgba(192,200,216,0.15); border-color: var(--chrome); }
+
+/* SENSITIVITY TABLE */
+.sens-table td, .sens-table th { text-align: center; }
+.sens-highlight { background: rgba(255,107,43,0.15) !important; color: var(--orange) !important; font-weight: 600; }
+
+/* DCF TABLE */
+.dcf-year { font-family: var(--font-mono); font-size: 0.8rem; }
+
+/* TRACKER TABLE */
+.tracker-table td { font-size: 0.8rem; }
+
+/* FOOTER */
+footer { background: var(--navy); border-top: 1px solid var(--border); padding: 24px; margin-top: 40px; }
+footer p { font-size: 0.73rem; color: var(--text-muted); line-height: 1.8; }
+
+/* CONFIDENCE PILLS */
+.pill { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 0.65rem; font-family: var(--font-mono); vertical-align: middle; margin-left: 4px; }
+.pill-v { background: rgba(46,204,113,0.12); border: 1px solid rgba(46,204,113,0.3); color: var(--green); }
+.pill-e { background: rgba(241,196,15,0.1); border: 1px solid rgba(241,196,15,0.3); color: var(--yellow); }
+.pill-u { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); color: var(--red); }
+
+/* MACRO CYCLE */
+.macro-dim { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.macro-dim:last-child { border: none; }
+.macro-name { min-width: 220px; font-size: 0.82rem; color: var(--chrome); }
+.macro-status { padding: 3px 10px; border-radius: 4px; font-size: 0.72rem; font-family: var(--font-mono); font-weight: 600; }
+.status-tail { background: rgba(46,204,113,0.15); border: 1px solid var(--green); color: var(--green); }
+.status-neut { background: rgba(192,200,216,0.1); border: 1px solid var(--chrome-dim); color: var(--chrome); }
+.status-head { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.4); color: var(--red); }
+.status-boom { background: rgba(255,179,68,0.15); border: 1px solid var(--amber); color: var(--amber); }
+.macro-note { font-size: 0.75rem; color: var(--text-muted); flex: 1; }
+
+/* ROIC CARDS */
+.roic-cards { display: flex; gap: 10px; flex-wrap: wrap; }
+.roic-card { background: var(--navy-light); border-radius: 6px; padding: 12px 16px; min-width: 100px; text-align: center; border-bottom: 3px solid var(--orange); }
+.roic-year { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); }
+.roic-val { font-family: var(--font-mono); font-size: 1.15rem; margin-top: 4px; }
+
+/* OWNER EARNINGS */
+.oe-box { background: linear-gradient(135deg, #0A1220 0%, #0F1A2E 100%); border: 1px solid var(--orange); border-radius: 8px; padding: 20px; }
+.oe-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.84rem; }
+.oe-row.total { border-top: 2px solid var(--orange); border-bottom: none; font-weight: 600; color: var(--amber); margin-top: 4px; padding-top: 10px; }
+
+/* PROGRESS BAR */
+.prog { height: 8px; background: var(--navy-light); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+.prog-fill { height: 100%; border-radius: 4px; }
+
+/* ORDERER BK */
+.order-chip { display: inline-block; padding: 4px 10px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,107,43,0.1); border: 1px solid rgba(255,107,43,0.3); color: var(--orange); margin-right: 6px; }
+
+/* AI SCORE GAUGE */
+.ai-score-wrap { display: flex; align-items: center; gap: 20px; padding: 20px; }
+.ai-score-circle { width: 100px; height: 100px; border-radius: 50%; background: conic-gradient(var(--chrome-dim) 0deg 54deg, var(--navy-light) 54deg 360deg); display: flex; align-items: center; justify-content: center; position: relative; }
+.ai-score-inner { width: 76px; height: 76px; background: var(--navy-card); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ai-score-num { font-family: var(--font-display); font-size: 1.4rem; color: var(--chrome); }
+.ai-score-label { font-size: 0.6rem; color: var(--text-muted); }
+
+/* CHAIN */
+.chain { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; margin: 14px 0; }
+.chain-node { flex: 1; min-width: 100px; padding: 12px 10px; background: var(--navy-light); border: 1px solid var(--border); text-align: center; font-size: 0.75rem; color: var(--chrome-dim); position: relative; }
+.chain-node.active-node { background: rgba(192,200,216,0.15); border-color: var(--chrome); color: var(--chrome); }
+.chain-node .cn-label { font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.chain-node .cn-val { font-weight: 600; margin-top: 3px; color: var(--text); }
+.chain-arrow { display: flex; align-items: center; color: var(--text-muted); font-size: 1rem; padding: 0 2px; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <h1>WEBELSOLAR</h1>
+      <div class="lede">Websol Energy System Ltd &nbsp;·&nbsp; NSE: WEBELSOLAR &nbsp;·&nbsp; Solar PV Cells &amp; Modules &nbsp;·&nbsp; Falta SEZ, West Bengal</div>
+      <div class="hero-badges">
+        <span class="badge badge-cat-d">CAT D · TURNAROUND</span>
+        <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+        <span class="badge badge-avoid">⛔ AVOID</span>
+        <span class="badge badge-verified">✓ VERIFIED</span>
+        <span class="badge badge-estimated">~ ESTIMATED</span>
+        <span class="badge badge-unverified">? UNVERIFIED</span>
+      </div>
+    </div>
+    <div class="verdict-box-hero">
+      <div class="verdict-hero-label">Verdict</div>
+      <div class="verdict-hero-val">AVOID</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px;">89.4% Pledging Blocker</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intel</button>
+  </div>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content" style="display:block;">
+
+  <div class="alert">
+    <div class="alert-title">⚠️ HARD BLOCKER: Promoter Pledging 89.4%</div>
+    <div class="alert-body">Framework rule: promoter pledging &gt;40% = AVOID. 89.4% of promoter holding is pledged — an extreme risk that overrides all other positives. A forced selling event on pledge invocation could be catastrophic for minority shareholders.</div>
+  </div>
+
+  <div class="grid-4" style="margin:16px 0;">
+    <div class="metric good">
+      <div class="metric-label">Current Price <span class="pill pill-e">~</span></div>
+      <div class="metric-val orange">₹105</div>
+      <div class="metric-sub">NSE, ~May 26 2026</div>
+    </div>
+    <div class="metric warn">
+      <div class="metric-label">Market Cap <span class="pill pill-e">~</span></div>
+      <div class="metric-val">₹4,431 Cr</div>
+      <div class="metric-sub">42.2 Cr post-split shares</div>
+    </div>
+    <div class="metric warn">
+      <div class="metric-label">52W High / Low <span class="pill pill-v">✓</span></div>
+      <div class="metric-val">₹158.99 / ₹50.40</div>
+      <div class="metric-sub">-34% from peak</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">P/E (FY26) <span class="pill pill-v">✓</span></div>
+      <div class="metric-val">14.6×</div>
+      <div class="metric-sub">EPS ₹7.18 (post-split)</div>
+    </div>
+    <div class="metric good">
+      <div class="metric-label">FY26 Revenue <span class="pill pill-v">✓</span></div>
+      <div class="metric-val green">₹1,049 Cr</div>
+      <div class="metric-sub">+82.4% YoY</div>
+    </div>
+    <div class="metric good">
+      <div class="metric-label">FY26 PAT <span class="pill pill-v">✓</span></div>
+      <div class="metric-val green">₹303 Cr</div>
+      <div class="metric-sub">+95.8% YoY</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">EBITDA Margin <span class="pill pill-v">✓</span></div>
+      <div class="metric-val orange">40.9%</div>
+      <div class="metric-sub">FY26 (vs 44.3% FY25)</div>
+    </div>
+    <div class="metric good">
+      <div class="metric-label">Net Cash <span class="pill pill-v">✓</span></div>
+      <div class="metric-val green">₹34 Cr</div>
+      <div class="metric-sub">Surplus as of Mar 2026</div>
+    </div>
+  </div>
+
+  <div class="section-title">Business Overview</div>
+  <div class="card">
+    <p style="font-size:0.88rem;line-height:1.75;color:var(--chrome-dim);">Websol Energy System Limited is one of India's oldest and largest standalone solar photovoltaic cell manufacturers, with a continuous manufacturing history dating to 1994. The company operates a world-class facility at Falta Special Economic Zone (SEZ), West Bengal, with <strong style="color:var(--text);">1.2 GW Mono PERC Bifacial solar cell capacity</strong> (doubled in September 2025) and <strong style="color:var(--text);">550 MW solar module capacity</strong>. Websol supplies cells primarily to Indian module manufacturers for DCR compliance, while its modules reach both domestic and international markets. The company is now upgrading one cell line to TOPCon technology (>24.5% efficiency target, total capacity to 1.35 GW) and has secured government approval for a <strong style="color:var(--amber);">4 GW greenfield facility in Andhra Pradesh</strong> (target: June 2027 commissioning). CRISIL rating: BBB+/Stable.</p>
+    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="order-chip">Order Book: ₹1,161 Cr</span>
+      <span class="order-chip">Cell Util: &gt;90%</span>
+      <span class="order-chip">Module Util: 74%</span>
+      <span class="order-chip">BBB+/Stable</span>
+      <span class="order-chip">First Dividend FY26: ₹0.25/sh</span>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px;">
+    <div class="card card-amber">
+      <div class="card-title">Why Interesting — The ALMM Catalyst</div>
+      <p style="font-size:0.84rem;color:var(--chrome-dim);line-height:1.7;">ALMM List-II (effective June 2026) mandates that module makers sourcing cells for Indian government projects must use domestically ALMM-listed cell producers. Websol is one of &lt;10 listed domestic cell manufacturers. This creates a regulatory moat — essentially guaranteed demand flow from 119.8 GW of listed module manufacturers. Combined with 40% BCD on modules and 25% on cells, Websol operates in a structurally protected environment with pricing power unusual for a commodity manufacturer.</p>
+    </div>
+    <div class="card card-red">
+      <div class="card-title">Why Challenging — The Framework Problem</div>
+      <p style="font-size:0.84rem;color:var(--chrome-dim);line-height:1.7;">Solar cells are fundamentally commodity products. The ALMM moat is regulatory, not structural — historically, ALMM has been suspended and reinstated, and policy reversal risk is real. More critically, the promoter has pledged <strong style="color:var(--red);">89.4% of their holding</strong> — a forced-sale scenario could wipe out significant equity value. The Buffett framework applies partially: Cat D turnaround with extreme caution. Buffett would almost certainly not invest with this pledging profile.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Series Rationale & Framework Adaptation</div>
+  <div class="card card-chrome">
+    <p style="font-size:0.84rem;color:var(--chrome-dim);line-height:1.75;">Websol is a <strong style="color:var(--text);">Cat D — Turnaround/Special Situation</strong> stock. The company was essentially non-operational in FY24 (₹26 Cr revenue) while upgrading to 600 MW Mono PERC Bifacial technology. FY25 marked restart; FY26 confirmed the business model. WACC 14–16%, terminal P/E 15–18×, MoS 25%. Framework deviation: given commodity-like solar cell pricing, we apply DCF on Owner Earnings (not revenue), and run all 5 methods with high weight on conservative scenarios. AI Overlay ⚪ NEUTRAL — automated manufacturing adds efficiency but no structural moat or competitive differentiation. No DCF adjustment for AI. Primary risk that limits verdict: 89.4% promoter pledging → hard AVOID regardless of valuation attractiveness.</p>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+
+  <div class="section-title">Macro Cycle Dashboard <span class="pill pill-v">✓ Live</span></div>
+  <div class="card">
+    <div class="macro-dim">
+      <div class="macro-name">Rural Income Cycle</div>
+      <span class="macro-status status-neut">NEUTRAL</span>
+      <div class="macro-note">Normal monsoon FY26; MSP hikes moderate. Limited direct impact on solar demand.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-name">Urban Consumption &amp; Capex</div>
+      <span class="macro-status status-tail">TAILWIND</span>
+      <div class="macro-note">India GDP FY26 ~7.4% (RBI). Strong government capex (₹11+ Lakh Cr). Infra + solar projects accelerating.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-name">Input Cost Cycle</div>
+      <span class="macro-status status-neut">NEUTRAL</span>
+      <div class="macro-note">Polysilicon prices low globally (Chinese oversupply). Wafer imports still Chinese; input cost risk on currency depreciation vs USD.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-name">RBI Rate Cycle</div>
+      <span class="macro-status status-tail">EASING</span>
+      <div class="macro-note">Repo at 5.25% (cut from 6.5% peak). 10yr G-Sec ~7% (elevated due to geopolitical). Neutral for solar capex. WACC pressure from higher yields.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-name">Government Capex Cycle</div>
+      <span class="macro-status status-tail">TAILWIND</span>
+      <div class="macro-note">500 GW renewable target by 2030. ALMM List-II June 2026 = structural demand anchor. PLI scheme catalysing capacity. PM Surya Ghar driving rooftop solar.</div>
+    </div>
+    <div class="macro-dim">
+      <div class="macro-name">AI Adoption Cycle</div>
+      <span class="macro-status status-neut">NEUTRAL</span>
+      <div class="macro-note">AI doesn't materially affect solar PV manufacturing or demand. Automated cell lines = baseline efficiency. No AI competitive moat for Websol. Impact: 0 pp on sector growth.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:8px;" class="grid-2">
+    <div class="card card-green">
+      <div class="card-title">Macro Composite</div>
+      <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--green);">TAILWIND</div>
+      <p style="font-size:0.82rem;color:var(--chrome-dim);margin-top:8px;">India nominal GDP FY26 ≈ 7.4% (real) + 2.1% (CPI) ≈ 9.5% — the absolute ceiling for terminal growth. Government capex + ALMM policy = strong regulatory tailwind that decouples Websol partially from commodity solar pricing.</p>
+    </div>
+    <div class="card card-chrome">
+      <div class="card-title">AI Cycle Impact</div>
+      <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--chrome);">NEUTRAL</div>
+      <p style="font-size:0.82rem;color:var(--chrome-dim);margin-top:8px;">AI is neither an accelerant nor a threat to solar cell manufacturing at Websol's scale. Automated production lines are standard industry practice, not a differentiating AI capability.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Sector Growth Derivation</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Accel</th><th>Source</th></tr>
+      <tr><td>Macro State</td><td>GDP ~5.5%</td><td>GDP ~6.8%</td><td>GDP ~8%+</td><td class="pill pill-v">✓ RBI</td></tr>
+      <tr><td>Renewables Sector CAGR</td><td class="td-num">10–12%</td><td class="td-num">14–18%</td><td class="td-num">20–25%</td><td class="pill pill-e">~ CEEW</td></tr>
+      <tr><td>India Solar Cell Demand (GW)</td><td>60 GW by FY30</td><td>100 GW by FY30</td><td>140 GW by FY30</td><td class="pill pill-e">~ MNRE</td></tr>
+      <tr><td>ALMM List-II Effect</td><td>Suspended</td><td>Enforced</td><td>Enforced + Export</td><td class="pill pill-v">✓ Policy</td></tr>
+      <tr><td>Websol Revenue CAGR (FY27-FY29)</td><td class="td-orange">35%</td><td class="td-green">65%</td><td class="td-green">80%</td><td class="pill pill-e">~</td></tr>
+      <tr><td>EBITDA Margin Trajectory</td><td>Compresses → 32%</td><td>Holds → 38–42%</td><td>Expands → 42–46%</td><td class="pill pill-e">~</td></tr>
+      <tr><td>FCF CAGR (FY27-FY31)</td><td class="td-num">20%</td><td class="td-num">35%</td><td class="td-num">50%</td><td class="pill pill-e">~</td></tr>
+      <tr><td>Terminal Growth (post FY31)</td><td class="td-num">3.5%</td><td class="td-num">5.0%</td><td class="td-num">6.5%</td><td class="pill pill-e">~</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Company Alpha Over Sector</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+      <tr><td>Market share gain (ALMM protected pool)</td><td><span class="badge badge-verified" style="font-size:0.68rem;">ACTIVE</span></td><td class="td-green">+8–12%</td><td class="td-num">+5–8%</td></tr>
+      <tr><td>Technology upgrade (TOPCon premium)</td><td><span class="badge badge-verified" style="font-size:0.68rem;">ACTIVE</span></td><td class="td-green">+3–5%</td><td class="td-num">+2–4%</td></tr>
+      <tr><td>Geographic expansion (AP greenfield)</td><td><span class="badge badge-neutral" style="font-size:0.68rem;">FORMING</span></td><td class="td-num">0%</td><td class="td-green">+15–20%</td></tr>
+      <tr><td>Export market (non-Chinese cell sourcing)</td><td><span class="badge badge-neutral" style="font-size:0.68rem;">POTENTIAL</span></td><td class="td-num">+2–4%</td><td class="td-num">+5–10%</td></tr>
+      <tr><td>Vertical integration (wafer/ingot, FY28)</td><td><span class="badge badge-estimated" style="font-size:0.68rem;">ASPIRATIONAL</span></td><td class="td-num">0%</td><td class="td-num">+3–5%</td></tr>
+      <tr><td>AI Alpha (6a/6b/6c)</td><td><span class="badge badge-neutral" style="font-size:0.68rem;">N/A</span></td><td class="td-num">0%</td><td class="td-num">0%</td></tr>
+      <tr><td><strong>Total Alpha</strong></td><td>—</td><td class="td-green"><strong>+13–21%</strong></td><td class="td-green"><strong>+25–47%</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="info">
+    <div class="info-title">Sensitivity Note</div>
+    <p style="font-size:0.82rem;color:var(--chrome-dim);">A 1% change in terminal growth rate changes IV by approximately 8–12%. A 1% change in Stage 1 FCF CAGR changes IV by approximately 4–7%. The dominant sensitivity is to ALMM policy continuity — suspension would compress Stage 1 growth by 20–30% and reduce IV by ~35–50%.</p>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+
+  <div class="section-title">5-Year Financial Performance <span class="pill pill-v">✓</span></div>
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>Metric</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>FY26</th>
+      </tr>
+      <tr>
+        <td>Revenue (₹ Cr)</td>
+        <td class="td-num">~170</td><td class="td-num">~100</td>
+        <td class="td-red">26</td><td class="td-green">575</td><td class="td-green">1,049</td>
+      </tr>
+      <tr>
+        <td>EBITDA (₹ Cr)</td>
+        <td class="td-num">~10</td><td class="td-red">(~30)</td>
+        <td class="td-red">(112)</td><td class="td-green">255</td><td class="td-green">429</td>
+      </tr>
+      <tr>
+        <td>EBITDA Margin</td>
+        <td class="td-num">~6%</td><td class="td-red">Neg</td>
+        <td class="td-red">Neg</td><td class="td-green">44.3%</td><td class="td-green">40.9%</td>
+      </tr>
+      <tr>
+        <td>PAT (₹ Cr)</td>
+        <td class="td-num">~11</td><td class="td-red">(~40)</td>
+        <td class="td-red">(121)</td><td class="td-green">155</td><td class="td-green">303</td>
+      </tr>
+      <tr>
+        <td>EPS — post-split (₹)</td>
+        <td class="td-num">₹0.26</td><td class="td-red">Neg</td>
+        <td class="td-red">(₹2.87)</td><td class="td-green">₹3.67</td><td class="td-green">₹7.18</td>
+      </tr>
+      <tr>
+        <td>CFO (₹ Cr)</td>
+        <td class="td-num">~15</td><td class="td-num">~(20)</td>
+        <td class="td-num">35</td><td class="td-green">167</td><td class="td-num">~220 est</td>
+      </tr>
+      <tr>
+        <td>Net Debt / (Cash) (₹ Cr)</td>
+        <td class="td-num">~180</td><td class="td-num">~160</td>
+        <td class="td-num">~162</td><td class="td-green">34 debt</td><td class="td-green">(34) cash</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section-title">ROE &amp; ROIC (5-Year) <span class="pill pill-e">~ Est</span></div>
+  <div class="roic-cards">
+    <div class="roic-card" style="border-color:var(--chrome-dim);">
+      <div class="roic-year">FY22 ROE</div>
+      <div class="roic-val" style="color:var(--chrome-dim);">~4%</div>
+    </div>
+    <div class="roic-card" style="border-color:var(--red);">
+      <div class="roic-year">FY23 ROE</div>
+      <div class="roic-val" style="color:var(--red);">Neg</div>
+    </div>
+    <div class="roic-card" style="border-color:var(--red);">
+      <div class="roic-year">FY24 ROE</div>
+      <div class="roic-val" style="color:var(--red);">Neg</div>
+    </div>
+    <div class="roic-card" style="border-color:var(--amber);">
+      <div class="roic-year">FY25 ROE</div>
+      <div class="roic-val" style="color:var(--amber);">~56%*</div>
+    </div>
+    <div class="roic-card" style="border-color:var(--green);">
+      <div class="roic-year">FY26 ROE</div>
+      <div class="roic-val" style="color:var(--green);">~71%</div>
+    </div>
+    <div class="roic-card" style="border-color:var(--red);">
+      <div class="roic-year">FY22 ROIC</div>
+      <div class="roic-val" style="color:var(--red);">&lt;5%</div>
+    </div>
+    <div class="roic-card" style="border-color:var(--red);">
+      <div class="roic-year">FY23-24 ROIC</div>
+      <div class="roic-val" style="color:var(--red);">Neg</div>
+    </div>
+    <div class="roic-card" style="border-color:var(--amber);">
+      <div class="roic-year">FY25 ROIC</div>
+      <div class="roic-val" style="color:var(--amber);">~28%</div>
+    </div>
+    <div class="roic-card" style="border-color:var(--green);">
+      <div class="roic-year">FY26 ROIC</div>
+      <div class="roic-val" style="color:var(--green);">~35%</div>
+    </div>
+  </div>
+  <p style="font-size:0.73rem;color:var(--text-muted);margin-top:6px;">* ROE/ROIC distorted by low equity base; FY26 ROIC = NOPAT ₹243 Cr / Invested Capital ₹688 Cr ≈ 35% — remarkable for manufacturing, driven by ALMM-protected margins. Sustainability of this ROIC is the key investment question.</p>
+
+  <div class="section-title">Financial Fortress Scorecard</div>
+  <div class="card">
+    <div class="score-item"><span class="score-badge fail">FAIL</span><span class="score-text">ROE ≥15% for 5 consecutive years — only 2 of 5 years positive (FY22, FY25, FY26); FY23-24 losses disqualify</span></div>
+    <div class="score-item"><span class="score-badge fail">FAIL</span><span class="score-text">ROIC &gt; WACC for 5 consecutive years — failed in FY22-24; passed FY25-26 (ROIC ~28-35% vs WACC 14-16%)</span></div>
+    <div class="score-item"><span class="score-badge pass">PASS</span><span class="score-text">Net cash — FY26 net cash position of ₹34 Cr; total debt ₹118 Cr vs cash ₹152 Cr</span></div>
+    <div class="score-item"><span class="score-badge fail">FAIL</span><span class="score-text">Net profit margin ≥15% — FY26 PAT margin 28.9% PASS, but 3 of 5 prior years were losses</span></div>
+    <div class="score-item"><span class="score-badge pass">PASS</span><span class="score-text">FCF positive &amp; growing — FY25 CFO ₹167 Cr (PASS); FY26 est. ₹220 Cr (PASS), though WC days jumped</span></div>
+    <div class="score-item"><span class="score-badge pass">PASS</span><span class="score-text">Owner Earnings ≥ Net Income — FY26 OE ~₹308 Cr vs PAT ₹303 Cr (broadly PASS with WC caveat)</span></div>
+    <div class="score-item"><span class="score-badge pass">PASS</span><span class="score-text">Pricing power proven — ALMM protection enables premium pricing; EBITDA margins 41-44% support this</span></div>
+    <div class="score-item"><span class="score-badge pass">PASS</span><span class="score-text">Revenue CAGR ≥ sector — FY25-26 CAGR massively exceeded 14-18% sector base rate</span></div>
+    <div class="score-item"><span class="score-badge fail">FAIL</span><span class="score-text">Predictable/recurring revenue — solar manufacturing is order-driven and policy-contingent; NOT recurring in Buffett sense</span></div>
+    <div class="score-item"><span class="score-badge marginal">MARGINAL</span><span class="score-text">Capital model — ROIC 35% is strong but requires periodic heavy capex (TOPCon upgrade, AP greenfield)</span></div>
+    <div class="score-item"><span class="score-badge fail">FAIL</span><span class="score-text">Working capital — WC days jumped from -215 to +68.8 days; negative WC advantage eliminated; DSO rising</span></div>
+  </div>
+
+  <div class="section-title">Owner Earnings (FY26)</div>
+  <div class="oe-box">
+    <div class="sub-title">Conservative Estimate</div>
+    <div class="oe-row"><span>Net Income (PAT)</span><span style="font-family:var(--font-mono);">₹303 Cr</span></div>
+    <div class="oe-row"><span>+ Depreciation &amp; Amortisation (est.)</span><span style="font-family:var(--font-mono);">+₹105 Cr</span></div>
+    <div class="oe-row"><span>+ Non-cash FX / SBC</span><span style="font-family:var(--font-mono);">+₹0</span></div>
+    <div class="oe-row"><span>− Maintenance CapEx (est.)</span><span style="font-family:var(--font-mono);">−₹50 Cr</span></div>
+    <div class="oe-row"><span>± Working Capital Change (est. negative — WC grew)</span><span style="font-family:var(--font-mono);">−₹50 Cr</span></div>
+    <div class="oe-row total"><span>= OWNER EARNINGS (Conservative)</span><span>≈ ₹308 Cr</span></div>
+    <div class="oe-row total" style="color:var(--chrome);"><span>= OWNER EARNINGS PER SHARE</span><span>≈ ₹7.30</span></div>
+    <p style="font-size:0.75rem;color:var(--text-muted);margin-top:10px;">CapEx split: Growth CapEx (AP facility, TOPCon upgrade) excluded. Maintenance CapEx estimated at ~12% of PP&amp;E. CFO/PAT ratio FY25 = 108% (CLEAN); FY26 estimated ~72% due to WC expansion (revenue growth consuming capital).</p>
+  </div>
+
+  <div class="section-title">O'Glove Earnings Quality Framework</div>
+  <div class="grid-2" style="gap:12px;">
+    <div class="card card-green">
+      <div class="card-title">Test 1 — FCF Conversion (5yr)</div>
+      <span class="score-badge pass">PASS</span>
+      <p style="font-size:0.82rem;color:var(--chrome-dim);margin-top:8px;">FY25 CFO/PAT = 167/155 = 108%. FY26 estimated 72% (WC absorption from revenue growth — expected, not alarming at this growth rate). Trend: recovering from distortion.</p>
+    </div>
+    <div class="card card-amber">
+      <div class="card-title">Test 2 — DSO Trend (3yr)</div>
+      <span class="score-badge marginal">MARGINAL</span>
+      <p style="font-size:0.82rem;color:var(--chrome-dim);margin-top:8px;">AR grew from ₹4.6 Cr (FY25) to likely ₹100+ Cr (FY26) as revenue scaled 82%. DSO is rising sharply as the company transitions from cash-in-advance to normal credit terms. Monitor closely.</p>
+    </div>
+    <div class="card card-green">
+      <div class="card-title">Test 3 — Inventory Days</div>
+      <span class="score-badge pass">PASS</span>
+      <p style="font-size:0.82rem;color:var(--chrome-dim);margin-top:8px;">Inventory FY25 = ₹34 Cr on ₹575 Cr revenue = ~22 days. Modest and controlled. No inventory stuffing signal.</p>
+    </div>
+    <div class="card card-green">
+      <div class="card-title">Test 4 — Accounting Policy Stability</div>
+      <span class="score-badge pass">PASS</span>
+      <p style="font-size:0.82rem;color:var(--chrome-dim);margin-top:8px;">10:1 stock split in November 2025 (economically neutral). No earnings-boosting accounting changes identified. Exceptional item in FY24 (₹105 Cr) was one-time write-off during upgrade.</p>
+    </div>
+    <div class="card card-green">
+      <div class="card-title">Test 5 — Gross Margin Consistency</div>
+      <span class="score-badge pass">PASS</span>
+      <p style="font-size:0.82rem;color:var(--chrome-dim);margin-top:8px;">Gross margin (materials basis): FY25 ~69%, FY26 Q4 ~52.7% (EBITDA basis). Slight compression in FY26 as variable costs grew, but structurally strong relative to pre-ALMM era. ALMM protection is the driver.</p>
+    </div>
+    <div class="card card-amber">
+      <div class="card-title">Overall Earnings Quality</div>
+      <div style="font-family:var(--font-display);font-size:1.4rem;color:var(--amber);margin:8px 0;">ACCEPTABLE</div>
+      <p style="font-size:0.82rem;color:var(--chrome-dim);">4 PASS, 1 MARGINAL. WC deterioration is the only concern — attributable to rapid growth rather than manipulation. Quality-adjust: minimal. No MoS widening required on O'Glove grounds alone.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+
+  <div class="section-title">Moat Assessment</div>
+
+  <div class="card">
+    <div class="card-title">Switching Costs</div>
+    <div class="moat-stars">★★</div>
+    <p style="font-size:0.84rem;color:var(--chrome-dim);margin-top:6px;"><strong style="color:var(--text);">Modest.</strong> Module manufacturers who use Websol cells for DCR compliance are partially locked in — changing supplier requires ALMM re-certification. However, with &lt;10 ALMM-listed cell producers, buyers have some alternatives. Switching cost is regulatory rather than deeply embedded. STRESS: WEAKENS if new cell manufacturers get ALMM listed quickly.</p>
+  </div>
+
+  <div class="card" style="margin-top:12px;">
+    <div class="card-title">Regulatory / ALMM Moat</div>
+    <div class="moat-stars">★★★★</div>
+    <p style="font-size:0.84rem;color:var(--chrome-dim);margin-top:6px;"><strong style="color:var(--text);">Strong but policy-dependent.</strong> ALMM List-II (June 2026) effectively creates a government-enforced demand pool for ALMM-listed cell makers. Websol is one of the few listed producers with operational scale. BCD 25% on cells + 40% on modules create pricing protection vs Chinese imports. STRESS: WEAKENS dramatically if ALMM is suspended (historical precedent) or WTO ruling forces India to dilute DCR.</p>
+  </div>
+
+  <div class="card" style="margin-top:12px;">
+    <div class="card-title">Scale &amp; Manufacturing Efficiency</div>
+    <div class="moat-stars">★★★</div>
+    <p style="font-size:0.84rem;color:var(--chrome-dim);margin-top:6px;"><strong style="color:var(--text);">Meaningful but challenged.</strong> 1.2 GW capacity (2nd largest standalone Indian cell maker), 3 decades of manufacturing experience, Falta SEZ location with power and logistics advantages. EBITDA margins 41-44% are exceptional for solar manufacturing globally. However, Chinese peers operate at 10× scale with inherently lower costs. STRESS: HOLDS (Websol's cost base is disciplined per MD commentary).</p>
+  </div>
+
+  <div class="card" style="margin-top:12px;">
+    <div class="card-title">Technology (TOPCon Upgrade)</div>
+    <div class="moat-stars">★★</div>
+    <p style="font-size:0.84rem;color:var(--chrome-dim);margin-top:6px;"><strong style="color:var(--text);">Near-term advantage; industry-wide trend.</strong> Upgrading to TOPCon (>24.5% efficiency, vs ~23.35% current Mono PERC) provides premium pricing for 12-18 months, but TOPCon is becoming commodity technology globally. STRESS: WEAKENS as all players upgrade.</p>
+  </div>
+
+  <div class="card" style="margin-top:12px;">
+    <div class="card-title">Cost Advantages / Intangibles</div>
+    <div class="moat-stars">★</div>
+    <p style="font-size:0.84rem;color:var(--chrome-dim);margin-top:6px;"><strong style="color:var(--text);">Weak.</strong> Polysilicon and wafers still largely imported. Raw material costs are global commodity prices. No brand advantage (B2B business). IP is minimal — uses licensed technology (Linton for wafer backward integration). STRESS: WEAKENS further on INR depreciation vs USD (raw material imports).</p>
+  </div>
+
+  <div style="margin-top:20px;" class="flywheel-box">
+    <div class="flywheel-verdict">🔘 DATA FLYWHEEL: COSMETIC</div>
+    <div class="flywheel-score">Score: 1/10 &nbsp;·&nbsp; 0/3 Criteria Confirmed</div>
+    <div style="margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div style="padding:12px;background:var(--navy);border-radius:6px;border:1px solid rgba(231,76,60,0.3);">
+        <div style="font-size:0.7rem;color:var(--red);font-weight:600;margin-bottom:4px;">✗ Proprietary Data</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);">Solar cell manufacturing generates process yield data — but this is operational, not AI-trainable competitive data. No unique dataset vs competitors.</div>
+      </div>
+      <div style="padding:12px;background:var(--navy);border-radius:6px;border:1px solid rgba(231,76,60,0.3);">
+        <div style="font-size:0.7rem;color:var(--red);font-weight:600;margin-bottom:4px;">✗ AI Improves With Scale</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);">More cells produced does not improve any AI system's accuracy. Manufacturing automation is rules-based, not ML-driven at Websol's level.</div>
+      </div>
+      <div style="padding:12px;background:var(--navy);border-radius:6px;border:1px solid rgba(231,76,60,0.3);">
+        <div style="font-size:0.7rem;color:var(--red);font-weight:600;margin-bottom:4px;">✗ Self-Reinforcing Loop</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);">No feedback loop exists. Module maker demand is driven by ALMM compliance and price, not AI superiority of Websol's product.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Overall Moat Grade</div>
+  <div style="text-align:center;padding:20px;background:var(--navy-card);border:1px solid var(--border);border-radius:8px;">
+    <div style="font-family:var(--font-display);font-size:3rem;color:var(--amber);">C+</div>
+    <div style="color:var(--chrome-dim);font-size:0.85rem;margin-top:6px;">Narrow-to-Moderate Moat &nbsp;·&nbsp; Primarily Regulatory &nbsp;·&nbsp; Policy Dependency Risk</div>
+  </div>
+
+  <div class="info" style="margin-top:16px;">
+    <div class="info-title">Macro Stress Test Summary</div>
+    <p style="font-size:0.82rem;color:var(--chrome-dim);">ALMM suspended (historical risk): Moat collapses from C+ to D−. Revenue could fall 40-60% as Chinese cells re-enter at &lt;50% of Websol's cost. Chinese dumping via WTO ruling: WEAKENS all moat sources. TOPCon commoditized by FY27: Technology moat disappears but regulatory moat persists. India 500 GW renewable target maintained: STRENGTHENS all demand-side assumptions.</p>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+
+  <div class="section-title">Management Assessment</div>
+
+  <div class="grid-2">
+    <div class="card card-green">
+      <div class="card-title">Strengths</div>
+      <ul style="font-size:0.84rem;color:var(--chrome-dim);line-height:2;padding-left:16px;">
+        <li>MD Sohan Lal Agarwal: 30+ years in solar, consistent execution on upgrade</li>
+        <li>Capacity doubled (600MW → 1.2GW) funded purely by internal accruals + market debt — no PLI dependency</li>
+        <li>TOPCon upgrade proactive — ahead of market curve on technology transition</li>
+        <li>CRISIL BBB+/Stable — creditor confidence in financial discipline</li>
+        <li>First dividend in 17 years (₹0.25/share) — signals management confidence in sustained profitability</li>
+        <li>WC management improving; net debt → net cash turnaround in one year</li>
+        <li>Secured Andhra Pradesh 4GW approval proactively (before industry bottleneck forms)</li>
+      </ul>
+    </div>
+    <div class="card card-red">
+      <div class="card-title">Concerns</div>
+      <ul style="font-size:0.84rem;color:var(--chrome-dim);line-height:2;padding-left:16px;">
+        <li><strong style="color:var(--red);">CRITICAL: 89.4% of promoter holding pledged</strong> — existential risk for minority shareholders</li>
+        <li>Promoter holding is LOW at 27.7% — alignment with minority shareholders is limited</li>
+        <li>No pledge reduction disclosed despite improving cash position — why hasn't pledging been reduced?</li>
+        <li>Vijay Kedia entry (positive signal) but no other institutional investors of significance</li>
+        <li>AP greenfield execution risk: ₹?? Cr capex, land allotment only, no financial closure disclosed</li>
+        <li>Backward integration (ingot/wafer) technology licensed from Linton — execution risk high</li>
+        <li>No independent evidence of guidance reliability (company has limited track record post-restart)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="alert" style="margin-top:16px;">
+    <div class="alert-title">⚠️ PLEDGING ANALYSIS — CRITICAL RED FLAG</div>
+    <div class="alert-body">
+      Promoter holding: ~27.7% of shares = 11.69 Cr shares. Pledged: 89.4% = ~10.45 Cr shares pledged.<br><br>
+      <strong>Scenario:</strong> If promoter borrowings trigger a margin call (stock price falls, lenders call loans), up to 10.45 Cr shares (~24.8% of total shares) could be force-sold into the market simultaneously. This would collapse the share price and dilute existing shareholders. The lender (not the promoter) controls 89.4% of the promoter's position.<br><br>
+      <strong>Framework verdict:</strong> Pledges >40% = AVOID. At 89.4%, this is the most extreme pledging risk in the QV Series to date. The question "why hasn't Websol used its strong FY26 cash position to reduce pledging?" is unanswered and alarming.
+    </div>
+  </div>
+
+  <div class="section-title">Capital Allocation History</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Period</th><th>Action</th><th>Capital Deployed</th><th>Outcome</th><th>Quality</th></tr>
+      <tr><td>FY23-24</td><td>Cell line upgrade (600MW Mono PERC Bifacial)</td><td>~₹80-100 Cr CapEx</td><td>★★★★ — transformed margins</td><td class="td-green">Good</td></tr>
+      <tr><td>Sep 2025</td><td>Cell Line 2 commissioning (600MW additional)</td><td>Internal accruals</td><td>★★★★★ — doubles capacity, funded organically</td><td class="td-green">Excellent</td></tr>
+      <tr><td>Nov 2025</td><td>10:1 stock split</td><td>Nil</td><td>Improved liquidity; retail access</td><td class="td-amber">Neutral</td></tr>
+      <tr><td>Jan 2026</td><td>AP 4GW greenfield (MoU signed)</td><td>TBD</td><td>Optionality; execution risk high</td><td class="td-amber">Monitoring</td></tr>
+      <tr><td>FY26 ongoing</td><td>TOPCon upgrade (one line)</td><td>Internal accruals</td><td>Capacity to 1.35GW; premium pricing</td><td class="td-green">Good</td></tr>
+      <tr><td>FY26</td><td>Pledging reduction</td><td>N/A</td><td><strong style="color:var(--red);">NOT DONE</strong> despite ₹34 Cr net cash</td><td class="td-red">Fail</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+
+  <div class="section-title">Valuation — Category D (5 Methods)</div>
+
+  <div class="info">
+    <div class="info-title">Earnings Quality: ACCEPTABLE — No Quality Adjustment Required</div>
+    <p style="font-size:0.82rem;color:var(--chrome-dim);">O'Glove ACCEPTABLE grade. Using reported EPS ₹7.18 (FY26) and estimated OE ₹308 Cr as base. WACC: 15% (Cat D midpoint). Terminal P/E: 15× (commodity-adjacent). MoS: 25% (Cat D mandate).</p>
+  </div>
+
+  <div class="section-title" style="font-size:1rem;">Method 1 — 2-Stage DCF</div>
+  <div class="card">
+    <div class="table-wrap">
+      <table class="dcf-year">
+        <tr>
+          <th>Year</th><th>Stress OE (₹Cr)</th><th>PV@15%</th><th>Base OE (₹Cr)</th><th>PV@15%</th><th>Accel OE (₹Cr)</th><th>PV@15%</th>
+        </tr>
+        <tr><td>FY26 (Base)</td><td colspan="6" style="text-align:center;color:var(--chrome-dim);">₹308 Cr Owner Earnings</td></tr>
+        <tr><td>FY27</td><td class="td-num">370</td><td class="td-num">322</td><td class="td-green">416</td><td class="td-green">362</td><td class="td-num">462</td><td class="td-num">402</td></tr>
+        <tr><td>FY28</td><td class="td-num">444</td><td class="td-num">336</td><td class="td-green">562</td><td class="td-green">426</td><td class="td-num">693</td><td class="td-num">525</td></tr>
+        <tr><td>FY29</td><td class="td-num">532</td><td class="td-num">350</td><td class="td-green">759</td><td class="td-green">499</td><td class="td-num">1039</td><td class="td-num">683</td></tr>
+        <tr><td>FY30</td><td class="td-num">639</td><td class="td-num">365</td><td class="td-green">1025</td><td class="td-green">586</td><td class="td-num">1559</td><td class="td-num">891</td></tr>
+        <tr><td>FY31</td><td class="td-num">766</td><td class="td-num">381</td><td class="td-green">1384</td><td class="td-green">688</td><td class="td-num">2338</td><td class="td-num">1163</td></tr>
+        <tr style="background:rgba(255,107,43,0.05);">
+          <td><strong>PV Stage 1</strong></td><td colspan="2" class="td-num">₹1,754</td><td colspan="2" class="td-green">₹2,561</td><td colspan="2" class="td-num">₹3,664</td>
+        </tr>
+        <tr>
+          <td>Terminal (FY31 × 15×)</td><td class="td-num">₹11,490</td><td class="td-num">PV: ₹5,717</td><td class="td-green">₹20,760</td><td class="td-green">PV: ₹10,323</td><td class="td-num">₹35,070</td><td class="td-num">PV: ₹17,436</td>
+        </tr>
+        <tr style="background:rgba(255,179,68,0.05);font-weight:600;">
+          <td>Total IV (₹Cr)</td><td colspan="2" class="td-orange">₹7,471</td><td colspan="2" class="td-green">₹12,884</td><td colspan="2" class="td-amber">₹21,100</td>
+        </tr>
+        <tr>
+          <td>IV per Share</td><td colspan="2" class="td-orange"><strong>₹177</strong></td><td colspan="2" class="td-green"><strong>₹305</strong></td><td colspan="2" class="td-amber"><strong>₹500</strong></td>
+        </tr>
+        <tr>
+          <td>MoS Entry (25% disc)</td><td colspan="2" class="td-num">₹133</td><td colspan="2" class="td-green">₹229</td><td colspan="2" class="td-num">₹375</td>
+        </tr>
+      </table>
+    </div>
+    <p style="font-size:0.73rem;color:var(--text-muted);margin-top:10px;">Growth rates: Stress 20% / Base 35% / Accel 50% Stage 1 FCF CAGR. Stage 2: 8/12/15%. Terminal g: 3.5/5/6.5%. Discounted at 15% WACC (Cat D).</p>
+  </div>
+
+  <div class="section-title" style="font-size:1rem;">DCF Sensitivity Table (Base Case)</div>
+  <div class="table-wrap">
+    <table class="sens-table">
+      <tr><th>WACC ↓ / Terminal g →</th><th>3.5%</th><th>5.0%</th><th>6.5%</th></tr>
+      <tr><td>13%</td><td class="td-num">₹355</td><td class="td-num">₹405</td><td class="td-green">₹475</td></tr>
+      <tr><td>15%</td><td class="td-num">₹260</td><td class="sens-highlight">₹305</td><td class="td-num">₹365</td></tr>
+      <tr><td>17%</td><td class="td-num">₹195</td><td class="td-num">₹225</td><td class="td-num">₹265</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title" style="font-size:1rem;">Method 2 — Owner Earnings Capitalisation</div>
+  <div class="card" style="font-size:0.84rem;">
+    <div class="oe-row"><span>OE FY26</span><span style="font-family:var(--font-mono);">₹308 Cr</span></div>
+    <div class="oe-row"><span>Required Return (15%)</span><span>−</span></div>
+    <div class="oe-row"><span>Base g (macro-derived)</span><span style="font-family:var(--font-mono);">5%</span></div>
+    <div class="oe-row"><span>Capitalisation divisor</span><span style="font-family:var(--font-mono);">10%</span></div>
+    <div class="oe-row total"><span>Base IV = 308 / 0.10 = ₹3,080 Cr → per share</span><span>₹73</span></div>
+    <p style="font-size:0.73rem;color:var(--text-muted);margin-top:8px;">Stress: OE/0.125 = ₹2,464 Cr = ₹58/sh &nbsp;·&nbsp; Accel: OE × 1.2 / 0.08 = ₹4,620 Cr = ₹109/sh. This method gives conservative floor values; not reflective of growth optionality.</p>
+  </div>
+
+  <div class="section-title" style="font-size:1rem;">Method 3 — ROIC / EPV</div>
+  <div class="card" style="font-size:0.84rem;">
+    <div class="oe-row"><span>NOPAT (EBIT × 1 - tax)</span><span style="font-family:var(--font-mono);">≈ ₹243 Cr</span></div>
+    <div class="oe-row"><span>Invested Capital (FY26)</span><span style="font-family:var(--font-mono);">≈ ₹688 Cr</span></div>
+    <div class="oe-row"><span>ROIC</span><span style="font-family:var(--font-mono);color:var(--green);">~35%</span></div>
+    <div class="oe-row"><span>EPV (NOPAT/WACC)</span><span style="font-family:var(--font-mono);">₹1,620 Cr = ₹38/sh</span></div>
+    <div class="oe-row"><span>Economic Profit spread × IC</span><span style="font-family:var(--font-mono);">(35−15)% × ₹688 = ₹138 Cr/yr</span></div>
+    <div class="oe-row"><span>PV of EP (15 years @ 15%)</span><span style="font-family:var(--font-mono);">≈ ₹920 Cr</span></div>
+    <div class="oe-row total"><span>EPV + Growth = ₹2,540 Cr → per share</span><span>₹60</span></div>
+    <p style="font-size:0.73rem;color:var(--text-muted);margin-top:8px;">EPV is a conservative floor (no growth). Growth premium adjusts for ALMM moat and capacity expansion. Stress: ₹38/sh | Base: ₹60/sh | Accel: ₹90/sh</p>
+  </div>
+
+  <div class="section-title" style="font-size:1rem;">Method 4 — P/E Earnings Power</div>
+  <div class="grid-2" style="gap:12px;">
+    <div class="card" style="font-size:0.84rem;">
+      <div class="sub-title">Historical P/E Context</div>
+      <div class="oe-row"><span>FY26 P/E at ₹105</span><span style="font-family:var(--font-mono);">14.6×</span></div>
+      <div class="oe-row"><span>FY27E EPS (analyst)</span><span style="font-family:var(--font-mono);">~₹13.8</span></div>
+      <div class="oe-row"><span>Forward P/E at ₹105</span><span style="font-family:var(--font-mono);color:var(--green);">7.6×</span></div>
+      <div class="oe-row"><span>Justified P/E (Cat D: 15-18×)</span><span style="font-family:var(--font-mono);">15-18×</span></div>
+      <div class="oe-row total"><span>Fair value on FY27E EPS (15×)</span><span>₹207</span></div>
+    </div>
+    <div class="card" style="font-size:0.84rem;">
+      <div class="sub-title">Reverse DCF Check</div>
+      <div class="oe-row"><span>Price</span><span style="font-family:var(--font-mono);">₹105</span></div>
+      <div class="oe-row"><span>Current implied growth rate</span><span style="font-family:var(--font-mono);">~18%</span></div>
+      <div class="oe-row"><span>Analyst consensus (FY27)</span><span style="font-family:var(--font-mono);">~95%</span></div>
+      <div class="oe-row"><span>Market implies very pessimistic scenario</span><span style="font-family:var(--font-mono);color:var(--amber);">Underprice signal</span></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:1rem;">Method 5 — Earnings Yield vs Bond Yield</div>
+  <div class="card" style="font-size:0.84rem;">
+    <div class="oe-row"><span>FY26 Earnings Yield (1/14.6×)</span><span style="font-family:var(--font-mono);">6.85%</span></div>
+    <div class="oe-row"><span>10yr G-Sec Yield <span class="pill pill-v">✓</span></span><span style="font-family:var(--font-mono);">~7.0%</span></div>
+    <div class="oe-row"><span>Equity Risk Premium</span><span style="font-family:var(--font-mono);color:var(--red);">−0.15% (Negative!)</span></div>
+    <div class="oe-row"><span>Forward EY (FY27E @ ₹105)</span><span style="font-family:var(--font-mono);color:var(--green);">13.1%</span></div>
+    <div class="oe-row total"><span>Signal</span><span style="color:var(--amber);">Current earnings: not cheap vs bonds. Forward: highly attractive.</span></div>
+  </div>
+
+  <div class="section-title">5-Method Summary Table</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Method</th><th>Stress IV/sh</th><th>Base IV/sh</th><th>Accel IV/sh</th><th>AI Adj</th></tr>
+      <tr><td>DCF (2-Stage)</td><td class="td-num">₹177</td><td class="td-green">₹305</td><td class="td-num">₹500</td><td class="td-num">None</td></tr>
+      <tr><td>Owner Earnings Cap</td><td class="td-num">₹58</td><td class="td-num">₹73</td><td class="td-num">₹109</td><td class="td-num">None</td></tr>
+      <tr><td>ROIC / EPV</td><td class="td-num">₹38</td><td class="td-num">₹60</td><td class="td-num">₹90</td><td class="td-num">None</td></tr>
+      <tr><td>P/E Earnings Power</td><td class="td-num">₹108</td><td class="td-orange">₹165</td><td class="td-num">₹250</td><td class="td-num">None</td></tr>
+      <tr><td>Earnings Yield</td><td class="td-num">₹82</td><td class="td-num">₹105</td><td class="td-num">₹160</td><td class="td-num">None</td></tr>
+      <tr style="background:rgba(255,107,43,0.07);font-weight:600;">
+        <td>Blended Base IV (avg 4 quantitative)</td><td class="td-num">₹80</td><td class="td-orange"><strong>₹151</strong></td><td class="td-num">₹277</td><td class="td-num">—</td>
+      </tr>
+      <tr>
+        <td>MoS Entry Zone (25% disc)</td><td class="td-num">₹60</td><td class="td-green"><strong>₹113</strong></td><td class="td-num">₹208</td><td class="td-num">—</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="alert">
+    <div class="alert-title">Valuation Conclusion</div>
+    <div class="alert-body">At ₹105, the stock trades BELOW the base MoS entry zone (₹113) — implying the stock is technically in buy territory on pure valuation. However, the AVOID verdict due to 89.4% promoter pledging OVERRIDES this. Valuation attractiveness is irrelevant when existential governance risk persists. The P/E and Earnings Yield methods give ₹105-165 as fair value range on current earnings; DCF gives ₹305 on growth assumptions — significant upside potential exists IF pledging is resolved.</div>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Economic Moat</div>
+      <div class="pillar-grade" style="color:var(--amber);">C+</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);">Narrow-Regulatory</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Financial Fortress</div>
+      <div class="pillar-grade" style="color:var(--amber);">C+</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);">Recovering; Short Track</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Management</div>
+      <div class="pillar-grade" style="color:var(--red);">D+</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);">89.4% Pledge: FAIL</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Valuation</div>
+      <div class="pillar-grade" style="color:var(--green);">B−</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);">Discounted to Base IV</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0;">
+    <span class="badge badge-cat-d">CAT D · TURNAROUND</span>
+    <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+    <span class="badge" style="background:rgba(192,200,216,0.1);border:1px solid var(--chrome-dim);color:var(--chrome);">COSMETIC FLYWHEEL</span>
+    <span class="badge badge-avoid">Phase 1 AI Adoption</span>
+  </div>
+
+  <div class="verdict-main">
+    <div class="verdict-stars">⛔</div>
+    <div class="verdict-label">AVOID</div>
+    <div style="color:var(--chrome-dim);font-size:0.85rem;margin-top:8px;">Primary Reason: 89.4% Promoter Pledging — Framework Hard Blocker</div>
+    <div class="verdict-quote">"Risk comes from not knowing what you're doing. But sometimes, it also comes from knowing exactly what you're doing and still not being able to control the outcome." — The promoter's pledged shares are a loaded gun held by the lender, not the promoter. No valuation attractiveness justifies this governance risk.</div>
+  </div>
+
+  <div class="section-title">Why AVOID Despite Operational Brilliance</div>
+  <div class="card card-red">
+    <p style="font-size:0.88rem;color:var(--chrome-dim);line-height:1.8;">Websol Energy's operational turnaround in FY25-26 is remarkable and real. Revenue grew 20× from FY24 to FY25, and 82% in FY26. EBITDA margins of 41% are exceptional for any manufacturer. Net cash position achieved in one year. ALMM List-II creates a genuine regulatory moat. Vijay Kedia's entry is a vote of confidence from a sophisticated investor. The valuation at 14.6× FY26 earnings and 7.6× FY27E earnings looks cheap. Yet all of this is irrelevant to the core problem: <strong style="color:var(--red);">the promoter has pledged 89.4% of their holding with financial institutions</strong>. If Websol's stock falls further from the 52-week high of ₹158.99 (already down 34%), lenders may invoke pledges and dump 10.45 Cr shares into the market simultaneously. The framework's hard rule — &gt;40% pledging = AVOID — exists precisely for this scenario.</p>
+  </div>
+
+  <div class="section-title">Upgrade Conditions (Watch for These)</div>
+  <div class="card">
+    <div class="upgrade-item">
+      <div class="upgrade-num">1</div>
+      <div class="upgrade-text"><strong>Promoter pledging reduces to &lt;40% of holding</strong> — via promoter equity top-up, pledge release, or debt repayment. Until this happens, no further analysis required. Quarterly BSE/NSE disclosure monitoring mandatory.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">2</div>
+      <div class="upgrade-text"><strong>ALMM List-II enforcement sustained for 2+ consecutive quarters without suspension</strong> — confirmed by MNRE order and no stay orders from courts or WTO proceedings. Must be verified from primary government source.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">3</div>
+      <div class="upgrade-text"><strong>EBITDA margin holds above 38% for 2 consecutive quarters</strong> — verifying that cell pricing has not been materially impacted by domestic oversupply or Chinese dumping via alternative channels.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">4</div>
+      <div class="upgrade-text"><strong>Andhra Pradesh greenfield achieves financial closure (debt + equity commitment secured)</strong> — formal announcement of construction finance from a recognized lender. MoU/approval alone insufficient.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">5</div>
+      <div class="upgrade-text"><strong>Price corrects to ₹75 or below</strong> — providing additional margin of safety. At ₹75: P/E = 10.5× FY26 / 5.4× FY27E — representing a genuinely cheap entry if pledging risk is also being addressed. Not an unconditional buy — conditions 1-3 must also be in progress.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Series Tracker Snapshot</div>
+  <div class="table-wrap">
+    <table class="tracker-table">
+      <tr>
+        <th>Ticker</th><th>Category</th><th>AI Overlay</th><th>Verdict</th><th>Moat</th><th>Financial</th><th>Mgmt</th><th>Val</th><th>MoS Entry</th>
+      </tr>
+      <tr>
+        <td><strong>WEBELSOLAR</strong></td>
+        <td>D</td>
+        <td>⚪ Neutral</td>
+        <td class="td-red"><strong>AVOID</strong></td>
+        <td>C+</td><td>C+</td><td class="td-red">D+</td><td>B−</td>
+        <td>₹113 (theoretical)</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+
+  <div class="alert">
+    <div class="alert-title">Technical Context — Post 45% Surge</div>
+    <div class="alert-body">Stock surged ~45% in 6 trading sessions (Apr 22-29, 2026) on Q4 FY26 results + Vijay Kedia 1.02% stake acquisition. RSI at 75 = overbought. Near-term consolidation/pullback likely before any technical setup forms. Verify live price before acting.</div>
+  </div>
+
+  <div class="section-title">A · Price Structure &amp; Levels <span class="pill pill-e">~ Price data needs live verification</span></div>
+  <div style="margin:12px 0;">
+    <div class="price-level danger"><div class="price-label">52W High</div><div class="price-val" style="color:var(--red);">₹158.99</div><div style="font-size:0.75rem;color:var(--text-muted);margin-left:auto;">−34% from current</div></div>
+    <div class="price-level current"><div class="price-label">Current Price ~</div><div class="price-val" style="color:var(--orange);">₹105</div><div style="font-size:0.75rem;color:var(--text-muted);margin-left:auto;">~May 26, 2026</div></div>
+    <div class="price-level"><div class="price-label">200 DMA</div><div class="price-val" style="color:var(--chrome);">₹94.14</div><div style="font-size:0.75rem;color:var(--text-muted);margin-left:auto;">Support level</div></div>
+    <div class="price-level"><div class="price-label">100 DMA</div><div class="price-val" style="color:var(--chrome);">₹81.94</div><div style="font-size:0.75rem;color:var(--text-muted);margin-left:auto;">Secondary support</div></div>
+    <div class="price-level entry"><div class="price-label">50 DMA</div><div class="price-val" style="color:var(--green);">₹75.59</div><div style="font-size:0.75rem;color:var(--text-muted);margin-left:auto;">Strong support zone</div></div>
+    <div class="price-level"><div class="price-label">52W Low</div><div class="price-val" style="color:var(--chrome-dim);">₹50.40</div><div style="font-size:0.75rem;color:var(--text-muted);margin-left:auto;">Extreme support</div></div>
+  </div>
+
+  <div class="section-title">B · Moving Average Dashboard</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>MA</th><th>Level</th><th>vs Current (~₹105)</th><th>Signal</th></tr>
+      <tr><td>20 EMA</td><td class="td-num">~₹97</td><td class="td-green">+8% above</td><td class="td-green">Bullish — stock above</td></tr>
+      <tr><td>50 DMA</td><td class="td-num">₹75.59</td><td class="td-green">+39% above</td><td class="td-green">Strong bull trend</td></tr>
+      <tr><td>100 DMA</td><td class="td-num">₹81.94</td><td class="td-green">+28% above</td><td class="td-green">Bullish</td></tr>
+      <tr><td>200 DMA</td><td class="td-num">₹94.14</td><td class="td-green">+11% above</td><td class="td-amber">Just crossed above 200 DMA — bullish confirmation</td></tr>
+      <tr><td>200 WMA</td><td class="td-num">~₹80 est</td><td class="td-green">+31% above</td><td class="td-amber">Recovering from multi-year underperformance</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">C · Volume Events (3 Months)</div>
+  <div class="card card-amber">
+    <p style="font-size:0.84rem;color:var(--chrome-dim);line-height:1.75;">Volume 16.3 million shares on Apr 23 (Kedia news day = massive retail participation). Volume at upper circuit for 2 consecutive sessions post-Q4 results. Average volume normally 1-2 Mn/day → 8-16× surge is a high-conviction institutional + retail entry signal. However, MACD Signal at 5.27 and RSI at 75+ means momentum is stretched — pullback to ₹85-95 would reset technicals for a cleaner entry (for hypothetical buyers if pledging were resolved).</p>
+  </div>
+
+  <div class="section-title">D · Oscillators &amp; Momentum</div>
+  <div class="grid-3">
+    <div class="metric warn">
+      <div class="metric-label">RSI (14)</div>
+      <div class="metric-val red">75.02</div>
+      <div class="metric-sub">Overbought — pullback likely</div>
+    </div>
+    <div class="metric good">
+      <div class="metric-label">MACD Signal</div>
+      <div class="metric-val green">+5.27</div>
+      <div class="metric-sub">Bullish crossover maintained</div>
+    </div>
+    <div class="metric warn">
+      <div class="metric-label">MFI</div>
+      <div class="metric-val red">80.43</div>
+      <div class="metric-sub">Overbought money flow</div>
+    </div>
+    <div class="metric warn">
+      <div class="metric-label">Beta (2yr)</div>
+      <div class="metric-val amber">1.95</div>
+      <div class="metric-sub">High volatility vs market</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">ATR</div>
+      <div class="metric-val">₹5.56</div>
+      <div class="metric-sub">Daily range typical</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">1M Return</div>
+      <div class="metric-val green">+42.67%</div>
+      <div class="metric-sub">vs Nifty ~flat</div>
+    </div>
+  </div>
+
+  <div class="section-title">E · Chart Pattern</div>
+  <div class="card card-green">
+    <div class="card-title">Double Bottom + Breakout</div>
+    <p style="font-size:0.84rem;color:var(--chrome-dim);">Stock formed a double bottom in the ₹50-65 range (Oct-Dec 2025, post split from 52W low). Classic reversal pattern confirmed by the breakout on volume above ₹75 (200 DMA). The recent surge to ₹105-128 represents a significant breakout from the ₹80-90 consolidation zone. Near-term resistance at ₹120-130 (previous support-turned-resistance from Sep 2025 post-split trading). If RSI resets to 50-55, ₹85-95 zone becomes high-probability re-entry for technically-minded investors.</p>
+  </div>
+
+  <div class="section-title">F · Trade Structure (Hypothetical — Subject to Pledge Resolution)</div>
+  <div class="card card-red">
+    <p style="font-size:0.84rem;color:var(--red);margin-bottom:10px;">⚠️ DO NOT TRADE THIS SETUP until promoter pledging condition is resolved. Trade structure is theoretical.</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Parameter</th><th>Level</th><th>Rationale</th></tr>
+        <tr><td>Entry (after RSI reset)</td><td class="td-num">₹85-95</td><td>200 DMA zone + RSI 50-55 + 3mo after pledge resolution</td></tr>
+        <tr><td>Stop Loss</td><td class="td-red">₹68</td><td>Below 52W low structure; -20% from entry</td></tr>
+        <tr><td>Target 1</td><td class="td-green">₹140</td><td>Base IV MoS entry zone; +60% from entry</td></tr>
+        <tr><td>Target 2</td><td class="td-green">₹210</td><td>15× FY27E EPS; +145% from entry</td></tr>
+        <tr><td>R:R Ratio</td><td class="td-orange">1:3.0</td><td>Meets ≥1:2.5 threshold (theoretical)</td></tr>
+        <tr><td>Position Size</td><td class="td-num">Max 3% portfolio</td><td>Cat D + policy risk + pledging history</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title">G · Technical Composite Score</div>
+  <div class="tech-composite">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div><div class="sub-title">Trend (5/5)</div><div class="gauge-bar"><div class="gauge-fill" style="width:80%;"></div></div><div style="font-size:0.75rem;color:var(--text-muted);">Score 4/5 — All MAs bullish, but extended</div></div>
+      <div><div class="sub-title">Momentum (5/5)</div><div class="gauge-bar"><div class="gauge-fill" style="width:60%;background:linear-gradient(90deg,var(--amber),var(--orange));"></div></div><div style="font-size:0.75rem;color:var(--text-muted);">Score 3/5 — MACD bullish, RSI overbought</div></div>
+      <div><div class="sub-title">Volume (5/5)</div><div class="gauge-bar"><div class="gauge-fill" style="width:100%;"></div></div><div style="font-size:0.75rem;color:var(--text-muted);">Score 5/5 — Massive institutional volume signal</div></div>
+      <div><div class="sub-title">Pattern (5/5)</div><div class="gauge-bar"><div class="gauge-fill" style="width:80%;"></div></div><div style="font-size:0.75rem;color:var(--text-muted);">Score 4/5 — Double bottom confirmed, breakout valid</div></div>
+      <div><div class="sub-title">Structure (5/5)</div><div class="gauge-bar"><div class="gauge-fill" style="width:60%;background:linear-gradient(90deg,var(--amber),var(--orange));"></div></div><div style="font-size:0.75rem;color:var(--text-muted);">Score 3/5 — Above all MAs but -34% from peak</div></div>
+      <div><div class="sub-title">Risk (5/5)</div><div class="gauge-bar"><div class="gauge-fill" style="width:40%;background:linear-gradient(90deg,var(--red),var(--orange));"></div></div><div style="font-size:0.75rem;color:var(--text-muted);">Score 2/5 — Beta 1.95, pledge risk, overbought</div></div>
+    </div>
+    <div style="margin-top:14px;text-align:center;padding:14px;background:var(--navy);border-radius:6px;">
+      <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--amber);">21/30 — 70%</div>
+      <div style="font-size:0.8rem;color:var(--text-muted);">Technical Composite Score — MODERATELY BULLISH, but short-term overbought</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+
+  <div class="section-title">A · Promoter Trend (5 Quarters) <span class="pill pill-v">✓</span></div>
+
+  <div class="alert">
+    <div class="alert-title">⚠️ CRITICAL: 89.4% Promoter Pledging</div>
+    <div class="alert-body">As per Screener.in and Equitymaster data, promoter pledging stands at 88-89.4% of promoter holding. This is classified as AVOID under the framework. Promoter holding itself is low at 27.7% — double jeopardy of low ownership + near-total pledging.</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Quarter</th><th>Promoter %</th><th>Pledged % of Holding</th><th>FII %</th><th>DII %</th><th>Public %</th></tr>
+      <tr><td>Mar 2025</td><td class="td-num">27.7%</td><td class="td-red">~88%</td><td class="td-num">~0.5%</td><td class="td-num">~1%</td><td class="td-num">~70.8%</td></tr>
+      <tr><td>Jun 2025</td><td class="td-num">27.7%</td><td class="td-red">~88%</td><td class="td-num">~0.6%</td><td class="td-num">~1.2%</td><td class="td-num">~70.5%</td></tr>
+      <tr><td>Sep 2025</td><td class="td-num">27.7%</td><td class="td-red">~88%</td><td class="td-num">~0.7%</td><td class="td-num">~1.3%</td><td class="td-num">~70.3%</td></tr>
+      <tr><td>Dec 2025</td><td class="td-num">27.71%</td><td class="td-red">88.12%</td><td class="td-num">~0.8%</td><td class="td-num">~1.5%</td><td class="td-num">~70%</td></tr>
+      <tr><td>Mar 2026</td><td class="td-num">27.71%</td><td class="td-red">89.4%</td><td class="td-num">~1%</td><td class="td-num">~1.8%</td><td class="td-num">~69.5%</td></tr>
+    </table>
+  </div>
+  <p style="font-size:0.73rem;color:var(--text-muted);margin-top:6px;">Promoter holding unchanged at 27.71% for 5 quarters. Pledging trend: INCREASING (not reducing). FII/DII gradually building but from very low base. Vijay Kedia (1.02%), Amit Mishra (notable public holder) from Mar 2026.</p>
+
+  <div class="section-title">B · Free Float &amp; Ownership Composition</div>
+
+  <div class="card" style="margin:12px 0;">
+    <div class="sub-title">Ownership Breakdown (Mar 2026 est.)</div>
+    <div class="sh-bar-wrap">
+      <div class="sh-segment" style="width:27.71%;background:var(--amber);" title="Promoter"></div>
+      <div class="sh-segment" style="width:1%;background:var(--green);" title="FII"></div>
+      <div class="sh-segment" style="width:1.8%;background:var(--orange);" title="DII"></div>
+      <div class="sh-segment" style="width:69.49%;background:var(--chrome-dim);" title="Public"></div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;font-size:0.75rem;">
+      <span style="color:var(--amber);">■ Promoter 27.71%</span>
+      <span style="color:var(--green);">■ FII ~1%</span>
+      <span style="color:var(--orange);">■ DII ~1.8%</span>
+      <span style="color:var(--chrome-dim);">■ Public ~69.5%</span>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="metric warn">
+      <div class="metric-label">Market Cap</div>
+      <div class="metric-val">₹4,431 Cr</div>
+      <div class="metric-sub">At ₹105, 42.2 Cr shares</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Free Float</div>
+      <div class="metric-val">72.3%</div>
+      <div class="metric-sub">FFF Market Cap ~₹3,204 Cr</div>
+    </div>
+    <div class="metric warn">
+      <div class="metric-label">Index Membership</div>
+      <div class="metric-val">Nifty Microcap</div>
+      <div class="metric-sub">BSE 1000, Nifty Smallcap 500</div>
+    </div>
+    <div class="metric warn">
+      <div class="metric-label">Effectively Pledged</div>
+      <div class="metric-val red">10.45 Cr shares</div>
+      <div class="metric-sub">~24.8% of total shares</div>
+    </div>
+  </div>
+
+  <div class="section-title">C · Notable Investors (Mar 2026) <span class="pill pill-v">✓</span></div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Investor</th><th>Stake</th><th>Category</th><th>Signal</th></tr>
+      <tr><td>Vijay Kedia (Kedia Capital)</td><td class="td-green">1.02%</td><td>HNI/Value Investor</td><td class="td-green">↑ New Entry Q4 FY26 — Strong Signal</td></tr>
+      <tr><td>Amit Mishra</td><td class="td-num">~1.5%</td><td>Individual</td><td class="td-num">→ Existing holder</td></tr>
+      <tr><td>FII Net</td><td class="td-num">~1%</td><td>Foreign Institutional</td><td class="td-amber">↑ Slowly building</td></tr>
+      <tr><td>DII / MF</td><td class="td-num">~1.8%</td><td>Domestic Institutions</td><td class="td-amber">↑ Gradual accumulation</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">D · Ownership Momentum &amp; Risk Scores</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Ownership Momentum Score</div>
+      <div style="font-family:var(--font-display);font-size:2rem;color:var(--amber);margin:8px 0;">42 / 100</div>
+      <p style="font-size:0.8rem;color:var(--chrome-dim);">Vijay Kedia entry (+20 pts) offset by static promoter holding and no pledge reduction (−30 pts). FII/DII trickle accumulation (+12 pts). Retail concentration risk (high public %).</p>
+    </div>
+    <div class="card card-red">
+      <div class="card-title">Shareholding Risk Score</div>
+      <div style="font-family:var(--font-display);font-size:2rem;color:var(--red);margin:8px 0;">84 / 100</div>
+      <p style="font-size:0.8rem;color:var(--chrome-dim);">89.4% pledge = maximum category risk (+40). Low promoter holding at 27.7% (+20). No institutional backstop (+15). Increasing pledge trend despite profit recovery (+9).</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTEL -->
+<div id="tab9" class="tab-content">
+
+  <div class="section-title">A · AI Classification Dashboard</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0;">
+    <div style="padding:14px 20px;background:var(--navy-card);border:1px solid var(--chrome-dim);border-radius:8px;text-align:center;min-width:130px;">
+      <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">Category</div>
+      <div style="font-family:var(--font-display);font-size:1.3rem;color:var(--amber);margin-top:4px;">CAT D</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);">Turnaround</div>
+    </div>
+    <div style="padding:14px 20px;background:var(--navy-card);border:1px solid var(--chrome-dim);border-radius:8px;text-align:center;min-width:130px;">
+      <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">AI Overlay</div>
+      <div style="font-family:var(--font-display);font-size:1.3rem;color:var(--chrome);margin-top:4px;">⚪ NEUTRAL</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);">No AI moat</div>
+    </div>
+    <div style="padding:14px 20px;background:var(--navy-card);border:1px solid var(--chrome-dim);border-radius:8px;text-align:center;min-width:130px;">
+      <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">Flywheel</div>
+      <div style="font-family:var(--font-display);font-size:1.3rem;color:var(--chrome-dim);margin-top:4px;">COSMETIC</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);">0/3 criteria</div>
+    </div>
+    <div style="padding:14px 20px;background:var(--navy-card);border:1px solid var(--chrome-dim);border-radius:8px;text-align:center;min-width:130px;">
+      <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">AI Phase</div>
+      <div style="font-family:var(--font-display);font-size:1.3rem;color:var(--chrome);margin-top:4px;">Phase 1</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);">Pre-adoption</div>
+    </div>
+  </div>
+
+  <div class="phase-row">
+    <div class="phase-cell active">
+      <div style="font-weight:600;color:var(--chrome);">Phase 1</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);">Pre-adoption</div>
+    </div>
+    <div class="phase-cell"><div style="font-weight:600;">Phase 2</div><div style="font-size:0.68rem;color:var(--text-muted);">Early deploy</div></div>
+    <div class="phase-cell"><div style="font-weight:600;">Phase 3</div><div style="font-size:0.68rem;color:var(--text-muted);">Scaling</div></div>
+    <div class="phase-cell"><div style="font-weight:600;">Phase 4</div><div style="font-size:0.68rem;color:var(--text-muted);">Native</div></div>
+  </div>
+
+  <div class="section-title">B · AI Value Chain Position</div>
+  <div class="chain">
+    <div class="chain-node"><div class="cn-label">Level 1</div><div class="cn-val">Infrastructure<br/>NVIDIA, TSMC</div></div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node"><div class="cn-label">Level 2</div><div class="cn-val">Foundation Models<br/>OpenAI, Anthropic</div></div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node"><div class="cn-label">Level 3</div><div class="cn-val">Platforms<br/>Cloud AI APIs</div></div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node"><div class="cn-label">Level 4</div><div class="cn-val">Vertical Apps<br/>AI software</div></div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node active-node"><div class="cn-label">Level 5 ✓</div><div class="cn-val">AI-Enabled Incumbent<br/>WEBELSOLAR</div></div>
+  </div>
+  <p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Level 5 — AI-Enabled Incumbent with minimal AI integration. Solar cell manufacturing uses automation (not AI), primarily for yield optimization and defect detection. Investment horizon: 3-5yr. Risk: moderate. Moat durability: regulatory (not AI-derived).</p>
+
+  <div class="section-title">C · India AI Opportunity</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Structural Advantage</th><th>Relevant?</th><th>Explanation</th></tr>
+      <tr><td>India Stack data access (UPI/Aadhaar)</td><td class="td-red">No</td><td>Manufacturing sector — no India Stack relevance</td></tr>
+      <tr><td>Vernacular AI benefit</td><td class="td-red">No</td><td>B2B business; language AI not relevant</td></tr>
+      <tr><td>India Stack infrastructure leverage</td><td class="td-red">No</td><td>Physical manufacturing; no digital infrastructure dependency</td></tr>
+      <tr><td>AI talent cost arbitrage</td><td class="td-amber">Marginal</td><td>Could use AI for process automation — but no evidence of deployment at Websol</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">F · AI Opportunity Score</div>
+  <div class="card">
+    <div class="ai-score-wrap">
+      <div class="ai-score-circle">
+        <div class="ai-score-inner">
+          <div class="ai-score-num">15</div>
+          <div class="ai-score-label">/100</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-display);font-size:1.2rem;color:var(--chrome);">NEUTRAL — 15/100</div>
+        <div style="font-size:0.82rem;color:var(--chrome-dim);margin-top:6px;">Portfolio Role: MONITOR (AI adds no value to this investment thesis).</div>
+        <div style="margin-top:12px;font-size:0.8rem;">
+          <div style="margin-bottom:4px;">Data Flywheel: <span style="color:var(--red);">2/20</span></div>
+          <div style="margin-bottom:4px;">Adoption Phase Timing: <span style="color:var(--chrome-dim);">3/20</span></div>
+          <div style="margin-bottom:4px;">Value Chain Position: <span style="color:var(--chrome-dim);">4/20</span></div>
+          <div style="margin-bottom:4px;">India Structural Advantage: <span style="color:var(--red);">1/20</span></div>
+          <div>AI Threat Resistance: <span style="color:var(--green);">5/20</span> (AI is not a threat to solar manufacturing)</div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--text-muted);border-top:1px solid var(--border);margin-top:12px;padding-top:12px;">Investment Horizon for Level 5 incumbent: 3-5yr. The AI dimension adds nothing to the Websol thesis — neither as risk nor as opportunity. The investment case is entirely about ALMM policy, capacity expansion, and pledge resolution.</p>
+  </div>
+</div>
+
+<footer>
+  <p><strong>SEBI Disclaimer:</strong> This report is for educational and research purposes only under the Buffett Quality-Value Series analytical framework. It does not constitute investment advice, a solicitation to buy or sell securities, or a registered investment advisory opinion. Past performance is not indicative of future results. Securities mentioned involve substantial risk including potential loss of principal. SEBI registration of the analyst is not implied. Always consult a SEBI-registered investment adviser before making investment decisions.</p>
+  <p style="margin-top:8px;"><strong>Data Notice:</strong> Financial data sourced from company filings (Q4 FY26 results, Apr 28 2026), Screener.in, ICICI Direct, SolarQuarter, and news sources. Price data ~May 26, 2026 — verify live before acting. Promoter pledging data from Screener.in and Equitymaster. Some figures marked [ESTIMATED] are cross-referenced estimates and not primary source verified. This report was generated on May 26, 2026.</p>
+  <p style="margin-top:8px;"><strong>Fonts:</strong> Syne (display), DM Sans (body), JetBrains Mono (data) — via Google Fonts. Report: Buffett Quality-Value Series v5.0 &nbsp;·&nbsp; WEBELSOLAR_qv_report.html</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

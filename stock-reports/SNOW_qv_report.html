@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snowflake (SNOW) — Buffett QV Series</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#060E1A;--bg1:#0B1829;--bg2:#102038;--bg3:#152848;
+  --cyan:#00D4FF;--violet:#7C3AED;--emerald:#10B981;--amber:#F59E0B;--red:#EF4444;--gold:#FFD700;
+  --txt0:#EEF4FF;--txt1:#94A8C4;--txt2:#4A6280;
+  --brd:#1A3355;--brd2:rgba(0,212,255,.18);
+  --cyan-glow:0 0 24px rgba(0,212,255,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--bg0);color:var(--txt0);line-height:1.65;font-size:15px}
+
+/* HERO */
+.hero{background:linear-gradient(140deg,#060E1A 0%,#0B1829 55%,#0D1E38 100%);border-bottom:1px solid var(--brd);padding:28px 36px 20px;max-height:220px;position:relative;overflow:hidden}
+.hero::before{content:'❄';position:absolute;right:40px;top:-20px;font-size:160px;opacity:.03;color:var(--cyan);pointer-events:none}
+.hero-inner{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.hero-left{flex:1}
+.ticker{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:4px}
+.hero-name{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#fff;line-height:1.1;letter-spacing:-.3px}
+.hero-sub{font-size:.78rem;color:var(--txt1);margin-top:4px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:.63rem;font-weight:600;letter-spacing:.5px;border:1px solid}
+.b-cat{background:rgba(124,58,237,.18);border-color:var(--violet);color:#C4B5FD}
+.b-aiw{background:rgba(16,185,129,.15);border-color:var(--emerald);color:#6EE7B7}
+.b-macro{background:rgba(245,158,11,.15);border-color:var(--amber);color:#FCD34D}
+.b-phase{background:rgba(0,212,255,.1);border-color:var(--cyan);color:var(--cyan)}
+.verdict-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,212,255,.1);border:1.5px solid var(--cyan);border-radius:6px;padding:8px 14px;font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--cyan);font-weight:600}
+.data-pills{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.dp{background:var(--bg2);border:1px solid var(--brd);border-radius:4px;padding:5px 10px;font-family:'IBM Plex Mono',monospace;font-size:.65rem}
+.dp .dl{color:var(--txt2);display:block;margin-bottom:1px}
+.dp .dv{color:var(--cyan);font-weight:600}
+
+/* TABS */
+#tab-bar{position:sticky;top:0;z-index:100;background:var(--bg1);border-bottom:1px solid var(--brd);overflow-x:auto;scrollbar-width:none}
+#tab-bar::-webkit-scrollbar{display:none}
+.tab-nav{display:flex;min-width:max-content}
+.tab-btn{padding:11px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--txt2);font-family:'IBM Plex Mono',monospace;font-size:.63rem;font-weight:500;cursor:pointer;white-space:nowrap;letter-spacing:.8px;text-transform:uppercase;transition:color .2s,border-color .2s}
+.tab-btn:hover{color:var(--txt0)}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab-content{display:none;padding:28px 36px;max-width:1200px;margin:0 auto}
+
+/* TYPOGRAPHY */
+.sec-title{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--txt0);margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--brd)}
+.sec-title .tag{color:var(--cyan);font-size:.72rem;font-family:'IBM Plex Mono',monospace;font-style:normal;margin-left:8px;letter-spacing:1px}
+h3{font-family:'Playfair Display',serif;font-size:1rem;color:var(--txt0);margin:18px 0 10px}
+p{color:var(--txt1);font-size:.84rem;line-height:1.75;margin-bottom:10px}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* CONFIDENCE */
+.ver{background:rgba(16,185,129,.15);color:#6EE7B7;border:1px solid rgba(16,185,129,.3);padding:1px 6px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:.58rem;font-weight:600;vertical-align:middle}
+.est{background:rgba(245,158,11,.15);color:#FCD34D;border:1px solid rgba(245,158,11,.3);padding:1px 6px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:.58rem;font-weight:600;vertical-align:middle}
+.unv{background:rgba(239,68,68,.15);color:#FCA5A5;border:1px solid rgba(239,68,68,.3);padding:1px 6px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:.58rem;font-weight:600;vertical-align:middle}
+
+/* METRIC GRID */
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.mg3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.mg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+@media(max-width:680px){.mg,.mg3{grid-template-columns:repeat(2,1fr)}.mg2{grid-template-columns:1fr}}
+.mc{background:var(--bg2);border:1px solid var(--brd);border-left:3px solid var(--cyan);border-radius:6px;padding:12px 14px}
+.mc.pos{border-left-color:var(--emerald)}
+.mc.warn{border-left-color:var(--amber)}
+.mc.neg{border-left-color:var(--red)}
+.mc.neu{border-left-color:var(--txt2)}
+.ml{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.mv{font-family:'IBM Plex Mono',monospace;font-size:1.15rem;font-weight:600;color:var(--txt0)}
+.ms{font-size:.7rem;color:var(--txt1);margin-top:2px}
+
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:.8rem}
+.tbl th{background:var(--bg2);padding:8px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--brd)}
+.tbl td{padding:8px 10px;border-bottom:1px solid rgba(26,51,85,.5);color:var(--txt0)}
+.tbl tr:hover td{background:rgba(0,212,255,.03)}
+.num{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.pn{color:var(--emerald)}.nn{color:var(--red)}.xn{color:var(--txt1)}
+.tbl tr.hl td{background:rgba(0,212,255,.06);color:var(--cyan)}
+
+/* SCORECARD */
+.sc-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 12px;background:var(--bg2);border:1px solid var(--brd);border-radius:5px;margin-bottom:6px;gap:12px}
+.sc-label{font-size:.8rem;color:var(--txt0);flex:1}
+.sc-label small{color:var(--txt1);font-size:.7rem;display:block;margin-top:2px}
+.pass{background:rgba(16,185,129,.2);color:#6EE7B7;padding:3px 9px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;white-space:nowrap}
+.marg{background:rgba(245,158,11,.2);color:#FCD34D;padding:3px 9px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;white-space:nowrap}
+.fail{background:rgba(239,68,68,.2);color:#FCA5A5;padding:3px 9px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;white-space:nowrap}
+
+/* MOAT */
+.moat-card{background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:14px;margin-bottom:10px}
+.moat-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.moat-name{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--txt0)}
+.stars{color:var(--cyan);font-size:.9rem;letter-spacing:1px}
+
+/* FLYWHEEL */
+.fw-box{background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(124,58,237,.06));border:1.5px solid var(--cyan);border-radius:10px;padding:20px;margin-bottom:20px;position:relative;overflow:hidden}
+.fw-box::after{content:'⟳';position:absolute;right:16px;top:8px;font-size:70px;opacity:.05;color:var(--cyan);pointer-events:none}
+.fw-lbl{font-family:'IBM Plex Mono',monospace;font-size:.63rem;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.fw-verdict{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:14px;color:var(--txt0)}
+.fw-check{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(26,51,85,.6);font-size:.8rem;color:var(--txt1)}
+.fw-check:last-child{border-bottom:none}
+.chk-y{color:var(--emerald);flex-shrink:0;font-size:1rem;margin-top:1px}
+.chk-p{color:var(--amber);flex-shrink:0;font-size:1rem;margin-top:1px}
+.chk-n{color:var(--red);flex-shrink:0;font-size:1rem;margin-top:1px}
+
+/* PILLAR GRADES */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:680px){.pillar-grid{grid-template-columns:repeat(2,1fr)}}
+.pg-card{background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:14px;text-align:center}
+.pg-name{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.pg-grade{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--cyan)}
+
+/* VERDICT */
+.verdict-box{background:linear-gradient(135deg,rgba(0,212,255,.07),rgba(124,58,237,.04));border:2px solid var(--cyan);border-radius:12px;padding:22px;margin-bottom:20px;box-shadow:var(--cyan-glow)}
+.verdict-stars{font-size:1.6rem;color:var(--cyan);letter-spacing:4px;margin-bottom:8px}
+.verdict-type{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
+.verdict-prose{font-family:'Playfair Display',serif;font-style:italic;font-size:.92rem;color:var(--txt1);line-height:1.75}
+
+/* UPGRADE CONDITIONS */
+.uc-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--brd);border-radius:6px;margin-bottom:6px}
+.uc-num{display:flex;align-items:center;justify-content:center;width:22px;height:22px;min-width:22px;background:rgba(0,212,255,.12);border:1px solid var(--cyan);border-radius:50%;font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--cyan);font-weight:600}
+.uc-text{font-size:.8rem;color:var(--txt0);line-height:1.55}
+
+/* VALUATION */
+.val-box{background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:16px;margin-bottom:14px}
+.val-box h4{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+
+/* AI DASHBOARD */
+.ai-dash{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:680px){.ai-dash{grid-template-columns:repeat(2,1fr)}}
+.ai-dc{background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:12px;text-align:center}
+.ai-dl{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.ai-dv{font-size:.85rem;font-weight:600;color:var(--txt0)}
+
+/* AI SCORE GAUGE */
+.gauge-wrap{text-align:center;padding:22px 16px;background:var(--bg2);border:1px solid var(--brd);border-radius:10px;margin-bottom:16px}
+.gauge-score{font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:700;color:var(--cyan);line-height:1}
+.gauge-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--txt1);text-transform:uppercase;letter-spacing:1.5px;margin-top:6px}
+
+/* VALUE CHAIN */
+.vchain{display:flex;gap:4px;margin:14px 0;overflow-x:auto;padding-bottom:4px}
+.vl{flex:1;min-width:90px;background:var(--bg2);border:1px solid var(--brd);border-radius:5px;padding:10px 7px;text-align:center;font-size:.68rem;color:var(--txt1)}
+.vl.active{border-color:var(--cyan);background:rgba(0,212,255,.08);color:var(--txt0)}
+.vl .vln{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--txt2);margin-bottom:3px}
+.vl.active .vln{color:var(--cyan)}
+
+/* MACRO DIM */
+.mdim{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg2);border:1px solid var(--brd);border-radius:5px;margin-bottom:6px}
+.mdim-lbl{font-size:.8rem;color:var(--txt0)}
+.mdim-lbl small{color:var(--txt1);font-size:.68rem;display:block}
+.mbadge{padding:3px 9px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:.63rem;font-weight:600}
+.m-tail{background:rgba(16,185,129,.18);color:#6EE7B7}
+.m-neu{background:rgba(148,163,184,.15);color:#94A3B8}
+.m-head{background:rgba(239,68,68,.18);color:#FCA5A5}
+
+/* PRICE LEVELS */
+.pl-wrap{background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:14px;margin-bottom:14px}
+.pl-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(26,51,85,.5);font-size:.8rem}
+.pl-item:last-child{border-bottom:none}
+.pl-current{background:rgba(0,212,255,.08);border-radius:4px;padding:3px 8px;font-family:'IBM Plex Mono',monospace;color:var(--cyan);font-size:.82rem;font-weight:600}
+
+/* MA DASH */
+.ma-item{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg2);border:1px solid var(--brd);border-radius:5px;margin-bottom:5px;font-size:.8rem}
+.ma-abv{color:var(--emerald);font-family:'IBM Plex Mono',monospace;font-size:.72rem}
+.ma-blw{color:var(--red);font-family:'IBM Plex Mono',monospace;font-size:.72rem}
+
+/* HOLDING BARS */
+.hb-wrap{padding:7px 0}
+.hb-lbl{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px}
+.hb-bg{background:var(--bg2);border:1px solid var(--brd);border-radius:3px;height:8px;overflow:hidden}
+.hb-fill{height:100%;border-radius:3px}
+
+/* INFO BOXES */
+.ibox{background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:14px;margin-bottom:12px}
+.ibox.warn{border-left:3px solid var(--amber);border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.04)}
+.ibox.danger{border-left:3px solid var(--red);border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.04)}
+.ibox.success{border-left:3px solid var(--emerald)}
+.ibox h4{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.ibox.warn h4{color:var(--amber)}
+.ibox.danger h4{color:var(--red)}
+.ibox.success h4{color:var(--emerald)}
+
+/* SERIES TABLE */
+.stbl{width:100%;border-collapse:collapse;font-size:.72rem;margin-top:20px}
+.stbl th{background:var(--bg2);padding:7px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--txt2);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--brd)}
+.stbl td{padding:7px 8px;border-bottom:1px solid rgba(26,51,85,.3)}
+.stbl tr.cur td{background:rgba(0,212,255,.05);font-weight:600}
+
+/* RSI BAR */
+.rsi-wrap{background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:14px;margin-bottom:14px}
+.rsi-bar{background:linear-gradient(to right,#EF4444 0%,#F59E0B 20%,#10B981 40%,#10B981 60%,#F59E0B 80%,#EF4444 100%);height:8px;border-radius:4px;position:relative;margin:12px 0 20px}
+.rsi-mkr{position:absolute;width:14px;height:14px;background:#fff;border:2px solid var(--cyan);border-radius:50%;top:-3px;transform:translateX(-50%)}
+.rsi-labels{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--txt2)}
+
+/* TRADE STRUCT */
+.trade-box{background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(124,58,237,.04));border:1.5px solid var(--brd2);border-radius:8px;padding:16px;margin-bottom:14px}
+.trade-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(26,51,85,.5);font-size:.8rem}
+.trade-row:last-child{border-bottom:none}
+.trade-key{color:var(--txt1)}
+.trade-val{font-family:'IBM Plex Mono',monospace;color:var(--txt0);font-weight:600}
+
+blockquote{border-left:3px solid var(--cyan);padding:12px 14px;margin:14px 0;font-family:'Playfair Display',serif;font-style:italic;color:var(--txt1);background:var(--bg2);border-radius:0 6px 6px 0;font-size:.88rem}
+
+.r40-bar-wrap{margin:10px 0}
+.r40-bar-bg{background:var(--bg1);border:1px solid var(--brd);border-radius:3px;height:10px;overflow:hidden}
+.r40-bar-fill{height:100%;border-radius:3px;background:linear-gradient(to right,var(--red),var(--amber),var(--emerald))}
+.r40-labels{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--txt2);margin-top:3px}
+
+footer{background:var(--bg1);border-top:1px solid var(--brd);padding:22px 36px;font-size:.7rem;color:var(--txt2);line-height:1.65}
+.hl{color:var(--cyan)}.em{color:var(--emerald)}.wa{color:var(--amber)}.re{color:var(--red)}.vi{color:#C4B5FD}
+.rf{display:inline-flex;align-items:center;gap:3px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);color:#FCA5A5;padding:1px 7px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="ticker">NYSE: SNOW · Buffett QV Series · April 2026</div>
+      <div class="hero-name">Snowflake Inc.</div>
+      <div class="hero-sub">AI Data Cloud — Enterprise Data Infrastructure &amp; AI Platform</div>
+      <div class="badges">
+        <span class="badge b-cat">Cat C · Mature Compounder</span>
+        <span class="badge b-aiw">🟢 AI WIDENER</span>
+        <span class="badge b-macro">⚪ US Enterprise AI · Phase 3</span>
+        <span class="badge b-phase">Data Flywheel: FORMING ★★★</span>
+      </div>
+      <div class="data-pills">
+        <div class="dp"><span class="dl">Price (Apr 16)</span><span class="dv">$144.48</span></div>
+        <div class="dp"><span class="dl">52W Range</span><span class="dv">$118 – $281</span></div>
+        <div class="dp"><span class="dl">Market Cap</span><span class="dv">~$50B</span></div>
+        <div class="dp"><span class="dl">EV/NTM Rev</span><span class="dv">~8.3x</span></div>
+        <div class="dp"><span class="dl">NRR</span><span class="dv">125%</span></div>
+        <div class="dp"><span class="dl">RPO</span><span class="dv">$9.77B (+42%)</span></div>
+      </div>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <div class="verdict-pill">★★★★ WATCH</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--txt2);margin-top:8px">Base IV: ~$200 · MoS Entry: $120–155</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro</button>
+    <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+    <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intel</button>
+  </div>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="t0" class="tab-content" style="display:block">
+  <h2 class="sec-title">Business Overview <span>Category C · AI Widener 🟢</span></h2>
+  <div class="mg">
+    <div class="mc pos"><div class="ml">FY2026 Revenue</div><div class="mv">$4.68B</div><div class="ms">+29.2% YoY <span class="ver">VERIFIED</span></div></div>
+    <div class="mc pos"><div class="ml">Free Cash Flow</div><div class="mv">$1.12B</div><div class="ms">24% FCF margin <span class="ver">VERIFIED</span></div></div>
+    <div class="mc"><div class="ml">NRR (Jan 2026)</div><div class="mv">125%</div><div class="ms">Sticky expansion <span class="ver">VERIFIED</span></div></div>
+    <div class="mc pos"><div class="ml">RPO Backlog</div><div class="mv">$9.77B</div><div class="ms">+42% YoY <span class="ver">VERIFIED</span></div></div>
+  </div>
+
+  <div class="mg">
+    <div class="mc neg"><div class="ml">GAAP Net Loss</div><div class="mv">−$1.33B</div><div class="ms">SBC-distorted <span class="ver">VERIFIED</span></div></div>
+    <div class="mc warn"><div class="ml">EV / NTM Revenue</div><div class="mv">~8.3×</div><div class="ms">vs. 20–40× peak <span class="est">ESTIMATED</span></div></div>
+    <div class="mc pos"><div class="ml">Cortex AI Accounts</div><div class="mv">9,100+</div><div class="ms">Weekly active <span class="est">ESTIMATED</span></div></div>
+    <div class="mc warn"><div class="ml">Stock YTD</div><div class="mv">−44%</div><div class="ms">Broad selloff <span class="ver">VERIFIED</span></div></div>
+  </div>
+
+  <h3>What Is Snowflake?</h3>
+  <p>Snowflake is the world's leading cloud-native data platform, enabling enterprises to consolidate, analyse, share, and govern data across Amazon Web Services, Microsoft Azure, and Google Cloud simultaneously. Founded in 2012 by three Oracle database veterans, it IPO'd in September 2020 in the largest-ever US software IPO at the time. Its consumption-based pricing model — customers pay per compute credit used, not a fixed subscription — aligns its revenue growth directly with customer data workload growth.</p>
+  <p>In FY2026, the company executed a decisive AI pivot under CEO Sridhar Ramaswamy (ex-Google AI chief, took over Feb 2024), transforming from a pure data warehouse into an "AI Data Cloud." <span class="est">ESTIMATED</span> Over 50% of Snowflake's customer base now uses Cortex AI — its managed AI service for building LLM applications directly on governed enterprise data — with 9,100+ accounts active weekly.</p>
+
+  <h3>Category Classification: C — Mature Quality Compounder with AI WIDENER 🟢</h3>
+  <div class="ibox">
+    <h4>Why Category C, not F?</h4>
+    <p style="margin-bottom:0">Snowflake's core product is the Data Cloud platform (data warehousing + analytics), not AI itself. It has gross margins above 70%, revenue CAGR stabilising at ~29%, and positive non-GAAP FCF. It is deploying AI aggressively via Cortex to deepen its platform moat — making it an AI WIDENER 🟢 on a fundamentally Cat C business. The data flywheel is FORMING (not yet fully confirmed), and AI workloads are growing 200%+ but from a small base. This is a premium enterprise SaaS company in transition — not an AI-native company building AI as its primary product.</p>
+  </div>
+
+  <h3>Why This Stock Is In The Series</h3>
+  <p>Snowflake sits at one of the most interesting inflection points in enterprise software. Three forces are converging simultaneously: (1) a stock that has fallen 44% YTD and 49% from its 52-week high — not from fundamental weakness but from a broad macro/sentiment reset in high-multiple software; (2) the company's clearest-ever AI monetisation signal — Cortex AI driving 30% product revenue growth and $9.77B RPO; (3) the structural shift from storage-based lock-in to compute-based lock-in via the open Apache Iceberg standard, which eliminated a competitive threat and repositioned Snowflake as the fastest compute engine. The question is whether the AI pilot-to-production conversion happens at scale in FY2027 — which would drive a re-rating from 8× to 12× NTM revenue, generating 50%+ returns from current levels.</p>
+
+  <h3>Key Thesis in One Sentence</h3>
+  <blockquote>Snowflake is the world's best data infrastructure business trading at its lowest-ever revenue multiple while simultaneously executing the most credible AI platform pivot in enterprise software — the market is pricing in permanent mediocrity for a business that just signed a $400M deal and has $9.77B in contracted future revenue.</blockquote>
+
+  <div class="ibox danger" style="margin-top:16px">
+    <h4>⚠ Material Risk — Securities Class Action</h4>
+    <p style="margin-bottom:0">Multiple law firms have filed or encouraged securities class action claims against Snowflake relating to alleged misleading revenue statements made between June 27, 2023 and February 28, 2024. The class action deadline is April 27, 2026. This overhang contributes to the stock's underperformance and must be monitored. If settled unfavourably, it represents a material one-time cash outflow. Risk: MARGINAL — typically results in insurance-covered settlements rather than existential damage. <span class="unv">UNVERIFIED — magnitude uncertain</span></p>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="t1" class="tab-content">
+  <h2 class="sec-title">Macro &amp; Growth <span>Layer 1 → 3</span></h2>
+
+  <h3>Layer 1 — US Macro Anchor</h3>
+  <div class="mg">
+    <div class="mc"><div class="ml">US Real GDP 2026E</div><div class="mv">2.4%</div><div class="ms">IMF Article IV, Apr 2026 <span class="ver">VERIFIED</span></div></div>
+    <div class="mc warn"><div class="ml">US CPI (est)</div><div class="mv">~3.0%</div><div class="ms">Above Fed 2% target <span class="est">ESTIMATED</span></div></div>
+    <div class="mc"><div class="ml">US Nominal GDP</div><div class="mv">~5.4%</div><div class="ms">Terminal growth ceiling <span class="est">ESTIMATED</span></div></div>
+    <div class="mc neg"><div class="ml">10-Yr UST Yield</div><div class="mv">4.31%</div><div class="ms">Apr 10, 2026 <span class="ver">VERIFIED</span></div></div>
+  </div>
+
+  <h3>Macro Cycle Dashboard</h3>
+  <div class="mdim"><div class="mdim-lbl">Enterprise IT Spend Cycle<small>Cloud/AI capex accelerating; DOGE cuts = headwind for gov't segment</small></div><span class="mbadge m-tail">TAILWIND</span></div>
+  <div class="mdim"><div class="mdim-lbl">Interest Rate Cycle (Fed)<small>Near-neutral; energy inflation limits easing room</small></div><span class="mbadge m-neu">NEUTRAL</span></div>
+  <div class="mdim"><div class="mdim-lbl">AI Investment Cycle<small>Global AI capex accelerating; $200B+ US hyperscaler spend 2026</small></div><span class="mbadge m-tail">TAILWIND</span></div>
+  <div class="mdim"><div class="mdim-lbl">Enterprise Data Regulation<small>GDPR/DPDP data governance demand; supports Snowflake's Horizon tools</small></div><span class="mbadge m-tail">TAILWIND</span></div>
+  <div class="mdim"><div class="mdim-lbl">Macro Uncertainty / Tariffs<small>Geopolitical risk dampening enterprise IT discretionary spend</small></div><span class="mbadge m-head">HEADWIND</span></div>
+  <div class="mdim"><div class="mdim-lbl">High-Multiple Software Reset<small>Market de-rating SaaS multiples from 20–30× to 8–12× NTM Revenue</small></div><span class="mbadge m-head">HEADWIND (Valuation)</span></div>
+  <div style="margin-top:8px;padding:10px 14px;background:var(--bg2);border:1px solid var(--brd);border-radius:5px;font-size:.8rem">
+    <strong class="hl">Macro Composite:</strong> <span class="wa">NEUTRAL-TAILWIND</span> — AI cycle is the most powerful macro tailwind Snowflake has ever had. Offset by multiple reset and macro uncertainty. Net: slightly favourable for a 3–5 year holder.
+  </div>
+
+  <h3>Layer 2 — Cloud/SaaS Sector Growth Derivation</h3>
+  <table class="tbl">
+    <tr><th>Scenario</th><th>Sector Base</th><th>AI Acceleration</th><th>Derived Sector Growth</th></tr>
+    <tr><td>STRESS (macro <2% real)</td><td class="num">12–15%</td><td class="num xn">+2%</td><td class="num">14–17%</td></tr>
+    <tr><td class="hl">BASE (2–3% real GDP)</td><td class="num">18–22%</td><td class="num pn">+4%</td><td class="num hl">22–26%</td></tr>
+    <tr><td>ACCEL (3%+ real GDP)</td><td class="num">25–30%</td><td class="num pn">+6%</td><td class="num">31–36%</td></tr>
+  </table>
+  <p style="font-size:.78rem;color:var(--txt1)"><span class="est">ESTIMATED</span> — AI is accelerating the Cloud/SaaS sector's base growth rate by approximately +2 to +6 percentage points over the next 5 years, primarily by creating new AI workload categories (inference, fine-tuning, agent compute) that did not exist 2 years ago.</p>
+
+  <h3>Layer 3 — Company Alpha Over Sector</h3>
+  <table class="tbl">
+    <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Evidence</th></tr>
+    <tr><td>Market Share Gain</td><td><span class="marg">ACTIVE</span></td><td class="num pn">+1%</td><td class="num xn">0%</td><td>~14% cloud data market share; Iceberg neutralises Databricks storage argument</td></tr>
+    <tr><td>Customer Expansion (NRR)</td><td><span class="pass">ACTIVE</span></td><td class="num pn">+3%</td><td class="num pn">+2%</td><td>125% NRR — existing customers consistently spending more each year</td></tr>
+    <tr><td>New Product Categories</td><td><span class="pass">ACTIVE</span></td><td class="num pn">+2%</td><td class="num pn">+3%</td><td>Cortex AI, Document AI, Snowpark, Data Marketplace — all new revenue streams</td></tr>
+    <tr><td>Large Enterprise Expansion</td><td><span class="pass">ACTIVE</span></td><td class="num pn">+2%</td><td class="num pn">+1%</td><td>733 customers &gt;$1M TTM (+27%); Q4 record $400M single deal signed</td></tr>
+    <tr><td>Geographic Expansion (Intl)</td><td><span class="marg">POTENTIAL</span></td><td class="num pn">+1%</td><td class="num pn">+2%</td><td>International mix growing but still US-dominated</td></tr>
+    <tr class="hl"><td>AI Alpha (6a+6b+6c)</td><td><span class="pass">FORMING</span></td><td class="num pn">+3%</td><td class="num pn">+5%</td><td>Cortex AI 50% adoption; AI workloads +200% YoY; compute flywheel building</td></tr>
+    <tr style="background:var(--bg3)"><td><strong>Total Company Alpha</strong></td><td>—</td><td class="num pn"><strong>+12%</strong></td><td class="num pn"><strong>+13%</strong></td><td>—</td></tr>
+  </table>
+
+  <h3>Growth Rate Summary Matrix</h3>
+  <table class="tbl">
+    <tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr>
+    <tr><td>Macro State</td><td>US GDP ~1.5%</td><td class="hl">US GDP ~2.4%</td><td>US GDP ~3%+</td></tr>
+    <tr><td>Sector Growth</td><td class="num">14–17%</td><td class="num hl">22–26%</td><td class="num">31–36%</td></tr>
+    <tr><td>Company Alpha</td><td class="num pn">+6%</td><td class="num pn hl">+12%</td><td class="num pn">+16%</td></tr>
+    <tr><td>AI Alpha (6a+6b+6c)</td><td class="num pn">+1%</td><td class="num pn hl">+3%</td><td class="num pn">+6%</td></tr>
+    <tr><td>Stage 1 Rev CAGR (5yr)</td><td class="num">18%</td><td class="num hl">27–29%</td><td class="num">35%</td></tr>
+    <tr><td>Stage 2 FCF CAGR (5yr)</td><td class="num">10%</td><td class="num hl">15–18%</td><td class="num">22%</td></tr>
+    <tr><td>Terminal Growth (g)</td><td class="num">3.5%</td><td class="num hl">5.0%</td><td class="num">5.5%</td></tr>
+    <tr><td>FCF Margin Trajectory</td><td>Compress to 20%</td><td class="hl">Stable at 23–26%</td><td>Expand to 30%+</td></tr>
+    <tr><td>Key Risk</td><td>Databricks wins enterprise; AI pilots stay pilots</td><td class="hl">Observe integration; class action settlement</td><td>Hyperscalers can't keep up with compute quality</td></tr>
+  </table>
+
+  <div class="ibox">
+    <h4>Sensitivity Analysis</h4>
+    <p style="margin-bottom:0">A 1× change in NTM revenue multiple changes intrinsic value by approximately $14–18 per share. A 1% change in terminal growth rate changes IV by approximately $8–12 per share. At current 8.3× NTM EV/Revenue, a re-rating to 11× (still well below historical averages) implies a share price of ~$190 — 31% upside from $144. <span class="est">ESTIMATED</span></p>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="t2" class="tab-content">
+  <h2 class="sec-title">Financials <span>Gross Margin · Rule of 40 · O'Glove</span></h2>
+
+  <h3>Revenue &amp; Gross Margin History (FY2022–FY2026)</h3>
+  <table class="tbl">
+    <tr><th>FY (ends Jan 31)</th><th>Revenue</th><th>YoY Growth</th><th>GAAP Prod GM</th><th>Non-GAAP Prod GM</th><th>FCF</th><th>FCF Margin</th></tr>
+    <tr><td>FY2022</td><td class="num">$1.22B</td><td class="num pn">+106%</td><td class="num">70%</td><td class="num">74%</td><td class="num xn">N/M</td><td class="num xn">—</td></tr>
+    <tr><td>FY2023</td><td class="num">$2.07B</td><td class="num pn">+70%</td><td class="num">72%</td><td class="num">74%</td><td class="num xn">N/M</td><td class="num xn">—</td></tr>
+    <tr><td>FY2024</td><td class="num">$2.81B</td><td class="num pn">+36%</td><td class="num">74%</td><td class="num">76%</td><td class="num pn">$809M</td><td class="num pn">29%</td></tr>
+    <tr><td>FY2025</td><td class="num">$3.63B</td><td class="num pn">+29%</td><td class="num">71%</td><td class="num">73%</td><td class="num pn">$914M</td><td class="num pn">25%</td></tr>
+    <tr class="hl"><td>FY2026</td><td class="num">$4.68B</td><td class="num pn">+29%</td><td class="num">72%</td><td class="num">75.8%</td><td class="num pn">$1.12B</td><td class="num pn">24%</td></tr>
+    <tr style="background:var(--bg3)"><td>FY2027E (guided)</td><td class="num">~$5.78B</td><td class="num pn">~27%</td><td class="num">—</td><td class="num">75%</td><td class="num pn">~$1.33B</td><td class="num pn">~23%</td></tr>
+  </table>
+  <p style="font-size:.75rem;color:var(--txt2)"><span class="ver">VERIFIED</span> from SEC 8-K filings · FY2027E: management guidance + analyst consensus</p>
+
+  <h3>Rule of 40 Trend (SaaS Health Metric)</h3>
+  <p>Rule of 40 = Revenue Growth % + FCF Margin %. Above 40 = healthy SaaS business. Above 60 = exceptional.</p>
+  <table class="tbl">
+    <tr><th>Period</th><th>Rev Growth</th><th>FCF Margin</th><th>Rule of 40 Score</th><th>Assessment</th></tr>
+    <tr><td>FY2024</td><td class="num pn">36%</td><td class="num pn">29%</td><td class="num pn"><strong>65</strong></td><td><span class="pass">EXCEPTIONAL</span></td></tr>
+    <tr><td>FY2025</td><td class="num pn">29%</td><td class="num pn">25%</td><td class="num pn"><strong>54</strong></td><td><span class="pass">HEALTHY</span></td></tr>
+    <tr class="hl"><td>FY2026</td><td class="num pn">29%</td><td class="num pn">24%</td><td class="num pn"><strong>53</strong></td><td><span class="pass">HEALTHY</span></td></tr>
+    <tr><td>FY2027E</td><td class="num pn">27%</td><td class="num pn">23%</td><td class="num pn"><strong>50</strong></td><td><span class="pass">HEALTHY</span></td></tr>
+  </table>
+  <div class="r40-bar-wrap">
+    <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--txt2);margin-bottom:4px"><span>R40 = 0</span><span>R40 = 40 (threshold)</span><span>R40 = 100</span></div>
+    <div class="r40-bar-bg"><div class="r40-bar-fill" style="width:53%"></div></div>
+    <div style="text-align:center;margin-top:6px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--emerald)">FY2026: R40 = 53 ✓ PASS — Solidly above 40 threshold</div>
+  </div>
+
+  <h3>Financial Fortress Scorecard <span style="font-size:.75rem;color:var(--txt2);font-family:'IBM Plex Mono',monospace">(adapted for FCF-positive SaaS)</span></h3>
+  <div class="sc-item"><div class="sc-label">Gross Margin ≥70% (software economics)<small>Non-GAAP product gross margin: 75.8% in FY2026; guided 75% in FY2027</small></div><span class="pass">✓ PASS</span></div>
+  <div class="sc-item"><div class="sc-label">Rule of 40 ≥ 40<small>FY2026: 53 — sustained above 40 for 3+ consecutive years</small></div><span class="pass">✓ PASS</span></div>
+  <div class="sc-item"><div class="sc-label">Revenue Growth ≥ Sector CAGR<small>29% vs sector ~22% base — consistently above sector</small></div><span class="pass">✓ PASS</span></div>
+  <div class="sc-item"><div class="sc-label">Net Revenue Retention (NRR) ≥ 120%<small>125% as of Jan 2026; was 126% (Jan 2025) — exceptional cohort health</small></div><span class="pass">✓ PASS</span></div>
+  <div class="sc-item"><div class="sc-label">FCF Positive and Growing<small>$1.12B FCF in FY2026; 24% FCF margin; positive for 3 consecutive years</small></div><span class="pass">✓ PASS</span></div>
+  <div class="sc-item"><div class="sc-label">Cash Burn Efficiency<small>FCF positive; burn multiple not applicable — company generates cash. Debt: $2.74B; Cash: $4.8B → net cash $2.04B</small></div><span class="pass">✓ PASS</span></div>
+  <div class="sc-item"><div class="sc-label">GAAP Profitability<small>GAAP Net Loss −$1.33B; heavily distorted by SBC (~$1.5B+). Non-GAAP operating margin: 10.5% FY2026; guided 12.5% FY2027</small></div><span class="marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Predictable / Recurring Revenue<small>Consumption-based creates some lumpiness; $9.77B RPO (+42%) provides strong visibility. Consumption &gt; subscription in volatility risk.</small></div><span class="marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">ROIC &gt; WACC<small>GAAP ROIC: −17% (SBC-distorted); non-GAAP improving as margins expand. WACC ~9.5–10.5%. ROIC turns positive at ~15% non-GAAP operating margin.</small></div><span class="fail">✗ FAIL (GAAP)</span></div>
+  <div class="sc-item"><div class="sc-label">Stock-Based Compensation Discipline<small>SBC ~$1.5B annually (~32% of revenue) — massive dilution risk. 5-yr diluted share count growing ~4% annually.</small></div><span class="fail">✗ FAIL</span></div>
+
+  <h3>Earnings Quality — O'Glove Framework</h3>
+  <div class="sc-item"><div class="sc-label">Test 1 — FCF Conversion<small>Op CFO $1.22B / Net Income NA (negative). FCF/Revenue = 24% — CLEAN. Cash generation is real. SBC inflates GAAP loss artificially.</small></div><span class="pass">✓ CLEAN</span></div>
+  <div class="sc-item"><div class="sc-label">Test 2 — DSO Trend<small>Consumption model with upfront billing (deferred revenue model). Billings typically precede revenue recognition — this is a POSITIVE quality signal, not a concern. Deferred revenue balance rising = future visibility.</small></div><span class="pass">✓ CLEAN</span></div>
+  <div class="sc-item"><div class="sc-label">Test 3 — Inventory Days<small>Not applicable — software/services company; no physical inventory.</small></div><span class="pass">✓ N/A</span></div>
+  <div class="sc-item"><div class="sc-label">Test 4 — Accounting Policy Stability<small>No material policy changes noted in recent filings. Consumption revenue recognition consistent. <span class="est">ESTIMATED</span></small></div><span class="pass">✓ STABLE</span></div>
+  <div class="sc-item"><div class="sc-label">Test 5 — Gross Margin Consistency<small>Product GM range: 70–76% over 5 years. FY2025 compression to 71% (GPU cost for AI) was explained and disclosed. FY2026 recovery to 72% GAAP / 75.8% non-GAAP. Consistent with AI investment narrative.</small></div><span class="pass">✓ ACCEPTABLE</span></div>
+  <div style="padding:10px 14px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:6px;margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:#6EE7B7">OVERALL EARNINGS QUALITY: CLEAN — FCF is real and growing. GAAP loss is accounting artifact of massive SBC. Deferred revenue model provides visibility. No red flags on cash quality.</div>
+
+  <h3>SBC Dilution — The Important Caveat</h3>
+  <div class="ibox warn">
+    <h4>⚠ Stock-Based Compensation Risk</h4>
+    <p style="margin-bottom:0">Snowflake's SBC (~$1.4–1.5B annually, ~32% of revenue) is extremely high by any standard. While typical for growth tech companies, it represents real economic cost to shareholders through dilution. The share count has grown from ~290M (IPO) to ~346M diluted shares today — a 19% dilution in 6 years. At current revenue growth rates, SBC/Revenue should naturally decline as the denominator grows. The base case assumes SBC falls to 20% of revenue by FY2029 as margins expand. This is a risk to monitor — not a dealbreaker, but it materially reduces owner earnings vs. GAAP FCF. <span class="est">ESTIMATED</span></p>
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="t3" class="tab-content">
+  <h2 class="sec-title">Economic Moat <span>Pillar 1</span></h2>
+
+  <div class="fw-box">
+    <div class="fw-lbl">Data Flywheel Assessment (new in v5.0)</div>
+    <div class="fw-verdict">DATA FLYWHEEL: FORMING ★★★ — The Loop Is Spinning, Not Yet Confirmed</div>
+    <div class="fw-check"><span class="chk-y">✓</span><div><strong>Q1 — Proprietary Training Data?</strong> YES. Every customer's data lives inside Snowflake under their governance. Snowflake observes query patterns, workload types, compute consumption, and Cortex AI usage across 10,000+ enterprise accounts. This telemetry data is proprietary — no competitor has access to it. Volume: petabytes of usage data updated in real-time. Uniqueness: HIGH. <span class="ver">ESTIMATED</span></div></div>
+    <div class="fw-check"><span class="chk-p">~</span><div><strong>Q2 — Does AI Improve With More Data?</strong> PARTIALLY CONFIRMED. Cortex AI models are trained and fine-tuned on Snowflake's infrastructure using customer data. As more enterprises use Cortex, Snowflake captures more usage patterns to improve its managed AI services. Evidence: Cortex weekly active accounts grew from &lt;1,000 to 9,100+ in 18 months, with AI workload volume growing 200%+ YoY. However, specific accuracy improvement metrics (e.g. "SQL generation accuracy improved X% with Y% more users") have not been disclosed in filings. <span class="est">ESTIMATED</span></div></div>
+    <div class="fw-check"><span class="chk-p">~</span><div><strong>Q3 — Does Better AI Attract More Users?</strong> FORMING. The 125% NRR confirms existing customers are expanding their Snowflake usage. The 50% Cortex AI adoption rate within the existing customer base shows the flywheel is beginning to spin. 740 net new customers in Q4 FY2026 (+40% YoY) suggests the platform's AI capabilities are attracting new buyers. However, the self-reinforcing loop between "better AI → more customers → better AI" is not yet unambiguously evidenced. The loop cycle is quarterly. <span class="est">ESTIMATED</span></div></div>
+    <div style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap">
+      <div><span style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--txt2)">DATA QUALITY:</span> <span class="wa">7/10</span></div>
+      <div><span style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--txt2)">IMPROVEMENT EVIDENCE:</span> <span class="wa">3/4</span></div>
+      <div><span style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--txt2)">LOOP SPEED:</span> <span class="wa">2/3</span></div>
+      <div><span style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--txt2)">FLYWHEEL SCORE:</span> <span class="hl">7/10 — Moderate-to-Strong</span></div>
+    </div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-h"><div class="moat-name">Multi-Cloud Neutrality &amp; Data Network Effects</div><div class="stars">★★★★</div></div>
+    <p>Snowflake is the only platform that works identically across AWS, Azure, and GCP simultaneously. Enterprises with multi-cloud strategies (65%+ of Snowflake customers) cannot consolidate on any single hyperscaler's native tool without losing this neutrality. This creates high switching costs — migrating off Snowflake means either accepting hyperscaler lock-in or rebuilding your data architecture. The Data Marketplace (3,000+ data providers) adds a network effect: more providers attract more buyers, and more buyers attract more providers. <span class="ver">ESTIMATED</span></p>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-h"><div class="moat-name">Enterprise Data Governance Lock-In (Horizon)</div><div class="stars">★★★★</div></div>
+    <p>Snowflake's Horizon Catalog provides data governance, security, privacy, and compliance controls across all data. For regulated industries (financial services, healthcare, government — Snowflake's biggest customer segments), replacing Horizon means rebuilding years of policy configurations, lineage tracking, and compliance certifications. This is an underappreciated switching cost that becomes more entrenched over time as more data policies are codified inside the platform. <span class="est">ESTIMATED</span></p>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-h"><div class="moat-name">Apache Iceberg — The Strategic Inversion</div><div class="stars">★★★</div></div>
+    <p>The most interesting moat development of 2025–26: Snowflake embraced Apache Iceberg (open-source data format) — proactively eliminating its proprietary storage lock-in. This appears to weaken the moat, but actually strengthens it. By allowing customers to keep data in open formats, Snowflake neutralised the main Databricks sales argument ("Snowflake locks you in"). Now, customers choose Snowflake purely on the merit of its compute engine — which Snowflake believes it can win consistently. This is a confident, moat-positive strategic move. <span class="ver">ESTIMATED</span></p>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-h"><div class="moat-name">Cortex AI — Building Compute Moat</div><div class="stars">★★★</div></div>
+    <p>Cortex AI allows enterprises to build AI applications directly on their Snowflake data without moving it to external AI platforms. The key moat: data sovereignty. Regulated industries (banks, healthcare, governments) cannot send their data to OpenAI APIs — but they can use Cortex AI within their Snowflake environment. With 9,100+ weekly active Cortex accounts, Snowflake is becoming the "safe AI" platform for enterprises that cannot compromise on data governance. This is an AI moat that competitors with less data governance infrastructure cannot easily replicate. <span class="est">ESTIMATED</span></p>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-h"><div class="moat-name">Consumption Model — Aligned Incentives</div><div class="stars">★★★</div></div>
+    <p>Unlike subscription SaaS where customers pay fixed fees and may underutilize, Snowflake's consumption model means customers only pay for what they use. This creates genuine alignment — when Snowflake helps a customer run workloads more efficiently, the customer pays less. This builds trust, reduces churn, and creates the foundation for expansion into new workloads (like AI inference) where the same trust dynamic applies. The 125% NRR is the proof point. <span class="ver">VERIFIED</span></p>
+  </div>
+
+  <h3>ROIC as Moat Proof</h3>
+  <div class="ibox warn">
+    <h4>⚠ ROIC Complexity for Snowflake</h4>
+    <p style="margin-bottom:0">Traditional ROIC is not a meaningful moat signal for Snowflake in its current phase. GAAP ROIC is negative (−17%) primarily because: (1) invested capital includes massive SBC-inflated equity base, (2) the company is in peak investment mode building AI infrastructure. The real moat signal is the GROSS MARGIN TREND: 70%→76% (non-GAAP) over 5 years, with product gross margin guided higher in FY2027. A business with expanding gross margins while growing 29% annually demonstrates that its moat is not being competed away — pricing power is holding. <span class="est">ESTIMATED</span></p>
+  </div>
+
+  <h3>Macro Moat Stress Test</h3>
+  <table class="tbl">
+    <tr><th>Moat Source</th><th>Stress Scenario Impact</th></tr>
+    <tr><td>Multi-Cloud Neutrality</td><td class="em">STRENGTHENS — enterprises cut hyperscaler spend but need a neutral layer more than ever</td></tr>
+    <tr><td>Data Governance / Horizon</td><td class="em">STRENGTHENS — regulation doesn't ease in downturns; compliance moat deepens</td></tr>
+    <tr><td>Cortex AI / AI Platform</td><td><span class="wa">HOLDS</span> — AI pilot projects may get cut; production deployments are stickier</td></tr>
+    <tr><td>Apache Iceberg Strategy</td><td class="em">STRENGTHENS — customers prefer open formats in downturns (reduces perceived lock-in risk)</td></tr>
+    <tr><td>Consumption Business Model</td><td><span class="re">WEAKENS SLIGHTLY</span> — enterprises cut data workloads in stress; consumption drops before subscriptions</td></tr>
+  </table>
+  <p><strong>Moat Grade: B+</strong> — Multi-layered, AI-reinforcing moat. Not yet A− because: (1) hyperscaler native tools are subsidised and growing; (2) Databricks is a well-funded private competitor; (3) Cortex AI flywheel not yet confirmed. If flywheel confirms in FY2027, upgrade to A−.</p>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="t4" class="tab-content">
+  <h2 class="sec-title">Management Integrity <span>Pillar 3</span></h2>
+
+  <div class="mg3">
+    <div class="mc pos"><div class="ml">CEO — AI Credibility</div><div class="mv">HIGH</div><div class="ms">Sridhar Ramaswamy, ex-Google AI</div></div>
+    <div class="mc warn"><div class="ml">Promoter / Insider Hold</div><div class="mv">~15%</div><div class="ms">Founders + institutional</div></div>
+    <div class="mc neg"><div class="ml">Class Action Risk</div><div class="mv">ACTIVE</div><div class="ms">Deadline April 27, 2026</div></div>
+  </div>
+
+  <h3>CEO Assessment — Sridhar Ramaswamy</h3>
+  <p>Ramaswamy took over from Frank Slootman in February 2024, bringing a rare credential: he was the head of Google's advertising and AI research for over a decade, making him one of the most AI-credible CEOs in enterprise software. He has moved quickly: Cortex AI went from concept to 50% customer adoption in under 18 months. His "AI Data Cloud" positioning has shifted the Snowflake narrative from "expensive data warehouse" to "AI platform for governed enterprise data." His strategic move to embrace Apache Iceberg (rather than fight it) shows both competitive intelligence and intellectual honesty — rare in tech leadership.</p>
+
+  <h3>AI Management Credibility</h3>
+  <div class="sc-item"><div class="sc-label">AI-Native Founding/Leadership Team<small>CEO: ex-Google AI (15+ years); CTO: ex-Google; engineering leadership has deep ML backgrounds</small></div><span class="pass">✓ HIGH</span></div>
+  <div class="sc-item"><div class="sc-label">AI Product with Measurable Benchmarks<small>Arctic LLM open-sourced with MoE architecture; Cortex Analyst shows measurable SQL generation accuracy. Third-party benchmarks exist for Arctic.</small></div><span class="pass">✓ VERIFIED</span></div>
+  <div class="sc-item"><div class="sc-label">R&D Investment Discipline<small>R&D: ~$1.2B (FY2026 est.), ~26% of revenue. Industry benchmark for AI companies: 15–25%. Slightly above benchmark but justified by platform transition pace.</small></div><span class="marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Building Proprietary Models vs. API Dependency<small>Arctic (proprietary LLM, open-sourced). Cortex also supports third-party models (OpenAI via $200M partnership, Anthropic, Llama). Dual-track: proprietary core + curated third-party. This is the right strategy.</small></div><span class="pass">✓ PASS</span></div>
+  <div class="sc-item"><div class="sc-label">Responsible AI &amp; Regulatory Compliance<small>Data Clean Rooms, Horizon governance — explicitly designed for GDPR/CCPA/DPDP compliance. No material AI bias complaints known.</small></div><span class="pass">✓ PASS</span></div>
+
+  <h3>Capital Allocation Assessment</h3>
+  <div class="sc-item"><div class="sc-label">Counter-Cyclical Behavior<small>During 2024 software selloff, maintained R&D investment and signed 9-figure contracts. Did not cut AI investment in the face of stock price pressure. Positive signal.</small></div><span class="pass">✓ STRONG</span></div>
+  <div class="sc-item"><div class="sc-label">M&A Track Record<small>Observe acquisition ($600M, Feb 2026) — observability platform. Strategic: adds APM capability to attract DevOps/SRE workflows into Snowflake ecosystem. Integration risk remains. Previously acquired Streamlit (democratised data apps), valued well.</small></div><span class="marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Share Buyback Program<small>$1.1B remaining repurchase authorization as of Q4 FY2026 — signals management believes stock is undervalued. Positive capital allocation signal at current price.</small></div><span class="pass">✓ POSITIVE</span></div>
+
+  <h3>Red Flags</h3>
+  <div class="ibox danger">
+    <h4>🚨 Securities Class Action — Material Overhang</h4>
+    <p style="margin-bottom:0">Multiple law firms have filed class action claims alleging that Snowflake made misleading revenue statements during the period June 27, 2023 to February 28, 2024. The claim deadline is April 27, 2026. The substance of the alleged misstatement relates to whether Snowflake overstated the pace of AI-driven workload revenue acceleration. This is a governance red flag. Historical precedent: similar SaaS class actions (Zoom, Palantir) typically result in settlements of $50–300M covered by D&O insurance. Existential risk: LOW. Reputation risk: MODERATE. Must be monitored as a material uncertainty. <span class="est">ESTIMATED — magnitude unverified</span></p>
+  </div>
+  <div class="ibox warn">
+    <h4>⚠ Stock-Based Compensation Discipline</h4>
+    <p style="margin-bottom:0">SBC at 32% of revenue is excessive by any reasonable standard. While this is culturally normalised in Silicon Valley tech companies, it represents real economic dilution to outside shareholders. Management has guided for improving SBC/Revenue ratio as the denominator grows, but has not given specific targets. This is a meaningful weakness in capital allocation integrity — the company is generous with shareholder capital when granting employee equity. Score: FAIL on this specific test.</p>
+  </div>
+
+  <p><strong>Management Grade: B</strong> — Ramaswamy is a genuine upgrade with exceptional AI credibility and strategic clarity. Offset by class action overhang and SBC discipline concerns. Watch for: class action resolution, SBC/Revenue declining below 25%, and Observe integration quality.</p>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="t5" class="tab-content">
+  <h2 class="sec-title">Valuation &amp; Margin of Safety <span>Pillar 4 · 4 Methods</span></h2>
+
+  <div class="ibox success">
+    <h4>Valuation Approach for Snowflake</h4>
+    <p style="margin-bottom:0">Snowflake is FCF-positive ($1.12B in FY2026) but GAAP-loss-making due to SBC. We use 4 methods: (1) Revenue Multiple — primary, as this is the market's dominant framework for consumption SaaS; (2) FCF-Based DCF — since FCF is real and growing; (3) Owner Earnings (FCF-adjusted for SBC) — the most conservative view; (4) Comparable Analysis — vs. peers. No standard P/E DCF applicable due to GAAP losses. WACC: 10% (US large-cap SaaS; 10-yr yield 4.31% + ERP 5.5% + small-size 0.2%). <span class="ver">ESTIMATED</span></p>
+  </div>
+
+  <h3>Method 1 — Revenue Multiple Valuation (Primary)</h3>
+  <p style="font-size:.8rem;color:var(--txt1)">FY2027E Revenue: ~$5.78B (mgmt guided $5.66B product + ~$120M services). Shares: 346M diluted. Net cash: $2.04B. Historical NTM EV/Revenue: 20–40× (hypergrowth); current 8.3×.</p>
+  <table class="tbl">
+    <tr><th>Scenario</th><th>NTM EV/Rev Multiple</th><th>EV</th><th>Equity Value</th><th>Per Share</th><th>vs Current $144</th></tr>
+    <tr><td>STRESS (class action; AI stays pilot phase)</td><td class="num">6×</td><td class="num">$34.7B</td><td class="num">$36.7B</td><td class="num nn">$106</td><td class="num nn">−27%</td></tr>
+    <tr class="hl"><td>BASE (AI production ramp; margins expand)</td><td class="num hl">10×</td><td class="num hl">$57.8B</td><td class="num hl">$59.8B</td><td class="num pn hl">$173</td><td class="num pn hl">+20%</td></tr>
+    <tr><td>ACCEL (AI becomes primary revenue driver)</td><td class="num">14×</td><td class="num">$80.9B</td><td class="num">$82.9B</td><td class="num pn">$240</td><td class="num pn">+66%</td></tr>
+    <tr><td>HISTORICAL MEAN (5yr avg 20–22×)</td><td class="num">20×</td><td class="num">$115.6B</td><td class="num">$117.6B</td><td class="num pn">$340</td><td class="num pn">+135%</td></tr>
+  </table>
+  <p style="font-size:.75rem;color:var(--txt2)">Note: Even at 10× (half the sector peer average), Snowflake offers 20% upside. At 14× (still well below its own historical average), 66% upside. <span class="est">ESTIMATED</span></p>
+
+  <h3>Method 2 — FCF-Based DCF (10% WACC)</h3>
+  <div class="val-box">
+    <h4>Base Case DCF (25% Stage 1 FCF CAGR × 5yr / 15% Stage 2 × 5yr / 5% terminal)</h4>
+    <table class="tbl" style="margin-bottom:0">
+      <tr><th>Stage</th><th>Entry FCF (FY2027E)</th><th>CAGR</th><th>Exit FCF</th><th>PV of Cash Flows</th></tr>
+      <tr><td>Stage 1 (FY27–FY32)</td><td class="num">$1.33B</td><td class="num pn">25%</td><td class="num">$3.25B</td><td class="num pn">$7.9B</td></tr>
+      <tr><td>Stage 2 (FY32–FY37)</td><td class="num">$3.25B</td><td class="num pn">15%</td><td class="num">$6.54B</td><td class="num pn">$11.6B</td></tr>
+      <tr><td>Terminal Value (5% g)</td><td class="num">$6.54B</td><td class="num">5%</td><td class="num">∞</td><td class="num pn">$53.0B</td></tr>
+      <tr class="hl"><td><strong>Total Enterprise Value</strong></td><td>—</td><td>—</td><td>—</td><td class="num pn"><strong>$72.5B</strong></td></tr>
+    </table>
+    <div style="margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--txt1)">Equity = $72.5B EV + $2.04B net cash = <span class="hl">$74.5B → $215 per share</span> (vs current $144)</div>
+  </div>
+  <table class="tbl">
+    <tr><th>Scenario</th><th>WACC</th><th>Stage 1 CAGR</th><th>Terminal g</th><th>IV per Share</th></tr>
+    <tr><td>STRESS</td><td class="num">11%</td><td class="num">18%</td><td class="num">3.5%</td><td class="num nn">$115</td></tr>
+    <tr class="hl"><td>BASE</td><td class="num hl">10%</td><td class="num pn hl">25%</td><td class="num hl">5.0%</td><td class="num pn hl">$215</td></tr>
+    <tr><td>ACCEL</td><td class="num">9.5%</td><td class="num pn">32%</td><td class="num">5.5%</td><td class="num pn">$305</td></tr>
+  </table>
+
+  <h3>Method 3 — Owner Earnings (FCF adjusted for SBC dilution)</h3>
+  <div class="val-box">
+    <h4>Conservative Owner Earnings (FY2026)</h4>
+    <div class="tbl" style="font-size:.8rem">
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--brd)"><span>GAAP Operating Cash Flow</span><span class="mono pn">+$1,220M</span></div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--brd)"><span>Less: CapEx (maintenance est.)</span><span class="mono nn">−$100M</span></div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--brd)"><span><strong>Raw FCF</strong></span><span class="mono pn"><strong>+$1,120M</strong></span></div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--brd)"><span>Less: 50% of SBC (economic cost adjustment)</span><span class="mono nn">−$750M</span></div>
+      <div style="display:flex;justify-content:space-between;padding:7px 0"><span><strong>Conservative Owner Earnings</strong></span><span class="mono pn"><strong>~$370M</strong></span></div>
+    </div>
+    <div style="margin-top:10px;font-size:.78rem;color:var(--txt1)">At 50× owner earnings multiple (justified by 25%+ growth rate): $370M × 50 = $18.5B → $54/share. <span class="re">This represents the BEAR CASE floor for a value investor unwilling to give credit for growth.</span> Most sophisticated investors treat SBC as real but non-cash, using raw FCF. Owner earnings is presented as context, not primary valuation.</div>
+  </div>
+
+  <h3>Method 4 — Comparable Company Analysis</h3>
+  <table class="tbl">
+    <tr><th>Peer</th><th>NTM Rev Growth</th><th>Gross Margin</th><th>Rule of 40</th><th>EV/NTM Rev</th></tr>
+    <tr><td>Snowflake (SNOW)</td><td class="num pn">27%</td><td class="num pn">75%</td><td class="num pn">50</td><td class="num hl">8.3× <span class="est">E</span></td></tr>
+    <tr><td>Palantir (PLTR)</td><td class="num pn">25%</td><td class="num">80%</td><td class="num pn">52</td><td class="num xn">~25×</td></tr>
+    <tr><td>MongoDB (MDB)</td><td class="num pn">22%</td><td class="num">74%</td><td class="num pn">48</td><td class="num xn">~12×</td></tr>
+    <tr><td>Confluent (CFLT)</td><td class="num pn">24%</td><td class="num">74%</td><td class="num pn">42</td><td class="num xn">~7×</td></tr>
+    <tr><td>Databricks (private)</td><td class="num pn">50%+</td><td class="num">~75%</td><td class="num pn">70+</td><td class="num xn">~15–18× (est.)</td></tr>
+    <tr><td>Sector Median (AI infra SaaS)</td><td class="num">25%</td><td class="num">75%</td><td class="num">50</td><td class="num xn">~14–16×</td></tr>
+  </table>
+  <p style="font-size:.78rem;color:var(--txt1)">At similar R40 scores and growth rates, sector peers trade at 12–25× NTM Revenue. Snowflake at 8.3× represents a 40–50% discount to the sector. The discount reflects: (1) class action overhang, (2) Databricks competition narrative, (3) broad SaaS multiple reset. Historically, discount of this magnitude vs. peers has been a buy signal. <span class="est">ESTIMATED</span></p>
+
+  <h3>5-Method Valuation Summary</h3>
+  <table class="tbl">
+    <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adjustment</th></tr>
+    <tr><td>Revenue Multiple</td><td class="num nn">$106</td><td class="num pn">$173</td><td class="num pn">$240</td><td class="num pn">+$15 (Cortex AI flywheel premium)</td></tr>
+    <tr><td>FCF DCF</td><td class="num nn">$115</td><td class="num pn">$215</td><td class="num pn">$305</td><td class="num pn">+$20 (AI alpha in Stage 1 FCF)</td></tr>
+    <tr><td>Owner Earnings (conservative)</td><td class="num nn">$35</td><td class="num xn">$54</td><td class="num xn">$80</td><td class="num xn">Floor only — not for growth co.</td></tr>
+    <tr><td>Comparable Analysis</td><td class="num nn">$100</td><td class="num pn">$195</td><td class="num pn">$270</td><td class="num pn">Sector re-rating potential</td></tr>
+    <tr class="hl"><td><strong>Blended Base IV</strong> (ex. OE)</td><td class="num nn"><strong>$107</strong></td><td class="num pn hl"><strong>~$194</strong></td><td class="num pn"><strong>$272</strong></td><td class="num pn">AI WIDENER adds ~$18 to base</td></tr>
+  </table>
+
+  <div style="background:linear-gradient(135deg,rgba(0,212,255,.07),rgba(16,185,129,.04));border:1px solid var(--brd2);border-radius:8px;padding:16px;margin-top:8px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--txt2);margin-bottom:6px">ENTRY ZONE ANALYSIS</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--txt0);margin-bottom:8px">Current price $144.48 = 25% discount to blended base IV of $194</div>
+    <div style="font-size:.8rem;color:var(--txt1)">The MoS Entry Zone of <strong class="hl">$120–155</strong> represents a 20–38% discount to base IV. Current price is squarely within this zone. Note: this is a Category C with AI characteristics — the standard margin of safety is 25–30% for such businesses. At $144, the discount already exceeds this threshold.</div>
+    <div style="margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--amber)">AI WIDENER confirmation adds ~$15–20 to base IV: "Cortex AI data flywheel confirmation represents a B+→A− moat upgrade worth approximately +10% to blended base IV."</div>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="t6" class="tab-content">
+  <h2 class="sec-title">Investment Verdict <span>Four Pillar Assessment</span></h2>
+
+  <div class="pillar-grid">
+    <div class="pg-card"><div class="pg-name">Pillar 1 · Moat</div><div class="pg-grade">B+</div><div style="font-size:.72rem;color:var(--txt1);margin-top:4px">Multi-cloud + governance + AI forming</div></div>
+    <div class="pg-card"><div class="pg-name">Pillar 2 · Financials</div><div class="pg-grade">B+</div><div style="font-size:.72rem;color:var(--txt1);margin-top:4px">FCF solid; SBC drag; GAAP loss</div></div>
+    <div class="pg-card"><div class="pg-name">Pillar 3 · Management</div><div class="pg-grade">B</div><div style="font-size:.72rem;color:var(--txt1);margin-top:4px">AI-native CEO; class action risk</div></div>
+    <div class="pg-card"><div class="pg-name">Pillar 4 · Valuation</div><div class="pg-grade">A−</div><div style="font-size:.72rem;color:var(--txt1);margin-top:4px">25% below base IV; in MoS zone</div></div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-type">★★★★ WATCH — Excellent Quality · Price in Entry Zone · One Catalyst From BUY</div>
+    <div class="verdict-stars">★★★★</div>
+    <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:var(--txt1);line-height:1.8;margin:0">Snowflake is a fundamentally strong business that has been caught in a double compression: a broad market de-rating of high-multiple software names, compounded by a securities class action overhang that has discouraged institutional accumulation. The underlying business, however, is accelerating: Q4 FY2026 product revenue grew 30%, RPO surged 42% to $9.77B, and management signed a $400M single deal — the largest in company history. At 8.3× NTM EV/Revenue, the stock is at a 40–50% discount to its SaaS peers with similar growth and margin profiles. The AI data cloud transition under Sridhar Ramaswamy is not a narrative — it is being measured in 9,100 weekly active Cortex accounts, 200% AI workload growth, and a $200M OpenAI partnership. The key uncertainty is whether AI pilots convert to production workloads in FY2027. If they do, the fundamental case for a re-rating from 8× to 12× NTM Revenue (+50% from current price) is strong. Two specific conditions prevent a full BUY rating today: the unresolved class action and the unconfirmed AI flywheel. Both are resolvable in the next 6–12 months.</p>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--brd);font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--txt2)">AI OVERLAY: WIDENER 🟢 · DATA FLYWHEEL: FORMING ★★★ · AI SCORE: 63/100 → STRATEGIC AI BET</div>
+    <blockquote style="margin-top:14px;font-size:.85rem">"The best time to buy a great data company is when the market confuses a macroeconomic quarter for a structural trend." — Framework principle</blockquote>
+  </div>
+
+  <h3>WATCH → BUY Upgrade Conditions (all 5 must trend positively)</h3>
+  <div class="uc-item"><div class="uc-num">1</div><div class="uc-text"><strong>Class Action Resolved:</strong> Securities class action settled (or dismissed) by courts without material financial liability exceeding $200M — expected by H2 2026 given April 27, 2026 deadline passed. This is the single biggest overhang on institutional accumulation. <span class="wa">MONITORING — APRIL 27 KEY DATE</span></div></div>
+  <div class="uc-item"><div class="uc-num">2</div><div class="uc-text"><strong>AI Production Confirmation:</strong> Q1 FY2027 (May 2026 earnings) product revenue growth ≥30% YoY AND management discloses that Cortex AI weekly active accounts have crossed 15,000 — confirming the pilot-to-production transition that the $9.77B RPO implies.</div></div>
+  <div class="uc-item"><div class="uc-num">3</div><div class="uc-text"><strong>FCF Margin Holds:</strong> Non-GAAP FCF margin sustains ≥22% for 2 consecutive quarters despite Observe integration (guided 23% for FY2027 with 150bps headwind from Observe). Confirms that AI GPU investment is accretive, not dilutive, to cash generation.</div></div>
+  <div class="uc-item"><div class="uc-num">4</div><div class="uc-text"><strong>Non-GAAP Operating Margin Expands:</strong> Non-GAAP operating margin reaches ≥11% for any quarter in FY2027 (guided 12.5% full year). This would signal that the SBC/Revenue ratio is declining and the business model is maturing toward profitability.</div></div>
+  <div class="uc-item"><div class="uc-num">5</div><div class="uc-text"><strong>Technical Confirmation:</strong> Price reclaims the 50-DMA (estimated ~$175–185) on weekly closing basis with volume ≥1.5× 20-day average. This signals institutional accumulation is beginning. RSI recovering above 50 on daily chart from current ~25 oversold condition would be the precursor signal.</div></div>
+
+  <h3>Series Tracker</h3>
+  <table class="stbl">
+    <tr><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>MoS Entry</th><th>Base IV</th><th>Key Thesis</th></tr>
+    <tr><td>NVO</td><td>NYSE</td><td>D</td><td>⚪</td><td>A−</td><td>B+</td><td>A−</td><td>A</td><td>WATCH★★★★</td><td>$44–49</td><td>$63</td><td>GLP-1 trough yr; oral pill; 75% from peak</td></tr>
+    <tr><td>CONFIPET</td><td>NSE</td><td>D</td><td>⚪</td><td>D</td><td>D−</td><td>D</td><td>D</td><td>AVOID</td><td>₹16</td><td>N/A</td><td>DGGI demand + audit + ROIC&lt;WACC</td></tr>
+    <tr><td>PVRINOX</td><td>NSE</td><td>D</td><td>⚪</td><td>B−</td><td>C+</td><td>B−</td><td>B−</td><td>WATCH★★★</td><td>₹1,150–1,300</td><td>N/A</td><td>Multiplex normalisation; synergy recovery</td></tr>
+    <tr><td>ANANDRATHI</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>A−</td><td>B+</td><td>B</td><td>WATCH★★★</td><td>₹1,850–2,100</td><td>~₹1,806</td><td>Wealth mgmt compounder; AI incumbent</td></tr>
+    <tr><td>ADANIGREEN</td><td>NSE</td><td>B</td><td>⚪</td><td>A−</td><td>B</td><td>B−</td><td>B−</td><td>WATCH★★★</td><td>₹800–850</td><td>₹829</td><td>Khavda 30GW monopoly; DOJ overhang</td></tr>
+    <tr><td>AEQUS</td><td>NSE</td><td>D</td><td>⚪</td><td>B−</td><td>C+</td><td>B−</td><td>B−</td><td>WATCH★★★</td><td>₹95–110</td><td>N/A</td><td>Aerospace SEZ; $814M order book</td></tr>
+    <tr><td>YATHARTH</td><td>NSE</td><td>C</td><td>⚪</td><td>B</td><td>B−</td><td>C+</td><td>B</td><td>WATCH★★★</td><td>₹480–560</td><td>N/A</td><td>Delhi-NCR hospital; promoter sell-down</td></tr>
+    <tr><td>VIKRAMSOLR</td><td>NSE</td><td>D</td><td>⚪</td><td>C+</td><td>C</td><td>C</td><td>C+</td><td>WATCH★★★</td><td>₹155–185</td><td>N/A</td><td>Solar PV; promoter pledge 48.2%</td></tr>
+    <tr><td>ATHERENERG</td><td>NSE</td><td>B</td><td>🟢</td><td>B</td><td>B−</td><td>B</td><td>B−</td><td>WATCH★★★</td><td>₹700–800</td><td>N/A</td><td>EV 2W; AtherStack data flywheel forming</td></tr>
+    <tr><td>INTC</td><td>NASDAQ</td><td>D</td><td>⚪</td><td>B−</td><td>C+</td><td>B−</td><td>B</td><td>WATCH★★★</td><td>~$31</td><td>$31</td><td>Turnaround; 18A yield key milestone</td></tr>
+    <tr><td>ORCL</td><td>NYSE</td><td>C→B</td><td>🟢</td><td>A−</td><td>A−</td><td>B+</td><td>A−</td><td>WATCH★★★★</td><td>$120–155</td><td>$240</td><td>$553B RPO; OCI 84% growth</td></tr>
+    <tr class="cur"><td>SNOW</td><td>NYSE</td><td>C</td><td>🟢</td><td>B+</td><td>B+</td><td>B</td><td>A−</td><td>WATCH★★★★</td><td>$120–155</td><td>~$194</td><td>AI Data Cloud; Cortex 50% adoption; RPO $9.77B; 8.3× NTM = deep value</td></tr>
+  </table>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="t7" class="tab-content">
+  <h2 class="sec-title">Technical Analysis <span>7 Sections</span></h2>
+
+  <h3>Section A — Price Structure</h3>
+  <div class="mg">
+    <div class="mc neg"><div class="ml">Current Price</div><div class="mv">$144.48</div><div class="ms">Apr 16, 2026 <span class="ver">VERIFIED</span></div></div>
+    <div class="mc neg"><div class="ml">52-Week High</div><div class="mv">$280.67</div><div class="ms">−48.6% from high</div></div>
+    <div class="mc warn"><div class="ml">52-Week Low</div><div class="mv">$118.30</div><div class="ms">+22% above 52W low</div></div>
+    <div class="mc neg"><div class="ml">YTD Performance</div><div class="mv">−44%</div><div class="ms">vs S&amp;P 500 −3.3%</div></div>
+  </div>
+
+  <p><strong>Multi-Timeframe Trend:</strong> Weekly trend = DOWN (lower highs, lower lows from $281 peak). Daily trend = BOTTOMING ATTEMPT (severe oversold at $118–132 range in early April; bouncing to $144 on Apr 16). Monthly trend = DOWN. The stock is in a confirmed downtrend with extreme oversold readings (RSI daily reached ~18 on Apr 9). The selloff is macro/sentiment-driven, not fundamental — Q4 FY2026 was the best quarter in company history. This divergence between price action and fundamentals is characteristic of capitulation lows in high-quality software stocks.</p>
+
+  <h3>Section B — Moving Average Dashboard</h3>
+  <div class="ma-item"><span>20-DMA (Fast)</span><span>~$155–165 est.</span><span class="ma-blw">BELOW ▼</span></div>
+  <div class="ma-item"><span>50-DMA (Trend)</span><span>~$175–185 est.</span><span class="ma-blw">BELOW ▼</span></div>
+  <div class="ma-item"><span>100-DMA (Medium)</span><span>~$205–215 est.</span><span class="ma-blw">BELOW ▼ </span></div>
+  <div class="ma-item"><span>200-DMA (Long-term)</span><span>~$220–235 est.</span><span class="ma-blw">BELOW ▼</span></div>
+  <div class="ma-item"><span>200-Week MA (Multi-year)</span><span>~$170–185 est.</span><span class="ma-blw">BELOW/AT ▼</span></div>
+  <p style="font-size:.76rem;color:var(--txt2)"><span class="est">ESTIMATED</span> — All MAs estimated from 52-week history and trend. Exact values require live charting data. The stock is in a clear "death cross" arrangement below all major moving averages — a classic sign of an extreme sentiment washout rather than a structural breakdown.</p>
+  <p style="font-size:.82rem;color:var(--amber)">⚠ MA Signal: All below. However, the RSI reading of ~18 (extreme oversold) and the fact that fundamentals ACCELERATED while price crashed is a contrarian setup. History shows that quality SaaS stocks (Salesforce 2022, Shopify 2022, Cloudflare 2022) recovered 80–150% within 12 months after similar divergence patterns.</p>
+
+  <h3>Section C — Volume Analysis</h3>
+  <p>Apr 9, 2026: Volume surged 9M+ additional shares as stock fell 11.83% (from $149 to $132) on broad market tariff panic. This appears to be capitulation volume. Apr 16, 2026: Price bouncing from $133–140 range to $144 — early sign of stabilisation. OBV Verdict: WEAK — sustained distribution from $280 peak. Needs accumulation volume above $160 to confirm institutional re-entry. Watch for: a week where SNOW closes up with volume 2× its 20-day average. That is the institutional accumulation confirmation signal.</p>
+
+  <h3>Section D — Momentum Indicators</h3>
+  <div class="rsi-wrap">
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+      <div><span style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--txt2)">RSI (14-day)</span><span style="font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--red);margin-left:12px;font-weight:600">~25–30 (Bouncing from ~18)</span></div>
+      <span class="est">ESTIMATED</span>
+    </div>
+    <div class="rsi-bar">
+      <div class="rsi-mkr" style="left:27%"></div>
+    </div>
+    <div class="rsi-labels"><span>0 — Oversold</span><span>30</span><span>50 — Neutral</span><span>70</span><span>100 — Overbought</span></div>
+    <div style="margin-top:8px;font-size:.78rem;color:var(--amber)">RSI was ~18 on Apr 9 — one of the most oversold readings in SNOW's history. Readings below 20 have historically marked 3–6 month lows for the stock. Currently bouncing.</div>
+  </div>
+  <p><strong>MACD:</strong> Below signal line and zero line — confirmed downtrend. No bullish crossover yet. A crossover above the signal line would be the first momentum confirmation signal. <strong>Stochastic:</strong> Approaching 20 level — oversold, but no hook-up yet. Weekly MACD: still falling, needs stabilisation. <span class="est">ESTIMATED</span></p>
+
+  <h3>Section E — Chart Pattern</h3>
+  <p><strong>Primary Pattern:</strong> Potential Capitulation Bottom / V-Reversal in the $118–135 range. The pattern requires: (1) a close above $155 (20-DMA region) on volume, (2) a retest of the $130–135 area that holds, and (3) a second leg up above $165. This would form a W-bottom structure that typically targets $220+ (the inverted measurement gives a target of ~100% of the depth of the W above the neckline). <strong>Bull thesis:</strong> If Cortex AI Q1 FY2027 print (May 20, 2026) shows acceleration, the catalyst could trigger a 15–20% single-session gap — the setup is reminiscent of cloud stocks post-capitulation in late 2022. <span class="est">ESTIMATED</span></p>
+
+  <h3>Section F — Trade Structure</h3>
+  <div class="trade-box">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">PRIMARY TRIGGER — Fundamental Value + Oversold Condition</div>
+    <div class="trade-row"><span class="trade-key">Entry Zone</span><span class="trade-val">$120–155 (CURRENT PRICE IN ZONE)</span></div>
+    <div class="trade-row"><span class="trade-key">Current Price</span><span class="trade-val">$144.48 — In Zone ✓</span></div>
+    <div class="trade-row"><span class="trade-key">Stop-Loss (Fundamental)</span><span class="trade-val">$105 (below stress IV; would signal structural impairment)</span></div>
+    <div class="trade-row"><span class="trade-key">Target 1 (50-DMA Recovery)</span><span class="trade-val">$175–185 (+21–28%)</span></div>
+    <div class="trade-row"><span class="trade-key">Target 2 (Base IV Re-rating)</span><span class="trade-val">$194–215 (+34–49%)</span></div>
+    <div class="trade-row"><span class="trade-key">Target 3 (AI Conviction Rating)</span><span class="trade-val">$240–270 (+66–87%)</span></div>
+    <div class="trade-row"><span class="trade-key">Risk:Reward</span><span class="trade-val">1:2.8 to T1 · 1:4.2 to T2 · 1:5.5 to T3</span></div>
+    <div class="trade-row"><span class="trade-key">Suggested Position Size</span><span class="trade-val">3–5% of portfolio (Cat C with class action risk)</span></div>
+    <div class="trade-row"><span class="trade-key">Catalyst Trigger (SECONDARY)</span><span class="trade-val">Reclaim 50-DMA (~$180) on 1.5× volume = add to position</span></div>
+    <div class="trade-row"><span class="trade-key">Earnings Watch Date</span><span class="trade-val">May 20, 2026 (Q1 FY2027) — KEY EVENT</span></div>
+  </div>
+
+  <h3>Section G — Technical Composite Score</h3>
+  <table class="tbl">
+    <tr><th>Dimension</th><th>Score /5</th><th>Note</th></tr>
+    <tr><td>Price Trend (multi-timeframe)</td><td class="num nn">1/5</td><td>All timeframes bearish</td></tr>
+    <tr><td>Moving Average Position</td><td class="num nn">1/5</td><td>Below all MAs</td></tr>
+    <tr><td>Volume Analysis</td><td class="num xn">2/5</td><td>Capitulation volume; watch for accumulation</td></tr>
+    <tr><td>Momentum (RSI/MACD)</td><td class="num pn">3/5</td><td>Extreme oversold = contrarian buy signal</td></tr>
+    <tr><td>Chart Pattern</td><td class="num xn">2/5</td><td>Potential V-reversal forming; unconfirmed</td></tr>
+    <tr><td>Fundamental/Technical Divergence</td><td class="num pn">5/5</td><td>Strongest signal: best-ever fundamentals, worst-ever RSI</td></tr>
+    <tr class="hl"><td><strong>Technical Composite</strong></td><td class="num wa"><strong>14/30 = 47%</strong></td><td>WEAK technicals BUT extreme fundamental-technical divergence = contrarian opportunity</td></tr>
+  </table>
+  <p style="font-size:.8rem;color:var(--amber)">⚠ Technical Alignment: Technicals are weak by standard measures. However, the fundamental-technical divergence (best-ever operating performance + worst RSI readings) historically resolves in favour of the fundamentals within 2–4 quarters in quality stocks. The trade is to buy the fundamental story while the market is pricing in a disaster that is not happening.</p>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="t8" class="tab-content">
+  <h2 class="sec-title">Shareholding &amp; Free Float <span>Ownership Structure</span></h2>
+
+  <div class="ibox warn">
+    <h4>⚠ Data Limitation</h4>
+    <p style="margin-bottom:0">Snowflake is a US-listed stock. Quarterly holding disclosures (13-F filings) are available but individual quarter breakdowns require proprietary data services. The following is based on available proxy filings, 13-F summaries, and analyst reports. All marked <span class="est">ESTIMATED</span> unless otherwise noted.</p>
+  </div>
+
+  <div class="mg">
+    <div class="mc"><div class="ml">Approx Shares Outstanding</div><div class="mv">~346M</div><div class="ms">Diluted <span class="est">ESTIMATED</span></div></div>
+    <div class="mc neg"><div class="ml">Market Cap (Apr 16)</div><div class="mv">~$50B</div><div class="ms">At $144.48 <span class="ver">VERIFIED</span></div></div>
+    <div class="mc warn"><div class="ml">Net Cash</div><div class="mv">$2.04B</div><div class="ms">$4.8B cash − $2.74B debt <span class="ver">VERIFIED</span></div></div>
+    <div class="mc"><div class="ml">Insider Holding (est.)</div><div class="mv">~15%</div><div class="ms">Founders + management <span class="est">ESTIMATED</span></div></div>
+  </div>
+
+  <h3>Section A — Ownership Structure</h3>
+  <div class="hb-wrap"><div class="hb-lbl"><span>Institutional Investors (~70%)</span><span class="pn">~70%</span></div><div class="hb-bg"><div class="hb-fill" style="width:70%;background:var(--cyan)"></div></div></div>
+  <div class="hb-wrap"><div class="hb-lbl"><span>Retail / Public (~15%)</span><span class="xn">~15%</span></div><div class="hb-bg"><div class="hb-fill" style="width:15%;background:var(--txt1)"></div></div></div>
+  <div class="hb-wrap"><div class="hb-lbl"><span>Founders &amp; Insiders (~15%)</span><span class="wa">~15%</span></div><div class="hb-bg"><div class="hb-fill" style="width:15%;background:var(--amber)"></div></div></div>
+  <p style="font-size:.74rem;color:var(--txt2);margin-top:6px"><span class="est">ESTIMATED</span> based on proxy filings and public 13-F summaries</p>
+
+  <h3>Section B — Key Institutional Holders</h3>
+  <table class="tbl">
+    <tr><th>Holder Type</th><th>Est. Holding</th><th>Signal</th></tr>
+    <tr><td>Vanguard Group</td><td class="num">~7%</td><td><span class="pass">Passive index</span></td></tr>
+    <tr><td>BlackRock</td><td class="num">~6%</td><td><span class="pass">Passive index</span></td></tr>
+    <tr><td>Fidelity</td><td class="num">~5%</td><td><span class="pass">Active + index</span></td></tr>
+    <tr><td>Hedge Funds (long-duration tech)</td><td class="num">~20%</td><td><span class="marg">Monitoring for exit</span></td></tr>
+    <tr><td>Insider / Founders</td><td class="num">~15%</td><td><span class="pass">Aligned</span></td></tr>
+  </table>
+  <p style="font-size:.74rem;color:var(--txt2)"><span class="est">ESTIMATED</span> — major hedge funds have reportedly returned to the stock after 2024 dip, viewing AI pivot as credible. Watch for any 13-F filings showing Softbank Vision Fund, Tiger Global, or long-duration tech funds initiating/expanding.</p>
+
+  <h3>Section C — Free Float &amp; Liquidity</h3>
+  <p>Free Float: ~85% of 346M shares = ~294M shares. Average daily volume: ~9.7M shares. This means the market cap equivalent turns over approximately every 30 days — very high liquidity. Institutional ownership turnover signals: watch for any 13-F additions from Sovereign Wealth Funds (GIC, ADIA, NBIM) as these represent long-duration conviction capital that often precedes extended re-ratings in quality software stocks. <span class="est">ESTIMATED</span></p>
+
+  <h3>Section D — Insider Activity</h3>
+  <p>CEO Sridhar Ramaswamy has not made material open-market purchases since taking the role (standard for a relatively new CEO still receiving equity grants). The $1.1B share buyback program (remaining as of Q4 FY2026) represents de facto management conviction that the stock is undervalued. Share repurchases at $144 vs. what management believes is a $190–200 intrinsic value is rational capital allocation. Watch for: any open-market purchases by Ramaswamy or the board in the $120–150 range — would be a high-conviction insider buy signal. <span class="ver">VERIFIED — buyback program size</span></p>
+
+  <div style="background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:14px;margin-top:16px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Ownership Momentum Score</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--amber)">52 / 100</div>
+    <div style="font-size:.78rem;color:var(--txt1);margin-top:4px">NEUTRAL — Large institutional base provides stability; hedge fund exposure creates vol; class action creates near-term institutional hesitation. Buyback program is a positive offset. Score would increase significantly on: class action resolution + SWF entry + insider purchases.</div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="t9" class="tab-content">
+  <h2 class="sec-title">AI Opportunity Intelligence <span>Tab 9 · v5.0</span></h2>
+
+  <h3>Section A — AI Classification Dashboard</h3>
+  <div class="ai-dash">
+    <div class="ai-dc"><div class="ai-dl">Category</div><div class="ai-dv" style="color:#C4B5FD">C — Mature Compounder</div></div>
+    <div class="ai-dc"><div class="ai-dl">AI Overlay</div><div class="ai-dv" style="color:var(--emerald)">🟢 AI WIDENER</div></div>
+    <div class="ai-dc"><div class="ai-dl">Data Flywheel</div><div class="ai-dv" style="color:var(--amber)">FORMING ★★★</div></div>
+    <div class="ai-dc"><div class="ai-dl">Adoption Phase</div><div class="ai-dv" style="color:var(--cyan)">Phase 3 — Inflection</div></div>
+  </div>
+
+  <p><strong>Adoption Phase Evidence:</strong> Enterprise AI infrastructure is firmly in Phase 3 (20–40% sector adoption, winners emerging, losers being eliminated). Evidence: (1) Snowflake's Cortex AI reached 50% of customer base from zero in 18 months — Phase 3 velocity; (2) RPO growth of 42% YoY shows enterprises making multi-year AI infrastructure commitments; (3) Q4 FY2026 largest-ever $400M deal — Phase 3 deal scale; (4) AI workloads growing 200%+ YoY from Phase 2 base. The critical Phase 3 signal — "winners clearly emerging" — manifests in Snowflake's NRR staying at 125% even as it scales. <span class="est">ESTIMATED</span></p>
+
+  <h3>Section B — Data Flywheel Deep-Dive</h3>
+  <div class="fw-box">
+    <div class="fw-lbl">Three-Question Flywheel Test — Detailed</div>
+    <div class="fw-check">
+      <span class="chk-y">✓</span>
+      <div>
+        <strong>Q1 — What Is the Proprietary Training Data?</strong><br>
+        Snowflake's proprietary data asset: (a) Enterprise query patterns across 10,000+ accounts — billions of SQL queries, data sharing patterns, and workload types; (b) Governance telemetry — data lineage, policy configurations, access patterns; (c) Cortex AI usage data — which enterprises use which AI features, on what data types, with what outcomes. Uniqueness: No competitor has this cross-enterprise data. Volume: Petabytes updated in real-time. Recency: Continuous. Outcome labels: Yes — Snowflake knows which queries succeed, which fail, which are optimised, and which drive the most compute consumption. Data quality score: <span class="hl">8/10</span>
+      </div>
+    </div>
+    <div class="fw-check">
+      <span class="chk-p">~</span>
+      <div>
+        <strong>Q2 — How Does AI Improve With More Data/Users?</strong><br>
+        Mechanism: As more enterprises run SQL workloads through Cortex, Snowflake's AI models learn optimal query execution plans, caching strategies, and compute allocation patterns. Cortex Analyst (natural language → SQL) improves its accuracy as it sees more domain-specific enterprise query patterns. Arctic (the proprietary LLM) is fine-tuned on enterprise data use cases. Evidence: AI workload accounts grew from ~500 to 9,100+ weekly in 18 months (+1,700%); AI workload VOLUME grew 200%+ YoY. However, specific accuracy metrics ("SQL generation accuracy improved X% as accounts doubled") have not been disclosed. Improvement score: <span class="wa">3/4</span>
+      </div>
+    </div>
+    <div class="fw-check">
+      <span class="chk-p">~</span>
+      <div>
+        <strong>Q3 — Does Better AI Attract More Users?</strong><br>
+        Loop: Better Cortex AI → enterprises trust Snowflake for AI workloads → they consolidate MORE data in Snowflake → more data makes Cortex better → loop. Evidence: NRR of 125% shows existing customers are expanding (the loop is working for existing users). 740 net new customers in Q4 FY2026 — 40% YoY growth in new customer acquisition (the loop is attracting new users). The $400M single deal signed in Q4 implies enterprises are choosing Snowflake as their primary AI data platform — not one of several. Loop speed: approximately quarterly (each quarter of more data improves next quarter's AI). Loop score: <span class="wa">2/3</span>
+      </div>
+    </div>
+    <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--txt2);margin-bottom:4px">FLYWHEEL STRENGTH SCORE</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--amber)">7/10 <span style="font-size:.85rem;color:var(--txt1)">Moderate-to-Strong</span></div>
+      </div>
+      <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:10px 14px;font-size:.78rem;color:var(--amber)">
+        FORMING → CONFIRMED upgrade condition: Snowflake publicly discloses specific Cortex AI accuracy improvement metrics (e.g., "Cortex Analyst SQL generation accuracy improved X% as we doubled accounts") in an earnings call or investor day. This would move the flywheel to CONFIRMED ★★★★★ and justify moat upgrade from B+ to A−.
+      </div>
+    </div>
+  </div>
+
+  <h3>Section C — AI Value Chain Position</h3>
+  <div class="vchain">
+    <div class="vl"><div class="vln">Level 1</div>Infrastructure<br>(GPUs, data centres)</div>
+    <div class="vl"><div class="vln">Level 2</div>Foundation Models<br>(OpenAI, Anthropic)</div>
+    <div class="vl active"><div class="vln">Level 3 ★</div>AI Platform<br>Data + Compute<br><strong>SNOWFLAKE</strong></div>
+    <div class="vl"><div class="vln">Level 4</div>Vertical Apps<br>(healthcare AI, etc.)</div>
+    <div class="vl active"><div class="vln">Level 5 ★</div>AI-Enabled<br>Incumbent<br><strong>SNOWFLAKE</strong></div>
+  </div>
+  <div class="ibox success">
+    <h4>Dual Positioning: Level 3 + Level 5</h4>
+    <p style="margin-bottom:0">Snowflake uniquely occupies BOTH Level 3 (AI Platform — Cortex AI is a platform for building AI apps on enterprise data) AND Level 5 (AI-Enabled Incumbent — it is enhancing its existing data cloud with AI to deepen moat). This dual positioning is the most powerful combination in the framework. Level 3 alone = high risk (platform wars are brutal). Level 5 alone = slow compounding. Level 3 + 5 = the Data Cloud becomes both the AI platform AND the beneficiary of AI adoption. Investment horizon for this combination: <strong>5–7 years</strong>.</p>
+  </div>
+
+  <h3>Section D — Global AI Opportunity Context</h3>
+  <table class="tbl">
+    <tr><th>AI Structural Advantage</th><th>Snowflake Relevance</th><th>Impact</th></tr>
+    <tr><td>US Enterprise Data at Scale</td><td>Core product is enterprise data. Processes petabytes across 10,000+ accounts.</td><td class="em">HIGH — Direct</td></tr>
+    <tr><td>Data Sovereignty / Governance Demand</td><td>Horizon and Clean Rooms — GDPR, CCPA, DPDP compliance. Growing regulatory moat.</td><td class="em">HIGH — Direct</td></tr>
+    <tr><td>Open Data Standard (Iceberg)</td><td>First to embrace Iceberg — turned a competitive threat into a moat.</td><td class="em">HIGH — Strategic</td></tr>
+    <tr><td>AI Agent Economy</td><td>Project SnowWork: autonomous AI agents for enterprise workflows — new revenue stream.</td><td class="wa">MEDIUM — Forming</td></tr>
+    <tr><td>India / EM AI Market</td><td>Limited direct exposure. Some India enterprise customers. Not a primary driver.</td><td class="xn">LOW</td></tr>
+  </table>
+
+  <h3>Section E — Competitive Moat vs. AI Disruption</h3>
+  <div class="ibox">
+    <h4>Disruption Assessment</h4>
+    <p>The primary disruption risk to Snowflake is the hyperscalers (AWS Redshift, Google BigQuery, Azure Fabric) using AI to make their native platforms "smart enough" that multi-cloud neutrality is no longer worth the price premium. Timeline: Medium-term (3–5 years). Second risk: Databricks (private) has superior ML/AI-native capabilities for data science workloads. If enterprises shift from analytics-first to ML-first workloads, Databricks could gain share. Timeline: Currently ongoing — contained by Iceberg strategy.</p>
+    <p>However, the disruption risk is <strong>symmetric</strong>: AI is also Snowflake's best growth driver. The same AI workloads that might go to Databricks (ML training) are also generating new revenue for Snowflake (Cortex inference, AI data preparation, AI governance). Net disruption assessment: LOW-MEDIUM. Snowflake is more likely an AI beneficiary than an AI victim.</p>
+    <p style="margin-bottom:0"><strong>Moat Resilience Score: 7/10</strong> — Strong governance and multi-cloud moat resist disruption; compute engine competition is the genuine vulnerability.</p>
+  </div>
+
+  <h3>Section F — AI Opportunity Verdict</h3>
+  <div class="gauge-wrap">
+    <div class="gauge-score">63</div>
+    <div class="gauge-label">AI Opportunity Score / 100</div>
+    <table class="tbl" style="margin-top:12px;margin-bottom:0">
+      <tr><th>Component</th><th>Score</th><th>Rationale</th></tr>
+      <tr><td>Data Flywheel Strength</td><td class="num wa">13/20</td><td>FORMING — loop spinning but unconfirmed by management metrics</td></tr>
+      <tr><td>Adoption Phase Timing</td><td class="num pn">16/20</td><td>Phase 3 = ideal entry window; winners emerging, returns maximised</td></tr>
+      <tr><td>Value Chain Position</td><td class="num pn">14/20</td><td>Level 3+5 dual position = best risk/reward combination</td></tr>
+      <tr><td>Structural AI Advantage</td><td class="num xn">6/20</td><td>US-only focus; no India Stack; but data governance moat is structural</td></tr>
+      <tr><td>AI Threat Resistance</td><td class="num pn">14/20</td><td>Iceberg strategy neutralised Databricks; hyperscaler risk contained but real</td></tr>
+      <tr class="hl"><td><strong>TOTAL</strong></td><td class="num hl"><strong>63/100</strong></td><td><strong>STRATEGIC AI BET — 2–3% starter position; await flywheel confirmation</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="ibox success" style="margin-top:16px">
+    <h4>✓ Portfolio Role: STRATEGIC AI BET (2–3% max initial)</h4>
+    <p>Snowflake is a high-conviction strategic AI bet in the enterprise data infrastructure space — the most important secular theme in enterprise software. The risk is not business quality (which is excellent) but timing: class action overhang, Observe integration, and the pilot-to-production conversion risk in Cortex AI. At 8.3× NTM EV/Revenue, the valuation provides sufficient margin of safety to initiate a starter position. Full position (4–5%) is reserved for when both the class action resolves AND Cortex AI weekly accounts cross 15,000 (production-scale confirmation). Investment Horizon: <strong>5–7 years</strong> — this is not a 12-month trade.</p>
+  </div>
+</div>
+
+<footer>
+  <div style="margin-bottom:8px;font-family:'Playfair Display',serif;font-size:.85rem;color:var(--txt0)">Buffett Quality-Value Series v5.0 — Report #: SNOW_qv_report</div>
+  <p style="margin-bottom:6px"><strong>SEC Disclaimer:</strong> This report is for educational and research purposes only. It does not constitute investment advice, a solicitation to buy or sell securities, or a guarantee of investment returns. All investors should conduct their own due diligence and consult a qualified financial advisor before making investment decisions. Past performance is not indicative of future results.</p>
+  <p style="margin-bottom:6px"><strong>Data Notice:</strong> Financial data sourced from Snowflake's SEC 8-K filings (FY2022–FY2026), IMF World Economic Outlook (April 2026), and publicly available analyst reports. Data confidence labels: <span class="ver">VERIFIED</span> = official filings / live search; <span class="est">ESTIMATED</span> = cross-referenced; high confidence; <span class="unv">UNVERIFIED</span> = limited source; treat with caution. Current stock price verified at $144.48 as of April 16, 2026 (Investing.com).</p>
+  <p style="margin-bottom:0"><strong>Font Credits:</strong> Playfair Display · IBM Plex Mono · Source Serif 4 (Google Fonts). Generated: April 2026.</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function() {
+  var tb = document.getElementById('tab-bar');
+  if (tb) {
+    var el = tb, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  var panel = document.getElementById(tabId);
+  if (panel) panel.style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

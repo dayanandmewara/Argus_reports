@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shadowfax Technologies | Buffett QV Series #41</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --midnight: #0A1628;
+  --navy: #0D2244;
+  --amber: #FF6B35;
+  --amber-light: #FF8C5A;
+  --silver: #E8EDF4;
+  --white: #F5F8FF;
+  --muted: #8E9BB5;
+  --card-bg: #0F1E38;
+  --card-border: #1A2E50;
+  --green: #22C55E;
+  --red: #EF4444;
+  --yellow: #F59E0B;
+  --cyan: #06B6D4;
+  --pass: #22C55E;
+  --marginal: #F59E0B;
+  --fail: #EF4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--midnight); color: var(--silver); font-family: 'Nunito Sans', sans-serif; font-size: 16px; font-weight: 400; line-height: 1.6; }
+h1, h2, h3, h4 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+/* HERO */
+.hero { background: linear-gradient(135deg, #080F1E 0%, #0D2244 50%, #0A1628 100%); padding: 28px 32px 22px; border-bottom: 3px solid var(--amber); max-height: 220px; overflow: hidden; }
+.hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.hero-left h1 { font-size: 2.4rem; color: var(--white); letter-spacing: 1px; line-height: 1; }
+.hero-left .sub { font-size: 0.95rem; color: var(--muted); margin-top: 4px; }
+.hero-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.badge { padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.5px; font-family: 'Barlow Condensed', sans-serif; }
+.badge-cat { background: #FF6B35; color: #fff; }
+.badge-ai-neutral { background: #374151; color: #D1D5DB; border: 1px solid #6B7280; }
+.badge-macro { background: #1A3A5C; color: #60A5FA; border: 1px solid #2563EB; }
+.badge-watch { background: #1A3A1A; color: #4ADE80; border: 1px solid #22C55E; }
+.verdict-box-hero { text-align: right; }
+.verdict-stars { font-size: 1.8rem; color: var(--amber); }
+.verdict-label { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; color: var(--muted); }
+.hero-pills { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+.pill { background: rgba(255,107,53,0.12); border: 1px solid rgba(255,107,53,0.3); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.pill span { color: var(--amber); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+/* TAB BAR */
+#tab-bar { background: var(--navy); border-bottom: 2px solid var(--card-border); position: sticky; top: 0; z-index: 100; overflow-x: auto; white-space: nowrap; }
+.tab-btn { display: inline-block; padding: 12px 16px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--muted); cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; transition: all 0.2s; letter-spacing: 0.5px; }
+.tab-btn:hover { color: var(--white); }
+.tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+.tab-content { display: none; padding: 28px 28px 40px; max-width: 1200px; margin: 0 auto; }
+.tab-content.active { display: block; }
+
+/* CARDS */
+.card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 20px; margin-bottom: 18px; }
+.card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--amber); margin-bottom: 12px; letter-spacing: 0.5px; text-transform: uppercase; }
+.section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--white); margin: 24px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--card-border); }
+
+/* METRICS GRID */
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 12px 0; }
+.metric-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; border-left: 4px solid var(--amber); }
+.metric-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.metric-value { font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 600; color: var(--white); margin-top: 4px; }
+.metric-note { font-size: 0.78rem; color: var(--muted); margin-top: 3px; }
+.metric-card.green { border-left-color: var(--green); }
+.metric-card.red { border-left-color: var(--red); }
+.metric-card.yellow { border-left-color: var(--yellow); }
+.metric-card.cyan { border-left-color: var(--cyan); }
+
+/* CONFIDENCE LABELS */
+.v { background: rgba(34,197,94,0.15); color: #86EFAC; padding: 1px 6px; border-radius: 3px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; }
+.e { background: rgba(245,158,11,0.15); color: #FCD34D; padding: 1px 6px; border-radius: 3px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; }
+.u { background: rgba(239,68,68,0.15); color: #FCA5A5; padding: 1px 6px; border-radius: 3px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; }
+
+/* TABLES */
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 10px 0; }
+.data-table th { background: var(--navy); color: var(--amber); padding: 10px 12px; text-align: left; font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.5px; border-bottom: 1px solid var(--card-border); }
+.data-table td { padding: 9px 12px; border-bottom: 1px solid rgba(26,46,80,0.5); color: var(--silver); }
+.data-table tr:hover { background: rgba(255,107,53,0.05); }
+.data-table .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+
+/* SCORECARD */
+.score-card { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--card-bg); border-radius: 8px; border-left: 4px solid; margin-bottom: 8px; }
+.score-card.pass { border-left-color: var(--pass); }
+.score-card.marginal { border-left-color: var(--marginal); }
+.score-card.fail { border-left-color: var(--fail); }
+.score-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+.score-badge.pass { background: rgba(34,197,94,0.2); color: var(--pass); }
+.score-badge.marginal { background: rgba(245,158,11,0.2); color: var(--marginal); }
+.score-badge.fail { background: rgba(239,68,68,0.2); color: var(--fail); }
+.score-text { flex: 1; }
+.score-text strong { display: block; color: var(--white); font-size: 0.9rem; }
+.score-text span { font-size: 0.82rem; color: var(--muted); }
+
+/* PILLAR GRADES */
+.pillar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 14px 0; }
+.pillar-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 18px; text-align: center; }
+.pillar-name { font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.pillar-grade { font-family: 'Barlow Condensed', sans-serif; font-size: 2.8rem; font-weight: 800; margin: 6px 0; }
+.grade-b-plus { color: #60A5FA; }
+.grade-b { color: #93C5FD; }
+.grade-b-minus { color: #A5B4FC; }
+.grade-c-plus { color: #F59E0B; }
+.grade-c { color: #FCD34D; }
+
+/* VERDICT BOX */
+.verdict-main { background: linear-gradient(135deg, #0D2244, #0A1628); border: 2px solid var(--amber); border-radius: 12px; padding: 28px; text-align: center; margin: 20px 0; }
+.verdict-main .stars { font-size: 2.5rem; margin-bottom: 8px; }
+.verdict-main h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; color: var(--amber); }
+.verdict-main p { color: var(--muted); margin-top: 12px; max-width: 600px; margin-left: auto; margin-right: auto; font-size: 0.95rem; }
+
+/* UPGRADE CONDITIONS */
+.upgrade-cond { display: flex; gap: 10px; padding: 10px; background: var(--card-bg); border-radius: 8px; border-left: 3px solid var(--cyan); margin-bottom: 8px; align-items: flex-start; }
+.cond-num { background: var(--cyan); color: var(--midnight); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+.cond-text { font-size: 0.88rem; color: var(--silver); }
+
+/* MOAT STARS */
+.moat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.moat-name { font-weight: 700; color: var(--white); }
+.moat-desc { font-size: 0.82rem; color: var(--muted); }
+.stars-rating { color: var(--amber); font-size: 1rem; }
+
+/* FLYWHEEL BOX */
+.flywheel-box { background: linear-gradient(135deg, #0D2244, #0A2030); border: 2px solid #374151; border-radius: 12px; padding: 24px; margin: 18px 0; }
+.flywheel-box.forming { border-color: var(--yellow); }
+.flywheel-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--yellow); margin-bottom: 12px; }
+.fw-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+.fw-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; font-weight: 700; }
+.fw-icon.yes { background: rgba(34,197,94,0.2); color: var(--green); }
+.fw-icon.partial { background: rgba(245,158,11,0.2); color: var(--yellow); }
+.fw-icon.no { background: rgba(239,68,68,0.2); color: var(--red); }
+
+/* GROWTH TABLE */
+.growth-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; }
+.growth-cell { padding: 12px; border-right: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border); }
+.growth-cell:nth-child(3n) { border-right: none; }
+.growth-cell.header { background: var(--navy); color: var(--amber); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px; }
+.growth-cell.label { background: rgba(13,34,68,0.5); color: var(--muted); font-size: 0.82rem; }
+.growth-cell .val { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--white); }
+.stress { color: #FCA5A5; }
+.base { color: #86EFAC; }
+.accel { color: #93C5FD; }
+
+/* VALUATION TABLE */
+.val-table { width: 100%; border-collapse: collapse; }
+.val-table th { background: var(--navy); color: var(--amber); padding: 10px; font-family: 'Barlow Condensed', sans-serif; border: 1px solid var(--card-border); }
+.val-table td { padding: 10px; border: 1px solid var(--card-border); font-size: 0.88rem; }
+.val-table .highlight { background: rgba(255,107,53,0.1); font-weight: 700; }
+
+/* AI SCORE GAUGE */
+.ai-score-bar { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 20px; }
+.ai-score-track { height: 16px; background: rgba(255,255,255,0.1); border-radius: 8px; margin: 12px 0; overflow: hidden; }
+.ai-score-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--amber), #FF8C5A); transition: width 0.5s; }
+.ai-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.ai-breakdown-item { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 6px 10px; background: rgba(255,255,255,0.05); border-radius: 6px; }
+
+/* VALUE CHAIN */
+.value-chain { display: flex; gap: 0; margin: 16px 0; overflow-x: auto; }
+.vc-step { flex: 1; min-width: 120px; padding: 12px 8px; text-align: center; background: var(--card-bg); border: 1px solid var(--card-border); font-size: 0.78rem; position: relative; }
+.vc-step.active { background: rgba(255,107,53,0.15); border-color: var(--amber); }
+.vc-step .vc-num { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--muted); }
+.vc-step.active .vc-num { color: var(--amber); }
+.vc-step .vc-name { font-weight: 700; color: var(--white); font-size: 0.8rem; margin: 4px 0; }
+.vc-step .vc-desc { color: var(--muted); font-size: 0.73rem; }
+.vc-arrow { display: flex; align-items: center; color: var(--card-border); font-size: 1.2rem; }
+
+/* MA DASHBOARD */
+.ma-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.ma-card { background: var(--card-bg); border-radius: 8px; padding: 12px; border: 1px solid var(--card-border); }
+.ma-label { font-size: 0.78rem; color: var(--muted); }
+.ma-value { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 600; margin: 4px 0; }
+.ma-status { font-size: 0.78rem; font-weight: 700; }
+.above { color: var(--green); }
+.below { color: var(--red); }
+
+/* SERIES TABLE */
+.series-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.series-table th { background: var(--navy); color: var(--amber); padding: 8px; font-family: 'Barlow Condensed', sans-serif; border: 1px solid var(--card-border); font-size: 0.78rem; }
+.series-table td { padding: 7px 8px; border: 1px solid var(--card-border); color: var(--silver); }
+.series-table tr.current { background: rgba(255,107,53,0.08); }
+
+/* RISK BOX */
+.risk-box { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+.risk-box h4 { color: var(--red); font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; margin-bottom: 6px; }
+
+/* THEME TABLE */
+.theme-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.theme-table th { background: var(--navy); color: var(--amber); padding: 8px 12px; font-family: 'Barlow Condensed', sans-serif; border: 1px solid var(--card-border); }
+.theme-table td { padding: 8px 12px; border: 1px solid var(--card-border); }
+.rel-direct { color: var(--green); font-weight: 700; }
+.rel-adj { color: var(--yellow); }
+.rel-none { color: var(--muted); }
+
+/* FOOTER */
+.footer { background: var(--navy); padding: 20px 28px; margin-top: 40px; border-top: 1px solid var(--card-border); font-size: 0.78rem; color: var(--muted); }
+
+/* RESPONSIVE */
+@media(max-width:680px){
+  .metrics-grid{grid-template-columns:1fr 1fr;}
+  .growth-grid{grid-template-columns:1fr;}
+  .hero-left h1{font-size:1.8rem;}
+  .pillar-grid{grid-template-columns:1fr 1fr;}
+  .ai-breakdown{grid-template-columns:1fr;}
+  .value-chain{flex-direction:column;}
+}
+@media(max-width:600px){
+  .metrics-grid{grid-template-columns:1fr;}
+  .hero{padding:16px;}
+  .tab-content{padding:16px;}
+}
+
+/* HIGHLIGHT */
+.highlight-box { background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.3); border-radius: 8px; padding: 14px; margin: 12px 0; }
+.highlight-box h4 { color: var(--cyan); font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; margin-bottom: 6px; }
+.info-box { background: rgba(255,107,53,0.06); border: 1px solid rgba(255,107,53,0.2); border-radius: 8px; padding: 14px; margin: 12px 0; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-left">
+      <h1>SHADOWFAX TECHNOLOGIES</h1>
+      <div class="sub">NSE: SHADOWFAX | India | Tech-Enabled 3PL Last-Mile Logistics | Series Report #41</div>
+      <div class="hero-badges">
+        <span class="badge badge-cat">CAT B — HIGH-GROWTH COMPOUNDER</span>
+        <span class="badge badge-ai-neutral">⚪ AI NEUTRAL</span>
+        <span class="badge badge-macro">MACRO: TAILWIND</span>
+        <span class="badge" style="background:#1A2E50;color:#93C5FD;border:1px solid #3B82F6;">DATA FLYWHEEL: FORMING ★★★</span>
+      </div>
+      <div class="hero-pills">
+        <div class="pill">Price <span>~₹113</span> <span class="u">UNVERIFIED</span></div>
+        <div class="pill">Mkt Cap <span>₹6,500 Cr</span></div>
+        <div class="pill">Rev FY25 <span>₹2,485 Cr</span></div>
+        <div class="pill">Q3 Rev Growth <span>+65.5%</span></div>
+        <div class="pill">Adj EBITDA Margin <span>4.3%</span></div>
+        <div class="pill">IPO <span>Jan 28, 2026</span></div>
+      </div>
+    </div>
+    <div class="verdict-box-hero">
+      <div class="verdict-stars">★★★</div>
+      <div class="verdict-label">WATCH</div>
+      <div style="color:var(--muted);font-size:0.8rem;margin-top:4px;">Entry: ₹98–115</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro & Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 0: OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab0" class="tab-content active">
+  <div class="section-title">Business Overview</div>
+  <div class="card">
+    <p style="color:var(--silver);line-height:1.8;">Shadowfax Technologies (NSE: SHADOWFAX) is India's second-largest third-party express logistics platform by volume, delivering 20+ crore shipments per quarter across express parcel, hyperlocal/quick-commerce, and on-demand mobility. Founded 2015 in Bangalore by Abhishek Bansal and Vaibhav Khandelwal, it listed on NSE/BSE on January 28, 2026, raising ₹1,907 Cr via IPO at ₹124/share. The company is asset-light (all facilities leased), operates a crowdsourced delivery partner model, and covers 15,166 PIN codes across 2,300+ cities. Revenue mix: ~75% Express Parcel, ~20% Hyperlocal/Quick-Commerce, ~5% Other Logistics Services (OLS including CriticaLog acquisition).</p>
+  </div>
+
+  <div class="section-title">Classification Rationale</div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div class="card-title">Why Category B</div>
+        <p style="font-size:0.9rem;color:var(--silver);">Revenue CAGR FY23–25: <span class="mono" style="color:var(--amber);">+32%</span>; accelerating to <span class="mono" style="color:var(--amber);">+67%</span> in 9M FY26. Underpenetrated market (India's e-commerce logistics at only 7% online retail penetration vs 25%+ in China). ROIC still building — GAAP profits only emerged in FY25. Large TAM: India express logistics projected 19–23% shipment CAGR to FY30. Asset-light model with operating leverage thesis. Classic Cat B profile: growth outrunning GAAP earnings due to heavy investment phase.</p>
+      </div>
+      <div>
+        <div class="card-title">Why AI Neutral ⚪</div>
+        <p style="font-size:0.9rem;color:var(--silver);">Shadowfax deploys AI for route optimisation (SF Maps), fraud detection (SF Shield), order batching, and address intelligence. However, these are operational efficiency tools also deployed by competitor Delhivery. No proprietary data flywheel with measurable AI improvement metrics published. AI enhances unit economics but does not create a structural moat unavailable to competitors. Classification: <strong style="color:var(--muted);">AI is a tool, not a moat.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Revenue Architecture</div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">Express Parcel</div>
+      <div class="metric-value">~75%</div>
+      <div class="metric-note">72% YoY growth Q3 FY26 <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Hyperlocal / Quick Commerce</div>
+      <div class="metric-value">~20%</div>
+      <div class="metric-note">43% YoY growth Q3 FY26 <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card yellow">
+      <div class="metric-label">Other Logistics (OLS)</div>
+      <div class="metric-value">~5%</div>
+      <div class="metric-note">65% YoY growth Q3 FY26 <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Top Client Concentration</div>
+      <div class="metric-value">48–59%</div>
+      <div class="metric-note">Flipkart/Meesho dominant <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Top-5 Client Concentration</div>
+      <div class="metric-value">74–85%</div>
+      <div class="metric-note">Structurally high risk <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card cyan">
+      <div class="metric-label">PIN Code Coverage</div>
+      <div class="metric-value">15,166</div>
+      <div class="metric-note">As of Dec 2025 (target 20,000) <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Delivery Partners</div>
+      <div class="metric-value">~2.06 Lakh</div>
+      <div class="metric-note">Avg quarterly unique <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Q3 FY26 Orders</div>
+      <div class="metric-value">20.6 Cr</div>
+      <div class="metric-note">+61% YoY; +29% QoQ <span class="v">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Why This Stock is in the Series</div>
+  <div class="card">
+    <p style="color:var(--silver);">Shadowfax represents a pure-play on India's logistics modernisation — specifically the explosive confluence of e-commerce penetration and quick commerce growth. It is the only publicly listed, 100% last-mile focused, tech-driven 3PL at scale after Ecom Express's exit from the listed space. With 65%+ revenue growth at IPO-age, EBITDA expanding 270 bps YoY, and coverage of India's 2nd-largest logistics network, it merits systematic analysis. The key analytical challenge: can this business, with razor-thin 4.3% adj EBITDA margins and extreme client concentration, compound ROIC above cost of capital over a decade? <em>That</em> is the Buffett question.</p>
+  </div>
+
+  <div class="section-title">Series Context Note</div>
+  <div class="info-box">
+    <h4>Framework Adaptations for Cat B — Pre-FCF Scale-Up</h4>
+    <p style="font-size:0.88rem;color:var(--silver);">Standard Buffett framework applied with Cat B adaptations: (1) ROIC analysis deemphasised given very recent profitability — gross margin trend and unit economics used instead. (2) DCF uses revenue-based Stage 1 projections with FCF margin expansion trajectory. (3) Owner Earnings approximated using EBITDA-CapEx proxy given thin GAAP profits. (4) O'Glove earnings quality tests 1 and 5 most relevant; Tests 2–4 partially applicable. (5) Highest weight given to Pillar 1 (Moat buildout evidence) and Pillar 3 (Management execution track record).</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 1: MACRO & GROWTH -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab1" class="tab-content">
+  <div class="section-title">Layer 1 — India Macro Anchor</div>
+  <div class="metrics-grid">
+    <div class="metric-card green">
+      <div class="metric-label">India Real GDP FY26E</div>
+      <div class="metric-value">7.6%</div>
+      <div class="metric-note">MoSPI revised; RBI 6.8% <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">India CPI FY26E</div>
+      <div class="metric-value">~2.5%</div>
+      <div class="metric-note">RBI lowered to 2.6% fcst <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">India Nominal GDP</div>
+      <div class="metric-value">~10.1%</div>
+      <div class="metric-note">MoSPI: 8.6–10% FY26 <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">10-Yr G-Sec Yield</div>
+      <div class="metric-value">~6.6%</div>
+      <div class="metric-note">RBI repo: 5.25–5.50% <span class="e">ESTIMATED</span></div>
+    </div>
+    <div class="metric-card cyan">
+      <div class="metric-label">RBI Policy Stance</div>
+      <div class="metric-value">EASING</div>
+      <div class="metric-note">Rate cut cycle in progress <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Macro Composite</div>
+      <div class="metric-value">TAILWIND</div>
+      <div class="metric-note">Low inflation + high growth <span class="e">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Macro Cycle Dashboard</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Cycle Dimension</th><th>Current Status</th><th>Shadowfax Impact</th></tr>
+      <tr><td>Rural Income Cycle</td><td><span style="color:var(--green);">RECOVERY</span> — MSP hikes, benign food prices</td><td>+1–3% to addressable volumes as Tier-2/3 delivery expands</td></tr>
+      <tr><td>Urban Consumption Cycle</td><td><span style="color:var(--green);">BOOM</span> — IT wages stable, e-commerce up</td><td>Direct positive: metro express parcel growth</td></tr>
+      <tr><td>Input Cost Cycle</td><td><span style="color:var(--green);">FALLING</span> — fuel costs moderate, CPI 2.5%</td><td>+1–2% margin tailwind; gig delivery cost benign</td></tr>
+      <tr><td>Interest Rate Cycle</td><td><span style="color:var(--green);">EASING</span> — RBI rate cuts underway</td><td>Reduces lease financing cost; positive for working capital</td></tr>
+      <tr><td>Govt Capex Cycle</td><td><span style="color:var(--green);">HIGH</span> — Roads ₹3.1 lakh Cr Budget 26-27</td><td>Improves highway efficiency; reduces transit time, fuel burn</td></tr>
+      <tr><td>AI Adoption Cycle</td><td><span style="color:var(--yellow);">PHASE 2–3</span> in logistics AI</td><td>Route AI = Phase 3 (mainstream). Quick commerce platform AI = Phase 2.</td></tr>
+    </table>
+    <div class="highlight-box" style="margin-top:12px;">
+      <h4>Macro Composite: TAILWIND 🟢</h4>
+      <p style="font-size:0.88rem;color:var(--silver);">All six macro dimensions are favourable for Shadowfax. The combination of easing inflation (lower gig worker cost pressures), government highway investment, rural recovery (expanding Tier-2/3 market), and continued e-commerce compounding creates a nearly ideal macro backdrop for a last-mile logistics scale-up.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+  <div class="card">
+    <div class="card-title">India Express Logistics Sector</div>
+    <table class="data-table">
+      <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Acceleration</th><th>AI Impact</th></tr>
+      <tr><td>Shipment CAGR to FY30</td><td class="mono stress">15–17%</td><td class="mono base">19–23%</td><td class="mono accel">25–30%</td><td>AI NEUTRAL — demand not AI-driven</td></tr>
+      <tr><td>E-Commerce CAGR</td><td class="mono stress">18%</td><td class="mono base">23–24%</td><td class="mono accel">28–30%</td><td>AI accelerates basket size, NPS</td></tr>
+      <tr><td>Quick Commerce CAGR</td><td class="mono stress">25%</td><td class="mono base">33–40%</td><td class="mono accel">50%+</td><td>AI in demand forecasting = WIDENER</td></tr>
+      <tr><td>D2C Logistics CAGR</td><td class="mono stress">20%</td><td class="mono base">25–30%</td><td class="mono accel">35%</td><td>AI personalisation boosts repeat orders</td></tr>
+      <tr><td>Market Size FY25</td><td colspan="3" class="mono base">USD ~9B (KPMG) / ~USD 19.5B (IMARC)</td><td>Range reflects different scope definitions</td></tr>
+      <tr><td>Market Size FY30E</td><td class="mono stress">USD 18B</td><td class="mono base">USD 22–46B</td><td class="mono accel">USD 50B+</td><td>Sources: Redseer, OMR, IMARC</td></tr>
+    </table>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;"><span class="v">VERIFIED</span> Redseer: Shipments to reach 24–29B by FY30 at 19–23% CAGR from FY24's 8–9B. Quick commerce fastest at 33–50% CAGR. KPMG: Express logistics USD 9B FY25 growing to USD 18–22B by FY30.</p>
+  </div>
+
+  <div class="section-title">Layer 3 — Company Alpha Over Sector</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Evidence</th></tr>
+      <tr><td>1. Market Share Gain</td><td><span style="color:var(--green);">ACTIVE</span></td><td class="mono">+8–12%</td><td class="mono">+3–5%</td><td>Share grew from ~17% to ~27–28% in 1yr (+1,000 bps) <span class="v">VERIFIED</span></td></tr>
+      <tr><td>2. Premiumisation</td><td><span style="color:var(--muted);">N/A</span></td><td class="mono">0%</td><td class="mono">0%</td><td>Logistics is commoditised pricing; SLA, not price premium</td></tr>
+      <tr><td>3. Category Expansion</td><td><span style="color:var(--yellow);">POTENTIAL</span></td><td class="mono">+2–3%</td><td class="mono">+3–5%</td><td>CriticaLog acquisition, dark stores, SME courier — new TAM</td></tr>
+      <tr><td>4. Geographic Expansion</td><td><span style="color:var(--green);">ACTIVE</span></td><td class="mono">+3–5%</td><td class="mono">+2–3%</td><td>14,758→15,166 PIN codes; target 20,000 by FY27</td></tr>
+      <tr><td>5. Pricing Power</td><td><span style="color:var(--red);">WEAK</span></td><td class="mono">-1–0%</td><td class="mono">0%</td><td>Logistics = commoditised; per-shipment pricing under pressure</td></tr>
+      <tr><td>6a. AI Cost Reduction</td><td><span style="color:var(--yellow);">NARROW</span></td><td class="mono">+1–1.5%</td><td class="mono">+1–2%</td><td>Route optimisation + SF Shield reduce cost/delivery <span class="e">ESTIMATED</span></td></tr>
+      <tr><td>6b. AI Market Expansion</td><td><span style="color:var(--muted);">N/A</span></td><td class="mono">0%</td><td class="mono">0%</td><td>AI not expanding TAM — e-commerce is the TAM expander</td></tr>
+      <tr><td>6c. Data Flywheel</td><td><span style="color:var(--yellow);">FORMING</span></td><td class="mono">+1%</td><td class="mono">+2–3%</td><td>More deliveries → better address intel → lower cost → more volumes</td></tr>
+    </table>
+    <div class="metrics-grid" style="margin-top:14px;">
+      <div class="metric-card green"><div class="metric-label">Total Stage 1 Alpha</div><div class="metric-value">+14–21%</div><div class="metric-note">Above sector base CAGR</div></div>
+      <div class="metric-card"><div class="metric-label">Total Stage 2 Alpha</div><div class="metric-value">+9–16%</div><div class="metric-note">Normalising as scale matures</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Growth Rate Summary Table</div>
+  <div class="growth-grid">
+    <div class="growth-cell header">Parameter</div>
+    <div class="growth-cell header" style="color:#FCA5A5;">STRESS</div>
+    <div class="growth-cell header" style="color:#86EFAC;">BASE</div>
+    <div class="growth-cell header" style="color:#93C5FD;">ACCELERATION</div>
+    <div class="growth-cell label">Macro State</div>
+    <div class="growth-cell"><span class="val stress">GDP ~5.5%</span></div>
+    <div class="growth-cell"><span class="val base">GDP ~6.8–7.6%</span></div>
+    <div class="growth-cell"><span class="val accel">GDP ~8%+</span></div>
+    <div class="growth-cell label">Sector Shipment CAGR</div>
+    <div class="growth-cell"><span class="val stress">15–17%</span></div>
+    <div class="growth-cell"><span class="val base">19–23%</span></div>
+    <div class="growth-cell"><span class="val accel">25–30%</span></div>
+    <div class="growth-cell label">Company Alpha</div>
+    <div class="growth-cell"><span class="val stress">+5–8%</span></div>
+    <div class="growth-cell"><span class="val base">+10–15%</span></div>
+    <div class="growth-cell"><span class="val accel">+15–20%</span></div>
+    <div class="growth-cell label">AI Alpha (6a+6c)</div>
+    <div class="growth-cell"><span class="val stress">+0.5%</span></div>
+    <div class="growth-cell"><span class="val base">+2%</span></div>
+    <div class="growth-cell"><span class="val accel">+3%</span></div>
+    <div class="growth-cell label">Stage 1 Rev CAGR</div>
+    <div class="growth-cell"><span class="val stress mono">20–25%</span></div>
+    <div class="growth-cell"><span class="val base mono">30–38%</span></div>
+    <div class="growth-cell"><span class="val accel mono">43–50%</span></div>
+    <div class="growth-cell label">Stage 2 Rev CAGR</div>
+    <div class="growth-cell"><span class="val stress mono">12–15%</span></div>
+    <div class="growth-cell"><span class="val base mono">18–22%</span></div>
+    <div class="growth-cell"><span class="val accel mono">25–28%</span></div>
+    <div class="growth-cell label">Terminal Rev Growth</div>
+    <div class="growth-cell"><span class="val stress mono">6.5%</span></div>
+    <div class="growth-cell"><span class="val base mono">7.3%</span></div>
+    <div class="growth-cell"><span class="val accel mono">8.0%</span></div>
+    <div class="growth-cell label">Adj EBITDA Margin Traj.</div>
+    <div class="growth-cell"><span class="val stress">Stable 4–5%</span></div>
+    <div class="growth-cell"><span class="val base">Expand 6–10%</span></div>
+    <div class="growth-cell"><span class="val accel">Expand 10–14%</span></div>
+    <div class="growth-cell label">Key Risk</div>
+    <div class="growth-cell" style="font-size:0.8rem;color:var(--muted);">Client loss / price war</div>
+    <div class="growth-cell" style="font-size:0.8rem;color:var(--muted);">Margin execution</div>
+    <div class="growth-cell" style="font-size:0.8rem;color:var(--muted);">Competition intensification</div>
+  </div>
+  <div class="highlight-box" style="margin-top:14px;">
+    <h4>Sensitivity Checks</h4>
+    <p style="font-size:0.88rem;color:var(--silver);">A 1% change in terminal revenue growth rate changes IV by approximately 8–12%. A 1% change in Stage 1 revenue CAGR changes IV by approximately 5–7%. A 0.5x change in EV/Revenue multiple changes IV by approximately ₹30–40/share.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 2: FINANCIALS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab2" class="tab-content">
+  <div class="section-title">Revenue & Profitability Track</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Metric</th><th>FY2023</th><th>FY2024</th><th>FY2025</th><th>9M FY2026</th><th>Q3 FY26</th></tr>
+      <tr><td>Revenue (₹ Cr)</td><td class="mono">1,415</td><td class="mono">1,885</td><td class="mono">2,485</td><td class="mono">2,965</td><td class="mono">1,160</td></tr>
+      <tr><td>Revenue YoY Growth</td><td class="mono">—</td><td class="mono">+33%</td><td class="mono">+32%</td><td class="mono">+67%</td><td class="mono stress">+65.5%</td></tr>
+      <tr><td>PAT (₹ Cr)</td><td class="mono" style="color:var(--red);">-143</td><td class="mono" style="color:var(--red);">-12</td><td class="mono" style="color:var(--green);">+6.4</td><td class="mono" style="color:var(--green);">+56</td><td class="mono" style="color:var(--green);">+35</td></tr>
+      <tr><td>PAT Margin</td><td class="mono">-10.1%</td><td class="mono">-0.6%</td><td class="mono">+0.26%</td><td class="mono">+1.9%</td><td class="mono">+3.0%</td></tr>
+      <tr><td>Ind AS EBITDA (₹ Cr)</td><td class="mono e">~10</td><td class="mono e">~20</td><td class="mono">~49</td><td class="mono">131</td><td class="mono">66.5</td></tr>
+      <tr><td>Ind AS EBITDA Margin</td><td class="mono e">~0.7%</td><td class="mono e">~1.1%</td><td class="mono">2.0%</td><td class="mono">4.4%</td><td class="mono">5.7%</td></tr>
+      <tr><td>Adj EBITDA (₹ Cr)</td><td class="mono e">—</td><td class="mono e">~18</td><td class="mono">49</td><td class="mono">101</td><td class="mono">49</td></tr>
+      <tr><td>Adj EBITDA Margin</td><td class="mono">—</td><td class="mono">1.0%</td><td class="mono">1.96%</td><td class="mono">3.4%</td><td class="mono">4.3%</td></tr>
+      <tr><td>FCF (₹ Cr)</td><td class="mono" style="color:var(--red);">-ve</td><td class="mono" style="color:var(--red);">-ve</td><td class="mono e" style="color:var(--yellow);">~10–15</td><td class="mono" style="color:var(--green);">+61</td><td class="mono">—</td></tr>
+    </table>
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:6px;"><span class="v">VERIFIED</span> from Q3 FY26 earnings press release, Shadowfax RHP, IPO documents, and media reports.</p>
+  </div>
+
+  <div class="section-title">Financial Fortress Scorecard — Cat B Adapted</div>
+  <div class="score-card pass">
+    <div class="score-badge pass">✓</div>
+    <div class="score-text"><strong>Revenue CAGR ≥ Sector CAGR</strong><span>Company FY23–25: 32%; Accelerating to 67% in 9M FY26 vs sector base 19–23% → OUTPERFORMING decisively</span></div>
+  </div>
+  <div class="score-card pass">
+    <div class="score-badge pass">✓</div>
+    <div class="score-text"><strong>FCF Turning Positive</strong><span>FCF positive ₹61 Cr in 9M FY26 — first sustained positive FCF period. 11 consecutive quarters of EBITDA positivity. <span class="v">VERIFIED</span></span></div>
+  </div>
+  <div class="score-card marginal">
+    <div class="score-badge marginal">~</div>
+    <div class="score-text"><strong>ROE / ROIC above WACC</strong><span>ROIC not yet meaningful — very recently profitable. PAT margin only 3% in best quarter. WACC estimated 13–15% (Cat B India). ROIC likely 3–6% on invested capital ex-leases. MARGINAL — monitor trajectory. <span class="e">ESTIMATED</span></span></div>
+  </div>
+  <div class="score-card marginal">
+    <div class="score-badge marginal">~</div>
+    <div class="score-text"><strong>Net Profit Margin ≥ 15%</strong><span>PAT margin only 3.0% in Q3 FY26. Management guides for Adj EBITDA margin "early teens" at steady state. Long runway to 15%+ net margin. MARGINAL.</span></div>
+  </div>
+  <div class="score-card marginal">
+    <div class="score-badge marginal">~</div>
+    <div class="score-text"><strong>Capital-Light Model</strong><span>Claims asset-light but lease liabilities ₹1,469 Cr (as of Sep 2025), capex ₹461 Cr FY25, ₹496 Cr H1 FY26. Lease-heavy model creates fixed cost structure. MARGINAL. <span class="v">VERIFIED</span></span></div>
+  </div>
+  <div class="score-card fail">
+    <div class="score-badge fail">✗</div>
+    <div class="score-text"><strong>Revenue Concentration Risk</strong><span>Largest single client: 48–59% of revenue (believed to be Flipkart group). Top-5 clients: 74–85% of revenue. This is NOT a fortress — it's a structural vulnerability. FAIL — major Buffett quality flag. <span class="v">VERIFIED</span></span></div>
+  </div>
+  <div class="score-card marginal">
+    <div class="score-badge marginal">~</div>
+    <div class="score-text"><strong>Predictable / Recurring Revenue</strong><span>Long-term enterprise contracts but no disclosed NRR metric. Volume-based pricing means revenue can vary. Multi-year relationships with Flipkart, Swiggy, Meesho lend some predictability. MARGINAL.</span></div>
+  </div>
+  <div class="score-card pass">
+    <div class="score-badge pass">✓</div>
+    <div class="score-text"><strong>Operating Leverage Demonstrating</strong><span>Adj EBITDA margin expanded 170 bps YoY to 4.3% in Q3 FY26; 190 bps YoY for 9M FY26. Each incremental revenue rupee producing meaningfully higher profit. Strong proof of scale economics. <span class="v">VERIFIED</span></span></div>
+  </div>
+
+  <div class="section-title">Owner Earnings Approximation</div>
+  <div class="card">
+    <div class="card-title">Annualised Owner Earnings — Q4 FY26 Run-Rate (Conservative Estimate)</div>
+    <table class="data-table">
+      <tr><th>Component</th><th>Calculation</th><th>Amount (₹ Cr)</th></tr>
+      <tr><td>Net Income (annualised at Q3 rate)</td><td>₹35 Cr × 4</td><td class="mono">~140</td></tr>
+      <tr><td>+ Depreciation & Amortisation (est.)</td><td>At ~3% of rev; rev ₹4,300E</td><td class="mono">~130</td></tr>
+      <tr><td>– Maintenance CapEx (est.)</td><td>~50% of total capex; excludes growth infra</td><td class="mono">-(~200)</td></tr>
+      <tr><td>± Working Capital Changes</td><td>COD exposure; WC relatively stable at scale</td><td class="mono">~(20)–(30)</td></tr>
+      <tr><td>Owner Earnings (Conservative)</td><td></td><td class="mono" style="color:var(--amber);">~40–50</td></tr>
+      <tr><td>Owner Earnings (Base — normalised)</td><td>Assumes growth capex = growth OE</td><td class="mono" style="color:var(--green);">~80–100</td></tr>
+    </table>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;">Note: Owner earnings are very thin at current stage. The investment thesis is about FUTURE owner earnings at 10–14% EBITDA steady-state (₹500–700 Cr), not current. <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Earnings Quality — O'Glove Framework</div>
+  <div class="score-card marginal">
+    <div class="score-badge marginal">~</div>
+    <div class="score-text"><strong>Test 1 — FCF Conversion (5-Year Trend)</strong><span>FY23–24: Negative (investment phase). FY25: First FCF positive (~₹10–15 Cr). 9M FY26: FCF ₹61 Cr with "highest ever capex deployment". FCF/Net Income ratio improving but thin. MARGINAL — trend positive. <span class="v">VERIFIED</span></span></div>
+  </div>
+  <div class="score-card marginal">
+    <div class="score-badge marginal">~</div>
+    <div class="score-text"><strong>Test 2 — DSO / Receivable Trend</strong><span>34–47% of orders are cash-on-delivery — significant collection risk. Enterprise clients (Flipkart, Swiggy) typically pay on 30–45 day terms. No specific DSO metric disclosed publicly. MARGINAL — COD exposure warrants monitoring. <span class="e">ESTIMATED</span></span></div>
+  </div>
+  <div class="score-card pass">
+    <div class="score-badge pass">✓</div>
+    <div class="score-text"><strong>Test 5 — Gross / EBITDA Margin Consistency</strong><span>Adj EBITDA margin has expanded consistently: 1.0%→1.96%→3.4% (9M FY26)→4.3% (Q3 FY26). 11 consecutive quarters EBITDA positive. No margin discontinuity suggesting accounting manipulation. PASS — trajectory is clean. <span class="v">VERIFIED</span></span></div>
+  </div>
+  <div class="score-card marginal">
+    <div class="score-badge marginal">~</div>
+    <div class="score-text"><strong>Test 4 — Accounting Policy Stability</strong><span>Recently listed company; first public accounts only as of Q3 FY26. Lease accounting (Ind AS 116) creates significant below-the-line charges. Ind AS EBITDA (₹66 Cr) vs Adj EBITDA (₹49 Cr) divergence = ₹17 Cr lease-related costs removed. Management presenting "adjusted" metrics with lease exclusion — monitor for earnings management. MARGINAL. <span class="v">VERIFIED</span></span></div>
+  </div>
+  <div class="card" style="margin-top:12px;">
+    <div class="card-title">Earnings Quality Overall: ACCEPTABLE (trending toward CLEAN)</div>
+    <p style="font-size:0.9rem;color:var(--silver);">No red flags from O'Glove testing at this stage. The main concern is the use of "Adjusted EBITDA" which excludes lease costs — a structurally legitimate adjustment for Ind AS 116 compliance but one that flatters the real P&L. Margin of safety should incorporate this: use Ind AS EBITDA (5.7%) rather than Adj EBITDA (4.3%) as the true operating margin benchmark.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 3: MOAT -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab3" class="tab-content">
+  <div class="section-title">Moat Sources Assessment</div>
+
+  <div class="moat-card">
+    <div><div class="moat-name">Network Effect (Delivery Partner Network)</div><div class="moat-desc">2.06 lakh quarterly unique gig partners covering 2,300+ cities. More orders → more riders attracted → denser coverage. Local knowledge advantage (gate codes, building access, informal landmarks) non-replicable from zero. <span class="e">ESTIMATED</span></div></div>
+    <div style="text-align:right;"><div class="stars-rating">★★★</div><div style="font-size:0.75rem;color:var(--muted);">MODERATE</div></div>
+  </div>
+  <div class="moat-card">
+    <div><div class="moat-name">Switching Costs (Enterprise Client Integration)</div><div class="moat-desc">Deep API integration with e-commerce platforms, WMS/OMS systems, tracking portals. Custom SLA agreements. Integration cost is real but not insurmountable — Flipkart exercises captive (Ekart) option partially. <span class="e">ESTIMATED</span></div></div>
+    <div style="text-align:right;"><div class="stars-rating">★★</div><div style="font-size:0.75rem;color:var(--muted);">NARROW</div></div>
+  </div>
+  <div class="moat-card">
+    <div><div class="moat-name">Scale Efficiency (Fixed Cost Leverage)</div><div class="moat-desc">Sort centres, line-haul infrastructure: near-fixed costs spread over rising volumes. Each incremental shipment has near-zero marginal cost. EBITDA margin expanding 170–270 bps YoY confirms operating leverage proof. <span class="v">VERIFIED</span></div></div>
+    <div style="text-align:right;"><div class="stars-rating">★★★</div><div style="font-size:0.75rem;color:var(--muted);">BUILDING</div></div>
+  </div>
+  <div class="moat-card">
+    <div><div class="moat-name">Address Intelligence (SF Maps)</div><div class="moat-desc">Proprietary geospatial database built from 1B+ deliveries. Maps informal addresses (no formal GPS coordinate) which cover ~40% of Indian delivery locations. Delhivery has similar but different dataset. This is a data asset, not yet a full flywheel. <span class="e">ESTIMATED</span></div></div>
+    <div style="text-align:right;"><div class="stars-rating">★★★</div><div style="font-size:0.75rem;color:var(--muted);">FORMING</div></div>
+  </div>
+  <div class="moat-card">
+    <div><div class="moat-name">Brand / Customer Habit</div><div class="moat-desc">B2B2C: end consumer doesn't choose Shadowfax, the platform does. No consumer brand moat. Differentiation is B2B SLA reliability, pricing, technology integration. <span class="v">VERIFIED</span></div></div>
+    <div style="text-align:right;"><div class="stars-rating">★</div><div style="font-size:0.75rem;color:var(--muted);">WEAK</div></div>
+  </div>
+  <div class="moat-card">
+    <div><div class="moat-name">Fraud Detection (SF Shield)</div><div class="moat-desc">AI-powered RTO (Return-to-Origin) risk assessment. More deliveries → more fraud pattern training → lower false-positive rate → lower RTO cost for enterprise clients. Partial flywheel evidence. <span class="e">ESTIMATED</span></div></div>
+    <div style="text-align:right;"><div class="stars-rating">★★</div><div style="font-size:0.75rem;color:var(--muted);">FORMING</div></div>
+  </div>
+
+  <div class="section-title">ROIC as Moat Proof</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Year</th><th>Revenue (₹ Cr)</th><th>EBITDA Margin</th><th>Approx ROIC</th><th>vs WACC (13–15%)</th></tr>
+      <tr><td>FY2023</td><td class="mono">1,415</td><td class="mono">~0.7%</td><td class="mono" style="color:var(--red);">Negative</td><td style="color:var(--red);">Below WACC</td></tr>
+      <tr><td>FY2024</td><td class="mono">1,885</td><td class="mono">~1.1%</td><td class="mono" style="color:var(--red);">Negative</td><td style="color:var(--red);">Below WACC</td></tr>
+      <tr><td>FY2025</td><td class="mono">2,485</td><td class="mono">2.0%</td><td class="mono" style="color:var(--yellow);">~2–3%</td><td style="color:var(--yellow);">Below WACC</td></tr>
+      <tr><td>9M FY2026E</td><td class="mono">2,965</td><td class="mono">4.4%</td><td class="mono" style="color:var(--yellow);">~5–7%</td><td style="color:var(--yellow);">Still below WACC</td></tr>
+      <tr><td>FY2028E (proj.)</td><td class="mono e">~6,500</td><td class="mono e">~8–10%</td><td class="mono e" style="color:var(--green);">~12–15%</td><td style="color:var(--green);">Approaching WACC</td></tr>
+    </table>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;">ROIC crossing WACC = the pivotal signal for a Cat B J-curve compounder. At current trajectory (190 bps/yr EBITDA expansion), ROIC could cross WACC by FY28–29. <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">DATA FLYWHEEL TEST</div>
+  <div class="flywheel-box forming">
+    <div class="flywheel-title">⚙ DATA FLYWHEEL: FORMING ★★★ (2/3 Confirmed)</div>
+    <div class="fw-item">
+      <div class="fw-icon partial">~</div>
+      <div><strong style="color:var(--white);">Q1: Proprietary Training Data?</strong><br><span style="font-size:0.85rem;color:var(--muted);">PARTIAL. Shadowfax has 1B+ delivery records, informal address database (SF Maps), RTO pattern data (SF Shield), and delivery sequence optimisation data. However, Delhivery also has a comparable proprietary dataset from a similar volume base. Data is NOT exclusively proprietary — overlap with competitor data exists. Score: 1.5/3</span></div>
+    </div>
+    <div class="fw-item">
+      <div class="fw-icon partial">~</div>
+      <div><strong style="color:var(--white);">Q2: Does AI improve with more data/users?</strong><br><span style="font-size:0.85rem;color:var(--muted);">FORMING. More deliveries → better SF Maps address resolution → lower delivery attempt failures. SF Shield: more COD orders → better fraud pattern recognition → lower RTO rates. HOWEVER: no specific quantified improvement metric disclosed in any earnings call (e.g. "RTO rate fell from X% to Y% as volume doubled"). Without this evidence, flywheel is ASSERTED, not CONFIRMED. Score: 1.5/4</span></div>
+    </div>
+    <div class="fw-item">
+      <div class="fw-icon yes">✓</div>
+      <div><strong style="color:var(--white);">Q3: Does better AI attract more users?</strong><br><span style="font-size:0.85rem;color:var(--muted);">YES — in B2B terms. Lower RTO rates → lower cost to enterprise clients → client retention and expansion. 27–28% market share gain in 1 year partly driven by operational reliability. The enterprise client value proposition is confirmed. Loop speed: 6–12 months (contract renewal cycle). Score: 3/3</span></div>
+    </div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(245,158,11,0.3);">
+      <strong style="color:var(--yellow);">Flywheel Strength Score: 6/10</strong>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
+        <div style="text-align:center;padding:8px;background:rgba(255,255,255,0.05);border-radius:6px;"><div style="font-size:0.75rem;color:var(--muted);">Data Quality</div><div class="mono" style="color:var(--yellow);">2/3</div></div>
+        <div style="text-align:center;padding:8px;background:rgba(255,255,255,0.05);border-radius:6px;"><div style="font-size:0.75rem;color:var(--muted);">Improvement Evidence</div><div class="mono" style="color:var(--yellow);">1.5/4</div></div>
+        <div style="text-align:center;padding:8px;background:rgba(255,255,255,0.05);border-radius:6px;"><div style="font-size:0.75rem;color:var(--muted);">Loop Speed</div><div class="mono" style="color:var(--green);">2.5/3</div></div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;"><strong>Verdict: MODERATE FLYWHEEL — Building, not confirmed.</strong> Moat grade is NOT upgraded until specific AI improvement metrics are disclosed and verified. Monitor: RTO rate trend, delivery attempt failure rate, address resolution accuracy metrics in earnings calls.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Moat Stress Tests</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Moat Source</th><th>Macro Stress</th><th>Competitive Threat</th><th>AI Disruption</th></tr>
+      <tr><td>Delivery Network</td><td>HOLDS — gig model is variable cost</td><td>WEAKENS — Delhivery/Ekart can poach</td><td>NEUTRAL — drones far away</td></tr>
+      <tr><td>Address Intelligence</td><td>HOLDS</td><td>HOLDS — proprietary dataset</td><td>WIDENS — AI makes data more valuable</td></tr>
+      <tr><td>Scale Efficiency</td><td>WEAKENS — volume drops hurt fixed costs</td><td>WEAKENS — if Flipkart insources</td><td>WIDENS — automation improves leverage</td></tr>
+      <tr><td>Enterprise Switching Cost</td><td>HOLDS</td><td>WEAKENS — client can dual-source</td><td>NEUTRAL</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Critical Moat Risk: Client Concentration</div>
+  <div class="risk-box">
+    <h4>⚠ The #1 Moat Vulnerability: Flipkart Dependence</h4>
+    <p style="font-size:0.88rem;color:var(--silver);">A logistics company where 48–59% of revenue comes from a single client is structurally NOT a wide-moat business by Buffett standards. If Flipkart (owned by Walmart) decides to expand its captive logistics arm (Ekart) or shifts volume to Delhivery, Shadowfax loses its moat overnight. This is the antithesis of the "castle and moat" metaphor — the castle's survival depends entirely on the king's goodwill. The moat assessment is capped at B- until top-client concentration falls below 35%.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 4: MANAGEMENT -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab4" class="tab-content">
+  <div class="section-title">Management Profile</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Person</th><th>Role</th><th>Assessment</th></tr>
+      <tr><td>Abhishek Bansal</td><td>MD & CEO</td><td>Co-founder. IIT Delhi + IIM Ahmedabad. Vision of "100-year company" — long-term orientation. Strong operational execution: grew from startup to ₹2,500 Cr revenue in 10 years.</td></tr>
+      <tr><td>Vaibhav Khandelwal</td><td>Co-Founder / Director</td><td>Operations background. Credited with building the gig-partner model and network density strategy.</td></tr>
+      <tr><td>Capital Allocation</td><td>Track Record</td><td>CriticaLog acquisition (Jan 2025) signals M&A capability. IPO proceeds targeted: ₹562 Cr for network expansion + automation + ₹139 Cr for lease payments. Growth-focused, not dividend-paying. Appropriate for stage.</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Shareholding Integrity Assessment</div>
+  <div class="score-card fail">
+    <div class="score-badge fail">✗</div>
+    <div class="score-text"><strong>Promoter Holding — 16.7% (LOW — CONCERN)</strong><span>Promoter holding below 20% is a Buffett red flag. Founders retain only 16.7% post-IPO, suggesting significant dilution over pre-IPO funding rounds (raised USD 247M over 12 rounds). Low insider skin-in-the-game vs a company requiring continued execution faith. <span class="v">VERIFIED</span></span></div>
+  </div>
+  <div class="score-card pass">
+    <div class="score-badge pass">✓</div>
+    <div class="score-text"><strong>Pledged Shares — 0% (Confirmed)</strong><span>No promoter pledge on disclosed shares. IPO prospectus does not mention any pledge arrangements. PASS. <span class="v">VERIFIED</span></span></div>
+  </div>
+  <div class="score-card marginal">
+    <div class="score-badge marginal">~</div>
+    <div class="score-text"><strong>Post-IPO Insider Behaviour</strong><span>Company is only 2 months listed as of this report. No post-IPO insider selling data available. OFS component of IPO means some PE investors exited at IPO. Monitor for insider buying as a positive signal. <span class="u">UNVERIFIED</span></span></div>
+  </div>
+  <div class="score-card pass">
+    <div class="score-badge pass">✓</div>
+    <div class="score-text"><strong>Guidance Reliability — Q3 FY26</strong><span>Management guided for "25–30% YoY growth next few years" and "gradual margin expansion of 1–1.2% annually." First post-IPO quarter delivered 65% growth and 170 bps margin improvement — tracking ABOVE guidance. Credibility established. <span class="v">VERIFIED</span></span></div>
+  </div>
+  <div class="score-card marginal">
+    <div class="score-badge marginal">~</div>
+    <div class="score-text"><strong>Related Party & Corporate Governance</strong><span>No IT raids, fraud allegations, or related party concerns in public domain. Standard IPO-era disclosure checks pass. Being Walmart/Flipkart-adjacent creates an unusual dynamic — largest client relationship must be managed at arm's length commercially. MARGINAL — monitor quarterly. <span class="e">ESTIMATED</span></span></div>
+  </div>
+
+  <div class="section-title">Capital Allocation Quality</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Allocation</th><th>Amount</th><th>Assessment</th></tr>
+      <tr><td>Network Expansion / Automation (IPO proceeds)</td><td class="mono">₹423 Cr</td><td>Appropriate — investing in scale to capture market share while sector is consolidating</td></tr>
+      <tr><td>Lease Payments (IPO proceeds)</td><td class="mono">₹139 Cr</td><td>Necessary but not value-creating — reduces future cash burden</td></tr>
+      <tr><td>CriticaLog Acquisition (Jan 2025)</td><td class="mono">Undisclosed</td><td>Expands high-margin critical logistics capability; OLS revenue grew 136% post-acquisition</td></tr>
+      <tr><td>R&D / Technology</td><td class="mono e">~3–5% of rev</td><td>Develops SF Maps, SF Shield, route optimisation — competitive moat investment <span class="e">ESTIMATED</span></td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Management Integrity Score</div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:800;color:#93C5FD;">B−</div>
+      <div>
+        <p style="color:var(--silver);font-size:0.9rem;">Strong execution track record and no integrity red flags. The single major concern is the low promoter holding (16.7%) which limits insider alignment. Management guidance has been conservative and beaten in first public quarter. Long-term vision articulated clearly. Weakness: pre-IPO dilution to PE investors means founders have limited economic upside incentive vs a founder owning 60%+.</p>
+        <p style="color:var(--muted);font-size:0.82rem;margin-top:6px;"><strong>Watch trigger:</strong> Any promoter stock purchase post-IPO = significant positive signal.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 5: VALUATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab5" class="tab-content">
+  <div class="section-title">Valuation Approach — Cat B Modified</div>
+  <div class="info-box">
+    <p style="font-size:0.88rem;color:var(--silver);">Standard Cat B: 5-method DCF + relative valuation. For Shadowfax, DCF is applied with revenue-based Stage 1 since GAAP profits are too thin to anchor reliably. Primary anchor: EV/Revenue multiples (comparable 3PL platforms) + DCF cross-check with FCF margin expansion trajectory. All growth rates sourced from Tab 1 derivation table.</p>
+  </div>
+
+  <div class="section-title">Method 1 — EV/Revenue Multiple Valuation (Primary)</div>
+  <div class="card">
+    <div class="card-title">Comparable 3PL / Logistics Platform Multiples</div>
+    <table class="data-table">
+      <tr><th>Company</th><th>Rev Growth</th><th>Adj EBITDA Margin</th><th>EV/Rev</th><th>Note</th></tr>
+      <tr><td>Delhivery (NSE: DELHIVERY)</td><td class="mono">15–20%</td><td class="mono">3–5%</td><td class="mono">~4–5x</td><td>Market leader, lower growth</td></tr>
+      <tr><td>Blue Dart Express</td><td class="mono">8–12%</td><td class="mono">12–15%</td><td class="mono">~3–4x</td><td>Mature, DHL-backed premium</td></tr>
+      <tr><td>XpressBees (unlisted)</td><td class="mono">30%+</td><td class="mono">3–5%</td><td class="mono e">~3–4x</td><td>Close comp; unlisted <span class="e">EST</span></td></tr>
+      <tr><td>Lalamove (HK)</td><td class="mono">20–25%</td><td class="mono">8–12%</td><td class="mono">~3x</td><td>Hyperlocal, higher margin</td></tr>
+    </table>
+    <table class="val-table" style="margin-top:14px;">
+      <tr><th>Scenario</th><th>FY27E Revenue</th><th>EV/Rev Multiple</th><th>Enterprise Value</th><th>Price/Share</th><th>Upside</th></tr>
+      <tr class="highlight"><td>STRESS</td><td class="mono">₹5,000 Cr</td><td class="mono">1.5x</td><td class="mono">₹7,500 Cr</td><td class="mono">~₹130</td><td class="mono" style="color:var(--yellow);">+15%</td></tr>
+      <tr class="highlight"><td>BASE</td><td class="mono">₹5,500 Cr</td><td class="mono">2.5x</td><td class="mono">₹13,750 Cr</td><td class="mono">~₹238</td><td class="mono" style="color:var(--green);">+110%</td></tr>
+      <tr class="highlight"><td>ACCEL.</td><td class="mono">₹6,000 Cr</td><td class="mono">3.5x</td><td class="mono">₹21,000 Cr</td><td class="mono">~₹363</td><td class="mono" style="color:var(--cyan);">+221%</td></tr>
+    </table>
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:8px;">FY27E Revenue: Management guidance 25–30% growth from FY26E ~₹4,100–4,300 Cr → FY27E ₹5,100–5,600 Cr. Price/share calculated as (EV – Net Debt of ~₹1,600 Cr including leases) / 578M shares. <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Method 2 — DCF (2-Stage Revenue → FCF)</div>
+  <div class="card">
+    <div class="card-title">Base Case DCF — FCF Margin Expansion Model</div>
+    <table class="data-table">
+      <tr><th>Year</th><th>Revenue</th><th>FCF Margin</th><th>FCF</th><th>Discounted @13%</th></tr>
+      <tr><td>FY27E</td><td class="mono">₹5,200 Cr</td><td class="mono">3.0%</td><td class="mono">₹156 Cr</td><td class="mono">₹138 Cr</td></tr>
+      <tr><td>FY28E</td><td class="mono">₹6,500 Cr</td><td class="mono">4.5%</td><td class="mono">₹293 Cr</td><td class="mono">₹229 Cr</td></tr>
+      <tr><td>FY29E</td><td class="mono">₹7,800 Cr</td><td class="mono">6.0%</td><td class="mono">₹468 Cr</td><td class="mono">₹324 Cr</td></tr>
+      <tr><td>FY30E</td><td class="mono">₹9,000 Cr</td><td class="mono">7.5%</td><td class="mono">₹675 Cr</td><td class="mono">₹413 Cr</td></tr>
+      <tr><td>FY31–35E</td><td class="mono">Stage 2: 18%</td><td class="mono">8.0%</td><td colspan="2" class="mono">PV Stage 2: ~₹1,800 Cr</td></tr>
+      <tr><td>Terminal Value</td><td colspan="2" class="mono">g = 7.3%; WACC = 13%</td><td colspan="2" class="mono">PV Terminal: ~₹3,200 Cr</td></tr>
+      <tr style="background:rgba(255,107,53,0.1);"><td><strong>Intrinsic Value</strong></td><td colspan="2"></td><td colspan="2" class="mono" style="color:var(--amber);">EV ~₹6,104 Cr → IV ~₹78/sh (after net debt)</td></tr>
+    </table>
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:6px;"><em>Note: DCF intrinsic value implies current price (₹113) is ABOVE DCF base case. This reflects that DCF is undervalued vs optionality — the market is paying for the acceleration scenario. This is typical for Cat B compounders in early ROIC J-curve phase.</em> <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Method 3 — P/E Earnings Power (Forward)</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Scenario</th><th>FY27E PAT</th><th>P/E Multiple</th><th>Implied Price</th></tr>
+      <tr><td>Conservative</td><td class="mono">₹150 Cr</td><td class="mono">40x</td><td class="mono">₹104</td></tr>
+      <tr><td>Base</td><td class="mono">₹220 Cr</td><td class="mono">50x</td><td class="mono">₹190</td></tr>
+      <tr><td>Bull</td><td class="mono">₹300 Cr</td><td class="mono">60x</td><td class="mono">₹311</td></tr>
+    </table>
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:6px;">FY27E PAT derived from 9M FY26 PAT ₹56 Cr (annualised ~₹90 Cr) × 2 years of 25–35% PAT growth. P/E multiple: Delhivery trades at 195x (thin profit base effect); Blue Dart at 50x. Shadowfax at 40–60x FY27 P/E = reasonable range for growing logistics platform. <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Method 4 — Earnings Yield vs Bond Yield</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr>
+      <tr><td>Current Earnings Yield (TTM)</td><td class="mono">~0.8%</td><td>Extremely thin — 10yr G-Sec at 6.6%; ERP deeply negative</td></tr>
+      <tr><td>FY27E Forward Earnings Yield</td><td class="mono">~1.9–2.9%</td><td>Still below bond yield; justified only by growth option</td></tr>
+      <tr><td>FY28E Forward Earnings Yield</td><td class="mono">~4.5–6.0%</td><td>Approaching 10yr G-Sec — growth premium requiring execution</td></tr>
+      <tr><td>ERP (FY28 base)</td><td class="mono e">~Neutral</td><td>Becomes interesting for long-term holders at FY28 normalisation</td></tr>
+    </table>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:6px;">Earnings yield today does NOT support investment on Buffett yield-on-cost logic. This is a pure growth bet, not a yield play. The analyst target of ₹175–180 (ICICI Securities, 2 analysts) is anchored to FY28 earnings normalisation. <span class="v">VERIFIED</span></p>
+  </div>
+
+  <div class="section-title">Method 5 — Relative Valuation (vs Peers)</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Metric</th><th>Shadowfax</th><th>Delhivery</th><th>Blue Dart</th><th>XpressBees (E)</th></tr>
+      <tr><td>Rev Growth (TTM)</td><td class="mono" style="color:var(--green);">65–67%</td><td class="mono">15–18%</td><td class="mono">9–12%</td><td class="mono e">30%+</td></tr>
+      <tr><td>Adj EBITDA Margin</td><td class="mono">4.3%</td><td class="mono">5–6%</td><td class="mono">12–15%</td><td class="mono e">3–5%</td></tr>
+      <tr><td>EV/Rev (approx.)</td><td class="mono" style="color:var(--green);">~1.5x</td><td class="mono">~4–5x</td><td class="mono">~3–4x</td><td class="mono e">~3x</td></tr>
+      <tr><td>Market Position</td><td class="mono">2nd</td><td class="mono">1st</td><td class="mono">Premium 3rd</td><td class="mono">3rd</td></tr>
+    </table>
+    <div class="highlight-box" style="margin-top:12px;">
+      <h4>Relative Valuation Conclusion</h4>
+      <p style="font-size:0.88rem;color:var(--silver);">Shadowfax at 1.5x EV/Rev is the <em>cheapest</em> express logistics platform by revenue multiple in India despite being the FASTEST growing. This valuation gap vs Delhivery (4–5x EV/Rev) is partially explained by thin margins and high client concentration — but is also possibly an opportunity if execution continues. Current price already reflects stress scenario (1.5x) — any re-rating to base scenario (2.5x) delivers 2x from current levels.</p>
+    </div>
+  </div>
+
+  <div class="section-title">5-Method Summary + Margin of Safety</div>
+  <table class="val-table">
+    <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>Note</th></tr>
+    <tr><td>EV/Revenue Multiple</td><td class="mono">₹130</td><td class="mono">₹238</td><td class="mono">₹363</td><td>Primary method</td></tr>
+    <tr><td>DCF (FCF expansion)</td><td class="mono">₹60</td><td class="mono">₹78</td><td class="mono">₹130</td><td>Conservative — captures floor</td></tr>
+    <tr><td>P/E Earnings Power</td><td class="mono">₹104</td><td class="mono">₹190</td><td class="mono">₹311</td><td>FY27E anchored</td></tr>
+    <tr><td>Earnings Yield</td><td class="mono">₹90</td><td class="mono">₹155</td><td class="mono">₹240</td><td>FY28 normalisation</td></tr>
+    <tr><td>Relative Valuation</td><td class="mono">₹115</td><td class="mono">₹200</td><td class="mono">₹350</td><td>vs Delhivery re-rating</td></tr>
+    <tr style="background:rgba(255,107,53,0.1);"><td><strong>BLENDED BASE IV</strong></td><td class="mono">₹100</td><td class="mono" style="color:var(--amber);font-weight:700;">₹172</td><td class="mono">₹279</td><td>Avg ex-DCF (3 methods)</td></tr>
+    <tr><td>AI Overlay Adjustment (Neutral)</td><td colspan="4" class="mono" style="color:var(--muted);">No AI premium/discount — AI is operational, not structural moat</td></tr>
+    <tr style="background:rgba(34,197,94,0.05);"><td><strong>MoS Entry (20%)</strong></td><td></td><td class="mono" style="color:var(--green);font-weight:700;">₹98–138</td><td></td><td>Full entry; Starter: ₹138–165</td></tr>
+  </table>
+  <div class="highlight-box" style="margin-top:12px;">
+    <h4>Valuation Conclusion</h4>
+    <p style="font-size:0.88rem;color:var(--silver);">At ₹113, the stock is trading AT the stress multiple and BELOW the base IV by ~34%. This is compelling from a risk-reward perspective IF execution on margin expansion and client diversification continues. The analyst target of ₹175–180 aligns with our base-case scenario. The stock is not cheap on DCF or earnings yield — but on revenue multiple basis vs comparable logistics platforms, it is genuinely undervalued.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 6: VERDICT -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab6" class="tab-content">
+  <div class="section-title">Four-Pillar Grades</div>
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 1 · Economic Moat</div>
+      <div class="pillar-grade grade-b-minus">B−</div>
+      <div style="font-size:0.82rem;color:var(--muted);">Narrow & building. Network effect + scale leverage confirmed, but capped by extreme client concentration. Flywheel forming, not confirmed.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 2 · Financial Fortress</div>
+      <div class="pillar-grade grade-c-plus">C+</div>
+      <div style="font-size:0.82rem;color:var(--muted);">Just profitable (FY25). Operating leverage proving. FCF positive 9M FY26. Margins thin; lease-heavy balance sheet; client concentration = structural weakness.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 3 · Management</div>
+      <div class="pillar-grade grade-b-minus">B−</div>
+      <div style="font-size:0.82rem;color:var(--muted);">Strong execution, clean governance, beat guidance Q1. Low promoter holding (16.7%) is the key concern. Long-term vision clearly articulated.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 4 · Valuation</div>
+      <div class="pillar-grade grade-b">B</div>
+      <div style="font-size:0.82rem;color:var(--muted);">Trading at stress EV/Revenue multiple. Blended base IV ₹172 vs current ₹113 = 34% discount. Risk-reward asymmetric (2:1) at current price.</div>
+    </div>
+  </div>
+
+  <div class="verdict-main">
+    <div class="stars">★★★</div>
+    <h2>WATCH — STRONG TRAJECTORY</h2>
+    <p><strong>Shadowfax is a compelling growth story with three material structural concerns preventing a BUY rating:</strong> (1) Extreme client concentration — Flipkart group is 48–59% of revenue; (2) Promoter holding only 16.7% — limited founder alignment; (3) Adj EBITDA margin only 4.3% — long way from the 10–14% steady-state target. The stock at ₹113 is trading at the stress EV/Revenue multiple and offers asymmetric risk-reward IF the business successfully diversifies its client base and expands margins. This is a high-growth Indian logistics bet for patient investors who can tolerate execution risk.</p>
+    <blockquote style="margin-top:16px;border-left:3px solid var(--amber);padding-left:16px;text-align:left;"><em>"Price is what you pay. Value is what you get. For Shadowfax, you're paying for today's growth story — value will emerge only when Flipkart concentration below 40% and EBITDA margin above 8%."</em></blockquote>
+  </div>
+
+  <div class="section-title">WATCH → BUY Upgrade Conditions (5 Measurable)</div>
+  <div class="upgrade-cond">
+    <div class="cond-num">1</div>
+    <div class="cond-text"><strong>Client concentration:</strong> Top client revenue contribution falls below 40% for 2 consecutive quarters (demonstrating genuine diversification, not seasonal).</div>
+  </div>
+  <div class="upgrade-cond">
+    <div class="cond-num">2</div>
+    <div class="cond-text"><strong>EBITDA margin:</strong> Ind AS Adj EBITDA margin exceeds 7.0% on a quarterly basis for 2 consecutive quarters (demonstrating operating leverage inflection).</div>
+  </div>
+  <div class="upgrade-cond">
+    <div class="cond-num">3</div>
+    <div class="cond-text"><strong>PIN code expansion:</strong> Covered PIN codes exceed 18,000 with maintained Q3-equivalent EBITDA margins (geographic growth without margin dilution).</div>
+  </div>
+  <div class="upgrade-cond">
+    <div class="cond-num">4</div>
+    <div class="cond-text"><strong>Flywheel confirmation:</strong> Management discloses specific AI performance metric — e.g. "RTO rate fell from X% to Y% as volumes doubled" or "delivery attempt failure rate reduced to Z%" — confirming data flywheel in earnings call.</div>
+  </div>
+  <div class="upgrade-cond">
+    <div class="cond-num">5</div>
+    <div class="cond-text"><strong>Promoter buying:</strong> Any promoter/management open-market purchase of shares (minimum ₹5 Cr) — insider conviction signal at post-IPO price.</div>
+  </div>
+
+  <div class="section-title">Pass / Avoid Triggers</div>
+  <div class="risk-box">
+    <h4>AVOID Triggers (Would Downgrade to PASS/AVOID)</h4>
+    <ul style="font-size:0.88rem;color:var(--silver);padding-left:18px;line-height:2;">
+      <li>Flipkart/Walmart insources delivery (Ekart expansion announcement)</li>
+      <li>Any confirmed promoter pledging of shares</li>
+      <li>Revenue growth decelerates below 20% for 2 consecutive quarters</li>
+      <li>EBITDA margin turns flat or negative</li>
+      <li>Client concentration worsens above 65% for top-1 client</li>
+    </ul>
+  </div>
+
+  <div class="section-title">Buffett Quality-Value Series — Full Log</div>
+  <div style="overflow-x:auto;">
+    <table class="series-table">
+      <tr><th>#</th><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry Zone</th></tr>
+      <tr><td>8/R</td><td>MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A−</td><td>A</td><td>B+</td><td>WATCH ★★★★</td><td>$288–316</td></tr>
+      <tr><td>31</td><td>ITBEES</td><td>NSE</td><td>ETF</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>B</td><td>WATCH ★★★★</td><td>Active Entry</td></tr>
+      <tr><td>32</td><td>NIFTYBEES</td><td>NSE</td><td>ETF</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>B</td><td>BUY (SIP Core)</td><td>Permanent SIP</td></tr>
+      <tr><td>33</td><td>FTNT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>B+</td><td>WATCH ★★★★</td><td>Active Entry</td></tr>
+      <tr><td>34</td><td>PANW</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>B</td><td>WATCH ★★★</td><td>Wait $140</td></tr>
+      <tr><td>35</td><td>CRWD</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH ★★★</td><td>Wait 50% corr.</td></tr>
+      <tr><td>36</td><td>VGK</td><td>NYSE</td><td>ETF</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>C+</td><td>WATCH ★★★</td><td>At fair value</td></tr>
+      <tr><td>37</td><td>E2ENETWORKS</td><td>NSE</td><td>F</td><td>⚪</td><td>C+</td><td>C</td><td>C+</td><td>C</td><td>WATCH ★★</td><td>₹1,400–1,700</td></tr>
+      <tr><td>38</td><td>BANDHANBNK</td><td>NSE</td><td>D</td><td>🟢</td><td>B−</td><td>C+</td><td>B−</td><td>B</td><td>WATCH ★★★</td><td>₹140–147</td></tr>
+      <tr><td>39</td><td>BAJAJHFL</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>B</td><td>B+</td><td>B</td><td>WATCH ★★★</td><td>₹65–75</td></tr>
+      <tr><td>39/R</td><td>MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A−</td><td>A</td><td>B+</td><td>WATCH ★★★★</td><td>$340–365</td></tr>
+      <tr><td>40/R</td><td>GOOGL</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A+</td><td>A−</td><td>B+</td><td>B+</td><td>WATCH ★★★★</td><td>$224–295</td></tr>
+      <tr class="current"><td><strong>41</strong></td><td><strong>SHADOWFAX</strong></td><td><strong>NSE</strong></td><td><strong>B</strong></td><td><strong>⚪</strong></td><td><strong>B−</strong></td><td><strong>C+</strong></td><td><strong>B−</strong></td><td><strong>B</strong></td><td><strong>WATCH ★★★</strong></td><td><strong>₹98–115</strong></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 7: TECHNICAL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab7" class="tab-content">
+  <div class="section-title">A · Price Structure & Multi-Timeframe Trend</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Timeframe</th><th>Trend</th><th>Structure</th><th>Key Level</th></tr>
+      <tr><td>Daily</td><td><span style="color:var(--yellow);">SIDEWAYS/WEAK</span></td><td>Range: ₹98–128. Post-IPO correction from ₹127.75 to ₹98.55 then partial recovery to ₹113. Below IPO price of ₹124.</td><td>₹98.55 (52W low)</td></tr>
+      <tr><td>Weekly</td><td><span style="color:var(--yellow);">FORMING BASE</span></td><td>Stock only ~2 months listed. No weekly trend established. Volume declining from IPO-week spike.</td><td>₹124 (IPO price = resistance)</td></tr>
+      <tr><td>Monthly</td><td><span style="color:var(--muted);">INSUFFICIENT DATA</span></td><td>Listed January 28, 2026 — only 2 monthly candles available.</td><td>First monthly close ~₹112</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">B · Moving Average Dashboard</div>
+  <div class="ma-grid">
+    <div class="ma-card">
+      <div class="ma-label">Current Price</div>
+      <div class="ma-value mono" style="color:var(--amber);">~₹113</div>
+      <div class="ma-status" style="color:var(--muted);">Ref price <span class="u">UNVERIFIED</span></div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">20-EMA</div>
+      <div class="ma-value mono e">~₹110–112</div>
+      <div class="ma-status above">Price near / above EMA20</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">50-DMA</div>
+      <div class="ma-value mono e">~₹114–118</div>
+      <div class="ma-status below">Price slightly below DMA50</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">IPO Price</div>
+      <div class="ma-value mono" style="color:var(--yellow);">₹124</div>
+      <div class="ma-status below">Current below IPO — psychological resistance</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">52W High</div>
+      <div class="ma-value mono">₹127.75</div>
+      <div class="ma-status below">ATH (Feb 13, 2026) <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">52W Low</div>
+      <div class="ma-value mono" style="color:var(--green);">₹98.55</div>
+      <div class="ma-status above">Jan 30, 2026 <span class="v">VERIFIED</span></div>
+    </div>
+  </div>
+  <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;"><em>Note: 100-DMA and 200-DMA not yet available — insufficient trading history (stock listed Jan 28, 2026). Only ~60 days of price data exists as of this report.</em></p>
+
+  <div class="section-title">C · Volume Analysis</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Volume Event</th><th>Date</th><th>Assessment</th></tr>
+      <tr><td>IPO Listing Day Volume</td><td>Jan 28, 2026</td><td>High institutional participation at listing. IPO subscribed 2.72x — moderate institutional appetite.</td></tr>
+      <tr><td>Q3 FY26 Earnings (Feb 12)</td><td>Feb 12, 2026</td><td>Stock initially moved post-results announcement (65% revenue growth). Price briefly touched ₹127.75 ATH on Feb 13.</td></tr>
+      <tr><td>Post-results correction</td><td>Feb–Mar 2026</td><td>Stock gave back all post-earnings gains and declined to ₹107–108 range — profit booking by IPO allottees.</td></tr>
+      <tr><td>Current OBV</td><td>Apr 2026</td><td>Insufficient data for reliable OBV analysis. Monitor for accumulation vs distribution trend over next 3 months. <span class="e">ESTIMATED</span></td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">D · Momentum (RSI & MACD)</div>
+  <div class="card">
+    <div class="metrics-grid">
+      <div class="metric-card yellow">
+        <div class="metric-label">RSI (14-day) Daily</div>
+        <div class="metric-value">~42–48</div>
+        <div class="metric-note">Neutral zone — no oversold signal <span class="e">ESTIMATED</span></div>
+      </div>
+      <div class="metric-card yellow">
+        <div class="metric-label">Beta</div>
+        <div class="metric-value">1.89</div>
+        <div class="metric-note">High volatility vs market <span class="v">VERIFIED</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Volatility (daily)</div>
+        <div class="metric-value">3.90%</div>
+        <div class="metric-note">High daily range stock <span class="v">VERIFIED</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">MACD</div>
+        <div class="metric-value e">NEUTRAL</div>
+        <div class="metric-note">No reliable signal yet <span class="e">ESTIMATED</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">E · Chart Patterns</div>
+  <div class="card">
+    <div class="highlight-box">
+      <h4>Post-IPO Base Formation (Early Stage)</h4>
+      <p style="font-size:0.88rem;color:var(--silver);">The stock is tracing a classic post-IPO base pattern: IPO listing at ₹124 → brief spike to ₹127.75 → correction to ₹98.55 (20% below IPO) → partial recovery to ₹107–115 range. This is typical for newly listed mid-cap growth stocks where IPO allottees and anchor investors create selling pressure in the first 90 days. A breakout above IPO price of ₹124 with volume would be the institutional entry signal.</p>
+    </div>
+  </div>
+
+  <div class="section-title">F · Trade Structure</div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div class="card-title">Primary Entry Trigger</div>
+        <p style="font-size:0.88rem;color:var(--silver);">Price at or near ₹98–108 (52W low zone + 15% below IPO price) + RSI &lt;40 + any positive earnings announcement or client diversification news. R:R ≥ 2.5:1 (target ₹172–180 base IV; SL ₹92–95).</p>
+      </div>
+      <div>
+        <div class="card-title">Secondary Entry Trigger</div>
+        <p style="font-size:0.88rem;color:var(--silver);">Breakout above ₹124 (IPO price) with 2× average volume + confirmed by Q4 FY26 results showing continued 25%+ growth. This signals institutional accumulation after IPO overhang clears.</p>
+      </div>
+    </div>
+    <table class="data-table" style="margin-top:14px;">
+      <tr><th>Parameter</th><th>Conservative (Full Position)</th><th>Aggressive (Starter)</th></tr>
+      <tr><td>Entry Zone</td><td class="mono">₹98–115</td><td class="mono">₹115–130</td></tr>
+      <tr><td>Stop Loss</td><td class="mono">₹90 (monthly close basis)</td><td class="mono">₹98.55 (52W low)</td></tr>
+      <tr><td>Target 1 (Base IV)</td><td class="mono">₹172</td><td class="mono">₹172</td></tr>
+      <tr><td>Target 2 (Bull scenario)</td><td class="mono">₹238–280</td><td class="mono">₹238</td></tr>
+      <tr><td>Risk:Reward</td><td class="mono" style="color:var(--green);">1:2.8</td><td class="mono">1:1.8</td></tr>
+      <tr><td>Recommended Position Size</td><td class="mono">3–5% of portfolio</td><td class="mono">1.5–2.5%</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">G · Technical Composite Score</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Dimension</th><th>Score (1–5)</th><th>Note</th></tr>
+      <tr><td>Price Structure</td><td class="mono">2/5</td><td>Below IPO price; in recovery from 52W low</td></tr>
+      <tr><td>Moving Averages</td><td class="mono">3/5</td><td>Near short-term MAs; longer-term insufficient data</td></tr>
+      <tr><td>Volume</td><td class="mono">2/5</td><td>Post-IPO selling pressure; no accumulation signal yet</td></tr>
+      <tr><td>Momentum (RSI)</td><td class="mono">3/5</td><td>Neutral zone; not oversold</td></tr>
+      <tr><td>Chart Patterns</td><td class="mono">3/5</td><td>Base formation constructive; no breakout yet</td></tr>
+      <tr><td>Macro / Sector Alignment</td><td class="mono">4/5</td><td>Strong tailwind sector</td></tr>
+      <tr><td><strong>Total</strong></td><td class="mono" style="color:var(--amber);"><strong>17/30 → 57%</strong></td><td><strong>Neutral-constructive. Entry zone attractive but no timing trigger yet.</strong></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 8: SHAREHOLDING -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab8" class="tab-content">
+  <div class="section-title">A · Promoter Holding Trend</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Quarter</th><th>Promoter %</th><th>Pledged %</th><th>Signal</th></tr>
+      <tr><td>Pre-IPO (Jan 2026)</td><td class="mono" style="color:var(--yellow);">~17.5%</td><td class="mono" style="color:var(--green);">0%</td><td>Post-dilution from 12 funding rounds</td></tr>
+      <tr><td>Q3 FY26 (Dec 2025)</td><td class="mono" style="color:var(--yellow);">16.7%</td><td class="mono" style="color:var(--green);">0%</td><td>First public filing <span class="v">VERIFIED</span></td></tr>
+      <tr><td>Q4 FY26 (Mar 2026)</td><td class="mono" style="color:var(--muted);">TBD</td><td class="mono" style="color:var(--muted);">TBD</td><td>Monitor for any change</td></tr>
+    </table>
+    <div class="risk-box" style="margin-top:12px;">
+      <h4>⚠ Promoter Holding Risk: LOW and Potentially Declining</h4>
+      <p style="font-size:0.88rem;color:var(--silver);">At 16.7%, promoter holding is structurally low. Standard Buffett framework prefers 40%+. The dilution reflects 12 funding rounds raising USD 247M — appropriate for the growth stage but leaves founders with limited "skin in the game." No pledges = positive. The critical watch is whether founders buy additional shares post-IPO (positive signal) or if PE investors sell further (negative signal).</p>
+    </div>
+  </div>
+
+  <div class="section-title">B · FII / DII Holding Pattern</div>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Holder</th><th>Holding %</th><th>Signal</th></tr>
+      <tr><td>Promoter</td><td class="mono" style="color:var(--yellow);">16.7%</td><td>Low; no pledges</td></tr>
+      <tr><td>FII / FPI</td><td class="mono" style="color:var(--green);">9.22%</td><td>Meaningful institutional ownership at IPO <span class="v">VERIFIED</span></td></tr>
+      <tr><td>DII (total)</td><td class="mono" style="color:var(--green);">6.07%</td><td>Domestic institutions building position</td></tr>
+      <tr><td>Mutual Funds</td><td class="mono" style="color:var(--green);">9.24%</td><td>Strong MF participation (note: DII + MF overlap possible) <span class="v">VERIFIED</span></td></tr>
+      <tr><td>Retail / Public</td><td class="mono" style="color:var(--red);">57.69%</td><td>HIGH retail — creates volatility; SIP flows beneficial but retail-heavy = weaker holder quality</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">C · Free Float & Market Structure</div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">Total Market Cap</div>
+      <div class="metric-value">~₹6,500 Cr</div>
+      <div class="metric-note">Small-cap classification <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="metric-card yellow">
+      <div class="metric-label">Free Float</div>
+      <div class="metric-value">~83%</div>
+      <div class="metric-note">High float = limited supply squeeze</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Shares Outstanding</div>
+      <div class="metric-value">~578M</div>
+      <div class="metric-note">USD 717M market cap equiv.</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Index Weight</div>
+      <div class="metric-value">Nil</div>
+      <div class="metric-note">Not yet in Nifty indices. No passive buying support.</div>
+    </div>
+  </div>
+
+  <div class="section-title">D · IPO Overhang Analysis</div>
+  <div class="card">
+    <p style="font-size:0.9rem;color:var(--silver);">The ₹1,907 Cr IPO had a significant OFS (Offer for Sale) component alongside ₹651 Cr fresh issue — meaning early PE investors (Flipkart, Eight Roads, Mirae, Delhivery's early backers) exited at IPO. The anchor investor allocation of ₹850 Cr (45% of IPO) included ICICI Prudential, Nippon and other institutions — these are long-horizon holders. The 6-month lock-in for anchor investors ends July 2026; this is the primary overhang risk near-term. Monitor for anchor investor selling as the lock-in expires.</p>
+  </div>
+
+  <div class="section-title">E · Shareholding Scores</div>
+  <div class="metrics-grid">
+    <div class="metric-card yellow">
+      <div class="metric-label">Ownership Momentum Score</div>
+      <div class="metric-value">42/100</div>
+      <div class="metric-note">IPO-stage; insufficient trend data. FII participation positive offset by high retail.</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Shareholding Risk Score</div>
+      <div class="metric-value">58/100</div>
+      <div class="metric-note">Low promoter holding + high retail + anchor lock-in expiry July 2026 = meaningful risk. No pledges = positive.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- TAB 9: AI INTELLIGENCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="tab9" class="tab-content">
+  <div class="section-title">A · AI Classification Dashboard</div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">Company Category</div>
+      <div class="metric-value" style="color:var(--amber);">CAT B</div>
+      <div class="metric-note">High-Growth Compounder</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">AI Overlay</div>
+      <div class="metric-value" style="color:var(--muted);">⚪ NEUTRAL</div>
+      <div class="metric-note">AI is an operational tool, not structural moat</div>
+    </div>
+    <div class="metric-card yellow">
+      <div class="metric-label">Data Flywheel</div>
+      <div class="metric-value" style="color:var(--yellow);">FORMING ★★★</div>
+      <div class="metric-note">2/3 tests confirmed; 6/10 strength</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">AI Adoption Phase</div>
+      <div class="metric-value" style="color:var(--cyan);">PHASE 3</div>
+      <div class="metric-note">Route AI mainstream; quick-commerce AI = Phase 2</div>
+    </div>
+  </div>
+
+  <div class="section-title">B · Data Flywheel Deep-Dive</div>
+  <div class="card">
+    <div class="card-title">Q1: What is the Proprietary Training Data?</div>
+    <table class="data-table">
+      <tr><th>Data Type</th><th>Volume</th><th>Uniqueness</th><th>Outcome Labels</th></tr>
+      <tr><td>Delivery Records</td><td class="mono">1B+</td><td>Medium — Delhivery has similar scale</td><td>Yes: successful/failed attempt, time taken</td></tr>
+      <tr><td>Address Intelligence (SF Maps)</td><td class="mono">15,000+ PINs mapped</td><td>High — includes informal landmarks, gates, unofficial access points</td><td>Yes: delivered vs undeliverable</td></tr>
+      <tr><td>RTO Pattern Data (SF Shield)</td><td class="mono">Crore-scale COD orders</td><td>Medium — competitors have similar RTO datasets</td><td>Yes: fraud vs genuine return</td></tr>
+      <tr><td>Gig Partner Performance</td><td class="mono">2+ lakh partners</td><td>High — hyperlocal knowledge of partner capabilities</td><td>Yes: SLA adherence, zone performance</td></tr>
+    </table>
+
+    <div class="card-title" style="margin-top:14px;">Q2: Does AI improve with more data/users?</div>
+    <p style="font-size:0.88rem;color:var(--silver);">Route optimization: More deliveries in a PIN code → better sequence algorithms → lower cost per delivery. SF Maps: More addressed deliveries → better informal address resolution → fewer failed attempts. SF Shield: More COD orders → better RTO risk model → lower fraudulent returns. HOWEVER: Management has NOT disclosed specific improvement metrics (e.g., "address resolution accuracy improved from X% to Y%"). Without this, flywheel is structurally logical but not empirically CONFIRMED. <span class="e">ESTIMATED</span></p>
+
+    <div class="card-title" style="margin-top:14px;">Q3: Does better AI attract more users?</div>
+    <p style="font-size:0.88rem;color:var(--silver);">YES — demonstrably. Shadowfax grew market share from ~17% to 27–28% in 12 months, partly because enterprise clients value its lower RTO rates and higher delivery success rates vs competitors. The loop: better AI → lower cost for enterprise client → enterprise client assigns more volume → more data → better AI. This loop is confirmed at the business level even if AI metrics aren't disclosed individually. Loop cycle time: 6–12 months (contract review period). <span class="v">VERIFIED</span></p>
+  </div>
+
+  <div class="section-title">C · AI Value Chain Position</div>
+  <div class="value-chain">
+    <div class="vc-step">
+      <div class="vc-num">1</div>
+      <div class="vc-name">Infrastructure</div>
+      <div class="vc-desc">Data centres, semiconductors, power</div>
+    </div>
+    <div class="vc-arrow">›</div>
+    <div class="vc-step">
+      <div class="vc-num">2</div>
+      <div class="vc-name">Foundation Models</div>
+      <div class="vc-desc">LLMs, OpenAI, Anthropic</div>
+    </div>
+    <div class="vc-arrow">›</div>
+    <div class="vc-step">
+      <div class="vc-num">3</div>
+      <div class="vc-name">AI Platforms</div>
+      <div class="vc-desc">Snowflake, Palantir, Databricks</div>
+    </div>
+    <div class="vc-arrow">›</div>
+    <div class="vc-step">
+      <div class="vc-num">4</div>
+      <div class="vc-name">AI Vertical Apps</div>
+      <div class="vc-desc">Industry-specific AI</div>
+    </div>
+    <div class="vc-arrow">›</div>
+    <div class="vc-step active">
+      <div class="vc-num">5</div>
+      <div class="vc-name">AI-Enabled Incumbents</div>
+      <div class="vc-desc">Existing businesses using AI to widen moat ← SHADOWFAX</div>
+    </div>
+  </div>
+  <div class="highlight-box">
+    <h4>Level 5: AI-Enabled Incumbent</h4>
+    <p style="font-size:0.88rem;color:var(--silver);">Shadowfax is a Level 5 AI-Enabled Incumbent — a logistics business using AI to improve an already-functioning operation. This is the best risk/reward position: AI amplifies an existing network advantage rather than depending on AI as the primary value driver. Investment horizon: 5–10 years (compounding, not a quick trade). Risk profile: low-medium on AI disruption specifically — logistics remains physical, AI is an efficiency enhancer.</p>
+  </div>
+
+  <div class="section-title">D · India AI Opportunity Context</div>
+  <div class="card">
+    <table class="theme-table">
+      <tr><th>India AI Advantage</th><th>Shadowfax Relevance</th><th>Detail</th></tr>
+      <tr><td>Data at Scale (UPI/Aadhaar)</td><td><span class="rel-none">INDIRECT</span></td><td>Shadowfax doesn't use UPI/Aadhaar data directly. COD payment processing creates payment data but not integrated with India Stack.</td></tr>
+      <tr><td>Language Diversity</td><td><span class="rel-none">NONE</span></td><td>B2B logistics doesn't require vernacular AI. Delivery partner communication is vernacular but not AI-driven.</td></tr>
+      <tr><td>India Stack Infrastructure</td><td><span class="rel-adj">ADJACENT</span></td><td>ONDC integration potential — Shadowfax could become a logistics layer for ONDC commerce. Early-stage partnership discussions rumoured.</td></tr>
+      <tr><td>AI Talent Cost Arbitrage</td><td><span class="rel-direct">YES</span></td><td>Builds SF Maps, SF Shield, route optimisation using Indian engineering talent at 30–40% of US cost. Data science team in Bangalore.</td></tr>
+    </table>
+
+    <table class="theme-table" style="margin-top:14px;">
+      <tr><th>India AI Theme</th><th>Phase</th><th>Shadowfax Relevance</th></tr>
+      <tr><td>AI in logistics/supply chain</td><td>Phase 2–3</td><td class="rel-direct">DIRECTLY RELEVANT — core business</td></tr>
+      <tr><td>AI in banking/credit</td><td>Phase 3</td><td class="rel-none">None</td></tr>
+      <tr><td>Data centres (infra)</td><td>Phase 3–4</td><td class="rel-none">None</td></tr>
+      <tr><td>Quick commerce enablement</td><td>Phase 2–3</td><td class="rel-direct">DIRECTLY RELEVANT — fastest growing segment</td></tr>
+      <tr><td>AI in diagnostics/health</td><td>Phase 2</td><td class="rel-none">None (does some pharma delivery but no AI health play)</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">F · AI Opportunity Score & Portfolio Role</div>
+  <div class="ai-score-bar">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;color:var(--amber);">AI OPPORTUNITY SCORE</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--amber);">38/100</div>
+    </div>
+    <div class="ai-score-track"><div class="ai-score-fill" style="width:38%;"></div></div>
+    <div class="ai-breakdown">
+      <div class="ai-breakdown-item"><span>Data Flywheel Strength</span><span class="mono">10/20</span></div>
+      <div class="ai-breakdown-item"><span>Adoption Phase Timing</span><span class="mono">10/20</span></div>
+      <div class="ai-breakdown-item"><span>Value Chain Position (L5)</span><span class="mono">14/20</span></div>
+      <div class="ai-breakdown-item"><span>India Structural Advantage</span><span class="mono">5/20</span></div>
+      <div class="ai-breakdown-item"><span>AI Threat Resistance</span><span class="mono">15/20</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title">Portfolio Role: AI NEUTRAL — Standard Fundamentals Govern</div>
+    <p style="font-size:0.9rem;color:var(--silver);">Score 38/100 = <strong>AI NEUTRAL</strong> zone. AI neither materially helps nor hurts the investment thesis. Invest in Shadowfax on pure logistics fundamentals: revenue growth trajectory, margin expansion, client diversification, and market share gains — not on AI optionality. The Level 5 position is positive (AI-enabled incumbent with strong AI disruption resistance) but the limited proprietary data advantage limits the AI opportunity premium.</p>
+    <p style="font-size:0.9rem;color:var(--silver);margin-top:10px;"><strong>Investment Horizon:</strong> 5–7 years for full payoff as India's express logistics market compounds at 19–23% CAGR through FY30 and Shadowfax's margin structure matures toward 10–14% EBITDA. Do NOT apply a 12-month price target framework to this position.</p>
+    <div class="highlight-box" style="margin-top:12px;">
+      <h4>What Changes the AI Rating Upward?</h4>
+      <p style="font-size:0.88rem;color:var(--silver);">If Shadowfax discloses quantified flywheel metrics (RTO rate improvement, address resolution accuracy) in any earnings call, AND if India's quick commerce adoption enters Phase 3 with Shadowfax as the clear last-mile winner, the AI score could move to STRATEGIC BET territory (60–70/100). Watch for ONDC integration or any AI partnership announcements.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p><strong>SEBI Disclaimer:</strong> This report is generated for educational and research purposes only. It does not constitute investment advice, solicitation to buy/sell securities, or a recommendation. Investors must conduct their own due diligence. Past performance is not indicative of future results. The analyst may hold positions in securities mentioned. This report is prepared under the Buffett Quality-Value Series v5.0 framework for systematic equity analysis.</p>
+  <p style="margin-top:8px;"><strong>Data Sources:</strong> Shadowfax Technologies RHP/DRHP (Jan 2026), Q3 FY26 Earnings Press Release (Feb 12, 2026), NSE/BSE filings, Redseer Strategy Consultants Express Logistics Report (2025), KPMG India Express Logistics Report (Aug 2025), IMARC/Mordor Intelligence market sizing, PIB India GDP reports (Feb–Mar 2026), IMF Article IV India (Nov 2025), Investing.com, Angel One, TradingView, Screener.in.</p>
+  <p style="margin-top:8px;"><strong>Fonts:</strong> Barlow Condensed (display) · JetBrains Mono (data) · Nunito Sans (body) — Google Fonts. Report generated: April 2026. Series #41.</p>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

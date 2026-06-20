@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UiPath (PATH) — Buffett Quality-Value Report v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:       #091424;
+  --navy-mid:   #0f2040;
+  --navy-light: #162d52;
+  --cyan:       #00C8FF;
+  --cyan-dim:   #0094c4;
+  --cyan-glow:  rgba(0,200,255,0.15);
+  --amber:      #FFB020;
+  --phosphor:   #E2F4FF;
+  --white:      #FFFFFF;
+  --pass-green: #00E5A0;
+  --fail-red:   #FF4D6A;
+  --warn-amber: #FFB020;
+  --text-main:  #CBD8E8;
+  --text-dim:   #7A9DB8;
+  --border:     rgba(0,200,255,0.18);
+  --card-bg:    rgba(15,32,64,0.75);
+  --glass:      rgba(255,255,255,0.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:#091424;
+  background-image:
+    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(0,200,255,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 90% 80%, rgba(255,176,32,0.04) 0%, transparent 60%);
+  color:var(--text-main);
+  font-family:'Source Serif 4',Georgia,serif;
+  font-size:15px;
+  line-height:1.7;
+  min-height:100vh;
+}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg, #060f1e 0%, #0b1e3a 50%, #091424 100%);
+  border-bottom:1px solid var(--border);
+  padding:28px 32px 22px;
+  max-height:220px;
+  overflow:hidden;
+  position:relative;
+}
+.hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+.hero-grid{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.hero-left h1{
+  font-family:'Syne',sans-serif;font-size:2.0rem;font-weight:800;
+  color:var(--white);letter-spacing:-0.02em;line-height:1.1;
+}
+.hero-left h1 span{color:var(--cyan)}
+.hero-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan-dim);margin-top:4px;letter-spacing:0.06em}
+.hero-lede{font-size:12.5px;color:var(--text-dim);margin-top:10px;max-width:580px;line-height:1.5}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.verdict-badge{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:13px;
+  padding:8px 18px;border-radius:3px;letter-spacing:0.04em;
+  background:linear-gradient(135deg, #162d52, #0f2040);
+  border:1px solid var(--amber);color:var(--amber);
+  text-align:center;
+}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.badge{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  padding:4px 10px;border-radius:2px;letter-spacing:0.05em;
+  border:1px solid; white-space:nowrap;
+}
+.badge-cat{color:#00C8FF;border-color:rgba(0,200,255,0.4);background:rgba(0,200,255,0.08)}
+.badge-widener{color:#00E5A0;border-color:rgba(0,229,160,0.4);background:rgba(0,229,160,0.08)}
+.badge-neutral{color:#7A9DB8;border-color:rgba(122,157,184,0.4);background:rgba(122,157,184,0.08)}
+.badge-threat{color:#FF4D6A;border-color:rgba(255,77,106,0.4);background:rgba(255,77,106,0.08)}
+.badge-macro{color:var(--amber);border-color:rgba(255,176,32,0.4);background:rgba(255,176,32,0.08)}
+.data-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.pill{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border-radius:12px;background:var(--glass);border:1px solid var(--border);color:var(--text-dim)}
+.pill b{color:var(--phosphor)}
+.pill.v{border-color:rgba(0,229,160,0.3);color:#00E5A0}
+.pill.u{border-color:rgba(255,77,106,0.3);color:#FF4D6A}
+.pill.e{border-color:rgba(255,176,32,0.3);color:var(--amber)}
+
+/* ── TAB BAR ── */
+#tab-bar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(9,20,36,0.97);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;overflow-x:auto;gap:0;
+}
+#tab-bar::-webkit-scrollbar{height:2px}
+#tab-bar::-webkit-scrollbar-thumb{background:var(--cyan-dim)}
+.tab-btn{
+  font-family:'Syne',sans-serif;font-size:11.5px;font-weight:600;
+  color:var(--text-dim);background:none;border:none;cursor:pointer;
+  padding:14px 16px;white-space:nowrap;letter-spacing:0.03em;
+  border-bottom:2px solid transparent;transition:all .2s;flex-shrink:0;
+}
+.tab-btn:hover{color:var(--phosphor);background:var(--glass)}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);background:rgba(0,200,255,0.04)}
+
+/* ── CONTENT ── */
+.tab-content{display:none;padding:28px 24px;max-width:1100px;margin:0 auto}
+.tab-content.active{display:block}
+
+/* ── SECTION HEADERS ── */
+.sec-head{
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:700;
+  color:var(--phosphor);letter-spacing:0.02em;
+  margin:32px 0 16px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.sec-head .num{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--cyan);background:var(--cyan-glow);
+  border:1px solid rgba(0,200,255,0.3);
+  padding:2px 8px;border-radius:2px;
+}
+.sub-head{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--phosphor);margin:20px 0 10px;letter-spacing:0.03em}
+
+/* ── CARDS ── */
+.card{
+  background:var(--card-bg);border:1px solid var(--border);
+  border-radius:4px;padding:18px 20px;margin-bottom:16px;
+  backdrop-filter:blur(4px);
+}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+.card-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.card-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:16px}
+.metric-card{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:4px;
+  padding:14px 16px;border-left:3px solid var(--cyan);
+}
+.metric-card.pass{border-left-color:var(--pass-green)}
+.metric-card.fail{border-left-color:var(--fail-red)}
+.metric-card.warn{border-left-color:var(--amber)}
+.metric-card.neutral{border-left-color:var(--text-dim)}
+.metric-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px}
+.metric-value{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;color:var(--phosphor);line-height:1.1}
+.metric-sub{font-size:11px;color:var(--text-dim);margin-top:3px}
+
+/* ── TABLES ── */
+.t{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0}
+.t th{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--cyan-dim);background:rgba(0,200,255,0.04);padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+.t td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--text-main)}
+.t tr:last-child td{border-bottom:none}
+.t tr:hover td{background:var(--glass)}
+.t td.num{font-family:'JetBrains Mono',monospace;color:var(--phosphor);text-align:right}
+.t td.green{color:var(--pass-green);font-family:'JetBrains Mono',monospace}
+.t td.red{color:var(--fail-red);font-family:'JetBrains Mono',monospace}
+.t td.amber{color:var(--amber);font-family:'JetBrains Mono',monospace}
+.t td.hl{background:rgba(0,200,255,0.06);font-weight:600}
+
+/* ── PASS / FAIL BADGES ── */
+.pf{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:2px;letter-spacing:0.04em}
+.pf-pass{color:var(--pass-green);background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3)}
+.pf-fail{color:var(--fail-red);background:rgba(255,77,106,0.1);border:1px solid rgba(255,77,106,0.3)}
+.pf-marg{color:var(--amber);background:rgba(255,176,32,0.1);border:1px solid rgba(255,176,32,0.3)}
+
+/* ── MOAT STARS ── */
+.stars{color:var(--cyan);font-size:14px;letter-spacing:1px}
+.stars-dim{color:var(--text-dim)}
+
+/* ── VERDICT BOX ── */
+.verdict-box{
+  background:linear-gradient(135deg, #0f2040, #091424);
+  border:2px solid var(--amber);border-radius:6px;padding:28px;
+  position:relative;overflow:hidden;margin-top:20px;
+}
+.verdict-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg, var(--amber), var(--cyan), var(--amber));
+}
+.verdict-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--amber);margin-bottom:8px}
+.verdict-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);margin-bottom:16px;letter-spacing:0.05em}
+.verdict-prose{font-size:14px;color:var(--text-main);line-height:1.75}
+.verdict-quote{
+  margin-top:20px;padding:14px 18px;
+  border-left:3px solid var(--cyan);background:var(--glass);
+  font-style:italic;font-size:13px;color:var(--text-dim);
+}
+
+/* ── UPGRADE CONDITIONS ── */
+.upgrade-item{
+  display:flex;align-items:flex-start;gap:12px;padding:12px 16px;
+  background:var(--glass);border:1px solid var(--border);border-radius:3px;margin-bottom:8px;
+}
+.upgrade-num{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  background:var(--cyan-glow);border:1px solid rgba(0,200,255,0.3);
+  border-radius:2px;color:var(--cyan);flex-shrink:0;margin-top:1px;
+}
+.upgrade-text{font-size:13px;color:var(--text-main)}
+
+/* ── PILLAR GRADES ── */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.pillar-card{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:4px;
+  padding:16px;text-align:center;
+}
+.pillar-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px}
+.pillar-grade{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;line-height:1;margin-bottom:4px}
+.pillar-sub{font-size:11px;color:var(--text-dim)}
+.grade-a{color:var(--pass-green)}
+.grade-b{color:var(--cyan)}
+.grade-c{color:var(--amber)}
+.grade-d{color:var(--fail-red)}
+
+/* ── FLYWHEEL BOX ── */
+.flywheel-box{
+  background:linear-gradient(135deg, rgba(0,200,255,0.05), rgba(0,200,255,0.02));
+  border:1px solid rgba(0,200,255,0.3);border-radius:4px;padding:20px;
+  margin:16px 0;position:relative;
+}
+.flywheel-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--cyan);margin-bottom:4px}
+.flywheel-score{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--cyan);line-height:1}
+
+/* ── AI BADGES DASHBOARD ── */
+.ai-dash{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.ai-dash-card{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:14px;text-align:center;
+}
+.ai-dash-label{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px}
+.ai-dash-val{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+
+/* ── VALUE CHAIN DIAGRAM ── */
+.value-chain{display:flex;gap:0;margin:16px 0;overflow-x:auto;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.vc-item{flex:1;padding:12px 10px;text-align:center;font-size:11px;border-right:1px solid var(--border);min-width:80px}
+.vc-item:last-child{border-right:none}
+.vc-item.active{background:rgba(0,200,255,0.12);border-bottom:3px solid var(--cyan)}
+.vc-num{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--cyan)}
+.vc-label{font-size:10px;color:var(--text-dim);margin-top:4px;line-height:1.3}
+
+/* ── GAUGE ── */
+.gauge-wrap{display:flex;align-items:center;gap:20px;margin:12px 0}
+.gauge-bar{flex:1;height:12px;background:var(--navy-mid);border-radius:6px;overflow:hidden;position:relative}
+.gauge-fill{height:100%;border-radius:6px;transition:width 1s ease}
+.gauge-label{font-family:'JetBrains Mono',monospace;font-size:11px;white-space:nowrap}
+.gauge-score{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800}
+
+/* ── DCF TABLE ── */
+.dcf-wrap{overflow-x:auto;margin:12px 0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:680px){
+  .hero{padding:20px 16px 16px;max-height:none}
+  .hero-grid{flex-direction:column}
+  .hero-left h1{font-size:1.5rem}
+  .card-grid,.card-grid-4,.pillar-grid,.ai-dash{grid-template-columns:repeat(2,1fr)}
+  .card-grid-2{grid-template-columns:1fr}
+  .tab-content{padding:20px 14px}
+  .value-chain{flex-wrap:wrap}
+}
+@media(max-width:600px){
+  .card-grid,.card-grid-4,.pillar-grid,.ai-dash{grid-template-columns:1fr}
+}
+.mono{font-family:'JetBrains Mono',monospace;font-size:12px}
+.text-green{color:var(--pass-green)}
+.text-red{color:var(--fail-red)}
+.text-amber{color:var(--amber)}
+.text-cyan{color:var(--cyan)}
+.text-dim{color:var(--text-dim)}
+.bold{font-weight:600;color:var(--phosphor)}
+p{margin-bottom:10px}
+ul{margin-left:18px;margin-bottom:10px}
+ul li{margin-bottom:5px;font-size:13.5px}
+strong{color:var(--phosphor)}
+.series-note{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);padding:10px;background:var(--glass);border:1px solid var(--border);border-radius:3px;margin-top:12px}
+
+/* PROGRESS RING */
+.ring-wrap{display:flex;align-items:center;gap:16px}
+.ring-svg{flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<div class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <h1>Ui<span>Path</span></h1>
+      <div class="hero-sub">NYSE: PATH &nbsp;|&nbsp; BUFFETT QUALITY-VALUE SERIES v5.0 &nbsp;|&nbsp; 14 APR 2026</div>
+      <div class="data-pills">
+        <span class="pill v"><b>$10.39</b> Live Price</span>
+        <span class="pill e"><b>$5.6B</b> Mkt Cap</span>
+        <span class="pill v"><b>$1.69B</b> Net Cash</span>
+        <span class="pill"><b>$1.853B</b> ARR</span>
+        <span class="pill v"><b>$372M</b> FCF FY26</span>
+        <span class="pill u"><b>$9.46</b> 52W Low</span>
+        <span class="pill"><b>$19.84</b> 52W High</span>
+      </div>
+      <div class="hero-lede">Global leader in enterprise agentic automation — pivoting from RPA legacy to AI orchestration. First-ever full-year GAAP profitability in FY2026, 83–85% gross margins, $1.69B net cash war chest, yet growth has decelerated to ~10-14% as agentic pivot matures. CEO share sales and cautious FY2027 guidance have compressed the stock 36% YTD — creating a potential value entry in a high-quality enterprise software platform.</div>
+    </div>
+    <div class="hero-right">
+      <div class="verdict-badge">⚠ WATCH ★★★★<br><span style="font-size:10px;font-weight:400">Price approaching MoS entry zone</span></div>
+      <div class="badge-row">
+        <span class="badge badge-cat">CATEGORY C — MATURE COMPOUNDER</span>
+        <span class="badge badge-widener">AI WIDENER 🟢 FORMING</span>
+        <span class="badge badge-macro">MACRO: HEADWIND (Higher-for-longer)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB BAR ══════════════════ -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro & Growth</button>
+  <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+  <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intelligence</button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 0 — OVERVIEW
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t0">
+  <div class="sec-head"><span class="num">0.1</span> Company Overview</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="sub-head">What UiPath Does</div>
+      <p style="font-size:13px">UiPath (founded 2005, Bucharest → New York) is the world's leading enterprise automation platform. It began as a <strong>Robotic Process Automation (RPA)</strong> tool — software "bots" mimicking human clicks and keystrokes on computer screens. By 2026, it has evolved into a full <strong>Agentic Automation Platform</strong> combining RPA bots, AI agents, human-in-the-loop workflows, and a central orchestration engine (Maestro).</p>
+      <p style="font-size:13px">Over 10,000 enterprise customers globally use UiPath to automate back-office and front-office workflows across banking, healthcare, insurance, manufacturing, and government — with 2,565 customers generating >$100K ARR and 357 generating >$1M ARR.</p>
+    </div>
+    <div class="card">
+      <div class="sub-head">Category Classification — C</div>
+      <p style="font-size:13px"><strong>Mature Quality Compounder (Software / Enterprise SaaS)</strong></p>
+      <p style="font-size:13px">ROIC is positive and improving. FCF has been positive for 2+ consecutive years ($292M FY24 → $328M FY25 → $372M FY26). Gross margins are consistently 83-85% GAAP — software economics confirmed. Revenue CAGR has decelerated from 40%+ at IPO to ~10-13% now.</p>
+      <p style="font-size:13px">Not Category F (AI-Native) because: (a) revenue growth below 40%, (b) FCF firmly positive 2+ years, (c) core product originated as RPA not AI, (d) Rule of 40 score = ~33, below 40 threshold.</p>
+      <p style="font-size:13px">Framework WACC: <strong>11-12%</strong>. Terminal g ceiling: US nominal GDP (~4.5%).</p>
+    </div>
+    <div class="card">
+      <div class="sub-head">AI Overlay — WIDENER 🟢 (Forming)</div>
+      <p style="font-size:13px">UiPath is deploying AI to deepen its automation moat via: <strong>Agentic Orchestration</strong> (Maestro — multi-agent coordination), <strong>AI Fabric</strong> (embedding LLMs into automation workflows), <strong>Document Understanding</strong> (AI-powered unstructured data processing), and the <strong>WorkFusion acquisition</strong> (Feb 2026 — AML/fraud detection AI).</p>
+      <p style="font-size:13px">The WIDENER designation is <em>forming</em> rather than confirmed because the data flywheel (does more enterprise usage make UiPath's AI smarter?) is still being built. OSWorld benchmark No. 1 ranking (powered by Claude Opus 4.5) for computer-use agents provides early evidence.</p>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">0.2</span> Why This Stock Is In the Series</div>
+  <div class="card">
+    <p>UiPath presents a classic <strong>quality compounder at a moment of uncertainty</strong> — the market's favourite setup for value creation. The stock is down ~36% YTD, trading near its 52-week low of $9.46, yet the underlying business has <em>never been stronger</em>: first full-year GAAP profitability achieved, FCF at record $372M, net cash of $1.69B, and the agentic AI transition gaining real enterprise traction.</p>
+    <p>The framework question: <strong>Is the growth deceleration (from 24% to 10%) permanent structural erosion, or a transition trough between the RPA era and the agentic era?</strong> The answer determines whether the current price is a 10-15% undervalued situation or a genuine 35-50% deep value opportunity.</p>
+    <p>UiPath also sits at the intersection of two of the most powerful enterprise technology trends: <strong>AI agentic automation</strong> and <strong>enterprise workflow orchestration</strong>. Gartner projects 40% of enterprise apps will embed AI agents by end of 2026. UiPath's platform is architected to be the orchestration layer — the "air traffic controller" — for all these agents, regardless of who built them.</p>
+    <div class="card" style="background:rgba(0,200,255,0.04);border-color:rgba(0,200,255,0.2);margin-top:14px">
+      <strong style="color:var(--cyan)">Core Investment Thesis:</strong> A defensible, cash-generating enterprise software platform undergoing an AI-powered business model transformation, trading at ~10.5x EV/FCF (near a stress-scenario intrinsic value) with $3.10/share in net cash providing downside support. Monitor for agentic AI ARR re-acceleration as the entry catalyst.
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">0.3</span> Key Business Metrics Dashboard</div>
+  <div class="card-grid-4">
+    <div class="metric-card pass">
+      <div class="metric-label">FY2026 Revenue</div>
+      <div class="metric-value">$1.61B</div>
+      <div class="metric-sub">+13% YoY &nbsp;•&nbsp; <span class="text-green">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass">
+      <div class="metric-label">ARR (Jan 2026)</div>
+      <div class="metric-value">$1.853B</div>
+      <div class="metric-sub">+11% YoY &nbsp;•&nbsp; <span class="text-green">VERIFIED</span></div>
+    </div>
+    <div class="metric-card pass">
+      <div class="metric-label">FCF FY2026</div>
+      <div class="metric-value">$372M</div>
+      <div class="metric-sub">23% FCF margin &nbsp;•&nbsp; <span class="text-green">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">Gross Margin</div>
+      <div class="metric-value">83–85%</div>
+      <div class="metric-sub">GAAP / Non-GAAP &nbsp;•&nbsp; <span class="text-green">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">DBNRR (Q4 FY26)</div>
+      <div class="metric-value">107%</div>
+      <div class="metric-sub">Down from 123% (FY23) &nbsp;•&nbsp; <span class="text-amber">DECLINING</span></div>
+    </div>
+    <div class="metric-card pass">
+      <div class="metric-label">Net Cash</div>
+      <div class="metric-value">$1.69B</div>
+      <div class="metric-sub">Zero meaningful debt &nbsp;•&nbsp; <span class="text-green">VERIFIED</span></div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">Rule of 40</div>
+      <div class="metric-value">~33</div>
+      <div class="metric-sub">13% rev + 23% FCF &nbsp;•&nbsp; <span class="text-amber">BELOW 40</span></div>
+    </div>
+    <div class="metric-card fail">
+      <div class="metric-label">FY27 Rev Guidance</div>
+      <div class="metric-value">~9-10%</div>
+      <div class="metric-sub">$1.754-1.759B &nbsp;•&nbsp; <span class="text-red">DECELERATING</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 1 — MACRO & GROWTH
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t1">
+  <div class="sec-head"><span class="num">1.1</span> Layer 1 — Macro Anchor (US)</div>
+  <div class="card">
+    <div class="card-grid">
+      <div>
+        <div class="sub-head">US Macro Inputs <span class="pf pf-pass">VERIFIED</span></div>
+        <table class="t">
+          <tr><td>US 10-Yr Treasury Yield</td><td class="num amber">4.31%</td></tr>
+          <tr><td>Fed Funds Rate</td><td class="num">3.50-3.75%</td></tr>
+          <tr><td>Fed Stance</td><td class="num amber">Hawkish Hold</td></tr>
+          <tr><td>US CPI (March 2026)</td><td class="num">~3.5-3.6%</td></tr>
+          <tr><td>US Real GDP Growth</td><td class="num">~2.2-2.5% est</td></tr>
+          <tr><td>US Nominal GDP</td><td class="num">~5.7-6.0%</td></tr>
+          <tr><td>Terminal g Ceiling</td><td class="num cyan">4.5% (conservative)</td></tr>
+          <tr><td>Energy Shock (WTI ~$110)</td><td class="num red">Inflationary headwind</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="sub-head">Macro Cycle Status</div>
+        <table class="t">
+          <tr><td>AI Adoption Cycle</td><td class="num green">Phase 2→3 Inflection</td></tr>
+          <tr><td>Enterprise IT Spend</td><td class="num amber">Cautious; ROI-gated</td></tr>
+          <tr><td>Software Valuation Cycle</td><td class="num red">Compression (Higher-4-longer)</td></tr>
+          <tr><td>Rate Easing Probability</td><td class="num amber">Low (1 cut expected 2026)</td></tr>
+          <tr><td>Geopolitical Risk</td><td class="num red">Elevated (Iran/Middle East)</td></tr>
+          <tr><td>USD Strength</td><td class="num amber">Strong (FX headwind for PATH)</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="sub-head">AI Adoption Cycle (6th Dimension)</div>
+        <table class="t">
+          <tr><td>Global AI Investment</td><td class="num green">Accelerating</td></tr>
+          <tr><td>Agentic AI Sector Phase</td><td class="num green">Phase 2→3 Transition</td></tr>
+          <tr><td>Enterprise Agentic Adoption</td><td class="num amber">~5-20% (Early Commercial)</td></tr>
+          <tr><td>AI Disruption Risk to PATH</td><td class="num amber">Medium (Microsoft threat)</td></tr>
+          <tr><td>AI Opportunity for PATH</td><td class="num green">HIGH (orchestration layer)</td></tr>
+        </table>
+        <div style="margin-top:8px;font-size:11px;color:var(--text-dim)">MACRO COMPOSITE: <span class="text-amber">⚠ HEADWIND</span> — Higher rates pressure software multiples; energy shock creates enterprise budget caution. AI adoption tailwind partially offsets.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">1.2</span> Layer 2 — Sector Growth Derivation</div>
+  <div class="card">
+    <p style="font-size:13px"><strong>Sector:</strong> Enterprise Automation / Agentic AI Software (US/Global)</p>
+    <table class="t">
+      <thead><tr><th>Parameter</th><th>Source / Basis</th><th>Rate</th><th>AI Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Enterprise RPA Market CAGR (2024-29)</td><td class="text-dim">Gartner/IDC estimates</td><td class="num">12-15%</td><td class="text-amber">Morphing into agentic</td></tr>
+        <tr><td>Agentic AI Software Market CAGR</td><td class="text-dim">Gartner projects 40% app embed by 2026</td><td class="num green">35-50%</td><td class="text-green">CORE driver</td></tr>
+        <tr><td>Blended Sector (RPA→Agentic)</td><td class="text-dim">Weighted blend; PATH straddles both</td><td class="num">15-20%</td><td class="text-green">AI WIDENER</td></tr>
+        <tr><td>Macro headwind adjustment</td><td class="text-dim">Higher-for-longer rate environment</td><td class="num red">−2 to −3%</td><td class="text-dim">Discount rate pressure</td></tr>
+        <tr><td>Sector effective growth (base)</td><td class="text-dim">Applied macro cycle</td><td class="num">13-17%</td><td class="text-dim">—</td></tr>
+        <tr><td>AI impact on sector ceiling</td><td class="text-dim">Agentic AI inflection</td><td class="num green">+3-5% vs RPA-only world</td><td class="text-green">Upward revision justified</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:12px;color:var(--text-dim);margin-top:8px"><span class="pf pf-marg">ESTIMATED</span> AI is <strong>accelerating</strong> the enterprise automation sector's growth ceiling by approximately +4 percentage points over 2025-2030 vs. the pure-RPA trajectory, driven by agentic AI adoption. Growth ceiling has shifted upward but so has competitive intensity.</div>
+  </div>
+
+  <div class="sec-head"><span class="num">1.3</span> Layer 3 — Company Alpha Over Sector</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Mechanism</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr></thead>
+      <tbody>
+        <tr><td>1. Market Share Gain</td><td class="text-amber">Potential</td><td>RPA leader → Agentic leader. Currently #1 specialist</td><td class="num">0 to +2%</td><td class="num">+1%</td></tr>
+        <tr><td>2. Premiumisation</td><td class="text-green">Active</td><td>Maestro orchestration / enterprise contracts expanding</td><td class="num">+1 to +2%</td><td class="num">+1%</td></tr>
+        <tr><td>3. Category Expansion</td><td class="text-green">Active</td><td>From RPA → Agentic orchestration → vertical solutions</td><td class="num">+2 to +3%</td><td class="num">+1%</td></tr>
+        <tr><td>4. Geographic Expansion</td><td class="text-amber">Marginal</td><td>Already global (Romania origin, NY HQ)</td><td class="num">+1%</td><td class="num">+1%</td></tr>
+        <tr><td>5. Pricing Power</td><td class="text-amber">Marginal</td><td>NRR 107% (was 123%); expansion slowing</td><td class="num">0%</td><td class="num">+1%</td></tr>
+        <tr><td><strong>6. AI-Driven Alpha</strong></td><td class="text-green">Active</td><td>Agentic platform + WorkFusion acquisition (AML)</td><td class="num">+2%</td><td class="num">+3%</td></tr>
+        <tr><td style="padding-left:16px">6a. AI Cost Reduction</td><td class="text-amber">Narrow moat</td><td>Proprietary process data improves automation accuracy</td><td class="num">+0.5%</td><td class="num">+1%</td></tr>
+        <tr><td style="padding-left:16px">6b. AI Market Expansion</td><td class="text-green">Active</td><td>Agentic AI expands TAM from RPA into all knowledge work</td><td class="num">+1.5%</td><td class="num">+2%</td></tr>
+        <tr><td style="padding-left:16px">6c. Data Flywheel</td><td class="text-amber">FORMING (2/3 criteria)</td><td>Workflow patterns across 10K+ enterprises; improves with use</td><td class="num">+0%</td><td class="num">Moat upgrade if confirmed</td></tr>
+        <tr style="background:rgba(0,200,255,0.04)"><td><strong>Total Company Alpha</strong></td><td>—</td><td>—</td><td class="num cyan">+6 to +10%</td><td class="num cyan">+8%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-head"><span class="num">1.4</span> Growth Rate Derivation — Final Summary</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr></thead>
+      <tbody>
+        <tr><td>Macro State</td><td class="red">GDP ~1.5% Real</td><td class="amber">GDP ~2.2% Real</td><td class="green">GDP ~3%+ Real</td></tr>
+        <tr><td>US Nominal GDP</td><td class="red">~5%</td><td class="amber">~5.7%</td><td class="green">~6.5%</td></tr>
+        <tr><td>Sector growth (agentic automation)</td><td class="red">10-12%</td><td class="amber">15-18%</td><td class="green">20-25%</td></tr>
+        <tr><td>Company alpha (sources above)</td><td class="red">+3%</td><td class="amber">+6%</td><td class="green">+10%</td></tr>
+        <tr><td>AI alpha contribution (6a+6b+6c)</td><td class="red">+1%</td><td class="amber">+2%</td><td class="green">+4%</td></tr>
+        <tr style="background:rgba(0,200,255,0.06)"><td><strong>Stage 1 Revenue CAGR (Yrs 1-5)</strong></td><td class="red num">8%</td><td class="amber num">11%</td><td class="green num">15%</td></tr>
+        <tr><td>Stage 2 FCF CAGR (Yrs 6-10)</td><td class="red num">6%</td><td class="amber num">9%</td><td class="green num">12%</td></tr>
+        <tr><td>Terminal growth rate</td><td class="red num">3.5%</td><td class="amber num">4.0%</td><td class="green num">4.5%</td></tr>
+        <tr><td>FCF Margin trajectory</td><td class="red">Stable ~20%</td><td class="amber">Expand to 26%</td><td class="green">Expand to 30%+</td></tr>
+        <tr><td>Key risk</td><td class="red">Microsoft moat erosion</td><td class="amber">NRR stays ~107%</td><td class="green">Agentic ARR inflection</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;font-size:12px;color:var(--text-dim)">
+      <strong style="color:var(--phosphor)">Sensitivity:</strong> A 1% change in terminal growth rate changes intrinsic value by approximately <strong style="color:var(--cyan)">±12%</strong>. A 1% change in Stage 1 revenue growth changes IV by approximately <strong style="color:var(--cyan)">±7%</strong>.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 2 — FINANCIALS
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t2">
+  <div class="sec-head"><span class="num">2.1</span> Revenue & Profitability History</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Fiscal Year</th><th>Revenue</th><th>YoY Growth</th><th>GAAP Gross Margin</th><th>Non-GAAP Op Margin</th><th>GAAP Net Income</th><th>FCF</th><th>ARR</th></tr></thead>
+      <tbody>
+        <tr><td>FY2022</td><td class="num">~$892M</td><td class="num amber">~58%</td><td class="num">83%</td><td class="num">—</td><td class="num red">$(308M)</td><td class="num red">~$(70M)</td><td class="num">~$825M</td></tr>
+        <tr><td>FY2023</td><td class="num">$1,059M</td><td class="num amber">+19%</td><td class="num">83%</td><td class="num">6%</td><td class="num red">$(340M)</td><td class="num amber">~$50K</td><td class="num">$1,204M</td></tr>
+        <tr><td>FY2024</td><td class="num">$1,308M</td><td class="num green">+24%</td><td class="num">85%</td><td class="num green">20%</td><td class="num amber">$(32M)</td><td class="num green">$292M</td><td class="num">$1,464M</td></tr>
+        <tr><td>FY2025</td><td class="num">$1,430M</td><td class="num amber">+9%</td><td class="num">83%</td><td class="num green">22%</td><td class="num amber">$(11M)</td><td class="num green">$328M</td><td class="num">$1,666M</td></tr>
+        <tr style="background:rgba(0,200,255,0.06)"><td><strong>FY2026</strong></td><td class="num cyan">$1,611M</td><td class="num green">+13%</td><td class="num">83%</td><td class="num green">23%</td><td class="num green">$282M</td><td class="num green">$372M</td><td class="num">$1,853M</td></tr>
+        <tr><td>FY2027E (Guidance)</td><td class="num">$1,754-1,759M</td><td class="num amber">~9-10%</td><td class="num">~84%</td><td class="num">~25%</td><td class="num">Est. positive</td><td class="num green">Est. $400M+</td><td class="num">$2,051-2,056M</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--text-dim);margin-top:8px">Data: <span class="pf pf-pass">VERIFIED</span> from SEC filings / UiPath earnings releases. FY2022 estimated.</div>
+  </div>
+
+  <div class="sec-head"><span class="num">2.2</span> Financial Fortress Scorecard (Category C)</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Test</th><th>Threshold</th><th>Actual</th><th>Verdict</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>ROE ≥ 15% for 5 years</td><td>≥15% consistently</td><td>14.4% TTM; negative prior years</td><td><span class="pf pf-marg">MARGINAL</span></td><td>First profitable year FY2026; trajectory improving sharply</td></tr>
+        <tr><td>ROIC &gt; WACC</td><td>ROIC &gt; 11%</td><td>~1.7% (TTM); improving</td><td><span class="pf pf-fail">FAIL</span></td><td>GAAP ROIC misleading — high SBC distorts; non-GAAP ops now profitable</td></tr>
+        <tr><td>Net Cash position</td><td>Positive preferred</td><td>$1.69B net cash, $70M debt</td><td><span class="pf pf-pass">PASS ✓</span></td><td>Exceptional fortress — $3.10/share in net cash</td></tr>
+        <tr><td>Gross Margin ≥ 60%</td><td>≥60%</td><td>83-85% GAAP consistently</td><td><span class="pf pf-pass">PASS ✓</span></td><td>Software-grade economics; durable across cycles</td></tr>
+        <tr><td>FCF Positive & Growing</td><td>Positive, growing</td><td>$0→$50K→$292M→$328M→$372M</td><td><span class="pf pf-pass">PASS ✓</span></td><td>FCF trajectory is strongest bull case metric</td></tr>
+        <tr><td>FCF Conversion ≥ 80%</td><td>OCF/Net Income ≥80%</td><td>FCF $372M / Rev $1.61B = 23%</td><td><span class="pf pf-pass">PASS ✓</span></td><td>Strong cash generation; OCF > GAAP income confirmed</td></tr>
+        <tr><td>Revenue CAGR ≥ Sector CAGR</td><td>≥15% sector growth</td><td>FY26: 13%; FY27E: ~9-10%</td><td><span class="pf pf-marg">MARGINAL</span></td><td>Growth deceleration is the central bear thesis concern</td></tr>
+        <tr><td>Net Retention Rate ≥ 110%</td><td>≥110%</td><td>107% (Q4 FY26); declining trend</td><td><span class="pf pf-marg">MARGINAL</span></td><td>Was 123% in FY23; decline = existing customers expanding slower</td></tr>
+        <tr><td>Capital-light model</td><td>High ROIC / low CapEx</td><td>CapEx ~$19M on $1.61B revenue = 1.2%</td><td><span class="pf pf-pass">PASS ✓</span></td><td>Extremely asset-light; pure software economics</td></tr>
+        <tr><td>Pricing power proven</td><td>ARR expansion</td><td>NRR 107%; some logo-level expansion</td><td><span class="pf pf-marg">MARGINAL</span></td><td>Not raising sticker prices; expansion via new products</td></tr>
+        <tr><td>Recurring revenue model</td><td>≥85% recurring</td><td>ARR $1.853B / Rev $1.611B = ~100% ARR-based</td><td><span class="pf pf-pass">PASS ✓</span></td><td>Full subscription model since FY2023 transition</td></tr>
+        <tr><td>Rule of 40 Score</td><td>≥40</td><td>13% + 23% = <strong>~36</strong></td><td><span class="pf pf-marg">MARGINAL</span></td><td>Below 40 threshold; approaching from FCF expansion side</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px">
+      <strong>Overall Financial Fortress Score:</strong> <span style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--amber)">B</span> — 7 Pass, 4 Marginal, 1 Fail. FCF strength and net cash fortress are exceptional; ROIC and growth deceleration are the primary concerns.
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">2.3</span> Owner Earnings (Cat C Calculation)</div>
+  <div class="card" style="border-color:rgba(0,200,255,0.3)">
+    <div class="sub-head">FY2026 Owner Earnings Derivation <span class="pf pf-marg">ESTIMATED</span></div>
+    <table class="t">
+      <tr><td>GAAP Net Income</td><td class="num">$282M</td></tr>
+      <tr><td>+ D&A (estimated)</td><td class="num">+$80M</td></tr>
+      <tr><td>+ Stock-Based Compensation (adj.)</td><td class="num">+$220M</td></tr>
+      <tr><td>− SBC added back (economic cost)</td><td class="num red">−$220M</td></tr>
+      <tr><td>− Maintenance CapEx (~$15M)</td><td class="num red">−$15M</td></tr>
+      <tr><td>± Working Capital Changes</td><td class="num">+$5M (est.)</td></tr>
+      <tr style="background:rgba(0,200,255,0.06)"><td><strong>Owner Earnings (Conservative)</strong></td><td class="num cyan"><strong>~$332M</strong></td></tr>
+      <tr><td>Owner Earnings per share (534M diluted)</td><td class="num cyan">$0.62/share</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Note: SBC at UiPath is significant (~$220M/yr). The owner earnings calculation nets it back as an economic cost to shareholders. FCF ($372M) excludes SBC which is why FCF > OE. Investors should use OE ($332M) as the more conservative cash return figure.</p>
+    <p style="font-size:12px;color:var(--text-dim)">Growth CapEx (AI product development, cloud infra): estimated $4M — extremely capital light. Total CapEx $19M. Maintenance CapEx ~$15M.</p>
+  </div>
+
+  <div class="sec-head"><span class="num">2.4</span> Earnings Quality Deep-Dive (O'Glove Framework)</div>
+  <div class="card">
+    <div class="card-grid">
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:4px;padding:14px">
+        <div class="sub-head">Test 1 — FCF Conversion <span class="pf pf-pass">PASS</span></div>
+        <p style="font-size:12px">OCF/Net Income trend: FY24 $292M/$–32M → not meaningful. FY26 OCF $371M / GAAP NI $282M = 131%. FCF consistently above net income. Cash is real.</p>
+        <div class="text-green" style="font-size:13px;font-weight:600">✓ Strong FCF conversion — cash exceeds GAAP earnings</div>
+      </div>
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:4px;padding:14px">
+        <div class="sub-head">Test 2 — DSO Trend <span class="pf pf-pass">PASS</span></div>
+        <p style="font-size:12px">SaaS subscription model = billings recognized upfront via RPO/cRPO. cRPO $820M (+14% YoY). No meaningful DSO deterioration. Deferred revenue healthy.</p>
+        <div class="text-green" style="font-size:13px;font-weight:600">✓ Clean receivables; subscription model limits DSO risk</div>
+      </div>
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:4px;padding:14px">
+        <div class="sub-head">Test 3 — Inventory Days <span class="pf pf-pass">N/A</span></div>
+        <p style="font-size:12px">Pure software company — no inventory. Not applicable. Substitute check: gross margin consistency (see Test 5).</p>
+        <div class="text-green" style="font-size:13px;font-weight:600">✓ N/A — pure software; no inventory risk</div>
+      </div>
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:4px;padding:14px">
+        <div class="sub-head">Test 4 — Accounting Stability <span class="pf pf-pass">PASS</span></div>
+        <p style="font-size:12px">No material accounting policy changes detected in last 3 years. Revenue recognition (ASC 606) consistently applied. Non-GAAP adjustments are standard and disclosed. SBC is a legitimate concern but not a manipulation signal.</p>
+        <div class="text-green" style="font-size:13px;font-weight:600">✓ Clean accounting policies; no red flags</div>
+      </div>
+      <div style="background:var(--glass);border:1px solid var(--border);border-radius:4px;padding:14px">
+        <div class="sub-head">Test 5 — Gross Margin Consistency <span class="pf pf-pass">PASS</span></div>
+        <p style="font-size:12px">GAAP Gross Margin: FY23: 83% | FY24: 85% | FY25: 83% | FY26: 83%. Exceptionally stable. Minor fluctuations reflect cloud hosting cost mix. Non-GAAP GM 85-87% consistently. No compression visible.</p>
+        <div class="text-green" style="font-size:13px;font-weight:600">✓ Gross margins 83-85% — rock-solid over 4 years</div>
+      </div>
+      <div style="background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.3);border-radius:4px;padding:14px">
+        <div class="sub-head">Overall Earnings Quality</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--pass-green)">CLEAN</div>
+        <p style="font-size:12px">All five O'Glove tests pass. The numbers are trustworthy. SBC is high (~$220M) but disclosed and consistent — economic dilution, not accounting manipulation. No IV adjustment required for earnings quality.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 3 — MOAT
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t3">
+  <div class="sec-head"><span class="num">3.1</span> Economic Moat Assessment</div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="sub-head">Switching Costs <span class="stars">★★★★</span><span class="stars-dim">★</span></div>
+      <p style="font-size:12.5px">Enterprise RPA is deeply embedded in core business processes. Migrating thousands of bots = months of re-engineering. UiPath's Orchestrator (central control plane) creates multi-layer lock-in: automation logic, monitoring, governance, security configurations, and now AI agent orchestration. Quoted customer: "Migration from another RPA platform took months of bot refactoring and retraining." Now with Maestro orchestrating AI agents, switching costs are increasing — not decreasing.</p>
+    </div>
+    <div class="card">
+      <div class="sub-head">Network Effects <span class="stars">★★</span><span class="stars-dim">★★★</span></div>
+      <p style="font-size:12.5px">Limited classic network effects. UiPath Marketplace (community-contributed automations) creates modest network value. Developer ecosystem with 1M+ certified developers creates talent moat — companies hire UiPath-skilled engineers, reinforcing platform adoption. However, network effects are not self-reinforcing in the same way as a consumer platform. Data flywheel (if confirmed) could change this assessment.</p>
+    </div>
+    <div class="card">
+      <div class="sub-head">Intangible Assets / Brand <span class="stars">★★★★</span><span class="stars-dim">★</span></div>
+      <p style="font-size:12.5px">UiPath is the category-defining brand in enterprise automation — akin to Xerox for photocopying or Salesforce for CRM. Named Leader in Forrester Wave (Autonomous Testing) — highest marks in 7 criteria. G2 Best AI Software Awards 2026 (5 categories). Fortune 500 trust as automation backbone. Brand moat is strong and growing with agentic positioning. OSWorld #1 ranking for computer-use agents (powered by Claude Opus 4.5) = technical credibility.</p>
+    </div>
+    <div class="card">
+      <div class="sub-head">Cost Advantage <span class="stars">★★★</span><span class="stars-dim">★★</span></div>
+      <p style="font-size:12.5px">83-85% gross margins reflect genuine software economics — negligible marginal cost per additional customer. Romania engineering base (Bucharest origin) provides structural cost advantage vs US-only competitors. Growing scale in AI compute enables better model training economics vs smaller entrants. Not a structural cost monopoly but advantages compound with scale.</p>
+    </div>
+    <div class="card">
+      <div class="sub-head">Scale / Efficient Scale <span class="stars">★★★</span><span class="stars-dim">★★</span></div>
+      <p style="font-size:12.5px">$1.85B ARR with 10,000+ enterprise customers creates a scale advantage in: (a) partner ecosystem (global SIs like Accenture, Deloitte are certified UiPath partners), (b) regulatory compliance tooling at global scale, (c) AI model training data from diverse enterprise workflows. Scale advantage is real but not yet a natural monopoly.</p>
+    </div>
+    <div class="card">
+      <div class="sub-head">Workflow Lock-in / Mission Critical <span class="stars">★★★★</span><span class="stars-dim">★</span></div>
+      <p style="font-size:12.5px">Automation of core financial processes (accounts payable, regulatory reporting, fraud detection) makes UiPath mission-critical. Downtime of UiPath bots = business disruption. This is a qualitatively different switching cost from "annoying to switch" to "dangerous to switch." Especially in banking/financial services where AML and compliance bots operate 24/7.</p>
+    </div>
+  </div>
+
+  <!-- DATA FLYWHEEL -->
+  <div class="sec-head"><span class="num">3.2</span> Data Flywheel Verdict</div>
+  <div class="flywheel-box">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="flywheel-title">DATA FLYWHEEL STATUS</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <div class="flywheel-score">6.5</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan-dim)">/10 — FORMING ★★★</div>
+        </div>
+        <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber)">⚠ FLYWHEEL FORMING — 2 of 3 criteria confirmed. Monitor quarterly.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="pf pf-pass">✓ Proprietary process data from 10,000+ enterprises</div>
+        <div class="pf pf-pass">✓ More workflow data improves AI accuracy (Document Understanding, Healing Agent)</div>
+        <div class="pf pf-marg">~ Better AI → more users: forming but not yet self-reinforcing loop confirmed</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:12.5px;color:var(--text-main)">
+      UiPath has access to aggregated workflow patterns, exception data, document extraction results, and automation performance metrics from thousands of Fortune 500 enterprises. This is proprietary training data competitors cannot replicate cheaply. The Healing Agent (detects and fixes automation breakages) and Document Understanding AI are demonstrably improving with more usage data. However, the third criterion — <em>better AI attracting more customers in a self-reinforcing loop</em> — is not yet clearly evidenced in the ARR growth data (NRR declining from 123% to 107% suggests the loop is not yet closing). Full flywheel would be a moat upgrade from B+ to A−.
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">3.3</span> Macro Moat Stress Test</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Moat Source</th><th>In Stress (GDP 1-2%)</th><th>In Base</th><th>In Acceleration</th></tr></thead>
+      <tbody>
+        <tr><td>Switching Costs</td><td class="green">STRENGTHENS — enterprises cut new spend; existing bots maintained</td><td class="green">HOLDS</td><td class="green">STRENGTHENS</td></tr>
+        <tr><td>Brand / Intangibles</td><td class="green">HOLDS — brand independent of cycle</td><td class="green">HOLDS</td><td class="green">STRENGTHENS</td></tr>
+        <tr><td>Cost Advantage</td><td class="green">HOLDS — Romania engineering cheaper in stress</td><td class="green">HOLDS</td><td class="amber">WEAKENS slightly (competitor hiring)</td></tr>
+        <tr><td>Mission-Critical Workflow Lock</td><td class="green">STRENGTHENS — no budget to replace critical bots</td><td class="green">HOLDS</td><td class="green">HOLDS</td></tr>
+        <tr><td>Data Flywheel (if confirmed)</td><td class="amber">SLOWS — less new usage → slower improvement</td><td class="green">FORMS</td><td class="green">ACCELERATES</td></tr>
+        <tr><td>Microsoft Threat (overall)</td><td class="amber">MANAGEABLE — Power Automate still not enterprise-grade for complex RPA</td><td class="amber">Competitive</td><td class="red">HIGHER RISK — Microsoft investment accelerates</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-head"><span class="num">3.4</span> Moat Grade & Threats</div>
+  <div class="card-grid-2">
+    <div class="card">
+      <div class="sub-head">Overall Moat Grade: <span style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--cyan)">B+</span></div>
+      <p style="font-size:12.5px"><strong>Wide moat, not exceptional.</strong> Switching costs + brand + mission-critical workflow lock create durable multi-year competitive protection. ROIC at 1.7% GAAP understates true economic returns due to SBC distortion — non-GAAP ROIC is more meaningful and improving. If data flywheel is confirmed: upgrade to A−.</p>
+    </div>
+    <div class="card">
+      <div class="sub-head">Key Moat Threats</div>
+      <ul style="font-size:12.5px">
+        <li><strong>Microsoft Power Automate + Copilot Studio:</strong> Direct RPA competitor embedded in Microsoft 365. Risk: enterprises with heavy M365 footprint may consolidate automation on Microsoft stack. Timeline: Medium (3-5 years).</li>
+        <li><strong>ServiceNow AI Agents:</strong> Competing for ITSM automation workflows. NOW has $95B EV vs PATH's $4B EV — vastly more investment firepower.</li>
+        <li><strong>LLM-native agents:</strong> If foundation models (GPT-5, Gemini Ultra) become capable of computer-use autonomously, the UiPath "RPA body" becomes less necessary. UiPath's counter: orchestration and governance layer remain essential even when agents are smart.</li>
+        <li><strong>NRR declining:</strong> 107% NRR suggests existing customers are not expanding rapidly — growth depends more on new logos than expansion. New logo growth is harder in a cautious enterprise IT budget environment.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 4 — MANAGEMENT
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t4">
+  <div class="sec-head"><span class="num">4.1</span> Management Assessment</div>
+  <div class="card-grid-2">
+    <div class="card">
+      <div class="sub-head">Strengths</div>
+      <ul style="font-size:13px">
+        <li><strong>Daniel Dines (Founder/CEO):</strong> Returned as sole CEO in 2024 after co-CEO Rob Enslin departed. Technical founder with genuine AI/automation vision. Has led the agentic pivot credibly. Founder-led companies with original technical vision historically outperform.</li>
+        <li><strong>Ashim Gupta (COO/CFO):</strong> Strong operator — delivered first full-year GAAP profitability. Non-GAAP operating margin expanded to 23% Q4 record. Disciplined cost management alongside product investment.</li>
+        <li><strong>Capital Allocation:</strong> $1B buyback program completed; new $500M authorized (March 2026). Repurchased ~$390M in FY2025. Signals confidence in intrinsic value despite public share sales.</li>
+        <li><strong>AI Credibility:</strong> OSWorld #1 ranking for computer-use agents (objective benchmark). WorkFusion acquisition expands AI moat into financial crime. TIME Best Inventions 2025.</li>
+        <li><strong>Counter-cyclical:</strong> Cost discipline maintained while investing in AI product at same time — rare combination. Operating leverage confirmed (revenue +13% → non-GAAP op income +more).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sub-head">Concerns / Red Flags</div>
+      <ul style="font-size:13px">
+        <li><strong class="text-red">CEO Insider Selling (SIGNIFICANT CONCERN):</strong> Daniel Dines sold 122,734 shares Oct 2025, plus 45,000 shares Oct, 45,000 Dec, 45,000 Jan. Other executives sold alongside him. Markets interpret = lack of confidence at high prices. This is the #1 red flag in the story.</li>
+        <li><strong class="text-amber">Guidance Conservatism vs. Execution Gap:</strong> FY2027 guidance of 9-10% growth despite being in the "agentic AI" era implies management uncertainty about pace of commercial uptake. May be conservative; could also reflect real headwinds.</li>
+        <li><strong class="text-amber">Leadership Transition History:</strong> Co-CEO Rob Enslin departure (2024) created turbulence. Go-to-market organization had to be "stabilized" (management's own words). Resurrecting sales productivity takes time.</li>
+        <li><strong class="text-amber">SBC at ~$220M/year:</strong> Significant dilution to shareholders — economic cost, not just accounting line. At current market cap ~$5.6B, SBC represents ~4% annual dilution. Buybacks partially offset but not fully.</li>
+        <li><strong>Pledged Shares:</strong> Not applicable (no pledged promoter shares in US structure). <span class="pf pf-pass">N/A</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">4.2</span> Shareholding Integrity</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Holder</th><th>Ownership %</th><th>Trend</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Daniel Dines (Founder/CEO)</td><td class="num">~9-10% (as of Q1 2026 after sales)</td><td class="red">↓ Selling</td><td class="text-red">⚠ Red Flag</td></tr>
+        <tr><td>Philippe Botteri (Accel/VC)</td><td class="num">~29%</td><td class="amber">— Stable</td><td class="text-amber">VC overhang possible</td></tr>
+        <tr><td>BlackRock (13G)</td><td class="num">~5%+</td><td class="green">— Passive hold</td><td class="text-green">Quality institutional</td></tr>
+        <tr><td>Total Institutional Ownership</td><td class="num">~61%</td><td class="amber">— Steady</td><td class="text-green">Institutional confidence intact</td></tr>
+        <tr><td>Insider Ownership (all)</td><td class="num">~35-40%</td><td class="red">↓ Declining from sales</td><td class="text-amber">Watch for further sales</td></tr>
+        <tr><td>Stock Structure</td><td colspan="3">Single-class (one share one vote). No super-voting founder shares.</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;padding:12px;background:rgba(255,77,106,0.06);border:1px solid rgba(255,77,106,0.25);border-radius:3px">
+      <strong style="color:var(--fail-red)">Key Management Concern:</strong> CEO insider selling is the most significant negative signal in this analysis. While the company is executing well operationally, large insider sales at prices well above today's levels (sold at $15-22 range per estimates) suggest the founder did not view the stock as cheap at those prices. At today's $10.39, the calculus may be different — but absence of insider buying at current depressed levels is notable.
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">4.3</span> AI Team Quality Assessment</div>
+  <div class="card">
+    <div class="card-grid">
+      <div>
+        <div class="sub-head">AI Credibility Indicators</div>
+        <ul style="font-size:12.5px">
+          <li>OSWorld-Verified benchmark No. 1 ranking for Screen Agent (powered by Claude Opus 4.5) — independent third-party validation</li>
+          <li>Agentic Orchestration Platform (Maestro) — general availability in FY2026</li>
+          <li>UiPath AI Fabric: embedding foundation models into automation workflows</li>
+          <li>Agent Builder: low-code/pro-code AI agent creation (3,000 agents created in preview)</li>
+          <li>AI R&D investment: ~15-20% of revenue estimated (non-GAAP R&D $380M+ in FY2026)</li>
+        </ul>
+      </div>
+      <div>
+        <div class="sub-head">AI Capital Allocation</div>
+        <ul style="font-size:12.5px">
+          <li>R&D spend: ~$380M+/yr (FY2026 estimate) — investing in proprietary AI capabilities not just API wrappers</li>
+          <li>WorkFusion acquisition (Feb 2026): AI for financial crime/AML — proprietary model training on financial workflow data</li>
+          <li>Partnership with Anthropic (Claude Opus 4.5 for Screen Agent) — using best-in-class models while building proprietary layers</li>
+          <li>Building on proprietary orchestration data, not just commodity LLM APIs — suggests moat-building mindset</li>
+        </ul>
+      </div>
+      <div>
+        <div class="sub-head">Responsible AI / Regulatory</div>
+        <ul style="font-size:12.5px">
+          <li>AIUC-1 certification (first enterprise automation platform) — independent AI safety/usage certification</li>
+          <li>Role-based access control + full audit trails for all agentic workflows</li>
+          <li>Policy-as-code governance for enterprise compliance</li>
+          <li>Healthcare AI solutions launched with appropriate regulatory consideration</li>
+          <li>No major AI bias complaints or regulatory investigations detected <span class="pf pf-pass">CLEAN</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 5 — VALUATION
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t5">
+  <div class="sec-head"><span class="num">5.1</span> Current Valuation Snapshot</div>
+  <div class="card-grid-4">
+    <div class="metric-card warn">
+      <div class="metric-label">EV/Revenue (TTM)</div>
+      <div class="metric-value">~2.5x</div>
+      <div class="metric-sub">EV $4B / Rev $1.61B &nbsp;•&nbsp; <span class="text-green">CHEAP for software</span></div>
+    </div>
+    <div class="metric-card pass">
+      <div class="metric-label">EV/FCF (TTM)</div>
+      <div class="metric-value">~10.5x</div>
+      <div class="metric-sub">EV $4B / FCF $372M &nbsp;•&nbsp; <span class="text-green">VERY CHEAP</span></div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">P/E (GAAP TTM)</div>
+      <div class="metric-value">~20x</div>
+      <div class="metric-sub">$10.39 / $0.52 EPS &nbsp;•&nbsp; <span class="text-amber">Reasonable</span></div>
+    </div>
+    <div class="metric-card pass">
+      <div class="metric-label">FCF Yield</div>
+      <div class="metric-value">6.6%</div>
+      <div class="metric-sub">vs 4.31% T10Y &nbsp;•&nbsp; <span class="text-green">ERP = +2.3%</span></div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">P/S (TTM)</div>
+      <div class="metric-value">3.5x</div>
+      <div class="metric-sub">$5.6B / $1.61B &nbsp;•&nbsp; <span class="text-green">Near-trough SaaS multiple</span></div>
+    </div>
+    <div class="metric-card pass">
+      <div class="metric-label">Cash per Share</div>
+      <div class="metric-value">$3.10</div>
+      <div class="metric-sub">30% of current stock price &nbsp;•&nbsp; <span class="text-green">Hard floor</span></div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">Forward P/E (FY27E)</div>
+      <div class="metric-value">~13x</div>
+      <div class="metric-sub">$10.39 / $0.78 consensus &nbsp;•&nbsp; <span class="text-green">Cheap on earnings</span></div>
+    </div>
+    <div class="metric-card neutral">
+      <div class="metric-label">EV/ARR</div>
+      <div class="metric-value">2.1x</div>
+      <div class="metric-sub">EV $4B / ARR $1.853B &nbsp;•&nbsp; <span class="text-amber">Historically discounted</span></div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">5.2</span> Method 1 — DCF (2-Stage)</div>
+  <div class="card">
+    <p style="font-size:12.5px;margin-bottom:12px">WACC: <strong>11%</strong> (US growth software, medium risk). Terminal g derived from US nominal GDP ceiling 4.5%. Quality-adjusted FCF used (CLEAN earnings). Diluted shares: 534M. Net cash added at end.</p>
+    <div class="dcf-wrap">
+      <table class="t">
+        <thead><tr><th>Year</th><th>STRESS (8% rev, 20% FCF margin)</th><th>BASE (11% rev, 23-26% FCF margin)</th><th>ACCEL (15% rev, 26-30% FCF margin)</th></tr></thead>
+        <tbody>
+          <tr><td>FY27E</td><td class="num">$335M</td><td class="num">$400M</td><td class="num">$463M</td></tr>
+          <tr><td>FY28E</td><td class="num">$362M</td><td class="num">$450M</td><td class="num">$540M</td></tr>
+          <tr><td>FY29E</td><td class="num">$390M</td><td class="num">$508M</td><td class="num">$630M</td></tr>
+          <tr><td>FY30E</td><td class="num">$422M</td><td class="num">$573M</td><td class="num">$735M</td></tr>
+          <tr><td>FY31E</td><td class="num">$455M</td><td class="num">$647M</td><td class="num">$857M</td></tr>
+          <tr><td>Stage 1 PV FCFs</td><td class="num red">$1,355M</td><td class="num amber">$1,835M</td><td class="num green">$2,480M</td></tr>
+          <tr><td>Stage 2 PV (Yrs 6-10, 6/9/12%)</td><td class="num red">$880M</td><td class="num amber">$1,460M</td><td class="num green">$2,300M</td></tr>
+          <tr><td>Terminal Value PV (terminal g)</td><td class="num red">$1,980M</td><td class="num amber">$3,840M</td><td class="num green">$6,100M</td></tr>
+          <tr style="background:rgba(0,200,255,0.06)"><td><strong>Total EV (Business)</strong></td><td class="num red">$4,215M</td><td class="num amber">$7,135M</td><td class="num green">$10,880M</td></tr>
+          <tr><td>+ Net Cash</td><td class="num green">$1,690M</td><td class="num green">$1,690M</td><td class="num green">$1,690M</td></tr>
+          <tr style="background:rgba(0,200,255,0.08)"><td><strong>Equity IV</strong></td><td class="num red">$5,905M</td><td class="num amber">$8,825M</td><td class="num green">$12,570M</td></tr>
+          <tr><td><strong>Per Share (534M diluted)</strong></td><td class="num red">$11.06</td><td class="num cyan">$16.52</td><td class="num green">$23.54</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--text-dim)">DCF Sensitivity (Base scenario): <br>Terminal g ±1%: IV changes by ±$2.30/share (±14%). WACC ±1%: IV changes by ±$1.80/share (±11%).</div>
+    <div style="margin-top:8px;padding:10px;background:rgba(0,200,255,0.06);border:1px solid rgba(0,200,255,0.2);border-radius:3px;font-size:12.5px">
+      <strong style="color:var(--cyan)">Key Insight:</strong> At $10.39, PATH is trading below even the STRESS DCF case of $11.06. The $1.69B net cash ($3.10/share) provides a hard downside floor. This means the <em>business operations</em> (ex-cash) are valued at just $7.29/share = ~$3.9B EV, implying ~10.5x EV/FCF — historically cheap for a software company with 83% gross margins.
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">5.3</span> Method 2 — Owner Earnings Capitalisation</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr></thead>
+      <tbody>
+        <tr><td>Owner Earnings (FY26 = $332M)</td><td>$332M</td><td>$332M</td><td>$332M</td></tr>
+        <tr><td>Required Return (WACC)</td><td>12%</td><td>11%</td><td>10%</td></tr>
+        <tr><td>Sustainable growth (g)</td><td>3.5%</td><td>4.0%</td><td>4.5%</td></tr>
+        <tr><td>IV (OE / r-g)</td><td>$332M / 8.5% = $3,906M</td><td>$332M / 7% = $4,743M</td><td>$332M / 5.5% = $6,036M</td></tr>
+        <tr><td>+ Net Cash</td><td>$1,690M</td><td>$1,690M</td><td>$1,690M</td></tr>
+        <tr style="background:rgba(0,200,255,0.06)"><td><strong>Per Share (534M)</strong></td><td class="num red">$10.49</td><td class="num amber">$12.03</td><td class="num green">$14.48</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:12px;color:var(--text-dim)">Method 2 is more conservative than DCF as it uses current owner earnings without explicit growth modeling. The range $10.49–$14.48 provides a floor-focused valuation. At $10.39, the stock is trading essentially AT the stress-scenario owner earnings value.</div>
+  </div>
+
+  <div class="sec-head"><span class="num">5.4</span> Method 3 — ROIC / Earnings Power Value</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Non-GAAP NOPAT (FY2026)</td><td class="num">$370M (est.)</td><td>Non-GAAP operating income $370M</td></tr>
+        <tr><td>WACC</td><td class="num">11%</td><td>Base scenario</td></tr>
+        <tr><td>EPV (NOPAT/WACC)</td><td class="num">$3,364M</td><td>No growth premium (conservative)</td></tr>
+        <tr><td>Growth premium (AI widener)</td><td class="num">1.25x</td><td>25% premium for AI opportunity</td></tr>
+        <tr><td>Adjusted EPV</td><td class="num">$4,205M</td><td>—</td></tr>
+        <tr><td>+ Net Cash</td><td class="num">$1,690M</td><td>—</td></tr>
+        <tr style="background:rgba(0,200,255,0.06)"><td><strong>EPV per Share</strong></td><td class="num cyan">$11.03</td><td>Floor valuation; no growth embedded</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-head"><span class="num">5.5</span> Method 4 — P/E Earnings Power</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Scenario</th><th>EPS Estimate</th><th>P/E Multiple</th><th>IV / Share</th></tr></thead>
+      <tbody>
+        <tr><td>FY2027E (Base) GAAP EPS</td><td class="num">$0.52 (approx)</td><td>20x (sector comp)</td><td class="num amber">$10.40</td></tr>
+        <tr><td>FY2027E Non-GAAP EPS (consensus)</td><td class="num">$0.78</td><td>18x (modest AI premium)</td><td class="num amber">$14.04</td></tr>
+        <tr><td>FY2028E Non-GAAP EPS</td><td class="num">$0.84 (est.)</td><td>20x</td><td class="num green">$16.80</td></tr>
+        <tr><td>5-yr EPS (if FCF margin 28%)</td><td class="num">~$1.20 est.</td><td>18x</td><td class="num green">$21.60</td></tr>
+        <tr><td>Reverse DCF implied growth</td><td colspan="2">At $10.39, implies 4-5% revenue growth forever → too pessimistic for a 83% gross margin co.</td><td class="num cyan">Market is pricing in near-zero real growth</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:12px;color:var(--text-dim)"><strong>AI premium question:</strong> If UiPath's data flywheel is confirmed (FORMING → CONFIRMED), terminal P/E should be +3-5x vs. peers → additional ~$4-6 per share IV uplift. This is the key upside optionality.</div>
+  </div>
+
+  <div class="sec-head"><span class="num">5.6</span> Method 5 — Earnings Yield vs Bond Yield</div>
+  <div class="card">
+    <div class="card-grid">
+      <div>
+        <table class="t">
+          <tr><td>FCF Yield (EV-based)</td><td class="num green">9.5% ($372M/$3.9B EV)</td></tr>
+          <tr><td>Earnings Yield (GAAP P/E)</td><td class="num green">5.0% ($0.52/$10.39)</td></tr>
+          <tr><td>Non-GAAP Earnings Yield</td><td class="num green">7.5% (non-GAAP EPS est.)</td></tr>
+          <tr><td>US 10-Yr Bond Yield</td><td class="num amber">4.31%</td></tr>
+          <tr><td>Equity Risk Premium (FCF)</td><td class="num green">+5.2% above bond yield</td></tr>
+          <tr><td>ERP Historical Average</td><td class="num">3.5-4.5%</td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="font-size:12.5px">
+          <strong>Earnings Yield Interpretation:</strong><br><br>
+          At current price, UiPath's FCF yield of <strong style="color:var(--pass-green)">9.5%</strong> (EV-based) is 520 basis points above the 10-year Treasury yield. Historically, an ERP above 4% signals reasonable to attractive equity valuation. The <strong>5.2% ERP</strong> is well above average — factoring in the higher-for-longer rate environment, this still looks attractive for a software compounder with expanding margins.
+          <br><br>
+          The FCF yield also compares favourably to software SaaS peers trading at <strong>3-5% FCF yields</strong> at current market prices.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">5.7</span> 5-Method Valuation Summary</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Method</th><th>STRESS IV/Share</th><th>BASE IV/Share</th><th>ACCEL IV/Share</th><th>AI Adj. (Flywheel confirmed)</th></tr></thead>
+      <tbody>
+        <tr><td>1. DCF (2-Stage)</td><td class="num red">$11.06</td><td class="num amber">$16.52</td><td class="num green">$23.54</td><td class="text-cyan">+$2-3/share</td></tr>
+        <tr><td>2. Owner Earnings Cap.</td><td class="num red">$10.49</td><td class="num amber">$12.03</td><td class="num green">$14.48</td><td class="text-cyan">+$1-2/share</td></tr>
+        <tr><td>3. EPV (ROIC / No Growth)</td><td colspan="2" class="num">$11.03 (floor)</td><td class="num green">$13.50</td><td class="text-cyan">+$2/share</td></tr>
+        <tr><td>4. P/E Earnings Power</td><td class="num red">$10.40 (GAAP FY27)</td><td class="num amber">$14.04 (non-GAAP)</td><td class="num green">$21.60 (5yr)</td><td class="text-cyan">+$3-5x P/E premium</td></tr>
+        <tr><td>5. Earnings Yield / FCF Yield</td><td colspan="2">FCF Yield 9.5% >> Bond 4.31% = clearly cheap on yield</td><td class="text-green">Strong BUY signal</td><td class="text-cyan">+$1/share</td></tr>
+        <tr style="background:rgba(0,200,255,0.08)"><td><strong>BLENDED BASE IV</strong></td><td class="num red">~$10.50-11.00</td><td class="num cyan"><strong>~$14-15</strong></td><td class="num green">~$19-22</td><td class="text-cyan">+$2-4 if flywheel confirmed</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+      <div style="padding:14px;background:rgba(255,77,106,0.08);border:1px solid rgba(255,77,106,0.3);border-radius:3px;text-align:center">
+        <div class="mono" style="color:var(--text-dim);font-size:10px">STRESS ENTRY (MoS)</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--fail-red)">$9.50</div>
+        <div style="font-size:11px;color:var(--text-dim)">30% below stress IV</div>
+      </div>
+      <div style="padding:14px;background:rgba(0,200,255,0.08);border:1px solid rgba(0,200,255,0.3);border-radius:3px;text-align:center">
+        <div class="mono" style="color:var(--text-dim);font-size:10px">BASE ENTRY (MoS 30%)</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--cyan)">$10-11</div>
+        <div style="font-size:11px;color:var(--text-dim)">Current price NEAR base entry</div>
+      </div>
+      <div style="padding:14px;background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.3);border-radius:3px;text-align:center">
+        <div class="mono" style="color:var(--text-dim);font-size:10px">BASE IV (FAIR VALUE)</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--pass-green)">$14-15</div>
+        <div style="font-size:11px;color:var(--text-dim)">~35-45% upside from $10.39</div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;padding:12px;background:rgba(255,176,32,0.06);border:1px solid rgba(255,176,32,0.25);border-radius:3px;font-size:12.5px">
+      <strong style="color:var(--amber)">AI Widener Premium Statement:</strong> If UiPath's data flywheel is confirmed (NRR recovers to >115%, agentic ARR re-accelerates to >20% growth), the business deserves a +3-5x P/E premium vs. non-AI peers — representing an additional <strong>$3-5/share</strong> of intrinsic value above the base estimate. The flywheel confirmation is the key upside catalyst that transforms this from WATCH to BUY — AI CONVICTION.
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">5.8</span> Comparable Company Valuation</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Company</th><th>EV/Revenue</th><th>EV/FCF</th><th>Rev Growth</th><th>Gross Margin</th><th>R40 Score</th></tr></thead>
+      <tbody>
+        <tr><td>UiPath (PATH)</td><td class="num cyan">2.5x</td><td class="num cyan">10.5x</td><td class="num">~13%</td><td class="num">83%</td><td class="num">~33</td></tr>
+        <tr><td>Palantir (PLTR)</td><td class="num red">45x+</td><td class="num">~80x</td><td class="num">~25%</td><td class="num">80%</td><td class="num">~60</td></tr>
+        <tr><td>ServiceNow (NOW)</td><td class="num red">17x</td><td class="num">45x</td><td class="num">~19%</td><td class="num">79%</td><td class="num">~50</td></tr>
+        <tr><td>Automation Anywhere (pvt)</td><td class="num">N/A (private)</td><td class="num">—</td><td class="num">~15%</td><td class="num">~70%</td><td class="num">~30</td></tr>
+        <tr><td>C3.ai (AI)</td><td class="num">6x</td><td class="num">N/M</td><td class="num">~26%</td><td class="num">60%</td><td class="num">~5</td></tr>
+        <tr><td>Workday (WDAY)</td><td class="num">5x</td><td class="num">25x</td><td class="num">~15%</td><td class="num">75%</td><td class="num">~40</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:12px;color:var(--text-dim);margin-top:8px">Conclusion: PATH is significantly cheaper than all software comparables on EV/Revenue and EV/FCF. The discount is justified partly by slower growth — but the magnitude appears excessive given the FCF strength and net cash position. <span class="pf pf-pass">ESTIMATED</span> from public filings and analyst estimates.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 6 — VERDICT
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t6">
+  <div class="sec-head"><span class="num">6.1</span> Four Pillar Summary</div>
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 1 · Economic Moat</div>
+      <div class="pillar-grade grade-b">B+</div>
+      <div class="pillar-sub">Wide moat via switching costs + brand + mission-critical lock. Data flywheel FORMING — not yet confirmed. Microsoft threat is real but medium-term.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 2 · Financial Fortress</div>
+      <div class="pillar-grade grade-b">B</div>
+      <div class="pillar-sub">83-85% gross margins, $1.69B net cash, $372M FCF, first GAAP profitability. ROIC recovering. NRR declining (107%) is primary concern. Rule of 40 = 33.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 3 · Management</div>
+      <div class="pillar-grade grade-c">B−</div>
+      <div class="pillar-sub">Strong operator (Ashim Gupta); founder back at helm. CEO insider selling is a significant red flag that keeps this from a higher grade. AI team credible (OSWorld #1).</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 4 · Valuation</div>
+      <div class="pillar-grade grade-a">A−</div>
+      <div class="pillar-sub">Trading at/below stress-scenario DCF and owner earnings floors. EV/FCF 10.5x for 83% GM software = compelling. Base IV $14-15 implies 35-45% upside.</div>
+    </div>
+  </div>
+  <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap">
+    <div class="badge badge-cat">CAT C — MATURE SOFTWARE</div>
+    <div class="badge badge-widener">AI WIDENER 🟢 FORMING</div>
+    <div class="badge" style="color:var(--amber);border-color:rgba(255,176,32,0.4);background:rgba(255,176,32,0.08)">FLYWHEEL: FORMING ★★★</div>
+    <div class="badge badge-macro">MACRO: HEADWIND ⚠</div>
+  </div>
+
+  <!-- VERDICT BOX -->
+  <div class="verdict-box">
+    <div class="verdict-title">⚠ WATCH ★★★★</div>
+    <div class="verdict-sub">NYSE: PATH &nbsp;|&nbsp; CURRENT PRICE: $10.39 &nbsp;|&nbsp; BASE IV: ~$14-15 &nbsp;|&nbsp; MoS ENTRY: $9.50-11.00</div>
+    <div class="verdict-prose">
+      <p>UiPath is a <strong>high-quality enterprise software compounder at a genuinely attractive price</strong>, held back from a full BUY verdict by three specific concerns that must be monitored: CEO insider selling, decelerating ARR growth (NRR at 107%), and a Rule of 40 score below the 40 threshold.</p>
+      <p>The bull case is compelling on pure valuation: at $10.39, the stock trades at just <strong>10.5x EV/FCF</strong> for a business with 83% gross margins, $1.69B in net cash, and a clear path to agentic AI market leadership. The reverse DCF at current prices implies near-zero perpetual growth — clearly too pessimistic for the world's #1 enterprise automation platform with $1.85B in ARR growing at 11-13%.</p>
+      <p>The agentic AI transformation is real and commercially validated. Gartner projects agentic AI will drive 30% of enterprise software sales by 2035. UiPath's orchestration layer (Maestro) is architected to sit above every other enterprise system — Microsoft 365, SAP, Salesforce, ServiceNow — coordinating agents across all of them. If this positioning plays out, UiPath is not competing with these companies; it is the infrastructure layer they run on.</p>
+      <p>The WATCH designation means: <strong>build awareness, prepare analysis, set precise entry alerts</strong>. The stock is within reach of the BUY zone. One or two of the upgrade conditions below triggering would convert this to a BUY — AI CONVICTION opportunity.</p>
+    </div>
+    <div class="verdict-quote">
+      "Price is what you pay. Value is what you get." — Warren Buffett. <em>At $10.39, you are paying for a stressed business and getting a software fortress with $3.10/share in cash, 83% gross margins, and the #1 position in enterprise automation entering the agentic AI era.</em>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">6.2</span> WATCH → BUY Upgrade Conditions</div>
+  <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px">ALL conditions must be specific and measurable. Vague signals not acceptable.</p>
+
+  <div class="upgrade-item">
+    <div class="upgrade-num">1</div>
+    <div class="upgrade-text"><strong>Price corrects to $9.50 or below</strong> (30% margin of safety to base IV of ~$14, or at/near stress IV floor). This is the mathematical entry zone. At $9.50, EV/FCF drops to ~9.2x — exceptional for 83% gross margin software. <em>Trigger: SET PRICE ALERT at $9.50.</em></div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">2</div>
+    <div class="upgrade-text"><strong>ARR growth re-accelerates to >14% YoY for 2 consecutive quarters</strong> — demonstrating that the agentic AI products (Maestro, Agent Builder) are driving net new ARR, not just replacing legacy RPA revenue. This is the single most important fundamental catalyst. <em>Watch: Q1 FY27 results (May 28, 2026) — FY27 ARR guidance $2.05B implies ~11% growth; any upside beats matter.</em></div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">3</div>
+    <div class="upgrade-text"><strong>NRR recovers to >112% for 2 consecutive quarters</strong> — existing customers expanding spend signals that agentic AI value is being captured commercially. Current 107% suggests stagnation. Recovery to 112%+ would indicate the flywheel is closing. <em>Monitor: Quarterly earnings reports.</em></div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">4</div>
+    <div class="upgrade-text"><strong>CEO Daniel Dines ceases insider selling for 2 consecutive quarters AND/OR makes open-market purchases</strong>. This would powerfully signal that management believes the stock is undervalued at current prices. Even stopping the sell program (which may be on a 10b5-1 plan) would be a positive signal. <em>Watch: SEC Form 4 filings.</em></div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">5</div>
+    <div class="upgrade-text"><strong>Rule of 40 score first exceeds 40 for 2 consecutive quarters</strong> (requires either revenue acceleration above 15% OR FCF margin expansion above 26% OR both). Crossing 40 historically triggers multiple re-rating in SaaS stocks. <em>Current: ~33. Target: 40+. Achievable if FY27 FCF margin expands to 26% even at 14% revenue growth.</em></div>
+  </div>
+
+  <div class="sec-head"><span class="num">6.3</span> Risk Summary</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Risk</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td>Microsoft Power Automate erodes RPA market share</td><td class="red">HIGH</td><td class="amber">Medium (3-5yr timeline)</td><td>Orchestration layer above Microsoft; RPA complexity too high for Power Automate</td></tr>
+        <tr><td>Agentic AI commoditised by foundation models</td><td class="amber">MEDIUM</td><td class="amber">Medium-low</td><td>Orchestration/governance layer remains essential even with smarter agents</td></tr>
+        <tr><td>NRR continues declining below 105%</td><td class="red">HIGH</td><td class="amber">Medium</td><td>Would confirm growth deceleration is structural; reduce position conviction</td></tr>
+        <tr><td>CEO continues selling; further insider exits</td><td class="amber">MEDIUM</td><td class="amber">Medium</td><td>Monitor Form 4 filings quarterly</td></tr>
+        <tr><td>Enterprise IT budget freeze (macro stress)</td><td class="amber">MEDIUM</td><td class="amber">Medium (rate environment)</td><td>Automation often protects jobs-at-risk budget category; ROI is measurable</td></tr>
+        <tr><td>Valuation compression (P/E sector derate)</td><td class="amber">MEDIUM</td><td class="amber">High (higher-for-longer)</td><td>Offset by net cash floor and FCF yield already attractive vs bonds</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 7 — TECHNICAL ANALYSIS
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t7">
+  <div class="sec-head"><span class="num">7A</span> Price Structure & Multi-Timeframe Trend</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Timeframe</th><th>Trend</th><th>Level</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Monthly (Long-Term)</td><td class="red">Bearish</td><td>Below 200-DMA</td><td>Long-term downtrend from IPO high $90+ → $10.39</td></tr>
+        <tr><td>Weekly (Medium-Term)</td><td class="red">Bearish</td><td>Below all key MAs</td><td>YTD -36%; pattern of lower highs since Nov 2025</td></tr>
+        <tr><td>Daily (Short-Term)</td><td class="amber">Tentatively turning</td><td>Near 52-week low support</td><td>RSI ~37-40; approaching oversold; watching for reversal</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-dim)">Current Price: <strong style="color:var(--phosphor)">$10.39</strong> (Apr 9, 2026) <span class="pf pf-marg">ESTIMATED</span></div>
+  </div>
+
+  <div class="sec-head"><span class="num">7B</span> Moving Average Dashboard</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>MA Level</th><th>Value</th><th>Price vs MA</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>20-EMA (Daily)</td><td class="num">~$10.80 (est.)</td><td class="red">BELOW by ~4%</td><td class="red">Short-term bearish</td></tr>
+        <tr><td>50-DMA</td><td class="num">$11.77</td><td class="red">BELOW by ~12%</td><td class="red">Medium-term bearish</td></tr>
+        <tr><td>100-DMA</td><td class="num">~$12.20 (est.)</td><td class="red">BELOW by ~17%</td><td class="red">Bearish</td></tr>
+        <tr><td>200-DMA</td><td class="num">$13.31</td><td class="red">BELOW by ~28%</td><td class="red">Long-term bearish; 200-DMA = major resistance</td></tr>
+        <tr><td>200-Week MA</td><td class="num">~$14.50 (est.)</td><td class="red">WELL BELOW</td><td class="text-amber">Historically — at 200WMA = accumulation zone</td></tr>
+        <tr><td>Death Cross Status</td><td colspan="3" class="red">50-DMA below 200-DMA confirmed — structurally bearish</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;padding:10px;background:rgba(0,200,255,0.04);border:1px solid rgba(0,200,255,0.2);border-radius:3px;font-size:12px">
+      <strong style="color:var(--cyan)">Technician's Note:</strong> Being 28% below the 200-DMA in a high-quality software stock often marks the zone of maximum pessimism and maximum opportunity for long-term investors. The 200-DMA at $13.31 is the first major resistance; a sustained close above it would be bullish confirmation for the agentic AI thesis.
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">7C</span> Volume Analysis</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Event</th><th>Volume Signal</th><th>Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>Q4 FY2026 Earnings (Mar 11, 2026)</td><td>High volume surge (revenue beat)</td><td>Institutional reaction: +6.8% intraday, then reversed on guidance concerns</td></tr>
+        <tr><td>Pre-Market Mar 12 Selloff</td><td>High distribution volume</td><td>FY2027 guidance disappointment = distribution at $12-13 range</td></tr>
+        <tr><td>Current (Apr 2026)</td><td>23M vs avg 32M = below avg</td><td>Selling exhaustion — volume declining on further price drops = bullish divergence</td></tr>
+        <tr><td>OBV Trend</td><td>Declining</td><td>Net negative flow over past 3 months; institutional de-risking occurring</td></tr>
+        <tr><td>Price near 52-Week Low $9.46</td><td>Watch for volume surge</td><td>If $9.46 holds on low volume = exhaustion bottom forming</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-head"><span class="num">7D</span> Momentum Indicators</div>
+  <div class="card-grid">
+    <div>
+      <div class="sub-head">RSI (14-day)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--amber)">37.6</div>
+      <div class="gauge-wrap">
+        <div class="gauge-bar"><div class="gauge-fill" style="width:37.6%;background:linear-gradient(90deg, var(--amber), #FF8000)"></div></div>
+        <span class="gauge-label" style="color:var(--amber)">Near Oversold</span>
+      </div>
+      <p style="font-size:12px;color:var(--text-dim)">RSI at 37.6 — approaching the sub-35 zone which has historically represented attractive entry in quality software. MFI at 27.4 = oversold signal. Weekly RSI approaching 30 would confirm deep oversold.</p>
+    </div>
+    <div>
+      <div class="sub-head">MACD (Daily)</div>
+      <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--fail-red)">Negative</div>
+      <p style="font-size:12px;color:var(--text-dim)">MACD histogram negative = bearish momentum. MACD line below signal line. No bullish crossover yet. Watch for bullish MACD crossover at earnings catalyst (May 28) as confirmation signal.</p>
+    </div>
+    <div>
+      <div class="sub-head">Stochastic / MFI</div>
+      <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--amber)">Oversold</div>
+      <p style="font-size:12px;color:var(--text-dim)">MFI 27.4 = money flow oversold. Bollinger lower band near $10.24 = price testing lower band. Stochastic likely in sub-20 zone = technically stretched to downside.</p>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">7E</span> Chart Pattern</div>
+  <div class="card">
+    <p style="font-size:13px"><strong>Pattern: Descending Channel / Extended Downtrend</strong></p>
+    <p style="font-size:13px">PATH has been in a descending channel since the $19.84 high. The stock is testing the lower channel boundary near the 52-week low of $9.46. If $9.46 holds (which has been tested multiple times), this forms a potential <strong>Double Bottom</strong> base formation. A breakout above the 50-DMA ($11.77) with volume would be the first confirmation of a trend reversal.</p>
+    <p style="font-size:13px"><strong>Agentic AI Phase 2→3 Breakout Pattern:</strong> For AI stocks, the Phase 2→3 transition often produces an explosive breakout from a long base — typically on an earnings beat + guidance raise + ARR acceleration. This is the catalyst to watch at Q1 FY27 results (May 28, 2026).</p>
+  </div>
+
+  <div class="sec-head"><span class="num">7F</span> Trade Structure</div>
+  <div class="card" style="border-color:rgba(0,200,255,0.3)">
+    <div class="card-grid">
+      <div>
+        <div class="sub-head">PRIMARY TRIGGER (Not Yet Active)</div>
+        <table class="t">
+          <tr><td>Condition</td><td>RSI &lt;35 + Price ≤ $9.50 + Volume contraction</td></tr>
+          <tr><td>Entry Zone</td><td class="num cyan">$9.00 - $10.00</td></tr>
+          <tr><td>Stop Loss</td><td class="num red">$7.50 (below any meaningful support)</td></tr>
+          <tr><td>Target 1 (T1)</td><td class="num green">$13.31 (200-DMA) = +28-48%</td></tr>
+          <tr><td>Target 2 (T2)</td><td class="num green">$16.00 (base IV) = +60-78%</td></tr>
+          <tr><td>Risk:Reward</td><td class="num green">1:2.8 (T1) to 1:5.5 (T2)</td></tr>
+          <tr><td>Position Size Cap</td><td class="num amber">3-5% of portfolio (transitional story)</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="sub-head">SECONDARY TRIGGER (Momentum Breakout)</div>
+        <table class="t">
+          <tr><td>Condition</td><td>Sustained close above $11.77 (50-DMA) + MACD crossover + Volume surge</td></tr>
+          <tr><td>Entry Zone</td><td class="num cyan">$11.50 - $12.50</td></tr>
+          <tr><td>Stop Loss</td><td class="num red">$10.00 (break below channel)</td></tr>
+          <tr><td>Target 1</td><td class="num green">$13.31 (200-DMA)</td></tr>
+          <tr><td>Target 2</td><td class="num green">$16.00 (base IV)</td></tr>
+          <tr><td>Risk:Reward</td><td class="num green">1:1.8 (T1); 1:3.0 (T2)</td></tr>
+          <tr><td>Catalyst</td><td>Q1 FY27 results May 28, 2026</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="sub-head">KEY PRICE LADDER</div>
+        <table class="t">
+          <tr><td>52-Week Low / Support</td><td class="num">$9.46</td></tr>
+          <tr><td>MoS Entry Zone Bottom</td><td class="num cyan">$9.50</td></tr>
+          <tr><td>Current Price</td><td class="num">$10.39</td></tr>
+          <tr><td>Bollinger Lower Band</td><td class="num">$10.24</td></tr>
+          <tr><td>20-EMA Resistance</td><td class="num">~$10.80</td></tr>
+          <tr><td>50-DMA Resistance</td><td class="num">$11.77</td></tr>
+          <tr><td>200-DMA Major Resistance</td><td class="num">$13.31</td></tr>
+          <tr><td>Base IV Target</td><td class="num green">$14-15</td></tr>
+          <tr><td>52-Week High</td><td class="num">$19.84</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">7G</span> Technical Composite Score</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Dimension</th><th>Score (1-5)</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Price Structure</td><td class="num red">1/5</td><td>Downtrend. Below all key MAs.</td></tr>
+        <tr><td>Moving Average Alignment</td><td class="num red">1/5</td><td>Death cross. 50-DMA below 200-DMA.</td></tr>
+        <tr><td>Volume / OBV</td><td class="num amber">2/5</td><td>Volume declining on selloff = possible exhaustion</td></tr>
+        <tr><td>Momentum (RSI/MACD)</td><td class="num amber">2/5</td><td>RSI near 37 = approaching oversold; MFI oversold</td></tr>
+        <tr><td>Chart Pattern</td><td class="num amber">3/5</td><td>Testing 52W low support; double bottom potential forming</td></tr>
+        <tr><td>Relative Strength</td><td class="num red">1/5</td><td>-36% YTD vs S&P 500 -1% = massive underperformance</td></tr>
+        <tr style="background:rgba(255,176,32,0.06)"><td><strong>Total Score</strong></td><td class="num amber"><strong>10/30 = 33%</strong></td><td>Technically weak but approaching oversold reversal zone</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-dim)"><strong>Technical Composite Assessment:</strong> The technical picture is bearish in trend but approaching oversold reversal territory. A fundamentals-driven investor (Buffett framework) uses technical analysis to <em>time</em> entry, not to determine thesis. The thesis is solid; the technical picture says "not yet" — but the gap between current price and MoS zone ($9.50) is only $0.89. Technical confirmation would be: RSI &lt;35 + price at $9.46-9.50 support + declining volume on the touch.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 8 — SHAREHOLDING
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t8">
+  <div class="sec-head"><span class="num">8A</span> Ownership Structure (US Market)</div>
+  <div class="card">
+    <p style="font-size:13px;margin-bottom:12px">Note: US market ownership uses institutional/insider breakdown (different from Indian promoter/FII/DII framework). Pledged shares concept replaced by insider selling alerts.</p>
+    <table class="t">
+      <thead><tr><th>Holder Category</th><th>Ownership %</th><th>Trend</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Institutional Investors (total)</td><td class="num green">~61%</td><td class="amber">↗ Steady</td><td class="text-green">Quality institutional base maintained despite stock decline</td></tr>
+        <tr><td>Philippe Botteri / Accel (VC)</td><td class="num">~29%</td><td class="amber">— Stable</td><td class="text-amber">Large VC overhang; potential future secondary sales</td></tr>
+        <tr><td>Daniel Dines (Founder/CEO)</td><td class="num amber">~9-10%</td><td class="red">↓ Selling</td><td class="text-red">Significant concern; sold 3M+ shares in 90 days</td></tr>
+        <tr><td>BlackRock (13G)</td><td class="num green">5%+</td><td class="green">— Passive</td><td class="text-green">Quality long-term holder</td></tr>
+        <tr><td>Vanguard Group</td><td class="num">3-4% est.</td><td class="green">— Passive</td><td class="text-green">Index-driven; stable</td></tr>
+        <tr><td>AQR Capital Management</td><td class="num amber">Increased 45% in Q4 2024</td><td class="green">↑ Buying</td><td class="text-green">Quantitative fund sees value</td></tr>
+        <tr><td>Other Institutional</td><td class="num">~20-25%</td><td class="amber">↔ Mixed</td><td class="text-amber">Some de-risking visible</td></tr>
+        <tr><td>Retail / Public Float</td><td class="num">~10%</td><td class="amber">—</td><td class="text-dim">Market sentiment driven</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-head"><span class="num">8B</span> Insider Selling Detail (Key Concern)</div>
+  <div class="card" style="border-color:rgba(255,77,106,0.3)">
+    <div class="sub-head" style="color:var(--fail-red)">⚠ CEO Insider Selling — Red Flag Analysis</div>
+    <table class="t">
+      <thead><tr><th>Date</th><th>Insider</th><th>Action</th><th>Shares</th><th>Est. Price</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td>Oct 2025</td><td>Daniel Dines (CEO)</td><td class="red">SOLD</td><td class="num">122,734</td><td class="num">~$15-18</td><td>Large block — initial concern raised</td></tr>
+        <tr><td>Oct 2025</td><td>Daniel Dines (CEO)</td><td class="red">SOLD</td><td class="num">45,000</td><td class="num">~$15</td><td>Sequential sale — confirmed pattern</td></tr>
+        <tr><td>Dec 2025</td><td>Daniel Dines (CEO)</td><td class="red">SOLD</td><td class="num">45,000</td><td class="num">~$13-14</td><td>Selling into weakness — meaningful signal</td></tr>
+        <tr><td>Jan 2026</td><td>Daniel Dines (CEO)</td><td class="red">SOLD</td><td class="num">45,000</td><td class="num">~$12-13</td><td>Still selling at lower prices = not just profit taking</td></tr>
+        <tr><td>Various</td><td>Other Executives</td><td class="red">SOLD</td><td class="num">Various</td><td class="num">$12-18 range</td><td>Broad-based insider distribution</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;padding:10px;background:rgba(255,77,106,0.06);border:1px solid rgba(255,77,106,0.25);border-radius:3px;font-size:12.5px">
+      <strong style="color:var(--fail-red)">Assessment:</strong> The sustained CEO selling over 4+ months, at progressively lower prices, is the most significant management integrity concern. It may be on a pre-arranged 10b5-1 plan (automatic selling), but the optics are damaging. Conversely, the company simultaneously authorized a new $500M buyback program — creating a contradictory signal (company buying while CEO sells). Key watch: does CEO buying emerge below $10? That would be a powerful reversal signal.
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">8C</span> Market Structure Analysis</div>
+  <div class="card-grid-2">
+    <div class="card">
+      <div class="sub-head">Free Float & Liquidity</div>
+      <table class="t">
+        <tr><td>Total Shares Outstanding</td><td class="num">~534M</td></tr>
+        <tr><td>Market Cap</td><td class="num">~$5.6B</td></tr>
+        <tr><td>Free Float (ex-insiders)</td><td class="num">~60-65%</td></tr>
+        <tr><td>Free Float Market Cap</td><td class="num">~$3.4B</td></tr>
+        <tr><td>Average Daily Volume</td><td class="num">~32M shares / $330M/day</td></tr>
+        <tr><td>Relative Volume (Apr 9)</td><td class="num red">0.65x (below average)</td></tr>
+        <tr><td>Short Interest</td><td class="num red">100.7M shares = 18.8% of float</td></tr>
+        <tr><td>Short Squeeze Potential</td><td class="num amber">Moderate (18.8% short = meaningful)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="sub-head">S&P 500 Inclusion Potential</div>
+      <p style="font-size:12.5px">UiPath achieved full-year GAAP profitability for the first time in FY2026 ($282M GAAP net income). This is a key S&P 500 inclusion requirement. With sustained GAAP profitability:</p>
+      <ul style="font-size:12.5px">
+        <li>S&P 500 inclusion becomes possible in 2026-2027</li>
+        <li>Inclusion would trigger $2-4B of forced index buying</li>
+        <li>Could represent 1-3% of outstanding shares purchased by passive funds</li>
+        <li>This is a significant near-term catalyst NOT reflected in current price</li>
+      </ul>
+      <div class="pf pf-marg" style="margin-top:8px">S&P 500 INCLUSION: POTENTIAL CATALYST — MONITOR</div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">8D</span> Ownership Momentum Score</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Factor</th><th>Weight</th><th>Score /10</th><th>Commentary</th></tr></thead>
+      <tbody>
+        <tr><td>Institutional Ownership Stability</td><td>25%</td><td class="num green">7</td><td>61% institutional; minor de-risking but not exodus</td></tr>
+        <tr><td>Insider Buying/Selling Direction</td><td>30%</td><td class="num red">2</td><td>CEO selling multiple times — significant negative</td></tr>
+        <tr><td>Company Buyback Activity</td><td>20%</td><td class="num green">8</td><td>$500M new program; $1B completed — strong signal</td></tr>
+        <tr><td>Short Interest Trend</td><td>15%</td><td class="num red">3</td><td>18.8% short — high, but potential squeeze fuel</td></tr>
+        <tr><td>Quality of Institutional Holders</td><td>10%</td><td class="num amber">6</td><td>BlackRock, Vanguard, AQR = quality holders</td></tr>
+        <tr style="background:rgba(255,176,32,0.06)"><td><strong>Ownership Momentum Score</strong></td><td>100%</td><td class="num amber"><strong>47/100</strong></td><td>Neutral-to-negative ownership dynamics; buyback a positive offset</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 9 — AI INTELLIGENCE
+══════════════════════════════════════════════ -->
+<div class="tab-content" id="t9">
+  <div class="sec-head"><span class="num">9A</span> AI Classification Dashboard</div>
+  <div class="ai-dash">
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">Category</div>
+      <div class="ai-dash-val" style="color:var(--cyan)">C — Mature<br>Compounder</div>
+    </div>
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">AI Overlay</div>
+      <div class="ai-dash-val" style="color:var(--pass-green)">AI WIDENER 🟢<br><span style="font-size:11px">FORMING</span></div>
+    </div>
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">Data Flywheel</div>
+      <div class="ai-dash-val" style="color:var(--cyan)">FORMING ★★★<br><span style="font-size:11px">2/3 criteria confirmed</span></div>
+    </div>
+    <div class="ai-dash-card">
+      <div class="ai-dash-label">Adoption Phase</div>
+      <div class="ai-dash-val" style="color:var(--amber)">PHASE 2→3<br><span style="font-size:11px">Agentic AI inflection</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0">
+    <div class="sub-head">Adoption Phase Assessment — Phase 2→3 Transition <span class="pf pf-marg">ESTIMATED</span></div>
+    <div class="card-grid">
+      <div style="padding:12px;background:rgba(255,176,32,0.06);border:1px solid rgba(255,176,32,0.2);border-radius:3px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber)">PHASE 2 — EARLY COMMERCIAL TRACTION</div>
+        <p style="font-size:12px;margin-top:8px">RPA automation: Phase 4 (mainstream). Agentic AI in enterprise: Phase 2 transitioning to Phase 3. Evidence: ~5-20% enterprise AI agent adoption; first companies showing real ROI (Suncoast Credit Union: $3.3M fraud prevented via UiPath agents); 3,000 agents created in preview. Gartner projects 40% app embed by end of 2026 — which would signal Phase 3 inflection.</p>
+      </div>
+      <div style="padding:12px;background:rgba(0,200,255,0.06);border:1px solid rgba(0,200,255,0.2);border-radius:3px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan)">TRANSITION TO PHASE 3 — INFLECTION</div>
+        <p style="font-size:12px;margin-top:8px">Gartner: agentic AI could drive 30% of enterprise software sales by 2035. UiPath's Maestro platform positioned as the orchestration layer for this transition. 78% of executives say agentic AI requires rethinking operating models (UiPath Trends Report 2026). Winners are emerging (UiPath, ServiceNow, Microsoft). Phase 2→3 transition = historically the biggest investor returns window.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">9B</span> Data Flywheel Deep-Dive</div>
+  <div class="card">
+    <div class="sub-head">Question 1: What is UiPath's Proprietary Training Data?</div>
+    <p style="font-size:13px"><strong>Data source:</strong> Workflow execution data from 10,000+ enterprise customers — every automation process, exception, document extraction result, and agent action is potentially logged in UiPath Orchestrator. This includes: claims processing patterns (insurance), invoice extraction accuracy (finance), AML investigation workflows (banking via WorkFusion), and customer onboarding exceptions (telecom/retail).</p>
+    <p style="font-size:13px"><strong>Volume:</strong> Billions of automation events annually. <strong>Uniqueness:</strong> No competitor has comparable breadth across industries and geographies. <strong>Outcome labels:</strong> YES — UiPath knows when an automation succeeds (invoice correctly processed) vs. fails (bot throws exception). This is the gold standard for supervised learning: you observe the ground truth.</p>
+    <div class="pf pf-pass">✓ PROPRIETARY DATA CONFIRMED — HIGH VOLUME, UNIQUE, OUTCOME-LABELED</div>
+
+    <div class="sub-head" style="margin-top:16px">Question 2: How Does the AI Improve With More Data/Users?</div>
+    <p style="font-size:13px"><strong>Mechanism 1 — Healing Agent:</strong> UiPath's AI that detects broken automations and auto-repairs them. More enterprise workflows = more failure patterns learned = more accurate healing. Measurable improvement claimed by management (specific metrics not publicly quantified). <span class="pf pf-marg">ESTIMATED</span></p>
+    <p style="font-size:13px"><strong>Mechanism 2 — Document Understanding:</strong> AI that extracts data from unstructured documents (invoices, contracts, claims). Every document processed — with human correction feedback — improves model accuracy. Industry reports from users confirm "high accuracy" after training on enterprise-specific document types.</p>
+    <p style="font-size:13px"><strong>Mechanism 3 — OSWorld Benchmark:</strong> UiPath Screen Agent achieved No. 1 ranking on OSWorld-Verified — independent benchmark for computer-use agents. This technical leadership is evidence that UiPath's AI is improving faster than competitors. Powered by Claude Opus 4.5 + UiPath's proprietary orchestration layer. <span class="pf pf-pass">VERIFIED</span></p>
+    <div class="pf pf-marg">~ IMPROVEMENT MECHANISM PLAUSIBLE — SPECIFIC METRICS FROM EARNINGS CALLS NOT YET QUANTIFIED</div>
+
+    <div class="sub-head" style="margin-top:16px">Question 3: Does Better AI Attract More Users?</div>
+    <p style="font-size:13px">This is where the flywheel is still forming. UiPath has 10,000+ customers — but the core metric that would confirm the flywheel closing is: <em>are customers choosing UiPath over Microsoft/ServiceNow specifically because UiPath's AI is more accurate, having been trained on more enterprise workflow data?</em> This is not yet clearly evidenced in market share data. NRR declining from 123% to 107% suggests expansion is happening more slowly than historical rates.</p>
+    <p style="font-size:13px">However, there is early evidence in customer testimonials (Suncoast Credit Union case study; Omega Healthcare saving thousands of work hours with Document Understanding) that better AI IS driving commercial outcomes and deepening the relationship. The loop is beginning to close but has not yet become self-reinforcing at scale.</p>
+    <div class="pf pf-marg">~ LOOP BEGINNING TO CLOSE — NOT YET FULLY SELF-REINFORCING</div>
+
+    <div style="margin-top:16px;padding:14px;background:rgba(0,200,255,0.06);border:1px solid rgba(0,200,255,0.25);border-radius:3px">
+      <div style="display:flex;gap:20px;flex-wrap:wrap">
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim)">DATA QUALITY</div><div class="flywheel-score" style="font-size:2rem">3/3</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim)">IMPROVEMENT EVIDENCE</div><div class="flywheel-score" style="font-size:2rem">2.5/4</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim)">LOOP SPEED</div><div class="flywheel-score" style="font-size:2rem">1/3</div></div>
+        <div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim)">TOTAL FLYWHEEL SCORE</div><div class="flywheel-score">6.5/10</div></div>
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-dim)">FORMING ★★★ — Moderate flywheel. If NRR recovers and agentic AI demonstrates measurable accuracy improvements from scale, this upgrades to CONFIRMED ★★★★★ and moat grade moves from B+ to A−.</div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">9C</span> AI Value Chain Position</div>
+  <div class="value-chain">
+    <div class="vc-item">
+      <div class="vc-num">L1</div>
+      <div class="vc-label">Infrastructure<br>(chips/data centres)</div>
+    </div>
+    <div class="vc-item">
+      <div class="vc-num">L2</div>
+      <div class="vc-label">Foundation<br>Models (OpenAI/Anthropic)</div>
+    </div>
+    <div class="vc-item">
+      <div class="vc-num">L3</div>
+      <div class="vc-label">AI Platforms<br>(Snowflake/Databricks)</div>
+    </div>
+    <div class="vc-item active">
+      <div class="vc-num">L4</div>
+      <div class="vc-label"><strong>UiPath → Vertical AI Application</strong><br>+ AI-Enabled Incumbent Hybrid</div>
+    </div>
+    <div class="vc-item">
+      <div class="vc-num">L5</div>
+      <div class="vc-label">AI-Enabled<br>Incumbents</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:10px">
+    <p style="font-size:13px"><strong>THIS COMPANY'S POSITION: Level 4 / Level 5 Hybrid</strong></p>
+    <p style="font-size:13px">UiPath sits at the intersection of Level 4 (Vertical AI Application — agentic orchestration for specific enterprise workflows like AML, claims processing, AP automation) and Level 5 (AI-Enabled Incumbent — existing enterprise software platform deploying AI to widen moat). This is actually the most favourable risk/return position in the AI value chain:</p>
+    <ul style="font-size:13px">
+      <li><strong>L4 advantage:</strong> Domain-specific enterprise AI with proprietary outcome data creates defensible moat</li>
+      <li><strong>L5 advantage:</strong> Existing $1.85B ARR customer base provides stable revenue while AI optionality compounds</li>
+      <li><strong>Implication:</strong> UiPath doesn't need to win the AI model wars (it uses Anthropic, OpenAI, etc.) — it wins by being the indispensable orchestration layer that uses whoever has the best models. This is a durable structural advantage.</li>
+    </ul>
+    <div class="pf pf-pass">LEVEL 4/5 HYBRID — Most attractive risk/return position; existing cash flows fund AI optionality</div>
+  </div>
+
+  <div class="sec-head"><span class="num">9D</span> Global AI Opportunity Context (US/Enterprise Focus)</div>
+  <div class="card">
+    <table class="t">
+      <thead><tr><th>Structural Advantage</th><th>Relevant to UiPath?</th><th>Explanation</th></tr></thead>
+      <tbody>
+        <tr><td>Enterprise Data at Scale</td><td class="text-green">YES — DIRECTLY</td><td>10,000+ enterprise customers = massive proprietary workflow dataset. Equivalent to a private "enterprise process data layer" not available to any competitor</td></tr>
+        <tr><td>Model Agnostic Orchestration</td><td class="text-green">YES — DIRECTLY</td><td>UiPath Maestro orchestrates ANY AI agent (OpenAI, Anthropic, Gemini, proprietary). As foundation models commoditise, UiPath's orchestration layer becomes MORE valuable</td></tr>
+        <tr><td>AI Talent (Romania Engineering)</td><td class="text-green">YES — COST ADVANTAGE</td><td>Bucharest origin provides access to top Eastern European AI/ML talent at 40-60% of Silicon Valley cost. Structural advantage that compounds with scale</td></tr>
+        <tr><td>Regulatory/Compliance AI</td><td class="text-green">YES — DIFFERENTIATED</td><td>AIUC-1 certification, governance-as-code, role-based access = regulatory AI compliance moat. In banking/healthcare, compliance governance is a differentiator vs. generic AI tools</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-head" style="margin-top:16px">AI Theme Relevance Table</div>
+    <table class="t">
+      <thead><tr><th>AI Theme</th><th>Phase (April 2026)</th><th>UiPath Relevance</th></tr></thead>
+      <tbody>
+        <tr><td>AI agents in enterprise / agentic automation</td><td class="green">Phase 2→3</td><td class="green">DIRECTLY — core product</td></tr>
+        <tr><td>AI in financial crime / AML / fraud</td><td class="green">Phase 3</td><td class="green">DIRECTLY — WorkFusion acquisition</td></tr>
+        <tr><td>AI in healthcare workflows</td><td class="amber">Phase 2</td><td class="green">DIRECTLY — new healthcare AI solutions</td></tr>
+        <tr><td>AI in back-office / shared services</td><td class="green">Phase 3-4</td><td class="green">DIRECTLY — core RPA + agentic market</td></tr>
+        <tr><td>AI document processing / IDP</td><td class="green">Phase 3</td><td class="green">DIRECTLY — Document Understanding product</td></tr>
+        <tr><td>AI in regulatory compliance / GRC</td><td class="amber">Phase 2-3</td><td class="green">DIRECTLY — governance-as-code</td></tr>
+        <tr><td>AI in supply chain / manufacturing</td><td class="amber">Phase 2</td><td class="amber">ADJACENT — automation applications</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-head"><span class="num">9E</span> Competitive Moat vs AI Disruption Risk</div>
+  <div class="card">
+    <div class="card-grid-2">
+      <div>
+        <div class="sub-head">Primary AI Threat: Microsoft Power Automate + Copilot</div>
+        <p style="font-size:12.5px"><strong>Disruption Timeline:</strong> Medium-term (3-5 years)</p>
+        <p style="font-size:12.5px">Microsoft is embedding automation capabilities directly into Microsoft 365 and Azure. Power Automate + Copilot Studio offers basic RPA + AI agents to M365 customers at low/no incremental cost. The threat is real for simple automation use cases in M365-heavy environments.</p>
+        <p style="font-size:12.5px"><strong>UiPath's counter:</strong> Complex enterprise RPA (legacy mainframe, multi-system orchestration, compliance-regulated workflows) remains far beyond Power Automate's capabilities. UiPath's 200-step automation workflows in banking/insurance require enterprise-grade governance that Microsoft doesn't offer. UiPath positions as the <em>horizontal orchestration layer above</em> Microsoft, not competing at the application level.</p>
+        <div class="pf pf-marg">TIMELINE: MEDIUM-TERM (3-5yr) — Manageable with continued product innovation</div>
+      </div>
+      <div>
+        <div class="sub-head">Moat Resilience Score</div>
+        <div style="text-align:center;padding:16px">
+          <div style="font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;color:var(--cyan)">7/10</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:8px">Strong moat with specific streams vulnerable</div>
+        </div>
+        <table class="t">
+          <tr><td>Simple RPA (M365 overlap)</td><td class="num red">At Risk (30% of use cases?)</td></tr>
+          <tr><td>Complex enterprise RPA</td><td class="num green">Defensible (5-7yr horizon)</td></tr>
+          <tr><td>Agentic orchestration</td><td class="num green">Structural advantage (Maestro)</td></tr>
+          <tr><td>Financial crime / AML AI</td><td class="num green">Growing moat (WorkFusion)</td></tr>
+          <tr><td>Governance/compliance AI</td><td class="num green">Regulatory barrier to entry</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span class="num">9F</span> AI Opportunity Verdict & Portfolio Role</div>
+  <div class="card">
+    <div class="sub-head">AI Opportunity Score</div>
+    <table class="t">
+      <thead><tr><th>Dimension</th><th>Weight</th><th>Score /20</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Data Flywheel Strength (6.5/10)</td><td>20%</td><td class="num amber">13/20</td><td>FORMING — proprietary data confirmed, loop closing slowly</td></tr>
+        <tr><td>Adoption Phase Timing (Phase 2→3)</td><td>20%</td><td class="num green">17/20</td><td>Exactly at Phase 2→3 inflection = maximum opportunity window</td></tr>
+        <tr><td>Value Chain Position (L4/5 Hybrid)</td><td>20%</td><td class="num green">16/20</td><td>Best risk/return position in AI value chain; existing cash flows + AI optionality</td></tr>
+        <tr><td>Global AI Structural Advantage</td><td>20%</td><td class="num green">15/20</td><td>Enterprise data moat + Romania talent + model-agnostic positioning</td></tr>
+        <tr><td>AI Threat Resistance</td><td>20%</td><td class="num amber">14/20</td><td>7/10 moat resilience; Microsoft is real but manageable 3-5yr threat</td></tr>
+        <tr style="background:rgba(0,200,255,0.06)"><td><strong>TOTAL AI OPPORTUNITY SCORE</strong></td><td>100%</td><td class="num cyan"><strong>75/100</strong></td><td>STRATEGIC AI BET tier</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:16px;padding:16px;background:linear-gradient(135deg, rgba(0,200,255,0.08), rgba(0,200,255,0.04));border:1px solid rgba(0,200,255,0.3);border-radius:4px">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--cyan);margin-bottom:8px">PORTFOLIO ROLE: STRATEGIC AI BET — STARTER POSITION (2-3% MAX)</div>
+      <p style="font-size:13px">Score 75/100 places UiPath in the <strong>STRATEGIC AI BET</strong> tier — strong AI opportunity but uncertainty remains about the pace of agentic AI ARR acceleration. The recommendation is a starter position (2-3% of portfolio maximum) with upgrade to full position (3-5%) when:</p>
+      <ul style="font-size:13px">
+        <li>ARR growth re-accelerates above 14% (Phase 2→3 inflection confirmed commercially)</li>
+        <li>NRR recovers to >112% (flywheel beginning to close)</li>
+        <li>Rule of 40 crosses 40 threshold</li>
+      </ul>
+      <p style="font-size:13px;margin-top:8px"><strong>Investment Horizon:</strong> <span style="color:var(--cyan)">5-7 years</span> — UiPath is positioned in an AI market that will be 5-10x its current size by 2031. Short-term price targets are irrelevant for this thesis. The agentic AI TAM expansion (from pure RPA to all knowledge work automation) is the key wealth creation thesis.</p>
+      <p style="font-size:13px">At $10.39, the market is pricing in near-zero real growth forever. For investors with a 5-7 year horizon, this creates an asymmetric entry: <strong>downside protected by $3.10/share in net cash + 83% gross margin business generating $370M+ FCF annually; upside defined by agentic AI market leadership.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ FOOTER ══════ -->
+<div style="padding:24px;border-top:1px solid var(--border);text-align:center;margin-top:32px">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);max-width:800px;margin:0 auto;line-height:1.7">
+    <strong>DISCLAIMER:</strong> This report is generated for informational and educational purposes only and does not constitute investment advice, a solicitation, or a recommendation to buy or sell any security. All valuations are estimates based on publicly available data and analytical models subject to error. Past performance is not indicative of future results. Investors should conduct their own due diligence and consult a registered investment advisor before making investment decisions. UiPath (NYSE: PATH) is subject to risks including but not limited to competitive threats, macroeconomic uncertainty, execution risk, and AI disruption. This report is prepared under the Buffett Quality-Value Framework v5.0 and uses web-sourced data labeled VERIFIED / ESTIMATED / UNVERIFIED accordingly. Data sourced: April 2026. Report generated by Claude (Anthropic) · Fonts: Syne, JetBrains Mono, Source Serif 4 (Google Fonts)
+  </div>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+  document.getElementById('t0').style.display = 'block';
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

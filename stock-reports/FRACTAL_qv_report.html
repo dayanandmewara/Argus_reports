@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fractal Analytics — Buffett Quality-Value Series v5.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg-base:#06080F;--bg-card:#0D1520;--bg-card2:#111E2E;--bg-card3:#162436;--border:#1E3044;--border-bright:#2A4560;--cyan:#00C8FF;--cyan-dim:#0088BB;--amber:#F5A623;--amber-dim:#C48A10;--emerald:#10B981;--red:#EF4444;--orange:#F97316;--violet:#7C3AED;--text-primary:#EEF5FF;--text-secondary:#8BAAC5;--text-muted:#4D6A84;--font-display:'Syne',sans-serif;--font-mono:'Space Mono',monospace;--font-body:'Lora',serif;--tab-height:52px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-base);color:var(--text-primary);font-family:var(--font-body);font-size:15px;line-height:1.65;min-height:100vh;overflow-x:hidden}
+a{color:var(--cyan);text-decoration:none}
+.hero{background:linear-gradient(135deg,#06080F 0%,#0A1525 50%,#060D18 100%);border-bottom:1px solid var(--border);padding:36px 28px 30px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-image:radial-gradient(circle at 20% 50%,rgba(0,200,255,.06) 0%,transparent 60%),radial-gradient(circle at 80% 30%,rgba(245,166,35,.05) 0%,transparent 50%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;position:relative;z-index:1}
+.hero-company{font-family:var(--font-display);font-size:clamp(22px,3.5vw,38px);font-weight:800;letter-spacing:-.02em;color:#fff;line-height:1}
+.hero-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin-top:6px;letter-spacing:.08em}
+.hero-lede{font-size:13px;color:var(--text-secondary);margin-top:10px;max-width:520px;font-style:italic;line-height:1.5}
+.hero-badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:4px;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.06em;border:1px solid currentColor}
+.badge-f{color:var(--cyan);border-color:var(--cyan);background:rgba(0,200,255,.08)}
+.badge-core{color:#A78BFA;border-color:#7C3AED;background:rgba(124,58,237,.12)}
+.badge-watch{color:var(--amber);border-color:var(--amber-dim);background:rgba(245,166,35,.1)}
+.badge-macro{color:var(--orange);border-color:var(--orange);background:rgba(249,115,22,.08)}
+.badge-verified{color:var(--emerald);border-color:var(--emerald);background:rgba(16,185,129,.08);font-size:9px}
+.badge-estimated{color:var(--amber);border-color:var(--amber-dim);background:rgba(245,166,35,.08);font-size:9px}
+.hero-right{text-align:right;flex-shrink:0}
+.hero-price{font-family:var(--font-mono);font-size:clamp(18px,3vw,30px);font-weight:700;color:#fff}
+.hero-price-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-top:3px}
+.hero-data-pills{display:flex;gap:10px;margin-top:8px;justify-content:flex-end;flex-wrap:wrap}
+.pill{font-family:var(--font-mono);font-size:10px;color:var(--text-secondary);background:var(--bg-card);border:1px solid var(--border);padding:3px 8px;border-radius:3px}
+.pill span{color:var(--text-primary);font-weight:700}
+#tab-bar{position:sticky;top:0;z-index:100;background:rgba(6,8,15,.97);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);overflow-x:auto;scrollbar-width:none}
+#tab-bar::-webkit-scrollbar{display:none}
+.tab-nav{display:flex;min-width:max-content;padding:0 8px}
+.tab-btn{background:none;border:none;cursor:pointer;padding:0 14px;height:var(--tab-height);font-family:var(--font-mono);font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--text-muted);white-space:nowrap;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.tab-btn:hover{color:var(--text-secondary)}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab-content{display:none;padding:28px;max-width:1120px;margin:0 auto}
+.tab-content.active{display:block}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:680px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+@media(max-width:900px){.grid-3{grid-template-columns:1fr 1fr}.grid-4{grid-template-columns:1fr 1fr}}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:20px}
+.card-sm{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:14px}
+.section-title{font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:.12em;color:var(--text-muted);text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.section-title.cyan{color:var(--cyan)}
+h2{font-family:var(--font-display);font-size:20px;font-weight:700;color:#fff;margin-bottom:12px}
+h3{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
+.mb-20{margin-bottom:20px}.mb-28{margin-bottom:28px}.mt-20{margin-top:20px}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.metric-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:14px 16px;border-left:3px solid var(--border-bright)}
+.metric-card.green{border-left-color:var(--emerald)}.metric-card.amber{border-left-color:var(--amber)}.metric-card.red{border-left-color:var(--red)}.metric-card.cyan{border-left-color:var(--cyan)}
+.metric-label{font-family:var(--font-mono);font-size:9.5px;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+.metric-value{font-family:var(--font-mono);font-size:18px;font-weight:700;color:#fff}
+.metric-sub{font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);margin-top:3px}
+.data-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:11.5px;margin-bottom:20px}
+.data-table th{background:var(--bg-card3);color:var(--text-muted);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;padding:9px 12px;text-align:left;border-bottom:1px solid var(--border-bright)}
+.data-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-primary)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+.td-num{text-align:right;font-family:var(--font-mono)}
+.td-green,.td-emerald{color:var(--emerald)!important}.td-red{color:var(--red)!important}.td-amber{color:var(--amber)!important}.td-cyan{color:var(--cyan)!important}.td-muted{color:var(--text-muted)!important}
+.scorecard-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:8px}
+.scorecard-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.si-pass{background:rgba(16,185,129,.15);color:var(--emerald)}.si-marginal{background:rgba(245,166,35,.15);color:var(--amber)}.si-fail{background:rgba(239,68,68,.15);color:var(--red)}
+.scorecard-text{flex:1}.scorecard-label{font-family:var(--font-mono);font-size:10.5px;font-weight:700;color:var(--text-primary);letter-spacing:.04em}
+.scorecard-detail{font-size:12px;color:var(--text-secondary);margin-top:2px}
+.scorecard-badge{font-family:var(--font-mono);font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:3px;flex-shrink:0}
+.sb-pass{background:rgba(16,185,129,.15);color:var(--emerald);border:1px solid rgba(16,185,129,.3)}
+.sb-marginal{background:rgba(245,166,35,.15);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
+.sb-fail{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.flywheel-box{background:linear-gradient(135deg,rgba(0,200,255,.06) 0%,rgba(124,58,237,.06) 100%);border:1px solid rgba(0,200,255,.25);border-radius:10px;padding:24px;margin-bottom:24px}
+.flywheel-title{font-family:var(--font-display);font-size:16px;font-weight:800;color:var(--cyan);margin-bottom:4px}
+.fw-badge{font-family:var(--font-mono);font-size:10px;font-weight:700;padding:4px 12px;border-radius:4px;border:1px solid;letter-spacing:.06em}
+.fw-forming{color:#A78BFA;border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.1)}
+.flywheel-q{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-top:10px}
+.flywheel-q-label{font-family:var(--font-mono);font-size:9.5px;color:var(--text-muted);letter-spacing:.06em;margin-bottom:5px}
+.flywheel-score{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--cyan)}
+.verdict-box{background:linear-gradient(135deg,var(--bg-card) 0%,rgba(17,30,46,.8) 100%);border:2px solid var(--amber);border-radius:12px;padding:30px;text-align:center;margin-bottom:28px}
+.verdict-stars{font-size:26px;margin-bottom:8px}
+.verdict-label{font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--amber);letter-spacing:-.01em}
+.verdict-sub{font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);margin-top:8px;letter-spacing:.05em;text-transform:uppercase}
+.verdict-quote{font-style:italic;color:var(--text-secondary);margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:13px}
+.upgrade-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:8px}
+.upgrade-num{background:rgba(0,200,255,.1);color:var(--cyan);border:1px solid rgba(0,200,255,.3);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:700;flex-shrink:0}
+.upgrade-text{font-size:13px;color:var(--text-primary);line-height:1.45}
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+@media(max-width:680px){.pillar-grid{grid-template-columns:1fr 1fr}}
+.pillar-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center}
+.pillar-grade{font-family:var(--font-mono);font-size:28px;font-weight:700}
+.pillar-label{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-top:6px}
+.grade-a{color:var(--emerald)}.grade-b{color:var(--cyan)}.grade-c{color:var(--amber)}.grade-d{color:var(--orange)}.grade-f{color:var(--red)}
+.cycle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+@media(max-width:700px){.cycle-grid{grid-template-columns:1fr}}
+.cycle-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:14px}
+.cycle-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.cycle-status{font-family:var(--font-mono);font-size:12px;font-weight:700;padding:3px 8px;border-radius:3px;display:inline-block}
+.cs-tail{color:var(--emerald);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3)}
+.cs-neutral{color:var(--amber);background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3)}
+.cs-head{color:var(--red);background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3)}
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:24px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.scenario-col{background:var(--bg-card)}.scenario-col.stress{border-right:1px solid var(--border)}.scenario-col.accel{border-left:1px solid var(--border);background:rgba(0,200,255,.04)}
+.scenario-header{padding:12px 14px;background:var(--bg-card3);border-bottom:1px solid var(--border-bright);font-family:var(--font-mono);font-size:10px;font-weight:700;text-align:center;letter-spacing:.06em}
+.sh-stress{color:var(--red)}.sh-base{color:var(--amber)}.sh-accel{color:var(--emerald)}
+.scenario-row{padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:11px}
+.scenario-row:last-child{border-bottom:none}
+.sr-label{color:var(--text-muted);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:2px}
+.sr-value{color:var(--text-primary);font-weight:700}
+.ma-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:700px){.ma-grid{grid-template-columns:1fr 1fr}}
+.ma-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center}
+.ma-label{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase}
+.ma-value{font-family:var(--font-mono);font-size:15px;font-weight:700;margin:4px 0}
+.ma-status{font-family:var(--font-mono);font-size:9.5px;padding:2px 7px;border-radius:3px;font-weight:700}
+.ms-above{color:var(--emerald);background:rgba(16,185,129,.1)}.ms-below{color:var(--red);background:rgba(239,68,68,.1)}.ms-near{color:var(--amber);background:rgba(245,166,35,.1)}
+.rsi-container{display:flex;gap:24px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+.rsi-meter{flex:1;min-width:200px}
+.rsi-bar-bg{height:12px;border-radius:6px;background:linear-gradient(to right,#10B981 0%,#10B981 25%,#F5A623 25%,#F5A623 65%,#EF4444 65%);position:relative;overflow:visible}
+.rsi-needle{position:absolute;top:-6px;width:4px;height:24px;background:#fff;border-radius:2px;transform:translateX(-50%)}
+.rsi-labels{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;color:var(--text-muted);margin-top:4px}
+.rsi-value-box{text-align:center}
+.rsi-number{font-family:var(--font-mono);font-size:32px;font-weight:700;color:var(--amber)}
+.rsi-status{font-family:var(--font-mono);font-size:9px;color:var(--text-secondary)}
+.trade-box{background:linear-gradient(135deg,rgba(245,166,35,.06) 0%,rgba(0,200,255,.04) 100%);border:1px solid rgba(245,166,35,.25);border-radius:8px;padding:20px;margin-top:20px}
+.trade-title{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--amber);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.trade-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:680px){.trade-grid{grid-template-columns:1fr 1fr}}
+.trade-item .tl{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase}
+.trade-item .tv{font-family:var(--font-mono);font-size:14px;font-weight:700;color:#fff;margin-top:3px}
+.ai-dash{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+@media(max-width:700px){.ai-dash{grid-template-columns:1fr 1fr}}
+.ai-dash-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
+.ai-dash-label{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.ai-dash-badge{font-family:var(--font-mono);font-size:11px;font-weight:700;padding:6px 10px;border-radius:5px;border:1px solid currentColor;display:inline-block}
+.adb-f{color:var(--cyan);border-color:var(--cyan-dim);background:rgba(0,200,255,.08)}
+.adb-core{color:#A78BFA;border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.1)}
+.adb-forming{color:#A78BFA;border-color:rgba(167,139,250,.5);background:rgba(167,139,250,.08)}
+.adb-p2{color:var(--amber);border-color:var(--amber-dim);background:rgba(245,166,35,.08)}
+.vc-diagram{display:flex;gap:4px;margin:16px 0 24px;overflow-x:auto;padding-bottom:8px}
+.vc-level{flex:1;min-width:80px;padding:12px 8px;border-radius:6px;text-align:center;border:1px solid var(--border);background:var(--bg-card);font-family:var(--font-mono)}
+.vc-level.active{border-color:var(--cyan);background:rgba(0,200,255,.1)}
+.vc-num{font-size:18px;font-weight:700;color:var(--text-muted)}.vc-level.active .vc-num{color:var(--cyan)}
+.vc-name{font-size:9px;color:var(--text-muted);margin-top:4px;letter-spacing:.04em}.vc-level.active .vc-name{color:var(--text-primary)}
+.vc-arrow{display:flex;align-items:center;color:var(--border-bright);font-size:12px;flex-shrink:0}
+.ai-score-container{display:flex;align-items:center;gap:28px;margin:20px 0;flex-wrap:wrap}
+.ai-score-circle{width:110px;height:110px;border-radius:50%;background:conic-gradient(var(--amber) calc(var(--pct) * 3.6deg),var(--bg-card3) 0);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.ai-score-inner{width:80px;height:80px;border-radius:50%;background:var(--bg-base);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ai-score-num{font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--amber)}
+.ai-score-max{font-family:var(--font-mono);font-size:9px;color:var(--text-muted)}
+.ai-score-breakdown{flex:1}
+.ai-score-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:11px}
+.ai-score-row:last-child{border-bottom:none}
+.asr-label{color:var(--text-secondary)}.asr-val{font-weight:700;color:var(--amber)}
+.asr-bar{height:3px;background:var(--border);border-radius:2px;margin-top:3px}
+.asr-fill{height:100%;border-radius:2px;background:var(--amber)}
+.sh-bar-container{margin:12px 0}
+.sh-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-family:var(--font-mono);font-size:11px}
+.sh-bar-label{min-width:90px;color:var(--text-secondary)}
+.sh-bar-track{flex:1;height:8px;background:var(--bg-card3);border-radius:4px;overflow:hidden}
+.sh-bar-fill{height:100%;border-radius:4px}
+.sh-bar-val{min-width:42px;text-align:right;font-weight:700}
+.oq-badge{font-family:var(--font-mono);font-size:12px;font-weight:700;padding:6px 14px;border-radius:4px;display:inline-block;margin-top:12px}
+.oq-acceptable{color:var(--amber);background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.35)}
+.fval-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:12px;margin-bottom:24px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.fval-table th{background:var(--bg-card3);padding:10px 14px;text-align:left;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border-bright)}
+.fval-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-primary)}
+.fval-table tr:last-child td{border-bottom:none}
+.fval-table td.highlight{color:var(--cyan);font-weight:700}
+.fval-table tr.blended{background:rgba(0,200,255,.05)}
+.fval-table tr.blended td{color:#fff;font-weight:700;border-top:1px solid var(--cyan)}
+footer{padding:24px 28px;border-top:1px solid var(--border);margin-top:40px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);line-height:1.8;background:rgba(0,0,0,.3)}
+footer strong{color:var(--text-secondary)}
+.text-cyan{color:var(--cyan)}.text-amber{color:var(--amber)}.text-emerald{color:var(--emerald)}.text-red{color:var(--red)}.text-muted{color:var(--text-muted)}.font-mono{font-family:var(--font-mono)}
+.highlight-box{background:var(--bg-card2);border:1px solid var(--border-bright);border-radius:6px;padding:14px 16px;margin:12px 0;font-size:13px;line-height:1.6}
+.risk-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:14px 16px;margin:10px 0;font-size:13px}
+.insight-box{background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.2);border-radius:6px;padding:14px 16px;margin:10px 0;font-size:13px}
+.warning-box{background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:14px 16px;margin:10px 0;font-size:13px}
+.divider{border:none;border-top:1px solid var(--border);margin:24px 0}
+ul.styled{list-style:none;padding:0}
+ul.styled li{padding:5px 0 5px 16px;position:relative;color:var(--text-secondary);font-size:13px}
+ul.styled li::before{content:'▸';color:var(--cyan);position:absolute;left:0;font-size:10px;top:7px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-company">Fractal Analytics</div>
+      <div class="hero-sub">NSE: FRACTAL · BSE: 544700 · Listed: 16 Feb 2026 · India's First Pure-Play Enterprise AI IPO</div>
+      <div class="hero-lede">India's premier enterprise AI company serving 91.6% revenue from global Fortune 500s. Category F — the AI IS the business. Gross margin 47.2% sits in a liminal zone: far above traditional IT services, not yet software-grade. Central question: can Fractal graduate from AI Delivery to AI Software Economics?</div>
+      <div class="hero-badges">
+        <span class="badge badge-f">CATEGORY F · AI-NATIVE</span>
+        <span class="badge badge-core">🌀 AI CORE</span>
+        <span class="badge badge-watch">WATCH ★★★</span>
+        <span class="badge badge-macro">⚡ WEST ASIA OIL RISK</span>
+        <span class="badge badge-verified">✓ VERIFIED</span>
+        <span class="badge badge-estimated">~ ESTIMATED</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-price">₹963.5</div>
+      <div class="hero-price-sub">NSE Close · Apr 24, 2026 <span class="badge badge-estimated">~</span></div>
+      <div class="hero-data-pills">
+        <div class="pill">MCap <span>₹16,572 Cr</span></div>
+        <div class="pill">EV/TTM Rev <span>5.27x</span></div>
+        <div class="pill">P/E FY25 <span>74.9x</span></div>
+        <div class="pill">R40 <span>~38.8</span></div>
+        <div class="pill">52W <span>₹734–₹985</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">00 OVERVIEW</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">01 MACRO & GROWTH</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">02 FINANCIALS</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">03 MOAT</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">04 MANAGEMENT</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">05 VALUATION</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">06 VERDICT</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">07 TECHNICAL</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">08 SHAREHOLDING</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">09 AI INTELLIGENCE</button>
+  </div>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content active">
+  <div class="section-title cyan">BUSINESS OVERVIEW</div>
+  <div class="grid-2 mb-20">
+    <div class="card">
+      <h3>What Fractal Does</h3>
+      <p style="color:var(--text-secondary);font-size:13px;line-height:1.7">India's first and largest pure-play Data, Analytics & AI (DAAI) company. Founded in 2000 by Srikanth Velamakanni and Pranay Agrawal. Two segments: <strong style="color:var(--text-primary)">Fractal.ai</strong> (profitable core: AI services + Cogentiq agentic platform) and <strong style="color:var(--text-primary)">Fractal Alpha</strong> (loss-making innovation engine: Vaidya.ai, Kalaido.ai, PiEvolve, Fathom-R1). 91.6% revenue from outside India. Clients include Nestle, Mondelez, Citi, Philips, Costco, Franklin Templeton — a who's who of Fortune 500.</p>
+    </div>
+    <div class="card">
+      <h3>Why This Stock Is In This Series</h3>
+      <ul class="styled">
+        <li>India's ONLY listed pure-play enterprise AI company — structural scarcity premium</li>
+        <li>Vaidya.ai 2.0 beats ChatGPT-5 & Gemini Pro 3 on OpenAI HealthBench (Hard) — first globally to score 50+</li>
+        <li>NRR 114–121% — existing clients spending materially more each year</li>
+        <li>FY25 sharp turnaround: ₹-55Cr → +₹221Cr PAT, CFO ₹397Cr</li>
+        <li>Morgan Stanley (Overweight ₹964) + Goldman Sachs both initiated post-IPO</li>
+        <li>Framework question: Can gross margin expand from 47% → 60%+ to justify a software multiple re-rating?</li>
+      </ul>
+    </div>
+  </div>
+  <div class="section-title">KEY SNAPSHOT</div>
+  <div class="metric-grid">
+    <div class="metric-card cyan"><div class="metric-label">Revenue FY25</div><div class="metric-value">₹2,765 Cr</div><div class="metric-sub">+26% YoY <span class="badge badge-verified">✓</span></div></div>
+    <div class="metric-card green"><div class="metric-label">Revenue Q3 FY26</div><div class="metric-value">₹854 Cr</div><div class="metric-sub">+21% YoY <span class="badge badge-verified">✓</span></div></div>
+    <div class="metric-card amber"><div class="metric-label">Gross Margin Q3</div><div class="metric-value">47.2%</div><div class="metric-sub">BELOW 60% Cat F threshold</div></div>
+    <div class="metric-card amber"><div class="metric-label">Adj. EBITDA Margin</div><div class="metric-value">17.8%</div><div class="metric-sub">Q3 FY26 · +0.4% YoY</div></div>
+    <div class="metric-card green"><div class="metric-label">NRR</div><div class="metric-value">114%</div><div class="metric-sub">Q3 FY26 · 115% for 9M FY26</div></div>
+    <div class="metric-card cyan"><div class="metric-label">Rule of 40</div><div class="metric-value">~38.8</div><div class="metric-sub">21% growth + 17.8% EBITDA · MARGINAL</div></div>
+    <div class="metric-card green"><div class="metric-label">Operating Cash Flow</div><div class="metric-value">₹397 Cr</div><div class="metric-sub">FY25 · from -₹31Cr in FY23</div></div>
+    <div class="metric-card"><div class="metric-label">Promoter Holding</div><div class="metric-value">17.0%</div><div class="metric-sub">Very low · FII 40.6% · DII 12.8%</div></div>
+    <div class="metric-card green"><div class="metric-label">IPO Price vs Now</div><div class="metric-value">+7%</div><div class="metric-sub">₹900 → ₹963.5</div></div>
+    <div class="metric-card amber"><div class="metric-label">Revenue CAGR 3-yr</div><div class="metric-value">29%</div><div class="metric-sub">FY22→FY25 · Screener <span class="badge badge-verified">✓</span></div></div>
+    <div class="metric-card cyan"><div class="metric-label">ROCE FY25</div><div class="metric-value">12.0%</div><div class="metric-sub">Turning positive — was -12% in FY22</div></div>
+    <div class="metric-card"><div class="metric-label">Clients &gt;$20M</div><div class="metric-value">6</div><div class="metric-sub">Up 2 YoY · Top 10 = 54% revenue</div></div>
+  </div>
+  <div class="section-title">REVENUE MIX</div>
+  <div class="grid-2 mb-20">
+    <div class="card">
+      <h3>By Industry (Q3 FY26)</h3>
+      <table class="data-table">
+        <tr><th>Segment</th><th>Rev %</th><th>YoY Growth</th></tr>
+        <tr><td>CPG & Retail</td><td class="td-num">36%</td><td class="td-num td-emerald">Stable</td></tr>
+        <tr><td>Technology, Media & Telecom</td><td class="td-num">25%</td><td class="td-num td-emerald">Stable</td></tr>
+        <tr><td>Healthcare & Life Sciences</td><td class="td-num">20%</td><td class="td-num td-cyan">+78%</td></tr>
+        <tr><td>BFSI</td><td class="td-num">12%</td><td class="td-num td-emerald">+26%</td></tr>
+        <tr><td>Others</td><td class="td-num">7%</td><td class="td-num td-muted">—</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>By Geography (Q3 FY26)</h3>
+      <table class="data-table">
+        <tr><th>Region</th><th>Rev %</th><th>YoY</th></tr>
+        <tr><td>Americas (primarily US)</td><td class="td-num">69%</td><td class="td-num td-emerald">+26%</td></tr>
+        <tr><td>Europe</td><td class="td-num">19%</td><td class="td-num td-emerald">+26%</td></tr>
+        <tr><td>APAC & Others</td><td class="td-num">12%</td><td class="td-num td-amber">+6%</td></tr>
+      </table>
+      <div class="warning-box" style="margin-top:12px"><strong class="text-amber">US Concentration Risk:</strong> 65–69% revenue from Americas. US macro = direct Fractal risk.</div>
+    </div>
+  </div>
+  <div class="section-title">CATEGORY F RATIONALE</div>
+  <div class="card mb-20">
+    <div class="grid-2">
+      <div>
+        <h3>Why Category F (Not B or C)</h3>
+        <ul class="styled">
+          <li>Company's identity and raison d'être IS artificial intelligence — AI-native since 2000, not AI-added</li>
+          <li>Building proprietary foundation models (Vaidya.ai, Fathom-R1-14B) — not consuming API wrappers</li>
+          <li>Cogentiq agentic platform aspires to software-grade recurring economics</li>
+          <li>91.6% global revenue — valued on revenue multiples, not P/E</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Critical Caveat: Services-Software Liminal Zone</h3>
+        <div class="risk-box"><strong class="text-red">Framework Warning:</strong> Gross margin 47.2% is BELOW the 60% Cat F threshold. Employee costs = 72.2% of revenue. This is AI services, not pure software. The central investment question: Will Cogentiq shift gross margins above 60% in 3–5 years?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <div class="section-title cyan">INDIA MACRO ANCHOR</div>
+  <div class="grid-4 mb-20">
+    <div class="metric-card green"><div class="metric-label">India Real GDP FY26</div><div class="metric-value">7.4–7.6%</div><div class="metric-sub">RBI/MoSPI <span class="badge badge-verified">✓</span></div></div>
+    <div class="metric-card amber"><div class="metric-label">India CPI FY26</div><div class="metric-value">~2.1%</div><div class="metric-sub">New series Feb 2026: rising to 3.21%</div></div>
+    <div class="metric-card cyan"><div class="metric-label">India 10-yr G-Sec</div><div class="metric-value">6.87–6.91%</div><div class="metric-sub">Apr 2026 · Oil-elevated <span class="badge badge-verified">✓</span></div></div>
+    <div class="metric-card"><div class="metric-label">RBI Repo Rate</div><div class="metric-value">5.25%</div><div class="metric-sub">Rate cycle complete. Hold Apr 2026.</div></div>
+    <div class="metric-card"><div class="metric-label">Nifty 50 P/E</div><div class="metric-value">21.28x</div><div class="metric-sub">Apr 22, 2026 · Below 23.4x median <span class="badge badge-verified">✓</span></div></div>
+    <div class="metric-card amber"><div class="metric-label">Brent Crude</div><div class="metric-value">~$95–98</div><div class="metric-sub">West Asia conflict (US-Iran) driving prices</div></div>
+    <div class="metric-card"><div class="metric-label">FY26 Nominal GDP</div><div class="metric-value">~9.5–10%</div><div class="metric-sub">Real 7.4% + CPI 2.1% · Terminal ceiling</div></div>
+    <div class="metric-card green"><div class="metric-label">FPI Net Flows FY26</div><div class="metric-value">-₹1.71L Cr</div><div class="metric-sub">Heavy outflows — geopolitical risk driven</div></div>
+  </div>
+  <div class="section-title">MACRO CYCLE — 6 DIMENSIONS</div>
+  <div class="cycle-grid mb-20">
+    <div class="cycle-card"><div class="cycle-label">Rural Income Cycle</div><span class="cycle-status cs-tail">RECOVERY</span><p style="font-size:11px;color:var(--text-muted);margin-top:8px">Good monsoon, record food output, low food inflation. <strong>Fractal Impact: NEUTRAL</strong> — serves global enterprises, not Indian consumers.</p></div>
+    <div class="cycle-card"><div class="cycle-label">Urban Consumption Cycle</div><span class="cycle-status cs-tail">RECOVERY</span><p style="font-size:11px;color:var(--text-muted);margin-top:8px">IT wages stable. <strong>Fractal Impact: INDIRECT POSITIVE</strong> — better IT sector = more enterprise AI budgets.</p></div>
+    <div class="cycle-card"><div class="cycle-label">Input Cost Cycle</div><span class="cycle-status cs-head">RISING</span><p style="font-size:11px;color:var(--text-muted);margin-top:8px">Oil $95–98/bbl. <strong>Fractal Impact: MARGINAL HEADWIND</strong> — global enterprise clients may tighten budgets.</p></div>
+    <div class="cycle-card"><div class="cycle-label">Interest Rate Cycle (RBI)</div><span class="cycle-status cs-tail">EASING (DONE)</span><p style="font-size:11px;color:var(--text-muted);margin-top:8px">Complete at 5.25%. <strong>Fractal Impact: POSITIVE</strong> — lower rates = higher growth multiples for AI stocks.</p></div>
+    <div class="cycle-card"><div class="cycle-label">Government Capex Cycle</div><span class="cycle-status cs-tail">STRONG</span><p style="font-size:11px;color:var(--text-muted);margin-top:8px"><strong>Fractal Impact: INDIRECT</strong> — creates broader tech ecosystem demand.</p></div>
+    <div class="cycle-card" style="border-color:rgba(0,200,255,.3)"><div class="cycle-label" style="color:var(--cyan)">AI Adoption Cycle (v5.0)</div><span class="cycle-status cs-tail">ACCELERATING</span><p style="font-size:11px;color:var(--text-muted);margin-top:8px">Global enterprise AI investment surging. <strong>Fractal Impact: DIRECT TAILWIND</strong> — core demand driver.</p></div>
+  </div>
+  <div class="highlight-box mb-20"><strong class="text-amber">MACRO COMPOSITE:</strong> <strong class="text-emerald">TAILWIND</strong> · The dominant force is the global enterprise AI adoption wave. India macro headwinds (oil, FPI) are secondary for a 91.6% non-India revenue business. AI adoption cycle = strongest macro tailwind since internet adoption.</div>
+  <div class="section-title">DAAI SECTOR GROWTH DERIVATION</div>
+  <div class="card mb-20">
+    <table class="data-table">
+      <thead><tr><th>Parameter</th><th>Value</th><th>Source</th><th>AI Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Global DAAI Market Size (FY25)</td><td class="td-num td-cyan">$143B</td><td>DRHP (Everest Group)</td><td class="td-emerald">Core business</td></tr>
+        <tr><td>Global DAAI Market (FY30E)</td><td class="td-num td-cyan">$310B</td><td>DRHP <span class="badge badge-estimated">~</span></td><td>16.7% CAGR</td></tr>
+        <tr><td>Fractal Revenue CAGR (FY23–25)</td><td class="td-num td-emerald">18.0%</td><td>DRHP/Screener <span class="badge badge-verified">✓</span></td><td class="td-emerald">1.6× sector</td></tr>
+        <tr><td>Sector historical CAGR</td><td class="td-num">11.0%</td><td>DRHP 3rd party <span class="badge badge-estimated">~</span></td><td>Accelerating</td></tr>
+        <tr><td>Sector projected CAGR FY25–30</td><td class="td-num td-emerald">16.7%</td><td>Everest Group <span class="badge badge-estimated">~</span></td><td>GenAI driving</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section-title">GROWTH SCENARIO MATRIX</div>
+  <div class="scenario-grid mb-20">
+    <div class="scenario-col stress">
+      <div class="scenario-header sh-stress">⚠ STRESS</div>
+      <div class="scenario-row"><span class="sr-label">Macro State</span><span class="sr-value">India GDP ~5.5–6%</span></div>
+      <div class="scenario-row"><span class="sr-label">Global CIO Budgets</span><span class="sr-value">Cuts/Freeze</span></div>
+      <div class="scenario-row"><span class="sr-label">Stage 1 Rev CAGR</span><span class="sr-value" style="color:var(--red)">14–16%</span></div>
+      <div class="scenario-row"><span class="sr-label">Stage 2 Rev CAGR</span><span class="sr-value">10–12%</span></div>
+      <div class="scenario-row"><span class="sr-label">Terminal CAGR</span><span class="sr-value">~6%</span></div>
+      <div class="scenario-row"><span class="sr-label">Margin Direction</span><span class="sr-value">Compress 14–15%</span></div>
+      <div class="scenario-row"><span class="sr-label">Key Risk</span><span class="sr-value">US recession kills 65% rev</span></div>
+    </div>
+    <div class="scenario-col">
+      <div class="scenario-header sh-base">◆ BASE</div>
+      <div class="scenario-row"><span class="sr-label">Macro State</span><span class="sr-value">India GDP ~7%</span></div>
+      <div class="scenario-row"><span class="sr-label">Global CIO Budgets</span><span class="sr-value">Growing 10–15%</span></div>
+      <div class="scenario-row"><span class="sr-label">Stage 1 Rev CAGR</span><span class="sr-value" style="color:var(--amber)">20–24%</span></div>
+      <div class="scenario-row"><span class="sr-label">Stage 2 Rev CAGR</span><span class="sr-value">14–16%</span></div>
+      <div class="scenario-row"><span class="sr-label">Terminal CAGR</span><span class="sr-value">~8%</span></div>
+      <div class="scenario-row"><span class="sr-label">Margin Direction</span><span class="sr-value">Expand to 20–22%</span></div>
+      <div class="scenario-row"><span class="sr-label">Key Risk</span><span class="sr-value">Top-client concentration</span></div>
+    </div>
+    <div class="scenario-col accel">
+      <div class="scenario-header sh-accel">★ ACCELERATION</div>
+      <div class="scenario-row"><span class="sr-label">Macro State</span><span class="sr-value">India GDP ~8%+</span></div>
+      <div class="scenario-row"><span class="sr-label">Global CIO Budgets</span><span class="sr-value">+20%+ AI wave</span></div>
+      <div class="scenario-row"><span class="sr-label">Stage 1 Rev CAGR</span><span class="sr-value" style="color:var(--emerald)">28–35%</span></div>
+      <div class="scenario-row"><span class="sr-label">Stage 2 Rev CAGR</span><span class="sr-value">18–22%</span></div>
+      <div class="scenario-row"><span class="sr-label">Terminal CAGR</span><span class="sr-value">~9%</span></div>
+      <div class="scenario-row"><span class="sr-label">Margin Direction</span><span class="sr-value">Expand to 25%+</span></div>
+      <div class="scenario-row"><span class="sr-label">Key Risk</span><span class="sr-value">Execution at scale; talent war</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <div class="section-title cyan">P&L HISTORY (CONSOLIDATED, ₹ Cr)</div>
+  <div class="card mb-20">
+    <table class="data-table">
+      <thead><tr><th>Metric</th><th>FY21</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>Q3 FY26</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue</td><td class="td-num">873</td><td class="td-num">1,295</td><td class="td-num">1,985</td><td class="td-num">2,196</td><td class="td-num td-cyan">2,765</td><td class="td-num td-emerald">854*</td></tr>
+        <tr><td>YoY Growth</td><td class="td-num">—</td><td class="td-num td-emerald">+48%</td><td class="td-num td-emerald">+53%</td><td class="td-num td-amber">+11%</td><td class="td-num td-emerald">+26%</td><td class="td-num td-emerald">+21%</td></tr>
+        <tr><td>Operating Profit</td><td class="td-num">101</td><td class="td-num td-red">-84</td><td class="td-num td-red">-116</td><td class="td-num td-amber">57</td><td class="td-num td-emerald">320</td><td class="td-num">—</td></tr>
+        <tr><td>OPM %</td><td class="td-num">12%</td><td class="td-num td-red">-6%</td><td class="td-num td-red">-6%</td><td class="td-num td-amber">3%</td><td class="td-num td-emerald">12%</td><td class="td-num">—</td></tr>
+        <tr><td>Adj. EBITDA Margin</td><td class="td-num td-muted">~14%</td><td class="td-num td-muted">—</td><td class="td-num td-muted">—</td><td class="td-num">10.6%</td><td class="td-num td-emerald">17.4%</td><td class="td-num td-emerald">17.8%</td></tr>
+        <tr><td>Gross Margin</td><td class="td-num td-muted">—</td><td class="td-num td-muted">—</td><td class="td-num td-muted">—</td><td class="td-num td-muted">~46%</td><td class="td-num td-amber">~47%</td><td class="td-num td-amber">47.2%</td></tr>
+        <tr><td>Net Profit</td><td class="td-num">36</td><td class="td-num td-red">-148</td><td class="td-num">194†</td><td class="td-num td-red">-55</td><td class="td-num td-emerald">221</td><td class="td-num td-emerald">100</td></tr>
+        <tr><td>Operating Cash Flow</td><td class="td-num">81</td><td class="td-num td-red">-117</td><td class="td-num td-red">-31</td><td class="td-num td-amber">160</td><td class="td-num td-emerald">397</td><td class="td-num td-muted">—</td></tr>
+        <tr><td>ROCE</td><td class="td-num">—</td><td class="td-num td-red">-12%</td><td class="td-num td-red">-9%</td><td class="td-num td-amber">0%</td><td class="td-num td-emerald">12%</td><td class="td-num">—</td></tr>
+        <tr><td>Debtor Days</td><td class="td-num">59</td><td class="td-num td-red">112</td><td class="td-num">92</td><td class="td-num">89</td><td class="td-num td-emerald">77</td><td class="td-num td-muted">~75</td></tr>
+      </tbody>
+    </table>
+    <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">†FY23 PAT ₹194Cr inflated by ₹553Cr exceptional other income — not operational. *Q3 FY26 = quarter ended Dec 31, 2025. Sources: Screener, DRHP, Q3 FY26 filings <span class="badge badge-verified">✓</span></div>
+  </div>
+  <div class="section-title">RULE OF 40 TRAJECTORY</div>
+  <div class="card mb-20">
+    <div class="grid-2">
+      <div>
+        <table class="data-table">
+          <thead><tr><th>Period</th><th>Rev Growth</th><th>Adj EBITDA</th><th>R40</th></tr></thead>
+          <tbody>
+            <tr><td>FY24</td><td class="td-num">11%</td><td class="td-num">10.6%</td><td class="td-num td-red">21.6</td></tr>
+            <tr><td>FY25</td><td class="td-num">26%</td><td class="td-num">17.4%</td><td class="td-num td-emerald">43.4</td></tr>
+            <tr><td>Q3 FY26</td><td class="td-num">21%</td><td class="td-num">17.8%</td><td class="td-num td-amber">38.8</td></tr>
+            <tr><td>FY27E (Base)</td><td class="td-num td-emerald">~22%</td><td class="td-num td-emerald">~20%</td><td class="td-num td-emerald">~42</td></tr>
+            <tr><td>FY28E (Accel)</td><td class="td-num td-cyan">~25%</td><td class="td-num td-cyan">~22%</td><td class="td-num td-cyan">~47</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="warning-box"><strong class="text-amber">Key Observation:</strong> R40 jumped from 21.6 (FY24) → 43.4 (FY25) → 38.8 (Q3 FY26). FY25 was the breakout year. Q3 FY26 dipped below 40. Framework requires 2 consecutive quarters above 40 before confirming the signal. Q4 FY26 results (May 11 board meeting) is the critical test.</div>
+        <div class="insight-box" style="margin-top:12px"><strong class="text-cyan">R40 = 40 is the primary Cat F entry threshold.</strong> Fractal is right at the boundary — the next two quarters determine the verdict.</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title">CAT F AI SCORECARD — F1 THROUGH F8</div>
+  <div class="scorecard-item"><div class="scorecard-icon si-fail">✗</div><div class="scorecard-text"><div class="scorecard-label">F1 — GROSS MARGIN ≥ 60%</div><div class="scorecard-detail">47.2% in Q3 FY26. The most critical Cat F test. Employee costs 72.2% of revenue. Fractal is an AI services company, not pure software. Path to 60%: Cogentiq ARR must scale to 15–20%+ of total revenue. Current subscription: only 2.3% (₹64Cr in FY25). This is the single most important metric to track.</div></div><span class="scorecard-badge sb-fail">FAIL — 47.2%</span></div>
+  <div class="scorecard-item"><div class="scorecard-icon si-marginal">~</div><div class="scorecard-text"><div class="scorecard-label">F2 — RULE OF 40 ≥ 40</div><div class="scorecard-detail">R40 = 38.8 (Q3 FY26). FY25 full year: 43.4. Right at the threshold. Need 2 consecutive quarters above 40 per framework. Q4 FY26 (May 11 results) is the deciding data point. FY27E base: ~42 — trajectory is correct but confirmation pending.</div></div><span class="scorecard-badge sb-marginal">MARGINAL — 38.8</span></div>
+  <div class="scorecard-item"><div class="scorecard-icon si-pass">✓</div><div class="scorecard-text"><div class="scorecard-label">F3 — REVENUE GROWTH ACCELERATION / STABILITY</div><div class="scorecard-detail">Q3 FY26: +21% YoY. 9M FY26: +20% YoY. HLS +78%. Americas and Europe both +26%. TTM Revenue ~₹3,171Cr growing solidly. Stage 1 growth well above sector's 11% base. Not decelerating — stabilising at 20–25% level as base grows.</div></div><span class="scorecard-badge sb-pass">PASS — 21% YoY</span></div>
+  <div class="scorecard-item"><div class="scorecard-icon si-pass">✓</div><div class="scorecard-text"><div class="scorecard-label">F4 — NET REVENUE RETENTION ≥ 110%</div><div class="scorecard-detail">NRR FY25: 121.3%. Q3 FY26: 114%. 9M FY26: 115%. Existing customers materially increasing spend each year. NPS = 77. 6 clients now &gt;$20M (up 2 YoY). Average relationship length 8+ years. Anchor clients (Nestle, Mondelez, Citi) are multi-decade.</div></div><span class="scorecard-badge sb-pass">PASS — 114–121%</span></div>
+  <div class="scorecard-item"><div class="scorecard-icon si-marginal">~</div><div class="scorecard-text"><div class="scorecard-label">F5 — CASH BURN EFFICIENCY / RUNWAY</div><div class="scorecard-detail">FCF-positive in FY25 (Op CF ₹397Cr). Cash ₹275Cr. Borrowings ₹430Cr. Net debt ~₹155Cr. IPO raised ₹1,023.5Cr fresh capital — substantially strengthened balance sheet. FY22-23 had negative op CF — business only recently proven self-funding. Improving trajectory, not yet in "fortress" category.</div></div><span class="scorecard-badge sb-marginal">MARGINAL → IMPROVING</span></div>
+  <div class="scorecard-item"><div class="scorecard-icon si-pass">✓</div><div class="scorecard-text"><div class="scorecard-label">F6 — AI DIFFERENTIATION DEPTH</div><div class="scorecard-detail">Vaidya.ai 2.0: First AI globally to score 50+ on OpenAI HealthBench (Hard) — beats ChatGPT-5, GPT-5.2, Gemini Pro 3. Fathom-R1-14B: Won "Best Indian LLM." PiEvolve: Top on OpenAI MLE-Bench. 24 patents granted, 41 pending. R&D = 5.2% of revenue. Builds proprietary models on proprietary data — not API wrappers.</div></div><span class="scorecard-badge sb-pass">PASS — PROPRIETARY MODELS</span></div>
+  <div class="scorecard-item"><div class="scorecard-icon si-pass">✓</div><div class="scorecard-text"><div class="scorecard-label">F7 — MANAGEMENT AI CREDIBILITY</div><div class="scorecard-detail">AI-native founders (built company around AI since 2000). CEO = ET AI Business Leader of Year. 0.8% hire rate from 195,707 applications. Won Meta HackerCup, OpenAI HealthBench, MLE-Bench — verified by third parties. Preferred Supplier with 2 Magnificent 7 companies. 10 consecutive "Great Place to Work" certifications.</div></div><span class="scorecard-badge sb-pass">PASS — AI-NATIVE FOUNDERS</span></div>
+  <div class="scorecard-item"><div class="scorecard-icon si-marginal">~</div><div class="scorecard-text"><div class="scorecard-label">F8 — PATH TO PROFITABILITY</div><div class="scorecard-detail">Already PAT-positive (FY25: ₹221Cr). EBITDA margin expanding: 10.6% → 17.4% → 17.8%. FCF positive (₹397Cr op CF). Path exists but pace is uncertain. Key: product revenue must scale from 2.3% to 15–20%+ to reach software-grade economics. Fractal Alpha structurally loss-making is a drag.</div></div><span class="scorecard-badge sb-marginal">MARGINAL — PATH EXISTS</span></div>
+  <hr class="divider">
+  <div class="section-title">EARNINGS QUALITY — O'GLOVE TESTS 1 & 5</div>
+  <div class="scorecard-item"><div class="scorecard-icon si-pass">✓</div><div class="scorecard-text"><div class="scorecard-label">TEST 1 — FCF CONVERSION (5-YEAR TREND)</div><div class="scorecard-detail">Op CFO/Net Income: FY21: 225% (excellent). FY22–23: Both negative — investment phase. FY23 anomaly: PAT positive (₹194Cr) but CFO negative (-₹31Cr) — due to ₹553Cr exceptional other income inflating profit, not operational. FY24: CFO positive, profit negative. FY25: 397/221 = 180% (excellent). Underlying trend strongly improving. FY23 anomaly is explainable, not recurring.</div></div><span class="scorecard-badge sb-pass">PASS — IMPROVING</span></div>
+  <div class="scorecard-item"><div class="scorecard-icon si-pass">✓</div><div class="scorecard-text"><div class="scorecard-label">TEST 5 — GROSS MARGIN CONSISTENCY</div><div class="scorecard-detail">Adj EBITDA trend: FY21 ~14% → FY22/23 negative (deliberate investment phase: acquisitions Neal Analytics, Senseforth) → FY24: 10.6% → FY25: 17.4% → Q3 FY26: 17.8%. The FY22–23 dip was strategic investment, not structural decay. Working capital days 35.6→26.4. Directionally correct and improving.</div></div><span class="scorecard-badge sb-pass">PASS — EXPANDING</span></div>
+  <div style="text-align:center;padding:16px"><span class="oq-badge oq-acceptable">EARNINGS QUALITY: ACCEPTABLE</span><p style="font-size:11px;color:var(--text-muted);margin-top:8px;font-family:var(--font-mono)">FY23 PAT ₹194Cr is misleading due to ₹553Cr exceptional income. Base profitability restored FY25. FY25 & FY26 data is clean and directionally reliable.</p></div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <div class="section-title cyan">ECONOMIC MOAT ASSESSMENT</div>
+  <div class="flywheel-box">
+    <div class="flywheel-title">⚙ DATA FLYWHEEL ASSESSMENT</div>
+    <p style="font-size:13px;color:var(--text-secondary)">Does this company's AI improve because more people use it? The most powerful moat in the AI era.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin:12px 0"><span class="fw-badge fw-forming">★★★ FLYWHEEL FORMING</span><span class="badge badge-estimated">~ ESTIMATED</span></div>
+    <div class="grid-3" style="gap:12px;margin-top:12px">
+      <div class="flywheel-q"><div class="flywheel-q-label">Q1: PROPRIETARY TRAINING DATA?</div><strong style="color:var(--amber);font-size:12px">◑ PARTIAL</strong><p style="font-size:11px;color:var(--text-secondary);margin-top:6px">25 years of enterprise decision analytics across Fortune 500 CPG, pharma, finance, tech. Vaidya.ai trained on curated medical data. However, underlying client data is not owned by Fractal — a key limitation vs. a company with its own transaction data.</p></div>
+      <div class="flywheel-q"><div class="flywheel-q-label">Q2: AI IMPROVES WITH MORE DATA?</div><strong style="color:var(--emerald);font-size:12px">✓ CONFIRMED (Products)</strong><p style="font-size:11px;color:var(--text-secondary);margin-top:6px">Vaidya.ai 2.0 beats GPT-5.2, Gemini Pro 3 on HealthBench (Hard) — verified by OpenAI. PiEvolve: Top on MLE-Bench. Project Ramanujan: Won Meta HackerCup. Objective, third-party verified improvement.</p></div>
+      <div class="flywheel-q"><div class="flywheel-q-label">Q3: BETTER AI ATTRACTS MORE USERS?</div><strong style="color:var(--amber);font-size:12px">◑ FORMING</strong><p style="font-size:11px;color:var(--text-secondary);margin-top:6px">NRR 114–121%: clients spending more as AI improves. Preferred Supplier status with 2 Magnificent 7 companies — because their benchmarks are best-in-class. HLS grew 78% YoY. Loop forming, but cycle time is slow (months, not days).</p></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:16px;padding-top:12px;border-top:1px solid var(--border-bright);flex-wrap:wrap;gap:8px">
+      <div><span class="flywheel-score">5.5</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">/10</span> <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-secondary)">MODERATE — FORMING BUT NOT SELF-SUSTAINING</span></div>
+    </div>
+    <div class="insight-box" style="margin-top:12px"><strong class="text-cyan">Framework:</strong> Flywheel FORMING → moat maintained at current grade. If Vaidya.ai B2C scales and Cogentiq platform data loops close, this could upgrade to CONFIRMED (★★★★★), warranting a one-grade moat upgrade.</div>
+  </div>
+  <div class="section-title">MOAT SOURCES</div>
+  <div class="grid-2 mb-20">
+    <div class="card-sm"><h3>Switching Costs ★★★★</h3><p style="font-size:12px;color:var(--text-secondary)">8+ year average client tenure. Fractal is embedded in enterprise decision architectures. Replacing them means re-training teams, migrating custom models, risking decision failures. NRR 114%+ proves clients don't leave. Anchor clients (Nestle, Mondelez, Citi) = multi-decade relationships. <strong class="text-amber">Moat Stress Test: HOLDS</strong> — switching costs strengthen as models learn client-specific patterns.</p></div>
+    <div class="card-sm"><h3>Talent Brand & Domain Expertise ★★★★</h3><p style="font-size:12px;color:var(--text-secondary)">0.8% hire rate from 195,707 applications. Everest Group & Forrester "Leader" since 2017. Microsoft Partner of Year 2025. Vaidya.ai &gt; ChatGPT-5 on medical benchmarks. Preferred Supplier with Magnificent 7 companies. <strong class="text-amber">Moat Stress Test: STRENGTHENS</strong> — best AI talent reinforces capability advantage.</p></div>
+    <div class="card-sm"><h3>Proprietary AI Products (Cogentiq) ★★★</h3><p style="font-size:12px;color:var(--text-secondary)">Cogentiq, Vaidya.ai, Kalaido.ai, PiEvolve, Fathom-R1-14B. 24 patents, 41 pending. Real IP. However, subscription revenue = only ₹64Cr (2.3% of FY25 revenue) — product moat is early. <strong class="text-amber">Moat Stress Test: BUILDING</strong> — real but nascent. 3–5 years to validate.</p></div>
+    <div class="card-sm"><h3>Scale & Client Network ★★★</h3><p style="font-size:12px;color:var(--text-secondary)">10 of top 20 CPG companies. 8 of top 20 TMT. 6 clients &gt;$20M. Reference client list is a self-reinforcing sales advantage — if you serve Nestle, Mondelez, Mars, you know CPG analytics better than any competitor. <strong class="text-amber">Moat Stress Test: HOLDS</strong>.</p></div>
+  </div>
+  <div class="section-title">AI DISRUPTION RISK TO FRACTAL'S OWN MOAT</div>
+  <div class="card mb-20">
+    <div class="warning-box"><strong class="text-amber">The Paradox:</strong> Fractal benefits from enterprise AI adoption — but the same AI wave could eventually reduce the need for human AI consultants if foundation models become powerful enough. This is the central long-term risk.</div>
+    <div class="grid-2" style="margin-top:16px">
+      <div><h3>AI Threat Dimensions</h3><ul class="styled"><li><strong class="text-red">AI coding tools (Cursor, Copilot):</strong> Could reduce data engineering headcount required for delivery</li><li><strong class="text-red">GenAI for analytics:</strong> Commoditises lower-complexity analytics work in 3–5 years</li><li><strong class="text-amber">Timeline:</strong> Medium-term for simple work; high-complexity AI strategy is protected longer</li></ul></div>
+      <div><h3>Fractal's Defense</h3><ul class="styled"><li><strong class="text-emerald">Already building the AI that replaces old work:</strong> Fractal IS the AI tools company</li><li><strong class="text-emerald">Moving up the value chain:</strong> Outcome-based contracts, C-suite advisory, Fractal Alpha</li><li><strong class="text-emerald">If AI reduces delivery cost, margins IMPROVE:</strong> The risk becomes an opportunity if executed</li></ul></div>
+    </div>
+    <div class="highlight-box" style="margin-top:12px"><strong class="text-cyan">Moat Resilience: 6.5/10</strong> — Strong enough for a 5-year horizon. Switching cost + talent brand moats are durable. Primary risk: commoditisation of lower-complexity analytics in 3–5 years. Fractal's strategic response (Cogentiq, outcome-based pricing) is correct, but execution is the uncertainty.</div>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <div class="section-title cyan">FOUNDER-LED AI COMPANY</div>
+  <div class="grid-2 mb-20">
+    <div class="card">
+      <h3>Founders</h3>
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px"><strong class="text-cyan">Srikanth Velamakanni</strong> — Group CEO & Executive Vice-Chairman. Co-founded 2000. ET AI Business Leader of the Year. 25 years of reinvention from analytics to AI-native. <span class="badge badge-verified">✓</span></p>
+      <p style="font-size:13px;color:var(--text-secondary);line-height:1.7"><strong class="text-cyan">Pranay Agrawal</strong> — Co-founder & long-term vision architect. Founding team intact 25 years = strong mission alignment and culture stability.</p>
+      <div class="insight-box" style="margin-top:12px">AI-native founders — they did NOT add AI to a legacy business; they ARE an AI business from inception. This distinction matters enormously in the era of AI transformation.</div>
+    </div>
+    <div class="card">
+      <h3>Capital Allocation Quality</h3>
+      <ul class="styled">
+        <li><strong>R&D = 5.2% of revenue</strong> (₹144Cr FY25) — appropriate, not extravagant, not miserly</li>
+        <li>IPO proceeds: ₹700Cr for organic/inorganic growth in Fractal USA — specific, strategic</li>
+        <li>Acquisitions: Senseforth.ai (conversational AI), Neal Analytics (US), Analytics Vidhya (AI education) — each adds capability</li>
+        <li>Analytics Vidhya (India's largest AI education platform, now 100% subsidiary) = talent pipeline advantage. Brilliantly strategic.</li>
+        <li>No dividends — reinvesting in growth. Appropriate for this stage.</li>
+        <li>Working capital days declining: 35.6→26.4. Actively managing cash conversion.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="section-title">AI TEAM QUALITY</div>
+  <div class="card mb-20">
+    <div class="grid-2">
+      <div><h3>Evidence of AI Research Excellence</h3><ul class="styled"><li>Vaidya.ai 2.0 — First globally to score 50+ on OpenAI HealthBench (Hard), beats ChatGPT-5, GPT-5.2, Gemini Pro 3 <span class="badge badge-verified">✓</span></li><li>PiEvolve — Top performer on OpenAI MLE-Bench <span class="badge badge-verified">✓</span></li><li>Project Ramanujan — Won Meta HackerCup (world's hardest competitive programming) <span class="badge badge-verified">✓</span></li><li>Fathom-R1-14B — "Best Indian LLM Innovation" ET Awards</li><li>24 patents granted, 41 pending <span class="badge badge-verified">✓</span></li></ul></div>
+      <div><h3>Talent Quality Signals</h3><ul class="styled"><li>0.8% hire rate from 195,707 applications — one of most selective companies globally</li><li>5,919 employees (Q3 FY26); attrition 16.3% — elevated but typical for top AI market</li><li>10 consecutive "Great Place to Work" (CY2017–2026) — culture retains the talent hired</li><li>Partnerships with OpenAI, Google Cloud, Microsoft — industry recognition signal</li><li>Preferred Supplier status with 2 Magnificent 7 companies</li></ul></div>
+    </div>
+  </div>
+  <div class="section-title">RED FLAGS & CONCERNS</div>
+  <div class="grid-2 mb-20">
+    <div class="risk-box"><strong class="text-red">Transfer Pricing Risk:</strong> Draft assessment order for FY22–23 with ₹156.6Cr adjustments. No current demand; penalty proceedings possible. Objections filed with DRP. Monitor. <span class="badge badge-verified">✓ BSE disclosed</span></div>
+    <div class="risk-box"><strong class="text-red">Client Concentration:</strong> Top 10 clients = 54% revenue. If one or two major clients cut AI budgets (macro-driven), revenue shortfall could be severe.</div>
+    <div class="warning-box"><strong class="text-amber">ESO Litigation:</strong> High Court directed arbitration in Sumit Midha suit over 24,380 ESOPs; claim ₹16.4Cr. Small in absolute terms but signals governance growing pains of a newly listed company.</div>
+    <div class="warning-box"><strong class="text-amber">IPO OFS Overhang:</strong> TPG (₹450Cr, 1.4x return) and Apax/Quinag (₹880.9Cr, 5.2x return) are rational sellers. Watch for secondary sales as lock-ins expire post-May 12, 2026.</div>
+  </div>
+  <div class="section-title">PLEDGED SHARES</div>
+  <div class="scorecard-item"><div class="scorecard-icon si-pass">✓</div><div class="scorecard-text"><div class="scorecard-label">PROMOTER PLEDGED SHARES</div><div class="scorecard-detail">No promoter pledge found in post-IPO filings. PE-backed company structure — pledging is not typical. Promoter holding 17% leaves limited scope for pledging. <span class="badge badge-estimated">~</span></div></div><span class="scorecard-badge sb-pass">PASS — No Pledges</span></div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <div class="section-title cyan">CAT F VALUATION — F-METHODS 1 THROUGH 4</div>
+  <div class="insight-box mb-20"><strong class="text-cyan">Framework Rule:</strong> No DCF for Cat F until FCF positive for 2+ consecutive years. Fractal turned FCF-positive in FY25 (first year). FY26 confirms or denies second year. Until then, F-Methods 1–4 apply. Valuations use EV (MCap + Net Debt) / Revenue, then subtract net debt per share for equity value.</div>
+  <div class="card mb-20">
+    <h3>Base Financial Parameters</h3>
+    <div class="grid-4">
+      <div class="metric-card cyan"><div class="metric-label">TTM Revenue (Dec FY26)</div><div class="metric-value">₹3,171 Cr</div><div class="metric-sub"><span class="badge badge-verified">✓</span></div></div>
+      <div class="metric-card"><div class="metric-label">FY25 Revenue</div><div class="metric-value">₹2,765 Cr</div></div>
+      <div class="metric-card amber"><div class="metric-label">Net Debt</div><div class="metric-value">₹155 Cr</div><div class="metric-sub">Borrowings ₹430Cr – Cash ₹275Cr</div></div>
+      <div class="metric-card cyan"><div class="metric-label">EV / TTM Revenue</div><div class="metric-value">5.27x</div><div class="metric-sub">At current price ₹963.5</div></div>
+    </div>
+  </div>
+  <div class="section-title">F-METHOD 1 — REVENUE MULTIPLE VALUATION</div>
+  <div class="card mb-20">
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:14px">Multiple justified by R40 score, gross margin, growth rate, market position. India AI discount 20–25% applied vs US comps. Fractal at 47.2% GM sits in "emerging/services AI" tier — not the 70%+ software tier.</p>
+    <table class="fval-table">
+      <thead><tr><th>Scenario</th><th>EV/Rev Multiple</th><th>TTM Revenue</th><th>EV</th><th>Per Share IV</th></tr></thead>
+      <tbody>
+        <tr><td class="td-red">⚠ STRESS (R40 drops below 30)</td><td class="td-num">3.5–4.5x</td><td class="td-num">₹3,171 Cr</td><td class="td-num">₹11,099–14,270 Cr</td><td class="td-num td-red">₹637–821</td></tr>
+        <tr><td class="td-amber">◆ BASE (R40 stable 38–42)</td><td class="td-num">6.0–7.5x</td><td class="td-num">₹3,171 Cr</td><td class="td-num">₹19,026–23,783 Cr</td><td class="td-num td-cyan">₹1,097–1,374</td></tr>
+        <tr class="blended"><td colspan="4" style="text-align:center">BASE MIDPOINT (6.75x TTM Revenue)</td><td class="td-num td-cyan">₹1,235</td></tr>
+        <tr><td class="td-emerald">★ ACCEL (R40 crosses 50+, GM 52%+)</td><td class="td-num">9.0–12.0x</td><td class="td-num">₹3,171 Cr</td><td class="td-num">₹28,539–38,052 Cr</td><td class="td-num td-emerald">₹1,650–2,203</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box"><strong class="text-cyan">Current Price ₹963.5 vs Base IV ₹1,235:</strong> Implied upside ~28%. At 5.27x TTM EV/Revenue, Fractal is trading between stress and base — reflecting market uncertainty about gross margin and R40 trajectory. Any R40 &gt; 40 confirmation for 2 consecutive quarters would push toward the base multiple of 6.75x.</div>
+  </div>
+  <div class="section-title">F-METHOD 2 — R40 TRAJECTORY VALUE</div>
+  <div class="card mb-20">
+    <table class="fval-table">
+      <thead><tr><th>Milestone</th><th>Year</th><th>EV/Rev Multiple</th><th>Revenue Est.</th><th>Per Share IV</th></tr></thead>
+      <tbody>
+        <tr><td>R40 confirms &gt;40 (2 consec qtrs)</td><td class="td-amber">FY27</td><td class="td-num">7–8x</td><td class="td-num">~₹3,960 Cr</td><td class="td-num td-cyan">₹1,607–1,839</td></tr>
+        <tr><td>R40 reaches 50 (GM 50%+)</td><td class="td-amber">FY28–29</td><td class="td-num">10–12x</td><td class="td-num">~₹5,000 Cr</td><td class="td-num td-emerald">₹2,904–3,484</td></tr>
+        <tr><td>R40 reaches 60 (product &gt;15% rev)</td><td class="td-amber">FY30–31</td><td class="td-num">14–18x</td><td class="td-num">~₹7,000 Cr</td><td class="td-num td-cyan">₹5,684–7,305</td></tr>
+      </tbody>
+    </table>
+    <div class="warning-box"><strong class="text-amber">Caveat:</strong> FY30–31 scenario requires transformation from services to product economics — proven difficult for IT services companies globally. This is optionality value. Weight at 20% probability in portfolio construction.</div>
+  </div>
+  <div class="section-title">F-METHOD 4 — GLOBAL COMPARABLE COMPANIES</div>
+  <div class="card mb-20">
+    <table class="data-table">
+      <thead><tr><th>Company</th><th>EV/Rev</th><th>Gross Margin</th><th>R40</th><th>Stage</th></tr></thead>
+      <tbody>
+        <tr><td>Palantir (PLTR)</td><td class="td-num td-red">~17x</td><td class="td-num td-emerald">80%</td><td class="td-num td-emerald">80+</td><td>Phase 4</td></tr>
+        <tr><td>C3.ai (AI)</td><td class="td-num td-amber">~8x</td><td class="td-num td-amber">60%</td><td class="td-num td-amber">-5 to +10</td><td>Phase 2</td></tr>
+        <tr><td>LatentView Analytics (INDIA)</td><td class="td-num td-amber">~5–8x</td><td class="td-num td-amber">45–50%</td><td class="td-num td-amber">25–35</td><td>Phase 2</td></tr>
+        <tr><td><strong>Fractal Analytics (FRACTAL)</strong></td><td class="td-num td-cyan"><strong>5.27x TTM</strong></td><td class="td-num td-amber"><strong>47.2%</strong></td><td class="td-num td-amber"><strong>38.8</strong></td><td>Phase 2–3</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box"><strong class="text-cyan">Comp-adjusted:</strong> Fractal at 5.27x TTM revenue trades 37% below C3.ai (8x). Discount is justified by lower gross margins (47% vs 60%), services mix, and R40 at 38.8 vs Palantir's 80+. A re-rating to 7–8x would be justified if R40 confirms &gt;40 and gross margins cross 50%.</div>
+  </div>
+  <div class="section-title">F-VALUATION SUMMARY</div>
+  <table class="fval-table mb-20">
+    <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th></tr></thead>
+    <tbody>
+      <tr><td>F-Method 1 (Revenue Multiple)</td><td class="td-num td-red">₹637–821</td><td class="td-num td-cyan">₹1,097–1,374</td><td class="td-num td-emerald">₹1,650–2,203</td></tr>
+      <tr><td>F-Method 2 (R40 Trajectory, FY27)</td><td class="td-num td-red">₹800–900</td><td class="td-num td-cyan">₹1,607</td><td class="td-num td-emerald">₹2,904+</td></tr>
+      <tr><td>F-Method 4 (Global Comps)</td><td class="td-num td-red">₹730</td><td class="td-num td-cyan">₹1,200</td><td class="td-num td-emerald">₹1,850</td></tr>
+      <tr class="blended"><td><strong>BLENDED BASE IV</strong></td><td><strong class="td-red">₹720–820</strong></td><td><strong class="td-cyan">₹1,235</strong></td><td><strong class="td-emerald">₹1,750+</strong></td></tr>
+    </tbody>
+  </table>
+  <div class="insight-box mb-20"><strong class="text-cyan">Current Price ₹963.5 context:</strong> Trading 22% below Base IV (₹1,235). Above stress floor (₹720–820). Standard Cat F MoS requirement = 20–25%. The stock is approaching but not yet at a high-conviction entry. Better entry: ₹800–875 (after anchor lock-in expiry May 12).</div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <div class="section-title cyan">FOUR PILLAR ASSESSMENT</div>
+  <div class="pillar-grid">
+    <div class="pillar-card"><div class="pillar-grade grade-b">B+</div><div class="pillar-label">P1 — Economic Moat</div><p style="font-size:11px;color:var(--text-muted);margin-top:8px">Strong switching costs + talent brand + proprietary AI models. Flywheel FORMING. Held back by services-heavy economics and nascent product revenue.</p></div>
+    <div class="pillar-card"><div class="pillar-grade grade-b">B</div><div class="pillar-label">P2 — Financial Fortress</div><p style="font-size:11px;color:var(--text-muted);margin-top:8px">FY25 turnaround real. FCF positive. R40 approaching 40. But gross margin FAILS Cat F threshold. ROE/ROCE only just turning positive.</p></div>
+    <div class="pillar-card"><div class="pillar-grade grade-a">A-</div><div class="pillar-label">P3 — Management Integrity</div><p style="font-size:11px;color:var(--text-muted);margin-top:8px">AI-native founders with 25-year track record. World-class AI benchmarks. Excellent capital allocation. Minor: transfer pricing litigation, low promoter holding.</p></div>
+    <div class="pillar-card"><div class="pillar-grade grade-b">B+</div><div class="pillar-label">P4 — Valuation</div><p style="font-size:11px;color:var(--text-muted);margin-top:8px">22% below Base IV of ₹1,235. Above stress floor. Not cheap, not expensive. After 28% post-Q3 rally, near-term risk/reward has weakened. Better entry: ₹800–875.</p></div>
+  </div>
+  <div class="verdict-box">
+    <div class="verdict-stars">★★★</div>
+    <div class="verdict-label">WATCH</div>
+    <div class="verdict-sub">Category F · AI Core · NSE: FRACTAL · Price ₹963.5 · April 25, 2026</div>
+    <div class="verdict-quote">"India's first pure-play enterprise AI story is real. The benchmarks are extraordinary — Vaidya.ai beating ChatGPT-5 is verified by OpenAI itself, not by Fractal's marketing department. But at ₹963, the stock has rallied 28% from its lows and sits 22% below our Base IV of ₹1,235. Two things are needed before conviction becomes BUY: (1) Rule of 40 must confirm above 40 for two consecutive quarters — FY25 was the first confirmation, Q3 FY26 dipped to 38.8, making Q4 FY26 results (May 11 board meeting) the critical catalyst; (2) the anchor lock-in expiry on May 12 may create a better entry at ₹800–875. The business deserves conviction — the timing asks for patience."<br><br>— Buffett Quality-Value Series v5.0 · April 2026</div>
+  </div>
+  <div class="section-title">WATCH → BUY UPGRADE CONDITIONS</div>
+  <div class="upgrade-item"><div class="upgrade-num">1</div><div class="upgrade-text"><strong>R40 (Adj EBITDA) confirms above 40 for 2 consecutive quarters.</strong> Q3 FY26 was 38.8 — just below. Q4 FY26 results (May 11, 2026) must show R40 ≥ 40. Specifically: revenue growth ≥ 20% + adj EBITDA margin ≥ 20%. If confirmed, this is the primary upgrade trigger. <span class="badge badge-verified">✓ MEASURABLE</span></div></div>
+  <div class="upgrade-item"><div class="upgrade-num">2</div><div class="upgrade-text"><strong>Price corrects to ₹800–875 range post anchor lock-in expiry (May 12, 2026).</strong> 50% anchor lock-in expires May 12 — typically creates 5–15% selling pressure. A dip to ₹800–875 increases margin of safety to 30–35% from Base IV of ₹1,235. Combine with Condition 1 for maximum conviction. <span class="badge badge-verified">✓ MEASURABLE</span></div></div>
+  <div class="upgrade-item"><div class="upgrade-num">3</div><div class="upgrade-text"><strong>Subscription / product revenue crosses 5% of total (from current 2.3%).</strong> Subscription revenue was ₹64Cr in FY25. Doubling to ~₹130Cr+ and 5%+ of total revenue signals that the product economics shift has begun. Validates the services-to-software thesis. <span class="badge badge-verified">✓ MEASURABLE</span></div></div>
+  <div class="upgrade-item"><div class="upgrade-num">4</div><div class="upgrade-text"><strong>Gross margin expands to ≥ 50% for two consecutive quarters.</strong> From 47.2% → crossing 50% validates trajectory toward the 60% software-grade threshold. Drivers: outcome-based contracts, Cogentiq ARR growth, reduced Fractal Alpha losses. <span class="badge badge-verified">✓ MEASURABLE</span></div></div>
+  <div class="upgrade-item"><div class="upgrade-num">5</div><div class="upgrade-text"><strong>FY26 full year revenue confirms ≥ ₹3,300 Cr (20% YoY growth sustained).</strong> Q4 FY26 board meeting May 11. Revenue ≥ ₹826Cr in Q4 maintains 20% YoY and confirms the ₹3,300Cr run-rate. Macro growth validation test. <span class="badge badge-verified">✓ MEASURABLE</span></div></div>
+  <hr class="divider">
+  <div class="section-title">KEY RISKS</div>
+  <div class="grid-2 mb-20">
+    <div class="risk-box"><strong class="text-red">1. US Economic Slowdown:</strong> 65–69% revenue from Americas. Fortune 500 CIO budget cuts due to West Asia conflict / US tariffs could slow Fractal growth to 12–15%, collapsing R40 below 30 and triggering a multiple de-rating to 3–4x.</div>
+    <div class="risk-box"><strong class="text-red">2. Employee Cost Spiral:</strong> Employee benefits = 72.2% of revenue. AI talent war or attrition surge (16.3% → 20%+) would rapidly squeeze the margin expansion thesis.</div>
+    <div class="risk-box"><strong class="text-red">3. Foundation Model Commoditisation:</strong> If GPT-6 makes AI services cheap to do in-house, CIOs reduce external AI spending. Fractal's defense is outcome-based contracts and proprietary benchmarks — but the structural risk is real.</div>
+    <div class="warning-box"><strong class="text-amber">4. Anchor Lock-in May 12:</strong> Second tranche (50%) unlocks May 12, 2026. At ₹963 vs IPO ₹900, many anchors are in-the-money. Potential 5–15% selling pressure around the unlock window.</div>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <div class="section-title cyan">PRICE STRUCTURE & MULTI-TIMEFRAME TREND</div>
+  <div class="card mb-20">
+    <div class="grid-2">
+      <table class="data-table">
+        <thead><tr><th>Timeframe</th><th>Trend</th><th>Key Level</th></tr></thead>
+        <tbody>
+          <tr><td>Daily</td><td class="td-emerald">↑ BULLISH</td><td>₹900 = IPO price support</td></tr>
+          <tr><td>Weekly</td><td class="td-amber">↑ RECOVERING</td><td>₹800 = major support</td></tr>
+          <tr><td>Since Listing (70 days)</td><td class="td-amber">VOLATILE RECOVERY</td><td>Base at ₹733–750</td></tr>
+          <tr><td>Overall Trend</td><td class="td-emerald">UP from lows</td><td>₹985 = 52W high resistance</td></tr>
+        </tbody>
+      </table>
+      <table class="data-table">
+        <thead><tr><th>Level</th><th>Price</th><th>Significance</th></tr></thead>
+        <tbody>
+          <tr><td>Resistance 2</td><td class="td-num td-red">₹985</td><td>52-week high (ATH)</td></tr>
+          <tr><td>Resistance 1 / Current</td><td class="td-num td-amber">₹963</td><td>Approaching ATH — inflection</td></tr>
+          <tr><td>Pivot</td><td class="td-num">₹900</td><td>IPO price — critical support/resistance</td></tr>
+          <tr><td>Support 1</td><td class="td-num td-amber">₹826</td><td>Post-Q3 high (resistance turned support)</td></tr>
+          <tr><td>Support 2</td><td class="td-num td-emerald">₹780–800</td><td>Pre-Q3 base zone</td></tr>
+          <tr><td>Major Support / ATL</td><td class="td-num td-emerald">₹734</td><td>52-week low — all-time low</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="section-title">MOVING AVERAGE DASHBOARD</div>
+  <div class="ma-grid mb-20">
+    <div class="ma-card"><div class="ma-label">20-EMA</div><div class="ma-value">~₹870</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);margin-top:2px">Est. from rally</div><div class="ma-status ms-above" style="margin-top:6px">ABOVE</div></div>
+    <div class="ma-card"><div class="ma-label">50-DMA</div><div class="ma-value">~₹840</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);margin-top:2px">Estimated</div><div class="ma-status ms-above" style="margin-top:6px">ABOVE</div></div>
+    <div class="ma-card"><div class="ma-label">100-DMA</div><div class="ma-value">~₹820</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);margin-top:2px">Est. — only 70 days listed</div><div class="ma-status ms-above" style="margin-top:6px">ABOVE</div></div>
+    <div class="ma-card"><div class="ma-label">200-DMA</div><div class="ma-value">N/A</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);margin-top:2px">Listed only ~70 trading days</div><div class="ma-status ms-near" style="margin-top:6px">TOO EARLY</div></div>
+  </div>
+  <div class="warning-box mb-20"><strong class="text-amber">Technical Limitation:</strong> Fractal listed February 16, 2026 (~70 trading days). Standard MA analysis (200-DMA, 200-WMA) is unavailable. All MA estimates are derived from available post-listing price data. Technical signals should be weighted less than fundamentals at this stage.</div>
+
+  <div class="section-title">KEY PRICE EVENTS SINCE LISTING</div>
+  <div class="card mb-20">
+    <table class="data-table">
+      <thead><tr><th>Date</th><th>Event</th><th>Price / Move</th><th>Significance</th></tr></thead>
+      <tbody>
+        <tr><td>Feb 16, 2026</td><td>IPO Listing Day Open</td><td class="td-red">₹876 (−2.7% vs issue)</td><td>Weak listing — AI disruption fears; IT sector weakness backdrop</td></tr>
+        <tr><td>Feb 16, 2026</td><td>Listing Day Close</td><td class="td-red">₹837.7 (−6.9% vs issue)</td><td>Disappointing debut — stock immediately under listing price</td></tr>
+        <tr><td>~Mar 5, 2026</td><td>Q3 FY26 Results</td><td class="td-emerald">₹780→₹826 (+5.9%)</td><td>₹100Cr PAT milestone, 21% revenue growth — clean beat</td></tr>
+        <tr><td>~Mar 10, 2026</td><td>Morgan Stanley + GS Initiations</td><td class="td-emerald">+4% to ₹829</td><td>MS: Overweight ₹964 target. GS initiates. Smart money enters.</td></tr>
+        <tr><td>Mar 13, 2026</td><td>Anchor Lock-in 50% Expires</td><td class="td-red">Selling pressure to ₹751</td><td>First anchor unlock — stock pulled from ₹829 to ₹751 range</td></tr>
+        <tr><td>Mar 30, 2026</td><td>Cycle Low</td><td class="td-amber">₹751.2</td><td>Post-lock-in selling complete; base formed; ATL is ₹733.5</td></tr>
+        <tr><td>Apr 14–24, 2026</td><td>Sharp Recovery Rally</td><td class="td-emerald">₹751→₹963.5 (+28%)</td><td>Strong buying; approaching 52W high of ₹984.85</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">MOMENTUM</div>
+  <div class="rsi-container mb-20">
+    <div class="rsi-value-box">
+      <div class="rsi-number">~68</div>
+      <div class="rsi-status">RSI (14-day) — ESTIMATED</div>
+      <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted);margin-top:4px">From 28% rally<br>₹751 → ₹963</div>
+    </div>
+    <div class="rsi-meter">
+      <div class="rsi-bar-bg"><div class="rsi-needle" style="left:68%"></div></div>
+      <div class="rsi-labels"><span>0</span><span>Oversold (30)</span><span>Neutral (50)</span><span>Overbought (70)</span><span>100</span></div>
+    </div>
+  </div>
+  <div class="grid-2 mb-20">
+    <div class="card-sm"><h3>Momentum Assessment</h3><ul class="styled"><li>RSI ~65–70 after 28% rally — approaching overbought territory</li><li>MACD: Positive cross confirmed after base formation at ₹751</li><li>Price near all-time high (₹984.85) — breakout would signal Phase 2→3</li><li>Weekly trend clearly UP from post-listing base; structure improving</li></ul></div>
+    <div class="card-sm"><h3>Cat F Phase 2→3 Breakout Signal</h3><div class="insight-box">For Category F stocks, the <strong class="text-cyan">first sustained break above all-time high on VOLUME SURGE</strong> is the institutional entry signal — marking the Phase 2→3 transition. Fractal's ATH is ₹984.85. A sustained close above ₹985–1,000 on above-average volume = Cat F entry signal per our framework.</div></div>
+  </div>
+
+  <div class="section-title">TRADE STRUCTURE</div>
+  <div class="trade-box">
+    <div class="trade-title">⚠ PRIMARY — PATIENT ENTRY (Post Lock-in Dip + Q4 Results)</div>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px">Standard Cat F ATH breakout NOT yet triggered. A more patient entry is available after May 12 anchor unlock:</p>
+    <div class="trade-grid">
+      <div class="trade-item"><div class="tl">ENTRY ZONE</div><div class="tv text-cyan">₹800–875</div></div>
+      <div class="trade-item"><div class="tl">STOP LOSS</div><div class="tv text-red">₹730 (below ATL)</div></div>
+      <div class="trade-item"><div class="tl">TARGET 1</div><div class="tv text-emerald">₹1,050</div></div>
+      <div class="trade-item"><div class="tl">TARGET 2 (Base IV)</div><div class="tv text-amber">₹1,235</div></div>
+    </div>
+    <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-top:12px">Risk:Reward at ₹837 entry / ₹730 SL / ₹1,235 T2 = 1:3.7 (excellent)</div>
+  </div>
+  <div class="trade-box" style="border-color:rgba(0,200,255,.25);background:rgba(0,200,255,.04);margin-top:14px">
+    <div class="trade-title" style="color:var(--cyan)">★ CAT F SECONDARY — ATH BREAKOUT TRIGGER</div>
+    <div class="trade-grid">
+      <div class="trade-item"><div class="tl">CONDITION</div><div class="tv" style="font-size:11px">Sustained close &gt;₹1,000 on 2× avg volume</div></div>
+      <div class="trade-item"><div class="tl">ENTRY</div><div class="tv text-cyan">₹1,000–1,020</div></div>
+      <div class="trade-item"><div class="tl">STOP LOSS</div><div class="tv text-red">₹920</div></div>
+      <div class="trade-item"><div class="tl">TARGET</div><div class="tv text-emerald">₹1,235+ (Base IV)</div></div>
+    </div>
+  </div>
+
+  <div class="section-title mt-20">TECHNICAL COMPOSITE SCORE</div>
+  <div class="card mb-20">
+    <table class="data-table">
+      <thead><tr><th>Dimension</th><th>Score</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Trend (Multi-timeframe)</td><td class="td-num td-emerald">4/5</td><td>Daily and weekly uptrend established from base</td></tr>
+        <tr><td>Moving Averages</td><td class="td-num td-emerald">4/5</td><td>Price above all available MAs; 200-DMA unavailable</td></tr>
+        <tr><td>Volume</td><td class="td-num td-amber">3/5</td><td>Limited history; institutional OBV unclear</td></tr>
+        <tr><td>Momentum (RSI/MACD)</td><td class="td-num td-amber">3/5</td><td>RSI ~68 — approaching overbought after 28% rally</td></tr>
+        <tr><td>Chart Pattern</td><td class="td-num td-emerald">4/5</td><td>V-bottom recovery from ₹734 base; approaching ATH</td></tr>
+        <tr><td>Trade Setup Quality</td><td class="td-num td-amber">3/5</td><td>After 28% rally, immediate R/R less favourable; better after dip</td></tr>
+        <tr style="background:var(--bg-card3)"><td><strong>COMPOSITE</strong></td><td class="td-num td-amber"><strong>21/30 = 70%</strong></td><td><strong>MEDIUM-HIGH — Wait for ATH breakout or dip entry</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <div class="section-title cyan">PROMOTER & INSTITUTIONAL HOLDING</div>
+  <div class="card mb-20">
+    <div class="warning-box mb-20"><strong class="text-amber">Data Limitation:</strong> Fractal has only ONE quarter of post-listing shareholding data (Feb 2026). Multi-quarter trend analysis will only be possible after Q1 FY27 (June 2026) results. The patterns below reflect the post-IPO ownership structure only.</div>
+    <div class="grid-2">
+      <div>
+        <h3>Shareholding Composition (Feb 2026)</h3>
+        <div style="margin:12px 0">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-family:var(--font-mono);font-size:11px"><span style="min-width:100px;color:var(--text-secondary)">Promoters</span><div style="flex:1;height:8px;background:var(--bg-card3);border-radius:4px;overflow:hidden"><div style="width:17%;height:100%;background:var(--amber);border-radius:4px"></div></div><span style="min-width:42px;text-align:right;font-weight:700;color:var(--amber)">17.0%</span></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-family:var(--font-mono);font-size:11px"><span style="min-width:100px;color:var(--text-secondary)">FIIs</span><div style="flex:1;height:8px;background:var(--bg-card3);border-radius:4px;overflow:hidden"><div style="width:40.6%;height:100%;background:var(--cyan);border-radius:4px"></div></div><span style="min-width:42px;text-align:right;font-weight:700;color:var(--cyan)">40.6%</span></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-family:var(--font-mono);font-size:11px"><span style="min-width:100px;color:var(--text-secondary)">DIIs</span><div style="flex:1;height:8px;background:var(--bg-card3);border-radius:4px;overflow:hidden"><div style="width:12.8%;height:100%;background:var(--emerald);border-radius:4px"></div></div><span style="min-width:42px;text-align:right;font-weight:700;color:var(--emerald)">12.8%</span></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-family:var(--font-mono);font-size:11px"><span style="min-width:100px;color:var(--text-secondary)">Public</span><div style="flex:1;height:8px;background:var(--bg-card3);border-radius:4px;overflow:hidden"><div style="width:29.6%;height:100%;background:var(--text-muted);border-radius:4px"></div></div><span style="min-width:42px;text-align:right;font-weight:700">29.6%</span></div>
+        </div>
+      </div>
+      <div>
+        <h3>Major Institutional Holders</h3>
+        <table class="data-table">
+          <thead><tr><th>Investor</th><th>Type</th><th>Approx %</th></tr></thead>
+          <tbody>
+            <tr><td>TPG Fett Holdings</td><td>PE (FII)</td><td class="td-num td-amber">~25.7%</td></tr>
+            <tr><td>Quinag Bidco (Apax)</td><td>PE (FII)</td><td class="td-num td-amber">~18.8%</td></tr>
+            <tr><td>GLM Family Trust</td><td>Strategic</td><td class="td-num">~15.7%</td></tr>
+            <tr><td>Morgan Stanley, Goldman etc.</td><td>IPO QIB</td><td class="td-num td-cyan">Post-IPO QIBs</td></tr>
+            <tr><td>Retail & Others</td><td>Public</td><td class="td-num">~29.6%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="risk-box" style="margin-top:14px"><strong class="text-red">LOW PROMOTER HOLDING (17%):</strong> Atypical for Indian listed companies, but NORMAL for a PE-backed AI startup going public. The real risk: TPG and Apax are rational sellers with 1.4x–5.2x returns locked in. Watch for secondary OFS in the next 12–18 months as PE investors exit.</div>
+  </div>
+
+  <div class="section-title">FII & DII CONTEXT</div>
+  <div class="card mb-20">
+    <div class="grid-2">
+      <div><h3>FII at 40.6% — Interpretation</h3><ul class="styled"><li>Very HIGH FII — signals global institutional confidence in the AI narrative</li><li>Morgan Stanley + Goldman Sachs initiating = quality smart money entering</li><li>However, significant portion of "FII" may be PE investors (TPG, Apax) counted as FII — these are motivated sellers, not long-term AI holders</li><li>Quality FII (dedicated AI/growth funds) is harder to distinguish from available data <span class="badge badge-estimated">~</span></li></ul></div>
+      <div><h3>Macro FPI Context</h3><div class="warning-box">FPIs were net sellers in India throughout FY26 — ₹1.71 lakh crore in outflows since Jan 2026. West Asia conflict, oil prices, dollar strength drove this. Fractal's strong post-IPO FII holding of 40.6% and price recovery suggest FRACTAL-specific FII interest is stronger than the broad FPI exit wave. Structural scarcity premium at work.</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">FREE FLOAT & MARKET CAP</div>
+  <div class="grid-3 mb-20">
+    <div class="metric-card cyan"><div class="metric-label">Total Market Cap</div><div class="metric-value">₹16,572 Cr</div></div>
+    <div class="metric-card amber"><div class="metric-label">Free Float (est.)</div><div class="metric-value">~₹10,870 Cr</div><div class="metric-sub">~65.6% (ex promoter + GLM)</div></div>
+    <div class="metric-card"><div class="metric-label">Index Inclusion</div><div class="metric-value">Pending</div><div class="metric-sub">Midcap 150 / BSE 500 eligibility watch</div></div>
+  </div>
+  <div class="highlight-box mb-20"><strong class="text-cyan">SIP Demand Potential:</strong> Nifty Midcap 150 or BSE 500 inclusion would drive DII (mutual fund SIP) systematic buying. Monthly SIP flows into mid-cap AI exposure funds could allocate ₹50–100Cr/month to FRACTAL once included. This is a structural demand catalyst to watch over the next 2–3 quarters.</div>
+
+  <div class="section-title">OWNERSHIP SCORES</div>
+  <div class="grid-2 mb-20">
+    <div class="card" style="text-align:center"><h3>Ownership Momentum Score</h3><div style="font-family:var(--font-mono);font-size:36px;font-weight:700;color:var(--amber);margin:16px 0">52<span style="font-size:16px;color:var(--text-muted)">/100</span></div><p style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Limited by: only 1 quarter of data; PE sellers present; low promoter. Positive: FII 40%+ with major investment banks initiating. Score improves as quarterly data accumulates.</p></div>
+    <div class="card" style="text-align:center"><h3>Shareholding Risk Score</h3><div style="font-family:var(--font-mono);font-size:36px;font-weight:700;color:var(--red);margin:16px 0">42<span style="font-size:16px;color:var(--text-muted)">/100 RISK</span></div><p style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">Elevated: PE investors are motivated sellers; anchor lock-in May 12; only 17% promoter. Key risk: secondary selling by TPG/Apax in next 12 months.</p></div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <div class="section-title cyan">AI CLASSIFICATION DASHBOARD</div>
+  <div class="ai-dash mb-20">
+    <div class="ai-dash-card"><div class="ai-dash-label">Category</div><span class="ai-dash-badge adb-f">F — AI NATIVE</span><p style="font-size:10px;color:var(--text-muted);margin-top:8px;font-family:var(--font-mono)">Core business IS AI. 25-year pure-play. BUT services economics ≠ software economics yet.</p></div>
+    <div class="ai-dash-card"><div class="ai-dash-label">AI Overlay</div><span class="ai-dash-badge adb-core">🌀 AI CORE</span><p style="font-size:10px;color:var(--text-muted);margin-top:8px;font-family:var(--font-mono)">The AI is the company — not a widener, not a threat. AI is the product itself.</p></div>
+    <div class="ai-dash-card"><div class="ai-dash-label">Data Flywheel</div><span class="ai-dash-badge adb-forming">★★★ FORMING</span><p style="font-size:10px;color:var(--text-muted);margin-top:8px;font-family:var(--font-mono)">2 of 3 criteria met. Vaidya.ai & PiEvolve improving. Loop forming but not self-sustaining.</p></div>
+    <div class="ai-dash-card"><div class="ai-dash-label">Adoption Phase</div><span class="ai-dash-badge adb-p2">PHASE 2–3</span><p style="font-size:10px;color:var(--text-muted);margin-top:8px;font-family:var(--font-mono)">Enterprise AI at inflection. Phase 3 for large Fortune 500. Phase 2 for SME/emerging.</p></div>
+  </div>
+
+  <div class="section-title">DATA FLYWHEEL DEEP-DIVE</div>
+  <div class="grid-3 mb-20">
+    <div class="card"><h3 style="color:var(--cyan)">Q1: Proprietary Training Data?</h3><p style="font-size:12px;color:var(--text-secondary);line-height:1.6">25 years of enterprise decision analytics across Fortune 500 CPG, pharma, finance, tech. Vaidya.ai trained on curated medical data. However, underlying client data is not owned by Fractal — a key limitation vs. a company with its own transaction data (like HDFC Bank or Zomato). Volume is massive; ownership and exclusivity are partial.</p><div style="font-family:var(--font-mono);font-size:11px;color:var(--amber);margin-top:10px;font-weight:700">Score: 1.5/3</div></div>
+    <div class="card"><h3 style="color:var(--cyan)">Q2: AI Improves With More Data?</h3><p style="font-size:12px;color:var(--text-secondary);line-height:1.6"><strong>CONFIRMED for products:</strong> Vaidya.ai 2.0 scored 50+ on HealthBench (Hard) — first globally, beats GPT-5.2 and Gemini Pro 3. Verified by OpenAI's own benchmark. PiEvolve: Top on MLE-Bench. Project Ramanujan: Won Meta HackerCup. These are objective, third-party validated improvements over time — not marketing claims.</p><div style="font-family:var(--font-mono);font-size:11px;color:var(--emerald);margin-top:10px;font-weight:700">Score: 2.5/4 — VERIFIED</div></div>
+    <div class="card"><h3 style="color:var(--cyan)">Q3: Better AI Attracts More Users?</h3><p style="font-size:12px;color:var(--text-secondary);line-height:1.6">NRR 114–121%: clients expanding spend as AI quality improves. Preferred Supplier with 2 Magnificent 7 companies — because benchmarks are best-in-class. HLS grew 78% YoY. The loop is forming — but cycle time is slow (enterprise procurement takes months, not days). Not a consumer platform flywheel speed.</p><div style="font-family:var(--font-mono);font-size:11px;color:var(--amber);margin-top:10px;font-weight:700">Score: 1.5/3 — FORMING</div></div>
+  </div>
+  <div class="card mb-20" style="border-color:rgba(124,58,237,.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div><div style="font-family:var(--font-display);font-size:15px;color:#A78BFA;font-weight:700">FLYWHEEL STRENGTH SCORE</div><p style="font-size:12px;color:var(--text-secondary);margin-top:4px">Data Quality: 1.5/3 · Improvement Evidence: 2.5/4 · Loop Speed: 1.5/3</p></div>
+      <div style="font-family:var(--font-mono);font-size:32px;font-weight:700;color:#A78BFA">5.5<span style="font-size:16px;color:var(--text-muted)">/10</span></div>
+    </div>
+    <div style="margin-top:10px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">VERDICT: <strong style="color:#A78BFA">MODERATE — FLYWHEEL FORMING</strong> · Consumer-facing products (Vaidya.ai B2C, Kalaido.ai) have potential to accelerate flywheel significantly if adoption scales. Monitor Vaidya.ai user adoption in upcoming results.</div>
+  </div>
+
+  <div class="section-title">AI VALUE CHAIN POSITION</div>
+  <div class="vc-diagram">
+    <div class="vc-level"><div class="vc-num">L1</div><div class="vc-name">Infrastructure</div><div style="font-size:8px;color:var(--text-muted);margin-top:4px;font-family:var(--font-mono)">Chips, DC, Power</div></div>
+    <div class="vc-arrow">→</div>
+    <div class="vc-level"><div class="vc-num">L2</div><div class="vc-name">Foundation Models</div><div style="font-size:8px;color:var(--text-muted);margin-top:4px;font-family:var(--font-mono)">OpenAI, Anthropic</div></div>
+    <div class="vc-arrow">→</div>
+    <div class="vc-level"><div class="vc-num">L3</div><div class="vc-name">AI Platforms</div><div style="font-size:8px;color:var(--text-muted);margin-top:4px;font-family:var(--font-mono)">Snowflake, Palantir</div></div>
+    <div class="vc-arrow">→</div>
+    <div class="vc-level active"><div class="vc-num">L4</div><div class="vc-name">AI Verticals</div><div style="font-size:8px;color:var(--cyan);margin-top:4px;font-family:var(--font-mono)">★ FRACTAL PRIMARY</div></div>
+    <div class="vc-arrow">→</div>
+    <div class="vc-level"><div class="vc-num">L5</div><div class="vc-name">AI-Enabled Incumbents</div><div style="font-size:8px;color:var(--text-muted);margin-top:4px;font-family:var(--font-mono)">HDFC, Naukri, DMart</div></div>
+  </div>
+  <div class="highlight-box mb-20"><strong class="text-cyan">Level 4 (AI Vertical Apps)</strong> with aspirational Level 2 (Vaidya.ai, Fathom-R1 are early foundation model plays). L4 = ideal risk/reward: domain data creates defensible moats; medium risk; large returns if vertical is dominated. <strong>Investment Horizon Implication: 5–7 years</strong> for full payoff. Do NOT apply 12-month price targets.</div>
+
+  <div class="section-title">AI PRODUCT PORTFOLIO</div>
+  <div class="card mb-20">
+    <table class="data-table">
+      <thead><tr><th>Product</th><th>Category</th><th>Status</th><th>Competitive Edge</th><th>Revenue Signal</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cogentiq</strong></td><td>Agentic AI Platform</td><td class="td-emerald">LIVE — Commercial</td><td>Purpose-built agentic platform; Preferred Supplier with Magnificent 7</td><td class="td-amber">~3–5% of revenue est.</td></tr>
+        <tr><td><strong>Vaidya.ai 2.0</strong></td><td>Medical AI</td><td class="td-emerald">LIVE — B2B+B2C</td><td>First globally to score 50+ on OpenAI HealthBench (Hard) <span class="badge badge-verified">✓</span></td><td class="td-amber">HLS segment +78% YoY</td></tr>
+        <tr><td><strong>PiEvolve</strong></td><td>Agentic ML Engine</td><td class="td-emerald">LIVE</td><td>Top on OpenAI MLE-Bench <span class="badge badge-verified">✓</span></td><td class="td-muted">Embedded in deals</td></tr>
+        <tr><td><strong>Fathom-R1-14B</strong></td><td>Open-Source Reasoning LLM</td><td class="td-emerald">RELEASED</td><td>Best Indian LLM; Won Meta HackerCup (Project Ramanujan) <span class="badge badge-verified">✓</span></td><td class="td-muted">Moat builder, not direct rev</td></tr>
+        <tr><td><strong>Kalaido.ai</strong></td><td>Text-to-Image Diffusion</td><td class="td-amber">Alpha/Beta</td><td>Fractal Alpha incubation; competitive market (Midjourney, Ideogram)</td><td class="td-muted">Negligible currently</td></tr>
+        <tr><td><strong>Analytics Vidhya</strong></td><td>AI Education Platform</td><td class="td-emerald">100% Subsidiary (Nov 2025)</td><td>India's largest AI education platform; talent pipeline moat</td><td class="td-amber">Separate P&L; strategic</td></tr>
+      </tbody>
+    </table>
+    <div class="insight-box" style="margin-top:12px"><strong class="text-cyan">Portfolio Assessment:</strong> Technically world-class (Vaidya.ai HealthBench is genuinely global-leading). The gap is commercialisation — subscription revenue is only ₹64Cr (2.3% FY25). The R&D engine is firing; the revenue conversion engine is early. The single most important metric to track: product ARR as % of total revenue.</div>
+  </div>
+
+  <div class="section-title">AI INTELLIGENCE SCORE (F1–F8 COMPOSITE)</div>
+  <div class="ai-score-container mb-20">
+    <div class="ai-score-circle" style="--pct:65"><div class="ai-score-inner"><div class="ai-score-num">65</div><div class="ai-score-max">/100</div></div></div>
+    <div class="ai-score-breakdown" style="flex:1">
+      <div class="ai-score-row"><div><span class="asr-label">F1 — Gross Margin ≥60%</span><div class="asr-bar"><div class="asr-fill" style="width:47%;background:var(--red)"></div></div></div><span class="asr-val" style="color:var(--red)">5/15 FAIL</span></div>
+      <div class="ai-score-row"><div><span class="asr-label">F2 — Rule of 40 ≥40</span><div class="asr-bar"><div class="asr-fill" style="width:75%;background:var(--amber)"></div></div></div><span class="asr-val" style="color:var(--amber)">9/12 MARGINAL</span></div>
+      <div class="ai-score-row"><div><span class="asr-label">F3 — Revenue Growth Acceleration</span><div class="asr-bar"><div class="asr-fill" style="width:90%;background:var(--emerald)"></div></div></div><span class="asr-val" style="color:var(--emerald)">11/12 PASS</span></div>
+      <div class="ai-score-row"><div><span class="asr-label">F4 — NRR ≥110%</span><div class="asr-bar"><div class="asr-fill" style="width:92%;background:var(--emerald)"></div></div></div><span class="asr-val" style="color:var(--emerald)">11/12 PASS</span></div>
+      <div class="ai-score-row"><div><span class="asr-label">F5 — Cash Burn / Runway</span><div class="asr-bar"><div class="asr-fill" style="width:75%;background:var(--amber)"></div></div></div><span class="asr-val" style="color:var(--amber)">9/12 IMPROVING</span></div>
+      <div class="ai-score-row"><div><span class="asr-label">F6 — AI Differentiation Depth</span><div class="asr-bar"><div class="asr-fill" style="width:92%;background:var(--emerald)"></div></div></div><span class="asr-val" style="color:var(--emerald)">11/12 PASS</span></div>
+      <div class="ai-score-row"><div><span class="asr-label">F7 — Management AI Credibility</span><div class="asr-bar"><div class="asr-fill" style="width:92%;background:var(--emerald)"></div></div></div><span class="asr-val" style="color:var(--emerald)">11/12 PASS</span></div>
+      <div class="ai-score-row"><div><span class="asr-label">F8 — Path to Profitability</span><div class="asr-bar"><div class="asr-fill" style="width:75%;background:var(--amber)"></div></div></div><span class="asr-val" style="color:var(--amber)">8/12 MARGINAL</span></div>
+    </div>
+  </div>
+  <div class="highlight-box mb-20"><strong class="text-cyan">AI INTELLIGENCE SCORE: 65/100</strong> — STRONG for a newly-listed AI-native company. Primary drag: F1 (gross margin fail) and F2 (R40 marginal). Five of eight tests PASS or near-pass — confirming genuine AI quality. Score jumps to 78–82 if: (a) gross margin crosses 50%, and (b) R40 confirms above 40 for 2 consecutive quarters. Score of 75+ = BUY★★★★ upgrade threshold in this framework.</div>
+
+  <div class="section-title">INVESTMENT HORIZON ALIGNMENT</div>
+  <div class="card mb-20">
+    <table class="data-table">
+      <thead><tr><th>Horizon</th><th>Expected Return</th><th>Key Catalyst</th><th>Probability</th></tr></thead>
+      <tbody>
+        <tr><td><strong>6 months (Oct 2026)</strong></td><td class="td-amber">₹900–1,100 range</td><td>Q4 FY26 results (May 11) + anchor lock-in clearing</td><td class="td-amber">60%</td></tr>
+        <tr><td><strong>12 months (Apr 2027)</strong></td><td class="td-cyan">₹1,100–1,400</td><td>R40 confirms &gt;40 × 2 qtrs; index inclusion</td><td class="td-cyan">55%</td></tr>
+        <tr><td><strong>3 years (FY29)</strong></td><td class="td-emerald">₹1,800–2,500</td><td>Product revenue 10%+; flywheel CONFIRMED; Vaidya.ai B2C traction</td><td class="td-emerald">45%</td></tr>
+        <tr><td><strong>5–7 years (FY31–33)</strong></td><td class="td-emerald">₹3,000–5,000+</td><td>Full Phase 4 AI infrastructure; software economics emerges</td><td class="td-amber">30%</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box" style="margin-top:12px"><strong class="text-cyan">Recommended Horizon: 5–7 years.</strong> This is a Phase 2→3→4 compounding story. Short-term (12 months) will be dominated by R40 confirmation/denial and macro noise. The full thesis — Fractal becoming India's Palantir — requires 5+ years of consistent execution. Do NOT trade this on 12-month price targets.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1120px;margin:0 auto">
+    <div>
+      <strong>REPORT METADATA</strong><br>
+      Ticker: FRACTAL (NSE) / 544700 (BSE) · Listed: 16 Feb 2026<br>
+      Series: Buffett Quality-Value v5.0 · Date: 25 Apr 2026<br>
+      File: FRACTAL_qv_report.html<br>
+      Price Used: ₹963.5 (NSE, ~Apr 24, 2026) <span class="badge badge-estimated">~</span><br>
+      Report Type: 10-Tab Category F Full Analysis<br>
+      Analyst AI: Claude Sonnet 4.6 · Buffett QV Series
+    </div>
+    <div>
+      <strong>DATA QUALITY FLAGS</strong><br>
+      <span class="badge badge-verified">✓ VERIFIED</span> = BSE/NSE filings, SEBI DRHP, Screener.in, Q3 FY26 results<br>
+      <span class="badge badge-estimated">~ ESTIMATED</span> = Derived from public data, analyst reports, extrapolated<br><br>
+      Sources: Screener.in, Fractal DRHP (SEBI), Q3 FY26 investor presentation, Business Standard, NSE/BSE circulars, HDFC Securities, 5Paisa FY26 Report, AngelOne, IndMoney, MultibaggAI, UnlistedZone FY25, TradingEconomics G-Sec, PIB GDP, RBI Bulletin, Zerodha Markets, Chittorgarh
+    </div>
+  </div>
+  <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+  <div style="max-width:1120px;margin:0 auto">
+    <strong>NOTION TRACKER PAYLOAD — DB: bed6ec6e-93c8-4fad-a005-4e8baef1b5af</strong><br>
+    Ticker: FRACTAL · Company: Fractal Analytics Limited · Market: NSE · Category: F · AI Overlay: 🌀 AI CORE · Verdict: WATCH★★★ · MoS Entry Zone: ₹800–875 · Current Price: 963.5 · Last Analysis Date: 2026-04-25 · Moat: B+ · Quality: B · Mgmt: A- · Val: B+ · Flywheel: Forming · AI Score: 65 · Phase: 2 · Stars: 3 · Base IV: ₹1,235 · Thesis: "India's only listed pure-play enterprise AI — Vaidya.ai beats ChatGPT-5; R40 must confirm above 40 on May 11 Q4 results before BUY conviction." · Report File: FRACTAL_qv_report.html · Horizon: 5-7yr · Conditions Met: 2<br><br>
+    <strong>DISCLAIMER:</strong> This report is for educational and analytical purposes only. It does not constitute investment advice, a buy/sell recommendation, or financial counsel. All data is sourced from public domain and believed to be accurate but is not independently audited. Invest at your own risk after consulting a SEBI-registered advisor. The Buffett Quality-Value Series is a proprietary analytical framework.
+  </div>
+</footer>
+
+<script>
+function switchTab(tabId){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  document.querySelector('[data-tab="'+tabId+'"]').classList.add('active');
+  window.scrollTo({top:document.getElementById('tab-bar').offsetTop-10,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIPRO — QV Report | Buffett Quality-Value Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c12;
+  --bg2: #0d1320;
+  --bg3: #131b2a;
+  --card: #111827;
+  --card2: #1a2336;
+  --border: #1e2d45;
+  --border2: #263348;
+  --primary: #3b82f6;
+  --accent: #e84b3a;
+  --accent2: #f59e0b;
+  --green: #22c55e;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --blue: #3b82f6;
+  --purple: #8b5cf6;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --verified: #22c55e;
+  --estimated: #f59e0b;
+  --unverified: #ef4444;
+  --cat-c: #3b82f6;
+  --threat: #ef4444;
+  --buyback: #f59e0b;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; line-height: 1.6; }
+a { color: var(--primary); text-decoration: none; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #04090f 0%, #0a1628 40%, #0f1f38 70%, #12172a 100%);
+  padding: 28px 28px 0;
+  position: relative;
+  overflow: hidden;
+  max-height: 220px;
+  border-bottom: 1px solid var(--border);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(239,68,68,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.hero-left h1 { font-family: var(--font-display); font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; color: #fff; }
+.hero-left .sub { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text3); letter-spacing: 2px; margin-bottom: 6px; }
+.hero-left .lede { font-size: 0.82rem; color: var(--text2); max-width: 520px; margin-top: 4px; line-height: 1.5; }
+.hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.verdict-badge {
+  background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(245,158,11,0.08));
+  border: 1.5px solid var(--amber);
+  color: var(--amber);
+  font-family: var(--font-display); font-weight: 700; font-size: 0.8rem;
+  padding: 6px 14px; border-radius: 6px; letter-spacing: 1px;
+}
+.price-box { text-align: right; }
+.price-box .cmp { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: #fff; }
+.price-box .cmp-label { font-size: 0.65rem; color: var(--text3); letter-spacing: 1px; }
+.badge-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.badge {
+  font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500;
+  padding: 3px 10px; border-radius: 4px; letter-spacing: 0.5px;
+}
+.badge-cat { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: #7db8ff; }
+.badge-threat { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.5); color: #f87171; }
+.badge-neutral { background: rgba(100,116,139,0.15); border: 1px solid rgba(100,116,139,0.4); color: #94a3b8; }
+.badge-green { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.4); color: #4ade80; }
+.badge-amber { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.4); color: #fbbf24; }
+.badge-buyback { background: rgba(245,158,11,0.2); border: 1px solid rgba(245,158,11,0.6); color: #f59e0b; font-weight: 700; }
+.conf-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; padding-bottom: 14px; }
+.pill { font-size: 0.6rem; padding: 2px 8px; border-radius: 20px; font-family: var(--font-mono); }
+.pill-v { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; }
+.pill-e { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
+.pill-u { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
+
+/* TAB BAR */
+#tab-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex; overflow-x: auto;
+  scrollbar-width: none;
+}
+#tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  font-family: var(--font-display); font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.5px; padding: 12px 16px;
+  border: none; background: none; color: var(--text3);
+  cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.tab-btn.active { color: #fff; border-bottom-color: var(--primary); }
+.tab-btn.buyback-tab { color: var(--amber) !important; }
+.tab-btn.buyback-tab.active { border-bottom-color: var(--amber); }
+
+/* CONTENT */
+.tab-content { display: none; padding: 24px 28px; }
+.tab-content.active { display: block; }
+
+/* COMMON */
+h2 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 16px; }
+h3 { font-family: var(--font-display); font-size: 0.85rem; font-weight: 600; color: var(--text2); margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+.section { margin-bottom: 28px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+.card2 { background: var(--card2); border: 1px solid var(--border2); border-radius: 8px; padding: 14px; }
+
+/* METRIC GRID */
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.metric-card {
+  background: var(--card2); border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: 8px; padding: 12px 14px;
+}
+.metric-card.green { border-left-color: var(--green); }
+.metric-card.red { border-left-color: var(--red); }
+.metric-card.amber { border-left-color: var(--amber); }
+.metric-card.purple { border-left-color: var(--purple); }
+.metric-label { font-size: 0.65rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.metric-value { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: #fff; }
+.metric-sub { font-size: 0.65rem; color: var(--text3); margin-top: 2px; }
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+th { background: var(--bg3); color: var(--text2); text-align: left; padding: 8px 12px; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+td { padding: 8px 12px; border-bottom: 1px solid rgba(30,45,69,0.5); color: var(--text); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+.tbl-wrap { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+
+/* SCORECARD */
+.scorecard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.sc-card {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.sc-icon { font-size: 1rem; flex-shrink: 0; }
+.sc-label { font-size: 0.72rem; color: var(--text2); margin-bottom: 2px; }
+.sc-result { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; }
+.pass { color: var(--green); }
+.marginal { color: var(--amber); }
+.fail { color: var(--red); }
+
+/* YEAR CARDS */
+.year-cards { display: flex; gap: 8px; flex-wrap: wrap; }
+.year-card {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px 14px; min-width: 80px;
+  text-align: center;
+}
+.year-card .yr { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text3); }
+.year-card .val { font-family: var(--font-display); font-size: 1rem; font-weight: 700; }
+.year-card.good .val { color: var(--green); }
+.year-card.ok .val { color: var(--amber); }
+.year-card.bad .val { color: var(--red); }
+
+/* MOAT STARS */
+.moat-card { background: var(--card2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+.moat-name { font-family: var(--font-display); font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.moat-stars { color: var(--amber); font-size: 0.9rem; margin-bottom: 4px; }
+.moat-desc { font-size: 0.75rem; color: var(--text2); line-height: 1.5; }
+
+/* FLYWHEEL BOX */
+.flywheel-box {
+  background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(59,130,246,0.02));
+  border: 1.5px solid rgba(59,130,246,0.3);
+  border-radius: 10px; padding: 18px;
+}
+.flywheel-title { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+.flywheel-verdict {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px; text-align: center; margin-top: 14px;
+}
+.flywheel-badge { font-family: var(--font-display); font-size: 1rem; font-weight: 800; letter-spacing: 1px; }
+
+/* VERDICT BOX */
+.verdict-box {
+  background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03));
+  border: 2px solid rgba(245,158,11,0.4);
+  border-radius: 12px; padding: 24px;
+}
+.verdict-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--amber); margin-bottom: 8px; }
+.verdict-quote { font-size: 0.78rem; color: var(--text2); font-style: italic; border-left: 2px solid var(--amber); padding-left: 12px; margin-top: 14px; }
+.upgrade-list { list-style: none; margin-top: 16px; }
+.upgrade-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 8px; font-size: 0.78rem; color: var(--text);
+}
+.upgrade-num {
+  background: var(--border2); color: var(--primary);
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* PILLAR GRADES */
+.pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.pillar-card {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; text-align: center;
+}
+.pillar-name { font-size: 0.65rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.pillar-grade { font-family: var(--font-display); font-size: 2rem; font-weight: 800; }
+.grade-A { color: var(--green); }
+.grade-B { color: var(--blue); }
+.grade-C { color: var(--amber); }
+.grade-D { color: var(--red); }
+
+/* AI SCORE GAUGE */
+.ai-gauge-wrap { display: flex; align-items: center; gap: 20px; }
+.ai-gauge-bar { flex: 1; height: 8px; background: var(--border2); border-radius: 4px; overflow: hidden; }
+.ai-gauge-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--red), var(--amber)); }
+.ai-score-num { font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--amber); min-width: 50px; text-align: right; }
+
+/* BUYBACK SECTION */
+.buyback-hero {
+  background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.04));
+  border: 2px solid rgba(245,158,11,0.4);
+  border-radius: 12px; padding: 22px; margin-bottom: 24px;
+}
+.buyback-hero h2 { color: var(--amber); font-size: 1.3rem; }
+.bb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 14px; }
+.bb-metric { background: var(--card); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px; padding: 12px; text-align: center; }
+.bb-metric .bm-label { font-size: 0.62rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.bb-metric .bm-val { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--amber); margin-top: 3px; }
+
+/* SCENARIO TABLE */
+.scenario-table th { background: rgba(245,158,11,0.1); color: var(--amber); }
+.scenario-table .best { color: var(--green); font-weight: 600; }
+.scenario-table .worst { color: var(--red); }
+.scenario-table .mid { color: var(--amber); }
+
+/* ALERT BOX */
+.alert-box {
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.alert-box.info { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); }
+.alert-box.warn { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); }
+.alert-box.danger { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); }
+.alert-box.success { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); }
+.alert-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.alert-text { font-size: 0.78rem; color: var(--text2); line-height: 1.55; }
+.alert-text strong { color: var(--text); }
+
+/* MACRO CYCLE */
+.macro-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.macro-card { background: var(--card2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.macro-dim { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.macro-status { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+.macro-detail { font-size: 0.72rem; color: var(--text2); line-height: 1.4; }
+.status-stress { color: var(--red); }
+.status-neutral { color: var(--text2); }
+.status-recovery { color: var(--amber); }
+.status-boom { color: var(--green); }
+
+/* FOOTER */
+footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 20px 28px; font-size: 0.68rem; color: var(--text3); line-height: 1.7; }
+
+/* TECHNICAL */
+.ta-section { background: var(--card2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+.ta-title { font-family: var(--font-display); font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+.ma-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.ma-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px; text-align: center; }
+.ma-label { font-size: 0.62rem; color: var(--text3); letter-spacing: 1px; margin-bottom: 3px; }
+.ma-val { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; }
+.above { color: var(--red); }
+.below { color: var(--green); }
+
+/* PROGRESS BAR */
+.prog-wrap { margin-bottom: 10px; }
+.prog-label { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text2); margin-bottom: 4px; }
+.prog-bar { height: 6px; background: var(--border2); border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 3px; }
+
+/* DIVIDER */
+.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* RESPONSIVE */
+@media (max-width: 680px) {
+  .hero { max-height: none; padding: 18px 16px 0; }
+  .hero-left h1 { font-size: 1.7rem; }
+  .hero-top { flex-direction: column; }
+  .hero-right { align-items: flex-start; }
+  .pillar-grid { grid-template-columns: repeat(2, 1fr); }
+  .tab-content { padding: 16px; }
+}
+@media (max-width: 600px) {
+  .metric-grid { grid-template-columns: repeat(2, 1fr); }
+  .pillar-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.tag-v { font-family: var(--font-mono); font-size: 0.6rem; background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); padding: 1px 5px; border-radius: 3px; }
+.tag-e { font-family: var(--font-mono); font-size: 0.6rem; background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); padding: 1px 5px; border-radius: 3px; }
+.tag-u { font-family: var(--font-mono); font-size: 0.6rem; background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.3); padding: 1px 5px; border-radius: 3px; }
+
+/* SUBTEXT */
+p.note { font-size: 0.72rem; color: var(--text3); margin-top: 8px; font-style: italic; }
+
+.highlight-number { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+</style>
+</head>
+<body>
+
+<!-- ─── HERO ─── -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-left">
+      <div class="sub">NSE: WIPRO · BUFFETT QUALITY-VALUE SERIES v5.0 · 12 MAY 2026</div>
+      <h1>Wipro Limited</h1>
+      <p class="lede">India's third-largest IT services company navigating an AI-driven inflection in demand patterns, with a ₹15,000 Cr buyback offering near-term tactical opportunity even as long-term structural headwinds from AI cannibalization mount. The fundamental thesis requires careful re-pricing.</p>
+      <div class="badge-row">
+        <span class="badge badge-cat">CAT C · MATURE COMPOUNDER</span>
+        <span class="badge badge-threat">🔴 AI THREAT</span>
+        <span class="badge badge-buyback">⭐ BUYBACK ₹250 · +29%</span>
+        <span class="badge badge-neutral">FLYWHEEL: COSMETIC</span>
+        <span class="badge badge-neutral">PHASE 3 ADOPTION</span>
+      </div>
+      <div class="conf-pills">
+        <span class="pill pill-v">✓ VERIFIED — Live SEC Filings / NSE Data</span>
+        <span class="pill pill-e">~ ESTIMATED — Cross-referenced</span>
+        <span class="pill pill-u">! UNVERIFIED — Limited source</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="verdict-badge">⭐⭐⭐ WATCH · BUYBACK TACTICAL</div>
+      <div class="price-box">
+        <div class="cmp-label">CMP (NSE)</div>
+        <div class="cmp">₹193</div>
+        <div style="font-size:0.7rem;color:var(--text3)">52W: ₹186.5 — ₹273.1</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TAB BAR ─── -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+  <button class="tab-btn buyback-tab" data-tab="tab10" onclick="switchTab('tab10')">⭐ Buyback 2026</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 0 — OVERVIEW -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content active" id="tab0">
+
+  <div class="section">
+    <h2>Category & AI Classification</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap;">
+      <div class="card" style="border-left:3px solid var(--blue)">
+        <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text3);letter-spacing:1px;margin-bottom:6px;">CATEGORY</div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--blue)">C — MATURE QUALITY COMPOUNDER</div>
+        <p style="font-size:0.75rem;color:var(--text2);margin-top:6px;line-height:1.5">ROIC 15–17% · Durable IT services franchise · Stable but structurally decelerating growth 0–8% · WACC 12–14% · Terminal P/E 18–22x · MoS 20% required</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text3);letter-spacing:1px;margin-bottom:6px;">AI OVERLAY</div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--red)">🔴 AI THREAT</div>
+        <p style="font-size:0.75rem;color:var(--text2);margin-top:6px;line-height:1.5">Core moat (low-cost labor + delivery scale) being eroded by GenAI/Agentic AI. AI deflation expected 2–3% on traditional revenue annually FY26–FY28. Conviction reduced; MoS widened; horizon shortened.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Business Snapshot</h2>
+    <div class="card">
+      <p style="font-size:0.82rem;color:var(--text2);line-height:1.7">
+        Wipro Limited (est. 1945, transformed IT-first post-2000) is India's 3rd largest IT services company by revenue, offering technology consulting, cloud, cybersecurity, data/AI, engineering R&D and BPS to 65+ countries. Revenue mix: BFSI ~33%, Consumer ~15%, Manufacturing ~10%, Healthcare ~10%, Energy & Utilities ~8%, others. Geographically, Americas ~55%, Europe ~28%, APAC+Others ~17%. Under CEO Srini Pallia (since Apr 2024), the company has pivoted to an "<strong>AI-first, consulting-led</strong>" model via the Wipro ai360 ecosystem ($1B investment), Lab45 R&D unit with 50+ Agentic AI solutions, and restructured business into 4 segments: Technology Services, BPS, Consulting, and Engineering & R&D from FY26.
+        <br><br>
+        FY26 marked a tentative revenue recovery (+4.0% YoY in INR) after two muted years, though in constant currency terms IT services revenue was flat to slightly negative. Large deal TCV momentum improved (Q1FY26 TCV surged 130% YoY) but deal ramp-up is uneven. The AI revenue contribution is still ~5% of total but growing fast from a low base.
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Key Metrics Snapshot</h2>
+    <div class="metric-grid">
+      <div class="metric-card green"><div class="metric-label">CMP (NSE)</div><div class="metric-value">₹193</div><div class="metric-sub">12 May 2026 <span class="tag-v">V</span></div></div>
+      <div class="metric-card amber"><div class="metric-label">Market Cap</div><div class="metric-value">₹2.03L Cr</div><div class="metric-sub">~$23.4B USD <span class="tag-v">V</span></div></div>
+      <div class="metric-card"><div class="metric-label">FY26 Revenue</div><div class="metric-value">₹92,624 Cr</div><div class="metric-sub">+4.0% YoY <span class="tag-v">V</span></div></div>
+      <div class="metric-card amber"><div class="metric-label">FY26 Net Profit</div><div class="metric-value">₹13,200 Cr</div><div class="metric-sub">+0.5% YoY <span class="tag-v">V</span></div></div>
+      <div class="metric-card"><div class="metric-label">Trailing P/E</div><div class="metric-value">15.3x</div><div class="metric-sub">5yr avg ~21x <span class="tag-e">E</span></div></div>
+      <div class="metric-card green"><div class="metric-label">OCF / Net Income</div><div class="metric-value">112.6%</div><div class="metric-sub">FY26 <span class="tag-v">V</span></div></div>
+      <div class="metric-card"><div class="metric-label">IT Svcs EBIT Margin</div><div class="metric-value">17.3%</div><div class="metric-sub">Q4FY26 <span class="tag-v">V</span></div></div>
+      <div class="metric-card green"><div class="metric-label">FY26 EPS</div><div class="metric-value">₹12.6</div><div class="metric-sub">+0.5% YoY <span class="tag-v">V</span></div></div>
+      <div class="metric-card red"><div class="metric-label">1yr Price Return</div><div class="metric-value">−18%</div><div class="metric-sub">Nifty IT sector lagged <span class="tag-v">V</span></div></div>
+      <div class="metric-card amber"><div class="metric-label">Buyback Price</div><div class="metric-value">₹250</div><div class="metric-sub">+29.5% premium <span class="tag-v">V</span></div></div>
+      <div class="metric-card"><div class="metric-label">Net Cash</div><div class="metric-value">₹26,778 Cr</div><div class="metric-sub">As of FY26 BS <span class="tag-v">V</span></div></div>
+      <div class="metric-card"><div class="metric-label">Dividend (FY26)</div><div class="metric-value">₹5/share</div><div class="metric-sub">Interim declared <span class="tag-v">V</span></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Series Rationale — Why Cover Wipro Now?</h2>
+    <div class="card">
+      <p style="font-size:0.82rem;color:var(--text2);line-height:1.7">
+        <strong style="color:var(--text)">Three reasons this stock demands attention right now:</strong><br><br>
+        <strong style="color:var(--amber)">1. Buyback Arbitrage Opportunity:</strong> Wipro has announced a ₹15,000 Cr tender buyback at ₹250/share. The stock currently trades at ~₹193 — representing a 29.5% premium. Retail (small shareholder) allocation offers attractive risk/reward especially across multiple accounts.<br><br>
+        <strong style="color:var(--red)">2. AI Existential Question:</strong> The sector is at an inflection — GenAI and Agentic AI are compressing the unit economics of traditional IT services (2–3% annual revenue deflation expected). Is Wipro building a credible AI-native moat, or is it at risk of being disrupted from below?<br><br>
+        <strong style="color:var(--blue)">3. Valuation Floor Being Tested:</strong> At 15x P/E (near a decade low), FY26 earnings recovery (+0.5% PAT), cash-rich balance sheet, and a ₹250 buyback signal, the stock is optically cheap. The framework question is whether this cheapness reflects deserved re-rating or temporary overshoot.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 1 — MACRO & GROWTH -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab1">
+
+  <div class="section">
+    <h2>Macro Cycle Dashboard</h2>
+    <div class="macro-grid">
+      <div class="macro-card"><div class="macro-dim">Rural Income Cycle</div><div class="macro-status status-neutral">NEUTRAL</div><div class="macro-detail">Good monsoon FY25; MSP hikes supportive. Limited direct impact on IT services sector.</div></div>
+      <div class="macro-card"><div class="macro-dim">Urban Consumption (IT Wages)</div><div class="macro-status status-stress">STRESS</div><div class="macro-detail">IT wage growth moderated; attrition normalized at 14%. Urban employment sentiment cautious amid AI displacement fears.</div></div>
+      <div class="macro-card"><div class="macro-dim">Input Cost Cycle</div><div class="macro-status status-recovery">RECOVERY</div><div class="macro-detail">Employee cost rationalisation ongoing. Fixed-price contracts improving margins. EBIT margin expanded 0.9% in FY25, held at 17.3% Q4FY26.</div></div>
+      <div class="macro-card"><div class="macro-dim">RBI Rate Cycle</div><div class="macro-status status-recovery">EASING</div><div class="macro-detail">RBI in rate-cut mode. 10yr G-Sec ~6.7–6.8%. Positive for equity valuations; reduces WACC marginally.</div></div>
+      <div class="macro-card"><div class="macro-dim">Government Capex Cycle</div><div class="macro-status status-recovery">NEUTRAL</div><div class="macro-detail">GoI IT/digital spending stable. BFSI digitisation strong. Not a primary Wipro revenue driver.</div></div>
+      <div class="macro-card"><div class="macro-dim">AI Adoption Cycle</div><div class="macro-status status-stress">THREAT — PHASE 3</div><div class="macro-detail">Enterprise clients in value-realisation phase. GenAI compressing traditional services pricing. Agentic AI replacing junior developer roles from FY27. AI is simultaneously a growth catalyst AND deflationary force.</div></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+      <span class="badge badge-neutral">Macro Composite: NEUTRAL</span>
+      <span class="badge badge-threat">AI Cycle Impact: THREAT + OPPORTUNITY (net: THREAT near-term)</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>India Macro Anchor</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Parameter</th><th>Value</th><th>Source</th></tr>
+        <tr><td>India Real GDP Growth (RBI FY26E)</td><td>6.5–7.0%</td><td><span class="tag-e">E</span></td></tr>
+        <tr><td>India CPI (FY26)</td><td>~4.2%</td><td><span class="tag-e">E</span></td></tr>
+        <tr><td>India Nominal GDP Ceiling</td><td>~10.5–11%</td><td><span class="tag-e">E</span></td></tr>
+        <tr><td>10yr G-Sec Yield</td><td>~6.75%</td><td><span class="tag-e">E</span></td></tr>
+        <tr><td>Nifty 50 P/E</td><td>~22x</td><td><span class="tag-e">E</span></td></tr>
+        <tr><td>US Real GDP (FY26E)</td><td>~2.1%</td><td><span class="tag-e">E</span></td></tr>
+        <tr><td>US CPI</td><td>~3.2%</td><td><span class="tag-e">E</span></td></tr>
+        <tr><td>US 10yr Treasury</td><td>~4.4%</td><td><span class="tag-e">E</span></td></tr>
+        <tr><td>India IT Services Sector CAGR (CRISIL FY26)</td><td>6–8% (INR terms)</td><td><span class="tag-v">V</span></td></tr>
+        <tr><td>AI Revenue Deflation on Legacy IT</td><td>–2 to –3% p.a. FY26-28</td><td><span class="tag-e">E</span> ICICI Direct</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Layer 2 — Sector Growth Derivation: IT Services</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Scenario</th><th>Sector Base</th><th>AI Adjustment</th><th>Net Sector CAGR</th></tr>
+        <tr><td>STRESS (AI disruption materialises fast)</td><td>6–8%</td><td>–3% deflation</td><td style="color:var(--red)">3–5%</td></tr>
+        <tr><td>BASE (gradual AI transition, recovery FY28+)</td><td>8–10%</td><td>–1% net</td><td style="color:var(--amber)">7–9%</td></tr>
+        <tr><td>ACCEL (AI unlocks new TAM, Wipro captures share)</td><td>10–12%</td><td>+2% net positive</td><td style="color:var(--green)">12–14%</td></tr>
+      </table>
+    </div>
+    <p class="note"><span class="tag-v">V</span> Crisil Ratings FY26 forecast 6–8% in INR. ICICIdirect: AI deflation 2–3% on legacy revenues. HDFC Securities: recovery to 7.7% by FY27.</p>
+  </div>
+
+  <div class="section">
+    <h2>Layer 3 — Company Alpha Over Sector</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+        <tr><td>Market share gain (vs TCS/Infosys)</td><td><span style="color:var(--amber)">Potential</span></td><td>0%</td><td>+0.5%</td></tr>
+        <tr><td>Premiumisation (consulting-led, higher billing)</td><td><span style="color:var(--amber)">Forming</span></td><td>+0.5%</td><td>+1.0%</td></tr>
+        <tr><td>Category expansion (ER&D, BPS growth)</td><td><span style="color:var(--blue)">Active</span></td><td>+0.5%</td><td>+0.5%</td></tr>
+        <tr><td>Geographic expansion (Europe sovereign cloud)</td><td><span style="color:var(--amber)">Potential</span></td><td>+0.5%</td><td>+1.0%</td></tr>
+        <tr><td>Pricing power (above inflation)</td><td><span style="color:var(--red)">Exhausted/Declining</span></td><td>–1.0%</td><td>0%</td></tr>
+        <tr><td>AI Alpha 6a — Cost Reduction</td><td><span style="color:var(--amber)">Potential</span></td><td>+0.5%</td><td>+1.0%</td></tr>
+        <tr><td>AI Alpha 6b — Market Expansion (new TAM)</td><td><span style="color:var(--text3)">Aspirational</span></td><td>0%</td><td>+1.0%</td></tr>
+        <tr><td>AI Alpha 6c — Flywheel/Switching Cost</td><td><span style="color:var(--red)">N/A (No Flywheel)</span></td><td>0%</td><td>0%</td></tr>
+        <tr style="background:rgba(59,130,246,0.05)"><td><strong>Total Alpha</strong></td><td>—</td><td><strong>+1.0%</strong></td><td><strong>+4.0%</strong></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Growth Rate Summary Table</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Parameter</th><th style="color:var(--red)">STRESS</th><th style="color:var(--amber)">BASE</th><th style="color:var(--green)">ACCEL</th></tr>
+        <tr><td>Macro (India nominal GDP)</td><td>~9%</td><td>~10.7%</td><td>~12%</td></tr>
+        <tr><td>IT Sector growth</td><td>3–5%</td><td>7–9%</td><td>12–14%</td></tr>
+        <tr><td>Company alpha</td><td>–0.5%</td><td>+1.0%</td><td>+2.0%</td></tr>
+        <tr><td>AI net impact</td><td>–3.0%</td><td>–0.5%</td><td>+2.0%</td></tr>
+        <tr><td><strong>Stage 1 Revenue CAGR (FY27–31)</strong></td><td style="color:var(--red)"><strong>2–4%</strong></td><td style="color:var(--amber)"><strong>6–8%</strong></td><td style="color:var(--green)"><strong>10–12%</strong></td></tr>
+        <tr><td>Stage 2 FCF CAGR (FY32–36)</td><td>3%</td><td>6%</td><td>8%</td></tr>
+        <tr><td>Terminal growth</td><td>3.5%</td><td>5.0%</td><td>6.0%</td></tr>
+        <tr><td>Margin direction</td><td style="color:var(--red)">Compress (AI pricing)</td><td style="color:var(--amber)">Stable 16–18%</td><td style="color:var(--green)">Expand to 20%+</td></tr>
+        <tr><td>Key risk</td><td>Agentic AI replaces delivery workforce</td><td>Deal ramp-up unevenness</td><td>Slow AI TAM monetisation</td></tr>
+      </table>
+    </div>
+    <div class="card2" style="margin-top:12px;background:rgba(59,130,246,0.06)">
+      <p style="font-size:0.75rem;color:var(--text2)"><strong>Sensitivity checks:</strong><br>
+      "A 1% change in terminal growth rate changes IV by approximately 8–10%."<br>
+      "A 1% change in Stage 1 revenue CAGR changes IV by approximately 5–7%."<br>
+      "The AI deflation assumption (–2 to –3% on legacy revenue) represents the single largest uncertainty in this model."</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 2 — FINANCIALS -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab2">
+
+  <div class="section">
+    <h2>Revenue & Profit Trend</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>FY</th><th>Revenue (₹Cr)</th><th>YoY%</th><th>Net Profit (₹Cr)</th><th>Net Margin%</th><th>EPS (₹)</th></tr>
+        <tr><td>FY22</td><td>79,312</td><td>+29.2%</td><td>10,469</td><td>13.2%</td><td>9.25 <span class="tag-e">E</span></td></tr>
+        <tr><td>FY23</td><td>90,488</td><td>+14.1%</td><td>11,352</td><td>12.5%</td><td>10.56 <span class="tag-e">E</span></td></tr>
+        <tr><td>FY24</td><td>89,760</td><td>–0.8%</td><td>11,041</td><td>12.3%</td><td>10.14 <span class="tag-e">E</span></td></tr>
+        <tr><td>FY25</td><td>89,088</td><td>–0.7%</td><td>13,140</td><td>14.7%</td><td>12.56 <span class="tag-v">V</span></td></tr>
+        <tr style="background:rgba(59,130,246,0.06)"><td><strong>FY26</strong></td><td><strong>92,624</strong></td><td style="color:var(--green)"><strong>+4.0%</strong></td><td><strong>13,200</strong></td><td><strong>14.3%</strong></td><td><strong>12.60 <span class="tag-v">V</span></strong></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>ROE & ROIC — 5-Year Cards</h2>
+    <div style="margin-bottom:8px;font-family:var(--font-mono);font-size:0.65rem;color:var(--text3)">RETURN ON EQUITY (%)</div>
+    <div class="year-cards">
+      <div class="year-card ok"><div class="yr">FY22</div><div class="val">17.2%</div></div>
+      <div class="year-card ok"><div class="yr">FY23</div><div class="val">16.8%</div></div>
+      <div class="year-card ok"><div class="yr">FY24</div><div class="val">17.1%</div></div>
+      <div class="year-card ok"><div class="yr">FY25</div><div class="val">18.2%</div></div>
+      <div class="year-card ok"><div class="yr">FY26</div><div class="val">18.0%</div></div>
+    </div>
+    <p class="note"><span class="tag-e">E</span> ROE consistent 16–18%. Below Cat A 40% threshold. Acceptable for Cat C. WACC ~13%; ROE > WACC confirmed across 5 years.</p>
+
+    <div style="margin-top:16px;margin-bottom:8px;font-family:var(--font-mono);font-size:0.65rem;color:var(--text3)">RETURN ON INVESTED CAPITAL (%)</div>
+    <div class="year-cards">
+      <div class="year-card ok"><div class="yr">FY22</div><div class="val">14.8%</div></div>
+      <div class="year-card ok"><div class="yr">FY23</div><div class="val">15.1%</div></div>
+      <div class="year-card ok"><div class="yr">FY24</div><div class="val">15.9%</div></div>
+      <div class="year-card ok"><div class="yr">FY25</div><div class="val">17.0%</div></div>
+      <div class="year-card ok"><div class="yr">FY26</div><div class="val">16.8%</div></div>
+    </div>
+    <p class="note"><span class="tag-e">E</span> ROIC 15–17% = NARROW MOAT range per framework. Improving trend is positive. ROIC consistently &gt; WACC 13% → ✓ PASS</p>
+  </div>
+
+  <div class="section">
+    <h2>Financial Fortress Scorecard</h2>
+    <div class="scorecard-grid">
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">ROE ≥15% for 5 consecutive years</div><div class="sc-result pass">PASS — 16.8%–18.2% range</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">ROIC > WACC (13%) for 5yr</div><div class="sc-result pass">PASS — 14.8%–17.0%</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">Net cash position</div><div class="sc-result pass">PASS — ₹26,778 Cr net cash (FY26)</div></div></div>
+      <div class="sc-card"><div class="sc-icon">~</div><div><div class="sc-label">Net profit margin ≥15%</div><div class="sc-result marginal">MARGINAL — 14.3% (just below)</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">FCF positive + growing; FCF conversion ≥80%</div><div class="sc-result pass">PASS — OCF/NI = 112.6% (FY26)</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">Owner earnings ≥ net income</div><div class="sc-result pass">PASS — D&A adds back; maint CapEx modest</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✗</div><div><div class="sc-label">Pricing power above inflation</div><div class="sc-result fail">FAIL — AI is deflating blended realisation rates</div></div></div>
+      <div class="sc-card"><div class="sc-icon">~</div><div><div class="sc-label">Revenue CAGR ≥ macro-derived sector CAGR</div><div class="sc-result marginal">MARGINAL — 5yr revenue CAGR ~3.9% vs sector 6–8%</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">Predictable/recurring revenue</div><div class="sc-result pass">PASS — 85%+ revenue from multi-year managed services</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">Capital-light model</div><div class="sc-result pass">PASS — CapEx ~2–3% of revenue; high ROIC</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">Dividend payout &lt;80% of OE</div><div class="sc-result pass">PASS — Dividend + buyback well within OCF</div></div></div>
+    </div>
+    <div class="card2" style="margin-top:14px;text-align:center">
+      <div style="font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--amber)">Overall Financial Fortress Grade: ACCEPTABLE ✓</div>
+      <p style="font-size:0.72rem;color:var(--text3);margin-top:4px">8 PASS / 2 MARGINAL / 1 FAIL. Strong cash generation; pricing power is the single key concern.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Owner Earnings Box (FY26)</h2>
+    <div class="card" style="border:1.5px solid var(--border2);background:rgba(59,130,246,0.04)">
+      <div class="tbl-wrap"><table>
+        <tr><th>Component</th><th>Conservative (₹Cr)</th><th>Base (₹Cr)</th></tr>
+        <tr><td>Net Income</td><td>13,200</td><td>13,200</td></tr>
+        <tr><td>+ Depreciation & Amortisation</td><td>3,200</td><td>3,500</td></tr>
+        <tr><td>+ Non-cash charges / SBC</td><td>300</td><td>500</td></tr>
+        <tr><td>– Maintenance CapEx</td><td>(2,800)</td><td>(2,200)</td></tr>
+        <tr><td>± Working Capital Changes</td><td>(500)</td><td>(200)</td></tr>
+        <tr style="background:rgba(59,130,246,0.08)"><td><strong>Owner Earnings</strong></td><td><strong>13,400</strong></td><td><strong>14,800</strong></td></tr>
+        <tr><td>Per Share (1,052 Cr shares)</td><td>₹12.7</td><td>₹14.1</td></tr>
+      </table></div>
+      <p class="note"><span class="tag-e">E</span> CapEx split estimated. D&A from segment disclosures. Conservative estimate used for valuation.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>O'Glove Earnings Quality — 5 Tests</h2>
+    <div class="scorecard-grid">
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">Test 1 — FCF Conversion (5yr): CFO/NI ≥80%</div><div class="sc-result pass">PASS — FY26: 112.6%, FY25: 128.2%, 5yr avg >105%</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">Test 2 — DSO Trend (3yr): AR/(Rev/365)</div><div class="sc-result pass">PASS — DSO ~62 days, stable; no aggressive recognition</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">Test 3 — Inventory Days</div><div class="sc-result pass">PASS — IT services; minimal inventory. N/A</div></div></div>
+      <div class="sc-card"><div class="sc-icon">✓</div><div><div class="sc-label">Test 4 — Accounting Policy Stability</div><div class="sc-result pass">PASS — No material accounting policy changes noted (FY23–FY26). Labour code change disclosed separately in FY26.</div></div></div>
+      <div class="sc-card"><div class="sc-icon">~</div><div><div class="sc-label">Test 5 — Gross Margin Consistency (5yr)</div><div class="sc-result marginal">MARGINAL — Revenue mix shift toward AI/automation compressing traditional blended billing rates. Watch FY27–28.</div></div></div>
+    </div>
+    <div class="card2" style="margin-top:12px;text-align:center">
+      <div style="font-family:var(--font-display);font-size:0.95rem;font-weight:700;color:var(--green)">Overall Earnings Quality: CLEAN ✓</div>
+      <p style="font-size:0.72rem;color:var(--text3);margin-top:4px">No quality adjustment required. Standard valuation applies.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 3 — MOAT -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab3">
+
+  <div class="section">
+    <h2>Moat Sources Analysis</h2>
+
+    <div class="moat-card">
+      <div class="moat-name">1. Switching Costs (Client Lock-in)</div>
+      <div class="moat-stars">★★★½</div>
+      <div class="moat-desc">Multi-year enterprise contracts, deep system integration, and the cost/risk of migrating large ERP/cloud workloads creates meaningful switching friction. Average contract tenure 3–5 years. However, AI-native challengers offering 40–60% cost reduction are beginning to shorten re-tender cycles. Stress test: <strong class="amber">HOLDS</strong> in base case, <strong style="color:var(--red)">WEAKENS</strong> if Agentic AI adoption accelerates faster than expected.</div>
+    </div>
+
+    <div class="moat-card">
+      <div class="moat-name">2. Scale & Delivery Network</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">220,000+ employees, global delivery centers, 65+ country presence. Scale allows competitive pricing on large deals (>$500M TCV). However, large headcount is becoming a cost liability rather than an asset in an AI-driven world. Stress test: <strong style="color:var(--red)">WEAKENS</strong> — scale moat inverts if AI reduces headcount requirements.</div>
+    </div>
+
+    <div class="moat-card">
+      <div class="moat-name">3. Client Relationships & Domain Expertise (BFSI, ER&D)</div>
+      <div class="moat-stars">★★★★</div>
+      <div class="moat-desc">BFSI deep expertise (33% revenue), regulatory knowledge, long-standing tier-1 banking/insurance relationships. Engineering R&D expertise hard to replicate. This is the <strong>most durable part</strong> of Wipro's moat — AI cannot easily replace sector-specific regulatory and process knowledge. Stress test: <strong style="color:var(--green)">STRENGTHENS</strong> as clients need trusted advisors for AI implementation governance.</div>
+    </div>
+
+    <div class="moat-card">
+      <div class="moat-name">4. Intangible Assets (Brand, IP, Certifications)</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">Top-5 Indian IT brand, ISO certifications, Wipro ai360 IP, Lab45 patents. Brand matters in large enterprise deal shortlists. However, brand alone does not command premium pricing. Stress test: <strong class="amber">HOLDS</strong>.</div>
+    </div>
+
+    <div class="moat-card">
+      <div class="moat-name">5. Cost Advantage (India Labour Arbitrage)</div>
+      <div class="moat-stars">★★</div>
+      <div class="moat-desc">India talent cost advantage (30–40% vs Western IT) has been the foundational moat for 25 years. This moat is being directly eroded by AI automation — GenAI code generation reduces junior developer requirements by 20–40%. Stress test: <strong style="color:var(--red)">WEAKENS materially</strong> over 5-7 year horizon.</div>
+    </div>
+
+  </div>
+
+  <div class="section">
+    <h2>DATA FLYWHEEL VERDICT</h2>
+    <div class="flywheel-box">
+      <div class="flywheel-title">Data Flywheel Assessment</div>
+      <div class="tbl-wrap"><table>
+        <tr><th>Criterion</th><th>Assessment</th><th>Score</th></tr>
+        <tr><td>Q1: Proprietary training data competitors cannot replicate?</td><td style="color:var(--red)">Wipro's client data is used under NDA for delivery, not owned. No proprietary public dataset. Lab45 models likely trained on licensed/public data.</td><td style="color:var(--red)">1/3</td></tr>
+        <tr><td>Q2: More users/data improves AI accuracy measurably?</td><td style="color:var(--amber)">Some internal evidence (productivity tools, code assistants), but no public evidence of model quality improving with client scale. Competitors have same access to foundation models.</td><td style="color:var(--amber)">1/4</td></tr>
+        <tr><td>Q3: Better AI attracts more users (self-reinforcing)?</td><td style="color:var(--red)">No evidence of a client network effect. AI wins are project-by-project, not platform-driven. Clients are not locked into Wipro's AI stack.</td><td style="color:var(--red)">0/3</td></tr>
+      </table></div>
+      <div class="flywheel-verdict">
+        <div class="flywheel-badge" style="color:var(--text3)">COSMETIC ★ — Flywheel Score: 2/10</div>
+        <p style="font-size:0.72rem;color:var(--text3);margin-top:6px">AI adds delivery efficiency but does NOT create self-reinforcing competitive advantage. No moat upgrade. AI overlay remains 🔴 THREAT.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Moat Overall Grade</h2>
+    <div class="metric-grid">
+      <div class="metric-card amber"><div class="metric-label">Moat Grade</div><div class="metric-value">B–</div><div class="metric-sub">Narrow, weakening moat</div></div>
+      <div class="metric-card amber"><div class="metric-label">ROIC Range (5yr)</div><div class="metric-value">15–17%</div><div class="metric-sub">Narrow moat zone</div></div>
+      <div class="metric-card red"><div class="metric-label">Moat Direction</div><div class="metric-value">↓ Weakening</div><div class="metric-sub">AI deflationary pressure</div></div>
+      <div class="metric-card"><div class="metric-label">Flywheel</div><div class="metric-value">Cosmetic</div><div class="metric-sub">2/10 score</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 4 — MANAGEMENT -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab4">
+
+  <div class="section">
+    <h2>Management Assessment</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="card" style="border-left:3px solid var(--green)">
+        <h3>Strengths</h3>
+        <ul style="font-size:0.78rem;color:var(--text2);padding-left:16px;line-height:2">
+          <li>CEO Srini Pallia's consulting-led AI pivot is strategically sound</li>
+          <li>Promoter (Premji family) holds 72.62% — extreme skin in the game</li>
+          <li><strong>Zero pledge</strong> on promoter shares — <span class="pass">PASS</span></li>
+          <li>Counter-cyclical capital allocation: 7 buybacks since 2016 (₹2,500 Cr → ₹15,000 Cr)</li>
+          <li>Consistent dividend payment record; returns capital when FCF > reinvestment needs</li>
+          <li>Strong CFO Aparna Iyer — margin discipline, OCF >100% of net income</li>
+          <li>Lab45 and ai360 investments signal genuine R&D commitment ($1B+)</li>
+          <li>No major accounting red flags or IT/SEBI issues</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <h3>Concerns</h3>
+        <ul style="font-size:0.78rem;color:var(--text2);padding-left:16px;line-height:2">
+          <li>Revenue decline for 2 consecutive fiscal years (FY24-25) — peer Infosys/HCL performed better</li>
+          <li>Srini Pallia is an insider (22yr Wipro veteran) — structural inertia risk</li>
+          <li>Restructuring frequency (new segment structure FY26) signals ongoing strategy churn</li>
+          <li>AI team: Wipro uses foundation models; no published AI papers or benchmarks from Lab45</li>
+          <li>AI capabilities described as "API wrapper" level, not proprietary model training</li>
+          <li>Guidance reliability: Q1FY26 guided –1% to +1% CC; actual was –2.3% CC</li>
+          <li>Large deal ramp-up unevenness adding quarterly volatility</li>
+          <li>High exposure to US (>55% revenue) amid tariff/immigration uncertainty</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Capital Allocation History</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Year</th><th>Buyback Size (₹Cr)</th><th>Price (₹)</th><th>Outcome</th></tr>
+        <tr><td>2016</td><td>2,500</td><td>625</td><td>Completed ✓</td></tr>
+        <tr><td>2017</td><td>11,000</td><td>320</td><td>Completed ✓</td></tr>
+        <tr><td>2019</td><td>10,500</td><td>325</td><td>Completed ✓</td></tr>
+        <tr><td>2020</td><td>9,500</td><td>400</td><td>100% retail acceptance ✓</td></tr>
+        <tr><td>2021</td><td>9,500</td><td>400</td><td>Completed ✓</td></tr>
+        <tr><td>2023</td><td>12,000</td><td>445</td><td>78% retail acceptance ✓</td></tr>
+        <tr style="background:rgba(245,158,11,0.06)"><td><strong>2026 (announced)</strong></td><td><strong>15,000</strong></td><td><strong>250</strong></td><td><strong>Pending record date</strong></td></tr>
+      </table>
+    </div>
+    <p class="note">Wipro has consistently returned surplus capital via buybacks. The buyback cadence and escalating size (₹2,500 Cr → ₹15,000 Cr over 10 years) reflects strong capital discipline. <span class="tag-v">V</span></p>
+  </div>
+
+  <div class="section">
+    <h2>Promoter & Pledge Status</h2>
+    <div class="metric-grid">
+      <div class="metric-card green"><div class="metric-label">Promoter Holding</div><div class="metric-value">72.62%</div><div class="metric-sub">Mar 2026 <span class="tag-v">V</span></div></div>
+      <div class="metric-card green"><div class="metric-label">Pledged Shares</div><div class="metric-value">0%</div><div class="metric-sub">PASS — No pledge <span class="tag-v">V</span></div></div>
+      <div class="metric-card amber"><div class="metric-label">Promoter in Buyback</div><div class="metric-value">YES</div><div class="metric-sub">Intend to participate — reduces retail allocation <span class="tag-v">V</span></div></div>
+      <div class="metric-card"><div class="metric-label">Mgmt Grade</div><div class="metric-value">B+</div><div class="metric-sub">Strong capital discipline; execution risk</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 5 — VALUATION -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab5">
+
+  <div class="section">
+    <h2>Method 1 — DCF (2-Stage)</h2>
+    <div class="alert-box info"><div class="alert-icon">ℹ️</div><div class="alert-text"><strong>Framework:</strong> Cat C: WACC 13%, Terminal P/E 18–22x. Earnings quality: CLEAN (no adjustment). AI THREAT: applying 10% IV discount on base IV. MoS entry: 80% of IV (AI THREAT widens from standard 80% to 80%).  FCF base = Owner Earnings ₹13,400 Cr conservative estimate for FY26.</div></div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Year</th><th>STRESS FCF (₹Cr)</th><th>BASE FCF (₹Cr)</th><th>ACCEL FCF (₹Cr)</th></tr>
+        <tr><td>FY27E</td><td>13,670 (+2%)</td><td>14,472 (+8%)</td><td>14,874 (+11%)</td></tr>
+        <tr><td>FY28E</td><td>13,943</td><td>15,630</td><td>16,510</td></tr>
+        <tr><td>FY29E</td><td>14,222</td><td>16,880</td><td>18,326</td></tr>
+        <tr><td>FY30E</td><td>14,506</td><td>18,230</td><td>20,342</td></tr>
+        <tr><td>FY31E</td><td>14,797</td><td>19,688</td><td>22,579</td></tr>
+        <tr><td>Terminal Year</td><td>–</td><td>–</td><td>–</td></tr>
+        <tr><td>Terminal P/E</td><td>16x</td><td>19x</td><td>22x</td></tr>
+        <tr style="background:rgba(59,130,246,0.06)"><td><strong>Stage 1 PV Sum</strong></td><td>53,800</td><td>61,200</td><td>67,500</td></tr>
+        <tr style="background:rgba(59,130,246,0.06)"><td><strong>Terminal Value PV</strong></td><td>1,32,800</td><td>1,78,400</td><td>2,12,600</td></tr>
+        <tr style="background:rgba(59,130,246,0.08)"><td><strong>Enterprise Value</strong></td><td>1,86,600</td><td>2,39,600</td><td>2,80,100</td></tr>
+        <tr style="background:rgba(59,130,246,0.08)"><td><strong>+ Net Cash (₹26,778 Cr)</strong></td><td>2,13,378</td><td>2,66,378</td><td>3,06,878</td></tr>
+        <tr style="background:rgba(59,130,246,0.1)"><td><strong>IV Per Share (1,052 Cr shares)</strong></td><td style="color:var(--red)"><strong>₹202</strong></td><td style="color:var(--amber)"><strong>₹253</strong></td><td style="color:var(--green)"><strong>₹292</strong></td></tr>
+        <tr><td>AI THREAT Discount (–10% on base)</td><td>–</td><td>₹228</td><td>–</td></tr>
+        <tr><td><strong>MoS Entry (80% of AI-adjusted base)</strong></td><td>–</td><td style="color:var(--amber)"><strong>₹182</strong></td><td>–</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>DCF Sensitivity Sub-Table (Base Scenario)</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>WACC \ Terminal g</th><th>3.5%</th><th>5.0% (Base)</th><th>6.0%</th></tr>
+        <tr><td>12%</td><td>₹232</td><td>₹274</td><td>₹310</td></tr>
+        <tr><td>13% (Base)</td><td>₹210</td><td style="background:rgba(59,130,246,0.08);font-weight:700">₹253</td><td>₹285</td></tr>
+        <tr><td>14%</td><td>₹188</td><td>₹226</td><td>₹255</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Method 2 — Owner Earnings Capitalisation</h2>
+    <div class="card2">
+      <p style="font-size:0.8rem;color:var(--text2)">Base OE = ₹13,400 Cr | Required Return = 13% | Macro-derived g = 6.0%</p>
+      <p style="font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--amber);margin-top:8px">IV = ₹13,400 Cr / (0.13 – 0.06) = ₹1,91,429 Cr + Net Cash ₹26,778 Cr = ₹2,18,207 Cr</p>
+      <p style="font-family:var(--font-display);font-size:0.9rem;color:var(--text);margin-top:4px">IV Per Share: <strong>₹207</strong> | AI THREAT adj. (–10%): ₹186 | Stress (g=4%): ₹164 | Accel (g=7%): ₹248</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Method 3 — ROIC / EPV</h2>
+    <div class="card2">
+      <p style="font-size:0.8rem;color:var(--text2)">NOPAT FY26 est. ₹16,200 Cr | WACC 13% | Growth premium 1.2x (narrow moat)</p>
+      <p style="font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--amber);margin-top:8px">EPV = (₹16,200 Cr / 0.13) × 1.2 = ₹1,49,538 Cr + Net Cash = ₹1,76,316 Cr</p>
+      <p style="font-family:var(--font-display);font-size:0.9rem;color:var(--text);margin-top:4px">IV Per Share: <strong>₹168</strong> (Macro stress floor) | Economic Profit = (17% – 13%) × IC ~₹4,780 Cr/yr</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Method 4 — P/E Earnings Power</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Metric</th><th>Value</th><th>Implication</th></tr>
+        <tr><td>Current P/E</td><td>15.3x</td><td>Near 10yr low; cheap if structural headwinds are temporary</td></tr>
+        <tr><td>5yr Average P/E</td><td>~20x</td><td>24% discount to own history → <span class="badge badge-green" style="font-size:0.6rem">ATTRACTIVE vs history</span></td></tr>
+        <tr><td>P/E at fair value (20x × FY26 EPS ₹12.6)</td><td>₹252</td><td>30% upside — but 20x needs stable growth to justify</td></tr>
+        <tr><td>Forward P/E (FY27E EPS ₹13.5)</td><td>14.3x</td><td>Very low; pricing in near-zero growth</td></tr>
+        <tr><td>PEG Ratio (macro-derived 7% growth)</td><td>2.2x</td><td>Fair for quality; not screaming cheap</td></tr>
+        <tr><td>Reverse DCF growth implied at ₹193</td><td>~3–4%</td><td>Market pricing in stress scenario</td></tr>
+        <tr><td>TCS / Infosys FY26 P/E (peer premium)</td><td>22x / 20x</td><td>Wipro deserves 10–15% discount to TCS</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Method 5 — Earnings Yield vs Bond Yield</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Metric</th><th>Value</th></tr>
+        <tr><td>Earnings Yield (EPS/Price)</td><td>6.5% (₹12.6/₹193)</td></tr>
+        <tr><td>FCF Yield (Owner Earnings/Mkt Cap)</td><td>6.6% (₹13,400 Cr / ₹2,03,376 Cr)</td></tr>
+        <tr><td>10yr G-Sec Yield</td><td>~6.75%</td></tr>
+        <tr><td>Equity Risk Premium (EY – Bond)</td><td>–0.1% (essentially at parity)</td></tr>
+        <tr><td>Interpretation</td><td style="color:var(--amber)">Wipro FCF yield barely exceeds risk-free rate → limited margin of safety for long-term holder</td></tr>
+        <tr><td>Dividend Yield</td><td>2.6% (₹5/₹193)</td></tr>
+        <tr><td>Bond crossover year (if FCF grows 8%/yr)</td><td>Year 2 (FY28)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>5-Method Valuation Summary</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adjustment</th></tr>
+        <tr><td>DCF (2-stage)</td><td>₹202</td><td>₹253</td><td>₹292</td><td>–10% on base</td></tr>
+        <tr><td>Owner Earnings Cap</td><td>₹164</td><td>₹207</td><td>₹248</td><td>–10% on base</td></tr>
+        <tr><td>ROIC / EPV</td><td>₹130</td><td>₹168</td><td>₹215</td><td>No upward adj.</td></tr>
+        <tr><td>P/E Earnings Power</td><td>₹176</td><td>₹220</td><td>₹270</td><td>–10% on base</td></tr>
+        <tr><td>Earnings Yield</td><td>₹160</td><td>₹200</td><td>₹240</td><td>–</td></tr>
+        <tr style="background:rgba(59,130,246,0.08)"><td><strong>Blended Base IV</strong></td><td style="color:var(--red)"><strong>₹166</strong></td><td style="color:var(--amber)"><strong>₹212</strong></td><td style="color:var(--green)"><strong>₹253</strong></td></tr>
+        <tr style="background:rgba(239,68,68,0.06)"><td colspan="4"><strong>AI THREAT discount applied to blended base: –10% → Adjusted Base IV: ₹191</strong></td><td>–</td></tr>
+        <tr style="background:rgba(245,158,11,0.06)"><td colspan="4"><strong>MoS Entry Zone (80% of adj. base): ₹153 | Current CMP ₹193 = 1.7% above adj. IV</strong></td><td>–</td></tr>
+      </table>
+    </div>
+    <div class="alert-box warn" style="margin-top:12px">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-text"><strong>Key Valuation Finding:</strong> At CMP ₹193, Wipro trades essentially AT its AI-threat-adjusted blended base IV (~₹191). The stock is fairly valued for long-term investment, not cheap enough for a MoS-based long-term BUY. The compelling opportunity is the <strong>buyback at ₹250</strong>, which offers a hard-floor 29.5% premium — making it a tactical BUY for buyback arbitrage, not a structural long-term buy at this price.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Relative Valuation</h2>
+    <p class="note">Own-history: Wipro current P/E of 15.3x is 24% below 5yr avg of ~20x →
+    <span class="badge badge-green">🟢 20%+ DISCOUNT to own history</span>. However, AI THREAT justifies a structurally lower P/E. Fair P/E in AI-threat environment: 16–18x. At 17x × FY27E EPS ₹13.5 = <strong>₹229</strong>.</p>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 6 — VERDICT -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab6">
+
+  <div class="section">
+    <h2>Four Pillar Grades</h2>
+    <div class="pillar-grid">
+      <div class="pillar-card"><div class="pillar-name">Pillar 1 · Moat</div><div class="pillar-grade grade-B">B–</div><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Narrow, weakening<br>Flywheel: Cosmetic</div></div>
+      <div class="pillar-card"><div class="pillar-name">Pillar 2 · Financials</div><div class="pillar-grade grade-B">B+</div><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Clean earnings<br>Strong cash generation</div></div>
+      <div class="pillar-card"><div class="pillar-name">Pillar 3 · Management</div><div class="pillar-grade grade-B">B+</div><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Capital discipline<br>Execution risk</div></div>
+      <div class="pillar-card"><div class="pillar-name">Pillar 4 · Valuation</div><div class="pillar-grade grade-C">C+</div><div style="font-size:0.7rem;color:var(--text3);margin-top:4px">Fair value at CMP<br>No MoS for long hold</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Verdict</h2>
+    <div class="verdict-box">
+      <div class="verdict-title">⭐⭐⭐ WATCH · BUYBACK TACTICAL</div>
+      <p style="font-size:0.82rem;color:var(--text2);line-height:1.65">
+        <strong style="color:var(--text)">Long-Term Investment Verdict: WATCH★★★</strong><br>
+        Wipro is a B-quality compounder with a narrowing moat, no AI flywheel, and a price that is at — not below — AI-adjusted intrinsic value. The market has already punished the AI THREAT (–18% in 12 months, –24% in 1 year from peak). Without a genuine AI differentiation, long-term ROIC trajectory is at risk. At ₹153–165, this becomes a BUY opportunity.<br><br>
+        <strong style="color:var(--amber)">Tactical Opportunity: BUYBACK ARBITRAGE ★★★★</strong><br>
+        The ₹15,000 Cr buyback at ₹250/share offers a hard ~29.5% premium. With the stock near ₹193, participation in the retail quota is a compelling risk-return trade for a 30–60 day window. See Buyback Tab for full strategy.
+      </p>
+      <div class="verdict-quote">"Price is what you pay. Value is what you get. In Wipro's case, the buyback guarantees you a specific price — which transforms uncertainty into arithmetic." — Buffett Quality-Value Series adaptation</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Upgrade Conditions (for Long-Term BUY)</h2>
+    <ul class="upgrade-list">
+      <li><div class="upgrade-num">1</div><span>Price corrects to ₹153 (20% discount to 5yr P/E → 16x × ₹9.6 stress EPS = ₹154)</span></li>
+      <li><div class="upgrade-num">2</div><span>RSI falls below 40 on daily chart and Wipro shows relative strength vs Nifty IT</span></li>
+      <li><div class="upgrade-num">3</div><span>Price touches ₹186.50 (52-week low / 200-DMA support zone)</span></li>
+      <li><div class="upgrade-num">4</div><span>AI revenue exceeds 10% of total quarterly revenue for 2 consecutive quarters (proves AI monetisation beyond the "5% low base")</span></li>
+      <li><div class="upgrade-num">5</div><span>FCF conversion recovers above 120% and large deal TCV maintains >$4B/quarter for 2 consecutive quarters</span></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Series Tracker</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Date</th><th>CMP</th><th>Verdict</th><th>AI Overlay</th><th>Moat</th><th>Quality</th><th>Val</th></tr>
+        <tr><td>12 May 2026</td><td>₹193</td><td>WATCH★★★</td><td>🔴 THREAT</td><td>B–</td><td>B+</td><td>C+</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 7 — TECHNICAL -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab7">
+
+  <div class="section">
+    <h2>Price Structure & Multi-Timeframe Trend</h2>
+    <div class="ta-section">
+      <div class="ta-title">A. Price Structure</div>
+      <div class="metric-grid">
+        <div class="metric-card red"><div class="metric-label">Current Price</div><div class="metric-value">₹193</div><div class="metric-sub">12 May 2026</div></div>
+        <div class="metric-card"><div class="metric-label">52W High</div><div class="metric-value">₹273.1</div><div class="metric-sub">−29.3% from high</div></div>
+        <div class="metric-card green"><div class="metric-label">52W Low</div><div class="metric-value">₹186.5</div><div class="metric-sub">+3.5% above low</div></div>
+        <div class="metric-card red"><div class="metric-label">6M Return</div><div class="metric-value">−17.5%</div><div class="metric-sub">Underperformed Nifty</div></div>
+        <div class="metric-card red"><div class="metric-label">1Y Return</div><div class="metric-value">−18.1%</div><div class="metric-sub">Weak absolute return</div></div>
+        <div class="metric-card amber"><div class="metric-label">3Y Return</div><div class="metric-value">+1.3%</div><div class="metric-sub">Near zero real return</div></div>
+      </div>
+      <p style="font-size:0.75rem;color:var(--text2);margin-top:10px;line-height:1.6"><strong>Daily:</strong> Downtrend intact. Lower highs, lower lows from ₹273 peak. Currently bouncing near ₹186–193 support zone (52W low). <strong>Weekly:</strong> Below all major moving averages. No reversal signal yet. <strong>Monthly:</strong> Multi-year consolidation range ₹186–₹320. Currently at lower band — potential long-term base formation.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="ta-section">
+      <div class="ta-title">B. Moving Average Dashboard</div>
+      <div class="ma-grid">
+        <div class="ma-card"><div class="ma-label">20-EMA</div><div class="ma-val above">~₹207</div><div style="font-size:0.62rem;color:var(--text3)">Price BELOW</div></div>
+        <div class="ma-card"><div class="ma-label">50-DMA</div><div class="ma-val above">~₹214</div><div style="font-size:0.62rem;color:var(--text3)">Price BELOW</div></div>
+        <div class="ma-card"><div class="ma-label">100-DMA</div><div class="ma-val above">~₹227</div><div style="font-size:0.62rem;color:var(--text3)">Price BELOW</div></div>
+        <div class="ma-card"><div class="ma-label">200-DMA</div><div class="ma-val above">~₹242</div><div style="font-size:0.62rem;color:var(--text3)">Price BELOW</div></div>
+        <div class="ma-card"><div class="ma-label">200-WMA</div><div class="ma-val above">~₹345</div><div style="font-size:0.62rem;color:var(--text3)">Price FAR BELOW</div></div>
+        <div class="ma-card"><div class="ma-label">Golden/Death Cross</div><div class="ma-val above">Death Cross</div><div style="font-size:0.62rem;color:var(--text3)">50DMA below 200DMA</div></div>
+      </div>
+      <p class="note"><span class="tag-e">E</span> All MAs estimated from price trend. Price below all key MAs — structurally bearish. No reversal until price recaptures 50-DMA ~₹214.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="ta-section">
+      <div class="ta-title">D. Momentum Indicators</div>
+      <div class="metric-grid">
+        <div class="metric-card amber"><div class="metric-label">RSI (14-day)</div><div class="metric-value">~38–42</div><div class="metric-sub">Approaching oversold zone <span class="tag-e">E</span></div></div>
+        <div class="metric-card red"><div class="metric-label">RSI (Weekly)</div><div class="metric-value">~35</div><div class="metric-sub">Weekly oversold <span class="tag-e">E</span></div></div>
+        <div class="metric-card amber"><div class="metric-label">MACD</div><div class="metric-value">Negative</div><div class="metric-sub">Signal line below zero</div></div>
+        <div class="metric-card amber"><div class="metric-label">RSI Divergence</div><div class="metric-value">Possible</div><div class="metric-sub">Price making new lows; RSI higher low = bullish divergence possible</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="ta-section">
+      <div class="ta-title">E. Chart Patterns</div>
+      <p style="font-size:0.78rem;color:var(--text2);line-height:1.6">
+        <strong>Potential Double Bottom:</strong> ₹186.5 area (52W low) being tested again. A close above ₹207 (neckline) would confirm. Target on breakout: ₹228–235.<br>
+        <strong>Trend:</strong> Descending channel since ₹273 peak. Channel upper boundary ~₹215, lower ~₹185. Current price near channel midpoint.<br>
+        <strong>Buyback effect:</strong> The ₹250 buyback announcement has created a fundamental floor. Stock unlikely to sustain significantly below ₹180–185 given buyback support.
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="ta-section">
+      <div class="ta-title">F. Trade Structure (Buyback-Oriented)</div>
+      <div class="tbl-wrap"><table>
+        <tr><th>Parameter</th><th>For Buyback Trade</th><th>For Long-Term Hold</th></tr>
+        <tr><td>Entry Zone</td><td>₹186–196 (current range)</td><td>₹153–165 (MoS zone)</td></tr>
+        <tr><td>Stop Loss</td><td>₹182 (below 52W low)</td><td>₹145 (structural support)</td></tr>
+        <tr><td>T1</td><td>₹250 (buyback price)</td><td>₹228 (50% recovery)</td></tr>
+        <tr><td>T2</td><td>N/A (tender offer)</td><td>₹253 (base IV)</td></tr>
+        <tr><td>R:R Ratio</td><td>~3.4:1 (at 78% acceptance)</td><td>2.5:1</td></tr>
+        <tr><td>Time Horizon</td><td>30–60 days</td><td>24–36 months</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="ta-section">
+      <div class="ta-title">G. Technical Composite Score</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <div class="prog-wrap"><div class="prog-label"><span>Trend (Daily/Weekly/Monthly)</span><span style="color:var(--red)">1/5</span></div><div class="prog-bar"><div class="prog-fill" style="width:20%;background:var(--red)"></div></div></div>
+          <div class="prog-wrap"><div class="prog-label"><span>Moving Averages</span><span style="color:var(--red)">1/5</span></div><div class="prog-bar"><div class="prog-fill" style="width:20%;background:var(--red)"></div></div></div>
+          <div class="prog-wrap"><div class="prog-label"><span>Volume / OBV</span><span style="color:var(--amber)">2.5/5</span></div><div class="prog-bar"><div class="prog-fill" style="width:50%;background:var(--amber)"></div></div></div>
+        </div>
+        <div>
+          <div class="prog-wrap"><div class="prog-label"><span>Momentum (RSI/MACD)</span><span style="color:var(--amber)">3/5</span></div><div class="prog-bar"><div class="prog-fill" style="width:60%;background:var(--amber)"></div></div></div>
+          <div class="prog-wrap"><div class="prog-label"><span>Chart Patterns</span><span style="color:var(--amber)">2.5/5</span></div><div class="prog-bar"><div class="prog-fill" style="width:50%;background:var(--amber)"></div></div></div>
+          <div class="prog-wrap"><div class="prog-label"><span>Support/Resistance</span><span style="color:var(--amber)">3/5</span></div><div class="prog-bar"><div class="prog-fill" style="width:60%;background:var(--amber)"></div></div></div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--amber)">Technical Score: 13.5/30 = 45% — WEAK. Awaiting reversal confirmation.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 8 — SHAREHOLDING -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab8">
+
+  <div class="section">
+    <h2>A. Promoter Trend — 5 Quarters</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Quarter</th><th>Promoter %</th><th>Pledged %</th><th>Signal</th></tr>
+        <tr><td>Mar '25</td><td>72.63%</td><td>0.00%</td><td>—</td></tr>
+        <tr><td>Jun '25</td><td>72.63%</td><td>0.00%</td><td>Stable</td></tr>
+        <tr><td>Sep '25</td><td>72.63%</td><td>0.00%</td><td>Stable</td></tr>
+        <tr><td>Dec '25</td><td>72.63%</td><td>0.00%</td><td>Stable</td></tr>
+        <tr style="background:rgba(34,197,94,0.05)"><td><strong>Mar '26</strong></td><td><strong>72.62%</strong></td><td><strong>0.00%</strong></td><td><span class="badge badge-green">ROCK SOLID</span></td></tr>
+      </table>
+    </div>
+    <p class="note"><span class="tag-v">V</span> Premji family holding essentially unchanged for years. Zero pledge. Highest institutional vote of confidence. Promoters intend to PARTICIPATE in the buyback — will tender some shares.</p>
+  </div>
+
+  <div class="section">
+    <h2>B. FII & DII Trend</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Quarter</th><th>FII %</th><th>DII %</th><th>MF %</th><th>Public %</th></tr>
+        <tr><td>Mar '25</td><td>10.2%</td><td>8.8%</td><td>5.1%</td><td>8.4%</td></tr>
+        <tr><td>Jun '25</td><td>9.8%</td><td>9.1%</td><td>4.9%</td><td>8.4%</td></tr>
+        <tr><td>Sep '25</td><td>9.5%</td><td>9.4%</td><td>4.7%</td><td>8.5%</td></tr>
+        <tr><td>Dec '25</td><td>8.8%</td><td>9.8%</td><td>4.5%</td><td>8.7%</td></tr>
+        <tr><td><strong>Mar '26</strong></td><td><strong>8.3%</strong></td><td><strong>10.4%</strong></td><td><strong>4.3%</strong></td><td><strong>8.6%</strong></td></tr>
+      </table>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+      <span class="badge badge-threat">FII: Steady decline (–1.9pp in 4 quarters)</span>
+      <span class="badge badge-green">DII: Steady accumulation (+1.6pp)</span>
+      <span class="badge badge-neutral">MF: Mild reduction</span>
+    </div>
+    <p class="note"><span class="tag-e">E</span> FII selling offset by DII (insurance/pension) accumulation. Net institutional holding stable. Sectoral FII limit utilisation: well below cap given FII reduction.</p>
+  </div>
+
+  <div class="section">
+    <h2>D. Full Composition & Ownership Momentum</h2>
+    <div class="metric-grid">
+      <div class="metric-card green"><div class="metric-label">Promoter (Premji family)</div><div class="metric-value">72.62%</div><div class="metric-sub">→ Stable; no pledge</div></div>
+      <div class="metric-card red"><div class="metric-label">FII</div><div class="metric-value">8.3%</div><div class="metric-sub">↓ Declining — AI concerns</div></div>
+      <div class="metric-card green"><div class="metric-label">DII (incl. MF)</div><div class="metric-value">10.4%</div><div class="metric-sub">↑ Accumulating</div></div>
+      <div class="metric-card"><div class="metric-label">Public</div><div class="metric-value">8.6%</div><div class="metric-sub">→ Stable retail participation</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>E. Ownership Scores</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="card2">
+        <h3>Ownership Momentum Score</h3>
+        <div style="font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--amber)">52/100</div>
+        <p style="font-size:0.72rem;color:var(--text3)">DII accumulation positive; FII exit negative; promoter lock-in strong. Mixed signal.</p>
+      </div>
+      <div class="card2">
+        <h3>Shareholding Risk Score</h3>
+        <div style="font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--green)">18/100</div>
+        <p style="font-size:0.72rem;color:var(--text3)">Very low risk — zero pledge, ultra-stable promoter, no block deal concerns.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 9 — AI INTELLIGENCE -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab9">
+
+  <div class="section">
+    <h2>A. AI Classification Dashboard</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px">
+      <div class="card2" style="text-align:center"><div style="font-size:0.62rem;color:var(--text3);margin-bottom:4px">CATEGORY</div><div class="badge badge-cat" style="font-size:0.75rem">CAT C</div></div>
+      <div class="card2" style="text-align:center"><div style="font-size:0.62rem;color:var(--text3);margin-bottom:4px">AI OVERLAY</div><div class="badge badge-threat" style="font-size:0.75rem">🔴 AI THREAT</div></div>
+      <div class="card2" style="text-align:center"><div style="font-size:0.62rem;color:var(--text3);margin-bottom:4px">FLYWHEEL</div><div class="badge badge-neutral" style="font-size:0.75rem">COSMETIC ★</div></div>
+      <div class="card2" style="text-align:center"><div style="font-size:0.62rem;color:var(--text3);margin-bottom:4px">AI PHASE</div><div class="badge badge-amber" style="font-size:0.75rem">PHASE 3</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>B. Data Flywheel Deep-Dive</h2>
+    <div class="flywheel-box">
+      <div class="tbl-wrap"><table>
+        <tr><th>Criterion</th><th>Finding</th><th>Score</th></tr>
+        <tr><td><strong>Q1: Proprietary data?</strong> Volume/Uniqueness/Recency/Outcome labels</td><td>Client data held under NDA, cannot be used for training proprietary models. No public AI dataset. Lab45 uses public foundation models (OpenAI, Anthropic, open-source LLMs). Competitor access identical.</td><td style="color:var(--red)">1/3</td></tr>
+        <tr><td><strong>Q2: More users → better AI?</strong></td><td>Some internal productivity gains (developers use GitHub Copilot, Wipro's AI coding tools). No evidence of model quality improving with external client scale. All clients access same underlying model quality.</td><td style="color:var(--red)">1/4</td></tr>
+        <tr><td><strong>Q3: Better AI → more users?</strong></td><td>No platform lock-in. Each engagement is project-based. Clients can and do switch IT vendors. No evidence of AI being the reason clients stay with Wipro.</td><td style="color:var(--red)">0/3</td></tr>
+      </table></div>
+      <div class="flywheel-verdict">
+        <div class="flywheel-badge" style="color:var(--text3)">COSMETIC — Flywheel Score: 2/10</div>
+        <p style="font-size:0.72rem;color:var(--text3);margin-top:4px">Wipro uses AI as a delivery efficiency tool. It does NOT own a proprietary AI model, training dataset, or feedback loop. This is fundamentally different from Cat F AI-native companies.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>C. AI Value Chain Position</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Level</th><th>Description</th><th>This Company?</th></tr>
+      <tr><td>L1 — Infrastructure</td><td>Compute, data centres, chips (NVIDIA, AWS, Azure)</td><td>—</td></tr>
+      <tr><td>L2 — Foundation Models</td><td>Training LLMs (OpenAI, Anthropic, Google DeepMind)</td><td>—</td></tr>
+      <tr><td>L3 — Platforms</td><td>MLOps, deployment, orchestration (Databricks, AWS SageMaker)</td><td>—</td></tr>
+      <tr><td>L4 — Vertical Apps</td><td>AI-native vertical SaaS, copilots</td><td>Partial via Lab45</td></tr>
+      <tr style="background:rgba(59,130,246,0.06)"><td><strong>L5 — AI-Enabled Incumbent</strong></td><td>Traditional enterprise services + AI overlay</td><td><strong>✓ PRIMARY</strong></td></tr>
+    </table></div>
+    <p class="note">Wipro is a Level 5 AI-Enabled Incumbent. This is the most commoditised position in the AI value chain. Margin erosion risk is highest here. Investment horizon: 3–5 years maximum. Moat durability: Medium-Low.</p>
+  </div>
+
+  <div class="section">
+    <h2>E. Disruption Risk (AI THREAT)</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Disruption Vector</th><th>Timeline</th><th>Revenue at Risk</th><th>Credible Response?</th></tr>
+      <tr><td>GenAI code generation replacing junior developers</td><td style="color:var(--red)">Imminent (1–2yr)</td><td>~15–20% of headcount cost</td><td><span class="pass">Yes — using AI to improve margins</span></td></tr>
+      <tr><td>Agentic AI automating testing/QA workflows</td><td style="color:var(--amber)">Medium (2–4yr)</td><td>~10–15% of revenue</td><td><span class="marginal">Partial — Lab45 solutions</span></td></tr>
+      <tr><td>AI-native competitors (Accenture AI, Cognizant GenAI)</td><td style="color:var(--amber)">Medium (2–4yr)</td><td>Pricing pressure across all verticals</td><td><span class="marginal">Partial — ai360 strategy</span></td></tr>
+      <tr><td>Clients in-housing AI capabilities</td><td style="color:var(--amber)">Medium (3–5yr)</td><td>~20% of relationship-dependent revenue</td><td><span class="fail">Weak — no proprietary lock-in</span></td></tr>
+      <tr><td>Price deflation on legacy managed services</td><td style="color:var(--red)">Active now</td><td>~2–3% annual revenue deflation</td><td><span class="marginal">Offset by large deal wins</span></td></tr>
+    </table></div>
+    <div class="metric-card red" style="max-width:200px;margin-top:12px"><div class="metric-label">Moat Resilience Score</div><div class="metric-value">4.5/10</div><div class="metric-sub">BFSI domain expertise saves it from a lower score</div></div>
+  </div>
+
+  <div class="section">
+    <h2>F. AI Opportunity Score</h2>
+    <div class="tbl-wrap"><table>
+      <tr><th>Dimension</th><th>Score</th><th>Comment</th></tr>
+      <tr><td>Data Flywheel</td><td style="color:var(--red)">2/20</td><td>No proprietary flywheel</td></tr>
+      <tr><td>Adoption Phase Timing</td><td style="color:var(--amber)">10/20</td><td>Phase 3 = value realisation — Wipro is positioned but not leading</td></tr>
+      <tr><td>Value Chain Position</td><td style="color:var(--amber)">8/20</td><td>Level 5 = lowest strategic position</td></tr>
+      <tr><td>India Structural Advantage</td><td style="color:var(--green)">14/20</td><td>Talent cost, India Stack, ER&D proximity</td></tr>
+      <tr><td>AI Threat Resistance</td><td style="color:var(--red)">5/20</td><td>Labor arbitrage moat being eroded</td></tr>
+      <tr style="background:rgba(59,130,246,0.06)"><td><strong>AI Opportunity Score</strong></td><td style="color:var(--amber)"><strong>39/100</strong></td><td><strong>MONITOR</strong></td></tr>
+    </table></div>
+    <div class="ai-gauge-wrap" style="margin-top:12px">
+      <div class="ai-gauge-bar"><div class="ai-gauge-fill" style="width:39%"></div></div>
+      <div class="ai-score-num">39</div>
+    </div>
+    <p class="note">Portfolio Role: MONITOR (40–60 threshold not yet reached). Horizon: 3–5 years (Level 5 incumbent). This is NOT an AI-core holding.</p>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- TAB 10 — BUYBACK 2026 (SPECIAL) -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab10">
+
+  <div class="buyback-hero">
+    <h2>⭐ Wipro Buyback 2026 — Full Analysis</h2>
+    <p style="font-size:0.78rem;color:var(--text2);margin-top:6px">Board approved 16 April 2026 · Tender Offer route · Record date pending · Opens/Closes May 2026</p>
+    <div class="bb-grid">
+      <div class="bb-metric"><div class="bm-label">Buyback Price</div><div class="bm-val">₹250</div></div>
+      <div class="bb-metric"><div class="bm-label">Current Price</div><div class="bm-val">₹193</div></div>
+      <div class="bb-metric"><div class="bm-label">Premium</div><div class="bm-val">+29.5%</div></div>
+      <div class="bb-metric"><div class="bm-label">Total Size</div><div class="bm-val">₹15,000 Cr</div></div>
+      <div class="bb-metric"><div class="bm-label">Shares Offered</div><div class="bm-val">60 Cr shares</div></div>
+      <div class="bb-metric"><div class="bm-label">% of Equity</div><div class="bm-val">5.7%</div></div>
+      <div class="bb-metric"><div class="bm-label">Small Shareholder</div><div class="bm-val">≤₹2L</div></div>
+      <div class="bb-metric"><div class="bm-label">Retail Reservation</div><div class="bm-val">15%</div></div>
+      <div class="bb-metric"><div class="bm-label">Min Acceptance (HDFC Sec)</div><div class="bm-val">30.8%</div></div>
+      <div class="bb-metric"><div class="bm-label">2023 Buyback Acceptance</div><div class="bm-val">78%</div></div>
+      <div class="bb-metric"><div class="bm-label">Record Date</div><div class="bm-val">Not yet</div></div>
+      <div class="bb-metric"><div class="bm-label">Route</div><div class="bm-val">Tender Offer</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>What is "Small Shareholder" and Why It Matters</h2>
+    <div class="alert-box info">
+      <div class="alert-icon">ℹ️</div>
+      <div class="alert-text">
+        <strong>SEBI Definition:</strong> A small shareholder is one whose holding has a <strong>market value ≤ ₹2,00,000</strong> based on the closing price on the record date (on the exchange with highest volume).<br><br>
+        <strong>At ₹193 CMP:</strong> ₹2,00,000 ÷ ₹193 = <strong>1,036 shares</strong> is the maximum per account to qualify as "small shareholder."<br>
+        <strong>At ₹200 CMP:</strong> ₹2,00,000 ÷ ₹200 = <strong>1,000 shares</strong> is the maximum.<br><br>
+        <strong>Why it matters:</strong> Small shareholders get a <strong>15% reservation</strong> of the total buyback (= 9 crore shares) with a <strong>higher entitlement ratio</strong> than general category. This dramatically increases acceptance probability.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Your Strategy: 6,000 Shares Across Multiple Accounts</h2>
+    <div class="alert-box success">
+      <div class="alert-icon">✅</div>
+      <div class="alert-text">
+        <strong>Optimal Strategy:</strong> Split 6,000 shares across <strong>6 separate Demat accounts</strong>, each holding <strong>~1,000 shares</strong>. At ~₹193 per share, each account holds ₹1,93,000 — safely under the ₹2 lakh small shareholder threshold.<br><br>
+        <strong>CRITICAL RULE:</strong> Each Demat account must belong to a <strong>different PAN (individual)</strong>. You cannot hold multiple Demat accounts under the same PAN. Legal accounts: spouse, parents, adult children, siblings, HUF.
+      </div>
+    </div>
+
+    <div class="tbl-wrap" style="margin-top:14px">
+      <table>
+        <tr><th>Account</th><th>Shares</th><th>Investment</th><th>Small Shareholder?</th></tr>
+        <tr><td>Account 1 (You)</td><td>1,000</td><td>₹1,93,000</td><td><span class="pass">✓ YES (at ₹193)</span></td></tr>
+        <tr><td>Account 2 (e.g., Spouse)</td><td>1,000</td><td>₹1,93,000</td><td><span class="pass">✓ YES</span></td></tr>
+        <tr><td>Account 3 (e.g., Parent 1)</td><td>1,000</td><td>₹1,93,000</td><td><span class="pass">✓ YES</span></td></tr>
+        <tr><td>Account 4 (e.g., Parent 2)</td><td>1,000</td><td>₹1,93,000</td><td><span class="pass">✓ YES</span></td></tr>
+        <tr><td>Account 5 (e.g., Sibling/Child)</td><td>1,000</td><td>₹1,93,000</td><td><span class="pass">✓ YES</span></td></tr>
+        <tr><td>Account 6 (e.g., Other Family)</td><td>1,000</td><td>₹1,93,000</td><td><span class="pass">✓ YES</span></td></tr>
+        <tr style="background:rgba(245,158,11,0.08)"><td><strong>TOTAL</strong></td><td><strong>6,000</strong></td><td><strong>₹11,58,000</strong></td><td>All 6 qualify</td></tr>
+      </table>
+    </div>
+    <div class="alert-box warn" style="margin-top:12px">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-text"><strong>Price Risk:</strong> If the stock price rises to ₹200+ before record date, the small shareholder limit drops to 1,000 shares. If you hold 1,000 already, you're fine. If you hold 1,000 at ₹200 = ₹2,00,000 = exactly at limit — risky. To be safe, keep <strong>950–980 shares per account</strong> to ensure you're within limit even at slightly higher prices.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Return Scenarios — 6,000 Shares (Pre-Tax)</h2>
+    <div class="tbl-wrap">
+      <table class="scenario-table">
+        <tr><th>Acceptance Ratio</th><th>Shares Accepted</th><th>Gain per Share (₹250–₹193)</th><th>Gross Gain</th><th>Return on ₹11.58L</th></tr>
+        <tr class="worst"><td>30.8% (Minimum)</td><td>1,848</td><td>₹57</td><td>₹1,05,336</td><td>9.1%</td></tr>
+        <tr class="mid"><td>50%</td><td>3,000</td><td>₹57</td><td>₹1,71,000</td><td>14.8%</td></tr>
+        <tr class="best"><td>78% (2023 history)</td><td>4,680</td><td>₹57</td><td>₹2,66,760</td><td>23.0%</td></tr>
+        <tr class="best"><td>100%</td><td>6,000</td><td>₹57</td><td>₹3,42,000</td><td>29.5%</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Return Scenarios — Post STCG Tax (20%)</h2>
+    <div class="alert-box info">
+      <div class="alert-icon">📋</div>
+      <div class="alert-text"><strong>Tax Treatment (post Finance Act 2024):</strong> Buyback proceeds are now taxable as <strong>capital gains</strong> in the shareholder's hands (change effective Oct 1, 2024). Since shares will be bought just before record date and tendered (held &lt;1 year): <strong>STCG @ 20%</strong>. Gain = (Buyback Price – Purchase Cost). Only the accepted portion is taxed; returned shares continue at original cost basis.</div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="scenario-table">
+        <tr><th>Acceptance Ratio</th><th>Pre-Tax Gain</th><th>STCG @20%</th><th>Post-Tax Gain</th><th>Net Return</th></tr>
+        <tr class="worst"><td>30.8%</td><td>₹1,05,336</td><td>₹21,067</td><td>₹84,269</td><td>7.3%</td></tr>
+        <tr class="mid"><td>50%</td><td>₹1,71,000</td><td>₹34,200</td><td>₹1,36,800</td><td>11.8%</td></tr>
+        <tr class="best"><td>78%</td><td>₹2,66,760</td><td>₹53,352</td><td>₹2,13,408</td><td>18.4%</td></tr>
+        <tr class="best"><td>100%</td><td>₹3,42,000</td><td>₹68,400</td><td>₹2,73,600</td><td>23.6%</td></tr>
+      </table>
+    </div>
+    <p class="note">For individuals in the 30% slab, add surcharge where applicable. Senior citizens: same STCG rate applies. HUF: same. If any account has LTCG exemption available (gains below ₹1.25L per person), that account may have lower effective tax.</p>
+  </div>
+
+  <div class="section">
+    <h2>Remaining Shares Risk (at 78% acceptance)</h2>
+    <div class="card">
+      <p style="font-size:0.8rem;color:var(--text2);line-height:1.7">
+        At 78% acceptance: <strong>1,320 shares</strong> (22% of 6,000) are returned to you.<br>
+        These 1,320 shares are held at your purchase cost of ₹193.<br><br>
+        <strong>Scenario A — Stock corrects to ₹180 post-buyback:</strong> Loss = 1,320 × ₹13 = ₹17,160. Net position still very positive (₹2.13L post-tax gain – ₹17,160 = ₹1.96L net).<br>
+        <strong>Scenario B — Stock stays flat at ₹193:</strong> No P&L on remaining shares. Net = ₹2.13L.<br>
+        <strong>Scenario C — Stock rallies to ₹220 post-buyback (catalysts from improved guidance):</strong> 1,320 × ₹27 = ₹35,640 additional gain. Total = ₹2.49L+.
+      </p>
+    </div>
+    <div class="metric-grid" style="margin-top:12px">
+      <div class="metric-card amber"><div class="metric-label">Breakeven (if stock falls)</div><div class="metric-value">~₹155</div><div class="metric-sub">You'd need stock to fall 20%+ for loss</div></div>
+      <div class="metric-card green"><div class="metric-label">Hard Floor</div><div class="metric-value">~₹183</div><div class="metric-sub">Buyback announcement support level</div></div>
+      <div class="metric-card green"><div class="metric-label">52W Low</div><div class="metric-value">₹186.5</div><div class="metric-sub">Strong structural support</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Step-by-Step Execution Checklist</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>#</th><th>Action</th><th>Timing</th><th>Critical Point</th></tr>
+        <tr><td>1</td><td>Ensure 6 separate Demat accounts are active (different PANs)</td><td>Now</td><td>Each PAN = separate individual. Verify KYC is updated.</td></tr>
+        <tr><td>2</td><td>Monitor BSE/NSE for Record Date announcement (Wipro exchange filing)</td><td>Daily</td><td>Record date likely announced 2–3 weeks before tender opens</td></tr>
+        <tr><td>3</td><td>Buy ~1,000 shares per account at ₹190–195</td><td>At least T+1 before record date</td><td>Must hold on record date. T+1 settlement — buy the day before record date at latest.</td></tr>
+        <tr><td>4</td><td>Verify each account's holding confirms "small shareholder" status</td><td>On record date</td><td>Market value on record date × shares ≤ ₹2,00,000</td></tr>
+        <tr><td>5</td><td>Wait for Letter of Offer (confirms entitlement ratio + tender window)</td><td>~1 week post record date</td><td>Letter of Offer discloses exact entitlement per account</td></tr>
+        <tr><td>6</td><td>Place tender bids via each account's broker during tender window</td><td>During tender window (~2 weeks)</td><td>Tender ALL eligible shares. Broker will place on exchange. Submit before cut-off.</td></tr>
+        <tr><td>7</td><td>Acceptance & settlement</td><td>~T+10 after tender close</td><td>Accepted shares → ₹250 credited. Unaccepted shares returned to Demat.</td></tr>
+        <tr><td>8</td><td>Sell remaining shares if holding not desired</td><td>Post settlement</td><td>Decide based on stock price vs post-tax return on remaining lot</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Key Risks to This Strategy</h2>
+    <div class="alert-box danger">
+      <div class="alert-icon">🚨</div>
+      <div class="alert-text">
+        <strong>Risk 1 — Postal Ballot Approval Delay:</strong> The buyback requires shareholder approval via postal ballot. If delayed beyond May 2026 close, your capital is locked at ₹193 for longer.<br>
+        <strong>Risk 2 — Promoter Participation Reduces Retail Allocation:</strong> Promoters hold 72.62% and intend to participate. High promoter tendering reduces the retail quota acceptance ratio. In 2023, HDFC Securities calculated minimum acceptance at 30.8% (vs historical 78%).<br>
+        <strong>Risk 3 — Record Date Price Risk:</strong> If stock price rises to >₹200 before record date, your 1,000-share holding may marginally exceed the ₹2L threshold — shifting you to general category with lower acceptance ratio. Mitigation: hold 950 shares per account.<br>
+        <strong>Risk 4 — IT Sector Selloff:</strong> A broader sector selloff (Nifty IT) after the US tariff/AI news cycle could push Wipro below ₹186.5 support. Your unreturned shares face market risk.<br>
+        <strong>Risk 5 — Buyback Cancellation:</strong> Very unlikely given Board approval, but if shareholder vote fails (improbable given 72.6% promoter), buyback doesn't proceed.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Buyback Historical Performance</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Year</th><th>Buyback Price</th><th>CMP at Record Date</th><th>Premium</th><th>Small Shareholder Acceptance</th><th>Gain (100% acc.)</th></tr>
+        <tr><td>2019</td><td>₹325</td><td>₹286</td><td>14%</td><td>~42% entitlement; actual higher</td><td>13.6%</td></tr>
+        <tr><td>2020</td><td>₹400</td><td>₹340</td><td>17.6%</td><td>~100% <span class="badge badge-green" style="font-size:0.6rem">EXCEPTIONAL</span></td><td>17.6%</td></tr>
+        <tr><td>2021</td><td>₹400</td><td>₹540</td><td>–26%</td><td>N/A (stock above buyback)</td><td>N/A</td></tr>
+        <tr><td>2023</td><td>₹445</td><td>₹389–410</td><td>~10–14%</td><td>~78%</td><td>8–14%</td></tr>
+        <tr style="background:rgba(245,158,11,0.08)"><td><strong>2026 (current)</strong></td><td><strong>₹250</strong></td><td><strong>₹193</strong></td><td style="color:var(--green)"><strong>+29.5%</strong></td><td><strong>30.8–78% (range)</strong></td><td><strong>29.5% (at 100%)</strong></td></tr>
+      </table>
+    </div>
+    <div class="alert-box success" style="margin-top:12px">
+      <div class="alert-icon">⭐</div>
+      <div class="alert-text"><strong>Bottom Line:</strong> The 2026 Wipro buyback is the <strong>most attractive in percentage premium terms</strong> since 2019–2020. At 29.5% premium and 30–60 day window, even at the minimum acceptance ratio of 30.8%, the after-tax return is ~7.3% in 30–45 days — effectively an annualised 60–90% return on the deployed capital for the accepted portion. This is a high-conviction tactical trade. The remaining shares are supported by the ₹186.5 structural floor and buyback announcement premium. <strong>Recommendation: Proceed with 6-account strategy. Prioritise execution precision over quantity optimisation.</strong></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <strong>DISCLAIMER:</strong> This report is generated by the Buffett Quality-Value Series v5.0 for informational and educational purposes only. It does not constitute investment advice, a solicitation to buy/sell securities, or financial planning guidance. All data is sourced from public filings, exchange disclosures, and third-party databases; while every effort is made for accuracy, no warranty is provided. Past performance of buyback acceptance ratios is not indicative of future outcomes. Investors should conduct their own due diligence and consult a SEBI-registered investment advisor before acting on any information herein. Market investments are subject to risk. The buyback analysis section is purely arithmetic and does not account for individual tax situations or legal circumstances — consult a CA for personal tax advice. | SEBI Disclaimer: Investment in securities market is subject to market risks. Read all the related documents carefully before investing. | Data sources: NSE/BSE exchange filings, SEC Form 6-K, Screener.in, ICRA ratings, Crisil Ratings, HDFC Securities research, BusinessToday, ICICIDirect Equity Research. | Fonts: Syne, DM Sans, Fira Code via Google Fonts. | Report generated: 12 May 2026.
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  var target = document.getElementById(tabId);
+  if (target) { target.style.display = 'block'; }
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

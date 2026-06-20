@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADANIPORTS — Buffett Quality-Value Series</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ocean: #07192d;
+  --ocean-mid: #0d2a47;
+  --teal: #0fb4c6;
+  --teal-light: #4acfde;
+  --brass: #c8922a;
+  --brass-light: #e4b855;
+  --fog: #f2f6fb;
+  --white: #ffffff;
+  --card: #ffffff;
+  --text: #1a2d42;
+  --text-muted: #5a6f84;
+  --border: #d8e4ee;
+  --pass: #15803d;
+  --pass-bg: #dcfce7;
+  --marginal: #92400e;
+  --marginal-bg: #fef3c7;
+  --fail: #991b1b;
+  --fail-bg: #fee2e2;
+  --verified: #065f46;
+  --verified-bg: #d1fae5;
+  --estimated: #78350f;
+  --estimated-bg: #fef3c7;
+  --unverified: #7f1d1d;
+  --unverified-bg: #fee2e2;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Crimson Pro',Georgia,serif; background:var(--fog); color:var(--text); font-size:16px; line-height:1.6; }
+a { color:var(--teal); }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, var(--ocean) 0%, var(--ocean-mid) 60%, #0a3352 100%);
+  color:var(--white);
+  padding:40px 32px 36px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0; bottom:0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 39px,
+    rgba(15,180,198,0.06) 39px, rgba(15,180,198,0.06) 40px
+  ),
+  repeating-linear-gradient(
+    90deg, transparent, transparent 79px,
+    rgba(15,180,198,0.04) 79px, rgba(15,180,198,0.04) 80px
+  );
+  pointer-events:none;
+}
+.hero-inner { position:relative; z-index:1; max-width:1100px; margin:0 auto; }
+.hero-top { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
+.company-name { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; letter-spacing:-0.5px; line-height:1.05; }
+.ticker { font-family:'IBM Plex Mono',monospace; font-size:0.85rem; color:var(--teal-light); letter-spacing:2px; margin-bottom:4px; }
+.verdict-badge {
+  background: linear-gradient(135deg, var(--brass), var(--brass-light));
+  color:#1a0a00;
+  padding:10px 20px;
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  font-size:0.9rem;
+  border-radius:4px;
+  text-align:center;
+  min-width:160px;
+}
+.badges-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+.badge {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:4px 12px; border-radius:20px;
+  font-family:'IBM Plex Mono',monospace; font-size:0.72rem; font-weight:600;
+  border:1px solid rgba(255,255,255,0.2);
+}
+.badge-cat-b { background:rgba(15,180,198,0.2); color:#7ef0fd; border-color:var(--teal); }
+.badge-neutral { background:rgba(180,180,180,0.15); color:#d0d8e8; }
+.badge-forming { background:rgba(200,146,42,0.2); color:#ffd080; border-color:var(--brass); }
+.badge-macro { background:rgba(21,128,61,0.25); color:#86efac; border-color:#16a34a; }
+.hero-pills { display:flex; flex-wrap:wrap; gap:8px; }
+.pill {
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  padding:4px 14px;
+  border-radius:20px;
+  font-size:0.8rem;
+  font-family:'IBM Plex Mono',monospace;
+}
+.lede {
+  font-size:1.05rem;
+  color:rgba(255,255,255,0.82);
+  line-height:1.6;
+  max-width:820px;
+  margin-top:14px;
+  font-style:italic;
+}
+
+/* TAB BAR */
+#tab-bar {
+  position:sticky; top:0; z-index:100;
+  background:var(--ocean);
+  border-bottom:2px solid var(--teal);
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.tab-bar-inner { display:flex; min-width:max-content; }
+.tab-btn {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem; font-weight:500;
+  color:rgba(255,255,255,0.6);
+  background:none; border:none;
+  padding:12px 14px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:color 0.2s, border-color 0.2s;
+  border-bottom:2px solid transparent;
+  margin-bottom:-2px;
+  letter-spacing:0.5px;
+}
+.tab-btn:hover { color:rgba(255,255,255,0.9); }
+.tab-btn.active { color:var(--teal); border-bottom-color:var(--teal); }
+
+/* CONTENT */
+.tab-content { display:none; padding:28px 20px; max-width:1100px; margin:0 auto; }
+
+/* CARDS */
+.card { background:var(--card); border-radius:8px; border:1px solid var(--border); margin-bottom:20px; overflow:hidden; }
+.card-header {
+  background:linear-gradient(90deg, var(--ocean) 0%, var(--ocean-mid) 100%);
+  color:var(--white);
+  padding:14px 20px;
+  font-family:'Playfair Display',serif;
+  font-size:1.05rem;
+  font-weight:700;
+  display:flex; align-items:center; gap:10px;
+}
+.card-header .ch-icon { font-size:1.1rem; }
+.card-body { padding:20px; }
+
+/* METRIC GRID */
+.metric-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:20px; }
+.metric-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-left:4px solid var(--teal);
+  border-radius:6px;
+  padding:14px 16px;
+}
+.metric-card.warn { border-left-color:var(--brass); }
+.metric-card.danger { border-left-color:#dc2626; }
+.metric-card.good { border-left-color:#16a34a; }
+.metric-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.metric-value { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--ocean); }
+.metric-sub { font-size:0.78rem; color:var(--text-muted); margin-top:2px; }
+
+/* TABLES */
+.data-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
+.data-table th { background:var(--ocean); color:var(--white); padding:10px 12px; text-align:left; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:0.5px; font-weight:500; }
+.data-table td { padding:9px 12px; border-bottom:1px solid var(--border); vertical-align:top; }
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:nth-child(even) td { background:rgba(15,180,198,0.04); }
+
+/* STATUS CHIPS */
+.pass-chip { display:inline-flex; align-items:center; gap:4px; background:var(--pass-bg); color:var(--pass); padding:2px 8px; border-radius:3px; font-size:0.75rem; font-weight:600; font-family:'IBM Plex Mono',monospace; }
+.marginal-chip { background:var(--marginal-bg); color:var(--marginal); padding:2px 8px; border-radius:3px; font-size:0.75rem; font-weight:600; font-family:'IBM Plex Mono',monospace; display:inline-flex; align-items:center; }
+.fail-chip { background:var(--fail-bg); color:var(--fail); padding:2px 8px; border-radius:3px; font-size:0.75rem; font-weight:600; font-family:'IBM Plex Mono',monospace; display:inline-flex; align-items:center; }
+
+/* DATA LABELS */
+.v-tag { background:var(--verified-bg); color:var(--verified); padding:1px 6px; border-radius:2px; font-size:0.65rem; font-weight:600; font-family:'IBM Plex Mono',monospace; vertical-align:middle; }
+.e-tag { background:var(--estimated-bg); color:var(--estimated); padding:1px 6px; border-radius:2px; font-size:0.65rem; font-weight:600; font-family:'IBM Plex Mono',monospace; vertical-align:middle; }
+.u-tag { background:var(--unverified-bg); color:var(--unverified); padding:1px 6px; border-radius:2px; font-size:0.65rem; font-weight:600; font-family:'IBM Plex Mono',monospace; vertical-align:middle; }
+
+/* PILLAR GRADES */
+.pillars-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:20px; }
+.pillar-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:18px; text-align:center; }
+.pillar-name { font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:1px; color:var(--text-muted); margin-bottom:8px; }
+.pillar-grade { font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:900; }
+.grade-a { color:#15803d; }
+.grade-b { color:#1d4ed8; }
+.grade-c { color:#d97706; }
+.grade-d { color:#dc2626; }
+.pillar-note { font-size:0.78rem; color:var(--text-muted); margin-top:4px; }
+
+/* VERDICT BOX */
+.verdict-box {
+  background:linear-gradient(135deg, var(--ocean) 0%, #0f3255 100%);
+  color:var(--white);
+  border-radius:12px;
+  padding:28px;
+  margin-bottom:24px;
+  border:1px solid var(--teal);
+  position:relative;
+  overflow:hidden;
+}
+.verdict-box::after {
+  content:'⚓';
+  position:absolute;
+  right:20px; bottom:10px;
+  font-size:5rem;
+  opacity:0.06;
+}
+.verdict-label { font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:2px; color:var(--teal); margin-bottom:8px; }
+.verdict-title { font-family:'Playfair Display',serif; font-size:2rem; font-weight:900; margin-bottom:10px; }
+.verdict-stars { font-size:1.5rem; margin-bottom:12px; color:var(--brass-light); }
+.verdict-text { font-size:1rem; color:rgba(255,255,255,0.85); line-height:1.65; }
+.upgrade-list { margin-top:20px; }
+.upgrade-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; }
+.upgrade-num { background:var(--teal); color:#000; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:0.72rem; font-weight:700; flex-shrink:0; margin-top:1px; }
+.upgrade-text { font-size:0.88rem; color:rgba(255,255,255,0.85); }
+
+/* MOAT STARS */
+.moat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-bottom:20px; }
+.moat-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:16px; }
+.moat-source { font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:0.8px; color:var(--text-muted); margin-bottom:6px; }
+.moat-name { font-weight:700; font-size:1rem; margin-bottom:6px; color:var(--ocean); }
+.moat-stars { color:var(--brass); font-size:1.1rem; margin-bottom:6px; }
+.moat-desc { font-size:0.82rem; color:var(--text-muted); line-height:1.5; }
+
+/* FLYWHEEL BOX */
+.flywheel-box { border:2px solid var(--brass); border-radius:10px; background:linear-gradient(135deg,#fff8e6,#fff); padding:20px; margin-bottom:20px; }
+.flywheel-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--ocean); margin-bottom:4px; }
+.flywheel-badge { display:inline-block; background:var(--brass); color:#fff; padding:3px 10px; border-radius:3px; font-size:0.72rem; font-family:'IBM Plex Mono',monospace; font-weight:600; margin-bottom:12px; }
+.flywheel-q { display:flex; gap:10px; margin-bottom:8px; align-items:flex-start; }
+.flywheel-icon { font-size:1rem; flex-shrink:0; margin-top:1px; }
+.flywheel-qtext { font-size:0.85rem; }
+
+/* SCENARIO TABLE */
+.scenario-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+.scenario-card { border-radius:8px; padding:18px; }
+.scenario-stress { background:#fff5f5; border:1px solid #fca5a5; }
+.scenario-base { background:#f0fdf4; border:1px solid #86efac; }
+.scenario-accel { background:#eff6ff; border:1px solid #93c5fd; }
+.scenario-title { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; font-weight:600; letter-spacing:1px; margin-bottom:10px; }
+.scenario-stress .scenario-title { color:#991b1b; }
+.scenario-base .scenario-title { color:#15803d; }
+.scenario-accel .scenario-title { color:#1d4ed8; }
+.scenario-row { display:flex; justify-content:space-between; font-size:0.82rem; padding:3px 0; border-bottom:1px solid rgba(0,0,0,0.06); }
+.scenario-row:last-child { border-bottom:none; }
+.scenario-key { color:var(--text-muted); }
+.scenario-val { font-weight:600; font-family:'IBM Plex Mono',monospace; }
+
+/* YEAR CARDS */
+.year-cards { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+.year-card { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:10px 14px; text-align:center; min-width:90px; }
+.year-card.best { border-top:3px solid #15803d; }
+.year-card.worst { border-top:3px solid #dc2626; }
+.year-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--text-muted); }
+.year-value { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--ocean); }
+.year-sub { font-size:0.7rem; color:var(--text-muted); }
+
+/* TECHNICAL */
+.price-ladder { background:linear-gradient(90deg,#fff,#f8fcff); border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:16px; }
+.price-level { display:flex; align-items:center; gap:12px; padding:6px 0; border-bottom:1px solid var(--border); }
+.price-level:last-child { border-bottom:none; }
+.price-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.price-dot.resist { background:#dc2626; }
+.price-dot.support { background:#15803d; }
+.price-dot.current { background:var(--teal); }
+.price-dot.target { background:var(--brass); }
+.price-lname { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-muted); width:120px; }
+.price-lval { font-family:'IBM Plex Mono',monospace; font-size:0.9rem; font-weight:600; color:var(--ocean); }
+.price-lnote { font-size:0.78rem; color:var(--text-muted); flex:1; }
+
+/* MA DASHBOARD */
+.ma-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:16px; }
+.ma-card { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center; }
+.ma-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--text-muted); margin-bottom:4px; }
+.ma-val { font-family:'IBM Plex Mono',monospace; font-size:1rem; font-weight:600; }
+.ma-val.above { color:#15803d; }
+.ma-val.below { color:#dc2626; }
+.ma-status { font-size:0.7rem; }
+
+/* RSI GAUGE */
+.rsi-bar { background:linear-gradient(90deg,#dc2626 0%,#f97316 20%,#eab308 40%,#22c55e 60%,#eab308 80%,#dc2626 100%); border-radius:4px; height:12px; position:relative; margin:8px 0; }
+.rsi-marker { position:absolute; top:-4px; width:4px; height:20px; background:var(--ocean); border-radius:2px; transform:translateX(-50%); }
+
+/* SHAREHOLDING */
+.holding-bar { display:flex; height:18px; border-radius:4px; overflow:hidden; margin-bottom:8px; }
+.holding-seg { height:100%; display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:600; color:white; font-family:'IBM Plex Mono',monospace; }
+
+/* AI SECTION */
+.ai-dashboard { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:20px; }
+.ai-badge-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:16px; text-align:center; }
+.ai-badge-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--text-muted); margin-bottom:8px; letter-spacing:0.5px; }
+.ai-badge-val { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+
+/* SCORE GAUGE */
+.score-gauge { display:flex; align-items:center; gap:16px; padding:16px; background:var(--card); border:1px solid var(--border); border-radius:8px; margin-bottom:16px; }
+.score-circle { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-direction:column; border:4px solid var(--teal); flex-shrink:0; }
+.score-num { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; color:var(--ocean); }
+.score-denom { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--text-muted); }
+
+/* VALUE CHAIN */
+.vc-levels { display:flex; gap:0; margin-bottom:16px; flex-wrap:nowrap; overflow-x:auto; }
+.vc-level { flex:1; padding:12px 8px; text-align:center; border-right:1px solid var(--border); min-width:100px; }
+.vc-level:last-child { border-right:none; }
+.vc-level.active { background:linear-gradient(180deg,var(--ocean),var(--ocean-mid)); color:white; border-radius:6px; }
+.vc-num { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; font-weight:600; margin-bottom:4px; }
+.vc-name { font-size:0.75rem; font-weight:600; }
+.vc-sub { font-size:0.65rem; margin-top:3px; }
+
+/* OE BOX */
+.oe-box { background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1px solid #86efac; border-radius:8px; padding:20px; margin-bottom:20px; }
+.oe-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:#166534; margin-bottom:12px; }
+.oe-row { display:flex; justify-content:space-between; font-size:0.85rem; padding:5px 0; border-bottom:1px solid rgba(22,101,52,0.1); }
+.oe-row:last-child { border-bottom:none; font-weight:700; font-size:0.95rem; }
+.oe-key { color:var(--text); }
+.oe-val { font-family:'IBM Plex Mono',monospace; color:#166534; }
+
+/* SERIES TABLE */
+.series-table-wrap { overflow-x:auto; }
+
+/* FOOTER */
+.footer { background:var(--ocean); color:rgba(255,255,255,0.55); padding:24px 20px; font-size:0.75rem; line-height:1.7; margin-top:40px; }
+.footer strong { color:rgba(255,255,255,0.8); }
+
+/* RESPONSIVE */
+@media(max-width:680px) {
+  .hero { padding:24px 16px 20px; }
+  .company-name { font-size:1.8rem; }
+  .metric-grid { grid-template-columns:1fr 1fr; }
+  .scenario-grid { grid-template-columns:1fr; }
+  .pillars-grid { grid-template-columns:1fr 1fr; }
+  .tab-btn { padding:10px 10px; font-size:0.62rem; }
+  .vc-levels { flex-direction:column; }
+}
+@media(max-width:600px) {
+  .metric-grid { grid-template-columns:1fr 1fr; }
+  .pillars-grid { grid-template-columns:1fr 1fr; }
+  .year-cards { gap:6px; }
+  .card-body { padding:14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div>
+        <div class="ticker">NSE: ADANIPORTS &nbsp;|&nbsp; PORT INFRASTRUCTURE &nbsp;|&nbsp; LARGE CAP</div>
+        <div class="company-name">Adani Ports &amp;<br>Special Economic Zone</div>
+      </div>
+      <div class="verdict-badge">
+        WATCH ★★★★<br>
+        <span style="font-size:0.72rem;opacity:0.8;">Entry ₹1,200–1,350</span>
+      </div>
+    </div>
+    <div class="badges-row">
+      <span class="badge badge-cat-b">⚡ CATEGORY B — HIGH-GROWTH COMPOUNDER</span>
+      <span class="badge badge-neutral">⚪ AI OVERLAY: NEUTRAL (WIDENER POTENTIAL)</span>
+      <span class="badge badge-forming">⚙ FLYWHEEL: FORMING</span>
+      <span class="badge badge-macro">📈 MACRO: TAILWIND</span>
+    </div>
+    <div class="hero-pills">
+      <span class="pill">CMP ₹1,573 <span class="e-tag">ESTIMATED</span></span>
+      <span class="pill">Mkt Cap ₹3.62L Cr</span>
+      <span class="pill">FY25 Rev ₹31,079 Cr</span>
+      <span class="pill">FY25 EBITDA ₹19,025 Cr</span>
+      <span class="pill">28% India Port Share</span>
+      <span class="pill">19 Ports &amp; Terminals</span>
+      <span class="pill">Target 1Bn T by 2030</span>
+    </div>
+    <div class="lede">India's largest private port operator—a geographic monopoly building an integrated transport utility on the spine of India's trade future. Cargo volume CAGR of 13% dwarfs the 4% sector average. At current price, quality is abundant but margin of safety is thin.</div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">⚓ Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">🌊 Macro &amp; Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">📊 Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">🏰 Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">👔 Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">💰 Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">⚖ Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">📈 Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">🧭 Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">🤖 AI Intelligence</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 0 — OVERVIEW -->
+<div id="tab0" class="tab-content" style="display:block;">
+  <div class="metric-grid">
+    <div class="metric-card good"><div class="metric-label">Current Price</div><div class="metric-value">₹1,573</div><div class="metric-sub">Apr 18, 2026 <span class="e-tag">EST</span></div></div>
+    <div class="metric-card"><div class="metric-label">52W Range</div><div class="metric-value">₹1,181–1,584</div><div class="metric-sub">Near 52W High <span class="v-tag">VFD</span></div></div>
+    <div class="metric-card"><div class="metric-label">FY25 Revenue</div><div class="metric-value">₹31,079 Cr</div><div class="metric-sub">+16% YoY <span class="v-tag">VFD</span></div></div>
+    <div class="metric-card good"><div class="metric-label">FY25 EBITDA</div><div class="metric-value">₹19,025 Cr</div><div class="metric-sub">61% margin <span class="v-tag">VFD</span></div></div>
+    <div class="metric-card good"><div class="metric-label">FY25 PAT</div><div class="metric-value">₹11,061 Cr</div><div class="metric-sub">+37% YoY <span class="v-tag">VFD</span></div></div>
+    <div class="metric-card"><div class="metric-label">P/E (TTM)</div><div class="metric-value">~27x</div><div class="metric-sub">Fwd FY26 ~24x <span class="e-tag">EST</span></div></div>
+    <div class="metric-card warn"><div class="metric-label">Net Debt/EBITDA</div><div class="metric-value">1.8x</div><div class="metric-sub">H1 FY26 <span class="v-tag">VFD</span></div></div>
+    <div class="metric-card"><div class="metric-label">ROCE / ROE</div><div class="metric-value">13.8% / 18.8%</div><div class="metric-sub">TTM <span class="v-tag">VFD</span></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">⚓</span> Business Overview</div>
+    <div class="card-body">
+      <p style="margin-bottom:14px;">Adani Ports and Special Economic Zone Ltd (APSEZ) is India's largest integrated port operator and logistics platform. Incorporated in 1998 under the Adani Group, it has transformed from a single-port operator at Mundra into a <strong>19-port network</strong> spanning 7 Indian states plus international terminals at Haifa (Israel), Dar es Salaam (Tanzania), Colombo (Sri Lanka), and Abbot Point, Australia (NQXT, pending regulatory closure). APSEZ's Mundra Port crossed 200 MMT in a single year in FY25—a first for any Indian port.</p>
+      <p style="margin-bottom:14px;">The company operates across four verticals: <strong>(1) Domestic Ports</strong> — 15 terminals, 633 MMT capacity, 74.2% EBITDA margin in H1 FY26; <strong>(2) International Ports</strong> — 4 terminals, H1 FY26 revenue ₹2,050 Cr, lifetime high; <strong>(3) Logistics</strong> — 12 MMLPs, ₹2,224 Cr H1 FY26 revenue (+92% YoY), RoCE improving to 9%; <strong>(4) Marine Services</strong> — 46+ vessels, ₹1,182 Cr H1 FY26 revenue (+213% YoY). The strategic pivot to become an "Integrated Transport Utility" — port-gate to customer-gate — is the core thesis.</p>
+      <p>APSEZ holds <strong>28% of India's total port cargo market</strong> and <strong>45.5% of container cargo</strong>. Its 2030 target of 1 Billion Tonnes annually requires a ~13% volume CAGR from FY25's 450 MMT base — consistent with its historical 13% CAGR since 2014.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🔍</span> Why APSEZ Is in This Series</div>
+    <div class="card-body">
+      <p style="margin-bottom:10px;"><strong>1. Infrastructure Monopoly with Geographic Lock-In:</strong> Ports are irreplicable assets — you cannot build a competing deep-water port adjacent to Mundra. This is the closest thing to a natural monopoly in Indian infrastructure. Regulatory concessions, environmental clearances, and capital intensity create a 15-20 year barrier to entry.</p>
+      <p style="margin-bottom:10px;"><strong>2. India Trade Supercycle Proxy:</strong> India's merchandise trade ambition — doubling exports to $2 trillion by 2030 — flows through APSEZ's ports. Every percentage point of GDP growth adds cargo volumes. The India-EU Free Trade Agreement (MOU signed 2025) and IMEC corridor directly benefit Mundra and Hazira.</p>
+      <p style="margin-bottom:10px;"><strong>3. Logistics Transformation Alpha:</strong> The logistics segment (trucking, MMLPs, rail, warehousing) is growing at 90%+ YoY. This is the fastest-growing and highest-optionality segment, evolving APSEZ from a tariff-regulated port business into an unregulated, higher-multiple logistics platform.</p>
+      <p><strong>Framework Adaptation:</strong> For infrastructure compounders, EV/EBITDA is the primary valuation metric (ports command 14-20x historically). DCF uses maintenance vs. growth CapEx split. Interest capitalization risk is flagged and O'Glove-adjusted.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🎯</span> Framework Classification</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Parameter</th><th>Assessment</th><th>Rationale</th></tr>
+        <tr><td>Category</td><td><strong>B — High-Growth Compounder</strong></td><td>16% revenue CAGR, international expansion, logistics alpha, 13% volume CAGR vs 4% sector</td></tr>
+        <tr><td>AI Overlay</td><td><strong>⚪ NEUTRAL → mild 🟢 WIDENER</strong></td><td>Tara AI bot, automated ports (Vizhinjam, CWIT), pilferage AI — efficiency tools, not yet moat-changing</td></tr>
+        <tr><td>Data Flywheel</td><td><strong>⚙ FORMING (2/3 criteria)</strong></td><td>Proprietary cargo data + route AI improving — feedback loop to users not yet confirmed</td></tr>
+        <tr><td>Adoption Phase</td><td><strong>Phase 2 (Smart Ports)</strong></td><td>Port automation at 5-20% adoption in India; Vizhinjam = pioneer, replication underway</td></tr>
+        <tr><td>WACC</td><td>12% (Category B infra)</td><td>India risk-free 6.6% + equity risk premium 5.4%</td></tr>
+        <tr><td>Valuation Primary</td><td>EV/EBITDA + DCF</td><td>Infrastructure standard; EV/EBITDA comparable across global port peers</td></tr>
+        <tr><td>Terminal Growth Cap</td><td>≤ 7.5% (India nominal GDP × 0.77)</td><td>India real GDP 7.3% + CPI 2.5% = 9.8% nominal; terminal = 0.77×</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 1 — MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🌊</span> Layer 1 — Macro Anchor</div>
+    <div class="card-body">
+      <div class="metric-grid">
+        <div class="metric-card good"><div class="metric-label">India Real GDP FY26</div><div class="metric-value">7.3%</div><div class="metric-sub">RBI estimate; IMF 6.6% <span class="v-tag">VFD</span></div></div>
+        <div class="metric-card good"><div class="metric-label">CPI Inflation FY26</div><div class="metric-value">~2.5%</div><div class="metric-sub">Multi-year lows; Oct25: 0.25% <span class="v-tag">VFD</span></div></div>
+        <div class="metric-card good"><div class="metric-label">India Nominal GDP</div><div class="metric-value">~9.8%</div><div class="metric-sub">Terminal growth ceiling <span class="e-tag">EST</span></div></div>
+        <div class="metric-card"><div class="metric-label">RBI Repo Rate</div><div class="metric-value">5.25%</div><div class="metric-sub">Neutral stance; easing cycle <span class="v-tag">VFD</span></div></div>
+        <div class="metric-card good"><div class="metric-label">India 10Y G-Sec</div><div class="metric-value">~6.6%</div><div class="metric-sub">Risk-free rate for WACC <span class="e-tag">EST</span></div></div>
+        <div class="metric-card good"><div class="metric-label">Macro Composite</div><div class="metric-value">TAILWIND</div><div class="metric-sub">Falling rates + strong GDP + low CPI</div></div>
+      </div>
+      <table class="data-table">
+        <tr><th>Macro Dimension</th><th>Status</th><th>APSEZ Impact</th></tr>
+        <tr><td>Urban Consumption Cycle</td><td><span class="pass-chip">✓ RECOVERY</span></td><td>Rising port container volumes; consumer goods import surge</td></tr>
+        <tr><td>India Trade Cycle</td><td><span class="pass-chip">✓ BOOM</span></td><td>India-EU FTA signed, IMEC corridor, PLI-driven export growth — direct volume catalyst</td></tr>
+        <tr><td>Infrastructure Capex Cycle</td><td><span class="pass-chip">✓ STRONG</span></td><td>Sagarmala 2.0 ₹6L Cr pipeline; Maritime Vision 2030; Rs 25,000 Cr Maritime Fund</td></tr>
+        <tr><td>Interest Rate Cycle</td><td><span class="pass-chip">✓ EASING</span></td><td>Debt-heavy model benefits from RBI cuts; gross debt ₹51,082 Cr refinancing</td></tr>
+        <tr><td>Input Cost Cycle</td><td><span class="pass-chip">✓ FALLING</span></td><td>Crude oil ~$63/bbl; fuel costs for marine fleet and trucking declining</td></tr>
+        <tr><td>AI Adoption Cycle (Ports)</td><td><span class="marginal-chip">~ PHASE 2</span></td><td>Smart port automation early stage; tailwind over 3-5yr, not immediate</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📦</span> Layer 2 — Sector Growth Derivation</div>
+    <div class="card-body">
+      <p style="margin-bottom:14px;"><strong>Sector:</strong> Ports &amp; Integrated Logistics (India). Major ports volume CAGR (10-year): ~4%; private ports grow faster. APSEZ's own volume CAGR (2014-2025): <strong>13%</strong>, 3× sector. India port infrastructure market CAGR 2026-2034 (IMARC Group): <strong>5.89%</strong>. Container cargo grew 70% in a decade at major ports. FY26 major ports surpassed 915 MT target (+7.06% YoY). <span class="v-tag">VFD</span></p>
+      <table class="data-table">
+        <tr><th>Segment</th><th>Historical CAGR</th><th>Projected Growth</th><th>AI Impact</th></tr>
+        <tr><td>Total Port Volume (India)</td><td>4-5% CAGR</td><td>7-9% (PLI + trade push)</td><td>AI NEUTRAL — volume driven by trade, not AI</td></tr>
+        <tr><td>Container Cargo</td><td>8-10% CAGR</td><td>12-15% (trade normalization)</td><td>AI WIDENER (automated terminals = lower cost)</td></tr>
+        <tr><td>Integrated Logistics</td><td>18-22% CAGR</td><td>20-28% (fragmented to organized)</td><td>AI WIDENER (route optimisation, pilferage AI)</td></tr>
+        <tr><td>Port Infrastructure Revenue</td><td>12-15% CAGR</td><td>14-18% (expansion + tariff)</td><td>AI NEUTRAL</td></tr>
+      </table>
+      <p style="margin-top:12px;"><em>"AI is accelerating the logistics segment's growth rate by approximately +2-3 percentage points over the next 5 years through route optimisation, pilferage prevention AI (Tara AI), and warehouse management automation. Core port volumes remain trade-driven."</em></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🚀</span> Layer 3 — Company Alpha Over Sector</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Evidence</th></tr>
+        <tr><td>Market Share Gain</td><td><span class="pass-chip">✓ ACTIVE</span></td><td>+3%</td><td>+1.5%</td><td>28% share FY26 vs 27.3% FY25; container 45.5% vs 45.1%</td></tr>
+        <tr><td>Category Expansion (Logistics)</td><td><span class="pass-chip">✓ ACTIVE</span></td><td>+4%</td><td>+3%</td><td>Logistics revenue +92% YoY H1 FY26; 12 MMLPs; trucking, warehousing</td></tr>
+        <tr><td>Geographic Expansion</td><td><span class="pass-chip">✓ ACTIVE</span></td><td>+3%</td><td>+2%</td><td>Colombo, Haifa, Tanzania, NQXT Australia; international ports revenue life-time high</td></tr>
+        <tr><td>Marine Services</td><td><span class="pass-chip">✓ ACTIVE</span></td><td>+2%</td><td>+1%</td><td>Marine revenue +213% YoY H1 FY26; 46 vessels; Astro Offshore acquisition</td></tr>
+        <tr><td>Pricing Power (tariff + mix)</td><td><span class="marginal-chip">~ MODERATE</span></td><td>+1%</td><td>+0.5%</td><td>Cargo mix shift to higher-yielding containers; some tariff flexibility</td></tr>
+        <tr><td>AI Alpha (6a+6b+6c)</td><td><span class="marginal-chip">~ FORMING</span></td><td>+1%</td><td>+2%</td><td>Tara AI, pilferage AI, automated ports → logistics cost efficiency</td></tr>
+        <tr><td style="font-weight:700;">Total Company Alpha</td><td>—</td><td style="font-weight:700;">+14%</td><td style="font-weight:700;">+10%</td><td>APSEZ outperforms sector by wide margin</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📋</span> Growth Rate Summary Table</div>
+    <div class="card-body">
+      <div class="scenario-grid">
+        <div class="scenario-card scenario-stress">
+          <div class="scenario-title">⚡ MACRO STRESS</div>
+          <div class="scenario-row"><span class="scenario-key">Macro State</span><span class="scenario-val">GDP ~5.5%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Trade CAGR</span><span class="scenario-val">6-7%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Company Alpha</span><span class="scenario-val">+7%</span></div>
+          <div class="scenario-row"><span class="scenario-key">AI Alpha</span><span class="scenario-val">+0.5%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Stage 1 Rev CAGR</span><span class="scenario-val">13-14%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Stage 2 CAGR</span><span class="scenario-val">9%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Terminal g</span><span class="scenario-val">6.5%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Key Risk</span><span class="scenario-val">Global trade slowdown</span></div>
+        </div>
+        <div class="scenario-card scenario-base">
+          <div class="scenario-title">✅ MACRO BASE</div>
+          <div class="scenario-row"><span class="scenario-key">Macro State</span><span class="scenario-val">GDP ~7.3%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Trade CAGR</span><span class="scenario-val">8-10%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Company Alpha</span><span class="scenario-val">+10%</span></div>
+          <div class="scenario-row"><span class="scenario-key">AI Alpha</span><span class="scenario-val">+1%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Stage 1 Rev CAGR</span><span class="scenario-val">17-18%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Stage 2 CAGR</span><span class="scenario-val">12%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Terminal g</span><span class="scenario-val">7.5%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Key Risk</span><span class="scenario-val">Tariff & debt management</span></div>
+        </div>
+        <div class="scenario-card scenario-accel">
+          <div class="scenario-title">🚀 ACCELERATION</div>
+          <div class="scenario-row"><span class="scenario-key">Macro State</span><span class="scenario-val">GDP ~8%+</span></div>
+          <div class="scenario-row"><span class="scenario-key">Trade CAGR</span><span class="scenario-val">11-13%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Company Alpha</span><span class="scenario-val">+13%</span></div>
+          <div class="scenario-row"><span class="scenario-key">AI Alpha</span><span class="scenario-val">+2%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Stage 1 Rev CAGR</span><span class="scenario-val">22-24%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Stage 2 CAGR</span><span class="scenario-val">14%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Terminal g</span><span class="scenario-val">7.8%</span></div>
+          <div class="scenario-row"><span class="scenario-key">Key Risk</span><span class="scenario-val">Execution on 1 BT ambition</span></div>
+        </div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--text-muted);"><strong>Sensitivity:</strong> A 1% change in terminal growth rate changes IV by ~15%. A 1% change in Stage 1 revenue CAGR changes IV by ~8%. A 1x change in EV/EBITDA multiple changes IV by ~₹160/share.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 2 — FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📊</span> Revenue, EBITDA &amp; PAT — 5-Year History</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Year</th><th>Revenue (₹ Cr)</th><th>EBITDA (₹ Cr)</th><th>EBITDA%</th><th>PAT (₹ Cr)</th><th>PAT Growth</th></tr>
+        <tr><td>FY21</td><td>12,550 <span class="e-tag">EST</span></td><td>~8,200</td><td>~65%</td><td>~5,000</td><td>—</td></tr>
+        <tr><td>FY22</td><td>17,119 <span class="e-tag">EST</span></td><td>~10,400</td><td>~61%</td><td>~5,500</td><td>~+10%</td></tr>
+        <tr><td>FY23</td><td>20,852 <span class="v-tag">VFD</span></td><td>~13,500</td><td>~65%</td><td>~6,200 <span class="e-tag">EST</span></td><td>~+13%</td></tr>
+        <tr><td>FY24</td><td>26,711 <span class="v-tag">VFD</span></td><td>15,864 <span class="v-tag">VFD</span></td><td>59%</td><td>8,104 <span class="v-tag">VFD</span></td><td>+31%</td></tr>
+        <tr><td style="font-weight:700;">FY25</td><td style="font-weight:700;">31,079 <span class="v-tag">VFD</span></td><td style="font-weight:700;">19,025 <span class="v-tag">VFD</span></td><td style="font-weight:700;">61%</td><td style="font-weight:700;">11,061 <span class="v-tag">VFD</span></td><td style="font-weight:700;">+37%</td></tr>
+        <tr><td>TTM (FY26E)</td><td>~36,487 <span class="v-tag">VFD</span></td><td>~21,500</td><td>~59%</td><td>~12,497 <span class="e-tag">EST</span></td><td>~+13%</td></tr>
+      </table>
+      <p style="margin-top:10px;font-size:0.82rem;color:var(--text-muted);">5-year Revenue CAGR: ~21% | 5-year PAT CAGR: 23.1% <span class="v-tag">VFD</span> per Screener. FY26 guidance: Revenue ₹36,000-38,000 Cr, EBITDA ₹21,000-22,000 Cr.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📉</span> ROCE &amp; ROE — 5-Year Track</div>
+    <div class="card-body">
+      <p style="margin-bottom:12px;font-size:0.85rem;">Port infrastructure is naturally capital-intensive. ROCE of 13.8% vs WACC of 12% gives a narrow positive Economic Profit spread — acceptable for a regulated infra business with durable concessions, but not a wide moat indicator. The improving trend is the key signal.</p>
+      <div class="year-cards">
+        <div class="year-card"><div class="year-label">FY21</div><div class="year-value">~9%</div><div class="year-sub">ROCE</div></div>
+        <div class="year-card"><div class="year-label">FY22</div><div class="year-value">~10%</div><div class="year-sub">ROCE</div></div>
+        <div class="year-card"><div class="year-label">FY23</div><div class="year-value">~11.5%</div><div class="year-sub">ROCE</div></div>
+        <div class="year-card"><div class="year-label">FY24</div><div class="year-value">~12.8%</div><div class="year-sub">ROCE</div></div>
+        <div class="year-card best"><div class="year-label">FY25</div><div class="year-value">13.8%</div><div class="year-sub">ROCE <span class="v-tag">VFD</span></div></div>
+      </div>
+      <div class="year-cards">
+        <div class="year-card"><div class="year-label">FY21</div><div class="year-value">~15%</div><div class="year-sub">ROE</div></div>
+        <div class="year-card"><div class="year-label">FY22</div><div class="year-value">~15%</div><div class="year-sub">ROE</div></div>
+        <div class="year-card"><div class="year-label">FY23</div><div class="year-value">~16%</div><div class="year-sub">ROE</div></div>
+        <div class="year-card"><div class="year-label">FY24</div><div class="year-value">~18%</div><div class="year-sub">ROE</div></div>
+        <div class="year-card best"><div class="year-label">FY25</div><div class="year-value">18.8%</div><div class="year-sub">ROE <span class="v-tag">VFD</span></div></div>
+      </div>
+      <p style="font-size:0.8rem;color:var(--text-muted);">WACC = 12% | ROIC ≈ ROCE ≈ 13.8% | Economic Profit Spread: +1.8% | Verdict: <span class="marginal-chip">~ NARROW MOAT</span></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🏦</span> Financial Fortress Scorecard</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Test</th><th>Result</th><th>Finding</th></tr>
+        <tr><td>ROE ≥ 15% for 5 years</td><td><span class="marginal-chip">~ MARGINAL</span></td><td>ROE has been 15-18.8%; technically passes in last 3 years but below in FY21-22</td></tr>
+        <tr><td>ROIC > WACC (12%) for 5 years</td><td><span class="marginal-chip">~ MARGINAL</span></td><td>ROCE crossed 12% only in FY23; currently 13.8% — 1.8% spread; improving trend is positive</td></tr>
+        <tr><td>Debt Position</td><td><span class="marginal-chip">~ MARGINAL</span></td><td>Gross debt ₹51,082 Cr; Net debt ₹38,000 Cr; Net Debt/EBITDA 1.8x — acceptable for infra but elevated</td></tr>
+        <tr><td>EBITDA Margin ≥ 15%</td><td><span class="pass-chip">✓ STRONG PASS</span></td><td>Domestic ports EBITDA margin 74.2% (H1 FY26 all-time high); consolidated 60-63%</td></tr>
+        <tr><td>FCF Positive &amp; Growing</td><td><span class="fail-chip">✗ MARGINAL FAIL</span></td><td>OCF ~₹15,000 Cr, CapEx ₹12,000 Cr → FCF ~₹2,000-3,000 Cr; low vs PAT. Growth CapEx context: deliberate 2030 investment</td></tr>
+        <tr><td>FCF Conversion ≥ 80%</td><td><span class="fail-chip">✗ FAIL</span></td><td>FCF ≈ 20-30% of PAT — entire CapEx cycle absorbs OCF. O'Glove flag. Infrastructure normative.</td></tr>
+        <tr><td>Revenue Growth ≥ Sector CAGR</td><td><span class="pass-chip">✓ STRONG PASS</span></td><td>APSEZ 21% CAGR vs 7-9% sector — massive outperformance for 5+ years</td></tr>
+        <tr><td>Pricing Power</td><td><span class="marginal-chip">~ MODERATE</span></td><td>Mix shift to high-yield containers; concession tariffs somewhat regulated; logistics unregulated</td></tr>
+        <tr><td>Capital Allocation</td><td><span class="marginal-chip">~ ACCEPTABLE</span></td><td>Strategic acquisitions (Gopalpur ₹3,080 Cr, NQXT $2.4B) expand network; integration risk is real</td></tr>
+        <tr><td>Interest Capitalization</td><td><span class="fail-chip">⚠ FLAG</span></td><td>Screener flagged potential interest capitalization — improves EBITDA but inflates asset base; reduces O'Glove score</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="oe-box">
+    <div class="oe-title">Owner Earnings Calculation — FY25 <span class="e-tag">EST</span></div>
+    <div class="oe-row"><span class="oe-key">Net Income (PAT)</span><span class="oe-val">₹11,061 Cr</span></div>
+    <div class="oe-row"><span class="oe-key">+ Depreciation &amp; Amortisation</span><span class="oe-val">+₹4,380 Cr</span></div>
+    <div class="oe-row"><span class="oe-key">+ Non-cash items (forex, SBC)</span><span class="oe-val">+₹400 Cr</span></div>
+    <div class="oe-row"><span class="oe-key">− Maintenance CapEx (est. 35% of total ₹12,000 Cr)</span><span class="oe-val">−₹4,200 Cr</span></div>
+    <div class="oe-row"><span class="oe-key">± Working Capital Changes</span><span class="oe-val">−₹200 Cr</span></div>
+    <div class="oe-row"><span class="oe-key">= Owner Earnings (Base)</span><span class="oe-val">₹11,441 Cr (~₹49.7/share)</span></div>
+    <div class="oe-row"><span class="oe-key">= Owner Earnings (Conservative, 40% maint CapEx)</span><span class="oe-val">₹10,841 Cr (~₹47.1/share)</span></div>
+    <p style="font-size:0.78rem;color:#166534;margin-top:10px;">Shares outstanding: ~230 Cr | Growth CapEx = ₹7,800 Cr (65%) — properly excluded from OE as it creates future value</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🔬</span> O'Glove Earnings Quality Deep-Dive</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>O'Glove Test</th><th>Finding</th><th>Verdict</th></tr>
+        <tr><td><strong>Test 1 — FCF Conversion (5yr)</strong></td><td>OCF/PAT ~127% (PASS) | FCF/PAT ~25% (FAIL). Heavy growth CapEx explains gap. OCF quality is intact — EBITDA converts to cash well.</td><td><span class="marginal-chip">~ ACCEPTABLE</span></td></tr>
+        <tr><td><strong>Test 2 — DSO Trend</strong></td><td>Port businesses collect dues within 30-45 days. DSO stable. No major receivables buildup detected. Container terminals use pre-payment models.</td><td><span class="pass-chip">✓ PASS</span></td></tr>
+        <tr><td><strong>Test 3 — Inventory Days</strong></td><td>Service business — no inventory in traditional sense. Agri silos hold grain inventory; logistics inventory is in transit. Not material.</td><td><span class="pass-chip">✓ N/A / PASS</span></td></tr>
+        <tr><td><strong>Test 4 — Accounting Policy Stability</strong></td><td>⚠ Interest capitalization flagged by Screener.in. Some CapEx-phase companies capitalize borrowing costs — legitimate under Ind AS 23 but inflates EBITDA vs peers who expense. Monitor in FY26 annual report footnotes.</td><td><span class="fail-chip">⚠ FLAG</span></td></tr>
+        <tr><td><strong>Test 5 — Gross Margin Consistency</strong></td><td>EBITDA margin 56-63% across all quarters (Dec22-Dec25). Domestic port margin 74.2% H1 FY26 — ALL-TIME HIGH. Stable and expanding. Strong signal.</td><td><span class="pass-chip">✓ PASS</span></td></tr>
+      </table>
+      <div style="margin-top:14px;padding:12px;background:#fef3c7;border-radius:6px;font-size:0.85rem;">
+        <strong>Overall Earnings Quality: ACCEPTABLE</strong> — OCF is genuine and growing. The interest capitalization flag warrants a 5% widening of MoS (from 25% to 30%). FCF conversion is low but structurally explained by the 2030 CapEx programme, not earnings manipulation.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 3 — MOAT -->
+<div id="tab3" class="tab-content">
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🏰</span> Economic Moat Assessment</div>
+    <div class="card-body">
+      <div class="moat-grid">
+        <div class="moat-card">
+          <div class="moat-source">MOAT SOURCE 1</div>
+          <div class="moat-name">Geographic Monopoly</div>
+          <div class="moat-stars">★★★★★</div>
+          <div class="moat-desc">Ports are irreplicable geographic assets. Mundra's location, 26 berths, deep-water access, and rail/road hinterland connectivity took 25+ years and ₹50,000+ Cr to build. No competing port can be legally or economically constructed in the same catchment area. This is the highest-quality moat in Indian infrastructure.</div>
+        </div>
+        <div class="moat-card">
+          <div class="moat-source">MOAT SOURCE 2</div>
+          <div class="moat-name">Concession Lock-In</div>
+          <div class="moat-stars">★★★★☆</div>
+          <div class="moat-desc">Government concessions run 30-50+ years. Mundra's concession, Vizhinjam, Dhamra — each locked in with the state government. Switching costs for cargo customers are high once supply chains are configured around a specific port. Gujarat port (Mundra) serves the entire north-west industrial corridor. No substitute.</div>
+        </div>
+        <div class="moat-card">
+          <div class="moat-source">MOAT SOURCE 3</div>
+          <div class="moat-name">Network Effect (Logistics)</div>
+          <div class="moat-stars">★★★☆☆</div>
+          <div class="moat-desc">The integrated port-rail-road-warehouse network creates a weak but genuine network effect: more cargo through ports → more logistics volume → better utilisation of MMLPs and rail rakes → lower unit cost → attracts more cargo. Currently forming; not yet self-reinforcing at scale.</div>
+        </div>
+        <div class="moat-card">
+          <div class="moat-source">MOAT SOURCE 4</div>
+          <div class="moat-name">Scale Cost Advantage</div>
+          <div class="moat-stars">★★★★☆</div>
+          <div class="moat-desc">28% market share creates operating leverage that smaller competitors cannot match. Mundra at 200+ MMT drives cost per tonne below any competing private port. APSEZ's pan-India presence allows it to offer multi-port, multi-modal solutions that no single-port operator can match.</div>
+        </div>
+        <div class="moat-card">
+          <div class="moat-source">MOAT SOURCE 5</div>
+          <div class="moat-name">Regulatory Moat</div>
+          <div class="moat-stars">★★★☆☆</div>
+          <div class="moat-desc">New port construction requires years of environmental clearances, coastal zone regulations, and maritime authority permits. The APSEZ portfolio took decades to assemble. Vizhinjam — in construction since 2015 — illustrates the regulatory difficulty. This barrier protects the entire existing portfolio.</div>
+        </div>
+        <div class="moat-card">
+          <div class="moat-source">MOAT SOURCE 6</div>
+          <div class="moat-name">International Platform</div>
+          <div class="moat-stars">★★☆☆☆</div>
+          <div class="moat-desc">Haifa (Israel), Colombo, Tanzania, Australia NQXT — still early stage. These create optionality for Indian exporters to use APSEZ end-to-end globally. The moat here is nascent; execution risk is meaningful, especially at NQXT ($2.4B acquisition pending regulatory approval).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">⚙ Data Flywheel Assessment</div>
+    <div class="flywheel-badge">FORMING ★★★ (2 of 3 criteria confirmed)</div>
+    <div class="flywheel-q">
+      <span class="flywheel-icon">🟡</span>
+      <div class="flywheel-qtext"><strong>Q1: Proprietary Training Data?</strong> YES — APSEZ processes millions of cargo transactions daily across 19 ports. Route data, cargo type, vessel schedules, customs clearance times, weather routing, and logistics movement data. Unique, cannot be replicated by competitors. Volume: 450+ MMT × average 5 data points = ~2.25B annual data events. However, this data is not yet being systematically used to train AI models that improve with scale — it is primarily used for operational dashboards.</div>
+    </div>
+    <div class="flywheel-q">
+      <span class="flywheel-icon">🟡</span>
+      <div class="flywheel-qtext"><strong>Q2: Does AI Improve With More Data?</strong> PARTIALLY — Tara AI (voice bot using LLM/ML for customer queries) and AI-powered pilferage risk assessment (route deviation, QR seals, zig-zag pattern detection) are real deployments. The pilferage model does improve as more logistics routes are added. No specific metric shared (e.g., "fraud rate fell from X% to Y%"). Qualitative evidence only.</div>
+    </div>
+    <div class="flywheel-q">
+      <span class="flywheel-icon">🔴</span>
+      <div class="flywheel-qtext"><strong>Q3: Does Better AI Attract More Users?</strong> NOT YET — Port customers do not choose Mundra because of AI quality. They choose it for location, tariff, turnaround time, and connectivity. AI is reducing internal costs (fuel, pilferage), not creating customer-facing switching costs. The loop is not yet self-reinforcing at the customer attraction level.</div>
+    </div>
+    <div style="margin-top:12px;font-size:0.82rem;color:var(--text-muted);">
+      <strong>Flywheel Score: 5/10</strong> — Data quality: 3/3 | AI improvement evidence: 1/4 | Loop speed: 1/3 | <em>Rating: Moderate. As logistics AI matures and customer-facing AI features improve delivery reliability data, this could upgrade to CONFIRMED within 2-3 years.</em>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">⚡</span> Macro Stress Test — Moat Durability</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Moat Source</th><th>Stress Scenario Response</th><th>Verdict</th></tr>
+        <tr><td>Geographic Monopoly</td><td>STRENGTHENS — in a trade slowdown, Mundra's cost efficiency gives it the lowest cost per tonne. Smaller competing ports lose volume to APSEZ first.</td><td><span class="pass-chip">✓ STRENGTHENS</span></td></tr>
+        <tr><td>Concession Lock-In</td><td>HOLDS — government concessions are contractual. Not affected by trade cycles. Even in 2020 COVID shutdown, concessions remained intact.</td><td><span class="pass-chip">✓ HOLDS</span></td></tr>
+        <tr><td>Network Effect (Logistics)</td><td>WEAKENS TEMPORARILY — logistics volumes fall in stress; MMPL utilisation drops; trucking margins compress. Network effect is revenue-linked.</td><td><span class="marginal-chip">~ WEAKENS</span></td></tr>
+        <tr><td>Scale Cost Advantage</td><td>STRENGTHENS — fixed costs spread over less volume hurts margins, but scale still means APSEZ is the last port to lose volumes. Market share typically rises in stress.</td><td><span class="pass-chip">✓ STRENGTHENS</span></td></tr>
+        <tr><td>International Platform</td><td>WEAKENS — global trade stress hits international ports first; NQXT coal terminal is commodity-exposed; Haifa geopolitical risk.</td><td><span class="fail-chip">⚠ WEAKENS</span></td></tr>
+      </table>
+      <div style="margin-top:12px;padding:10px;background:#f0fdf4;border-radius:6px;font-size:0.83rem;">
+        <strong>Moat Composite Grade: B+</strong> — The domestic port monopoly (Mundra + 14 other ports) is rock-solid. The logistics and international moat is building but not yet proven through a full stress cycle. ROIC of 13.8% vs 12% WACC gives a thin but positive Economic Profit spread — this must widen as CapEx matures.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 4 — MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">👔</span> Management Assessment</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Dimension</th><th>Assessment</th><th>Evidence</th></tr>
+        <tr><td><strong>Execution Track Record</strong></td><td><span class="pass-chip">✓ STRONG</span></td><td>FY25: Outperformed all guidance metrics (PAT, EBITDA, cargo volume). Mundra 200 MMT milestone. Vizhinjam 100% utilisation in 9 months. Guidance raised mid-year and then beat.</td></tr>
+        <tr><td><strong>Capital Allocation Vision</strong></td><td><span class="pass-chip">✓ PASS</span></td><td>Logical sequence: ports → logistics → marine → international. Each segment feeds the next. Gopalpur (east coast balance) and NQXT (coal export from Australia) have strategic rationale.</td></tr>
+        <tr><td><strong>Guidance Reliability</strong></td><td><span class="pass-chip">✓ PASS</span></td><td>FY25 EBITDA guidance raised mid-year to ₹18,800-18,900 Cr; actual ₹19,025 Cr — beat. Revenue guidance raised and beat. Management has consistently delivered on stated targets since FY22.</td></tr>
+        <tr><td><strong>Promoter Alignment</strong></td><td><span class="pass-chip">✓ PASS</span></td><td>Promoter (Adani family) holds 68% — significant skin in the game. No promoter selling in recent quarters. Promoter holding increased 2.13% in last quarter per Screener.</td></tr>
+        <tr><td><strong>Pledged Shares</strong></td><td><span class="pass-chip">✓ PASS</span></td><td>Promoter pledges at ~0% in recent quarters (nearly cleared from post-Hindenburg highs). This is a major improvement from 2023 when pledges were elevated.</td></tr>
+        <tr><td><strong>Governance Overhang</strong></td><td><span class="fail-chip">⚠ CONCERN</span></td><td>US DOJ indictment (Nov 2024) was on Adani Green Energy / Gautam Adani (solar tariff case) — not APSEZ directly. However, group governance reputation affects APSEZ's cost of capital and FII appetite. Fitch revised outlook to "Stable" (improvement). S&amp;P outlook to "Positive."</td></tr>
+        <tr><td><strong>Interest Capitalization</strong></td><td><span class="fail-chip">⚠ FLAG</span></td><td>CapEx-phase companies often capitalize interest (borrowing costs) as per Ind AS 23. This temporarily reduces reported interest expense and improves PAT. Legitimate but inflates EBITDA vs peers who fully expense. Requires monitoring in FY26 annual report footnotes.</td></tr>
+        <tr><td><strong>Acquisition Strategy</strong></td><td><span class="marginal-chip">~ WATCH</span></td><td>NQXT ($2.4B) is the largest acquisition yet — Australian coal terminal with commodity exposure. Rationale (serving Indian coal importers) is logical but the price paid and integration risk are notable. Still pending regulatory approval as of Apr 2026.</td></tr>
+        <tr><td><strong>Counter-Cyclical Behaviour</strong></td><td><span class="pass-chip">✓ PASS</span></td><td>Continued port expansion during COVID, Hindenburg attack, and DOJ indictment. Did not pause strategic investment when share price fell 50% from peak. This is a hallmark of long-term focused management.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🔬</span> AI Management Quality (Tab 4 AI Extension)</div>
+    <div class="card-body">
+      <p style="margin-bottom:10px;"><strong>AI Team Depth:</strong> Adani Group announced USD 100 billion commitment to AI data centres (Feb 2026) — group-level; benefits APSEZ indirectly through shared compute and digital backbone. APSEZ specifically has deployed Tara AI (voice LLM bot), pilferage AI (ML-based logistics route monitoring), and operates Vizhinjam as India's first fully automated transshipment port.</p>
+      <p style="margin-bottom:10px;"><strong>Capital Allocation in AI:</strong> APSEZ's own AI R&amp;D spend as % of revenue is not disclosed. Group AI infra investment is being led by AEL (Adani Enterprises). APSEZ benefits as a consumer of shared AI infra — effectively subsidised technology access.</p>
+      <p><strong>Key Risk:</strong> APSEZ is not an AI company — it is a port company using AI as a tool. The risk is that management over-invests in AI features that do not materially change the core port economics. The Tara AI and pilferage AI deployments are sensible, operationally grounded uses. No evidence of AI-washing.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">⚖</span> Management Grade Summary</div>
+    <div class="card-body">
+      <p><strong>Grade: B−</strong></p>
+      <p style="margin-top:8px;">Execution quality is A-grade. Strategy vision (1 billion tonnes by 2030; Integrated Transport Utility) is compelling and internally consistent. Capital allocation is generally value-accretive. However, the Adani Group governance overhang, interest capitalization flag, and NQXT acquisition risk prevent a B or higher grade. The promoter pledge cleanup and improving credit ratings (Fitch Stable, S&P Positive, ICRA AAA) are meaningful positive signals on the governance front.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 5 — VALUATION -->
+<div id="tab5" class="tab-content">
+  <p style="margin-bottom:16px;font-size:0.9rem;color:var(--text-muted);"><em>Primary metric: EV/EBITDA (infrastructure standard). All growth rates from Tab 1 macro-derived table. O'Glove: ACCEPTABLE → 5% additional MoS applied (interest capitalization flag).</em></p>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🏗</span> Method 1 — EV/EBITDA Valuation (Primary for Infrastructure)</div>
+    <div class="card-body">
+      <p style="margin-bottom:12px;font-size:0.85rem;">Infrastructure port peers globally trade 12-22x EV/EBITDA. DP World (Dubai): ~14-16x. Hutchison Ports: ~10-12x. APSEZ commands a premium for growth rate and India market position. Historical APSEZ range: 12-22x. Current: ~18.6x.</p>
+      <table class="data-table">
+        <tr><th>Scenario</th><th>EV/EBITDA Multiple</th><th>FY26E EBITDA</th><th>Implied EV</th><th>Less: Net Debt ~₹38,000 Cr</th><th>Implied Equity</th><th>IV / Share (230 Cr)</th></tr>
+        <tr><td>⚡ Stress</td><td>13x</td><td>₹21,500 Cr</td><td>₹2,79,500 Cr</td><td>−₹38,000 Cr</td><td>₹2,41,500 Cr</td><td style="font-weight:700;">₹1,050</td></tr>
+        <tr><td>✅ Base</td><td>16x</td><td>₹21,500 Cr</td><td>₹3,44,000 Cr</td><td>−₹38,000 Cr</td><td>₹3,06,000 Cr</td><td style="font-weight:700;">₹1,330</td></tr>
+        <tr><td>🚀 Acceleration</td><td>20x</td><td>₹22,000 Cr</td><td>₹4,40,000 Cr</td><td>−₹38,000 Cr</td><td>₹4,02,000 Cr</td><td style="font-weight:700;">₹1,748</td></tr>
+      </table>
+      <p style="margin-top:10px;font-size:0.8rem;color:var(--text-muted);">Current EV/EBITDA: ₹(362,505+38,000)/21,500 = ~18.6x — at the HIGH end of historical range. Stock is pricing in acceleration scenario or a multiple re-rating. <span class="e-tag">EST</span></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📐</span> Method 2 — DCF (2-Stage, Owner Earnings)</div>
+    <div class="card-body">
+      <p style="margin-bottom:10px;font-size:0.85rem;">WACC 12% | Stage 1: 5 years | Stage 2: 5 years | OE base FY26E: ₹11,441 Cr (₹49.7/share)</p>
+      <table class="data-table">
+        <tr><th>Year</th><th>STRESS (13% Stage1)</th><th>BASE (18% Stage1)</th><th>ACCEL (22% Stage1)</th></tr>
+        <tr><td>Y1</td><td>₹54 → PV ₹48</td><td>₹59 → PV ₹52</td><td>₹61 → PV ₹54</td></tr>
+        <tr><td>Y2</td><td>₹61 → PV ₹49</td><td>₹69 → PV ₹55</td><td>₹74 → PV ₹59</td></tr>
+        <tr><td>Y3</td><td>₹69 → PV ₹49</td><td>₹82 → PV ₹58</td><td>₹91 → PV ₹64</td></tr>
+        <tr><td>Y4</td><td>₹78 → PV ₹50</td><td>₹96 → PV ₹61</td><td>₹111 → PV ₹70</td></tr>
+        <tr><td>Y5</td><td>₹88 → PV ₹50</td><td>₹114 → PV ₹64</td><td>₹135 → PV ₹76</td></tr>
+        <tr><td><strong>Sum Stage 1</strong></td><td>₹246</td><td>₹291</td><td>₹324</td></tr>
+        <tr><td><strong>Terminal Value (g)</strong></td><td>6.5%; TV ₹1,052 → PV ₹597</td><td>7.5%; TV ₹2,699 → PV ₹1,532</td><td>7.8%; TV ₹4,870 → PV ₹2,763</td></tr>
+        <tr><td style="font-weight:700;">DCF IV/Share</td><td style="font-weight:700;">₹843</td><td style="font-weight:700;">₹1,823</td><td style="font-weight:700;">₹3,087</td></tr>
+      </table>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-top:8px;">Terminal value uses OE at end of Stage 1 × (1+g) / (WACC-g). Wide range reflects sensitivity to terminal growth. Base stage 2 growth 12% → terminal 7.5%.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📈</span> Method 3 — P/E Earnings Power</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Metric</th><th>Stress (22x P/E)</th><th>Base (27x P/E)</th><th>Accel (33x P/E)</th></tr>
+        <tr><td>FY26E EPS: ₹54.3/share</td><td>₹1,195</td><td>₹1,466</td><td>₹1,792</td></tr>
+        <tr><td>FY27E EPS: ₹63/share (est +16%)</td><td>₹1,386</td><td>₹1,701</td><td>₹2,079</td></tr>
+        <tr><td>Normalised P/E (5yr avg): ~28x</td><td colspan="3" style="font-size:0.8rem;">Historical APSEZ P/E: 18-35x; current 27x is near 5yr avg of ~26-28x — FAIRLY VALUED</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🏦</span> Method 4 — Owner Earnings Capitalisation</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Scenario</th><th>OE/Share</th><th>Required Return</th><th>Terminal g</th><th>IV/Share</th></tr>
+        <tr><td>Stress</td><td>₹47</td><td>12%</td><td>6.5%</td><td>₹900</td></tr>
+        <tr><td>Base</td><td>₹50</td><td>12%</td><td>7.5%</td><td>₹1,400</td></tr>
+        <tr><td>Acceleration</td><td>₹55</td><td>12%</td><td>7.8%</td><td>₹2,095</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">💹</span> Method 5 — Earnings Yield vs Bond Yield</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr>
+        <tr><td>TTM Earnings Yield (EPS/Price)</td><td>~3.6% (54.3/1573)</td><td>Below India 10Y G-Sec 6.6% — poor ERP at current price</td></tr>
+        <tr><td>FCF Yield (FCF ₹2,500 Cr / Mkt Cap ₹3.6L Cr)</td><td>~0.7%</td><td>Very thin — reflects growth CapEx phase; not indicative of ongoing yield</td></tr>
+        <tr><td>EBITDA Yield (EBITDA/EV)</td><td>~5.4%</td><td>At 18.6x EV/EBITDA → 5.4% raw yield; below bond rate → requiring growth to justify</td></tr>
+        <tr><td>Equity Risk Premium</td><td>3.6% − 6.6% = −3%</td><td>NEGATIVE — stock is priced for acceleration, not base case</td></tr>
+        <tr><td>Yield-on-Cost at ₹1,300 entry</td><td>Year 5 EPS ~₹80 → YoC 6.2%</td><td>Attractive if entering at discount; less so at current price</td></tr>
+        <tr><td>Bond Crossover Year (at current price)</td><td>~Year 4-5</td><td>Dividend yield will cross India bond yield around FY30 if current trajectory holds</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📋</span> 5-Method Valuation Summary</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>Weight</th></tr>
+        <tr><td>EV/EBITDA (Primary)</td><td>₹1,050</td><td>₹1,330</td><td>₹1,748</td><td>35%</td></tr>
+        <tr><td>DCF (Owner Earnings)</td><td>₹843</td><td>₹1,823</td><td>₹3,087</td><td>30%</td></tr>
+        <tr><td>P/E Earnings Power</td><td>₹1,195</td><td>₹1,466</td><td>₹1,792</td><td>20%</td></tr>
+        <tr><td>OE Capitalisation</td><td>₹900</td><td>₹1,400</td><td>₹2,095</td><td>15%</td></tr>
+        <tr><td style="font-weight:700;">Blended IV (Weighted)</td><td style="font-weight:700;">₹1,009</td><td style="font-weight:700;">₹1,549</td><td style="font-weight:700;">₹2,150</td><td>100%</td></tr>
+        <tr><td>AI Adjustment (NEUTRAL)</td><td colspan="3">No AI premium or discount; AI tools are operational efficiencies, not moat-changing at current stage</td><td>₹0</td></tr>
+        <tr><td>O'Glove MoS Adjustment</td><td colspan="3">Interest cap flag → widen MoS by 5% (30% total vs 25% base)</td><td>−5%</td></tr>
+        <tr><td style="font-weight:700;background:#dcfce7;">Base IV After Adjustments</td><td style="font-weight:700;background:#dcfce7;">₹1,009</td><td style="font-weight:700;background:#dcfce7;">₹1,549</td><td style="font-weight:700;background:#dcfce7;">₹2,150</td><td>—</td></tr>
+        <tr><td style="font-weight:700;background:#fef3c7;">Entry Zone (30% MoS on Base)</td><td colspan="3" style="font-weight:700;background:#fef3c7;">₹1,084 (stress) → ₹1,084–1,249 (range) → BUY ZONE: ₹1,200–1,350</td><td>—</td></tr>
+      </table>
+      <p style="margin-top:12px;font-size:0.83rem;color:var(--text-muted);">Current price ₹1,573 = ~1.5% above base IV. Stock is FAIRLY VALUED to slight PREMIUM in base case. Only the acceleration scenario justifies current price. <strong>Not yet in margin of safety zone.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 6 — VERDICT -->
+<div id="tab6" class="tab-content">
+  <div class="pillars-grid">
+    <div class="pillar-card"><div class="pillar-name">ECONOMIC MOAT</div><div class="pillar-grade grade-b">B+</div><div class="pillar-note">Geographic monopoly strong; ROIC 13.8% > WACC 12% but narrow spread; logistics moat forming</div></div>
+    <div class="pillar-card"><div class="pillar-name">FINANCIAL FORTRESS</div><div class="pillar-grade grade-b">B−</div><div class="pillar-note">EBITDA 61% margin excellent; FCF low (growth CapEx); interest cap flag; ROE 18.8% improving</div></div>
+    <div class="pillar-card"><div class="pillar-name">MANAGEMENT</div><div class="pillar-grade grade-b">B−</div><div class="pillar-note">Stellar execution; governance overhang (group-level DOJ); interest cap; NQXT risk</div></div>
+    <div class="pillar-card"><div class="pillar-name">VALUATION</div><div class="pillar-grade grade-c">C+</div><div class="pillar-note">Current ₹1,573 at base IV; 30% MoS entry zone ₹1,200–1,350; EV/EBITDA 18.6x = near top</div></div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-label">SERIES VERDICT — ADANI PORTS (ADANIPORTS)</div>
+    <div class="verdict-title">WATCH ★★★★</div>
+    <div class="verdict-stars">⭐⭐⭐⭐</div>
+    <div class="verdict-text">
+      APSEZ is India's finest infrastructure compounder — a durable geographic monopoly building a logistics empire on the spine of India's trade future. The business quality is A-grade. The growth story (1 billion tonnes by 2030; 13% volume CAGR track record) is credible and backed by demonstrated execution. Three pillars are strong to excellent. The problem is the fourth: price. At ₹1,573, the stock trades at its base IV with no margin of safety. The earnings quality flag (interest capitalization) and governance overhang from group-level DOJ proceedings warrant a 30% margin of safety — requiring a price of ₹1,200–1,350 before initiating a full position.
+      <br><br>
+      This is not a "avoid" verdict — quite the opposite. APSEZ is exactly the kind of business a long-term Buffett-framework investor wants to own. The discipline required is simply to wait for price to come to quality, not chase quality at any price. Set alerts. Be patient. The ₹1,200–1,350 zone represents a BUY of the highest conviction.
+    </div>
+    <div style="margin-top:16px;font-style:italic;font-size:0.85rem;color:rgba(255,255,255,0.65);">"Price is what you pay. Value is what you get." — Warren Buffett | APSEZ delivers value; current price asks you to pay a full premium for it.</div>
+
+    <div class="upgrade-list" style="margin-top:20px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--teal);letter-spacing:1px;margin-bottom:12px;">WATCH → BUY UPGRADE CONDITIONS</div>
+      <div class="upgrade-item">
+        <div class="upgrade-num">1</div>
+        <div class="upgrade-text">Price corrects to ₹1,200–1,350 (representing 30% margin of safety on base IV of ₹1,549 and 13-14x EV/EBITDA on FY26E EBITDA)</div>
+      </div>
+      <div class="upgrade-item">
+        <div class="upgrade-num">2</div>
+        <div class="upgrade-text">Net Debt/EBITDA falls sustainably below 1.5x for 2 consecutive quarters (currently 1.8x H1 FY26; confirms debt reduction trajectory from NQXT investment)</div>
+      </div>
+      <div class="upgrade-item">
+        <div class="upgrade-num">3</div>
+        <div class="upgrade-text">ROCE climbs above 15% for 2 consecutive quarters — proving that the ₹12,000 Cr/year CapEx programme is generating returns above WACC, converting to true wide-moat status</div>
+      </div>
+      <div class="upgrade-item">
+        <div class="upgrade-num">4</div>
+        <div class="upgrade-text">FY26 full-year EBITDA confirms ≥₹21,000 Cr guidance and management provides FY27 revenue guidance of ≥₹43,000 Cr (signalling 15%+ CAGR continuation)</div>
+      </div>
+      <div class="upgrade-item">
+        <div class="upgrade-num">5</div>
+        <div class="upgrade-text">Adani Group governance overhang clears materially — either DOJ proceedings resolve or APSEZ receives a standalone credit rating upgrade to A+ / Fitch BBB (currently BBB− / ICRA AAA)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📚</span> Series Tracker — Selected Reports</div>
+    <div class="card-body">
+      <div class="series-table-wrap">
+        <table class="data-table" style="font-size:0.78rem;">
+          <tr><th>Ticker</th><th>Exchange</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry Zone</th><th>Thesis</th></tr>
+          <tr><td>NVO</td><td>NYSE</td><td>C→D</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>A−</td><td>WATCH ★★★★</td><td>$44–49</td><td>GLP-1 trough; oral pill pipeline; P/E 10.3× vs 32× avg</td></tr>
+          <tr><td>PVRINOX</td><td>NSE</td><td>D</td><td>⚪</td><td>B−</td><td>C+</td><td>B−</td><td>B</td><td>WATCH ★★★</td><td>₹1,150–1,300</td><td>Multiplex recovery; Ind AS 116 inflates OCF</td></tr>
+          <tr><td>YATHARTH</td><td>NSE</td><td>C</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>—</td><td>WATCH ★★★</td><td>₹480–560</td><td>NCR hospital; IT enforcement; FCF 68%; debt surge</td></tr>
+          <tr><td>AEQUS</td><td>NSE</td><td>D</td><td>⚪</td><td>B−</td><td>D+</td><td>C+</td><td>C+</td><td>WATCH ★★★</td><td>₹95–110</td><td>Aerospace SEZ; $814M order; consecutive losses</td></tr>
+          <tr><td>ANANDRATHI</td><td>NSE</td><td>B</td><td>🟢</td><td>—</td><td>—</td><td>—</td><td>—</td><td>WATCH ★★★</td><td>₹1,850–2,100</td><td>ROCE 56%; 37% profit CAGR; above base IV</td></tr>
+          <tr><td>VIKRAMSOLR</td><td>NSE</td><td>D</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>—</td><td>WATCH ★★★</td><td>₹155–185</td><td>Pledge 48.2% avoid threshold; cell mfg Dec 2026</td></tr>
+          <tr><td>ORCL</td><td>NYSE</td><td>C→B</td><td>🟢</td><td>B+</td><td>B−</td><td>A−</td><td>B</td><td>WATCH ★★★★</td><td>$120–155</td><td>$553B RPO backlog; OCI 84% growth; fwd P/E 18.7×</td></tr>
+          <tr style="background:#e0f2fe;font-weight:700;"><td>ADANIPORTS</td><td>NSE</td><td>B</td><td>⚪</td><td>B+</td><td>B−</td><td>B−</td><td>C+</td><td>WATCH ★★★★</td><td>₹1,200–1,350</td><td>28% India port share; 1BT 2030 vision; near full value</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 7 — TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📈</span> Section A — Price Structure &amp; Multi-Timeframe Trend</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Signal</th></tr>
+        <tr><td>Daily</td><td>Bullish recovery</td><td>₹1,422 (200-DMA)</td><td>Stock 10%+ above 200-DMA; short-term momentum positive</td></tr>
+        <tr><td>Weekly</td><td>Neutral to bullish</td><td>₹1,350 (prior resistance now support)</td><td>Above all major weekly MAs; approaching 52W high ₹1,584</td></tr>
+        <tr><td>Monthly</td><td>Long-term uptrend intact</td><td>₹1,041 (52W low support)</td><td>Recovery from ₹1,041 low to ₹1,573 = +51% recovery. Trend intact.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📊</span> Section B — Price Ladder</div>
+    <div class="card-body">
+      <div class="price-ladder">
+        <div class="price-level"><span class="price-dot resist"></span><span class="price-lname">52W High</span><span class="price-lval">₹1,584</span><span class="price-lnote">Key resistance — breakout above = new all-time high attempt</span></div>
+        <div class="price-level"><span class="price-dot resist"></span><span class="price-lname">T2 Target</span><span class="price-lval">₹1,800</span><span class="price-lnote">Base IV; acceleration scenario entry with margin</span></div>
+        <div class="price-level"><span class="price-dot current"></span><span class="price-lname">CMP</span><span class="price-lval">₹1,573</span><span class="price-lnote">Current; near 52W high; EV/EBITDA 18.6x = full valuation</span></div>
+        <div class="price-level"><span class="price-dot resist"></span><span class="price-lname">Resistance</span><span class="price-lval">₹1,500</span><span class="price-lnote">Prior consolidation zone (Nov-Dec 2025) — now support</span></div>
+        <div class="price-level"><span class="price-dot support"></span><span class="price-lname">50-DMA</span><span class="price-lval">₹1,439</span><span class="price-lnote">First support; pullback here = healthy correction opportunity</span></div>
+        <div class="price-level"><span class="price-dot support"></span><span class="price-lname">200-DMA</span><span class="price-lval">₹1,422</span><span class="price-lnote">Primary technical support; touch = SECONDARY TRIGGER</span></div>
+        <div class="price-level"><span class="price-dot target"></span><span class="price-lname">MoS Entry (30%)</span><span class="price-lval">₹1,200–1,350</span><span class="price-lnote">PRIMARY ENTRY ZONE — 30% below base IV; WATCH → BUY upgrade</span></div>
+        <div class="price-level"><span class="price-dot support"></span><span class="price-lname">52W Low</span><span class="price-lval">₹1,181</span><span class="price-lnote">Ultimate support; breach = stress scenario; re-evaluate thesis</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📉</span> Section C — MA Dashboard</div>
+    <div class="card-body">
+      <div class="ma-grid">
+        <div class="ma-card"><div class="ma-label">20-EMA</div><div class="ma-val above">~₹1,520</div><div class="ma-status">✓ Price above</div></div>
+        <div class="ma-card"><div class="ma-label">50-DMA</div><div class="ma-val above">₹1,439</div><div class="ma-status">✓ Price above (+9.3%)</div></div>
+        <div class="ma-card"><div class="ma-label">100-DMA</div><div class="ma-val above">~₹1,430</div><div class="ma-status">✓ Price above</div></div>
+        <div class="ma-card"><div class="ma-label">200-DMA</div><div class="ma-val above">₹1,422</div><div class="ma-status">✓ Price above (+10.6%)</div></div>
+        <div class="ma-card"><div class="ma-label">Cross Status</div><div class="ma-val above">GOLDEN</div><div class="ma-status">50 > 200: Bullish</div></div>
+        <div class="ma-card"><div class="ma-label">EMA Ribbon</div><div class="ma-val above">BULLISH</div><div class="ma-status">All EMAs expanding</div></div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--text-muted);">Stock is 10-11% above its 200-DMA — healthy uptrend, not overbought from an MA perspective. A pullback to 200-DMA (₹1,422) would be a normal and healthy correction in an uptrend. <span class="e-tag">EST</span></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🌀</span> Section D — Momentum (RSI &amp; MACD)</div>
+    <div class="card-body">
+      <p style="margin-bottom:8px;font-size:0.85rem;"><strong>RSI (14-day):</strong> Estimated ~62-65 based on price near 52W high from 52W low context. Not oversold (< 30) or overbought (> 70). <span class="e-tag">EST</span></p>
+      <div class="rsi-bar">
+        <div class="rsi-marker" style="left:62%;"></div>
+      </div>
+      <p style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);margin-bottom:12px;"><span>0 — Oversold</span><span>30</span><span>50</span><span>70</span><span>100 — Overbought</span></p>
+      <table class="data-table">
+        <tr><th>Indicator</th><th>Reading</th><th>Signal</th></tr>
+        <tr><td>RSI Daily</td><td>~62-65</td><td>Neutral-bullish; not overbought; room to run</td></tr>
+        <tr><td>RSI Weekly</td><td>~55-60</td><td>Bullish territory; no divergence visible</td></tr>
+        <tr><td>MACD</td><td>Positive crossover</td><td>MACD line above signal; histogram expanding = bullish momentum</td></tr>
+        <tr><td>OBV (Volume)</td><td>Rising</td><td>Institutional accumulation evident on strong price recovery from ₹1,181 low</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🎯</span> Section F — Trade Structure</div>
+    <div class="card-body">
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:18px;margin-bottom:16px;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:#15803d;margin-bottom:8px;">PRIMARY TRIGGER (NOT YET ACTIVE)</div>
+        <p style="font-size:0.85rem;margin-bottom:8px;"><strong>Condition:</strong> Price corrects to ₹1,200–1,350 zone (30% MoS on base IV) + RSI falls to 40-45 on daily chart + tests 200-DMA on weekly</p>
+        <p style="font-size:0.85rem;margin-bottom:8px;"><strong>Entry:</strong> ₹1,250 (centre of zone) | <strong>Stop Loss:</strong> ₹1,100 (below 52W low ₹1,181) | <strong>T1:</strong> ₹1,549 (base IV) | <strong>T2:</strong> ₹1,800 (mild premium to base IV)</p>
+        <p style="font-size:0.85rem;"><strong>Risk:Reward:</strong> Risk ₹150 (−12%) | Reward T1: ₹299 (+24%) | R:R = 1:2 | Reward T2: ₹550 (+44%) | R:R = 1:3.7 ✓</p>
+      </div>
+      <div style="background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:18px;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:#92400e;margin-bottom:8px;">SECONDARY TRIGGER (BREAKOUT SCENARIO)</div>
+        <p style="font-size:0.85rem;margin-bottom:8px;"><strong>Condition:</strong> Breakout above 52W high ₹1,584 on volume surge (2× average) + MACD positive crossover on weekly</p>
+        <p style="font-size:0.85rem;"><strong>Entry:</strong> ₹1,600-1,620 | <strong>SL:</strong> ₹1,440 (200-DMA) | <strong>T1:</strong> ₹1,850 | <strong>T2:</strong> ₹2,150 (accel IV). R:R ≥ 1:2. Smaller starter position only.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🏆</span> Section G — Technical Composite Score</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>Dimension</th><th>Score (1–5)</th><th>Note</th></tr>
+        <tr><td>Price Trend (Multi-timeframe)</td><td>4/5</td><td>Bullish across all timeframes; 52W recovery strong</td></tr>
+        <tr><td>MA Configuration</td><td>4/5</td><td>Above all MAs; golden cross; EMA ribbon bullish</td></tr>
+        <tr><td>Volume Pattern</td><td>3/5</td><td>Recovery volume acceptable; needs confirmation on new breakout</td></tr>
+        <tr><td>Momentum (RSI/MACD)</td><td>3/5</td><td>RSI neutral-bullish; not a momentum setup for new entry at CMP</td></tr>
+        <tr><td>Chart Pattern</td><td>4/5</td><td>Recovery from deep correction → potential base pattern; 52W high test imminent</td></tr>
+        <tr><td>Risk/Reward at CMP</td><td>2/5</td><td>R:R poor at current price; no MoS; wait for pullback</td></tr>
+        <tr><td style="font-weight:700;">COMPOSITE</td><td style="font-weight:700;">20/30 = 67%</td><td>NEUTRAL — trend is your friend but entry timing is poor at CMP</td></tr>
+      </table>
+      <p style="margin-top:10px;font-size:0.82rem;color:var(--text-muted);">Technical alignment: FAIR. Not a buy signal at current price. Wait for primary trigger (₹1,200-1,350 zone) for R:R ≥ 1:2.5.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 8 — SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🧭</span> Section A — Shareholding Composition (Mar 2026)</div>
+    <div class="card-body">
+      <div class="holding-bar" style="margin-bottom:12px;">
+        <div class="holding-seg" style="width:68%;background:#0d2a47;">Promoter 68%</div>
+        <div class="holding-seg" style="width:13.2%;background:#0fb4c6;">FII 13.2%</div>
+        <div class="holding-seg" style="width:8.7%;background:#c8922a;">DII 8.7%</div>
+        <div class="holding-seg" style="width:5.2%;background:#6b7280;">MF 5.2%</div>
+        <div class="holding-seg" style="width:4.9%;background:#9ca3af;">Public 4.9%</div>
+      </div>
+      <table class="data-table">
+        <tr><th>Category</th><th>Jun 24</th><th>Sep 24</th><th>Dec 24</th><th>Mar 25</th><th>Mar 26</th><th>Trend</th></tr>
+        <tr><td><strong>Promoter</strong></td><td>65.9%</td><td>~65.9%</td><td>~65.9%</td><td>~65.9%</td><td><strong>68.0%</strong></td><td>▲ +2.1% POSITIVE</td></tr>
+        <tr><td><strong>FII / FPI</strong></td><td>13.9%</td><td>~14.5%</td><td>~14.0%</td><td>~13.5%</td><td><strong>13.2%</strong></td><td>▼ Mild decrease — monitors governance news</td></tr>
+        <tr><td><strong>DII</strong></td><td>~7.5%</td><td>~8.0%</td><td>~8.5%</td><td>~9.0%</td><td><strong>8.7%</strong></td><td>▲ Stable/increasing — LIC NCD anchor</td></tr>
+        <tr><td><strong>Mutual Funds</strong></td><td>5.1%</td><td>~5.1%</td><td>~5.2%</td><td>~5.2%</td><td><strong>5.24%</strong></td><td>→ Stable; index inclusion drives passive SIP</td></tr>
+        <tr><td><strong>Public / Retail</strong></td><td>~7.6%</td><td>~7.5%</td><td>~6.5%</td><td>~5.5%</td><td><strong>4.9%</strong></td><td>▼ Declining — institutions absorbing float</td></tr>
+      </table>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;"><span class="e-tag">EST</span> Exact quarterly breakdown derived from multiple sources; Mar 2026 verified from Kotak Neo/Tickertape reports. <span class="v-tag">VFD</span></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">⚠</span> Section B — Promoter Pledging Risk</div>
+    <div class="card-body">
+      <div style="background:#dcfce7;border:1px solid #86efac;border-radius:6px;padding:14px;margin-bottom:12px;">
+        <strong style="color:#15803d;">✓ PLEDGES: NEAR ZERO (CLEARED)</strong>
+        <p style="margin-top:6px;font-size:0.85rem;color:#166534;">Post-Hindenburg 2023, APSEZ promoters substantially cleared share pledges. Trendlyne data shows pledge decrease of 0.03% in recent quarter, indicating near-complete clearance. This is a major positive governance development — the hard-avoid threshold (>40%) is not applicable here. The ADANIGREEN DOJ pledge risk was separate and does not apply to APSEZ's own promoter pledges.</p>
+      </div>
+      <table class="data-table">
+        <tr><th>Risk Metric</th><th>APSEZ Status</th><th>Threshold</th><th>Assessment</th></tr>
+        <tr><td>Promoter Pledge %</td><td>~0%</td><td>&gt;40% = AVOID</td><td><span class="pass-chip">✓ PASS</span></td></tr>
+        <tr><td>Promoter Holding Trend</td><td>+2.1% (increasing)</td><td>Declining = negative</td><td><span class="pass-chip">✓ POSITIVE SIGNAL</span></td></tr>
+        <tr><td>FII Holding Trend</td><td>−0.7% (mild decline)</td><td>Sustained decline = concern</td><td><span class="marginal-chip">~ WATCH</span></td></tr>
+        <tr><td>Institutional Quality</td><td>LIC NCD anchor (₹5,000 Cr 15-yr); Fitch BBB−</td><td>Long-duration = positive signal</td><td><span class="pass-chip">✓ POSITIVE</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">📊</span> Section C — Free Float &amp; SIP Architecture</div>
+    <div class="card-body">
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">Market Cap</div><div class="metric-value">₹3.62L Cr</div><div class="metric-sub">Large Cap; Nifty 50 + Sensex</div></div>
+        <div class="metric-card good"><div class="metric-label">Free Float</div><div class="metric-value">~32%</div><div class="metric-sub">Tight; promoter 68% locked</div></div>
+        <div class="metric-card"><div class="metric-label">Free Float Mkt Cap</div><div class="metric-value">~₹1.16L Cr</div><div class="metric-sub">Index weight driven</div></div>
+        <div class="metric-card good"><div class="metric-label">Index Membership</div><div class="metric-value">Nifty 50 + Sensex</div><div class="metric-sub">Mandatory SIP inflow via passive</div></div>
+      </div>
+      <p style="font-size:0.83rem;margin-top:8px;">Nifty 50 weight estimate: ~1.5-2%. Monthly SIP inflow into Nifty 50 funds creates a structural buy programme regardless of price. This provides a permanent base of institutional demand. Tight free float (32%) amplifies price response to net FII buying.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🎯</span> Section E — Ownership Scores</div>
+    <div class="card-body">
+      <div class="metric-grid">
+        <div class="metric-card good"><div class="metric-label">Ownership Momentum Score</div><div class="metric-value">72/100</div><div class="metric-sub">Promoter buying; DII stable; mild FII exit</div></div>
+        <div class="metric-card good"><div class="metric-label">Shareholding Risk Score</div><div class="metric-value">25/100</div><div class="metric-sub">Low pledge; no insider selling; tight float = LOWER risk</div></div>
+      </div>
+      <p style="font-size:0.83rem;">Overall shareholding structure is supportive. Promoter increase is the strongest positive signal. LIC's 15-year NCD commitment signals institutional confidence in the credit and business quality. The mild FII decline reflects group-level governance caution, not business-specific concern — this could reverse rapidly if DOJ proceedings resolve.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 9 — AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🤖</span> Section A — AI Classification Dashboard</div>
+    <div class="card-body">
+      <div class="ai-dashboard">
+        <div class="ai-badge-card"><div class="ai-badge-label">CATEGORY</div><div class="ai-badge-val" style="color:var(--teal);">B — High-Growth Compounder</div></div>
+        <div class="ai-badge-card"><div class="ai-badge-label">AI OVERLAY</div><div class="ai-badge-val" style="color:var(--text-muted);">⚪ NEUTRAL<br><small style="font-size:0.7rem;color:var(--brass);">(Widener Potential)</small></div></div>
+        <div class="ai-badge-card"><div class="ai-badge-label">DATA FLYWHEEL</div><div class="ai-badge-val" style="color:var(--brass);">⚙ FORMING ★★★</div></div>
+        <div class="ai-badge-card"><div class="ai-badge-label">ADOPTION PHASE</div><div class="ai-badge-val" style="color:var(--ocean);">Phase 2<br><small style="font-size:0.7rem;">Early Commercial Traction</small></div></div>
+      </div>
+      <p style="font-size:0.85rem;margin-bottom:10px;"><strong>Adoption Phase Evidence:</strong> Vizhinjam International Seaport — India's first fully automated transshipment port — achieved 100% utilisation in 9 months of operation, representing Phase 2 traction for smart port technology in India. Colombo West International Terminal (CWIT) commenced as an automated terminal. Smart port technology adoption in India is at 5-20% — consistent with Phase 2 definition. <span class="e-tag">EST</span></p>
+      <p style="font-size:0.85rem;"><strong>Note on Coverage Depth:</strong> As an AI NEUTRAL company with Widener potential, this tab covers Sections A, B, C, D, and F. Section E (AI Threat) is not applicable — APSEZ's geographic monopoly moat is AI-resistant.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">⚙</span> Section B — Data Flywheel Deep-Dive</div>
+    <div class="card-body">
+      <div class="flywheel-box" style="margin:0;">
+        <div class="flywheel-title">Flywheel Score: 5/10 — FORMING</div>
+        <div class="flywheel-q">
+          <span class="flywheel-icon">✅</span>
+          <div class="flywheel-qtext"><strong>Q1: Proprietary Training Data (3/3)</strong> — APSEZ processes 450+ MMT of cargo annually across 19 ports. This generates: vessel arrival/departure timing, cargo type and density patterns, customs clearance time, weather impact data, truck turnaround at gate, rail rake utilisation, and container dwell times. This data is unique, continuous, and outcome-labelled (every cargo movement has a measurable outcome — on-time delivery, damage rate, turnaround time). No competitor has comparable multi-port, multi-modal data across India's entire west + east + south coast.</div>
+        </div>
+        <div class="flywheel-q">
+          <span class="flywheel-icon">🟡</span>
+          <div class="flywheel-qtext"><strong>Q2: AI Improvement Evidence (1/4)</strong> — <em>Tara AI:</em> In-house LLM/ML voice-enabled customer service bot handling cargo queries. <em>Pilferage AI:</em> Uses route deviation analysis, risky point stoppages, street view AI, zig-zag pattern detection, and QR code seal verification to detect logistics fraud in real-time. Generates automatic alerts for route deviation, device tampering. This system does improve as more routes are added — more baseline data = better anomaly detection. However, APSEZ has not published specific accuracy improvement metrics (e.g., "pilferage detection rate improved from X% to Y%") that would constitute [VERIFIED] flywheel evidence.</div>
+        </div>
+        <div class="flywheel-q">
+          <span class="flywheel-icon">❌</span>
+          <div class="flywheel-qtext"><strong>Q3: Better AI Attracts More Users (1/3)</strong> — Port customers choose Mundra for location, tariff, connectivity, and turnaround time — not AI quality. The logistics segment has more potential: if APSEZ's AI demonstrably reduces pilferage rates and improves delivery reliability, large shippers (FMCG, auto, pharma) may consolidate their logistics onto the APSEZ platform. This mechanism is theoretically valid but has not yet been confirmed as a customer acquisition driver. Loop speed: 12-18 months per cycle currently — too slow for rapid compounding.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🔗</span> Section C — AI Value Chain Position</div>
+    <div class="card-body">
+      <div class="vc-levels">
+        <div class="vc-level"><div class="vc-num">LEVEL 1</div><div class="vc-name">Infrastructure</div><div class="vc-sub">Compute / Energy / Data centres</div></div>
+        <div class="vc-level"><div class="vc-num">LEVEL 2</div><div class="vc-name">Foundation Models</div><div class="vc-sub">OpenAI, Anthropic, Krutrim</div></div>
+        <div class="vc-level"><div class="vc-num">LEVEL 3</div><div class="vc-name">AI Platforms</div><div class="vc-sub">Middleware / Data pipelines</div></div>
+        <div class="vc-level"><div class="vc-num">LEVEL 4</div><div class="vc-name">Vertical Apps</div><div class="vc-sub">Logistics AI, Port AI</div></div>
+        <div class="vc-level active"><div class="vc-num">LEVEL 5 ★</div><div class="vc-name">AI-Enabled Incumbent</div><div class="vc-sub">APSEZ — Port monopoly + AI tools</div></div>
+      </div>
+      <p style="font-size:0.83rem;margin-top:10px;"><strong>APSEZ is a Level 5 AI-Enabled Incumbent</strong> — the most attractive category for risk-adjusted returns. The core business (port infrastructure) is AI-resistant (you cannot AI-away a deep-water berth). AI is used to improve operational efficiency and logistics quality. Level 5 companies have the best risk/reward because: (a) the moat does not depend on winning the AI race, (b) AI adds return on existing assets, (c) investment horizon is 7-10 years, not a binary bet. <strong>Investment Horizon: 7-10 years.</strong></p>
+      <p style="font-size:0.83rem;margin-top:8px;"><strong>Special Note:</strong> Adani Group's USD 100 billion AI data centre commitment (Feb 2026) positions the group as a Level 1 AI infrastructure player. APSEZ indirectly benefits through shared digital infrastructure, AI compute for logistics optimisation, and group-level AI talent. This is a meaningful indirect benefit, not a core business driver.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🇮🇳</span> Section D — India AI Opportunity Context</div>
+    <div class="card-body">
+      <table class="data-table">
+        <tr><th>India AI Advantage</th><th>APSEZ Relevance</th><th>Assessment</th></tr>
+        <tr><td><strong>Advantage 1 — Data at Scale (UPI/Aadhaar)</strong></td><td>Adjacent — APSEZ handles customs, KYC for shipping agents; Aadhaar-linked verification for port workers and contractors. Does not build on UPI transaction data directly.</td><td>Adjacent</td></tr>
+        <tr><td><strong>Advantage 2 — Language Diversity</strong></td><td>Tara AI supports vernacular queries from port workers and truck drivers — operationally relevant. Logistics staff across Tamil Nadu, Gujarat, Odisha speak different languages.</td><td>Adjacent</td></tr>
+        <tr><td><strong>Advantage 3 — India Stack Infrastructure</strong></td><td>APSEZ's ONDC logistics integration and digital freight documentation uses India Stack (DigiLocker for cargo documents, single-window customs clearance). Real benefit in logistics efficiency.</td><td>YES — Logistics</td></tr>
+        <tr><td><strong>Advantage 4 — AI Talent Cost Arbitrage</strong></td><td>APSEZ builds AI tools in-house (Tara AI, pilferage AI) at 30-40% of US development cost. The Adani Group's AI data centre commitment creates internal AI talent ecosystem.</td><td>YES — Internal cost advantage</td></tr>
+      </table>
+      <table class="data-table" style="margin-top:14px;">
+        <tr><th>India AI Theme</th><th>Phase</th><th>APSEZ Relevance</th></tr>
+        <tr><td>AI in banking/credit</td><td>Phase 3</td><td>None — Adjacent</td></tr>
+        <tr><td>AI in logistics/supply chain</td><td>Phase 2–3</td><td><strong>Directly</strong> — Pilferage AI, route optimisation, MMPL AI management</td></tr>
+        <tr><td>AI in diagnostics/health</td><td>Phase 2</td><td>None</td></tr>
+        <tr><td>Data centres (infra)</td><td>Phase 3–4</td><td><strong>Adjacent</strong> — Adani Group USD 100Bn AI infra commitment; APSEZ may host data centres in SEZ land bank</td></tr>
+        <tr><td>AI SME credit/fintech</td><td>Phase 2</td><td>None</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="ch-icon">🏅</span> Section F — AI Opportunity Verdict</div>
+    <div class="card-body">
+      <div class="score-gauge">
+        <div class="score-circle">
+          <div class="score-num">42</div>
+          <div class="score-denom">/100</div>
+        </div>
+        <div>
+          <strong>AI Opportunity Score: 42/100 — MONITOR</strong>
+          <p style="font-size:0.83rem;margin-top:6px;color:var(--text-muted);">
+            Data Flywheel strength: 8/20 (FORMING — logistics data is proprietary but loop incomplete)<br>
+            Adoption Phase timing: 12/20 (Phase 2 — early commercial, some traction)<br>
+            Value chain position: 14/20 (Level 5 — best risk/reward for long-term holders)<br>
+            India structural advantage: 8/20 (Adjacent: logistics AI, India Stack lite)<br>
+            AI threat resistance: 20/20 (Geographic monopoly = near-immune to AI disruption)<br>
+          </p>
+        </div>
+      </div>
+      <p style="margin-bottom:10px;"><strong>Portfolio Role: AI NEUTRAL — Standard Fundamental Framework Governs</strong></p>
+      <p style="margin-bottom:10px;font-size:0.85rem;">APSEZ's AI score of 42/100 places it firmly in the MONITOR category — AI is neither the bull case nor a threat. The core investment thesis is the geographic monopoly, India trade CAGR, and logistics integration story. AI adds an efficiency layer (5-10% margin improvement over 3-5 years) but does not alter the fundamental nature of the investment.</p>
+      <p style="margin-bottom:10px;font-size:0.85rem;"><strong>Widener Potential Path:</strong> If APSEZ deploys its cargo data to build a logistics intelligence platform (similar to Freightos or Flexport globally), and if that platform demonstrates measurable AI flywheel characteristics (more users → better route pricing → more shippers → more data → repeat), the AI overlay could upgrade to 🟢 WIDENER. This would justify a +3-5x P/E premium and upgrade the Moat grade from B+ to A−. Watch for: (a) launch of an APSEZ logistics marketplace platform, (b) AI-driven cargo price discovery tool, (c) specific metrics on pilferage reduction published in annual report.</p>
+      <p style="font-size:0.85rem;"><strong>Investment Horizon: 7-10 years</strong> (Level 5 AI-enabled incumbent). Do not apply a 12-month price target framework. APSEZ compounds like infrastructure — slowly and then all at once. The 2030 vision (1 Billion Tonnes) is the right horizon to own this business.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p><strong>Disclaimer:</strong> This report is generated for educational and research purposes only under the Buffett Quality-Value Series framework. It does not constitute investment advice, a solicitation to buy or sell securities, or a guarantee of returns. Investing in equity markets involves substantial risk of capital loss. Past performance is not indicative of future results.</p>
+    <p style="margin-top:8px;"><strong>SEBI Disclaimer:</strong> The author/generator is not a SEBI-registered investment advisor, analyst, or portfolio manager. This report does not constitute a research report under SEBI (Research Analysts) Regulations, 2014. Please consult a SEBI-registered financial advisor before making investment decisions.</p>
+    <p style="margin-top:8px;"><strong>Data:</strong> [VERIFIED] = confirmed from official filings, company releases, or live web search | [ESTIMATED] = cross-referenced, high confidence | [UNVERIFIED] = limited source, treat with caution. Financials sourced from APSEZ investor relations, Screener.in, Tickertape, BSE/NSE filings. Macro data from RBI, IMF, CRISIL. Technical data as of April 2026.</p>
+    <p style="margin-top:8px;"><strong>Fonts:</strong> Playfair Display (Google Fonts) | Crimson Pro (Google Fonts) | IBM Plex Mono (IBM / Google Fonts) | Design: Maritime Command theme.</p>
+    <p style="margin-top:8px;color:rgba(255,255,255,0.35);">Buffett Quality-Value Series v5.0 | Report generated April 19, 2026 | ADANIPORTS_qv_report.html</p>
+  </div>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>

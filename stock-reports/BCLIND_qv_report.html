@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BCL Industries | Buffett Quality-Value Report #20</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --amber:       #C26A1A;
+  --amber-dark:  #8B4210;
+  --amber-light: #E8A845;
+  --grain:       #1C0F05;
+  --grain-mid:   #3D2010;
+  --cream:       #FBF4E8;
+  --parchment:   #F2E8D4;
+  --gold:        #D4950A;
+  --copper:      #A0522D;
+  --text:        #2C1810;
+  --text-muted:  #6B4530;
+  --pass-bg:     #D4EDDA; --pass-text: #155724; --pass-border: #28a745;
+  --marginal-bg: #FFF3CD; --marginal-text: #856404; --marginal-border: #ffc107;
+  --fail-bg:     #F8D7DA; --fail-text:  #721c24; --fail-border:  #dc3545;
+  --verified-bg: #D4EDDA; --verified-text: #155724;
+  --estimated-bg:#FFF3CD; --estimated-text:#856404;
+  --unverified-bg:#F8D7DA; --unverified-text:#721c24;
+  --tab-bar-h:   52px;
+  --hero-h:      210px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Lora', Georgia, serif;
+  background: var(--cream);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ═══ HERO ═══ */
+.hero {
+  background: linear-gradient(135deg, var(--grain) 0%, #2F1508 40%, var(--amber-dark) 100%);
+  min-height: var(--hero-h);
+  padding: 28px 36px 22px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, rgba(200,140,60,.04) 0px, rgba(200,140,60,.04) 1px, transparent 1px, transparent 16px);
+  pointer-events: none;
+}
+.hero-inner { max-width: 1100px; margin: 0 auto; position: relative; }
+.hero-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+.hero-title { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--amber-light); font-weight: 700; letter-spacing: -.5px; }
+.hero-subtitle { font-family: 'Lora', serif; font-size: .82rem; color: rgba(255,255,255,.55); letter-spacing: .05em; margin-top: 2px; }
+.badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; align-items: center; }
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 20px; font-size: .72rem; font-weight: 600;
+  letter-spacing: .06em; font-family: 'Fira Mono', monospace;
+  border: 1px solid;
+}
+.badge-cat    { background: rgba(200,140,60,.18); color: var(--amber-light); border-color: var(--amber); }
+.badge-ai     { background: rgba(160,160,160,.18); color: #ccc; border-color: #888; }
+.badge-verdict { background: rgba(212,149,10,.25); color: var(--amber-light); border-color: var(--gold); font-size: .75rem; }
+.badge-macro  { background: rgba(60,140,60,.2); color: #7dde9a; border-color: #3c8c5a; }
+.pill-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.pill {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  color: #eee; padding: 3px 11px; border-radius: 12px;
+  font-size: .7rem; font-family: 'Fira Mono', monospace;
+}
+.pill span { color: var(--amber-light); font-weight: 600; }
+.hero-lede { margin-top: 14px; color: rgba(255,255,255,.72); font-size: .86rem; font-style: italic; max-width: 820px; }
+.verdict-badge-hero {
+  text-align: right;
+  font-family: 'Playfair Display', serif;
+}
+.verdict-text { font-size: 1.1rem; font-weight: 700; color: var(--amber-light); }
+.verdict-stars { font-size: 1.5rem; color: var(--gold); letter-spacing: 2px; }
+.grade-pill {
+  display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: .65rem;
+  font-family: 'Fira Mono', monospace; font-weight: 600; margin: 2px;
+}
+
+/* ═══ TAB BAR ═══ */
+#tab-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--grain); box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  overflow-x: auto; white-space: nowrap;
+  height: var(--tab-bar-h);
+  display: flex; align-items: center;
+  scrollbar-width: none;
+}
+#tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: 0 20px; height: 100%; border: none; background: transparent;
+  color: rgba(255,255,255,.55); font-family: 'Fira Mono', monospace;
+  font-size: .68rem; letter-spacing: .07em; cursor: pointer; white-space: nowrap;
+  border-bottom: 3px solid transparent; transition: all .2s; display: inline-flex;
+  align-items: center;
+}
+.tab-btn:hover { color: rgba(255,255,255,.85); }
+.tab-btn.active { color: var(--amber-light); border-bottom-color: var(--amber); }
+
+/* ═══ CONTENT ═══ */
+.tab-content { display: none; max-width: 1100px; margin: 0 auto; padding: 32px 24px 48px; }
+.tab-content.active { display: block; }
+
+h2 { font-family: 'Playfair Display', serif; font-size: 1.55rem; color: var(--amber-dark); border-bottom: 2px solid var(--parchment); padding-bottom: 8px; margin: 28px 0 18px; }
+h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--grain-mid); margin: 22px 0 10px; }
+h4 { font-family: 'Lora', serif; font-size: .9rem; font-weight: 600; color: var(--amber-dark); margin: 16px 0 6px; }
+p { margin-bottom: 10px; }
+
+/* ═══ METRIC GRID ═══ */
+.metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+@media (max-width: 680px) { .metric-grid { grid-template-columns: repeat(2,1fr); } }
+.metric-card {
+  background: white; border-radius: 8px; padding: 14px 16px;
+  border-left: 4px solid var(--amber); box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.metric-card.green { border-left-color: var(--pass-border); }
+.metric-card.red   { border-left-color: var(--fail-border); }
+.metric-card.amber { border-left-color: var(--marginal-border); }
+.metric-label { font-size: .68rem; color: var(--text-muted); font-family: 'Fira Mono', monospace; text-transform: uppercase; letter-spacing: .05em; }
+.metric-value { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--grain); font-weight: 700; margin: 2px 0; }
+.metric-sub { font-size: .7rem; color: var(--text-muted); }
+
+/* ═══ TABLE ═══ */
+.data-table { width: 100%; border-collapse: collapse; font-size: .8rem; margin: 14px 0; }
+.data-table th { background: var(--grain); color: var(--amber-light); padding: 9px 12px; text-align: left; font-family: 'Fira Mono', monospace; font-size: .68rem; letter-spacing: .05em; }
+.data-table td { padding: 8px 12px; border-bottom: 1px solid var(--parchment); }
+.data-table tr:nth-child(even) td { background: rgba(242,232,212,.3); }
+.data-table tr:hover td { background: rgba(194,106,26,.06); }
+.data-table .num { text-align: right; font-family: 'Fira Mono', monospace; }
+
+/* ═══ SCORECARD ═══ */
+.scorecard-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin: 14px 0; }
+@media (max-width: 600px) { .scorecard-grid { grid-template-columns: 1fr; } }
+.score-card {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px; border-radius: 8px; border: 1px solid;
+}
+.score-card.pass { background: var(--pass-bg); border-color: var(--pass-border); color: var(--pass-text); }
+.score-card.marginal { background: var(--marginal-bg); border-color: var(--marginal-border); color: var(--marginal-text); }
+.score-card.fail { background: var(--fail-bg); border-color: var(--fail-border); color: var(--fail-text); }
+.score-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+.score-label { font-size: .72rem; font-family: 'Fira Mono', monospace; font-weight: 600; }
+.score-detail { font-size: .72rem; margin-top: 2px; }
+
+/* ═══ MOAT STARS ═══ */
+.moat-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin: 14px 0; }
+.moat-card { background: white; border-radius: 8px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06); border-top: 3px solid var(--amber); }
+.moat-name { font-weight: 600; font-size: .85rem; color: var(--grain); }
+.moat-stars { color: var(--gold); font-size: 1rem; letter-spacing: 2px; }
+.moat-detail { font-size: .75rem; color: var(--text-muted); margin-top: 4px; }
+
+/* ═══ FLYWHEEL BOX ═══ */
+.flywheel-box {
+  border: 2px solid #888; border-radius: 10px; padding: 18px 22px; margin: 18px 0;
+  background: rgba(150,150,150,.06);
+}
+.flywheel-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: #666; margin-bottom: 10px; }
+.flywheel-badge { display: inline-block; padding: 3px 14px; border-radius: 14px; font-size: .75rem; font-weight: 700; font-family: 'Fira Mono', monospace; background: #eee; color: #666; border: 1px solid #aaa; margin-bottom: 8px; }
+
+/* ═══ VERDICT BOX ═══ */
+.verdict-box {
+  background: var(--grain); color: white; border-radius: 12px; padding: 24px 28px; margin: 20px 0;
+  border-left: 6px solid var(--amber);
+}
+.verdict-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--amber-light); margin-bottom: 12px; }
+.verdict-quote { font-style: italic; color: rgba(255,255,255,.7); font-size: .85rem; border-left: 3px solid var(--amber); padding-left: 14px; margin: 14px 0; }
+
+/* ═══ PILLAR GRADES ═══ */
+.pillar-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 16px 0; }
+@media (max-width: 600px) { .pillar-row { grid-template-columns: repeat(2,1fr); } }
+.pillar-card { text-align: center; background: white; border-radius: 8px; padding: 16px 10px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.pillar-name { font-size: .68rem; font-family: 'Fira Mono', monospace; text-transform: uppercase; color: var(--text-muted); letter-spacing: .05em; }
+.pillar-grade { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--amber-dark); }
+.pillar-sub { font-size: .7rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ═══ UPGRADE CONDITIONS ═══ */
+.upgrade-list { list-style: none; margin: 14px 0; }
+.upgrade-list li {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px;
+  background: white; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid var(--amber);
+  font-size: .83rem; box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+.upgrade-num { background: var(--amber); color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; flex-shrink: 0; }
+
+/* ═══ LABEL PILLS ═══ */
+.lbl { display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: .62rem; font-weight: 600; font-family: 'Fira Mono', monospace; vertical-align: middle; margin-left: 4px; }
+.lbl-v { background: var(--verified-bg); color: var(--verified-text); }
+.lbl-e { background: var(--estimated-bg); color: var(--estimated-text); }
+.lbl-u { background: var(--unverified-bg); color: var(--unverified-text); }
+
+/* ═══ SECTION ═══ */
+.section { background: white; border-radius: 10px; padding: 20px 22px; margin: 16px 0; box-shadow: 0 1px 5px rgba(0,0,0,.06); }
+
+/* ═══ ROE/ROIC TRACK ═══ */
+.yr-track { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.yr-card {
+  flex: 1; min-width: 80px; padding: 10px 8px; border-radius: 8px; text-align: center;
+  font-family: 'Fira Mono', monospace;
+}
+.yr-card .yr { font-size: .65rem; color: rgba(255,255,255,.6); }
+.yr-card .val { font-size: 1rem; font-weight: 600; color: white; }
+.yr-card.strong { background: var(--pass-border); }
+.yr-card.ok { background: #6f8f72; }
+.yr-card.weak { background: #c4895a; }
+.yr-card.poor { background: var(--fail-border); }
+
+/* ═══ TECH SECTION ═══ */
+.ma-dashboard { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin: 14px 0; }
+.ma-card { background: white; border-radius: 8px; padding: 12px 14px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.ma-label { font-size: .65rem; font-family: 'Fira Mono', monospace; color: var(--text-muted); }
+.ma-val { font-size: 1rem; font-weight: 700; font-family: 'Fira Mono', monospace; }
+.ma-status { font-size: .7rem; }
+.ma-card.below .ma-status { color: var(--fail-border); }
+.ma-card.above .ma-status { color: var(--pass-border); }
+
+/* ═══ SERIES TABLE ═══ */
+.series-table { font-size: .7rem; }
+
+/* ═══ AI DASHBOARD ═══ */
+.ai-badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+.ai-badge-card {
+  flex: 1; min-width: 120px; text-align: center; background: white; border-radius: 8px;
+  padding: 14px 10px; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.ai-badge-title { font-size: .62rem; font-family: 'Fira Mono', monospace; color: var(--text-muted); letter-spacing: .05em; margin-bottom: 6px; }
+.ai-badge-val { font-size: .85rem; font-weight: 700; color: var(--grain); }
+
+/* ═══ MACRO CYCLE ═══ */
+.macro-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 14px 0; }
+@media (max-width: 600px) { .macro-grid { grid-template-columns: 1fr; } }
+.macro-card { background: white; border-radius: 8px; padding: 12px 14px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.macro-title { font-size: .68rem; font-family: 'Fira Mono', monospace; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+.macro-status { font-size: .8rem; font-weight: 600; margin: 4px 0; }
+.macro-detail { font-size: .7rem; color: var(--text-muted); }
+.status-good { color: #28a745; }
+.status-neutral { color: #856404; }
+.status-bad { color: #dc3545; }
+
+/* ═══ DCF TABLE ═══ */
+.dcf-scenario { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 14px 0; }
+.dcf-card { border-radius: 8px; padding: 14px 16px; text-align: center; }
+.dcf-card.stress { background: rgba(220,53,69,.08); border: 1px solid rgba(220,53,69,.3); }
+.dcf-card.base { background: rgba(194,106,26,.1); border: 1px solid var(--amber); }
+.dcf-card.accel { background: rgba(40,167,69,.08); border: 1px solid rgba(40,167,69,.3); }
+.dcf-scenario-label { font-size: .7rem; font-family: 'Fira Mono', monospace; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+.dcf-iv { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--grain); }
+.dcf-sub { font-size: .72rem; color: var(--text-muted); margin-top: 4px; }
+
+/* ═══ SHAREHOLDING TREND ═══ */
+.sh-bar { height: 8px; border-radius: 4px; background: var(--parchment); margin: 4px 0 10px; overflow: hidden; }
+.sh-bar-fill { height: 100%; border-radius: 4px; background: var(--amber); }
+
+/* MISC */
+.info-box { background: rgba(194,106,26,.08); border: 1px solid rgba(194,106,26,.2); border-radius: 8px; padding: 14px 18px; margin: 14px 0; font-size: .83rem; }
+.warn-box { background: rgba(220,53,69,.06); border: 1px solid rgba(220,53,69,.2); border-radius: 8px; padding: 14px 18px; margin: 14px 0; font-size: .83rem; }
+.note { font-size: .75rem; color: var(--text-muted); font-style: italic; margin-top: 6px; }
+.footer { background: var(--grain-mid); color: rgba(255,255,255,.5); font-size: .68rem; padding: 20px 36px; line-height: 1.8; margin-top: 40px; }
+
+hr { border: none; border-top: 1px solid var(--parchment); margin: 18px 0; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div>
+        <div class="hero-title">BCL Industries Ltd</div>
+        <div class="hero-subtitle">NSE: BCLIND &nbsp;│&nbsp; BUFFETT QUALITY-VALUE SERIES &nbsp;│&nbsp; REPORT #20</div>
+        <div class="badge-row">
+          <span class="badge badge-cat">⚙ CATEGORY C</span>
+          <span class="badge badge-ai">⚪ AI NEUTRAL</span>
+          <span class="badge badge-macro">📈 MACRO: TAILWIND (Ethanol)</span>
+        </div>
+      </div>
+      <div class="verdict-badge-hero">
+        <div class="verdict-text">WATCH</div>
+        <div class="verdict-stars">★★★</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:4px;font-family:'Fira Mono',monospace;">MoS ENTRY: ₹22–25</div>
+      </div>
+    </div>
+    <div class="pill-row">
+      <span class="pill">Price <span>₹27.7</span></span>
+      <span class="pill">Mkt Cap <span>₹819 Cr</span></span>
+      <span class="pill">P/E <span>7.0×</span></span>
+      <span class="pill">P/B <span>0.96×</span></span>
+      <span class="pill">ROE <span>13%</span></span>
+      <span class="pill">Net Debt <span>₹507 Cr</span></span>
+      <span class="pill">52W H/L <span>₹49.3/₹26.0</span></span>
+    </div>
+    <div class="hero-lede">
+      Grain-based ethanol and edible oil conglomerate riding India's E20 blending mandate — 700 KLPD capacity fully ramped, OMC allocation secured, yet ROIC sits below WACC and margins remain thin. The post-expansion FCF recovery thesis is the investment case. Not cheap enough yet.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB BAR ═══ -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro & Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 0 — OVERVIEW
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content active" id="tab0">
+  <h2>Company Overview</h2>
+  <div class="section">
+    <h3>Business Description</h3>
+    <p>BCL Industries Limited (NSE: BCLIND) is one of India's largest grain-based agro-processing manufacturers, incorporated in 1975 and headquartered in Chandigarh. The company operates across three segments: <strong>Distillery</strong> (grain-based ethanol, ENA, IMIL liquor), <strong>Oil &amp; Vanaspati</strong> (refined edible oils), and a nascent <strong>Real Estate</strong> arm in Punjab. <span class="lbl lbl-v">VERIFIED</span></p>
+    <p>BCL holds the distinction of being <em>the only company in India and South Asia with forward and backward integration in its distillery-ethanol plant</em> — from grain procurement through ENA and ethanol production to by-product utilisation. The company operates a 700 KLPD (kilolitres per day) distillery network across Bathinda (Punjab) and Kharagpur (West Bengal), reaching full capacity utilisation in FY2024-25. <span class="lbl lbl-v">VERIFIED</span></p>
+    <h3>Segment Revenue Breakdown (Estimated FY25) <span class="lbl lbl-e">ESTIMATED</span></h3>
+    <table class="data-table">
+      <tr><th>Segment</th><th>Est. Revenue Share</th><th>Growth Driver</th><th>Moat Rating</th></tr>
+      <tr><td>Distillery (Ethanol/ENA/IMIL)</td><td class="num">~60%</td><td>India EBP E20 mandate</td><td>★★★</td></tr>
+      <tr><td>Oil &amp; Vanaspati (Edible Oil)</td><td class="num">~37%</td><td>Commodity/volume</td><td>★</td></tr>
+      <tr><td>Real Estate</td><td class="num">~3%</td><td>Punjab residential</td><td>★★</td></tr>
+    </table>
+    <h3>Why This Stock Is in the Series</h3>
+    <p>BCL Industries represents a recurring archetype in Indian small-cap investing: a genuine business tailwind (India's E20 ethanol mandate) combined with apparent valuation cheapness (P/E 7×, P/B below 1×), but obscured by thin margins, rising leverage, an earnings quality concern, and a business structurally dependent on administered government pricing. It tests the framework's ability to distinguish genuine value from a value trap.</p>
+    <div class="info-box">
+      <strong>Framework Adaptation (Category C with D Characteristics):</strong> BCL straddles Category C (mature compounder with stable growth) and Category D (turnaround / special situation) due to its recent capex expansion cycle now entering normalisation. ROIC at ~9.6% is below WACC of ~12%, which under strict Buffett criteria would disqualify it as a quality compounder. We apply a Category C framework but flag the ROIC deficiency prominently in Pillar 1.
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Key Investment Characteristics</h3>
+    <div class="metric-grid">
+      <div class="metric-card amber">
+        <div class="metric-label">Policy Dependency</div>
+        <div class="metric-value">HIGH</div>
+        <div class="metric-sub">Ethanol price set by MoP&amp;NG annually</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Capacity Status</div>
+        <div class="metric-value">FULL</div>
+        <div class="metric-sub">700 KLPD fully utilised FY25</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">ROIC vs WACC</div>
+        <div class="metric-value">−2.4%</div>
+        <div class="metric-sub">ROIC 9.6% vs WACC ~12%</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Debt Trajectory</div>
+        <div class="metric-value">RISING</div>
+        <div class="metric-sub">₹183Cr→₹536Cr in 4 years</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 1 — MACRO & GROWTH
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab1">
+  <h2>Macro &amp; Growth Analysis</h2>
+
+  <h3>Layer 1 — Macro Anchor</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Indicator</th><th>Value</th><th>Source</th><th>Confidence</th></tr>
+      <tr><td>India Real GDP Growth FY26</td><td class="num">6.8% (RBI); 7.4% (Eco Survey)</td><td>RBI MPC / Eco Survey 2025-26</td><td><span class="lbl lbl-v">VERIFIED</span></td></tr>
+      <tr><td>India CPI Inflation FY26</td><td class="num">~2.0–2.6%</td><td>RBI projections (benign)</td><td><span class="lbl lbl-v">VERIFIED</span></td></tr>
+      <tr><td>India Nominal GDP Growth</td><td class="num">~8.8–9.4%</td><td>Real GDP + CPI</td><td><span class="lbl lbl-e">ESTIMATED</span></td></tr>
+      <tr><td>India 10-Year G-Sec Yield</td><td class="num">~7.1%</td><td>Trading Economics Apr 2026</td><td><span class="lbl lbl-v">VERIFIED</span></td></tr>
+      <tr><td>RBI Repo Rate</td><td class="num">5.25% (easing cycle)</td><td>RBI MPC Apr 2025</td><td><span class="lbl lbl-v">VERIFIED</span></td></tr>
+      <tr><td>Nifty 50 P/E (est.)</td><td class="num">~21–22×</td><td>Market consensus</td><td><span class="lbl lbl-e">ESTIMATED</span></td></tr>
+    </table>
+    <div class="note">Terminal growth ceiling: India Nominal GDP × 0.65 = ~5.8–6.1%. Used 6.0% in base case DCF.</div>
+  </div>
+
+  <h3>Macro Cycle Dashboard — 6 Dimensions</h3>
+  <div class="macro-grid">
+    <div class="macro-card">
+      <div class="macro-title">Rural Income Cycle</div>
+      <div class="macro-status status-good">✓ Recovery / Boom</div>
+      <div class="macro-detail">Good monsoon FY26; record rabi; MSP hikes. Positive for grain procurement costs and FMCG demand adjacency.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-title">Urban Consumption</div>
+      <div class="macro-status status-good">✓ Expansion</div>
+      <div class="macro-detail">GDP 7.4% with IT wages stabilising; middle-class IMFL demand growing. Positive for premium ENA/IMFL channel.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-title">Input Cost Cycle</div>
+      <div class="macro-status status-neutral">~ Stable</div>
+      <div class="macro-detail">Grain prices flat-to-falling on bumper harvests. Edible oil prices volatile (import-linked). Net neutral for BCL margins.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-title">Interest Rate Cycle</div>
+      <div class="macro-status status-good">✓ Easing</div>
+      <div class="macro-detail">RBI repo cut 100bps in FY26 to 5.25%. BCL's ₹536Cr debt benefits; interest expense may moderate in FY27.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-title">Ethanol Policy Cycle</div>
+      <div class="macro-status status-good">✓ Structural Tailwind</div>
+      <div class="macro-detail">E20 achieved in FY25-26. Government signalling E30 target 2028-30. Multi-year runway for grain-based ethanol. CRITICAL driver for BCL.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-title">AI Adoption Cycle</div>
+      <div class="macro-status status-neutral">⚪ Not Relevant</div>
+      <div class="macro-detail">AI disruption risk: LOW. AI opportunity for BCL: LOW. Agro-processing is capital-asset business. No identifiable AI moat or threat.</div>
+    </div>
+  </div>
+  <div class="info-box"><strong>MACRO COMPOSITE:</strong> <span style="color:var(--pass-border);font-weight:600">TAILWIND</span> — driven specifically by the Ethanol Blending Programme (EBP). E20 achievement at 19%+ blending is a significant milestone. The post-E20 question (E30 timeline) is the key medium-term uncertainty. Easing interest rates provide secondary relief on debt costs.</div>
+
+  <h3>Layer 2 — Sector Growth Derivation</h3>
+  <div class="section">
+    <p><strong>Primary Sector: Grain-Based Distillery / Ethanol</strong> (India EBP mandate-driven)</p>
+    <table class="data-table">
+      <tr><th>Scenario</th><th>Ethanol Sector Growth</th><th>Edible Oil Growth</th><th>BCL Blended Revenue Growth</th><th>AI Impact</th></tr>
+      <tr><td>Stress (GDP 5.5%, EBP slowdown)</td><td class="num">8–10%</td><td class="num">5–7%</td><td class="num">7–9%</td><td>⚪ Neutral</td></tr>
+      <tr><td>Base (GDP 6.8%, E20 consolidation)</td><td class="num">12–15%</td><td class="num">8–10%</td><td class="num">11–13%</td><td>⚪ Neutral</td></tr>
+      <tr><td>Acceleration (GDP 8%+, E30 push)</td><td class="num">18–22%</td><td class="num">10–12%</td><td class="num">15–18%</td><td>⚪ Neutral</td></tr>
+    </table>
+    <p class="note">Sector CAGR reference: Ethanol/Distillery sector 3yr CAGR ~15-18% driven by EBP policy. BCL revenue 5yr CAGR: 25% (expansion-driven, now moderating). <span class="lbl lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <h3>Layer 3 — Company Alpha Over Sector</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr>
+      <tr><td>Market Share Gain (Ethanol)</td><td>ACTIVE</td><td class="num">+2%</td><td class="num">+1%</td><td>BCL scale advantage in grain-based ENA/ethanol; OMC preferred supplier</td></tr>
+      <tr><td>Premiumisation (ENA → IMFL)</td><td>POTENTIAL</td><td class="num">+0.5%</td><td class="num">+1%</td><td>ENA sold to IMFL distillers; direct IMFL entry possible but unproven</td></tr>
+      <tr><td>Category Expansion (Real Estate)</td><td>MARGINAL</td><td class="num">+0.5%</td><td class="num">+0.5%</td><td>Punjab residential; small and non-core</td></tr>
+      <tr><td>Geographic Expansion (West Bengal)</td><td>ACTIVE</td><td class="num">+1%</td><td class="num">+0.5%</td><td>Kharagpur 100 KLPD plant — eastern India diversification</td></tr>
+      <tr><td>Pricing Power</td><td>WEAK</td><td class="num">0%</td><td class="num">0%</td><td>Ethanol: APM-governed (administered price). Edible oil: commodity. NO pricing power.</td></tr>
+      <tr><td>AI Alpha (6a+6b+6c)</td><td>N/A</td><td class="num">0%</td><td class="num">0%</td><td>No identifiable AI deployment in core operations</td></tr>
+      <tr style="font-weight:700;background:rgba(194,106,26,.1)"><td>Total Alpha</td><td>—</td><td class="num">+4%</td><td class="num">+3%</td><td></td></tr>
+    </table>
+  </div>
+
+  <h3>Growth Rate Summary Table</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr>
+      <tr><td>Macro State</td><td>GDP ~5.5%, EBP slowdown</td><td>GDP ~6.8%, E20 stable</td><td>GDP ~8%+, E30 push</td></tr>
+      <tr><td>Sector Growth</td><td class="num">8–10%</td><td class="num">12–15%</td><td class="num">18–22%</td></tr>
+      <tr><td>Company Alpha</td><td class="num">+2%</td><td class="num">+4%</td><td class="num">+5%</td></tr>
+      <tr><td>AI Alpha</td><td class="num">0%</td><td class="num">0%</td><td class="num">0%</td></tr>
+      <tr><td><strong>Stage 1 FCF CAGR (5yr)</strong></td><td class="num"><strong>7%</strong></td><td class="num"><strong>12%</strong></td><td class="num"><strong>18%</strong></td></tr>
+      <tr><td>Stage 2 FCF CAGR (5yr)</td><td class="num">5%</td><td class="num">7%</td><td class="num">9%</td></tr>
+      <tr><td>Terminal Growth</td><td class="num">5.5%</td><td class="num">6.0%</td><td class="num">6.5%</td></tr>
+      <tr><td>Margin Direction</td><td>Compress (grain cost up)</td><td>Stable (8–9% OPM)</td><td>Expand (E30 volume)</td></tr>
+      <tr><td>Key Risk</td><td>EBP policy revision or grain shortage</td><td>Post-E20 volume plateau</td><td>Capacity constraint</td></tr>
+    </table>
+    <p class="note"><strong>Sensitivity:</strong> A 1% change in terminal growth changes IV by ~₹8–10 per share. A 1% change in Stage 1 growth changes IV by ~₹5–7 per share.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 2 — FINANCIALS
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab2">
+  <h2>Financial Fortress Analysis</h2>
+
+  <h3>Revenue &amp; Profit Track (FY21–TTM) <span class="lbl lbl-v">VERIFIED</span></h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Year</th><th class="num">Revenue (₹ Cr)</th><th class="num">YoY</th><th class="num">Op. Profit (₹ Cr)</th><th class="num">OPM %</th><th class="num">Net Profit (₹ Cr)</th><th class="num">NPM %</th></tr>
+      <tr><td>FY21</td><td class="num">1,427</td><td class="num">+56%</td><td class="num">69</td><td class="num">4.8%</td><td class="num">42</td><td class="num">2.9%</td></tr>
+      <tr><td>FY22</td><td class="num">1,988</td><td class="num">+39%</td><td class="num">138</td><td class="num">6.9%</td><td class="num">85</td><td class="num">4.3%</td></tr>
+      <tr><td>FY23</td><td class="num">1,818</td><td class="num">−9%</td><td class="num">124</td><td class="num">6.8%</td><td class="num">64</td><td class="num">3.5%</td></tr>
+      <tr><td>FY24</td><td class="num">2,129</td><td class="num">+17%</td><td class="num">191</td><td class="num">9.0%</td><td class="num">96</td><td class="num">4.5%</td></tr>
+      <tr><td>FY25</td><td class="num">2,815</td><td class="num">+32%</td><td class="num">205</td><td class="num">7.3%</td><td class="num">103</td><td class="num">3.7%</td></tr>
+      <tr style="background:rgba(194,106,26,.08);font-weight:600"><td>TTM (Mar 26)</td><td class="num">2,932</td><td class="num">+4%</td><td class="num">237</td><td class="num">8.1%</td><td class="num">128</td><td class="num">4.4%</td></tr>
+    </table>
+    <p class="note">5yr Revenue CAGR: 25% | 3yr Revenue CAGR: 12% | 5yr Profit CAGR: 30% | 3yr Profit CAGR: 4% (divergence = margin squeeze during expansion). Q3 FY26 Net Profit: ₹35 Cr — highest-ever quarterly profit.</p>
+  </div>
+
+  <h3>ROE &amp; ROCE Track</h3>
+  <div class="section">
+    <div class="yr-track">
+      <div class="yr-card ok"><div class="yr">FY21</div><div class="val">ROE<br>16%</div></div>
+      <div class="yr-card strong"><div class="yr">FY22</div><div class="val">ROE<br>25%</div></div>
+      <div class="yr-card ok"><div class="yr">FY23</div><div class="val">ROE<br>14%</div></div>
+      <div class="yr-card ok"><div class="yr">FY24</div><div class="val">ROE<br>15%</div></div>
+      <div class="yr-card weak"><div class="yr">FY25</div><div class="val">ROE<br>13%</div></div>
+    </div>
+    <div class="yr-track">
+      <div class="yr-card ok"><div class="yr">FY21</div><div class="val">ROCE<br>~12%</div></div>
+      <div class="yr-card ok"><div class="yr">FY22</div><div class="val">ROCE<br>~16%</div></div>
+      <div class="yr-card weak"><div class="yr">FY23</div><div class="val">ROCE<br>~16%</div></div>
+      <div class="yr-card ok"><div class="yr">FY24</div><div class="val">ROCE<br>18.5%</div></div>
+      <div class="yr-card weak"><div class="yr">FY25</div><div class="val">ROCE<br>13.2%</div></div>
+    </div>
+    <p class="note"><span class="lbl lbl-v">VERIFIED</span> ROE 5yr avg ~16%. ROCE declining from peak 18.5% (FY24) as new capacity was commissioned. Current ROCE 13.2% is above RBI repo but below framework WACC of 12%. ROIC ~9.6% is the harder measure and sits <em>below</em> WACC — the fundamental moat concern.</p>
+  </div>
+
+  <h3>Balance Sheet Strength</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Item</th><th class="num">FY22</th><th class="num">FY23</th><th class="num">FY24</th><th class="num">FY25</th><th class="num">Sep '25</th></tr>
+      <tr><td>Equity + Reserves (₹ Cr)</td><td class="num">366</td><td class="num">480</td><td class="num">651</td><td class="num">802</td><td class="num">854</td></tr>
+      <tr><td>Total Borrowings (₹ Cr)</td><td class="num">260</td><td class="num">438</td><td class="num">477</td><td class="num">536</td><td class="num">662</td></tr>
+      <tr><td>D/E Ratio</td><td class="num">0.71×</td><td class="num">0.91×</td><td class="num">0.73×</td><td class="num">0.67×</td><td class="num">0.77×</td></tr>
+      <tr><td>Interest Expense (₹ Cr)</td><td class="num">18</td><td class="num">20</td><td class="num">33</td><td class="num">31</td><td class="num">—</td></tr>
+      <tr><td>Interest Coverage (×)</td><td class="num">7.7×</td><td class="num">6.2×</td><td class="num">5.8×</td><td class="num">5.4×</td><td class="num">~6×</td></tr>
+    </table>
+    <div class="warn-box">⚠ <strong>Debt rising consistently:</strong> Borrowings grew from ₹183 Cr (FY21) to ₹662 Cr (Sep 2025) — a 3.6× increase in 4 years. Debt is funding growth capex (distillery expansion). Now that 700 KLPD capacity is fully utilised, debt should plateau. But the ₹80-110 Cr CWIP suggests further capex may be planned. <span class="lbl lbl-e">ESTIMATED</span></div>
+  </div>
+
+  <h3>Financial Fortress Scorecard</h3>
+  <div class="scorecard-grid">
+    <div class="score-card fail"><div class="score-icon">✗</div><div><div class="score-label">ROE ≥ 15% (5yr)</div><div class="score-detail">5yr avg ~16% but declining to 13% in FY25. Trending wrong direction post-expansion. MARGINAL→FAIL</div></div></div>
+    <div class="score-card fail"><div class="score-icon">✗</div><div><div class="score-label">ROIC &gt; WACC</div><div class="score-detail">ROIC ~9.6% vs WACC ~12%. Negative spread = economic value destruction. Critical weakness. FAIL</div></div></div>
+    <div class="score-card fail"><div class="score-icon">✗</div><div><div class="score-label">Net Cash Position</div><div class="score-detail">Net Debt ₹507 Cr. Cash ₹27 Cr. Leveraged balance sheet. Debt rising. FAIL</div></div></div>
+    <div class="score-card fail"><div class="score-icon">✗</div><div><div class="score-label">Net Profit Margin ≥ 15%</div><div class="score-detail">NPM: 3.5–4.5%. Agro-processing margins inherently thin. Structural failure vs threshold. FAIL</div></div></div>
+    <div class="score-card marginal"><div class="score-icon">~</div><div><div class="score-label">FCF Positive &amp; Growing</div><div class="score-detail">Operating CF likely near-zero in FY25 due to WC build. Post-expansion normalisation expected FY26-27. MARGINAL</div></div></div>
+    <div class="score-card fail"><div class="score-icon">✗</div><div><div class="score-label">FCF Conversion ≥ 80%</div><div class="score-detail">WC increased ₹163 Cr in FY25 against net profit ₹103 Cr — implying operating CF ≈ −₹14 Cr. FAIL</div></div></div>
+    <div class="score-card fail"><div class="score-icon">✗</div><div><div class="score-label">Revenue Growth ≥ Sector</div><div class="score-detail">BCL 3yr CAGR 12% = sector CAGR. No outperformance on recent basis. MARGINAL/FAIL</div></div></div>
+    <div class="score-card pass"><div class="score-icon">✓</div><div><div class="score-label">Pricing Power</div><div class="score-detail">Partial: OMC long-term ethanol contracts provide revenue visibility. BUT price is ADMINISTERED — no genuine pricing power. PARTIAL PASS</div></div></div>
+    <div class="score-card marginal"><div class="score-icon">~</div><div><div class="score-label">Capital Light Model</div><div class="score-detail">CapEx-intensive expansion phase (₹136 Cr FY25 gross). Post-expansion, asset-turns should improve. MARGINAL</div></div></div>
+    <div class="score-card pass"><div class="score-icon">✓</div><div><div class="score-label">Recurring Revenue</div><div class="score-detail">107,000 KL OMC ethanol allocation for FY26 provides baseline revenue visibility. PASS</div></div></div>
+  </div>
+
+  <h3>Owner Earnings (FY25, Base Case) <span class="lbl lbl-e">ESTIMATED</span></h3>
+  <div class="section" style="background:rgba(28,15,5,.03);border-left:4px solid var(--amber);">
+    <table class="data-table">
+      <tr><th>Component</th><th class="num">Conservative (₹ Cr)</th><th class="num">Base (₹ Cr)</th></tr>
+      <tr><td>Net Income (FY25)</td><td class="num">103</td><td class="num">103</td></tr>
+      <tr><td>+ Depreciation &amp; Amortisation</td><td class="num">+46</td><td class="num">+46</td></tr>
+      <tr><td>− Maintenance CapEx (est.)</td><td class="num">−60</td><td class="num">−45</td></tr>
+      <tr><td>± Working Capital Changes</td><td class="num">−163</td><td class="num">−80</td></tr>
+      <tr><td>+ Other non-cash (D&amp;A adj.)</td><td class="num">+5</td><td class="num">+5</td></tr>
+      <tr style="font-weight:700;color:var(--amber-dark)"><td>Owner Earnings</td><td class="num">−69 Cr</td><td class="num">+29 Cr</td></tr>
+    </table>
+    <p class="note">The WC build in FY25 (₹163 Cr other assets increase) was likely a one-time expansion-phase phenomenon. In FY26, with 700 KLPD fully utilised and no new major capacity, WC should normalise to ₹60-80 Cr. Owner earnings could recover to ₹80-120 Cr in FY26-27. This <em>is</em> the bull case.</p>
+  </div>
+
+  <h3>O'Glove Earnings Quality Deep-Dive</h3>
+  <div class="section">
+    <div class="scorecard-grid">
+      <div class="score-card fail"><div class="score-icon">✗</div><div><div class="score-label">TEST 1 — FCF Conversion (5yr)</div><div class="score-detail">Op CFO estimated &lt; Net Income in FY25 due to massive WC build. 5yr conversion well below 80% threshold given capex expansion. FAIL — watch FY26 for recovery</div></div></div>
+      <div class="score-card marginal"><div class="score-icon">~</div><div><div class="score-label">TEST 2 — DSO Trend (3yr)</div><div class="score-detail">OMC receivables should be short-cycle (30-45 day payment terms standard). Other assets growing faster than revenue suggests some receivable stretch. MARGINAL <span class="lbl lbl-e">ESTIMATED</span></div></div></div>
+      <div class="score-card marginal"><div class="score-icon">~</div><div><div class="score-label">TEST 3 — Inventory Days</div><div class="score-detail">Grain-based business requires raw material inventory. Screener flags no specific inventory anomaly. Revenue growing, so inventory days broadly stable. MARGINAL</div></div></div>
+      <div class="score-card fail"><div class="score-icon">✗</div><div><div class="score-label">TEST 4 — Accounting Policy</div><div class="score-detail">⚠ RED FLAG: Screener explicitly flags "Company might be capitalising interest cost." Capitalized interest inflates fixed assets (CWIP) and understates actual interest expense — boosting reported profits. FAIL — requires scrutiny</div></div></div>
+      <div class="score-card marginal"><div class="score-icon">~</div><div><div class="score-label">TEST 5 — Gross Margin Consistency</div><div class="score-detail">OPM: 5–9% over 5 years — volatile rather than consistent. FY22 peak 7%; FY25 dip to 7.3%; TTM recovery to 8.1%. Reflects commodity input cycles. MARGINAL</div></div></div>
+    </div>
+    <div class="warn-box">
+      <strong>Overall Earnings Quality: SUSPECT</strong><br>
+      Three issues combine: (1) Near-zero or negative operating CF in FY25; (2) Interest capitalisation concern per Screener; (3) OPM volatility. Framework rule: SUSPECT → <strong>adjust earnings for valuation, widen MoS by 5%</strong>. Base valuation uses 85% of reported earnings as the adjusted figure.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 3 — MOAT
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab3">
+  <h2>Economic Moat Assessment</h2>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">Data Flywheel Status</div>
+    <div class="flywheel-badge">🤖 AI IS COSMETIC</div>
+    <p style="font-size:.82rem;margin-top:8px;color:#666">BCL Industries has no identifiable AI data flywheel. No proprietary AI training data, no AI-powered process improvement, no loop mechanism. AI is neither a moat source nor a threat for this business. Moat grade is unaffected by AI framework. Standard Category C moat assessment applies.</p>
+  </div>
+
+  <h3>Moat Sources Assessment</h3>
+  <div class="moat-grid">
+    <div class="moat-card">
+      <div class="moat-name">Forward-Backward Integration</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-detail">Only company in India/South Asia with complete distillery integration (grain → ENA → ethanol → by-products). Creates operational efficiency but not an unassailable moat — others can build similar integration with capital.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">Grain Procurement Expertise</div>
+      <div class="moat-stars">★★</div>
+      <div class="moat-detail">Decades of procurement networks in Punjab and West Bengal. Provides cost advantage vs new entrants. But not proprietary — replicable by well-capitalised competitors.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">OMC Relationship &amp; Allocation</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-detail">Secured 107,000 KL OMC ethanol allocation for FY26. Long-standing supplier relationship with BPCL/IOC/HPCL. This creates switching costs on the buyer side and revenue visibility. Key competitive position.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">Ethanol Capacity Scale</div>
+      <div class="moat-stars">★★</div>
+      <div class="moat-detail">700 KLPD = among India's largest grain-based distillery networks. Scale provides procurement leverage. But capital-intensive — competitors building similar capacity with government subsidies.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">ENA Brand (IMFL Linkage)</div>
+      <div class="moat-stars">★★</div>
+      <div class="moat-detail">ENA supplied to IMFL distillers. Consistent quality + long-term supply agreements provide modest switching cost. Potential to move up the value chain into own IMFL brands.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">Edible Oil Operations</div>
+      <div class="moat-stars">★</div>
+      <div class="moat-detail">Commodity edible oil with no brand differentiation or pricing power. Import price-linked. Contributes ~37% revenue but virtually zero moat. This segment dilutes the overall moat quality.</div>
+    </div>
+  </div>
+
+  <h3>ROIC as Moat Proof</h3>
+  <div class="section">
+    <div class="metric-grid">
+      <div class="metric-card red">
+        <div class="metric-label">ROIC FY25</div>
+        <div class="metric-value">9.6%</div>
+        <div class="metric-sub">Below WACC — no economic moat confirmed</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">WACC (Cat C)</div>
+        <div class="metric-value">12.0%</div>
+        <div class="metric-sub">Category C India framework WACC</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">ROIC−WACC Spread</div>
+        <div class="metric-value">−2.4%</div>
+        <div class="metric-sub">Value destruction at current ROIC</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Required for Narrow Moat</div>
+        <div class="metric-value">15–20%</div>
+        <div class="metric-sub">BCL needs 5–10% ROIC improvement</div>
+      </div>
+    </div>
+    <p>The ROIC-WACC test is the most important moat validator in the Buffett framework. BCL's ROIC of ~9.6% <em>below</em> the 12% WACC threshold means the company is currently <strong>destroying economic value</strong> even as it reports positive accounting profits. This is not unusual for companies mid-way through a large capacity expansion cycle — the incremental capital deployed has not yet generated adequate returns. The thesis is that ROIC normalises upward as FY25 capacity comes to full productive use.</p>
+    <p class="note"><span class="lbl lbl-e">ESTIMATED</span> ROIC calculation: EBIT(1-t) = ₹168 Cr × 0.75 = ₹126 Cr | Invested Capital = ₹1,310 Cr | ROIC = 9.6%</p>
+  </div>
+
+  <h3>Macro Moat Stress Test</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Moat Source</th><th>Stress Scenario</th><th>Verdict</th></tr>
+      <tr><td>Integration &amp; Scale</td><td>EBP policy reversal or grain shortage</td><td style="color:var(--fail-border)">WEAKENS — utilisation falls, fixed cost absorption deteriorates</td></tr>
+      <tr><td>OMC Relationships</td><td>Government changes ethanol procurement terms</td><td style="color:var(--marginal-border)">HOLDS with risk — long-term agreements provide buffer but price reset possible</td></tr>
+      <tr><td>Edible Oil</td><td>Crude palm oil import surge (FTA)</td><td style="color:var(--fail-border)">WEAKENS — commodity price pressure directly compresses margins</td></tr>
+      <tr><td>Grain Procurement</td><td>Below-average monsoon, grain prices spike</td><td style="color:var(--marginal-border)">HOLDS partially — procurement expertise helps but cannot eliminate cost increase</td></tr>
+    </table>
+  </div>
+
+  <h3>Moat Grade Summary</h3>
+  <div class="info-box">
+    <strong>Overall Moat Grade: C</strong> — BCL has operational moats (integration, scale, OMC relationships) but ROIC below WACC confirms these are insufficient to generate economic surplus. The business competes in policy-administered pricing (ethanol) and commodity markets (edible oil), both of which cap long-run returns. The moat is <em>operational</em>, not <em>structural</em> — it provides competitive positioning but not pricing power.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 4 — MANAGEMENT
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab4">
+  <h2>Management Integrity Assessment</h2>
+
+  <div class="section">
+    <h3>Capital Allocation Track Record</h3>
+    <p>BCL's management under promoter family (R.C. Nayyar + Mittal family, led by Kushal Mittal) has pursued an aggressive capacity expansion strategy: Bathinda distillery doubled (200 → 400 KLPD) + Kharagpur plant (100 KLPD) + captive power plant commissioned in FY23-25. Total capex run: approximately ₹350-400 Cr over 3 years. This was <em>growth capital allocation</em> timed to the India EBP tailwind — fundamentally a reasonable strategic bet given the ethanol mandate. <span class="lbl lbl-e">ESTIMATED</span></p>
+    <p>However, the timing of reaching full utilisation (FY25) coincides with E20 achievement (~19% blending), raising the question: what drives the <em>next</em> growth cycle? Management's response is the E30 narrative and potential expansion into 2G ethanol or direct IMFL. These remain aspirational at this stage.</p>
+  </div>
+
+  <div class="section">
+    <h3>Shareholding Integrity</h3>
+    <div class="metric-grid">
+      <div class="metric-card green">
+        <div class="metric-label">Promoter Holding</div>
+        <div class="metric-value">57.8%</div>
+        <div class="metric-sub">Adequate — majority held by family</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Promoter 3yr Trend</div>
+        <div class="metric-value">−3.33%</div>
+        <div class="metric-sub">Declined over 3 years — INVESTIGATE</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Pledged Shares</div>
+        <div class="metric-value">~Low</div>
+        <div class="metric-sub">No significant pledge flag identified</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">FII Holding</div>
+        <div class="metric-value">1.84%</div>
+        <div class="metric-sub">Very low — institutional disinterest</div>
+      </div>
+    </div>
+    <div class="warn-box">⚠ <strong>Promoter holding declined 3.33% over 3 years</strong> — while not alarming (still at 57.8%), any continuing decline warrants monitoring. Under the Buffett framework, increasing promoter holding signals insider confidence. A declining promoter holding signals the opposite. The 3yr decline period coincides with the peak valuation years (FY22-23), suggesting some promoter selling at higher prices. Need 2 consecutive quarters of increasing promoter holding as an upgrade trigger. <span class="lbl lbl-e">ESTIMATED</span></div>
+  </div>
+
+  <div class="section">
+    <h3>Management Concerns (O'Glove Flags)</h3>
+    <div class="scorecard-grid">
+      <div class="score-card fail"><div class="score-icon">⚠</div><div><div class="score-label">Interest Capitalisation</div><div class="score-detail">Screener.in explicitly flags: "Company might be capitalising the interest cost." Under IndAS, capitalising borrowing costs during CWIP construction is permitted — but it inflates assets and overstates earnings. IMPORTANT: Requires reading Notes to Accounts to quantify. Estimated impact: ₹8-15 Cr understated interest per year. MARGINAL FAIL</div></div></div>
+      <div class="score-card fail"><div class="score-icon">⚠</div><div><div class="score-label">Low Dividend Payout</div><div class="score-detail">Dividend payout only 11.3% of profits over 3 years. With thin FCF and high debt, this is understandable — but signals capital is being deployed for growth rather than returned. Dividend yield: ~0.9%. Not a concern but not a positive signal either.</div></div></div>
+      <div class="score-card marginal"><div class="score-icon">~</div><div><div class="score-label">Guidance Reliability</div><div class="score-detail">Management reached full 700 KLPD capacity utilisation as guided in FY25. Delivered on capacity targets. Ethanol allocation secured per plan. Partial PASS on guidance execution. <span class="lbl lbl-e">ESTIMATED</span></div></div></div>
+      <div class="score-card pass"><div class="score-icon">✓</div><div><div class="score-label">Counter-Cyclical Behaviour</div><div class="score-detail">Expanded distillery capacity during the 2022-24 investment phase when peers were cautious. Timed to EBP policy clarity. This was a bold but reasonably well-executed cyclical bet. PASS on counter-cyclical capital allocation.</div></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Management AI Credibility</h3>
+    <p>No AI-specific management capability required for this business. BCL is an agro-processing manufacturer where operational excellence, grain procurement, and government relationship management are the key management skills. AI is not a relevant assessment dimension. <strong>Irrelevant for Category C agro-processing.</strong></p>
+  </div>
+
+  <div class="info-box">
+    <strong>Management Grade: C+</strong> — Competent operators who made a well-timed but leveraged bet on India's ethanol mandate. Execution on capacity targets has been broadly successful. Key concerns: interest capitalisation flag, declining promoter holding over 3 years, and limited transparency on next-phase growth plan post-E20.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 5 — VALUATION
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab5">
+  <h2>Valuation &amp; Margin of Safety</h2>
+
+  <div class="warn-box">⚠ <strong>Earnings Quality Adjustment Applied:</strong> O'Glove test rated SUSPECT. All earnings-based valuation uses 85% of reported figures (5% MoS widening applied). Reported EPS TTM: ₹3.97 → Adjusted EPS: ₹3.37.</div>
+
+  <h3>Method 1 — Discounted Cash Flow (2-Stage)</h3>
+  <div class="section">
+    <p>WACC: 12.0% (Category C India). Normalised FCF: ₹100 Cr (conservative post-expansion, reflecting WC normalisation). Shares: 30 Cr.</p>
+    <div class="dcf-scenario">
+      <div class="dcf-card stress">
+        <div class="dcf-scenario-label">STRESS</div>
+        <div class="dcf-iv">₹38</div>
+        <div class="dcf-sub">Stage 1: 7%, Stage 2: 5%, Terminal: 5.5%, WACC: 13%</div>
+      </div>
+      <div class="dcf-card base">
+        <div class="dcf-scenario-label">BASE</div>
+        <div class="dcf-iv">₹52</div>
+        <div class="dcf-sub">Stage 1: 12%, Stage 2: 7%, Terminal: 6.0%, WACC: 12%</div>
+      </div>
+      <div class="dcf-card accel">
+        <div class="dcf-scenario-label">ACCELERATION</div>
+        <div class="dcf-iv">₹74</div>
+        <div class="dcf-sub">Stage 1: 18%, Stage 2: 9%, Terminal: 6.5%, WACC: 11.5%</div>
+      </div>
+    </div>
+    <table class="data-table" style="margin-top:14px;font-size:.72rem">
+      <tr><th>Sensitivity: Base IV vs WACC/Terminal g</th><th class="num">g=5.5%</th><th class="num">g=6.0%</th><th class="num">g=6.5%</th></tr>
+      <tr><td>WACC 11%</td><td class="num">₹56</td><td class="num">₹62</td><td class="num">₹70</td></tr>
+      <tr><td><strong>WACC 12%</strong></td><td class="num">₹46</td><td class="num"><strong>₹52</strong></td><td class="num">₹58</td></tr>
+      <tr><td>WACC 13%</td><td class="num">₹38</td><td class="num">₹43</td><td class="num">₹48</td></tr>
+    </table>
+  </div>
+
+  <h3>Method 2 — EV/EBITDA Multiple</h3>
+  <div class="section">
+    <p>TTM EBITDA: ₹287 Cr (Operating Profit ₹237 + D&A ₹50). Net Debt: ₹507 Cr. Shares: 30 Cr.</p>
+    <table class="data-table">
+      <tr><th>Scenario</th><th class="num">Multiple</th><th class="num">EV (₹ Cr)</th><th class="num">Equity Value (₹ Cr)</th><th class="num">Per Share</th></tr>
+      <tr><td>Stress (sector floor: 5×)</td><td class="num">5×</td><td class="num">1,435</td><td class="num">928</td><td class="num">₹31</td></tr>
+      <tr><td>Base (agro-distillery peers: 7×)</td><td class="num">7×</td><td class="num">2,009</td><td class="num">1,502</td><td class="num">₹50</td></tr>
+      <tr><td>Accel. (policy premium: 9×)</td><td class="num">9×</td><td class="num">2,583</td><td class="num">2,076</td><td class="num">₹69</td></tr>
+    </table>
+    <p class="note">Peer comparison: Radico Khaitan EV/EBITDA ~18×, but it's branded IMFL. Shree Renuka Sugars ~6×. SBGL ~8×. BCL should trade between commodity distillery (5-6×) and integrated processor (7-9×). <span class="lbl lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <h3>Method 3 — Owner Earnings Capitalisation</h3>
+  <div class="section">
+    <p>Normalised Owner Earnings: ₹100 Cr (FY26 recovery estimate post WC normalisation). Required return: 12%. Long-term growth g: 6%.</p>
+    <p>Value = OE / (r − g) = ₹100 / (0.12 − 0.06) = ₹1,667 Cr enterprise value</p>
+    <p>Equity value = ₹1,667 Cr − ₹507 Cr (net debt) = <strong>₹1,160 Cr → ₹38.7 per share</strong></p>
+    <p class="note">Conservative (OE ₹80 Cr): ₹26 per share | Optimistic (OE ₹130 Cr): ₹54 per share. Wide range reflects OE uncertainty during expansion-to-normalisation transition.</p>
+  </div>
+
+  <h3>Method 4 — P/E Earnings Power</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Metric</th><th class="num">Value</th><th>Interpretation</th></tr>
+      <tr><td>Current P/E (TTM)</td><td class="num">7.0×</td><td>Well below sector peer average of 12-18×</td></tr>
+      <tr><td>Adjusted EPS (85% quality)</td><td class="num">₹3.37</td><td>After SUSPECT earnings quality haircut</td></tr>
+      <tr><td>Normalised P/E target (Cat C no-moat)</td><td class="num">10–14×</td><td>Appropriate for ROIC-deficient compounder</td></tr>
+      <tr><td>Fair Value at 12× (base)</td><td class="num">₹40</td><td>₹3.37 × 12 = ₹40.4</td></tr>
+      <tr><td>Fair Value at 10× (stress)</td><td class="num">₹34</td><td>₹3.37 × 10 = ₹33.7</td></tr>
+      <tr><td>Fair Value at 15× (accel.)</td><td class="num">₹51</td><td>₹3.37 × 15 = ₹50.6 (E30 premium)</td></tr>
+      <tr><td>PEG Ratio</td><td class="num">0.58×</td><td>P/E 7 / 12% earnings growth = cheap PEG</td></tr>
+    </table>
+  </div>
+
+  <h3>Method 5 — Earnings Yield vs Bond Yield</h3>
+  <div class="section">
+    <div class="metric-grid">
+      <div class="metric-card green">
+        <div class="metric-label">Earnings Yield</div>
+        <div class="metric-value">14.3%</div>
+        <div class="metric-sub">EPS ₹3.97 / Price ₹27.7</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">G-Sec Yield</div>
+        <div class="metric-value">7.1%</div>
+        <div class="metric-sub">India 10-year (Apr 2026)</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Equity Risk Premium</div>
+        <div class="metric-value">+7.2%</div>
+        <div class="metric-sub">EY − G-Sec: very attractive spread</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">FCF Yield</div>
+        <div class="metric-value">~3-5%</div>
+        <div class="metric-sub">Estimated post-normalisation FY27</div>
+      </div>
+    </div>
+    <p>The earnings yield of 14.3% vs 7.1% G-Sec yield = ERP of +720bps. This is one of the highest ERP readings in the series. <em>However</em>, this must be discounted for earnings quality concerns and ROIC-WACC deficit. On a quality-adjusted basis (85% haircut), EY = 12.2% — still a 5.1% spread over bonds.</p>
+  </div>
+
+  <h3>5-Method Summary Table</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Method</th><th class="num">Stress IV</th><th class="num">Base IV</th><th class="num">Accel. IV</th><th>AI Adjustment</th></tr>
+      <tr><td>1. DCF (2-Stage)</td><td class="num">₹38</td><td class="num">₹52</td><td class="num">₹74</td><td>None (AI NEUTRAL)</td></tr>
+      <tr><td>2. EV/EBITDA</td><td class="num">₹31</td><td class="num">₹50</td><td class="num">₹69</td><td>None</td></tr>
+      <tr><td>3. OE Capitalisation</td><td class="num">₹26</td><td class="num">₹39</td><td class="num">₹54</td><td>None</td></tr>
+      <tr><td>4. P/E Earnings Power</td><td class="num">₹34</td><td class="num">₹40</td><td class="num">₹51</td><td>None</td></tr>
+      <tr><td>5. EY/Bond Yield</td><td class="num">₹30</td><td class="num">₹44</td><td class="num">₹62</td><td>None</td></tr>
+      <tr style="font-weight:700;background:rgba(194,106,26,.12)"><td>Blended Base IV</td><td class="num">₹32</td><td class="num">₹45</td><td class="num">₹62</td><td>0% premium (NEUTRAL)</td></tr>
+    </table>
+    <p class="note">Blended Base IV = average of 5 methods = ₹45. Current Price ₹27.7 = <strong>38% discount to Base IV</strong>. MoS Entry (15% additional margin for SUSPECT earnings quality) = ₹45 × (1 − 0.40) = ₹27 | <strong>Deep Value Entry: ₹22–25 for 2× upside to Base IV.</strong></p>
+  </div>
+
+  <div class="info-box">
+    <strong>Valuation Grade: B</strong> — BCL is genuinely cheap on all five metrics vs intrinsic value. The risk is that "cheap" reflects the market's correct assessment of thin margins, ROIC deficit, rising debt, and policy dependency. The current price of ₹27.7 offers modest margin of safety to the stress IV (₹32) and an attractive discount to the base IV (₹45). A deeper correction to ₹22-25 would provide the full 2× asymmetric risk-reward the framework requires.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 6 — VERDICT
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab6">
+  <h2>Investment Verdict</h2>
+
+  <div class="pillar-row">
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 1 — Moat</div>
+      <div class="pillar-grade" style="color:#c0392b">C</div>
+      <div class="pillar-sub">ROIC &lt; WACC; operational not structural; OMC relationships = best source</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 2 — Quality</div>
+      <div class="pillar-grade" style="color:#d97706">C+</div>
+      <div class="pillar-sub">Revenue CAGR strong; but NPM thin, FCF poor, debt rising, OQ suspect</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 3 — Management</div>
+      <div class="pillar-grade" style="color:#d97706">C+</div>
+      <div class="pillar-sub">Capacity bets well-timed; interest cap flag; promoter decline concern</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 4 — Valuation</div>
+      <div class="pillar-grade" style="color:#15803d">B</div>
+      <div class="pillar-sub">P/E 7×, P/B 0.96×, 38% discount to Base IV — genuinely cheap</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-title">WATCH ★★★</div>
+    <div class="verdict-quote">
+      "Price is what you pay. Value is what you get. With BCL, you may be getting policy-dependent value at a discount — but only if the FCF recovery thesis proves out."
+    </div>
+    <p style="color:rgba(255,255,255,.8);font-size:.85rem;margin-top:12px;">BCL Industries offers genuine valuation cheapness — P/E 7×, P/B below book, 38% discount to base intrinsic value — but this cheapness reflects substantive quality deficits: ROIC below WACC, near-zero FCF in FY25, rising leverage, an earnings quality concern (interest capitalisation), and complete dependence on administered ethanol pricing. The investment case rests on the post-expansion FCF recovery thesis: with 700 KLPD fully utilised, WC should normalise and capex moderate, potentially lifting FCF from near-zero to ₹100-120 Cr by FY27. Q3 FY26 net profit of ₹35 Cr (record) is a positive signal. But the stock is not yet at the margin of safety required for a BUY — that requires either a further price correction to ₹22-25 or ROIC evidence crossing 12%.</p>
+    <p style="color:rgba(255,255,255,.8);font-size:.85rem;margin-top:8px;"><strong>AI assessment: NEUTRAL — AI plays no role in the investment thesis, neither as moat widener nor as threat.</strong></p>
+  </div>
+
+  <h3>WATCH → BUY Upgrade Conditions (5 specific, measurable triggers)</h3>
+  <ul class="upgrade-list">
+    <li><span class="upgrade-num">1</span>Price corrects to ₹22–25 (15–20% further decline from current ₹27.7), providing full 2× upside asymmetry to Base IV of ₹45</li>
+    <li><span class="upgrade-num">2</span>ROIC crosses 12% for 2 consecutive quarters — confirming that WACC-ROIC spread has turned positive and the moat is self-sustaining</li>
+    <li><span class="upgrade-num">3</span>FCF conversion recovers above 80% for 2 consecutive quarters (confirming WC normalisation post-expansion)</li>
+    <li><span class="upgrade-num">4</span>Promoter holding increases for 2 consecutive quarters, reversing the 3-year declining trend (insider conviction signal)</li>
+    <li><span class="upgrade-num">5</span>Government announces E30 blending roadmap with a firm 2028 target, extending BCL's ethanol revenue runway beyond E20 plateau</li>
+  </ul>
+
+  <h3>Series Tracker</h3>
+  <div class="section">
+    <table class="data-table series-table">
+      <thead>
+        <tr><th>#</th><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry</th><th>Summary Thesis</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>PVRINOX</td><td>NSE</td><td>C</td><td>⚪</td><td>B</td><td>B−</td><td>B+</td><td>B+</td><td>WATCH★★★</td><td>₹1,200</td><td>Multiplex duopoly recovery post-COVID</td></tr>
+        <tr><td>2</td><td>YATHARTH</td><td>NSE</td><td>B</td><td>⚪</td><td>B+</td><td>B</td><td>B</td><td>B</td><td>WATCH★★★</td><td>₹280</td><td>Tier-2 healthcare network expansion</td></tr>
+        <tr><td>3</td><td>BAJAJ-AUTO</td><td>NSE</td><td>C</td><td>⚪</td><td>A−</td><td>A−</td><td>A</td><td>B+</td><td>WATCH★★★★</td><td>₹6,500</td><td>Premium 2W compounder + EV optionality</td></tr>
+        <tr><td>4</td><td>TATACHEM</td><td>NSE</td><td>C</td><td>⚪</td><td>B</td><td>B−</td><td>B</td><td>B</td><td>WATCH★★★</td><td>₹750</td><td>Soda ash cycle recovery</td></tr>
+        <tr><td>5</td><td>TATAMOTORS</td><td>NSE</td><td>D</td><td>🔴</td><td>C+</td><td>B−</td><td>B</td><td>B</td><td>WATCH★★★</td><td>₹550</td><td>JLR EV transition + China risk</td></tr>
+        <tr><td>6</td><td>BANKBARODA</td><td>NSE</td><td>D</td><td>⚪</td><td>B−</td><td>C+</td><td>C+</td><td>B+</td><td>WATCH★★★</td><td>₹200</td><td>PSB re-rating play</td></tr>
+        <tr><td>7</td><td>GOOGL</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>A</td><td>A−</td><td>WATCH★★★★</td><td>$155</td><td>Gemini AI WIDENER + search moat</td></tr>
+        <tr><td>8</td><td>MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A+</td><td>A+</td><td>A+</td><td>B+</td><td>WATCH★★★★</td><td>$380</td><td>Copilot + Azure AI flywheel</td></tr>
+        <tr><td>9</td><td>NEWGEN</td><td>NSE</td><td>C</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>B</td><td>WATCH★★★★</td><td>₹900</td><td>Enterprise software + AI embed</td></tr>
+        <tr><td>10</td><td>MELI</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>A−</td><td>B+</td><td>A</td><td>B</td><td>WATCH★★★★</td><td>$1,800</td><td>LatAm e-commerce + fintech flywheel</td></tr>
+        <tr><td>11</td><td>COLPAL</td><td>NSE</td><td>A</td><td>⚪</td><td>A+</td><td>A+</td><td>A</td><td>A−</td><td>WATCH★★★★</td><td>₹2,800</td><td>India FMCG monopoly; oral care</td></tr>
+        <tr><td>12</td><td>INTC</td><td>NASDAQ</td><td>D</td><td>🔴</td><td>B−</td><td>C+</td><td>C+</td><td>B+</td><td>WATCH★★</td><td>$18</td><td>Foundry turnaround; AMD/TSMC threat</td></tr>
+        <tr><td>18</td><td>NVO</td><td>NYSE</td><td>D→C</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>A−</td><td>WATCH★★★★</td><td>$44–49</td><td>GLP-1 trough; oral pill + AI pipeline</td></tr>
+        <tr><td>19</td><td>CONFIPET</td><td>NSE</td><td>D</td><td>⚪</td><td>C−</td><td>D</td><td>D−</td><td>D+</td><td>AVOID</td><td>₹16</td><td>DGGI demand + audit + negative FCF = trap</td></tr>
+        <tr style="background:rgba(194,106,26,.12);font-weight:600"><td>20</td><td>BCLIND</td><td>NSE</td><td>C</td><td>⚪</td><td>C</td><td>C+</td><td>C+</td><td>B</td><td>WATCH★★★</td><td>₹22–25</td><td>E20 ethanol tailwind; FCF recovery thesis; cheap but not quality enough yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 7 — TECHNICAL ANALYSIS
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab7">
+  <h2>Technical Analysis</h2>
+
+  <h3>Section A — Price Structure &amp; Multi-Timeframe Trend</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Timeframe</th><th>Trend</th><th>Evidence</th></tr>
+      <tr><td>Daily</td><td style="color:var(--fail-border)">BEARISH (mildly)</td><td>Below all major MAs; RSI recovering from oversold but still weak; near 52W lows</td></tr>
+      <tr><td>Weekly</td><td style="color:var(--marginal-border)">BEARISH</td><td>MACD bearish; OBV mildly positive (some accumulation) — mixed signals</td></tr>
+      <tr><td>Monthly</td><td style="color:var(--fail-border)">BEARISH</td><td>Strong sell from MA analysis; stock has declined 35%+ from 52W high</td></tr>
+    </table>
+    <p>BCL's price structure is in a clear downtrend from the ₹52 peak. The stock has lost ~47% from its high to the current low zone of ~₹26-28. Current price (₹27.7) is near the 52W low (₹26.0), creating a support zone but not yet a confirmed reversal. This is technically the <em>capitulation zone</em> — typically where value investors begin considering positions. <span class="lbl lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <h3>Section B — Moving Average Dashboard</h3>
+  <div class="ma-dashboard">
+    <div class="ma-card below">
+      <div class="ma-label">20-EMA</div>
+      <div class="ma-val">~₹30</div>
+      <div class="ma-status">BELOW ↓</div>
+    </div>
+    <div class="ma-card below">
+      <div class="ma-label">50-DMA</div>
+      <div class="ma-val">~₹32</div>
+      <div class="ma-status">BELOW ↓</div>
+    </div>
+    <div class="ma-card below">
+      <div class="ma-label">100-DMA</div>
+      <div class="ma-val">~₹36</div>
+      <div class="ma-status">BELOW ↓</div>
+    </div>
+    <div class="ma-card below">
+      <div class="ma-label">200-DMA</div>
+      <div class="ma-val">~₹44</div>
+      <div class="ma-status">BELOW ↓</div>
+    </div>
+  </div>
+  <p><strong>MA Cross Status:</strong> DEAD CROSS confirmed (50-DMA crossed below 200-DMA). All four moving averages point bearish. Stock trading 37% below 200-DMA — significantly extended to the downside. In past cycles, BCL has recovered sharply from extended MA deviations. <span class="lbl lbl-e">ESTIMATED — MAs approximate from analytical reports</span></p>
+
+  <h3>Section C — Volume Analysis</h3>
+  <div class="section">
+    <p>Recent OBV: Mildly positive on weekly timeframe per MarketsMojo analysis (some accumulation at low levels). Volume-based indicators: selling momentum dominant on daily. This suggests weak hands selling while some value-conscious buyers accumulate near 52W lows. Not yet a definitive institutional accumulation signal. <span class="lbl lbl-e">ESTIMATED</span></p>
+    <div class="info-box">Notable: BCL approved ₹55 Cr land sale and acquired remaining 25% in Svaksha Distillery (making it wholly owned) — these corporate actions in Nov 2025 suggest management is rationalising the portfolio while maintaining control over distillery assets.</div>
+  </div>
+
+  <h3>Section D — Momentum Indicators</h3>
+  <div class="section">
+    <div class="metric-grid">
+      <div class="metric-card amber">
+        <div class="metric-label">RSI (14-Day)</div>
+        <div class="metric-value">~35–40</div>
+        <div class="metric-sub">Approaching oversold; weekly RSI bullish</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">MACD</div>
+        <div class="metric-value">BEARISH</div>
+        <div class="metric-sub">Bearish on weekly and monthly; daily improving</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">CCI</div>
+        <div class="metric-value">BUY signal</div>
+        <div class="metric-sub">Short-term buy but momentum weak</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">VWAP (short)</div>
+        <div class="metric-value">~₹45</div>
+        <div class="metric-sub">Stock well below short-term VWAP</div>
+      </div>
+    </div>
+    <p class="note"><span class="lbl lbl-e">ESTIMATED</span> RSI and momentum readings from analytical sources. Daily RSI near oversold zone creates potential for technical bounce, but sustained recovery requires fundamental catalyst (FCF recovery confirmation, ROIC improvement, or E30 policy announcement).</p>
+  </div>
+
+  <h3>Section E — Chart Pattern</h3>
+  <div class="section">
+    <p><strong>Pattern: Descending Channel (Bearish)</strong> — BCL has been in a falling channel since the ₹52 peak. The current price near ₹26-28 zone is at the lower end of the channel and the 52W low support zone. A potential <em>double bottom</em> formation is developing if the stock holds ₹26 and makes a higher low.</p>
+    <p><strong>Target on reversal:</strong> Channel resistance ₹36-38 (first target), then ₹44-46 (200-DMA retest). Invalidation: daily close below ₹25.5 (new 52W low).</p>
+  </div>
+
+  <h3>Section F — Trade Structure</h3>
+  <div class="section" style="background:rgba(194,106,26,.05);border-left:4px solid var(--amber);">
+    <h4>PRIMARY TRIGGER (Framework-Aligned Entry)</h4>
+    <p>Requires convergence of: (1) Further price decline to ₹22-25, (2) RSI &lt;35 on daily, (3) ROIC evidence improving, (4) FCF recovery confirmed in 2 consecutive quarters.</p>
+    <table class="data-table">
+      <tr><th>Parameter</th><th>PRIMARY (WATCH trigger)</th><th>STARTER (current level)</th></tr>
+      <tr><td>Entry Zone</td><td class="num">₹22–25</td><td class="num">₹27–28 (cautious tracking)</td></tr>
+      <tr><td>Stop-Loss</td><td class="num">₹19 (below book value)</td><td class="num">₹23</td></tr>
+      <tr><td>Target 1</td><td class="num">₹38 (200-DMA)</td><td class="num">₹35</td></tr>
+      <tr><td>Target 2</td><td class="num">₹52 (prior high)</td><td class="num">₹45 (Base IV)</td></tr>
+      <tr><td>Risk:Reward</td><td class="num">1:3.0+</td><td class="num">1:1.8</td></tr>
+      <tr><td>Position Size</td><td class="num">2-3% portfolio max</td><td class="num">1% tracking only</td></tr>
+    </table>
+    <p class="note">At current price ₹27.7, R:R is marginal (1.8:1) — below the framework threshold of 2.5:1. Do not size a full position at current levels.</p>
+  </div>
+
+  <h3>Section G — Technical Composite Score</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Dimension</th><th class="num">Score (1-5)</th><th>Comment</th></tr>
+      <tr><td>Price Trend (weekly/monthly)</td><td class="num">2</td><td>Bearish; in descending channel</td></tr>
+      <tr><td>Moving Averages</td><td class="num">1</td><td>Below all 4 MAs; dead cross active</td></tr>
+      <tr><td>Volume / OBV</td><td class="num">3</td><td>Mild accumulation weekly; mixed signal</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td class="num">2</td><td>RSI near oversold; MACD bearish</td></tr>
+      <tr><td>Support/Resistance</td><td class="num">3</td><td>At 52W low support; holding so far</td></tr>
+      <tr><td>Chart Pattern</td><td class="num">2</td><td>Descending channel; potential double bottom forming</td></tr>
+      <tr style="font-weight:700"><td>TOTAL</td><td class="num">13/30 (43%)</td><td>WEAK — Do not buy on technicals alone</td></tr>
+    </table>
+    <div class="warn-box">Technical score 43% is WEAK. The framework requires Technical + Fundamental + Shareholding convergence for a BUY signal. Currently: Valuation ✓ | Fundamentals ✗ | Technicals ✗ | Shareholding ⚠. Only 1 of 4 pillars converging = WATCH, not BUY.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 8 — SHAREHOLDING
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab8">
+  <h2>Shareholding &amp; Free Float Analysis</h2>
+
+  <h3>Section A — Promoter Holding Trend</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>Quarter</th><th class="num">Promoter %</th><th class="num">Change</th><th>Signal</th></tr>
+      <tr><td>Q1 FY24 (Jun 2023)</td><td class="num">~61.1%</td><td>—</td><td>Base</td></tr>
+      <tr><td>Q2 FY24 (Sep 2023)</td><td class="num">~60.5%</td><td class="num">−0.6%</td><td style="color:var(--marginal-border)">Mild selling</td></tr>
+      <tr><td>Q3 FY24 (Dec 2023)</td><td class="num">~59.3%</td><td class="num">−1.2%</td><td style="color:var(--fail-border)">Selling accelerating</td></tr>
+      <tr><td>Q4 FY24 (Mar 2024)</td><td class="num">~58.5%</td><td class="num">−0.8%</td><td style="color:var(--fail-border)">Continued decline</td></tr>
+      <tr><td>Q1 FY26 (Jun 2025)</td><td class="num">57.77%</td><td class="num">−0.7%</td><td style="color:var(--fail-border)">Still declining</td></tr>
+    </table>
+    <p class="note"><span class="lbl lbl-e">ESTIMATED</span> Exact quarterly data not fully available for all periods. Screener confirms 3yr decline of −3.33%. Promoter pledged shares: No significant pledge reported. <span class="badge" style="background:#fff3cd;color:#856404;border-color:#ffc107;font-size:.65rem;">PLEDGES: LOW RISK</span></p>
+    <div class="warn-box">⚠ Promoter holding declined 3.33% over 3 years — trend is negative. Current 57.77% is still majority but the direction is concerning. This was partly offset by the period coinciding with peak valuations (₹45-52 price range) — promoters may have sold at premium prices. Need reversal for upgrade condition.</div>
+  </div>
+
+  <h3>Section B — Institutional Holding</h3>
+  <div class="section">
+    <div class="metric-grid">
+      <div class="metric-card red">
+        <div class="metric-label">FII Holding</div>
+        <div class="metric-value">1.84%</div>
+        <div class="metric-sub">Very low; 23 FIIs with tiny stakes</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">DII / Mutual Funds</div>
+        <div class="metric-value">~0%</div>
+        <div class="metric-sub">No mutual fund ownership detected</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Retail / Public</div>
+        <div class="metric-value">~40.4%</div>
+        <div class="metric-sub">High retail ownership — liquidity risk</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">Institutional Conviction</div>
+        <div class="metric-value">ABSENT</div>
+        <div class="metric-sub">No institutional anchor — serious concern</div>
+      </div>
+    </div>
+    <div class="warn-box">🔴 <strong>Critical Shareholding Concern:</strong> No mutual fund ownership and only 1.84% FII is a major negative signal. Institutional investors — who conduct deep-dive research — have avoided this stock. This is a pattern associated with: (1) small-cap liquidity constraints, (2) governance concerns, or (3) fundamental quality issues. For a stock at P/E 7×, the absence of institutional buyers requires serious explanation. This is precisely the question the framework asks: "Is it cheap or is it a value trap?"</div>
+  </div>
+
+  <h3>Section C — Free Float &amp; Market Structure</h3>
+  <div class="section">
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-label">Total Market Cap</div>
+        <div class="metric-value">₹819 Cr</div>
+        <div class="metric-sub">Small-cap; illiquid</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Free Float Cap</div>
+        <div class="metric-value">~₹346 Cr</div>
+        <div class="metric-sub">Mkt cap × (100-57.77)% = very small</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">MSCI / Nifty</div>
+        <div class="metric-value">None</div>
+        <div class="metric-sub">Not in any major index</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">SIP Monthly Est.</div>
+        <div class="metric-value">~₹0</div>
+        <div class="metric-sub">Not in MF schemes — no SIP demand</div>
+      </div>
+    </div>
+    <p>The free float of ~₹346 Cr is extremely small. This means even a small institutional fund cannot build a meaningful position without moving the price. This liquidity constraint is a structural reason why institutional investors avoid the stock — not necessarily a reflection of business quality.</p>
+  </div>
+
+  <h3>Section D — Full Composition Table</h3>
+  <table class="data-table">
+    <tr><th>Holder Type</th><th class="num">Holding %</th><th class="num">Trend</th><th>Signal</th></tr>
+    <tr><td>Promoter Group</td><td class="num">57.77%</td><td class="num">↓ −3.33% (3yr)</td><td style="color:var(--fail-border)">⚠ Declining — WATCH</td></tr>
+    <tr><td>FII / FPI</td><td class="num">1.84%</td><td class="num">→ Stable</td><td style="color:var(--marginal-border)">Very low; no major player</td></tr>
+    <tr><td>DII / Domestic MF</td><td class="num">~0%</td><td class="num">→ Absent</td><td style="color:var(--fail-border)">🔴 No institutional ownership</td></tr>
+    <tr><td>Retail / Public</td><td class="num">~40.4%</td><td class="num">↑ Rising</td><td style="color:var(--fail-border)">Rising retail = institutions exiting</td></tr>
+  </table>
+  <p class="note">Key individual: Sunita Mittal holds 16.59% (largest single stake). Public individual Sangeetha S holds 1.13% — largest non-promoter named holder.</p>
+
+  <h3>Section E — Ownership Scores</h3>
+  <div class="section">
+    <div class="metric-grid">
+      <div class="metric-card red">
+        <div class="metric-label">Ownership Momentum Score</div>
+        <div class="metric-value">28/100</div>
+        <div class="metric-sub">Promoter selling + no institutional entry</div>
+      </div>
+      <div class="metric-card red">
+        <div class="metric-label">Shareholding Risk Score</div>
+        <div class="metric-value">72/100</div>
+        <div class="metric-sub">High retail concentration; illiquid; no institutional anchor</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 9 — AI INTELLIGENCE
+═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab9">
+  <h2>AI Opportunity Intelligence</h2>
+  <p class="note">BCL Industries is classified AI NEUTRAL. This tab provides Section A (classification) and Section F (portfolio role). Sections B-E (Flywheel deep-dive, Disruption risk, India AI opportunity) are brief given the AI-neutral nature of the business.</p>
+
+  <h3>Section A — AI Classification Dashboard</h3>
+  <div class="ai-badge-row">
+    <div class="ai-badge-card">
+      <div class="ai-badge-title">CATEGORY</div>
+      <div class="ai-badge-val">⚙ C</div>
+      <div style="font-size:.65rem;color:#999;margin-top:4px">Mature Compounder</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-title">AI OVERLAY</div>
+      <div class="ai-badge-val">⚪ NEUTRAL</div>
+      <div style="font-size:.65rem;color:#999;margin-top:4px">AI is a tool, not a moat</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-title">DATA FLYWHEEL</div>
+      <div class="ai-badge-val">🤖 COSMETIC</div>
+      <div style="font-size:.65rem;color:#999;margin-top:4px">No flywheel identified</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-title">ADOPTION PHASE</div>
+      <div class="ai-badge-val">N/A</div>
+      <div style="font-size:.65rem;color:#999;margin-top:4px">Not an AI play</div>
+    </div>
+  </div>
+
+  <h3>Section B — Why BCL is AI NEUTRAL (Brief)</h3>
+  <div class="section">
+    <p>BCL Industries is a grain-based agro-processing manufacturer. Its core value drivers are: (1) grain procurement efficiency, (2) distillery conversion rates, (3) OMC relationship management, and (4) government policy navigation. None of these are enhanced by AI in a structurally moat-building way.</p>
+    <p>BCL <em>could</em> use AI for: route optimization in grain procurement logistics, predictive maintenance of distillery equipment, or demand forecasting for edible oil. These are AI-as-a-tool applications (Category: AI NEUTRAL) that reduce costs but do not create proprietary data flywheels or switching costs. Any efficiency gains are replicable by competitors at low incremental cost.</p>
+    <p><strong>Flywheel test result:</strong> 0/3 criteria confirmed. AI IS COSMETIC for BCL.</p>
+  </div>
+
+  <h3>Section C — AI Disruption Risk Assessment</h3>
+  <div class="section">
+    <p><strong>AI Disruption Risk to BCL: LOW</strong></p>
+    <p>Distillery and edible oil processing are physical, asset-intensive businesses. No AI system can replace grain fermentation, distillation, or oil refining. The core physical process is AI-immune. Regulatory relationships (OMC tenders, state liquor licences) are human-driven. The business is inherently offline and capital-asset based.</p>
+    <p><strong>Moat Resilience Score vs AI: 9/10</strong> — BCL's business is almost entirely immune to AI disruption. The risk is policy disruption (EBP rollback) and commodity cycles, not AI.</p>
+  </div>
+
+  <h3>Section D — India AI Opportunity Context</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>India AI Theme</th><th>Phase</th><th>BCL Relevance</th></tr>
+      <tr><td>AI in banking/credit</td><td>Phase 3</td><td>None</td></tr>
+      <tr><td>Vernacular AI content</td><td>Phase 2</td><td>None</td></tr>
+      <tr><td>AI in agri advisory</td><td>Phase 1-2</td><td>Adjacent — AI grain advisory could affect procurement; low impact on BCL</td></tr>
+      <tr><td>AI in logistics/supply chain</td><td>Phase 2-3</td><td>Adjacent — procurement logistics efficiency. Modest positive.</td></tr>
+      <tr><td>Data centres (infra)</td><td>Phase 3-4</td><td>None</td></tr>
+      <tr><td>AI in diagnostics/health</td><td>Phase 2</td><td>None</td></tr>
+    </table>
+    <p>India Stack advantage: <strong>None identified</strong> for BCL's core operations. UPI/Aadhaar data does not flow into distillery or edible oil economics.</p>
+  </div>
+
+  <h3>Section F — AI Opportunity Score &amp; Portfolio Role</h3>
+  <div class="section">
+    <table class="data-table">
+      <tr><th>AI Score Component</th><th class="num">Score</th><th>Basis</th></tr>
+      <tr><td>Data Flywheel Strength</td><td class="num">0/20</td><td>COSMETIC — no flywheel</td></tr>
+      <tr><td>Adoption Phase Timing</td><td class="num">5/20</td><td>N/A for this business</td></tr>
+      <tr><td>Value Chain Position</td><td class="num">10/20</td><td>Level 5 (AI-enabled incumbent) but AI is not actually enabling BCL yet</td></tr>
+      <tr><td>India Structural Advantage</td><td class="num">2/20</td><td>No India Stack or language AI advantage</td></tr>
+      <tr><td>AI Threat Resistance</td><td class="num">18/20</td><td>Excellent — agro-processing is AI-immune</td></tr>
+      <tr style="font-weight:700;background:rgba(194,106,26,.08)"><td>TOTAL AI OPPORTUNITY SCORE</td><td class="num">35/100</td><td></td></tr>
+    </table>
+    <p>Score 35/100 = <strong>AI NEUTRAL — Standard fundamental framework governs.</strong> AI neither helps nor hurts BCL materially. Investment thesis is 100% based on: (1) ethanol policy trajectory, (2) FCF recovery post-expansion, (3) ROIC improvement, and (4) leverage reduction. The AI lens adds nothing new to this thesis.</p>
+    <div class="info-box">
+      <strong>Portfolio Role: MONITOR</strong> (AI Score 35/100)<br>
+      BCL is a fundamental value play — not an AI opportunity. Standard Buffett quality-value framework applies in full. The AI Intelligence tab confirms no additional AI-related premium or risk needs to be applied to the valuation. Invest on fundamentals alone. Investment horizon (if BUY conditions are met): 3-5 years for normalisation of FCF and ROIC.
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong style="color:rgba(255,255,255,.7)">Disclaimer:</strong> This report is produced for educational and research purposes only and does not constitute investment advice, a solicitation, or a recommendation to buy or sell any security. SEBI Registration is not held. This is not SEBI-registered research. BCL Industries (NSE: BCLIND) analysis is based on publicly available information as of April 2026. All financial data from Screener.in, company BSE/NSE filings, and public sources. Intrinsic value estimates are the analyst's own and involve significant uncertainty. Past performance is not indicative of future results. Investors should conduct their own due diligence and consult a SEBI-registered investment advisor before making investment decisions.
+  <br><br>
+  <strong style="color:rgba(255,255,255,.7)">Data Confidence:</strong> [VERIFIED] = confirmed from filings or official searches | [ESTIMATED] = high confidence cross-referenced | [UNVERIFIED] = limited source. Current stock price should be independently confirmed before any investment decision.
+  <br><br>
+  <strong style="color:rgba(255,255,255,.7)">Fonts:</strong> Playfair Display · Lora · Fira Mono — via Google Fonts. Report generated: April 2026. Buffett Quality-Value Framework v5.0.
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+    el.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  var target = document.getElementById(tabId);
+  if (target) { target.style.display = 'block'; target.classList.add('active'); }
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

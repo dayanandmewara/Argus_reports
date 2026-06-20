@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coforge — Quality-Value Report | AI-Powered Equity Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400&family=DM+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0C1B2E;
+  --copper: #C96B2A;
+  --copper-light: #E8843E;
+  --steel: #1B5E8C;
+  --steel-light: #2D84C0;
+  --ivory: #F5F0E8;
+  --ivory-dark: #EDE5D8;
+  --text-primary: #1A1A2E;
+  --text-secondary: #4A4A6A;
+  --text-muted: #7A7A9A;
+  --pass-green: #1A7A3C;
+  --pass-bg: #D4EDDA;
+  --warn-amber: #92600A;
+  --warn-bg: #FFF3CD;
+  --fail-red: #8B1A1A;
+  --fail-bg: #FFE0E0;
+  --border: #D8CFC0;
+  --card-bg: #FFFFFF;
+  --tab-active: #C96B2A;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--ivory);color:var(--text-primary);font-size:15px;line-height:1.6;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0C1B2E 0%,#1A2E45 50%,#0E2235 100%);color:#fff;padding:40px 28px 32px;position:relative;overflow:hidden;min-height:200px;}
+.hero::before{content:'';position:absolute;top:0;right:0;width:380px;height:100%;background:radial-gradient(ellipse at 80% 50%,rgba(201,107,42,0.18) 0%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--copper-light);margin-bottom:8px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,50px);font-weight:800;line-height:1.05;margin-bottom:4px;}
+.hero-sub{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:16px;font-family:'IBM Plex Mono',monospace;}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.badge-cat{background:#1B5E8C;color:#fff;}
+.badge-ai{background:rgba(255,255,255,0.12);color:#E8D5B7;border:1px solid rgba(255,255,255,0.2);}
+.badge-verdict{background:var(--copper);color:#fff;font-size:12px;padding:5px 14px;}
+.badge-macro{background:rgba(26,127,60,0.25);color:#7EE8A2;border:1px solid rgba(126,232,162,0.3);}
+.data-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+.pill{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:8px 12px;min-width:100px;}
+.pill-label{font-size:10px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px;}
+.pill-value{font-size:16px;font-weight:600;font-family:'Playfair Display',serif;}
+.pill-value.up{color:#7EE8A2;}
+.pill-value.warn{color:#F4C06B;}
+.pill-value.down{color:#FF8080;}
+.hero-lede{font-size:13.5px;color:rgba(255,255,255,0.72);line-height:1.7;max-width:640px;margin-top:14px;border-left:3px solid var(--copper);padding-left:12px;}
+
+/* TAB BAR */
+#tab-bar{background:var(--navy);position:sticky;top:0;z-index:100;overflow-x:auto;white-space:nowrap;border-bottom:2px solid var(--copper);}
+#tab-bar::-webkit-scrollbar{height:3px;}
+#tab-bar::-webkit-scrollbar-thumb{background:var(--copper);}
+.tab-nav{display:inline-flex;padding:0 12px;}
+.tab-btn{background:none;border:none;color:rgba(255,255,255,0.5);padding:12px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:.3px;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab-btn:hover{color:rgba(255,255,255,0.85);}
+.tab-btn.active{color:#fff;border-bottom:3px solid var(--copper);}
+
+/* CONTENT */
+.tab-content{display:none;padding:28px 20px;max-width:1100px;margin:0 auto;}
+.tab-content.active-tab{display:block;}
+.section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.section-title small{font-size:13px;font-weight:400;color:var(--text-muted);font-family:'DM Sans',sans-serif;margin-left:8px;}
+.section-divider{border:none;border-top:1px solid var(--border);margin:24px 0;}
+
+/* CARDS */
+.card{background:var(--card-bg);border-radius:10px;padding:20px;border:1px solid var(--border);margin-bottom:16px;}
+.card-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.card-title .icon{width:20px;height:20px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;background:var(--copper);color:#fff;}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:680px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+/* METRIC CARDS */
+.metric-card{background:#fff;border-radius:8px;padding:14px 16px;border-left:4px solid var(--copper);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+.metric-card.green{border-left-color:var(--pass-green);}
+.metric-card.amber{border-left-color:#B8860B;}
+.metric-card.red{border-left-color:#8B1A1A;}
+.metric-card.steel{border-left-color:var(--steel);}
+.metric-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
+.metric-value{font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);}
+.metric-sub{font-size:11px;color:var(--text-muted);margin-top:3px;}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:8px;}
+th{background:var(--navy);color:#fff;padding:9px 11px;text-align:left;font-weight:500;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.3px;}
+td{padding:8px 11px;border-bottom:1px solid var(--border);}
+tr:nth-child(even) td{background:rgba(245,240,232,0.5);}
+tr:hover td{background:var(--ivory-dark);}
+.td-right{text-align:right;}
+.td-center{text-align:center;}
+
+/* CONFIDENCE BADGES */
+.verified{background:#D4EDDA;color:#155724;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.5px;font-family:'IBM Plex Mono',monospace;}
+.estimated{background:#FFF3CD;color:#856404;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.5px;font-family:'IBM Plex Mono',monospace;}
+.unverified{background:#FFE0E0;color:#721C24;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.5px;font-family:'IBM Plex Mono',monospace;}
+
+/* SCORECARD */
+.score-item{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;}
+.score-item:last-child{border-bottom:none;}
+.score-badge{padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;font-family:'IBM Plex Mono',monospace;}
+.score-pass{background:var(--pass-bg);color:var(--pass-green);}
+.score-marginal{background:var(--warn-bg);color:var(--warn-amber);}
+.score-fail{background:var(--fail-bg);color:var(--fail-red);}
+
+/* PILLAR GRADES */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+@media(max-width:640px){.pillar-grid{grid-template-columns:1fr 1fr;}}
+.pillar-card{background:var(--navy);color:#fff;border-radius:10px;padding:18px;text-align:center;}
+.pillar-name{font-size:11px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.pillar-grade{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;color:var(--copper-light);}
+.pillar-desc{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px;}
+
+/* VERDICT BOX */
+.verdict-box{background:var(--navy);color:#fff;border-radius:12px;padding:28px;border:2px solid var(--copper);margin-bottom:20px;}
+.verdict-headline{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:var(--copper-light);margin-bottom:8px;}
+.verdict-stars{font-size:22px;margin-bottom:12px;letter-spacing:2px;}
+.verdict-quote{font-style:italic;color:rgba(255,255,255,0.65);font-size:14px;border-left:3px solid var(--copper);padding-left:12px;margin:16px 0;}
+
+/* UPGRADE CONDITIONS */
+.upgrade-list{list-style:none;}
+.upgrade-list li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.upgrade-list li:last-child{border-bottom:none;}
+.upgrade-num{background:var(--copper);color:#fff;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* MOAT STARS */
+.moat-card{background:#fff;border-radius:8px;padding:14px 16px;border:1px solid var(--border);margin-bottom:10px;}
+.moat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.moat-name{font-weight:600;font-size:14px;color:var(--navy);}
+.stars{color:var(--copper);font-size:14px;letter-spacing:1px;}
+
+/* FLYWHEEL BOX */
+.flywheel-box{background:linear-gradient(135deg,#0C1B2E,#1A2E45);color:#fff;border-radius:12px;padding:22px;border:2px solid var(--steel-light);margin-bottom:20px;}
+.flywheel-title{font-family:'Playfair Display',serif;font-size:18px;margin-bottom:12px;color:var(--steel-light);}
+.flywheel-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-weight:700;font-size:12px;margin-bottom:12px;}
+.flywheel-cosmetic{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);}
+.flywheel-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;font-size:13px;}
+.flywheel-check .icon{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;}
+.icon-yes{background:var(--pass-green);color:#fff;}
+.icon-no{background:#8B1A1A;color:#fff;}
+
+/* DCF TABLE */
+.scenario-table{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.scenario-col{padding:0;}
+.scenario-head{padding:12px 14px;font-weight:700;font-size:12px;text-align:center;}
+.scenario-head.stress{background:#FFE0E0;color:#8B1A1A;}
+.scenario-head.base{background:#D4EDDA;color:#155724;}
+.scenario-head.accel{background:#CCE5FF;color:#004085;}
+.scenario-row{padding:9px 14px;border-top:1px solid var(--border);font-size:12px;}
+.scenario-label{color:var(--text-muted);font-size:11px;margin-bottom:2px;}
+.scenario-val{font-weight:600;color:var(--navy);}
+
+/* TECHNICAL PRICE LADDER */
+.price-ladder{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.ladder-item{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;}
+.ladder-item:last-child{border-bottom:none;}
+.ladder-level{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;}
+.ladder-label{font-size:11px;color:var(--text-muted);}
+.ladder-resistance{color:#8B1A1A;}
+.ladder-support{color:var(--pass-green);}
+.ladder-current{background:rgba(201,107,42,0.08);font-weight:700;}
+.ladder-current .ladder-level{color:var(--copper);}
+
+/* AI SCORE GAUGE */
+.ai-score-display{background:var(--navy);color:#fff;border-radius:10px;padding:20px;text-align:center;}
+.ai-score-number{font-family:'Playfair Display',serif;font-size:52px;font-weight:800;color:var(--copper-light);}
+.ai-score-label{font-size:13px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;}
+.ai-bar{background:rgba(255,255,255,0.1);border-radius:10px;height:8px;margin:12px 0 6px;}
+.ai-bar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--steel),var(--copper-light));}
+
+/* VALUE CHAIN */
+.value-chain{display:flex;gap:0;margin:16px 0;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.vc-item{flex:1;padding:10px 8px;text-align:center;font-size:11px;font-weight:500;border-right:1px solid var(--border);background:#fff;color:var(--text-muted);transition:all .2s;}
+.vc-item:last-child{border-right:none;}
+.vc-item.active{background:var(--navy);color:#fff;}
+.vc-item .vc-num{font-size:16px;font-weight:700;font-family:'Playfair Display',serif;display:block;margin-bottom:2px;}
+@media(max-width:600px){.value-chain{flex-direction:column;} .vc-item{border-right:none;border-bottom:1px solid var(--border);}}
+
+/* SHAREHOLDING */
+.sh-bar{height:12px;border-radius:6px;background:var(--ivory-dark);overflow:hidden;margin:4px 0 2px;}
+.sh-fill{height:100%;border-radius:6px;}
+.sh-fii{background:var(--steel);}
+.sh-dii{background:var(--pass-green);}
+.sh-retail{background:var(--copper);}
+.sh-promoter{background:#9B59B6;}
+.sh-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;}
+.sh-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* MACRO CYCLE DASHBOARD */
+.macro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+@media(max-width:640px){.macro-grid{grid-template-columns:1fr 1fr;}}
+.macro-item{background:#fff;border-radius:8px;padding:12px;border:1px solid var(--border);}
+.macro-item-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.macro-item-status{font-size:13px;font-weight:600;margin-bottom:2px;}
+.macro-item-note{font-size:11px;color:var(--text-muted);}
+.macro-tailwind{color:var(--pass-green);}
+.macro-neutral{color:#7A7A9A;}
+.macro-headwind{color:#8B1A1A;}
+
+/* OWNER EARNINGS */
+.oe-box{background:linear-gradient(135deg,var(--navy),#1A3050);color:#fff;border-radius:10px;padding:20px;}
+.oe-title{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:14px;color:var(--copper-light);}
+.oe-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.1);font-size:13px;}
+.oe-row:last-child{border-bottom:none;font-weight:700;color:var(--copper-light);}
+.oe-label{color:rgba(255,255,255,0.65);}
+.oe-val{font-family:'IBM Plex Mono',monospace;font-weight:500;}
+
+/* ROIC TABLE */
+.roic-cards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.roic-yr{background:#fff;border-radius:8px;padding:12px 14px;border:1px solid var(--border);min-width:90px;flex:1;}
+.roic-yr-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.roic-yr-val{font-size:20px;font-weight:700;font-family:'Playfair Display',serif;}
+.roic-good{color:var(--pass-green);border-top:3px solid var(--pass-green);}
+.roic-mid{color:#B8860B;border-top:3px solid #B8860B;}
+.roic-low{color:#8B1A1A;border-top:3px solid #8B1A1A;}
+
+/* NOTES */
+.note{background:rgba(201,107,42,0.08);border-left:3px solid var(--copper);padding:10px 14px;border-radius:0 6px 6px 0;font-size:12.5px;color:var(--text-secondary);margin:12px 0;}
+
+/* SERIES TABLE */
+.series-table-wrap{overflow-x:auto;}
+.series-table{min-width:700px;}
+
+/* RESPONSIVE */
+@media(max-width:600px){.hero{padding:28px 16px 24px;} .tab-content{padding:18px 14px;} .section-title{font-size:18px;}}
+
+/* HIGHLIGHT BAR */
+.highlight-bar{background:var(--copper);color:#fff;padding:10px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;font-weight:500;}
+
+/* TRADE BOX */
+.trade-box{background:var(--navy);color:#fff;border-radius:10px;padding:20px;font-family:'IBM Plex Mono',monospace;font-size:13px;}
+.trade-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.1);}
+.trade-row:last-child{border-bottom:none;}
+.trade-label{color:rgba(255,255,255,0.55);}
+.trade-val{color:var(--copper-light);font-weight:600;}
+
+/* INDIA THEME TABLE */
+.theme-table td:first-child{font-weight:600;}
+.relevance-direct{background:#D4EDDA;color:#155724;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;}
+.relevance-adj{background:#FFF3CD;color:#856404;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;}
+.relevance-none{background:var(--ivory-dark);color:var(--text-muted);padding:2px 8px;border-radius:12px;font-size:11px;}
+
+/* FOOTER */
+.footer{background:var(--navy);color:rgba(255,255,255,0.4);padding:20px;font-size:11px;line-height:1.8;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Quality-Value Equity Series v5.0</div>
+  <div class="hero-title">Coforge</div>
+  <div class="hero-sub">NSE: COFORGE &nbsp;|&nbsp; ISIN: INE591G01025 &nbsp;|&nbsp; IT Services &amp; Engineering</div>
+  <div class="badge-row">
+    <span class="badge badge-cat">Category C — Mature Compounder</span>
+    <span class="badge badge-ai">⚪ AI NEUTRAL</span>
+    <span class="badge badge-verdict">WATCH ★★★★</span>
+    <span class="badge badge-macro">Macro: TAILWIND (RBI Easing)</span>
+  </div>
+  <div class="data-pills">
+    <div class="pill">
+      <div class="pill-label">Current Price</div>
+      <div class="pill-value">₹1,300</div>
+    </div>
+    <div class="pill">
+      <div class="pill-label">52W Range</div>
+      <div class="pill-value warn">₹1,008–1,994</div>
+    </div>
+    <div class="pill">
+      <div class="pill-label">Market Cap</div>
+      <div class="pill-value">₹43,600 Cr</div>
+    </div>
+    <div class="pill">
+      <div class="pill-label">FY26 PAT</div>
+      <div class="pill-value up">₹1,556 Cr</div>
+    </div>
+    <div class="pill">
+      <div class="pill-label">FY26 Rev Growth</div>
+      <div class="pill-value up">+35.9%</div>
+    </div>
+    <div class="pill">
+      <div class="pill-label">P/E (FY26)</div>
+      <div class="pill-value">~28x</div>
+    </div>
+    <div class="pill">
+      <div class="pill-label">EBIT Margin</div>
+      <div class="pill-value up">14.4%</div>
+    </div>
+    <div class="pill">
+      <div class="pill-label">MoS Entry Zone</div>
+      <div class="pill-value warn">₹1,050–1,150</div>
+    </div>
+  </div>
+  <div class="hero-lede">
+    Coforge — formerly NIIT Technologies — is India's fastest-growing mid-tier IT engineering firm, now a $2.5B enterprise built around AI-led engineering, data, and cloud. FY26 delivered +35.9% revenue growth and PAT nearly doubling at +91.6%, with EBIT margins hitting an all-time high of 16.6% in Q4. The stock collapsed 50% from its December 2024 peak of ₹2,005 before Q4 results catalysed a 10% bounce. Deep correction + exceptional results + strong order book ($1.75B executable) create a compelling risk-reward — but the entry price matters greatly.
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0. Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1. Macro &amp; Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2. Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3. Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4. Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5. Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6. Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7. Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8. Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9. AI Intelligence</button>
+  </div>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content" style="display:block;">
+  <div class="section-title">Business Overview <small>Coforge Limited — NSE: COFORGE</small></div>
+  <div class="card">
+    <div class="card-title"><span class="icon">🏢</span> Company at a Glance</div>
+    <p style="font-size:14px;line-height:1.8;color:var(--text-secondary);margin-bottom:12px;">
+      Coforge (formerly NIIT Technologies) is a global IT engineering and digital services company headquartered in Noida, India. Founded in 1992, it has evolved from a generalist IT services firm into a hyper-specialised, domain-deep engineering powerhouse. The company operates across 21 countries with 35,777 employees and serves over 250 global clients including British Airways, ING Group, SEI Investments, Sabre, and SITA.
+    </p>
+    <p style="font-size:14px;line-height:1.8;color:var(--text-secondary);">
+      Private equity firm EQT Partners (successor to Baring PE) controls Coforge with zero traditional promoter holding. Under CEO Sudhir Singh, the company has undergone a dramatic transformation — from a mid-tier generalist to a focused, AI-led engineering leader with deep BFSI, Travel, and Insurance verticals. The Cigniti Technologies acquisition ($220M, Dec 2024) expanded into healthcare, retail, and hi-tech verticals.
+    </p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Revenue Mix (FY26)</div>
+      <table>
+        <tr><th>Segment</th><th class="td-right">Share</th><th class="td-right">Trend</th></tr>
+        <tr><td>BFSI (Banking, Finance, Insurance)</td><td class="td-right"><strong>55%</strong></td><td class="td-right" style="color:var(--pass-green);">↑ Core</td></tr>
+        <tr><td>Travel &amp; Transportation</td><td class="td-right">20%</td><td class="td-right" style="color:var(--pass-green);">↑ Recovery</td></tr>
+        <tr><td>Manufacturing</td><td class="td-right">12%</td><td class="td-right" style="color:var(--text-muted);">→ Stable</td></tr>
+        <tr><td>Healthcare (post-Cigniti)</td><td class="td-right">8%</td><td class="td-right" style="color:var(--pass-green);">↑ Expanding</td></tr>
+        <tr><td>Other</td><td class="td-right">5%</td><td class="td-right" style="color:var(--text-muted);">→ Stable</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">🌍</span> Geographic Mix (FY26)</div>
+      <table>
+        <tr><th>Region</th><th class="td-right">Share</th><th class="td-right">Trend</th></tr>
+        <tr><td>Americas</td><td class="td-right"><strong>55%</strong></td><td class="td-right" style="color:var(--pass-green);">↑ Growing</td></tr>
+        <tr><td>Europe</td><td class="td-right">37%</td><td class="td-right" style="color:var(--text-muted);">→ Stable</td></tr>
+        <tr><td>Rest of World</td><td class="td-right">8%</td><td class="td-right" style="color:var(--pass-green);">↑ APAC</td></tr>
+      </table>
+      <div class="note">Top 5 clients = 25% revenue; Top 10 = 35%. Client concentration manageable.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">⭐</span> Why This Stock Is in the Series</div>
+    <p style="font-size:14px;line-height:1.8;color:var(--text-secondary);">
+      Coforge represents a high-risk, high-reward bet on India's IT sector transformation. It is the fastest-growing mid-tier Indian IT company by revenue (FY26: +35.9%), yet its stock fell 50% from peak — creating what may be a rare value-meets-growth entry point. The investment thesis rests on four pillars: (1) exceptional domain depth in BFSI and Travel — high-switching-cost verticals, (2) margin expansion story (EBIT from 11% to 14.4% in FY26, guidance for 20.5%+ EBITDA in FY27), (3) FCF inflection — guidance for 100%+ FCF/PAT conversion from FY27, and (4) $1.75B order book providing 12+ months revenue visibility. The key risk is AI disruption of traditional IT services labour arbitrage models over a 3–5 year horizon.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🔑</span> Key Milestones &amp; Recent Developments</div>
+    <table>
+      <tr><th>Date</th><th>Event</th><th class="td-right">Significance</th></tr>
+      <tr><td>Dec 2024</td><td>Cigniti Technologies acquisition completed ($220M)</td><td class="td-right" style="color:var(--pass-green);">High — +3 verticals</td></tr>
+      <tr><td>Mar 2025</td><td>Acquired Rythmos (cloud) + TMLabs (ServiceNow)</td><td class="td-right" style="color:#B8860B;">Medium — capability fill</td></tr>
+      <tr><td>FY26 Full Year</td><td>PAT +91.6%, EBIT margin +370bps to 14.4%</td><td class="td-right" style="color:var(--pass-green);">High — inflection year</td></tr>
+      <tr><td>Q4 FY26</td><td>EBIT margin 16.6% (all-time high); FCF +68% QoQ</td><td class="td-right" style="color:var(--pass-green);">High — margin story</td></tr>
+      <tr><td>Apr 2026</td><td>Cigniti merger formally completed (NCLT approved)</td><td class="td-right" style="color:var(--pass-green);">High — clean structure</td></tr>
+      <tr><td>Apr 2026</td><td>Encora acquisition announced (next integration)</td><td class="td-right" style="color:#B8860B;">Medium — execution risk</td></tr>
+      <tr><td>May 2026</td><td>Cigniti shareholder share exchange (record date May 16)</td><td class="td-right" style="color:var(--text-muted);">Low — dilution event</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <div class="section-title">Macro &amp; Sector Context <small>Layer 1 → Layer 3</small></div>
+
+  <div class="card">
+    <div class="card-title">🌐 LAYER 1 — Macro Anchor (India)</div>
+    <div class="grid-3" style="margin-bottom:14px;">
+      <div class="metric-card green">
+        <div class="metric-label">Real GDP FY26 (Actual)</div>
+        <div class="metric-value">7.6%</div>
+        <div class="metric-sub"><span class="verified">VERIFIED</span> India FY26 revised up from 7.4%</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">India CPI (FY27E)</div>
+        <div class="metric-value">4.7%</div>
+        <div class="metric-sub"><span class="estimated">ESTIMATED</span> IMF Apr 2026 WEO; RBI target 4%</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Nominal GDP (FY26)</div>
+        <div class="metric-value">~11.6%</div>
+        <div class="metric-sub"><span class="estimated">ESTIMATED</span> 7.6% real + ~4% CPI; terminal ceiling</div>
+      </div>
+      <div class="metric-card steel">
+        <div class="metric-label">India 10Y G-Sec Yield</div>
+        <div class="metric-value">6.93%</div>
+        <div class="metric-sub"><span class="verified">VERIFIED</span> May 8, 2026 — easing trend</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">RBI Repo Rate</div>
+        <div class="metric-value">5.25%</div>
+        <div class="metric-sub"><span class="estimated">ESTIMATED</span> Easing stance; 100bps cut since Feb 2025</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">INR/USD Trend</div>
+        <div class="metric-value">~₹88–90</div>
+        <div class="metric-sub"><span class="estimated">ESTIMATED</span> Modest depreciation; revenue tailwind for IT</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🌡️ Macro Cycle Dashboard</div>
+    <div class="macro-grid">
+      <div class="macro-item"><div class="macro-item-label">Urban Consumption</div><div class="macro-item-status macro-tailwind">Recovery</div><div class="macro-item-note">IT wage growth; real estate; urban jobs stable</div></div>
+      <div class="macro-item"><div class="macro-item-label">Rural Income</div><div class="macro-item-status macro-neutral">Neutral</div><div class="macro-item-note">Monsoon normal; MSP hikes; limited IT impact</div></div>
+      <div class="macro-item"><div class="macro-item-label">Input Cost (IT: talent)</div><div class="macro-item-status macro-tailwind">Falling</div><div class="macro-item-note">Attrition eased (10.8% LTM); fresher supply rising</div></div>
+      <div class="macro-item"><div class="macro-item-label">Interest Rate Cycle (RBI)</div><div class="macro-item-status macro-tailwind">Easing ✓</div><div class="macro-item-note">100bps cut; lower cost of debt; ERP widens equity attractiveness</div></div>
+      <div class="macro-item"><div class="macro-item-label">Govt Capex Cycle</div><div class="macro-item-status macro-tailwind">Expanding</div><div class="macro-item-note">IT in digital public infra; GCC expansion; AI Mission ₹2,000 Cr</div></div>
+      <div class="macro-item"><div class="macro-item-label">AI Adoption Cycle</div><div class="macro-item-status macro-tailwind">Accelerating</div><div class="macro-item-note">IT spend+11.1% in 2026 (Gartner); AI-led engineering growing fastest</div></div>
+    </div>
+    <div class="highlight-bar">MACRO COMPOSITE FOR COFORGE: ✅ TAILWIND &nbsp;|&nbsp; AI CYCLE IMPACT: ⚪ NEUTRAL — IT services faces AI disruption risk but short-term spending on AI transformation is a revenue opportunity</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏭 LAYER 2 — Sector Growth Derivation</div>
+    <table>
+      <tr><th>Parameter</th><th>Base</th><th>Accel.</th><th>Stress</th><th>AI Impact</th></tr>
+      <tr><td><strong>IT Services (traditional)</strong></td><td>9–11%</td><td>12–14%</td><td>6–8%</td><td style="color:#8B1A1A;">⚠️ AI THREAT</td></tr>
+      <tr><td><strong>AI-Engineering Services (Coforge niche)</strong></td><td>15–18%</td><td>20–25%</td><td>8–12%</td><td style="color:var(--pass-green);">✅ AI NEUTRAL/WIDENER</td></tr>
+      <tr><td><strong>IT Products / SaaS (embedded)</strong></td><td>18–22%</td><td>25–30%</td><td>12–16%</td><td style="color:var(--pass-green);">✅ AI WIDENER</td></tr>
+      <tr><td><strong>BFSI Technology (Coforge's #1 vertical)</strong></td><td>15–17%</td><td>18–22%</td><td>10–13%</td><td style="color:var(--pass-green);">✅ AI WIDENER (fraud/credit)</td></tr>
+      <tr><td><strong>Travel Technology</strong></td><td>12–15%</td><td>18–22%</td><td>8–10%</td><td style="color:var(--text-muted);">⚪ NEUTRAL</td></tr>
+    </table>
+    <p style="font-size:12.5px;color:var(--text-muted);margin-top:8px;">Source: Gartner Nov 2025 (India IT +11.1% in 2026); NASSCOM ($300B India IT milestone FY26); Sector derivation from master framework table. <span class="estimated">ESTIMATED</span></p>
+    <div class="note">
+      Coforge operates in the highest-growth sub-segment of IT (AI-engineering + domain-specific). Unlike Tier-1 Indian IT (TCS, Infosys), Coforge is not exposed to pure labour-arbitrage commoditisation — its deep domain verticals create stickiness. However, AI will begin commoditising even domain-specific IT code generation by FY28–29.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🚀 LAYER 3 — Company Alpha Over Sector</div>
+    <table>
+      <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+      <tr><td>Market Share Gain</td><td><span style="color:var(--pass-green);">Active</span></td><td>+3%</td><td>+2%</td></tr>
+      <tr><td>Premiumisation (outcome-based pricing)</td><td><span style="color:var(--pass-green);">Active</span></td><td>+2%</td><td>+1%</td></tr>
+      <tr><td>Category/Vertical Expansion (Healthcare)</td><td><span style="color:var(--pass-green);">Active — Cigniti</span></td><td>+4%</td><td>+2%</td></tr>
+      <tr><td>Geographic Expansion (APAC, Mid-West US)</td><td><span style="color:#B8860B;">Potential</span></td><td>+1%</td><td>+1%</td></tr>
+      <tr><td>Pricing Power (T&amp;M → Outcome)</td><td><span style="color:#B8860B;">Forming</span></td><td>+1%</td><td>+2%</td></tr>
+      <tr><td>AI Alpha (6a+6b+6c)</td><td><span style="color:var(--text-muted);">⚪ NEUTRAL</span></td><td>+1%</td><td>+1%</td></tr>
+      <tr style="font-weight:700;background:var(--ivory-dark);"><td>TOTAL ALPHA</td><td>—</td><td>+12%</td><td>+9%</td></tr>
+    </table>
+    <div class="note">AI Alpha Detail: 6a (cost reduction via GitHub Copilot + CodeInsight.AI → headcount efficiency) = +1% but REPLICABLE by competitors. 6b (market expansion via AI credit scoring in BFSI) = ADJACENT benefit through clients, not direct Coforge revenue. 6c (data flywheel) = NOT CONFIRMED — Coforge is a services business, data belongs to clients not Coforge.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Growth Rate Summary Table</div>
+    <div class="scenario-table">
+      <div class="scenario-col">
+        <div class="scenario-head stress">STRESS</div>
+        <div class="scenario-row"><div class="scenario-label">Macro</div><div class="scenario-val">GDP ~5.5%; CPI ~5%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Sector Growth</div><div class="scenario-val">8–10%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Company Alpha</div><div class="scenario-val">+4%</div></div>
+        <div class="scenario-row"><div class="scenario-label">AI Alpha</div><div class="scenario-val">0%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Stage 1 Rev CAGR</div><div class="scenario-val">12–14%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Stage 2 Rev CAGR</div><div class="scenario-val">8–10%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Terminal Growth</div><div class="scenario-val">6.8%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Margin Direction</div><div class="scenario-val">Stable/Compress</div></div>
+        <div class="scenario-row"><div class="scenario-label">Key Risk</div><div class="scenario-val">US recession; deal delays</div></div>
+      </div>
+      <div class="scenario-col">
+        <div class="scenario-head base">BASE</div>
+        <div class="scenario-row"><div class="scenario-label">Macro</div><div class="scenario-val">GDP ~6.8%; CPI ~4.7%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Sector Growth</div><div class="scenario-val">12–15%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Company Alpha</div><div class="scenario-val">+8%</div></div>
+        <div class="scenario-row"><div class="scenario-label">AI Alpha</div><div class="scenario-val">+1%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Stage 1 Rev CAGR</div><div class="scenario-val">20–22%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Stage 2 Rev CAGR</div><div class="scenario-val">12–14%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Terminal Growth</div><div class="scenario-val">8.0%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Margin Direction</div><div class="scenario-val">Expanding (+100bps/yr)</div></div>
+        <div class="scenario-row"><div class="scenario-label">Key Risk</div><div class="scenario-val">Encora integration; AI disruption</div></div>
+      </div>
+      <div class="scenario-col">
+        <div class="scenario-head accel">ACCELERATION</div>
+        <div class="scenario-row"><div class="scenario-label">Macro</div><div class="scenario-val">GDP ~8%+; CPI ~3.5%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Sector Growth</div><div class="scenario-val">18–22%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Company Alpha</div><div class="scenario-val">+10%</div></div>
+        <div class="scenario-row"><div class="scenario-label">AI Alpha</div><div class="scenario-val">+2%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Stage 1 Rev CAGR</div><div class="scenario-val">28–32%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Stage 2 Rev CAGR</div><div class="scenario-val">16–18%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Terminal Growth</div><div class="scenario-val">9.0%</div></div>
+        <div class="scenario-row"><div class="scenario-label">Margin Direction</div><div class="scenario-val">Strong expansion</div></div>
+        <div class="scenario-row"><div class="scenario-label">Key Risk</div><div class="scenario-val">Talent shortage; integration speed</div></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:12px;">Sensitivity: A 1% change in terminal growth changes IV by ~8%. A 1% change in Stage 1 revenue CAGR changes IV by ~5%.</div>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <div class="section-title">Financial Fortress <small>FY22–FY26 Deep-Dive</small></div>
+
+  <div class="card">
+    <div class="card-title">📈 5-Year Revenue &amp; Profitability Trend</div>
+    <table>
+      <tr><th>Year</th><th class="td-right">Revenue (₹ Cr)</th><th class="td-right">Rev Growth</th><th class="td-right">PAT (₹ Cr)</th><th class="td-right">PAT Margin</th><th class="td-right">EBIT Margin</th></tr>
+      <tr><td>FY22</td><td class="td-right">6,432</td><td class="td-right">+26%</td><td class="td-right">714</td><td class="td-right">11.1%</td><td class="td-right">~11%</td></tr>
+      <tr><td>FY23</td><td class="td-right">8,014</td><td class="td-right" style="color:var(--pass-green);">+24.6%</td><td class="td-right">745</td><td class="td-right">9.3%</td><td class="td-right">~11.5%</td></tr>
+      <tr><td>FY24</td><td class="td-right">9,179</td><td class="td-right" style="color:#B8860B;">+14.5%</td><td class="td-right">808</td><td class="td-right">8.8%</td><td class="td-right">~11.2%</td></tr>
+      <tr><td>FY25</td><td class="td-right">~12,200</td><td class="td-right" style="color:var(--pass-green);">+32.9%</td><td class="td-right">~813</td><td class="td-right">6.7%</td><td class="td-right">~10.7%</td></tr>
+      <tr style="background:rgba(201,107,42,0.06);font-weight:700;"><td>FY26</td><td class="td-right">16,420</td><td class="td-right" style="color:var(--pass-green);">+35.9%</td><td class="td-right">1,556</td><td class="td-right" style="color:var(--pass-green);">9.5%</td><td class="td-right" style="color:var(--pass-green);">14.4%</td></tr>
+    </table>
+    <p style="font-size:11.5px;color:var(--text-muted);margin-top:6px;"><span class="verified">VERIFIED</span> FY26 from BusinessWire press release (May 5, 2026) &nbsp;|&nbsp; <span class="estimated">ESTIMATED</span> FY22-FY25 from screener.in / kotak / historical filings</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 ROE History (5-Year)</div>
+    <div class="roic-cards">
+      <div class="roic-yr roic-mid"><div class="roic-yr-label">FY22</div><div class="roic-yr-val">~14%</div></div>
+      <div class="roic-yr roic-mid"><div class="roic-yr-label">FY23</div><div class="roic-yr-val">~13%</div></div>
+      <div class="roic-yr roic-mid"><div class="roic-yr-label">FY24</div><div class="roic-yr-val">~12%</div></div>
+      <div class="roic-yr roic-low"><div class="roic-yr-label">FY25</div><div class="roic-yr-val">~10%</div></div>
+      <div class="roic-yr roic-mid"><div class="roic-yr-label">FY26</div><div class="roic-yr-val">~15%</div></div>
+    </div>
+    <div class="note">ROE has been consistently below 15% threshold due to aggressive intangible investments (goodwill from acquisitions) expanding equity base. FY26 recovery to ~15% reflects PAT near-doubling. ROIC (adj. for goodwill) is estimated at 18–22% — more reflective of true capital efficiency in the operating business. <span class="estimated">ESTIMATED</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏦 Financial Fortress Scorecard (Category C)</div>
+    <div class="score-item"><span>ROE ≥ 15% for 5 consecutive years</span><span class="score-badge score-marginal">MARGINAL ~</span></div>
+    <div class="score-item"><span>ROIC &gt; WACC for 5 consecutive years</span><span class="score-badge score-marginal">MARGINAL ~</span></div>
+    <div class="score-item"><span>Net cash / low debt (D/E 0.11)</span><span class="score-badge score-pass">PASS ✓</span></div>
+    <div class="score-item"><span>Net profit margin ≥ 15%</span><span class="score-badge score-fail">FAIL ✗ (9.5%)</span></div>
+    <div class="score-item"><span>FCF positive and growing</span><span class="score-badge score-pass">PASS ✓</span></div>
+    <div class="score-item"><span>FCF conversion ≥ 80% of net income</span><span class="score-badge score-marginal">MARGINAL ~ (improving; FCF/PAT &gt;100% guided FY27)</span></div>
+    <div class="score-item"><span>Pricing power (T&amp;M → outcome-based)</span><span class="score-badge score-marginal">MARGINAL ~ (transitioning)</span></div>
+    <div class="score-item"><span>Revenue growth 5yr CAGR ≥ sector CAGR</span><span class="score-badge score-pass">PASS ✓ (26.5% CAGR vs sector ~10%)</span></div>
+    <div class="score-item"><span>Predictable / recurring revenue</span><span class="score-badge score-pass">PASS ✓ (multi-year contracts, $1.75B order book)</span></div>
+    <div class="score-item"><span>Capital-light model</span><span class="score-badge score-marginal">MARGINAL ~ (acquisitions add goodwill)</span></div>
+    <div class="score-item"><span>Dividend payout &lt; 80% of OE</span><span class="score-badge score-pass">PASS ✓ (payout ratio ~30–35%)</span></div>
+    <div class="score-item"><span>Revenue growth vs sector: Outperforming</span><span class="score-badge score-pass">PASS ✓ (2–3x sector growth)</span></div>
+    <div style="padding:10px 12px;background:var(--ivory-dark);border-radius:0 0 6px 6px;font-size:13px;font-weight:600;color:var(--navy);">Overall Financial Fortress Grade: <span style="color:var(--steel);">B</span> — Strong revenue engine; improving FCF; margin inflection underway; ROIC below ideal due to acquisition goodwill.</div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <div class="card">
+        <div class="card-title">💰 Owner Earnings (FY26 Estimate)</div>
+        <div class="oe-box">
+          <div class="oe-title">Owner Earnings Calculation</div>
+          <div class="oe-row"><span class="oe-label">Net Income (PAT)</span><span class="oe-val">+ ₹1,556 Cr</span></div>
+          <div class="oe-row"><span class="oe-label">D&amp;A (est. ~₹400 Cr)</span><span class="oe-val">+ ₹400 Cr</span></div>
+          <div class="oe-row"><span class="oe-label">Non-cash SBC (est.)</span><span class="oe-val">+ ₹80 Cr</span></div>
+          <div class="oe-row"><span class="oe-label">Maintenance CapEx (est. 2% rev)</span><span class="oe-val">– ₹328 Cr</span></div>
+          <div class="oe-row"><span class="oe-label">Working Capital Changes</span><span class="oe-val">– ₹150 Cr</span></div>
+          <div class="oe-row"><span class="oe-label"><strong>OWNER EARNINGS (Base)</strong></span><span class="oe-val" style="color:var(--copper-light);">~ ₹1,558 Cr</span></div>
+          <div class="oe-row"><span class="oe-label">OE per Share (~336M shares)</span><span class="oe-val" style="color:var(--copper-light);">~ ₹46.4/sh</span></div>
+        </div>
+        <div class="note" style="margin-top:8px;">OE ≈ Net Income implies good quality earnings. <span class="estimated">ESTIMATED</span> — full CapEx breakdown not disclosed.</div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">🔍 Earnings Quality (O'Glove Framework)</div>
+        <div class="score-item"><span>Test 1 — FCF Conversion (Op CFO/NI)</span><span class="score-badge score-marginal">MARGINAL ~ (FY26 improving; FY25 weak due to restructuring)</span></div>
+        <div class="score-item"><span>Test 2 — DSO Trend (Receivables/Rev per day)</span><span class="score-badge score-pass">PASS ✓ (stable for services; no spike flagged)</span></div>
+        <div class="score-item"><span>Test 3 — Inventory Days</span><td><span class="score-badge score-pass">PASS ✓ (N/A for pure IT services)</span></div>
+        <div class="score-item"><span>Test 4 — Accounting Policy Stability</span><span class="score-badge score-pass">PASS ✓ (no aggressive policy changes noted)</span></div>
+        <div class="score-item"><span>Test 5 — Gross Margin Consistency</span><span class="score-badge score-pass">PASS ✓ (EBITDA expanding YoY)</span></div>
+        <div style="padding:10px 12px;background:var(--ivory-dark);border-radius:0 0 6px 6px;font-size:13px;font-weight:600;color:var(--navy);">Overall Earnings Quality: <span style="color:var(--pass-green);">ACCEPTABLE</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Key Balance Sheet Metrics</div>
+    <div class="grid-4">
+      <div class="metric-card green">
+        <div class="metric-label">Net Debt/Cash</div>
+        <div class="metric-value">Net Debt</div>
+        <div class="metric-sub">₹400 Cr net debt (D/E=0.11) — manageable <span class="estimated">EST</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Current Ratio</div>
+        <div class="metric-value">1.57x</div>
+        <div class="metric-sub">Comfortable liquidity <span class="verified">VER</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">EBITDA (FY26)</div>
+        <div class="metric-value">₹3,046 Cr</div>
+        <div class="metric-sub">+76.9% YoY; margin 18.5% <span class="verified">VER</span></div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Goodwill (est.)</div>
+        <div class="metric-value">~₹4,000 Cr</div>
+        <div class="metric-sub">Acquisitions inflate equity; depresses ROIC <span class="estimated">EST</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <div class="section-title">Economic Moat <small>Competitive Advantage Durability</small></div>
+
+  <!-- DATA FLYWHEEL BOX (prominent) -->
+  <div class="flywheel-box">
+    <div class="flywheel-title">🌀 Data Flywheel Assessment — Mandatory for All Stocks</div>
+    <span class="flywheel-badge flywheel-cosmetic">AI FEATURE, NOT MOAT ★</span>
+    <div style="margin-top:12px;">
+      <div class="flywheel-check">
+        <div class="icon icon-no">✗</div>
+        <div><strong>Q1: Proprietary training data no competitor can access?</strong><br><span style="color:rgba(255,255,255,0.6);font-size:12.5px;">NO. Coforge's AI tools (CodeInsight.AI, Quasar GenAI) run on client data that legally belongs to clients. Coforge does not retain or train on proprietary outcome data from client engagements. AI platforms built on GitHub Copilot / OpenAI APIs provide no exclusive data advantage.</span></div>
+      </div>
+      <div class="flywheel-check">
+        <div class="icon icon-no">✗</div>
+        <div><strong>Q2: Does AI measurably improve with more users/data?</strong><br><span style="color:rgba(255,255,255,0.6);font-size:12.5px;">NO confirmed evidence. Coforge trains 10,000+ developers on GitHub Copilot, which improves Microsoft's AI, not Coforge's. CodeInsight.AI helps Coforge delivery but is not a self-improving flywheel creating a competitive moat vs. peers using the same tools.</span></div>
+      </div>
+      <div class="flywheel-check">
+        <div class="icon icon-no">✗</div>
+        <div><strong>Q3: Does better AI attract more clients creating a self-reinforcing loop?</strong><br><span style="color:rgba(255,255,255,0.6);font-size:12.5px;">NOT YET. Coforge wins deals on domain expertise + relationship depth + delivery excellence — not on a proprietary AI model that differentiates from peers. The AI tools provide cost efficiency (6a lever) but not a moat-building feedback loop.</span></div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;margin-top:12px;">
+      <strong style="color:var(--copper-light);">Flywheel Score: 1/10</strong> — Data quality: 0/3 | Improvement evidence: 1/4 | Loop speed: 0/3<br>
+      <span style="font-size:12px;color:rgba(255,255,255,0.5);">Conclusion: AI adds value as a cost efficiency tool but does NOT compound Coforge's competitive defensibility. The moat grade is NOT upgraded.</span>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:4px;">Moat Sources</div>
+
+  <div class="moat-card">
+    <div class="moat-header">
+      <div class="moat-name">🔒 Switching Costs (BFSI &amp; Travel Domain)</div>
+      <div class="stars">★★★★☆</div>
+    </div>
+    <p style="font-size:13.5px;color:var(--text-secondary);">Coforge manages mission-critical systems for global airlines (10 of top 15), global banks, and insurance carriers. Replacing a Coforge system means migrating core banking, reservation systems, or claims processing — typically 2–4 year transitions at enormous risk and cost. Client stickiness is evidenced by expanding large account revenues (Cigniti top 2 clients: $25M → $75M per annum post-integration). MOAT STATUS: HOLDS even in stress scenario.</p>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-header">
+      <div class="moat-name">🧠 Domain Expertise (BFSI/Travel IP)</div>
+      <div class="stars">★★★☆☆</div>
+    </div>
+    <p style="font-size:13.5px;color:var(--text-secondary);">Coforge has built deep domain libraries, frameworks, and accelerators for BFSI (Duck Creek platform leadership — "Leader and Star Performer" Everest Group 2026), Travel (SITA, Sabre integrations), and Insurance. These IP assets reduce delivery time and increase quality vs. generalist IT firms. However, AI coding tools are beginning to narrow the IP advantage — junior BFSI IT code can increasingly be generated by foundation models, threatening the entry-level labour component. MOAT STATUS: WEAKENS slowly over 5–7 years as AI matures.</p>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-header">
+      <div class="moat-name">🤝 Client Relationships &amp; Trust</div>
+      <div class="stars">★★★★☆</div>
+    </div>
+    <p style="font-size:13.5px;color:var(--text-secondary);">Over 250 global clients; many multi-decade relationships. British Airways, ING Group, SEI Investments are long-tenure accounts. High repeat business = structural revenue visibility. Top 10 clients at 35% revenue with expanding wallet share. MOAT STATUS: HOLDS — trust is hard to replicate.</p>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-header">
+      <div class="moat-name">📈 Efficient Scale / Global Delivery</div>
+      <div class="stars">★★★☆☆</div>
+    </div>
+    <p style="font-size:13.5px;color:var(--text-secondary);">35,777 employees across 21 countries; 26 delivery centres. Gives near-shore + offshore blended delivery cost advantage vs. pure offshore or pure onshore competitors. MOAT STATUS: HOLDS in base scenario; AI gradually erodes the 'more people = more capacity' benefit.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📐 ROIC as Moat Proof</div>
+    <div class="roic-cards">
+      <div class="roic-yr roic-mid"><div class="roic-yr-label">FY22</div><div class="roic-yr-val">~18%</div></div>
+      <div class="roic-yr roic-mid"><div class="roic-yr-label">FY23</div><div class="roic-yr-val">~16%</div></div>
+      <div class="roic-yr roic-mid"><div class="roic-yr-label">FY24</div><div class="roic-yr-val">~15%</div></div>
+      <div class="roic-yr roic-low"><div class="roic-yr-label">FY25</div><div class="roic-yr-val">~11%</div></div>
+      <div class="roic-yr roic-mid"><div class="roic-yr-label">FY26E</div><div class="roic-yr-val">~18%</div></div>
+    </div>
+    <div class="note">ROIC range 11–18% indicates a NARROW to MODERATE moat. ROIC dipped in FY25 due to Cigniti acquisition costs; FY26 recovery reflects true operating leverage. Adjusted ROIC (excluding acquisition goodwill) estimated at 22–25% — indicating a genuinely capital-efficient operating model. <span class="estimated">ESTIMATED</span></div>
+    <div style="margin-top:10px;padding:8px 12px;background:var(--ivory-dark);border-radius:6px;font-size:13px;"><strong>Moat Grade: B-</strong> — Switching costs + domain IP form a real but narrow moat. Not wide enough for premium valuation; needs sustained ROIC improvement. No flywheel upgrade.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ Macro Moat Stress Test</div>
+    <table>
+      <tr><th>Moat Source</th><th>STRENGTHENS</th><th>HOLDS</th><th>WEAKENS</th></tr>
+      <tr><td>Switching Costs (BFSI/Travel)</td><td></td><td style="color:var(--pass-green);">✅ HOLDS</td><td></td></tr>
+      <tr><td>Domain Expertise / IP</td><td></td><td></td><td style="color:#B8860B;">⚠️ Slow WEAKENING (AI coding)</td></tr>
+      <tr><td>Client Relationships</td><td></td><td style="color:var(--pass-green);">✅ HOLDS</td><td></td></tr>
+      <tr><td>Global Delivery Scale</td><td></td><td></td><td style="color:#B8860B;">⚠️ Gradual WEAKENING (AI agents)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <div class="section-title">Management Integrity &amp; Capital Allocation</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">💪 Management Strengths</div>
+      <ul style="font-size:13.5px;color:var(--text-secondary);list-style:disc;padding-left:18px;line-height:2;">
+        <li>CEO Sudhir Singh: "Tech Titan" award Business Today 2026; strong execution track record</li>
+        <li>Cigniti integration: EBITDA margins expanded from 11% → 19% in 6 quarters — textbook execution</li>
+        <li>Cigniti top client accounts: $25M → $75M per annum — cross-sell discipline</li>
+        <li>FY26 EBIT margin expansion: +370bps in one year — cost discipline proven</li>
+        <li>FCF guidance upgrade: from 70-80% to &gt;100% FCF/PAT from FY27 — shareholder focus</li>
+        <li>Order book execution: $1.75B order executable entering FY27 — visibility</li>
+        <li>EQT Partners oversight: sophisticated PE governance; value creation mindset</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">⚠️ Concerns &amp; Red Flags</div>
+      <ul style="font-size:13.5px;color:var(--text-secondary);list-style:disc;padding-left:18px;line-height:2;">
+        <li>Zero promoter holding: No founder skin in the game; PE exit risk remains</li>
+        <li>Acquisition-led growth raises integration risk (Encora next, after Cigniti)</li>
+        <li>FY25 PAT near flat despite revenue jump: One-time restructuring charges — need monitoring</li>
+        <li>Headcount growing (35,777 at Q4) while revenue moderating sequentially (+1.7% Q4) — efficiency watch</li>
+        <li>Citigroup maintains SELL target ₹1,115 citing order book growth slowing</li>
+        <li>IT Services sector AI disruption timeline: 3–5 years before structural headwind intensifies</li>
+        <li>Tax rate flagged as "seemingly low" — needs clarity in annual report</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏦 Capital Allocation Assessment</div>
+    <table>
+      <tr><th>Action</th><th>Decision</th><th class="td-right">Assessment</th></tr>
+      <tr><td>Cigniti acquisition ($220M, Dec 2024)</td><td>Inorganic vertical expansion</td><td class="td-right" style="color:var(--pass-green);">✅ Excellent — EBITDA expanded 11→19%</td></tr>
+      <tr><td>Rythmos + TMLabs (Mar 2025)</td><td>Cloud + ServiceNow capability</td><td class="td-right" style="color:#B8860B;">⚠️ Sensible — smaller bolt-ons</td></tr>
+      <tr><td>Encora acquisition (announced Apr 2026)</td><td>AI-native engineering scale-up</td><td class="td-right" style="color:#B8860B;">⚠️ Watch — execution risk on 2nd large deal</td></tr>
+      <tr><td>Dividend payout (₹19/share; ~35% payout)</td><td>Shareholder return</td><td class="td-right" style="color:var(--pass-green);">✅ Conservative and sustainable</td></tr>
+      <tr><td>FCF guidance upgrade (&gt;100% conversion)</td><td>FCF focus for FY27+</td><td class="td-right" style="color:var(--pass-green);">✅ Bullish signal for capital allocation</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔐 Pledged Shares &amp; Ownership Integrity</div>
+    <div class="metric-card green" style="margin-bottom:10px;">
+      <div class="metric-label">Pledged Shares</div>
+      <div class="metric-value">0%</div>
+      <div class="metric-sub">No pledged shares reported. Zero promoter = no pledge risk. <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="note">No IT raids, regulatory violations, or related-party transaction concerns identified in available disclosures. Management integrity score: HIGH. Key governance risk is concentrated ownership by EQT/institutional investors — secondary offering risk if PE begins exit.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🤖 AI Team Quality Assessment</div>
+    <table>
+      <tr><th>Dimension</th><th class="td-right">Assessment</th></tr>
+      <tr><td>AI R&amp;D platform (CodeInsight.AI, Quasar GenAI, BlueSwan)</td><td class="td-right"><span class="score-badge score-pass">PASS ✓</span></td></tr>
+      <tr><td>GenAI CoE on ServiceNow + Data &amp; AI Lab at IIT BHU</td><td class="td-right"><span class="score-badge score-pass">PASS ✓</span></td></tr>
+      <tr><td>10,000+ developers trained on GitHub Copilot</td><td class="td-right"><span class="score-badge score-marginal">MARGINAL ~ (uses Microsoft AI, not proprietary)</span></td></tr>
+      <tr><td>AI-native engineering strategic positioning</td><td class="td-right"><span class="score-badge score-marginal">MARGINAL ~ (services, not product moat)</span></td></tr>
+      <tr><td>Responsible AI / GDPR / India PDPB compliance</td><td class="td-right"><span class="score-badge score-pass">PASS ✓ (no regulatory violations noted)</span></td></tr>
+    </table>
+    <div class="note" style="margin-top:8px;"><strong>Management Grade: B+</strong> — Exceptional execution on acquisitions; growing AI capability focus; zero pledge/fraud risk; moderated by PE ownership structure and sequential revenue moderation in Q4.</div>
+  </div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <div class="section-title">Valuation &amp; Margin of Safety <small>5-Method Framework</small></div>
+
+  <div class="card">
+    <div class="card-title">📐 Method 1 — DCF (2-Stage)</div>
+    <table>
+      <tr><th>Year</th><th class="td-right">Stress FCF</th><th class="td-right">Base FCF</th><th class="td-right">Accel. FCF</th></tr>
+      <tr><td>FY27E</td><td class="td-right">₹1,500 Cr</td><td class="td-right">₹1,800 Cr</td><td class="td-right">₹2,100 Cr</td></tr>
+      <tr><td>FY28E</td><td class="td-right">₹1,700 Cr</td><td class="td-right">₹2,160 Cr</td><td class="td-right">₹2,700 Cr</td></tr>
+      <tr><td>FY29E</td><td class="td-right">₹1,870 Cr</td><td class="td-right">₹2,590 Cr</td><td class="td-right">₹3,375 Cr</td></tr>
+      <tr><td>FY30E</td><td class="td-right">₹2,000 Cr</td><td class="td-right">₹3,108 Cr</td><td class="td-right">₹4,050 Cr</td></tr>
+      <tr><td>FY31E (Stage 2)</td><td class="td-right">₹2,100 Cr</td><td class="td-right">₹3,500 Cr</td><td class="td-right">₹4,700 Cr</td></tr>
+      <tr style="font-weight:700;"><td>Terminal Value</td><td class="td-right">₹26,250 Cr</td><td class="td-right">₹52,500 Cr</td><td class="td-right">₹73,438 Cr</td></tr>
+    </table>
+    <div class="note">WACC: 13% (Cat C); Terminal g: Stress 6.8%, Base 8.0%, Accel 9.0% (≤ nominal GDP). Stage 1: 5 years (FY27-31). Stage 2: Growing at sector rate. Entry discount: ×0.70.<br>
+    <strong>DCF Intrinsic Values:</strong> Stress: ₹1,100 | Base: ₹1,750 | Accel: ₹2,400 <span class="estimated">ESTIMATED</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💹 Method 2 — Owner Earnings Capitalisation</div>
+    <table>
+      <tr><th>Scenario</th><th class="td-right">OE (₹ Cr)</th><th class="td-right">Required Return</th><th class="td-right">Growth g</th><th class="td-right">IV per Share</th></tr>
+      <tr><td>Stress</td><td class="td-right">₹1,200 Cr</td><td class="td-right">13%</td><td class="td-right">7%</td><td class="td-right"><strong>₹1,071</strong></td></tr>
+      <tr><td>Base</td><td class="td-right">₹1,558 Cr</td><td class="td-right">13%</td><td class="td-right">8%</td><td class="td-right"><strong>₹1,558</strong></td></tr>
+      <tr><td>Accel.</td><td class="td-right">₹1,900 Cr</td><td class="td-right">13%</td><td class="td-right">9%</td><td class="td-right"><strong>₹2,375</strong></td></tr>
+    </table>
+    <div class="note">OE/share derived from FY26 estimated OE of ₹1,558 Cr / ~336M shares ≈ ₹46.4. Capitalised at required return minus growth. <span class="estimated">ESTIMATED</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Method 3 — ROIC / Earnings Power Value</div>
+    <table>
+      <tr><th>Scenario</th><th class="td-right">NOPAT</th><th class="td-right">WACC</th><th class="td-right">Growth Premium</th><th class="td-right">EPV/Share</th></tr>
+      <tr><td>Stress</td><td class="td-right">₹1,500 Cr</td><td class="td-right">13%</td><td class="td-right">1.2×</td><td class="td-right"><strong>₹1,031</strong></td></tr>
+      <tr><td>Base</td><td class="td-right">₹1,900 Cr</td><td class="td-right">13%</td><td class="td-right">1.4×</td><td class="td-right"><strong>₹1,493</strong></td></tr>
+      <tr><td>Accel.</td><td class="td-right">₹2,300 Cr</td><td class="td-right">13%</td><td class="td-right">1.6×</td><td class="td-right"><strong>₹2,037</strong></td></tr>
+    </table>
+    <div class="note">NOPAT estimated as EBIT × (1 – tax rate ~22%). ROIC-WACC spread positive in all scenarios confirms economic moat. <span class="estimated">ESTIMATED</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📈 Method 4 — P/E Earnings Power</div>
+    <table>
+      <tr><th>Metric</th><th class="td-right">Value</th><th>Comment</th></tr>
+      <tr><td>Current Price</td><td class="td-right">₹1,300</td><td><span class="unverified">UNVERIFIED</span> — May 9, 2026 estimate post Q4 rally</td></tr>
+      <tr><td>FY26 EPS</td><td class="td-right">~₹46</td><td><span class="estimated">ESTIMATED</span> PAT ₹1,556 Cr / 336M shares</td></tr>
+      <tr><td>Trailing P/E (FY26)</td><td class="td-right">~28x</td><td>Deep discount vs 52W avg ~55x P/E</td></tr>
+      <tr><td>Forward P/E (FY27E)</td><td class="td-right">~22x</td><td>Assumes 25% PAT growth in FY27</td></tr>
+      <tr><td>PEG (P/E / growth)</td><td class="td-right">~0.8x</td><td>Attractive — below 1.0 implies growth underpriced</td></tr>
+      <tr><td>Normalised P/E (Cat C target: 20–25x)</td><td class="td-right">20–25x</td><td>Base P/E on FY26 EPS = ₹920–₹1,150 (wait for correction) to ₹1,380–₹1,725 on FY27E EPS</td></tr>
+      <tr><td>Reverse DCF: implied growth at ₹1,300</td><td class="td-right">~14% FCF CAGR</td><td>Achievable in base scenario — value exists</td></tr>
+    </table>
+    <div class="note"><strong>AI premium/discount question:</strong> AI NEUTRAL overlay = no premium justified. However, risk of AI disruption (3–5yr timeline) does NOT yet warrant a discount — Coforge is actively repositioning. No P/E adjustment made.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📉 Method 5 — Earnings Yield vs Bond Yield</div>
+    <div class="grid-3">
+      <div class="metric-card green">
+        <div class="metric-label">Earnings Yield (FY26)</div>
+        <div class="metric-value">3.5%</div>
+        <div class="metric-sub">EPS ₹46 / Price ₹1,300 = 3.5%</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">India 10Y G-Sec Yield</div>
+        <div class="metric-value">6.93%</div>
+        <div class="metric-sub">Higher than current earnings yield</div>
+      </div>
+      <div class="metric-card steel">
+        <div class="metric-label">Equity Risk Premium</div>
+        <div class="metric-value">~6%</div>
+        <div class="metric-sub">Required ERP for IT services category</div>
+      </div>
+    </div>
+    <div class="note">Current earnings yield (3.5%) is below the G-Sec yield (6.93%) — implies the market is pricing in significant growth. However, FCF yield on FY27E is ~4.5% (with FCF conversion improving) and grows rapidly toward 6–7% by FY29E, making the long-term case compelling at current prices. Dividend yield: ~1.5% (₹19/share at ₹1,300).</div>
+    <table style="margin-top:12px;">
+      <tr><th>Yield on Cost</th><th class="td-right">Year 1</th><th class="td-right">Year 3</th><th class="td-right">Year 5</th><th class="td-right">Year 7</th></tr>
+      <tr><td>FCF Yield @ ₹1,300 entry</td><td class="td-right">~4.5%</td><td class="td-right">~6.8%</td><td class="td-right">~10.2%</td><td class="td-right">~14.5%</td></tr>
+      <tr><td>G-Sec bond crossover year</td><td colspan="4">Year 3–4 (FCF yield crosses 6.93% G-Sec at entry of ₹1,300)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 5-Method Summary Table &amp; Blended IV</div>
+    <table>
+      <tr><th>Method</th><th class="td-right">Stress IV</th><th class="td-right">Base IV</th><th class="td-right">Accel. IV</th><th>AI Adjustment</th></tr>
+      <tr><td>DCF (2-Stage)</td><td class="td-right">₹1,100</td><td class="td-right">₹1,750</td><td class="td-right">₹2,400</td><td>None (AI NEUTRAL)</td></tr>
+      <tr><td>OE Capitalisation</td><td class="td-right">₹1,071</td><td class="td-right">₹1,558</td><td class="td-right">₹2,375</td><td>None</td></tr>
+      <tr><td>ROIC / EPV</td><td class="td-right">₹1,031</td><td class="td-right">₹1,493</td><td class="td-right">₹2,037</td><td>None</td></tr>
+      <tr><td>P/E Earnings Power</td><td class="td-right">₹1,150</td><td class="td-right">₹1,725</td><td class="td-right">₹2,300</td><td>None</td></tr>
+      <tr style="font-weight:700;background:rgba(201,107,42,0.08);"><td>BLENDED BASE IV</td><td class="td-right">₹1,088</td><td class="td-right">₹1,632</td><td class="td-right">₹2,278</td><td>No premium — AI NEUTRAL</td></tr>
+    </table>
+    <div class="note" style="margin-top:10px;"><strong>MoS Entry Zone:</strong> ₹1,050–₹1,150 (Stress IV with 15% MoS buffer) &nbsp;|&nbsp; <strong>Base IV:</strong> ₹1,600–₹1,800 range (FY27 forward) &nbsp;|&nbsp; <strong>Current Price ₹1,300 is above Stress IV but below Base IV</strong> — a moderate valuation, not a deep bargain, not expensive. The ideal entry is ₹1,050–₹1,150 for BUY signal.</div>
+    <div style="background:var(--navy);color:#fff;padding:12px 16px;border-radius:6px;margin-top:8px;font-size:13px;">
+      <strong style="color:var(--copper-light);">AI Disruption Discount Applied?</strong> NO — AI NEUTRAL overlay. AI disruption risk over 3–5yr horizon acknowledged but not yet sufficient to apply DCF discount. <em>If AI coding tools begin demonstrably eroding Coforge's deal sizes or margins by FY28, apply 10% discount to blended IV.</em>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <div class="section-title">Investment Verdict <small>Quality-Value Framework v5.0</small></div>
+
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 1 — Moat</div>
+      <div class="pillar-grade">B-</div>
+      <div class="pillar-desc">Switching costs + domain IP. Narrow. No flywheel.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 2 — Financials</div>
+      <div class="pillar-grade">B</div>
+      <div class="pillar-desc">Strong revenue CAGR; FCF inflecting; margins expanding</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 3 — Management</div>
+      <div class="pillar-grade">B+</div>
+      <div class="pillar-desc">Execution excellence; Cigniti success; EQT governance</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 4 — Valuation</div>
+      <div class="pillar-grade">B</div>
+      <div class="pillar-desc">~28x FY26 P/E; below Base IV; not yet at MoS entry</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-headline">WATCH</div>
+    <div class="verdict-stars">★★★★☆</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.8);margin-bottom:14px;line-height:1.8;">
+      Coforge is an exceptional business at a moderately attractive — but not yet compelling — price. FY26 results were a blowout: revenue +35.9%, PAT +91.6%, EBIT margins hitting all-time highs at 16.6% in Q4. The $1.75B order book provides clear FY27 visibility. Management has proven it can integrate acquisitions (Cigniti EBITDA: 11% → 19%). All four pillars grade satisfactory. However:
+    </div>
+    <ul style="color:rgba(255,255,255,0.7);font-size:13.5px;line-height:2;padding-left:20px;margin-bottom:14px;">
+      <li>Current price ₹1,300 is above Stress IV (₹1,088) but below Base IV (₹1,632) — partial margin of safety only</li>
+      <li>Post-Q4 bounce (+10%) means the easy money may have already been made for near-term traders</li>
+      <li>AI disruption of IT services is a 3–5 year structural risk that cap the terminal multiple</li>
+      <li>No data flywheel = no AI moat upgrade; upside is operational, not transformational</li>
+    </ul>
+    <div class="verdict-quote">
+      "The best business to own is one that has a high return on capital and can employ all that capital at the same rate. The second-best is one growing fast enough that its reinvestment competes with everything else for capital allocation. Coforge is earning its way toward the first, while currently living in the second." — Adapted from Warren Buffett
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+      <div style="background:rgba(255,255,255,0.08);border-radius:6px;padding:10px 16px;text-align:center;flex:1;min-width:120px;">
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;">MoS Entry Zone</div>
+        <div style="font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:var(--copper-light);">₹1,050–₹1,150</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:6px;padding:10px 16px;text-align:center;flex:1;min-width:120px;">
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;">Base IV</div>
+        <div style="font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:#7EE8A2;">₹1,600–₹1,800</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:6px;padding:10px 16px;text-align:center;flex:1;min-width:120px;">
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;">Horizon</div>
+        <div style="font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:#7EC8E3;">3–5 Years</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border-radius:6px;padding:10px 16px;text-align:center;flex:1;min-width:120px;">
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.5px;">AI Overlay</div>
+        <div style="font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:#B0B0C0;">⚪ NEUTRAL</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 WATCH → BUY Upgrade Conditions (Specific &amp; Measurable)</div>
+    <ul class="upgrade-list">
+      <li><span class="upgrade-num">1</span><div><strong>Price corrects to ₹1,050–₹1,150</strong> (20%+ discount to Base IV; 15% MoS; near 52-week low support). This is the primary BUY trigger — maximum margin of safety entry.</div></li>
+      <li><span class="upgrade-num">2</span><div><strong>RSI falls below 40 on the daily chart</strong> at any price below ₹1,150 — indicates capitulation, historically highest return entry for Indian IT stocks.</div></li>
+      <li><span class="upgrade-num">3</span><div><strong>FCF/PAT conversion exceeds 100% for 2 consecutive quarters (Q1+Q2 FY27)</strong> — confirms management's FCF guidance is real and not guidance theatre. A critical financial health inflection.</div></li>
+      <li><span class="upgrade-num">4</span><div><strong>EBIT margin sustains above 15% for 2 consecutive quarters</strong> (Q4 FY26 was 16.6%; Q1 FY27 must confirm this is structural, not one-time). Margin sustainability = quality inflection.</div></li>
+      <li><span class="upgrade-num">5</span><div><strong>Order executable holds at $1.5B+ entering Q3 FY27</strong> — confirms deal momentum is not decelerating. A sub-$1.3B order book would signal pipeline concern and delay BUY signal.</div></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Investment Series Table</div>
+    <div class="series-table-wrap">
+      <table class="series-table">
+        <tr><th>Stock</th><th>Category</th><th>AI</th><th>Verdict</th><th class="td-right">Entry</th><th class="td-right">Base IV</th><th>Horizon</th></tr>
+        <tr style="background:rgba(201,107,42,0.08);"><td><strong>Coforge</strong></td><td>C</td><td>⚪</td><td>WATCH ★★★★</td><td class="td-right">₹1,050–1,150</td><td class="td-right">₹1,632</td><td>3–5yr</td></tr>
+        <tr><td>—</td><td>—</td><td>—</td><td>—</td><td class="td-right">—</td><td class="td-right">—</td><td>—</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <div class="section-title">Technical Analysis <small>Multi-Timeframe &amp; Trade Structure</small></div>
+
+  <div class="card">
+    <div class="card-title">📉 Section A — Price Structure &amp; Multi-Timeframe Trend</div>
+    <table>
+      <tr><th>Timeframe</th><th>Trend</th><th>Structure</th><th>Signal</th></tr>
+      <tr><td>Weekly (long-term)</td><td style="color:#8B1A1A;">⬇️ Downtrend</td><td>Lower highs since Dec 2024 ATH (₹2,005)</td><td style="color:#8B1A1A;">Bearish structure intact</td></tr>
+      <tr><td>Daily (medium-term)</td><td style="color:#B8860B;">↔️ Attempting Base</td><td>Stock bounced from ₹1,008 low; Q4 results gap-up +10%</td><td style="color:#B8860B;">Recovery attempt; watch ₹1,400 resistance</td></tr>
+      <tr><td>4H (short-term)</td><td style="color:var(--pass-green);">↑ Short-term up</td><td>Post-earnings gap held; higher lows forming</td><td style="color:var(--pass-green);">Momentum recovering</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Price Ladder — Key Levels</div>
+    <div class="price-ladder">
+      <div class="ladder-item"><div><div class="ladder-resistance ladder-level">₹1,994</div><div class="ladder-label">52-Week High / All-Time High (Dec 2024)</div></div><span class="ladder-resistance" style="font-size:12px;">Strong Resistance</span></div>
+      <div class="ladder-item"><div><div class="ladder-resistance ladder-level">₹1,600–1,608</div><div class="ladder-label">200 DMA Level (approx.) <span class="estimated">EST</span></div></div><span class="ladder-resistance" style="font-size:12px;">Major Resistance</span></div>
+      <div class="ladder-item"><div><div class="ladder-resistance ladder-level">₹1,400</div><div class="ladder-label">Previous horizontal support (now resistance)</div></div><span class="ladder-resistance" style="font-size:12px;">Overhead Supply</span></div>
+      <div class="ladder-item ladder-current"><div><div class="ladder-level">₹1,285–1,320</div><div class="ladder-label">CURRENT PRICE ZONE (post Q4 rally) <span class="unverified">UNVERIFIED</span></div></div><span style="color:var(--copper);font-size:12px;font-weight:700;">HERE ◀</span></div>
+      <div class="ladder-item"><div><div class="ladder-support ladder-level">₹1,150–1,200</div><div class="ladder-label">50 DMA zone (recent crossover) + gap fill</div></div><span class="ladder-support" style="font-size:12px;">Support</span></div>
+      <div class="ladder-item"><div><div class="ladder-support ladder-level">₹1,050–1,100</div><div class="ladder-label">MoS Entry / BUY zone (near 52W low)</div></div><span class="ladder-support" style="font-size:12px;">STRONG Support / BUY ZONE</span></div>
+      <div class="ladder-item"><div><div class="ladder-support ladder-level">₹1,008</div><div class="ladder-label">52-Week Low (Mar 2026)</div></div><span class="ladder-support" style="font-size:12px;">Absolute Support</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📏 Section B — Moving Average Dashboard</div>
+    <table>
+      <tr><th>MA</th><th class="td-right">Level (Est.)</th><th>Price vs MA</th><th>Signal</th></tr>
+      <tr><td>20 EMA</td><td class="td-right">~₹1,180</td><td style="color:var(--pass-green);">Price ABOVE ✅</td><td style="color:var(--pass-green);">Short-term bullish</td></tr>
+      <tr><td>50 DMA</td><td class="td-right">~₹1,208</td><td style="color:var(--pass-green);">Price ABOVE ✅ (just crossed)</td><td style="color:var(--pass-green);">Recent bullish cross</td></tr>
+      <tr><td>100 DMA</td><td class="td-right">~₹1,380</td><td style="color:#8B1A1A;">Price BELOW ✗</td><td style="color:#8B1A1A;">Resistance ahead</td></tr>
+      <tr><td>200 DMA</td><td class="td-right">~₹1,600</td><td style="color:#8B1A1A;">Price BELOW ✗ (by ~23%)</td><td style="color:#8B1A1A;">Major headwind; recovery needed</td></tr>
+    </table>
+    <div class="note">Cross status: Death cross was in force (50DMA &lt; 200DMA). The 50DMA has not yet crossed back above 200DMA (would require ~3–4 months of sustained recovery to get a Golden Cross). <span class="estimated">ESTIMATED</span></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">📈 Section D — Momentum</div>
+      <table>
+        <tr><th>Indicator</th><th class="td-right">Reading</th><th>Signal</th></tr>
+        <tr><td>RSI Daily</td><td class="td-right">~48–52</td><td style="color:#B8860B;">Neutral (recovering from 15 in Mar)</td></tr>
+        <tr><td>RSI Weekly</td><td class="td-right">~35–40</td><td style="color:#B8860B;">Near oversold (watch closely)</td></tr>
+        <tr><td>MACD</td><td class="td-right">Crossing up</td><td style="color:var(--pass-green);">Bullish signal on daily</td></tr>
+        <tr><td>Stochastic</td><td class="td-right">Recovering</td><td style="color:var(--pass-green);">From extreme oversold</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Section C — Volume Analysis</div>
+      <table>
+        <tr><th>Event</th><th>Date</th><th>Signal</th></tr>
+        <tr><td>52W Low test</td><td>Mar 18, 2026</td><td style="color:var(--pass-green);">Volume ~2× avg → Capitulation</td></tr>
+        <tr><td>Q4 Results bounce</td><td>May 5, 2026</td><td style="color:var(--pass-green);">+10% gap-up; volume surge</td></tr>
+        <tr><td>ATH</td><td>Dec 30, 2024</td><td style="color:#8B1A1A;">Peak volume = distribution</td></tr>
+      </table>
+      <div class="note">OBV Verdict: Declining trend from ATH. Recent Q4 bounce shows improving OBV — bullish divergence forming vs price lows in March. <span class="estimated">ESTIMATED</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 Section F — Trade Structure</div>
+    <div class="highlight-bar">PRIMARY TRIGGER: 15–20% correction from current level + RSI &lt; 40 + Price at ₹1,050–1,150 zone</div>
+    <div class="trade-box">
+      <div class="trade-row"><span class="trade-label">Entry Price (Primary Trigger)</span><span class="trade-val">₹1,050–₹1,150</span></div>
+      <div class="trade-row"><span class="trade-label">Stop Loss (Hard)</span><span class="trade-val">₹960 (~8% below ₹1,050)</span></div>
+      <div class="trade-row"><span class="trade-label">Target 1 (T1)</span><span class="trade-val">₹1,400 (100 DMA reclaim)</span></div>
+      <div class="trade-row"><span class="trade-label">Target 2 (T2)</span><span class="trade-val">₹1,750 (Base IV)</span></div>
+      <div class="trade-row"><span class="trade-label">Risk:Reward (T2)</span><span class="trade-val">1 : 6+ (at ₹1,050 entry)</span></div>
+      <div class="trade-row"><span class="trade-label">Secondary Trigger</span><span class="trade-val">Price holds ₹1,200 for 3 days + MACD bullish cross</span></div>
+      <div class="trade-row"><span class="trade-label">Suggested Position Size</span><span class="trade-val">3–5% of portfolio (AI NEUTRAL; no size cap uplift)</span></div>
+      <div class="trade-row"><span class="trade-label">Timeframe</span><span class="trade-val">3–5 years (not a short-term trade)</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Section G — Technical Composite Score</div>
+    <table>
+      <tr><th>Dimension</th><th class="td-right">Score (1–5)</th><th>Rationale</th></tr>
+      <tr><td>Trend (Multi-timeframe)</td><td class="td-right">2/5</td><td>Weekly downtrend intact; daily recovering</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td class="td-right">3/5</td><td>Recovering from extreme oversold; MACD turning</td></tr>
+      <tr><td>Volume</td><td class="td-right">3/5</td><td>Capitulation volume + Q4 bounce volume positive</td></tr>
+      <tr><td>Moving Averages</td><td class="td-right">2/5</td><td>Below 200 DMA; above 50 DMA (mixed)</td></tr>
+      <tr><td>Price Structure</td><td class="td-right">3/5</td><td>Higher low vs March; Q4 gap held; 52W low tested</td></tr>
+      <tr><td>Chart Pattern</td><td class="td-right">3/5</td><td>Potential double-bottom forming at ₹1,008–₹1,050 zone</td></tr>
+      <tr style="font-weight:700;"><td>TOTAL</td><td class="td-right">16/30 = 53%</td><td>Neutral-Recovering: Not a technical BUY yet</td></tr>
+    </table>
+    <div class="note">Technical alignment note: Fundamental case is stronger than the technical case. For full BUY confidence, wait for weekly RSI to recover above 50 OR for a clean retest of ₹1,050–₹1,100 with RSI divergence.</div>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <div class="section-title">Shareholding &amp; Free Float Analysis</div>
+
+  <div class="card">
+    <div class="card-title">📊 Section A — Promoter Holding Trend</div>
+    <div class="note" style="margin-bottom:12px;">⚠️ IMPORTANT: Coforge has <strong>0% traditional promoter holding</strong>. The company is controlled by EQT Partners (Private Equity, successor to Baring PE Asia). EQT/Baring PE is classified under FII/PE categories. Some data sources show "Promoter 28.3%" which likely includes EQT's stake counted as promoter-equivalent by data vendors.</div>
+    <table>
+      <tr><th>Quarter</th><th class="td-right">Promoter %</th><th class="td-right">FII %</th><th class="td-right">DII/MF %</th><th class="td-right">Retail/Other %</th></tr>
+      <tr><td>Mar 2025</td><td class="td-right">0%</td><td class="td-right">~35%</td><td class="td-right">~52%</td><td class="td-right">~13%</td></tr>
+      <tr><td>Jun 2025</td><td class="td-right">0%</td><td class="td-right">~34%</td><td class="td-right">~53%</td><td class="td-right">~13%</td></tr>
+      <tr><td>Sep 2025</td><td class="td-right">0%</td><td class="td-right">~33%</td><td class="td-right">~54%</td><td class="td-right">~13%</td></tr>
+      <tr><td>Dec 2025</td><td class="td-right">0%</td><td class="td-right">~30%</td><td class="td-right">~53%</td><td class="td-right">~17%</td></tr>
+      <tr style="font-weight:700;"><td>Mar 2026 (est.)</td><td class="td-right">0%</td><td class="td-right">~30%</td><td class="td-right">~54%</td><td class="td-right">~16%</td></tr>
+    </table>
+    <div class="note"><span class="estimated">ESTIMATED</span> — Trend shows FII selling accelerating in late 2025 (Jan 2026 = heavy FII outflows from India broadly); DII/MF holding rising as domestic SIP inflows absorb FII selling. Pledged shares: 0%.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🟦 Section B — Shareholding Composition (Latest)</div>
+    <div class="sh-row"><div class="sh-dot" style="background:var(--steel);"></div><strong>FII (incl. EQT PE):</strong> <span style="margin-left:8px;">~30–34%</span> <div class="sh-bar" style="flex:1;margin:0 10px;"><div class="sh-fill sh-fii" style="width:34%;"></div></div></div>
+    <div class="sh-row"><div class="sh-dot" style="background:var(--pass-green);"></div><strong>DII (Mutual Funds: 36–39%; others):</strong> <span style="margin-left:8px;">~53%</span> <div class="sh-bar" style="flex:1;margin:0 10px;"><div class="sh-fill sh-dii" style="width:53%;"></div></div></div>
+    <div class="sh-row"><div class="sh-dot" style="background:var(--copper);"></div><strong>Retail / Public:</strong> <span style="margin-left:8px;">~13–17%</span> <div class="sh-bar" style="flex:1;margin:0 10px;"><div class="sh-fill sh-retail" style="width:15%;"></div></div></div>
+    <div class="note" style="margin-top:10px;">Largest MF holders: Motilal Oswal Midcap Fund (9.16%). DII holding at 53%+ is institutional anchor — consistent SIP inflows support price floor. FII holding at 30–34% = moderate sensitivity to global risk-off. <span class="estimated">ESTIMATED</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💧 Section C — Free Float &amp; SIP Inflow Estimate</div>
+    <div class="grid-2">
+      <div class="metric-card steel">
+        <div class="metric-label">Market Cap (₹1,300)</div>
+        <div class="metric-value">~₹43,680 Cr</div>
+        <div class="metric-sub">~336M shares × ₹1,300 <span class="estimated">EST</span></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Free Float (est.)</div>
+        <div class="metric-value">~₹30,000 Cr</div>
+        <div class="metric-sub">~70% float (no promoter lock-in)</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-label">Monthly SIP Inflow (MF ~39%)</div>
+        <div class="metric-value">~₹120–150 Cr/mo</div>
+        <div class="metric-sub">Estimated MF absorption demand <span class="estimated">EST</span></div>
+      </div>
+      <div class="metric-card steel">
+        <div class="metric-label">Nifty IT Index Weight</div>
+        <div class="metric-value">~3–4%</div>
+        <div class="metric-sub">Mid-cap IT; not in Nifty 50 <span class="estimated">EST</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Section E — Ownership Momentum &amp; Risk Scores</div>
+    <div class="grid-2">
+      <div style="background:var(--navy);color:#fff;border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Ownership Momentum Score</div>
+        <div style="font-size:48px;font-weight:800;font-family:'Playfair Display',serif;color:#7EE8A2;">58</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);">/ 100 — Moderate positive</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.65);margin-top:8px;">DII accumulating (+trend) partially offset by FII selling (−trend). Q4 results catalyst may reverse FII trend.</div>
+      </div>
+      <div style="background:var(--navy);color:#fff;border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Shareholding Risk Score</div>
+        <div style="font-size:48px;font-weight:800;font-family:'Playfair Display',serif;color:#F4C06B;">35</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);">/ 100 — LOW RISK (lower = safer)</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.65);margin-top:8px;">No pledge risk, zero promoter dilution concern, DII anchor. Key risk: EQT secondary offering if PE exits.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <div class="section-title">AI Opportunity Intelligence <small>Mandatory Assessment — All Stocks</small></div>
+
+  <!-- SECTION A: AI CLASSIFICATION DASHBOARD -->
+  <div class="card">
+    <div class="card-title">🤖 Section A — AI Classification Dashboard</div>
+    <div class="grid-4" style="margin-bottom:16px;">
+      <div style="background:var(--navy);color:#fff;border-radius:8px;padding:14px;text-align:center;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Category</div>
+        <div style="font-size:22px;font-weight:800;font-family:'Playfair Display',serif;color:var(--copper-light);">C</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);">Mature Compounder</div>
+      </div>
+      <div style="background:var(--navy);color:#fff;border-radius:8px;padding:14px;text-align:center;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">AI Overlay</div>
+        <div style="font-size:22px;font-weight:800;font-family:'Playfair Display',serif;color:#B0B0C0;">⚪ NEUTRAL</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);">AI as efficiency tool, not moat</div>
+      </div>
+      <div style="background:var(--navy);color:#fff;border-radius:8px;padding:14px;text-align:center;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Data Flywheel</div>
+        <div style="font-size:22px;font-weight:800;font-family:'Playfair Display',serif;color:#FF8080;">AI FEATURE ★</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);">No self-improving moat</div>
+      </div>
+      <div style="background:var(--navy);color:#fff;border-radius:8px;padding:14px;text-align:center;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">AI Phase</div>
+        <div style="font-size:22px;font-weight:800;font-family:'Playfair Display',serif;color:#F4C06B;">Phase 2→3</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);">AI adoption in BFSI/Travel IT</div>
+      </div>
+    </div>
+    <div class="note">
+      <strong>Adoption Phase Evidence:</strong> Coforge operates in BFSI and Travel tech where AI adoption is moving from Phase 2 (early commercial traction) to Phase 3 (inflection). AI fraud detection in banking = Phase 3; AI underwriting in insurance = Phase 2; AI reservation systems in travel = Phase 2. Coforge benefits as the engineering partner implementing these AI systems for its clients — but does not own the AI itself. <span class="estimated">ESTIMATED</span> based on NASSCOM/Gartner sector reports.
+    </div>
+  </div>
+
+  <!-- SECTION B: DATA FLYWHEEL -->
+  <div class="card">
+    <div class="card-title">🌀 Section B — Data Flywheel Deep-Dive</div>
+    <table>
+      <tr><th>Question</th><th>Finding</th><th class="td-right">Score</th></tr>
+      <tr>
+        <td><strong>Q1: Proprietary training data?</strong></td>
+        <td>Coforge uses client data under strict data governance agreements. It does not retain or commercialise client data. AI platforms (CodeInsight.AI) are built on open-source/API foundations. No exclusive proprietary dataset identified.</td>
+        <td class="td-right"><strong>0/3</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Q2: Does AI improve with more users?</strong></td>
+        <td>GitHub Copilot productivity improves for developers (benefiting Microsoft's model). CodeInsight.AI helps individual client modernisation but does not create a cross-client learning effect that Coforge can monetise or defend. One ISG recognition does not confirm a learning moat.</td>
+        <td class="td-right"><strong>1/4</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Q3: Does better AI attract more clients?</strong></td>
+        <td>Coforge wins clients through domain expertise, relationship trust, and delivery reputation — not through AI superiority. No evidence that "because our AI is better, clients specifically choose Coforge over others." AI is a hygiene factor, not a differentiator, in enterprise IT sourcing.</td>
+        <td class="td-right"><strong>0/3</strong></td>
+      </tr>
+    </table>
+    <div style="margin-top:10px;background:var(--ivory-dark);padding:10px 14px;border-radius:6px;font-size:13px;">
+      <strong>Flywheel Score: 1/10</strong> — Verdict: <strong>AI FEATURE, NOT MOAT</strong>. Coforge's AI tools add delivery efficiency value but do not create a compounding competitive advantage. Any competitor can adopt the same tools (GitHub Copilot, OpenAI APIs). The moat grade is NOT upgraded from B-.
+    </div>
+  </div>
+
+  <!-- SECTION C: VALUE CHAIN POSITION -->
+  <div class="card">
+    <div class="card-title">🔗 Section C — AI Value Chain Position</div>
+    <div class="value-chain">
+      <div class="vc-item"><span class="vc-num">1</span>Infrastructure</div>
+      <div class="vc-item"><span class="vc-num">2</span>Foundation Models</div>
+      <div class="vc-item"><span class="vc-num">3</span>AI Platforms</div>
+      <div class="vc-item"><span class="vc-num">4</span>AI Verticals</div>
+      <div class="vc-item active"><span class="vc-num">5</span>AI-Enabled Incumbents ◀</div>
+    </div>
+    <div class="note" style="margin-top:12px;">
+      <strong>Coforge = Level 5 — AI-Enabled Incumbent</strong><br>
+      Existing IT services business using AI to become more efficient and relevant. This is the most under-appreciated position per the framework — <em>best risk/reward as an AI play</em> — but also the most exposed to commoditisation if AI directly replaces IT services labour.<br><br>
+      <strong>Investment Horizon Implication:</strong> Level 5 = 3–5 year compounding window before AI structural disruption meaningfully impacts labour-based revenue. Coforge must use this window to transition more revenue to outcome/platform-based pricing (structural protection) or risk margin compression.
+    </div>
+  </div>
+
+  <!-- SECTION D: INDIA AI OPPORTUNITY -->
+  <div class="card">
+    <div class="card-title">🇮🇳 Section D — India AI Opportunity Context</div>
+    <table>
+      <tr><th>India AI Advantage</th><th>Coforge Relevance</th><th class="td-right">Benefit</th></tr>
+      <tr><td><strong>Advantage 1 — Data at Scale (UPI/Aadhaar)</strong></td><td>Coforge serves BFSI clients who USE UPI/Aadhaar data. Coforge itself does not hold this data. Adjacent benefit.</td><td class="td-right"><span class="relevance-adj">Adjacent</span></td></tr>
+      <tr><td><strong>Advantage 2 — Vernacular AI</strong></td><td>Not currently a Coforge focus area. Primarily serves English-language global enterprise clients.</td><td class="td-right"><span class="relevance-none">None</span></td></tr>
+      <tr><td><strong>Advantage 3 — India Stack Infrastructure</strong></td><td>Coforge builds solutions for BFSI clients using India Stack (ONDC, UPI APIs). Engineering partner for India Stack adoption.</td><td class="td-right"><span class="relevance-adj">Adjacent</span></td></tr>
+      <tr><td><strong>Advantage 4 — AI Talent Cost Arbitrage</strong></td><td>YES — Core to Coforge's delivery model. India AI/ML engineers at 30-40% US cost. IIT BHU Data &amp; AI Lab = talent pipeline.</td><td class="td-right"><span class="relevance-direct">Direct ✅</span></td></tr>
+    </table>
+
+    <div style="margin-top:16px;">
+      <strong style="font-size:14px;">India AI Theme Relevance Table</strong>
+      <table style="margin-top:8px;">
+        <tr><th>Theme</th><th>Phase</th><th>Coforge Relevance</th></tr>
+        <tr><td>AI in banking/credit</td><td>Phase 3</td><td><span class="relevance-direct">Directly (BFSI = 55% revenue)</span></td></tr>
+        <tr><td>Vernacular AI content</td><td>Phase 2</td><td><span class="relevance-none">None</span></td></tr>
+        <tr><td>AI in pharma R&amp;D</td><td>Phase 2</td><td><span class="relevance-none">None</span></td></tr>
+        <tr><td>AI in agri advisory</td><td>Phase 1–2</td><td><span class="relevance-none">None</span></td></tr>
+        <tr><td>AI in logistics/supply</td><td>Phase 2–3</td><td><span class="relevance-adj">Adjacent (travel/transport vertical)</span></td></tr>
+        <tr><td>AI in diagnostics/health</td><td>Phase 2</td><td><span class="relevance-adj">Adjacent (Cigniti healthcare)</span></td></tr>
+        <tr><td>Data centres (infra)</td><td>Phase 3–4</td><td><span class="relevance-none">None (not infra)</span></td></tr>
+        <tr><td>AI SME credit/fintech</td><td>Phase 2</td><td><span class="relevance-adj">Adjacent (BFSI clients)</span></td></tr>
+        <tr><td>AI in education</td><td>Phase 2</td><td><span class="relevance-none">None</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION F: AI VERDICT -->
+  <div class="card">
+    <div class="card-title">🏆 Section F — AI Opportunity Verdict &amp; Portfolio Role</div>
+    <div class="ai-score-display" style="margin-bottom:16px;">
+      <div class="ai-score-label">AI Opportunity Score</div>
+      <div class="ai-score-number">42</div>
+      <div class="ai-score-label">/ 100</div>
+      <div class="ai-bar"><div class="ai-bar-fill" style="width:42%;"></div></div>
+    </div>
+    <table>
+      <tr><th>AI Score Component</th><th class="td-right">Score</th><th>Rationale</th></tr>
+      <tr><td>Data Flywheel Strength</td><td class="td-right">2/20</td><td>No flywheel; AI feature only</td></tr>
+      <tr><td>Adoption Phase Timing</td><td class="td-right">14/20</td><td>Phase 2→3 in BFSI — good timing window</td></tr>
+      <tr><td>Value Chain Position</td><td class="td-right">14/20</td><td>Level 5 — good risk/reward but disruption exposed</td></tr>
+      <tr><td>India Structural Advantage</td><td class="td-right">8/20</td><td>Talent arbitrage only; not data or vernacular play</td></tr>
+      <tr><td>AI Threat Resistance</td><td class="td-right">4/20</td><td>IT services faces 3–5yr AI disruption risk; switching costs provide partial protection</td></tr>
+      <tr style="font-weight:700;"><td>TOTAL</td><td class="td-right">42/100</td><td>MONITOR — Standard fundamental framework governs</td></tr>
+    </table>
+    <div style="background:var(--navy);color:#fff;border-radius:8px;padding:16px;margin-top:12px;">
+      <strong style="color:var(--copper-light);">Portfolio Role: MONITOR / Standard Fundamental Play</strong><br>
+      <span style="font-size:13px;color:rgba(255,255,255,0.7);">AI score 42/100 = MONITOR. Invest on fundamental strength (domain moat, FCF inflection, margin expansion), not on AI narrative. Coforge is not an "AI stock" — it is a disciplined IT services compounder that uses AI to improve efficiency. Any premium assigned for AI positioning is speculative. <br><br>
+      <strong style="color:var(--copper-light);">Investment Horizon:</strong> 3–5 years. Coforge must demonstrate by FY28 that it can transition from labour-led to outcome/IP-led revenue — or face structural margin compression from AI coding tools. Monitor quarterly: EBIT margin per employee, outcome-based revenue %, deal size trends.</span>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong style="color:rgba(255,255,255,0.7);">⚠️ SEBI Disclaimer:</strong> This report is for educational and research purposes only. It does not constitute investment advice, a solicitation, or a recommendation to buy or sell any security. All investments in securities markets are subject to market risks. Please read all related documents carefully before investing. Past performance is not indicative of future results. The author/publisher is not registered as an investment advisor under SEBI (Investment Advisers) Regulations, 2013.
+  <br><br>
+  <strong style="color:rgba(255,255,255,0.7);">Data Notice:</strong> Financial data sourced from BusinessWire (Coforge Q4 FY26 press release May 5, 2026), screener.in, stockanalysis.com, and analyst reports. Macro data from IMF April 2026 WEO, RBI, and Gartner. Shareholding data estimated from multiple market data providers. All estimates clearly labelled. Not a primary source research document.
+  <br><br>
+  <strong style="color:rgba(255,255,255,0.7);">Framework:</strong> Quality-Value Equity Analysis v5.0 | Buffett Framework with AI Overlay | Generated: May 9, 2026
+  <br><br>
+  Typography: Playfair Display (Google Fonts) · IBM Plex Mono (Google Fonts) · DM Sans (Google Fonts). Report File: coforge_qv_report.html
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

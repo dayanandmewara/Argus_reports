@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSE Ltd — Buffett Quality-Value Report v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060E1A;
+  --card: #0D1D35;
+  --card2: #112240;
+  --border: #1E3A5F;
+  --gold: #C9A84C;
+  --gold-light: #E2C87A;
+  --teal: #2DD4BF;
+  --blue: #3B82F6;
+  --text: #E8EDF5;
+  --muted: #7A95B8;
+  --pass: #22C55E;
+  --marginal: #F59E0B;
+  --fail: #EF4444;
+  --verified: #22C55E;
+  --estimated: #F59E0B;
+  --unverified: #EF4444;
+  --widener: #22C55E;
+  --neutral: #94A3B8;
+  --threat: #EF4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; }
+h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
+code, .mono { font-family: 'JetBrains Mono', monospace; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #020913 0%, #0A1E3D 50%, #0D2850 100%);
+  border-bottom: 2px solid var(--gold);
+  padding: 32px 24px 24px;
+  position: relative;
+  overflow: hidden;
+  max-height: 220px;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 400px; height: 220px;
+  background: radial-gradient(ellipse at 80% 50%, rgba(201,168,76,0.08) 0%, transparent 70%);
+}
+.hero-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+.hero-left h1 { font-size: clamp(22px, 4vw, 38px); font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+.hero-left .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; font-family: 'Syne', sans-serif; letter-spacing: 0.5px; }
+.badge-cat { background: rgba(201,168,76,0.15); border: 1px solid var(--gold); color: var(--gold); }
+.badge-ai { background: rgba(34,197,94,0.15); border: 1px solid var(--widener); color: var(--widener); }
+.badge-watch { background: rgba(245,158,11,0.15); border: 1px solid var(--marginal); color: var(--marginal); }
+.badge-macro { background: rgba(59,130,246,0.15); border: 1px solid var(--blue); color: var(--blue); }
+.verdict-box-hero { background: rgba(245,158,11,0.1); border: 2px solid var(--marginal); border-radius: 10px; padding: 10px 18px; text-align: center; }
+.verdict-box-hero .v-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.verdict-box-hero .v-val { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--marginal); }
+.pills { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+.pill { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; }
+.pill .pk { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.pill .pv { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; color: var(--gold); }
+.lede { color: var(--muted); font-size: 13px; margin-top: 10px; max-width: 800px; line-height: 1.4; }
+
+/* TAB BAR */
+#tab-bar { background: #08131F; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; overflow-x: auto; white-space: nowrap; }
+.tab-scroll { display: flex; }
+.tab-btn { background: none; border: none; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 14px 18px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* CONTENT */
+.tab-content { display: none; padding: 24px; max-width: 1200px; margin: 0 auto; }
+.tab-content:first-of-type { display: block; }
+
+/* CARDS */
+.section { margin-bottom: 32px; }
+.section-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.card2 { background: var(--card2); }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media(max-width:680px) { .grid3,.grid4 { grid-template-columns: repeat(2,1fr); } }
+@media(max-width:600px) { .grid2,.grid3,.grid4 { grid-template-columns: 1fr; } }
+
+/* METRIC CARDS */
+.metric { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; border-left: 3px solid var(--gold); }
+.metric.pass { border-left-color: var(--pass); }
+.metric.fail { border-left-color: var(--fail); }
+.metric.warn { border-left-color: var(--marginal); }
+.metric-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.metric-value { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 600; color: var(--text); margin: 4px 0; }
+.metric-note { font-size: 12px; color: var(--muted); }
+
+/* CONFIDENCE LABELS */
+.v { background: rgba(34,197,94,0.15); color: var(--verified); border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 600; }
+.e { background: rgba(245,158,11,0.15); color: var(--estimated); border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 600; }
+.u { background: rgba(239,68,68,0.15); color: var(--unverified); border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 600; }
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { background: var(--card2); color: var(--muted); text-align: left; padding: 10px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Syne', sans-serif; font-weight: 600; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* SCORECARD */
+.score-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.score-item:last-child { border-bottom: none; }
+.score-left { flex: 1; }
+.score-name { font-size: 14px; font-weight: 500; }
+.score-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.score-badge { padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: 'Syne', sans-serif; }
+.score-pass { background: rgba(34,197,94,0.15); color: var(--pass); }
+.score-marginal { background: rgba(245,158,11,0.15); color: var(--marginal); }
+.score-fail { background: rgba(239,68,68,0.15); color: var(--fail); }
+
+/* MOAT STARS */
+.stars { color: var(--gold); font-size: 14px; }
+.moat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.moat-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.moat-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+/* FLYWHEEL */
+.flywheel-box { background: linear-gradient(135deg, rgba(45,212,191,0.08), rgba(34,197,94,0.05)); border: 2px solid var(--teal); border-radius: 12px; padding: 20px; }
+.flywheel-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--teal); margin-bottom: 12px; }
+.fw-q { margin-bottom: 12px; }
+.fw-q-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.fw-q-ans { font-size: 13px; color: var(--muted); }
+
+/* VERDICT */
+.verdict-main { background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05)); border: 2px solid var(--marginal); border-radius: 14px; padding: 28px; margin-bottom: 24px; }
+.verdict-grade { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--marginal); margin-bottom: 8px; }
+.verdict-quote { font-style: italic; color: var(--muted); font-size: 14px; border-left: 3px solid var(--gold); padding-left: 12px; margin: 16px 0; }
+.upgrade-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px; background: var(--card); border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
+.upgrade-num { background: var(--gold); color: #000; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.upgrade-text { font-size: 13px; color: var(--muted); }
+
+/* PILLAR GRADES */
+.pillar-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
+@media(max-width:600px) { .pillar-grid { grid-template-columns: repeat(2,1fr); } }
+.pillar-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+.pillar-name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.pillar-grade { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--gold); }
+
+/* AI SCORE GAUGE */
+.ai-gauge-wrap { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.ai-gauge-bar { flex: 1; min-width: 200px; }
+.ai-gauge-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.ai-gauge-track { background: var(--border); border-radius: 8px; height: 12px; overflow: hidden; }
+.ai-gauge-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--teal), var(--gold)); transition: width 1s ease; }
+.ai-score-num { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; color: var(--teal); }
+
+/* VALUE CHAIN */
+.value-chain { display: flex; gap: 0; overflow-x: auto; margin: 16px 0; }
+.vc-item { flex: 1; min-width: 100px; padding: 12px 8px; text-align: center; background: var(--card); border: 1px solid var(--border); font-size: 11px; color: var(--muted); position: relative; }
+.vc-item.active { background: rgba(201,168,76,0.15); border-color: var(--gold); color: var(--gold); font-weight: 600; }
+.vc-item:not(:last-child)::after { content: '▶'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: var(--border); font-size: 10px; z-index: 1; }
+
+/* TECH LADDER */
+.price-ladder { font-family: 'JetBrains Mono', monospace; }
+.pl-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.pl-row.current { background: rgba(201,168,76,0.1); color: var(--gold); font-weight: 600; }
+.pl-level { color: var(--muted); font-size: 11px; }
+
+/* SHAREHOLDING TABLE */
+.sh-trend { font-size: 12px; }
+.sh-up { color: var(--pass); }
+.sh-down { color: var(--fail); }
+.sh-flat { color: var(--muted); }
+
+/* SERIES TABLE */
+.series-table-wrap { overflow-x: auto; }
+
+/* FOOTER */
+footer { background: #030A14; border-top: 1px solid var(--border); padding: 24px; text-align: center; color: var(--muted); font-size: 12px; line-height: 1.8; margin-top: 40px; }
+
+/* OE BOX */
+.oe-box { background: linear-gradient(135deg, rgba(201,168,76,0.08), transparent); border: 1px solid var(--gold); border-radius: 10px; padding: 20px; }
+.oe-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(201,168,76,0.15); font-size: 14px; }
+.oe-row:last-child { border-bottom: none; font-weight: 600; color: var(--gold); }
+
+/* SENSITIVITY */
+.sens-table td, .sens-table th { text-align: center; }
+.sens-highlight { background: rgba(201,168,76,0.15); font-weight: 600; }
+
+/* PHASE BADGE */
+.phase-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; font-family: 'Syne', sans-serif; }
+.phase2 { background: rgba(59,130,246,0.15); border: 1px solid var(--blue); color: var(--blue); }
+.phase3 { background: rgba(34,197,94,0.15); border: 1px solid var(--pass); color: var(--pass); }
+.phase4 { background: rgba(201,168,76,0.15); border: 1px solid var(--gold); color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-left">
+      <h1>BSE Limited</h1>
+      <div class="sub">NSE: BSE &nbsp;|&nbsp; India's Oldest Exchange &nbsp;|&nbsp; Founded 1875 &nbsp;|&nbsp; Dalal Street, Mumbai</div>
+      <div class="badges">
+        <span class="badge badge-cat">CATEGORY C — MATURE COMPOUNDER</span>
+        <span class="badge badge-ai">🟢 AI WIDENER</span>
+        <span class="badge badge-watch">WATCH ★★★</span>
+        <span class="badge badge-macro">MACRO: TAILWIND</span>
+      </div>
+    </div>
+    <div class="verdict-box-hero">
+      <div class="v-label">Verdict</div>
+      <div class="v-val">WATCH ★★★</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">₹2,800–3,200 Entry Zone</div>
+    </div>
+  </div>
+  <div class="pills">
+    <div class="pill"><div class="pk">Price</div><div class="pv">₹3,963 <span class="e">E</span></div></div>
+    <div class="pill"><div class="pk">Market Cap</div><div class="pv">₹1,61,437 Cr</div></div>
+    <div class="pill"><div class="pk">FY26 Revenue</div><div class="pv">₹4,834 Cr <span class="v">V</span></div></div>
+    <div class="pill"><div class="pk">FY26 PAT</div><div class="pv">₹2,487 Cr <span class="v">V</span></div></div>
+    <div class="pill"><div class="pk">P/E</div><div class="pv">64.9x</div></div>
+    <div class="pill"><div class="pk">ROCE</div><div class="pv">46.6%</div></div>
+  </div>
+  <div class="lede">BSE — a regulatory quasi-monopoly on India's capital market infrastructure — is printing record earnings (Q4 FY26: +85% revenue, +61% PAT YoY) while trading at its all-time high. Exceptional business, stretched price.</div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-scroll">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0. Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1. Macro & Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2. Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3. Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4. Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5. Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6. Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7. Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8. Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9. AI Intelligence</button>
+  </div>
+</div>
+
+<!-- ==================== TAB 0: OVERVIEW ==================== -->
+<div id="tab0" class="tab-content" style="display:block;">
+  <div class="section">
+    <div class="section-title">Business Overview</div>
+    <div class="card">
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;">
+        BSE Ltd (Bombay Stock Exchange) is Asia's oldest stock exchange, founded in 1875 and listed in 2017 as India's first publicly traded exchange. It operates as a regulated financial market infrastructure — a near-monopoly franchise granted by SEBI under the Securities Contract (Regulation) Act. BSE facilitates trading in equities, derivatives, currencies, debt, and mutual funds, and operates the world's fastest exchange at 6 microseconds matching speed.
+      </p>
+      <br>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;">
+        Its most compelling asset may be non-obvious: <strong style="color:var(--gold);">BSE StAR MF</strong> — India's largest mutual fund distribution platform with 281 million registered investors, 83,000+ distributors, and 15,000+ schemes across 721 cities as of FY26. This platform is increasingly AI-enabled and represents a structural flywheel on top of the exchange's core toll-road business model.
+      </p>
+      <br>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;">
+        The BSE SME platform has become the preferred listing venue for India's small and medium enterprises, creating network effects across issuer, investor, and broker communities. BSE's revenue has grown from ₹925 Cr in FY23 to ₹4,834 Cr in FY26 — a 3-year CAGR of 68% — driven by explosive growth in equity derivatives transaction charges and StAR MF distribution fees.
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Why This Stock Is in the Series</div>
+    <div class="grid2">
+      <div class="card">
+        <div style="color:var(--gold);font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;">The Opportunity</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;">BSE is a "toll road" on India's capital market participation — every equity trade, every SIP order, every new demat account benefits BSE. With India's equity participation rate at ~8% of households vs 55%+ in the US, the structural runway is multi-decade. BSE also has a near-monopoly in SME listings and is the No. 2 exchange in derivatives — growing share rapidly.</p>
+      </div>
+      <div class="card">
+        <div style="color:var(--gold);font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;">The Challenge</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;">BSE has no promoter — it is a community/diffusely owned entity. Its derivative revenue is highly cyclical and SEBI-sensitive (SEBI F&O restrictions in FY25 impacted volumes). NSE dominates ~95%+ of derivatives turnover by value. BSE's earnings quality is complicated by settlement pool flows (cash flows ≠ profits). Currently at 52-week high, P/E of 65x — zero margin of safety at current price.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Category & AI Classification</div>
+    <div class="grid3">
+      <div class="card" style="border-left:3px solid var(--gold);">
+        <div class="metric-label">Category</div>
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gold);">C</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Mature Quality Compounder. ROIC 23–47% trend. Durable regulatory moat. Stable 15–25% sector growth with BSE gaining alpha. Not FMCG-type (Cat A). Not hyper-growth 25%+ Rev CAGR (Cat B). Exchange infrastructure = classic Cat C.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--widener);">
+        <div class="metric-label">AI Overlay</div>
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--widener);">🟢 WIDENER</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">BSE deploys AI in market surveillance (BOSS system), algorithmic order detection, StAR MF smart routing, and fraud pattern recognition. Transaction data at scale (millions of orders/day) creates proprietary AI training data.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--teal);">
+        <div class="metric-label">Data Flywheel</div>
+        <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--teal);">FORMING ★★★</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Two of three flywheel criteria confirmed: proprietary order-flow data and AI market surveillance improving with volume. Loop not yet self-reinforcing as user-level product differentiation remains limited vs NSE.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Q4 FY26 Results — Just Released (May 7, 2026)</div>
+    <div class="grid4">
+      <div class="metric pass">
+        <div class="metric-label">Q4 FY26 Revenue <span class="v">V</span></div>
+        <div class="metric-value">₹1,564 Cr</div>
+        <div class="metric-note">+84.5% YoY vs ₹847 Cr</div>
+      </div>
+      <div class="metric pass">
+        <div class="metric-label">Q4 FY26 Net Profit <span class="v">V</span></div>
+        <div class="metric-value">₹795 Cr</div>
+        <div class="metric-note">+61% YoY vs ₹494 Cr</div>
+      </div>
+      <div class="metric pass">
+        <div class="metric-label">FY26 Full Year PAT <span class="v">V</span></div>
+        <div class="metric-value">₹2,487 Cr</div>
+        <div class="metric-note">+88% YoY vs ₹1,322 Cr</div>
+      </div>
+      <div class="metric pass">
+        <div class="metric-label">FY26 OPM</div>
+        <div class="metric-value">~61%</div>
+        <div class="metric-note">Expanded from 58% in FY25</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <p style="font-size:13px;color:var(--muted);">Key Q4 FY26 drivers: Equity derivatives ADNTO rose to ₹245 trillion in Q4 vs ₹210 trillion in Q3 and ₹112 trillion year-ago — more than doubled. StAR MF now at 281M registered investors, 83,000 distributors. BSE SME platform growing rapidly. Dividend: ₹10 final recommended for FY26 (record date July 10, 2026).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 1: MACRO & GROWTH ==================== -->
+<div id="tab1" class="tab-content">
+  <div class="section">
+    <div class="section-title">Layer 1 — Macro Anchor</div>
+    <div class="grid3">
+      <div class="metric pass">
+        <div class="metric-label">India Real GDP <span class="e">E</span></div>
+        <div class="metric-value">6.4–6.8%</div>
+        <div class="metric-note">RBI/IMF estimate FY26-27</div>
+      </div>
+      <div class="metric warn">
+        <div class="metric-label">India CPI <span class="v">V</span></div>
+        <div class="metric-value">~4.0–4.5%</div>
+        <div class="metric-note">RBI Q6 MPC projection FY26</div>
+      </div>
+      <div class="metric pass">
+        <div class="metric-label">India Nominal GDP <span class="e">E</span></div>
+        <div class="metric-value">~10.8–11%</div>
+        <div class="metric-note">Terminal growth ceiling</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">10-yr G-Sec Yield <span class="v">V</span></div>
+        <div class="metric-value">6.96–7.0%</div>
+        <div class="metric-note">May 2026 (near 1-month high)</div>
+      </div>
+      <div class="metric pass">
+        <div class="metric-label">RBI Stance</div>
+        <div class="metric-value">Easing</div>
+        <div class="metric-note">Rate cut cycle supportive of equity participation</div>
+      </div>
+      <div class="metric pass">
+        <div class="metric-label">AI Cycle (India)</div>
+        <div class="metric-value">Accelerating</div>
+        <div class="metric-note">India AI Stack Phase 3–4 for fintech/banking</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--gold);margin-bottom:12px;">Macro Cycle Dashboard</div>
+      <table>
+        <tr><th>Dimension</th><th>Current Status</th><th>Impact on BSE</th><th>Magnitude</th></tr>
+        <tr><td>Urban Consumption Cycle</td><td><span class="badge badge-macro">Recovery</span></td><td>More retail investors, SIP growth</td><td>+2 to +3%</td></tr>
+        <tr><td>Rural Income Cycle</td><td><span class="badge badge-macro">Neutral</span></td><td>Tier 2-3 equity participation nascent</td><td>Neutral</td></tr>
+        <tr><td>Interest Rate Cycle (RBI)</td><td><span class="badge" style="background:rgba(34,197,94,0.15);border:1px solid var(--pass);color:var(--pass);">Easing</span></td><td>Lower rates = equity attractive = volumes ↑</td><td>+3 to +5%</td></tr>
+        <tr><td>Government Capex Cycle</td><td><span class="badge badge-macro">Steady</span></td><td>PSU listings, disinvestment pipeline</td><td>+1 to +2%</td></tr>
+        <tr><td>Financial Inclusion</td><td><span class="badge" style="background:rgba(34,197,94,0.15);border:1px solid var(--pass);color:var(--pass);">Accelerating</span></td><td>Demat accounts ~180M and growing</td><td>+3 to +5%</td></tr>
+        <tr><td>AI Adoption Cycle</td><td><span class="badge" style="background:rgba(45,212,191,0.15);border:1px solid var(--teal);color:var(--teal);">Phase 3–4</span></td><td>AI surveillance widening moat; AI MF routing</td><td>+1 to +2%</td></tr>
+      </table>
+      <div style="margin-top:12px;font-size:13px;"><strong style="color:var(--pass);">MACRO COMPOSITE: TAILWIND</strong> — easing rates, rising equity participation, financial inclusion, and India's structural capital market deepening all benefit BSE.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Sector: Capital Markets / Exchange Infrastructure. BSE operates in a sector with no clean 3-year CAGR benchmark (SEBI restrictions in FY25 caused NSE F&O volumes to dip, while BSE gained share). Exchange revenues are partially cyclical — volumes scale with market participation and volatility, but listing/data fees are annuity-like. <span class="e">E</span></p>
+      <table>
+        <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Acceleration</th></tr>
+        <tr><td>Macro State</td><td>GDP ~5.5%</td><td>GDP ~6.8%</td><td>GDP ~8%+</td></tr>
+        <tr><td>Sector Volume Growth</td><td>5–8%</td><td>15–20%</td><td>25–35%</td></tr>
+        <tr><td>AI impact on sector</td><td>Neutral</td><td>+1%</td><td>+2–3%</td></tr>
+        <tr><td>BSE Alpha (share gain)</td><td>+2%</td><td>+5%</td><td>+8%</td></tr>
+        <tr><td>Stage 1 Rev CAGR (5yr)</td><td>12%</td><td>22%</td><td>32%</td></tr>
+        <tr><td>Stage 2 Rev/FCF CAGR</td><td>8%</td><td>14%</td><td>18%</td></tr>
+        <tr><td>Terminal Growth</td><td>5.5%</td><td>7.0%</td><td>8.0%</td></tr>
+        <tr><td>Margin Direction</td><td>Compress (SEBI)</td><td>Stable/Expand</td><td>Expand</td></tr>
+        <tr><td>Key Risk</td><td>SEBI F&O curbs</td><td>NSE competition</td><td>Regulatory cap</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 3 — Company Alpha Over Sector</div>
+    <div class="card">
+      <table>
+        <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+        <tr><td>Market Share Gain (Derivatives)</td><td>Active</td><td>+3%</td><td>+1%</td></tr>
+        <tr><td>StAR MF Platform Expansion</td><td>Active ★★★</td><td>+4%</td><td>+3%</td></tr>
+        <tr><td>SME Platform Listings</td><td>Active ★★★★</td><td>+2%</td><td>+1%</td></tr>
+        <tr><td>Geographic / Institutional Depth</td><td>Potential</td><td>+1%</td><td>+2%</td></tr>
+        <tr><td>Listing Fee Pricing Power</td><td>SEBI-constrained</td><td>0%</td><td>+1%</td></tr>
+        <tr><td>AI Alpha (6a: Surveillance cost reduction)</td><td>Active</td><td>+1%</td><td>+1%</td></tr>
+        <tr><td>AI Alpha (6b: TAM expansion via AI MF routing)</td><td>Forming</td><td>+1%</td><td>+2%</td></tr>
+        <tr><td>AI Alpha (6c: Flywheel — FORMING)</td><td>Forming</td><td>+0.5%</td><td>+1%</td></tr>
+        <tr style="font-weight:600;"><td>Total Alpha</td><td>—</td><td>+12.5%</td><td>+12%</td></tr>
+      </table>
+      <div style="margin-top:12px;font-size:13px;color:var(--muted);">Sensitivity: A 1% change in terminal growth rate changes Base IV by approximately ±12–15%. A 1% change in Stage 1 CAGR changes IV by approximately ±5–7%.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 2: FINANCIALS ==================== -->
+<div id="tab2" class="tab-content">
+  <div class="section">
+    <div class="section-title">Revenue & Profit History (Consolidated) <span class="v">V</span></div>
+    <div class="card" style="overflow-x:auto;">
+      <table>
+        <tr><th>Year</th><th>Revenue (Cr)</th><th>Net Profit (Cr)</th><th>OPM%</th><th>EPS (₹)</th><th>ROE%</th><th>ROCE%</th></tr>
+        <tr><td>FY21</td><td>630</td><td>142</td><td>32%</td><td>3.58</td><td>~5%</td><td>~8%</td></tr>
+        <tr><td>FY22</td><td>841</td><td>245</td><td>42%</td><td>6.27</td><td>~9%</td><td>15%</td></tr>
+        <tr><td>FY23</td><td>925</td><td>206</td><td>34%</td><td>5.43</td><td>~8%</td><td>12%</td></tr>
+        <tr><td>FY24</td><td>1,568</td><td>772</td><td>45%</td><td>19.17</td><td>~23%</td><td>23%</td></tr>
+        <tr><td>FY25</td><td>3,212</td><td>1,322</td><td>58%</td><td>32.65</td><td>36%</td><td>47%</td></tr>
+        <tr style="background:rgba(201,168,76,0.08);font-weight:600;"><td>FY26 <span class="v">V</span></td><td>4,834</td><td>2,487</td><td>~61%</td><td>~61.4</td><td>~45%</td><td>~55%E</td></tr>
+      </table>
+    </div>
+    <div class="grid3" style="margin-top:12px;">
+      <div class="metric pass"><div class="metric-label">5-yr Rev CAGR</div><div class="metric-value">39%</div><div class="metric-note">FY21→FY26</div></div>
+      <div class="metric pass"><div class="metric-label">5-yr PAT CAGR</div><div class="metric-value">65%</div><div class="metric-note">Screener data <span class="v">V</span></div></div>
+      <div class="metric pass"><div class="metric-label">FY26 Revenue growth</div><div class="metric-value">+50.5%</div><div class="metric-note">₹3,212 → ₹4,834 Cr</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Financial Fortress Scorecard (Category C)</div>
+    <div class="card">
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">ROE ≥ 15% for 5 years</div><div class="score-desc">ROE: 5%, 9%, 8%, 23%, 36% — only past 2 years cross threshold. FY26 ~45%E</div></div>
+        <span class="score-badge score-marginal">MARGINAL ~</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">ROIC > WACC (12%)</div><div class="score-desc">ROCE 47% in FY25, ~55%E in FY26. Massively above WACC. Very recent acceleration.</div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Net Cash / Debt Free</div><div class="score-desc">Zero borrowings. Investments ₹2,845 Cr on balance sheet. Net cash positive. <span class="v">V</span></div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Net Profit Margin ≥ 15%</div><div class="score-desc">FY26 NPM ~51.4%. FY25 NPM 41%. FY24 NPM 49%. Consistently high and improving.</div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">FCF Positive & Growing</div><div class="score-desc">FCF highly volatile: FY24 ₹2,513 Cr, FY25 ₹262 Cr, FY23 -₹280 Cr. Settlement pool distorts CFO. <span class="u">U</span></div></div>
+        <span class="score-badge score-marginal">MARGINAL ~</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Revenue CAGR ≥ Sector CAGR</div><div class="score-desc">BSE 3yr Rev CAGR 68% vs sector growth ~15-20%. Massive outperformance.</div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Predictable / Recurring Revenue</div><div class="score-desc">Transaction charges = cyclical. Listing fees, data fees, StAR MF = recurring/annuity. Mix improving.</div></div>
+        <span class="score-badge score-marginal">MARGINAL ~</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Capital-Light Model (High ROIC)</div><div class="score-desc">CapEx minimal. ROCE 47%. Revenue per employee ~₹6.5 Cr. Ultra capital-light.</div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Dividend Payout Sustainable</div><div class="score-desc">FY26: ₹10 final + prior dividends. Payout ratio ~23% — well within sustainable range.</div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Owner Earnings <span class="e">E</span></div>
+    <div class="oe-box">
+      <div class="oe-row"><span>Net Income (FY26)</span><span style="font-family:'JetBrains Mono',monospace;">+ ₹2,487 Cr</span></div>
+      <div class="oe-row"><span>Depreciation & Amortisation</span><span style="font-family:'JetBrains Mono',monospace;">+ ₹134 Cr</span></div>
+      <div class="oe-row"><span>Non-cash / SBC adjustments</span><span style="font-family:'JetBrains Mono',monospace;">+ ₹15 Cr</span></div>
+      <div class="oe-row"><span>Maintenance CapEx (estimated)</span><span style="font-family:'JetBrains Mono',monospace;">- ₹80 Cr</span></div>
+      <div class="oe-row"><span>Working Capital Changes (excl. settlement)</span><span style="font-family:'JetBrains Mono',monospace;">- ₹50 Cr</span></div>
+      <div class="oe-row"><span style="color:var(--gold);font-weight:700;">Conservative Owner Earnings</span><span style="font-family:'JetBrains Mono',monospace;">≈ ₹2,506 Cr</span></div>
+      <div class="oe-row"><span style="color:var(--gold);font-weight:700;">Base Owner Earnings</span><span style="font-family:'JetBrains Mono',monospace;">≈ ₹2,550 Cr</span></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;">Note: BSE's CFO is highly distorted by settlement pool cash (client funds held on behalf of ICCL). True Owner Earnings should be computed on standalone/operational basis, not raw CFO. <span class="u">U</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Earnings Quality — O'Glove Framework</div>
+    <div class="card">
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Test 1 — FCF Conversion (5-yr)</div><div class="score-desc">CFO/Net Profit: FY21 -48%, FY22 588%, FY23 -66%, FY24 342%, FY25 31%. Extremely volatile due to settlement pool. NOT a sign of earnings manipulation — structural to exchange accounting.</div></div>
+        <span class="score-badge score-marginal">MARGINAL ~</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Test 2 — DSO Trend (3-yr)</div><div class="score-desc">Debtor Days: FY23: 36d, FY24: 49d, FY25: 35d. No concerning sustained uptrend. Volatility reflects institutional credit terms.</div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Test 3 — Inventory Days</div><div class="score-desc">Exchange business — no inventory. N/A.</div></div>
+        <span class="score-badge score-pass">N/A</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Test 4 — Accounting Policy Stability</div><div class="score-desc">No material accounting policy changes detected in recent filings. Clean audit (S R Batliboi & Co LLP). <span class="e">E</span></div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Test 5 — Gross Margin Consistency (5-yr)</div><div class="score-desc">OPM: 42%, 34%, 45%, 58%, 61% — strong and expanding. FY23 dip was volume-related. Trend clearly positive.</div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:rgba(245,158,11,0.1);border-radius:8px;border:1px solid var(--marginal);">
+        <strong style="color:var(--marginal);">Earnings Quality: ACCEPTABLE</strong> — Cash flow volatility is structural (settlement pool), not earnings manipulation. Gross margins expanding, DSO stable, no accounting red flags. Classified ACCEPTABLE not CLEAN due to CFO volatility requiring analyst judgment.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 3: MOAT ==================== -->
+<div id="tab3" class="tab-content">
+  <div class="section">
+    <div class="section-title">Moat Assessment — Pillar 1 Grade: B+</div>
+    <div class="grid2">
+      <div class="moat-card">
+        <div class="moat-name">🔒 Regulatory Licence Monopoly <span class="stars">★★★★★</span></div>
+        <div class="moat-desc">BSE holds a permanent SEBI licence to operate a stock exchange — one of only two in India (NSE being the other). This is a legislatively protected duopoly. New entrants cannot enter without SEBI approval, which has never been granted for a new national exchange. This is the strongest moat type: government-granted natural monopoly. Status: <strong style="color:var(--pass);">UNASSAILABLE in stress scenario.</strong></div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-name">🌐 Network Effects (Multi-sided Platform) <span class="stars">★★★★</span></div>
+        <div class="moat-desc">BSE's value increases with more listed companies, more investors, more brokers, and more market makers. The StAR MF platform with 281M registered investors creates profound network effects — more investors attract more schemes, which attracts more distributors, which attracts more investors. SME platform: more companies listed = more investor interest = more companies want to list.</div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-name">💰 Cost Advantage (Infrastructure Scale) <span class="stars">★★★</span></div>
+        <div class="moat-desc">BSE operates at 6 microseconds — world's fastest exchange. Technology infrastructure built over decades. Revenue per employee ₹6.5 Cr (FY26). Operating leverage is exceptional: FY26 revenue grew 50% while expenses grew only ~19%. EBITDA margins approaching 65%.</div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-name">🔄 Switching Costs (Broker/Listed Co.) <span class="stars">★★★</span></div>
+        <div class="moat-desc">Once a company lists on BSE, switching costs are high (re-listing fees, investor communication, index inclusion loss). For brokers, BSE membership is regulatory and relationship-driven — changing exchanges requires SEBI approval. StAR MF distributors are deeply embedded in the platform's workflow.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--gold);margin-bottom:12px;">ROIC as Moat Proof</div>
+      <table>
+        <tr><th>Year</th><th>ROCE/ROIC</th><th>Assessment</th></tr>
+        <tr><td>FY22</td><td>15%</td><td style="color:var(--marginal);">Narrow moat (just entering)</td></tr>
+        <tr><td>FY23</td><td>12%</td><td style="color:var(--marginal);">Transition year (SEBI impact)</td></tr>
+        <tr><td>FY24</td><td>23%</td><td style="color:var(--pass);">Wide moat emerging</td></tr>
+        <tr><td>FY25</td><td>47%</td><td style="color:var(--pass);">Exceptional — wide moat confirmed</td></tr>
+        <tr><td>FY26E</td><td>~55%</td><td style="color:var(--pass);">Category-leading ROIC</td></tr>
+      </table>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px;">ROIC trend validates the moat is real and widening. The exceptional FY25-26 acceleration reflects derivatives market share gain and StAR MF scaling.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">AI Data Flywheel Test</div>
+    <div class="flywheel-box">
+      <div class="flywheel-title">🌀 FLYWHEEL STATUS: FORMING ★★★</div>
+      <div class="fw-q">
+        <div class="fw-q-title">Q1: Does BSE have proprietary training data competitors cannot access?</div>
+        <div class="fw-q-ans"><span class="score-badge score-pass">YES ✓</span> — BSE has 150 years of transaction order-flow data, real-time order book data (6 microsecond granularity), settlement and clearing data, SME listing behavior data, and StAR MF order routing data with 281M investor behavior profiles. No competitor has equivalent historical depth + breadth across all these dimensions simultaneously.</div>
+      </div>
+      <div class="fw-q">
+        <div class="fw-q-title">Q2: Does the AI measurably improve with more data/users?</div>
+        <div class="fw-q-ans"><span class="score-badge score-pass">PARTIAL ✓</span> — BSE's BOSS (BSE Online Surveillance System) uses AI/ML to detect algorithmic manipulation patterns. More trading volume → more pattern training data → better manipulation detection. StAR MF's smart routing AI improves with more order data. However, specific accuracy improvement metrics (e.g., "false positive rate fell from X% to Y%") are not publicly disclosed in earnings calls. Evidence is structural, not yet quantified. <span class="e">E</span></div>
+      </div>
+      <div class="fw-q">
+        <div class="fw-q-title">Q3: Does better AI attract more users?</div>
+        <div class="fw-q-ans"><span class="score-badge score-marginal">FORMING ~</span> — BSE's AI surveillance makes the exchange safer and more reputable, which does attract more institutional listings (especially SME companies seeking SEBI-clean platforms). However, retail investors do not choose BSE over NSE based on AI quality — they follow where liquidity is. The flywheel is forming at the institutional/issuer level, not yet at retail investor level.</div>
+      </div>
+      <div style="margin-top:16px;border-top:1px solid rgba(45,212,191,0.3);padding-top:12px;">
+        <strong style="color:var(--teal);">Flywheel Score: 6/10</strong> — Data Quality: 3/3 | Improvement Evidence: 2/4 | Loop Speed: 1/3<br>
+        <span style="font-size:12px;color:var(--muted);">Classification: Moderate flywheel. Moat grade maintained at B+ (no full upgrade yet — flywheel confirmation requires public disclosure of AI accuracy metrics).</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Macro Stress Test</div>
+    <div class="card">
+      <table>
+        <tr><th>Moat Source</th><th>STRENGTHENS</th><th>HOLDS</th><th>WEAKENS</th></tr>
+        <tr><td>Regulatory Licence</td><td>✓</td><td>—</td><td>—</td></tr>
+        <tr><td>Network Effects (StAR MF)</td><td>—</td><td>✓</td><td>—</td></tr>
+        <tr><td>Derivatives Market Share</td><td>—</td><td>—</td><td>✓ (SEBI curbs reduce volumes)</td></tr>
+        <tr><td>SME Platform</td><td>—</td><td>✓</td><td>—</td></tr>
+        <tr><td>Infrastructure Scale</td><td>✓</td><td>—</td><td>—</td></tr>
+        <tr><td>AI Surveillance Moat</td><td>✓ (regulators demand more)</td><td>—</td><td>—</td></tr>
+      </table>
+      <p style="font-size:13px;color:var(--muted);margin-top:10px;"><strong>Key Stress Risk:</strong> SEBI can regulate transaction charge rates or restrict F&O volumes (as happened in FY25), directly impacting BSE's fastest-growing revenue stream. This is the primary moat threat — not competition, but regulation of the regulator's own licensee.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 4: MANAGEMENT ==================== -->
+<div id="tab4" class="tab-content">
+  <div class="section">
+    <div class="section-title">Management Assessment — Pillar 3 Grade: B</div>
+    <div class="grid2">
+      <div class="card" style="border-left:3px solid var(--pass);">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--pass);margin-bottom:10px;">Strengths</div>
+        <ul style="font-size:13px;color:var(--muted);line-height:2;padding-left:16px;">
+          <li>Professional management under MD&CEO — clean regulatory record vs peers</li>
+          <li>Counter-cyclical capital allocation: invested in tech infrastructure during 2020-22 lull</li>
+          <li>Capital-light expansion: StAR MF scaled to 281M investors with minimal incremental capex</li>
+          <li>Zero borrowings — conservative balance sheet management despite growth</li>
+          <li>Dividend policy: 41% 3-year average payout — sustainable and investor-friendly</li>
+          <li>₹10 final dividend FY26 recommended despite strong PAT — appropriate payout discipline</li>
+          <li>AGM scheduled August 19, 2026 — transparent governance calendar</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:3px solid var(--marginal);">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--marginal);margin-bottom:10px;">Concerns</div>
+        <ul style="font-size:13px;color:var(--muted);line-height:2;padding-left:16px;">
+          <li>No promoter holding — BSE is diffusely owned; CEO accountability is primarily regulatory</li>
+          <li>Regulatory dependency: management cannot fully control revenue levers (SEBI sets transaction fee rates, F&O rules)</li>
+          <li>NSE still dominates 95%+ of derivatives value — BSE hasn't cracked NSE's core stronghold</li>
+          <li>StAR MF revenue heavily dependent on MF industry commission structures (AMFI/SEBI regulated)</li>
+          <li>Limited AI team disclosure — no public headcount data, no R&D capex breakdown <span class="u">U</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Shareholding Integrity</div>
+    <div class="grid3">
+      <div class="metric">
+        <div class="metric-label">Promoter Holding</div>
+        <div class="metric-value">0%</div>
+        <div class="metric-note">BSE is community-owned — no promoter. This is structural, not a red flag.</div>
+      </div>
+      <div class="metric pass">
+        <div class="metric-label">Pledged Shares</div>
+        <div class="metric-value">NIL</div>
+        <div class="metric-note">No promoter pledges — structurally impossible.</div>
+      </div>
+      <div class="metric pass">
+        <div class="metric-label">Capital Allocation Grade</div>
+        <div class="metric-value">B+</div>
+        <div class="metric-note">Minimal debt, reinvesting in tech, dividends sustainable.</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;">BSE's governance is unique: it is regulated by SEBI, which also regulates its competitors and its own regulator. This creates a complex principal-agent relationship but also means BSE's management is held to exceptionally high regulatory standards. No IT raids, no SFIO investigations, no related-party concerns on record. <span class="e">E</span></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">AI Management Assessment</div>
+    <div class="card">
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">AI Team Quality</div><div class="score-desc">BSE has an internal technology division but AI team depth is not publicly disclosed. BOSS surveillance system is proprietary. No peer-reviewed AI publications identified. <span class="u">U</span></div></div>
+        <span class="score-badge score-marginal">MARGINAL ~</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">AI Capital Allocation</div><div class="score-desc">Technology capex growing (CWIP ₹214 Cr as of Sep 2025 vs ₹54 Cr in FY25). Significant infrastructure investment underway. R&D as % of revenue not separately disclosed. <span class="e">E</span></div></div>
+        <span class="score-badge score-marginal">MARGINAL ~</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Responsible AI / Regulatory</div><div class="score-desc">Exchange AI (market surveillance) is subject to SEBI oversight — highest possible regulatory scrutiny. BSE's AI systems are de-facto SEBI-approved. No AI bias complaints on record.</div></div>
+        <span class="score-badge score-pass">PASS ✓</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 5: VALUATION ==================== -->
+<div id="tab5" class="tab-content">
+  <div class="section">
+    <div class="section-title">Method 1 — Two-Stage DCF (Category C)</div>
+    <div class="card" style="overflow-x:auto;">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Using Owner Earnings base of ₹2,550 Cr (FY26). WACC: 12% (Cat C India). Terminal P/E: 20-22x. All growth rates from macro-derived table. <span class="e">E</span></p>
+      <table>
+        <tr><th>Year</th><th>Base OE Growth (22%)</th><th>OE (Cr)</th><th>PV @ 12%</th></tr>
+        <tr><td>Y1</td><td>22%</td><td>3,111</td><td>2,778</td></tr>
+        <tr><td>Y2</td><td>22%</td><td>3,796</td><td>3,027</td></tr>
+        <tr><td>Y3</td><td>22%</td><td>4,631</td><td>3,296</td></tr>
+        <tr><td>Y4</td><td>22%</td><td>5,650</td><td>3,591</td></tr>
+        <tr><td>Y5</td><td>22%</td><td>6,893</td><td>3,910</td></tr>
+        <tr style="font-style:italic;color:var(--muted);"><td>Y6-10</td><td>14% (Stage 2)</td><td colspan="2">→ PV of Terminal Value</td></tr>
+        <tr><td colspan="2">Y10 OE</td><td>~13,200</td><td>—</td></tr>
+        <tr><td colspan="2">Terminal Value (7% g)</td><td>281,820</td><td>—</td></tr>
+        <tr><td colspan="2">PV of Terminal Value</td><td>—</td><td>90,600</td></tr>
+        <tr style="font-weight:600;"><td colspan="2">PV of Stage 1</td><td>—</td><td>16,602</td></tr>
+        <tr style="font-weight:600;"><td colspan="2">PV of Stage 2</td><td>—</td><td>~35,000</td></tr>
+        <tr style="font-weight:600;background:rgba(201,168,76,0.08);"><td colspan="2">Total Enterprise Value</td><td>—</td><td>~1,42,202 Cr</td></tr>
+        <tr style="font-weight:600;color:var(--gold);"><td colspan="2">IV per Share (~40.5 Cr shares)</td><td>—</td><td>₹3,511</td></tr>
+      </table>
+    </div>
+    <div class="card card2" style="margin-top:10px;">
+      <p style="font-size:12px;color:var(--muted);">DCF Sensitivity — Base IV ₹3,511:</p>
+      <table class="sens-table" style="margin-top:8px;font-size:12px;">
+        <tr><th></th><th>g=6%</th><th>g=7%</th><th>g=8%</th></tr>
+        <tr><td>WACC=11%</td><td>₹3,880</td><td class="sens-highlight">₹4,420</td><td>₹5,200</td></tr>
+        <tr><td>WACC=12%</td><td>₹3,100</td><td class="sens-highlight">₹3,511</td><td>₹4,100</td></tr>
+        <tr><td>WACC=13%</td><td>₹2,500</td><td class="sens-highlight">₹2,820</td><td>₹3,200</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 2 — Owner Earnings Capitalisation</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--muted);">Value = OE / (Required Return − g)</p>
+      <table style="margin-top:12px;">
+        <tr><th>Scenario</th><th>OE (Cr)</th><th>Req. Return</th><th>g</th><th>Value (Cr)</th><th>Per Share</th></tr>
+        <tr><td>Stress</td><td>2,300</td><td>13%</td><td>5.5%</td><td>30,667</td><td>₹757</td></tr>
+        <tr><td>Base</td><td>2,550</td><td>12%</td><td>7.0%</td><td>51,000</td><td>₹1,259</td></tr>
+        <tr><td>Accel.</td><td>2,700</td><td>11%</td><td>8.0%</td><td>90,000</td><td>₹2,222</td></tr>
+      </table>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px;">Note: OE capitalisation is less suitable for BSE due to its growth trajectory — growth value dominates the intrinsic value calculation. The DCF and P/E methods are more reliable here.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 3 — ROIC / EPV</div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--muted);">EPV = NOPAT/WACC × growth premium. NOPAT (FY26E) = EBIT × (1-tax) ≈ ₹2,300 Cr × 0.75 = ₹1,725 Cr.</p>
+      <div class="grid3" style="margin-top:12px;">
+        <div class="metric"><div class="metric-label">EPV (Base)</div><div class="metric-value">₹1,725 / 0.12</div><div class="metric-note">= ₹14,375 Cr enterprise / ~₹355/share</div></div>
+        <div class="metric pass"><div class="metric-label">Economic Profit</div><div class="metric-value">Massive</div><div class="metric-note">(ROIC 47% - WACC 12%) × Capital = ~₹4,500 Cr annualised economic profit</div></div>
+        <div class="metric pass"><div class="metric-label">Growth Premium</div><div class="metric-value">~10x EPV</div><div class="metric-note">Market paying for growth, not just static earnings power — validates BSE's premium multiple</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 4 — P/E Earnings Power</div>
+    <div class="card">
+      <table>
+        <tr><th>Metric</th><th>Value</th><th>Assessment</th></tr>
+        <tr><td>FY26 EPS (actual)</td><td>₹61.4</td><td><span class="v">V</span></td></tr>
+        <tr><td>Current P/E</td><td>64.5x</td><td style="color:var(--fail);">Stretched — expensive</td></tr>
+        <tr><td>FY27E EPS (22% growth)</td><td>~₹74.9</td><td><span class="e">E</span></td></tr>
+        <tr><td>Forward P/E (FY27E)</td><td>~52.9x</td><td style="color:var(--marginal);">Still elevated</td></tr>
+        <tr><td>3yr avg P/E (FY24-26)</td><td>~55x</td><td>Current at 64x = 16% premium to own avg</td></tr>
+        <tr><td>PEG Ratio</td><td>64.5/61% = 1.06x</td><td style="color:var(--pass);">PEG < 1.5 = acceptable for growth</td></tr>
+        <tr><td>Fair P/E (Cat C, AI Widener)</td><td>45–55x</td><td>AI Widener justifies +5x premium over non-AI peers</td></tr>
+        <tr><td>Implied Fair Value at 50x FY26 EPS</td><td>₹3,070</td><td style="color:var(--pass);">Entry Zone</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 5 — Earnings Yield vs Bond Yield (ERP)</div>
+    <div class="card">
+      <table>
+        <tr><th>Metric</th><th>Value</th><th>Signal</th></tr>
+        <tr><td>Earnings Yield (1/P/E)</td><td>1.55%</td><td style="color:var(--fail);">Far below bond yield — negative ERP</td></tr>
+        <tr><td>FCF Yield (FCF/Market Cap)</td><td>~0.16% <span class="u">U</span></td><td style="color:var(--fail);">FCF distorted — not reliable</td></tr>
+        <tr><td>India 10-yr G-Sec Yield</td><td>~6.97%</td><td><span class="v">V</span></td></tr>
+        <tr><td>Equity Risk Premium (ERP)</td><td>1.55% - 6.97% = -5.4%</td><td style="color:var(--fail);">NEGATIVE ERP — structural overvaluation signal</td></tr>
+        <tr><td>Dividend Yield</td><td>~0.25%</td><td style="color:var(--muted);">Trivial; not income play</td></tr>
+        <tr><td>Bond Crossover Year</td><td>&gt;20 years</td><td style="color:var(--fail);">Yield-on-cost never catches bond yield at current price</td></tr>
+      </table>
+      <div style="margin-top:12px;padding:12px;background:rgba(239,68,68,0.08);border-radius:8px;border:1px solid var(--fail);">
+        <strong style="color:var(--fail);">NEGATIVE ERP: Structural Overvaluation Signal</strong> — At ₹3,963, BSE's earnings yield of 1.55% is far below the risk-free rate of 6.97%. An investor is accepting 5.4% less yield than a G-Sec for the privilege of equity risk. This is only justifiable if earnings growth is exceptional AND sustained — which may be the case, but the margin of safety is zero.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5-Method Summary & Entry Zone</div>
+    <div class="card">
+      <table>
+        <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>AI Adj.</th></tr>
+        <tr><td>1. DCF (2-Stage)</td><td>₹1,800</td><td>₹3,511</td><td>₹5,400</td><td>+₹200 (flywheel forming)</td></tr>
+        <tr><td>2. OE Capitalisation</td><td>₹757</td><td>₹1,259</td><td>₹2,222</td><td>Less relevant (growth co.)</td></tr>
+        <tr><td>3. EPV / ROIC</td><td>₹355</td><td>₹355 × 8x</td><td>₹355 × 12x</td><td>Growth value dominates</td></tr>
+        <tr><td>4. P/E Earnings Power</td><td>₹2,460</td><td>₹3,070</td><td>₹4,100</td><td>+5x AI Widener premium</td></tr>
+        <tr><td>5. ERP / Yield</td><td>₹900</td><td>₹1,500</td><td>₹2,200</td><td>NEGATIVE ERP at current price</td></tr>
+        <tr style="font-weight:600;color:var(--gold);background:rgba(201,168,76,0.08);">
+          <td>Blended Base IV (ex. OE cap, EPV)</td><td>₹2,130</td><td>₹3,290</td><td>₹4,750</td><td>+₹200 AI Widener</td>
+        </tr>
+        <tr style="font-weight:600;color:var(--teal);">
+          <td>Entry Price (MoS 20%) <span class="e">E</span></td><td>—</td><td>₹2,800–3,200</td><td>—</td><td>—</td>
+        </tr>
+      </table>
+      <div style="margin-top:12px;font-size:13px;color:var(--muted);">
+        <strong style="color:var(--gold);">AI WIDENER adjustment:</strong> Flywheel FORMING adds ₹200 premium to Base IV (represents approximately +6% premium vs non-AI exchange peer). Full flywheel CONFIRMED would add ₹400–500 (moat grade upgrade from B+ → A−).<br><br>
+        <strong style="color:var(--fail);">Current Price ₹3,963 vs Base IV ₹3,290: Trading at 20% PREMIUM to intrinsic value. Zero margin of safety.</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 6: VERDICT ==================== -->
+<div id="tab6" class="tab-content">
+  <div class="pillar-grid">
+    <div class="pillar-card"><div class="pillar-name">Economic Moat</div><div class="pillar-grade">B+</div></div>
+    <div class="pillar-card"><div class="pillar-name">Financial Fortress</div><div class="pillar-grade">B+</div></div>
+    <div class="pillar-card"><div class="pillar-name">Management</div><div class="pillar-grade">B</div></div>
+    <div class="pillar-card"><div class="pillar-name">Valuation</div><div class="pillar-grade">C+</div></div>
+  </div>
+
+  <div class="verdict-main">
+    <div class="verdict-grade">WATCH ★★★</div>
+    <p style="font-size:14px;color:var(--muted);line-height:1.7;">BSE Ltd is an exceptional business — a regulatory-protected duopoly operating at the intersection of India's capital market deepening story, mutual fund proliferation, and AI-enabled market surveillance. Its FY26 results are outstanding: 85% revenue growth, 61% PAT growth, ROCE approaching 55%, zero debt, 281 million MF investors on its platform. But at ₹3,963 (all-time high), the stock is trading at 64.5x P/E with a negative equity risk premium of -5.4%. Base IV is approximately ₹3,290 and entry zone is ₹2,800–3,200. The quality is there; the price is not.</p>
+    <div class="verdict-quote">"Price is what you pay. Value is what you get. At all-time highs with a negative ERP, you are paying more than you are getting." — Warren Buffett (adapted)</div>
+    <div class="verdict-quote">"The safest investment in the world still has a right price. BSE is a great business at the wrong price today — and potentially a great investment at 20% lower." — Buffett QV Series framework note</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">WATCH → BUY Upgrade Conditions (All must be measurable)</div>
+    <div class="upgrade-item"><div class="upgrade-num">1</div><div class="upgrade-text"><strong>Price corrects to ₹2,800–3,200</strong> — representing 20–30% discount to current price and within/below Base IV of ₹3,290. This provides the required margin of safety for Cat C (20%).</div></div>
+    <div class="upgrade-item"><div class="upgrade-num">2</div><div class="upgrade-text"><strong>RSI falls below 40 on the daily chart</strong> — indicating capitulation-level selling and mean reversion from current overbought territory.</div></div>
+    <div class="upgrade-item"><div class="upgrade-num">3</div><div class="upgrade-text"><strong>P/E corrects to 45–50x forward earnings</strong> — FY27E EPS ~₹75, so P/E 45x = price ~₹3,375; P/E 42x = ~₹3,150. First entry at ≤₹3,200.</div></div>
+    <div class="upgrade-item"><div class="upgrade-num">4</div><div class="upgrade-text"><strong>DII holding continues to build above 20%</strong> — Domestic institutions have been accumulating aggressively (23.74% in Dec 2025 from 0.65% in Mar 2023). Continued accumulation signals long-term institutional conviction.</div></div>
+    <div class="upgrade-item"><div class="upgrade-num">5</div><div class="upgrade-text"><strong>BSE StAR MF registered investor count exceeds 350 million</strong> — confirming flywheel strength and widening the moat grade to A− (unlocks AI Widener full conviction upgrade).</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Series Table — Buffett Quality-Value Series v5.0</div>
+    <div class="series-table-wrap">
+      <table style="font-size:12px;">
+        <tr><th>#</th><th>Company</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Thesis</th></tr>
+        <tr><td>1</td><td>PVR INOX</td><td>C</td><td>⚪</td><td>C+</td><td>D</td><td>C</td><td>D+</td><td>PASS</td><td>No pricing power; 5 loss years</td></tr>
+        <tr><td>2</td><td>Yatharth Hospital</td><td>C</td><td>🟢</td><td>B−</td><td>C+</td><td>C+</td><td>D+</td><td>WATCH ★★</td><td>IT investigation; AI diagnostics potential</td></tr>
+        <tr><td>3</td><td>Bajaj Auto</td><td>C</td><td>⚪</td><td>A−</td><td>A</td><td>B+</td><td>C</td><td>WATCH ★★★</td><td>India quality leader; above entry</td></tr>
+        <tr><td>4</td><td>Tata Chemicals</td><td>E</td><td>⚪</td><td>D−</td><td>F</td><td>B−</td><td>C+</td><td>PASS</td><td>Commodity trap; wrong framework</td></tr>
+        <tr><td>5</td><td>Tata Motors PV</td><td>D</td><td>🔴</td><td>B−</td><td>D</td><td>B</td><td>B−</td><td>WATCH ★★</td><td>JLR EV + AI risk; near entry price</td></tr>
+        <tr><td>6</td><td>Bank of Baroda</td><td>D</td><td>🟢</td><td>C+</td><td>C+</td><td>C</td><td>B</td><td>WATCH ★★</td><td>PSB; AI credit scoring forming moat</td></tr>
+        <tr><td>7</td><td>Alphabet (GOOGL)</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>B+</td><td>C+</td><td>WATCH ★★★★</td><td>Gemini = AI WIDENER; antitrust priced</td></tr>
+        <tr><td>8</td><td>Microsoft (MSFT)</td><td>C</td><td>🟢</td><td>A+</td><td>A</td><td>A</td><td>D+</td><td>WATCH ★★★</td><td>Copilot flywheel; still too expensive</td></tr>
+        <tr><td>9</td><td>Newgen Software</td><td>C</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>D</td><td>WATCH ★★★</td><td>AI-native BPM moat; overpriced</td></tr>
+        <tr><td>10</td><td>MercadoLibre (MELI)</td><td>B</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>B+</td><td>BUY ★★★★★</td><td>LatAm AI flywheel; FCF yield &gt; UST</td></tr>
+        <tr><td>11</td><td>Colgate India (COLPAL)</td><td>A</td><td>⚪</td><td>A+</td><td>A+</td><td>A</td><td>B+</td><td>WATCH ★★★★½</td><td>Perfect biz; AI neutral; adapted buy</td></tr>
+        <tr style="background:rgba(201,168,76,0.08);font-weight:600;"><td>12</td><td>BSE Ltd</td><td>C</td><td>🟢</td><td>B+</td><td>B+</td><td>B</td><td>C+</td><td>WATCH ★★★</td><td>Exchange duopoly; AI widener; at all-time high</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 7: TECHNICAL ==================== -->
+<div id="tab7" class="tab-content">
+  <div class="section">
+    <div class="section-title">Section A — Price Structure & Multi-Timeframe Trend</div>
+    <div class="card">
+      <table>
+        <tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Signal</th></tr>
+        <tr><td>Weekly</td><td style="color:var(--pass);">Strong Uptrend</td><td>52-wk High ₹3,985</td><td>Recent breakout to ATH — momentum extreme</td></tr>
+        <tr><td>Daily</td><td style="color:var(--pass);">Uptrend</td><td>₹3,963 (close May 7)</td><td>At all-time high — extended from all MAs</td></tr>
+        <tr><td>Monthly</td><td style="color:var(--pass);">Strong</td><td>200-DMA ₹2,130</td><td>86% above 200-DMA — historically extended</td></tr>
+      </table>
+      <p style="font-size:13px;color:var(--muted);margin-top:10px;">1-year return: +66.9% (52-week change). 3-year return: +171%. BSE is in a powerful structural uptrend driven by fundamental earnings upgrades, not just sentiment.</p>
+    </div>
+
+    <div class="section-title" style="margin-top:24px;">Section B — Price Ladder</div>
+    <div class="price-ladder">
+      <div class="pl-row"><span>₹4,200</span><span class="pl-level">Target 2 (Accel. IV)</span></div>
+      <div class="pl-row"><span>₹4,000</span><span class="pl-level">52-week High (ATH) resistance</span></div>
+      <div class="pl-row current"><span>₹3,963 ◀ NOW</span><span class="pl-level">Current (May 8, 2026)</span></div>
+      <div class="pl-row"><span>₹3,511</span><span class="pl-level">DCF Base IV</span></div>
+      <div class="pl-row"><span>₹3,290</span><span class="pl-level">Blended Base IV (Entry zone top)</span></div>
+      <div class="pl-row"><span>₹3,200</span><span class="pl-level">T1 Entry Price (MoS 20%)</span></div>
+      <div class="pl-row"><span>₹3,000</span><span class="pl-level">Strong support — fair value zone</span></div>
+      <div class="pl-row"><span>₹2,800</span><span class="pl-level">T2 Entry (MoS 25%) — HIGH CONVICTION BUY</span></div>
+      <div class="pl-row"><span>₹2,500</span><span class="pl-level">50-DMA ≈ ₹2,330 area — deep value zone</span></div>
+      <div class="pl-row"><span>₹2,130</span><span class="pl-level">200-DMA — Strong buy if reached</span></div>
+      <div class="pl-row"><span>₹2,021</span><span class="pl-level">52-week Low — Stop Loss for any entry</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — MA Dashboard</div>
+    <div class="grid4">
+      <div class="metric fail"><div class="metric-label">vs 20-EMA</div><div class="metric-value">~+15%E</div><div class="metric-note">Well above — overbought near term</div></div>
+      <div class="metric fail"><div class="metric-label">vs 50-DMA</div><div class="metric-value">~+70%E</div><div class="metric-note">₹2,330 (from 5paisa) — extremely extended</div></div>
+      <div class="metric fail"><div class="metric-label">vs 100-DMA</div><div class="metric-value">~+55%E</div><div class="metric-note">Significant premium — caution</div></div>
+      <div class="metric fail"><div class="metric-label">vs 200-DMA</div><div class="metric-value">~+86%E</div><div class="metric-note">₹2,130 — historically extended, risk of mean reversion</div></div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <p style="font-size:13px;color:var(--muted);">Golden Cross: Confirmed. All MAs in bullish alignment (20 > 50 > 100 > 200). However, price is trading at the most extended level vs all MAs in recent history — at 86% above 200-DMA. Historically, this level has preceded 25-40% corrections back toward the 200-DMA.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — Momentum</div>
+    <div class="grid3">
+      <div class="metric fail">
+        <div class="metric-label">RSI (14-day) <span class="e">E</span></div>
+        <div class="metric-value">~68–72</div>
+        <div class="metric-note">Approaching overbought (stock at 52-wk high May 7). Prior reading from TipRanks (31) was stale/pre-earnings.</div>
+      </div>
+      <div class="metric fail">
+        <div class="metric-label">RSI Weekly <span class="e">E</span></div>
+        <div class="metric-value">~72–75</div>
+        <div class="metric-note">Overbought on weekly — no immediate entry signal</div>
+      </div>
+      <div class="metric pass">
+        <div class="metric-label">MACD (Daily) <span class="e">E</span></div>
+        <div class="metric-value">Bullish</div>
+        <div class="metric-note">Post-earnings gap-up likely extended MACD significantly above signal line</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — Trade Structure (Tiered)</div>
+    <div class="card" style="border:1px solid var(--marginal);">
+      <div style="color:var(--marginal);font-family:'Syne',sans-serif;font-weight:700;margin-bottom:12px;">⚠️ NO IMMEDIATE ENTRY — Conditions Not Met</div>
+      <table>
+        <tr><th>Tier</th><th>Entry Price</th><th>Trigger</th><th>Allocation</th><th>Stop Loss</th><th>Target</th><th>R:R</th></tr>
+        <tr><td>T1 — Starter</td><td>₹3,000–3,200</td><td>RSI &lt; 50 + price at 20-EMA</td><td>1.5%</td><td>₹2,750</td><td>₹4,000</td><td>1:3.2</td></tr>
+        <tr><td>T2 — Core</td><td>₹2,700–2,900</td><td>RSI &lt; 40 + 50-DMA test</td><td>2.5%</td><td>₹2,400</td><td>₹4,200</td><td>1:4.4</td></tr>
+        <tr><td>T3 — High Conviction</td><td>₹2,200–2,400</td><td>RSI &lt; 35 + 200-DMA test</td><td>2%</td><td>₹2,000</td><td>₹4,500</td><td>1:10.3</td></tr>
+      </table>
+      <p style="font-size:12px;color:var(--muted);margin-top:10px;">Primary Trigger: 25–30% correction + RSI &lt; 40 + price at/near 50-DMA (₹2,300–2,500 range). Secondary: P/E ≤ 48x forward earnings. Technical composite currently: OVERBOUGHT (do not enter).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section G — Technical Composite Score</div>
+    <div class="card">
+      <table>
+        <tr><th>Dimension</th><th>Score (1-5)</th><th>Note</th></tr>
+        <tr><td>Trend (Multi-timeframe)</td><td style="color:var(--pass);">5/5</td><td>All timeframes bullish</td></tr>
+        <tr><td>MA Alignment</td><td style="color:var(--pass);">5/5</td><td>Golden cross confirmed</td></tr>
+        <tr><td>RSI / Momentum</td><td style="color:var(--fail);">1/5</td><td>Overbought — poor entry timing</td></tr>
+        <tr><td>Volume Confirmation</td><td style="color:var(--pass);">4/5</td><td>High volume on post-earnings move</td></tr>
+        <tr><td>Price vs Value</td><td style="color:var(--fail);">1/5</td><td>At ATH, above IV — no MoS</td></tr>
+        <tr><td>Pattern</td><td style="color:var(--marginal);">3/5</td><td>Earnings breakout — powerful but extended</td></tr>
+        <tr style="font-weight:600;"><td>Total</td><td>19/30 = 63%</td><td style="color:var(--marginal);">NEUTRAL — Wait for Setup</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 8: SHAREHOLDING ==================== -->
+<div id="tab8" class="tab-content">
+  <div class="section">
+    <div class="section-title">Section A — Promoter Holding</div>
+    <div class="card">
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;">BSE has <strong style="color:var(--gold);">no promoter</strong> — it is a community-owned exchange with no single controlling entity. This is a regulatory design requirement for stock exchanges (SEBI PFUTP regulations limit any entity to max 5% ownership in an exchange). This is <strong>not a governance risk</strong> — it is a structural feature that means BSE is accountable to regulators and markets, not a promoter family.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — FII + DII Trend (5 Quarters)</div>
+    <div class="card" style="overflow-x:auto;">
+      <table>
+        <tr><th>Quarter</th><th>FII</th><th>Trend</th><th>DII</th><th>Trend</th><th>Public</th><th>Others</th></tr>
+        <tr><td>Mar 2024</td><td>13.04%</td><td class="sh-trend sh-up">↑</td><td>12.69%</td><td class="sh-trend sh-up">↑↑</td><td>51.91%</td><td>22.36%</td></tr>
+        <tr><td>Jun 2024</td><td>11.12%</td><td class="sh-trend sh-down">↓</td><td>11.60%</td><td class="sh-trend sh-down">↓</td><td>54.52%</td><td>22.75%</td></tr>
+        <tr><td>Sep 2024</td><td>13.01%</td><td class="sh-trend sh-up">↑</td><td>11.68%</td><td class="sh-trend sh-flat">→</td><td>52.40%</td><td>22.90%</td></tr>
+        <tr><td>Dec 2024</td><td>16.03%</td><td class="sh-trend sh-up">↑↑</td><td>12.07%</td><td class="sh-trend sh-up">↑</td><td>50.00%</td><td>21.90%</td></tr>
+        <tr><td>Mar 2025</td><td>16.78%</td><td class="sh-trend sh-up">↑</td><td>12.33%</td><td class="sh-trend sh-up">↑</td><td>48.78%</td><td>22.11%</td></tr>
+        <tr><td>Jun 2025</td><td>18.14%</td><td class="sh-trend sh-up">↑↑</td><td>11.27%</td><td class="sh-trend sh-down">↓</td><td>50.01%</td><td>20.58%</td></tr>
+        <tr><td>Sep 2025</td><td>16.25%</td><td class="sh-trend sh-down">↓</td><td>19.91%</td><td class="sh-trend sh-up">↑↑↑</td><td>63.76%</td><td>0.00%</td></tr>
+        <tr style="font-weight:600;background:rgba(201,168,76,0.08);"><td>Dec 2025</td><td>17.45%</td><td class="sh-trend sh-up">↑</td><td>23.74%</td><td class="sh-trend sh-up">↑↑</td><td>58.73%</td><td>0.00%</td></tr>
+      </table>
+    </div>
+    <div class="card card2" style="margin-top:12px;">
+      <p style="font-size:13px;color:var(--muted);"><strong style="color:var(--teal);">DII surge is remarkable:</strong> From 0.65% in Mar 2023 → 23.74% in Dec 2025 — a 23-percentage-point institutional accumulation in 2.5 years. This is one of the most dramatic institutional adoption stories in Indian mid-cap space. Mutual funds are now the largest DII holders, followed by insurance companies. This institutional depth is a major quality signal.</p>
+      <p style="font-size:13px;color:var(--muted);margin-top:8px;"><strong>FII headroom:</strong> Current FII at 17.45% — sectoral FII limit for exchanges is typically 49% (FPI limit). Still significant FII accumulation room available. MSCI index weight presence in Nifty Capital Markets index.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — Free Float & SIP Estimates</div>
+    <div class="grid3">
+      <div class="metric pass"><div class="metric-label">Total Market Cap <span class="v">V</span></div><div class="metric-value">₹1,61,437 Cr</div></div>
+      <div class="metric"><div class="metric-label">Free Float (~77% of cap)</div><div class="metric-value">~₹1,24,000 Cr</div></div>
+      <div class="metric pass"><div class="metric-label">SIP Inflow (BSE) <span class="e">E</span></div><div class="metric-value">~₹300 Cr/mo</div><div class="metric-note">Estimated from Nifty Capital Markets SIP allocation</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section E — Ownership Momentum Scores</div>
+    <div class="grid2">
+      <div class="card" style="border-left:3px solid var(--pass);">
+        <div class="metric-label">Ownership Momentum Score <span class="e">E</span></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--pass);">78/100</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px;">Strong FII + DII accumulation trend. No promoter (structurally neutral). Shareholder count growing rapidly (6.68L → 10.58L in 9 months). Positive signal overall.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--pass);">
+        <div class="metric-label">Shareholding Risk Score <span class="e">E</span></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--pass);">18/100</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px;">Low risk: zero pledges, no promoter concentration risk, high institutional quality of holders. Main risk is public/retail as 58.7% holders — can create volatility on sentiment shifts.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 9: AI INTELLIGENCE ==================== -->
+<div id="tab9" class="tab-content">
+  <div class="section">
+    <div class="section-title">Section A — AI Classification Dashboard</div>
+    <div class="grid4">
+      <div class="card" style="text-align:center;border-left:3px solid var(--gold);">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Category</div>
+        <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--gold);">C</div>
+        <div style="font-size:11px;color:var(--muted);">Mature Compounder</div>
+      </div>
+      <div class="card" style="text-align:center;border-left:3px solid var(--widener);">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">AI Overlay</div>
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--widener);">🟢 WIDENER</div>
+        <div style="font-size:11px;color:var(--muted);">Deepening moat via AI</div>
+      </div>
+      <div class="card" style="text-align:center;border-left:3px solid var(--teal);">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Flywheel</div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--teal);">FORMING ★★★</div>
+        <div style="font-size:11px;color:var(--muted);">6/10 score</div>
+      </div>
+      <div class="card" style="text-align:center;border-left:3px solid var(--blue);">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">AI Phase</div>
+        <div class="phase-badge phase4" style="margin:8px 0;">Phase 3–4</div>
+        <div style="font-size:11px;color:var(--muted);">AI in financial markets = mainstream</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--gold);margin-bottom:10px;">Adoption Phase Evidence <span class="e">E</span></div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;">AI in capital market infrastructure (surveillance, fraud detection, algorithmic trading monitoring) is in Phase 3-4 globally and Phase 3 in India as of 2026. Evidence: SEBI mandated AI-based market surveillance for all exchanges (2023 circular). BSE's BOSS system uses ML for real-time pattern detection across millions of orders/second. Multiple Indian fintech and broking platforms use BSE's API with AI analytics. AI in MF order routing (StAR MF) is Phase 3 — mainstream adoption but still improving. Phase 4 for basic surveillance (commodity-level), Phase 3 for advanced predictive analytics.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+    <div class="flywheel-box">
+      <div class="flywheel-title">🌀 FLYWHEEL SCORE: 6/10 — FORMING</div>
+
+      <div class="fw-q">
+        <div class="fw-q-title">Q1: What is BSE's proprietary training data?</div>
+        <div class="fw-q-ans">
+          <strong>Volume:</strong> ~50M+ orders/day across equity, derivatives, currency, debt. 150 years of historical market data (1875-2026).<br>
+          <strong>Uniqueness:</strong> BSE's order flow, settlement data, and SME listing behavior cannot be obtained by any external party. Exchange data is legally proprietary (Securities Law).<br>
+          <strong>Recency:</strong> Real-time, 6-microsecond resolution.<br>
+          <strong>Outcome labels:</strong> BSE knows which orders resulted in manipulation (enforcement actions), which SMEs succeeded/failed post-listing, which MF orders executed at best price — ideal labels for AI training.<br>
+          <strong>Data Quality Score: 3/3</strong>
+        </div>
+      </div>
+
+      <div class="fw-q">
+        <div class="fw-q-title">Q2: How does AI improve with more data?</div>
+        <div class="fw-q-ans">
+          BSE's BOSS surveillance system trains on manipulation patterns — more trading volume → more diverse manipulation patterns → better detection. However, <strong>specific performance metrics are not publicly disclosed</strong> (no earnings call data on false-positive rates or detection accuracy improvements). Structurally, the mechanism is valid and credible. Improvement: 2/4 — partial confirmation without public quantification.<br>
+          StAR MF order routing AI improves with more investor behavioral data — 281M registered investors create a massive preference and behavior dataset. <span class="e">E</span>
+        </div>
+      </div>
+
+      <div class="fw-q">
+        <div class="fw-q-title">Q3: Does better AI attract more users?</div>
+        <div class="fw-q-ans">
+          At the <strong>institutional/issuer level</strong>: YES — BSE's clean regulatory record (partly enabled by AI surveillance) makes it the preferred SME listing venue. Better surveillance = more trust = more quality companies = more investor interest = more trading = more data. Loop speed: ~2 years (annual report cycle). At the <strong>retail investor level</strong>: WEAK — retail traders follow liquidity (NSE), not exchange AI quality. Retail loop: 0/3 effectively.<br>
+          Overall loop score: 1/3
+        </div>
+      </div>
+
+      <div style="margin-top:16px;border-top:1px solid rgba(45,212,191,0.3);padding-top:12px;">
+        <table style="font-size:13px;">
+          <tr><th>Component</th><th>Score</th><th>Assessment</th></tr>
+          <tr><td>Data Quality</td><td>3/3</td><td style="color:var(--pass);">World-class proprietary exchange data</td></tr>
+          <tr><td>AI Improvement Evidence</td><td>2/4</td><td style="color:var(--marginal);">Mechanism confirmed; metrics not disclosed</td></tr>
+          <tr><td>Loop Speed & Strength</td><td>1/3</td><td style="color:var(--marginal);">Institutional only; retail loop weak</td></tr>
+          <tr style="font-weight:600;"><td>Total</td><td>6/10</td><td style="color:var(--marginal);">Moderate flywheel — FORMING</td></tr>
+        </table>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px;">Upgrade path: If BSE discloses AI performance metrics (surveillance accuracy, MF routing optimization rates) in earnings calls, flywheel upgrades to CONFIRMED (7+/10) → moat grade upgrades B+ → A−.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — AI Value Chain Position</div>
+    <div class="value-chain">
+      <div class="vc-item">L1<br>Infrastructure<br>(Picks & Shovels)</div>
+      <div class="vc-item">L2<br>Foundation<br>Models</div>
+      <div class="vc-item">L3<br>AI Platforms<br>/Middleware</div>
+      <div class="vc-item">L4<br>Vertical AI<br>Applications</div>
+      <div class="vc-item active">L5<br>AI-Enabled<br>Incumbent ★</div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;"><strong style="color:var(--gold);">BSE is a Level 5 (AI-Enabled Incumbent)</strong> — the most attractive risk/reward position in the AI value chain. BSE is an existing business with a strong regulatory moat, using AI to deepen that moat. This is lower risk than pure-play AI companies (no binary technology risk) with significant upside from AI-enhanced capabilities. Level 5 companies compound their moats, not just their revenues.</p>
+      <p style="font-size:13px;color:var(--muted);margin-top:8px;"><strong>Investment horizon implication:</strong> 7–10 years. BSE should be held through regulatory cycles, volume downturns, and even SEBI F&O restrictions — the structural exchange moat and AI deepening create a 7-10 year compounding story, not a short-term trade.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — India AI Opportunity Context</div>
+    <div class="card">
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">India Stack Data Access (UPI/Aadhaar)</div><div class="score-desc">BSE's ICCL (clearing subsidiary) processes India's largest equity settlement volumes — sitting alongside India Stack financial data flows. StAR MF integrates with NACH/UPI for SIP payments, giving BSE adjacent access to payment behavior data.</div></div>
+        <span class="score-badge score-pass">Adjacent ✓</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">Vernacular AI Benefit</div><div class="score-desc">BSE SME platform reaches tier-2/3 investors. StAR MF's 721-city network includes vernacular-language investor education. As BSE develops AI investor tools in Hindi and regional languages, TAM expands significantly.</div></div>
+        <span class="score-badge score-marginal">Forming ~</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">India Stack as Free Infrastructure</div><div class="score-desc">BSE's StAR MF integrates DigiLocker (KYC), NACH (SIP mandate), UPI (payment). This reduces onboarding friction → more investors → more AI training data. India Stack is genuinely free infrastructure enabling BSE's platform.</div></div>
+        <span class="score-badge score-pass">YES ✓</span>
+      </div>
+      <div class="score-item">
+        <div class="score-left"><div class="score-name">AI Talent Cost Arbitrage</div><div class="score-desc">BSE's 741-employee organization punches far above its weight (Revenue per employee ₹6.5 Cr). AI engineering talent from India's pool at domestic rates powers BSE's surveillance and analytics. However, not a global AI export play.</div></div>
+        <span class="score-badge score-pass">Domestic ✓</span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;overflow-x:auto;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--gold);margin-bottom:12px;">India AI Theme Relevance</div>
+      <table>
+        <tr><th>AI Theme</th><th>Phase</th><th>BSE Relevance</th></tr>
+        <tr><td>AI in banking/credit</td><td><span class="phase-badge phase3">Phase 3</span></td><td style="color:var(--gold);">Adjacent — BSE clearing + StAR MF data</td></tr>
+        <tr><td>AI in logistics/supply</td><td><span class="phase-badge phase3">Phase 2–3</span></td><td style="color:var(--muted);">None</td></tr>
+        <tr><td>AI in diagnostics/health</td><td><span class="phase-badge phase3">Phase 2</span></td><td style="color:var(--muted);">None</td></tr>
+        <tr><td>Data centres (infra)</td><td><span class="phase-badge phase3">Phase 3–4</span></td><td style="color:var(--pass);">Indirect — BSE data infrastructure investment</td></tr>
+        <tr><td>AI SME credit/fintech</td><td><span class="phase-badge phase3">Phase 2</span></td><td style="color:var(--gold);">Directly Adjacent — BSE SME listing data for credit scoring</td></tr>
+        <tr><td>AI in capital markets</td><td><span class="phase-badge phase3">Phase 3–4</span></td><td style="color:var(--pass);">DIRECT — BSE's core AI opportunity</td></tr>
+        <tr><td>AI MF distribution</td><td><span class="phase-badge phase3">Phase 2–3</span></td><td style="color:var(--pass);">DIRECT — StAR MF AI routing</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — AI Opportunity Verdict</div>
+    <div class="ai-gauge-wrap">
+      <div>
+        <div class="ai-score-num">67</div>
+        <div style="font-size:12px;color:var(--muted);">out of 100</div>
+      </div>
+      <div class="ai-gauge-bar">
+        <div class="ai-gauge-label">AI Opportunity Score Breakdown</div>
+        <div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px;"><span>Data Flywheel (6/10 → 12/20)</span><span>12/20</span></div>
+          <div class="ai-gauge-track"><div class="ai-gauge-fill" style="width:60%;background:var(--teal);"></div></div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px;"><span>Adoption Phase Timing (Phase 3-4 → 15/20)</span><span>15/20</span></div>
+          <div class="ai-gauge-track"><div class="ai-gauge-fill" style="width:75%;background:var(--blue);"></div></div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px;"><span>Value Chain (Level 5 → 16/20)</span><span>16/20</span></div>
+          <div class="ai-gauge-track"><div class="ai-gauge-fill" style="width:80%;background:var(--pass);"></div></div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px;"><span>India Structural Advantage (14/20)</span><span>14/20</span></div>
+          <div class="ai-gauge-track"><div class="ai-gauge-fill" style="width:70%;background:var(--gold);"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px;"><span>AI Threat Resistance (10/20 — regulatory is the real risk)</span><span>10/20</span></div>
+          <div class="ai-gauge-track"><div class="ai-gauge-fill" style="width:50%;background:var(--marginal);"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;border-left:3px solid var(--teal);">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--teal);margin-bottom:10px;">Portfolio Role: STRATEGIC AI BET (Score 67/100)</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;">BSE scores 67/100 — qualifying as a <strong>Strategic AI Bet</strong>. The exchange's AI opportunity is real (Level 5 incumbent, Phase 3-4 adoption, strong India Stack adjacency) but not yet confirmed as a full data flywheel. At the right price (₹2,800–3,200), BSE merits a 2–3% portfolio allocation as an AI-widened exchange infrastructure holding.</p>
+      <p style="font-size:13px;color:var(--muted);margin-top:8px;"><strong style="color:var(--gold);">Investment Horizon: 7–10 years.</strong> BSE is a Level 5 AI-enabled incumbent — the return profile is steady compounding from India's capital market deepening (structural), not a rapid multiple-expansion AI trade. Hold through short-term volatility. Exit only if SEBI changes exchange regulations structurally (not just volume restrictions) or if moat deteriorates fundamentally.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><strong>SEBI Disclaimer:</strong> This report is generated using publicly available data for educational and research purposes under the Buffett Quality-Value Series v5.0. This is NOT investment advice. All figures are sourced from BSE Ltd filings, Screener.in, and public news sources. Investments in securities markets are subject to market risks. Please read all offer documents carefully before investing. Past performance is not indicative of future results.</p>
+  <br>
+  <p><strong>Data Notes:</strong> [V] VERIFIED = official filings / live web search this session &nbsp;|&nbsp; [E] ESTIMATED = cross-referenced, high confidence &nbsp;|&nbsp; [U] UNVERIFIED = limited source. Price as of May 7, 2026 close. All financials consolidated. FY26 = April 2025 – March 2026.</p>
+  <br>
+  <p>Fonts: Syne, DM Sans, JetBrains Mono via Google Fonts. Report generated May 9, 2026 under the Buffett Quality-Value Series v5.0 framework.</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

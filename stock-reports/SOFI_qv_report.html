@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoFi Technologies (SOFI) — Buffett Quality-Value Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy-card: #1A2744;
+    --navy-mid: #243456;
+    --teal: #00D4A0;
+    --teal-dim: #00A07A;
+    --amber: #FFB547;
+    --amber-dim: #CC8F36;
+    --text-primary: #E8F0FE;
+    --text-secondary: #8FA6CC;
+    --text-muted: #6A80A0;
+    --pass-green: #22C55E;
+    --fail-red: #EF4444;
+    --marginal-amber: #F59E0B;
+    --border: rgba(0,212,160,0.15);
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--navy); color: var(--text-primary); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+  
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #081220 0%, #0D1B2A 50%, #112240 100%); padding: 28px 24px 22px; border-bottom: 2px solid var(--teal); max-height: 220px; overflow: hidden; }
+  .hero-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+  .hero-company { font-family: var(--font-display); font-size: clamp(22px,5vw,38px); font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+  .hero-sub { font-size: 14px; color: var(--text-secondary); font-family: var(--font-mono); margin-top: 2px; }
+  .hero-verdict { background: var(--amber); color: #0D1B2A; padding: 6px 16px; border-radius: 6px; font-family: var(--font-display); font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; font-family: var(--font-display); border: 1px solid; white-space: nowrap; }
+  .badge-cat { background: rgba(0,212,160,0.12); border-color: var(--teal); color: var(--teal); }
+  .badge-neutral { background: rgba(150,160,180,0.12); border-color: #8FA6CC; color: #8FA6CC; }
+  .badge-warn { background: rgba(255,181,71,0.12); border-color: var(--amber); color: var(--amber); }
+  .badge-danger { background: rgba(239,68,68,0.12); border-color: var(--fail-red); color: var(--fail-red); }
+  .hero-pills { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .pill { background: rgba(255,255,255,0.06); padding: 3px 10px; border-radius: 4px; font-size: 12px; font-family: var(--font-mono); color: var(--text-secondary); }
+  .pill-green { background: rgba(34,197,94,0.12); color: #22C55E; }
+  .pill-red { background: rgba(239,68,68,0.12); color: #EF4444; }
+  .pill-amber { background: rgba(245,158,11,0.12); color: #F59E0B; }
+  .hero-lede { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.4; }
+
+  /* TAB BAR */
+  #tab-bar { position: sticky; top: 0; z-index: 100; background: #081220; border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; scrollbar-width: none; }
+  #tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { flex-shrink: 0; padding: 12px 16px; font-size: 13px; font-family: var(--font-display); font-weight: 500; color: var(--text-muted); background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--text-secondary); }
+  .tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 24px 20px; max-width: 1100px; margin: 0 auto; }
+  .tab-content.active-tab { display: block; }
+  
+  /* CARDS */
+  .card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .card-stripe { border-top: 3px solid var(--teal); }
+  .card-stripe-amber { border-top: 3px solid var(--amber); }
+  .card-stripe-red { border-top: 3px solid var(--fail-red); }
+  .card-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--teal); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .card-title-amber { color: var(--amber); }
+  .section-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: #fff; margin: 24px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  
+  /* METRIC GRID */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .metric-card { background: var(--navy-card); border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 8px; padding: 14px; }
+  .metric-card.amber { border-left-color: var(--amber); }
+  .metric-card.red { border-left-color: var(--fail-red); }
+  .metric-card.green { border-left-color: var(--pass-green); }
+  .metric-label { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.5px; }
+  .metric-value { font-size: 22px; font-family: var(--font-display); font-weight: 700; color: #fff; margin-top: 4px; }
+  .metric-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: var(--navy-mid); color: var(--teal); font-family: var(--font-display); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; text-align: left; }
+  td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-secondary); font-family: var(--font-mono); font-size: 13px; }
+  tr:hover td { background: rgba(0,212,160,0.04); }
+  td.highlight { color: var(--text-primary); font-weight: 500; }
+  td.green { color: var(--pass-green); }
+  td.red { color: var(--fail-red); }
+  td.amber { color: var(--amber); }
+  
+  /* SCORECARD */
+  .scorecard-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .scorecard-label { font-size: 14px; color: var(--text-secondary); flex: 1; }
+  .scorecard-grade { padding: 3px 12px; border-radius: 4px; font-family: var(--font-display); font-size: 12px; font-weight: 700; }
+  .grade-pass { background: rgba(34,197,94,0.15); color: var(--pass-green); }
+  .grade-fail { background: rgba(239,68,68,0.15); color: var(--fail-red); }
+  .grade-marginal { background: rgba(245,158,11,0.15); color: var(--marginal-amber); }
+  
+  /* MOAT STARS */
+  .moat-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .moat-name { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: #fff; }
+  .moat-stars { color: var(--amber); font-size: 18px; margin: 4px 0; }
+  .moat-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  
+  /* FLYWHEEL BOX */
+  .flywheel-box { background: linear-gradient(135deg, #0D2440 0%, #1A2744 100%); border: 2px solid var(--teal); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .flywheel-score { font-size: 48px; font-family: var(--font-display); font-weight: 700; color: var(--teal); }
+  .flywheel-label { color: var(--text-muted); font-size: 13px; margin-top: -4px; }
+  .flywheel-questions { margin-top: 14px; }
+  .flywheel-q { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 13px; color: var(--text-secondary); }
+  .flywheel-q .icon { font-size: 16px; flex-shrink: 0; }
+  
+  /* VERDICT BOX */
+  .verdict-box { background: linear-gradient(135deg, #0D2440 0%, #112240 100%); border: 2px solid var(--amber); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .verdict-stars { font-size: 28px; color: var(--amber); letter-spacing: 2px; }
+  .verdict-label { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: #fff; margin: 8px 0; }
+  .verdict-quote { font-style: italic; color: var(--text-muted); font-size: 14px; border-left: 3px solid var(--teal); padding-left: 12px; margin: 14px 0; }
+  .verdict-prose { color: var(--text-secondary); font-size: 14px; line-height: 1.7; }
+  
+  /* UPGRADE CONDITIONS */
+  .upgrade-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .upgrade-num { background: var(--teal); color: #0D1B2A; font-family: var(--font-display); font-weight: 700; font-size: 12px; min-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .upgrade-text { font-size: 14px; color: var(--text-secondary); }
+  
+  /* DATA LABELS */
+  .lbl-v { background: rgba(34,197,94,0.15); color: var(--pass-green); padding: 1px 6px; border-radius: 3px; font-size: 11px; font-family: var(--font-mono); }
+  .lbl-e { background: rgba(245,158,11,0.15); color: var(--marginal-amber); padding: 1px 6px; border-radius: 3px; font-size: 11px; font-family: var(--font-mono); }
+  .lbl-u { background: rgba(239,68,68,0.15); color: var(--fail-red); padding: 1px 6px; border-radius: 3px; font-size: 11px; font-family: var(--font-mono); }
+  
+  /* RISK BOX */
+  .risk-box { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 16px; margin: 14px 0; }
+  .risk-title { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--fail-red); margin-bottom: 8px; }
+  .risk-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  
+  /* GAUGE BAR */
+  .gauge-bar { background: var(--navy-mid); border-radius: 20px; height: 8px; margin-top: 8px; }
+  .gauge-fill { height: 8px; border-radius: 20px; background: linear-gradient(90deg, var(--teal), var(--amber)); }
+  
+  /* PILLAR GRID */
+  .pillar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .pillar-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .pillar-name { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-display); }
+  .pillar-grade { font-family: var(--font-display); font-size: 36px; font-weight: 700; color: var(--teal); margin: 8px 0; }
+  .pillar-grade.amber { color: var(--amber); }
+  .pillar-grade.red { color: var(--fail-red); }
+  .pillar-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+  
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  
+  /* OE BOX */
+  .oe-box { background: linear-gradient(135deg, #0D2030 0%, #1A2744 100%); border: 1px solid rgba(0,212,160,0.3); border-radius: 10px; padding: 18px; margin: 16px 0; }
+  
+  /* AI DASHBOARD */
+  .ai-dash { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .ai-badge-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+  .ai-badge-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-family: var(--font-display); }
+  .ai-badge-value { font-family: var(--font-display); font-size: 14px; font-weight: 700; }
+  
+  /* SERIES TABLE */
+  .series-table th { font-size: 11px; }
+  .series-table td { font-size: 12px; padding: 8px 10px; }
+  
+  /* PRICE LADDER */
+  .ladder-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .ladder-level { font-family: var(--font-mono); font-size: 14px; font-weight: 500; }
+  .ladder-desc { font-size: 13px; color: var(--text-muted); }
+  
+  /* VALUE CHAIN */
+  .chain { display: flex; gap: 0; margin: 16px 0; flex-wrap: wrap; }
+  .chain-item { flex: 1; min-width: 100px; padding: 12px 10px; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: var(--text-muted); font-family: var(--font-display); }
+  .chain-item:last-child { border-right: none; }
+  .chain-item.active { background: rgba(0,212,160,0.1); color: var(--teal); border: 1px solid rgba(0,212,160,0.3); border-radius: 6px; }
+  .chain-level { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+  
+  /* AI SCORE GAUGE */
+  .ai-score-ring { text-align: center; margin: 20px 0; }
+  .ai-score-num { font-family: var(--font-display); font-size: 52px; font-weight: 700; color: var(--teal); }
+  .ai-score-label { font-size: 13px; color: var(--text-muted); }
+  
+  /* RESPONSIVE */
+  @media (max-width: 680px) { .metric-grid { grid-template-columns: 1fr 1fr; } .pillar-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .hero-company { font-size: 22px; } .metric-grid { grid-template-columns: 1fr 1fr; } .chain { flex-direction: column; } }
+  
+  /* SCROLLABLE TABLE WRAPPER */
+  .tbl-wrap { overflow-x: auto; }
+  
+  /* MACRO CYCLE */
+  .macro-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .macro-item { background: var(--navy-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .macro-dim { font-size: 11px; color: var(--text-muted); font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.5px; }
+  .macro-status { font-family: var(--font-display); font-size: 14px; font-weight: 600; margin: 4px 0; }
+  .macro-detail { font-size: 12px; color: var(--text-muted); }
+  
+  @media (max-width: 680px) { .macro-row { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-company">SoFi Technologies, Inc.</div>
+      <div class="hero-sub">NASDAQ: SOFI &nbsp;|&nbsp; Digital Banking &amp; Fintech Platform &nbsp;|&nbsp; US Market</div>
+    </div>
+    <div class="hero-verdict">WATCH ★★★</div>
+  </div>
+  <div class="hero-badges">
+    <span class="badge badge-cat">Category B — High-Growth Compounder</span>
+    <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+    <span class="badge badge-warn">Flywheel: FEATURE 2/10</span>
+    <span class="badge badge-danger">⚠ ACCOUNTING CLOUD — Muddy Waters Active</span>
+  </div>
+  <div class="hero-pills">
+    <span class="pill">Price ~$16.22 <span class="lbl-e">EST</span></span>
+    <span class="pill">MCap ~$20.7B</span>
+    <span class="pill">FY2025 Rev $3.6B adj</span>
+    <span class="pill">Members 13.7M</span>
+    <span class="pill pill-red">52W High $32.73 → -50%</span>
+    <span class="pill">10Y UST 4.30% <span class="lbl-v">VRF</span></span>
+  </div>
+  <div class="hero-lede">Digital bank, personal finance superapp, and B2B fintech infrastructure (Galileo). Bank charter is the structural moat. Muddy Waters short report (Mar 2026) alleges $312M unrecorded debt and inflated EBITDA — unresolved, but contested by Mizuho. O'Glove Earnings Quality: SUSPECT.</div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Ownership</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 0: OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab0">
+  <div class="section-title">Business Overview</div>
+  
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-label">Price (Apr 10, 2026)</div>
+      <div class="metric-value">$16.22</div>
+      <div class="metric-sub">52W: $10.07 – $32.73 <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Market Cap</div>
+      <div class="metric-value">$20.7B</div>
+      <div class="metric-sub">Diluted shares ~1.27B <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">FY2025 Adj Revenue</div>
+      <div class="metric-value">$3.6B</div>
+      <div class="metric-sub">+38% YoY <span class="lbl-v">VRF</span></div>
+    </div>
+    <div class="metric-card green">
+      <div class="metric-label">Total Members</div>
+      <div class="metric-value">13.7M</div>
+      <div class="metric-sub">+35% YoY, Q4 2025 <span class="lbl-v">VRF</span></div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">Total Products</div>
+      <div class="metric-value">&gt;20M</div>
+      <div class="metric-sub">+37% YoY <span class="lbl-v">VRF</span></div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">From ATH ($32.73)</div>
+      <div class="metric-value">−50%</div>
+      <div class="metric-sub">MW report + macro headwinds</div>
+    </div>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Company Classification &amp; Why It's In The Series</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;">
+      <strong style="color:#fff;">Category B — High-Growth Global Compounder.</strong> SoFi is a digital bank and fintech superapp targeting financially-savvy young professionals (HENRYs — High Earners Not Rich Yet). Founded 2011, went public via SPAC in 2021. The pivotal structural event was obtaining an OCC national bank charter in February 2022, allowing SoFi to hold deposits and fund loans at ~4–5% cost (vs 7–9% warehouse lines for non-bank fintechs). Revenue has compounded at ~45% CAGR over five years (FY2020–FY2025 adjusted), driven by three segments: <strong style="color:var(--teal);">Lending</strong> (personal loans, student loans, home loans), <strong style="color:var(--teal);">Financial Services</strong> (banking, invest, credit card, crypto), and <strong style="color:var(--teal);">Technology Platform</strong> (Galileo API infrastructure + Technisys core banking — serving 160M+ enabled accounts for fintechs globally).
+    </p>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-top:10px;">
+      <strong style="color:var(--amber);">Why in the series:</strong> SoFi sits at a critical inflection — first full year of GAAP profitability (FY2024), bank charter lowering funding costs, Galileo creating a B2B moat, and stock down 50% from all-time high. However a serious short-seller report from Muddy Waters (March 2026) alleges accounting manipulation, inflated EBITDA, and understated charge-offs. Resolution of this cloud is the central question for the investment thesis.
+    </p>
+  </div>
+
+  <div class="risk-box">
+    <div class="risk-title">⚠ CRITICAL RISK — Muddy Waters Short Report (March 17, 2026)</div>
+    <div class="risk-text">
+      Carson Block's Muddy Waters Research (MW) published a 28-page short report titled "SOFI: A Financial Engineering Treadmill." Key allegations: (1) FY2025 Adjusted EBITDA inflated by ~90% — true EBITDA ~$103M vs $1.05B reported; (2) $312M unrecorded debt via a JPMorgan loan transaction booked as a "sale" but allegedly secured borrowing per Utah UCC filings; (3) Personal loan charge-off rate understated at 2.89% vs estimated actual of ~6.1% (allegedly defaulted loans parked in unconsolidated entities); (4) Management bonus structure incentivizes fair value manipulation; (5) CEO and CFO extracted $58.3M via prepaid variable forward contracts (prearranged stock sales). <br><br>
+      <strong style="color:var(--amber);">SoFi's response:</strong> Denied all allegations, called the report "factually inaccurate and misleading," threatened legal action. CEO Noto bought $500K of stock on open market. Mizuho analyst Don Dolev pushed back substantively on key claims. SoFi did NOT answer 11 specific factual questions posed by Muddy Waters. Short interest rose to 10.1% (multi-month high). <span class="lbl-u">UNRESOLVED</span>
+    </div>
+  </div>
+
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Three-Segment Architecture</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Segment</th><th>FY2025 Rev (adj)</th><th>% of Total</th><th>Growth YoY</th><th>Key Driver</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Lending</td><td>~$1.5B</td><td>~42%</td><td class="amber">+11%</td><td>$36B+ originations, personal/home loans</td></tr>
+        <tr><td class="highlight">Financial Services</td><td>~$1.7B</td><td>~47%</td><td class="green">+60%+</td><td>Banking, invest, credit card, fee revenue</td></tr>
+        <tr><td class="highlight">Tech Platform</td><td>~$440M</td><td>~12%</td><td class="amber">+12%</td><td>Galileo (160M+ accounts), Technisys core</td></tr>
+        <tr><td class="highlight">Combined FS + Tech</td><td>~$2.1B</td><td>~58%</td><td class="green">+52%</td><td>Structural shift toward fee-based revenue</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Source: Q4 FY2024 + Q4 FY2025 earnings releases. FY2025 segments estimated from quarterly data. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Key Events Timeline</div>
+    <div class="scorecard-item"><span class="scorecard-label">2011 — Founded by Stanford students to refinance student loans</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">2020 — Acquired Galileo (API fintech infrastructure) for $1.2B</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Jun 2021 — Went public via SPAC at ~$10/share</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Feb 2022 — Obtained OCC national bank charter (structural inflection)</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Feb 2022 — Acquired Technisys (cloud core banking) for $1.1B</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Dec 2022 — All-time low $4.24 (rates spike, student loan pause)</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Q4 2023 — First GAAP profitable quarter (+$48M), 30% adj EBITDA margin</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">FY2024 — First full year GAAP profitable (+$499M incl. deferred tax)</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">FY2025 — Record $3.6B adj revenue, first $1B revenue quarter (Q4)</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Nov 2025 — All-time high $32.73 on bull run (+280% from April low)</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Mar 17, 2026 — Muddy Waters short report → stock enters sharp decline</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Apr 10, 2026 — Stock at $16.22 → −50% from ATH, near 52W low territory</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 1: MACRO & GROWTH -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab1">
+  <div class="section-title">Layer 1 — US Macro Anchor</div>
+  
+  <div class="macro-row">
+    <div class="macro-item">
+      <div class="macro-dim">US 10Y Treasury</div>
+      <div class="macro-status" style="color:var(--fail-red);">4.30%</div>
+      <div class="macro-detail">At 3-week low; spiked to 4.39% in early Apr 2026 <span class="lbl-v">VRF</span></div>
+    </div>
+    <div class="macro-item">
+      <div class="macro-dim">US CPI (March 2026)</div>
+      <div class="macro-status" style="color:var(--amber);">3.3% YoY</div>
+      <div class="macro-detail">+0.9% MoM — Iran War oil shock impact <span class="lbl-v">VRF</span></div>
+    </div>
+    <div class="macro-item">
+      <div class="macro-dim">Core PCE</div>
+      <div class="macro-status" style="color:var(--amber);">3.1%</div>
+      <div class="macro-detail">Sticky; well above Fed's 2% target <span class="lbl-v">VRF</span></div>
+    </div>
+    <div class="macro-item">
+      <div class="macro-dim">US Real GDP 2026E</div>
+      <div class="macro-status">~2.2%</div>
+      <div class="macro-detail">RSM baseline; post-tariff reaccel <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="macro-item">
+      <div class="macro-dim">US Nominal GDP</div>
+      <div class="macro-status">~5.5%</div>
+      <div class="macro-detail">Real 2.2% + CPI 3.3% = Terminal ceiling <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="macro-item">
+      <div class="macro-dim">Fed Stance</div>
+      <div class="macro-status" style="color:var(--amber);">Neutral-Hawkish</div>
+      <div class="macro-detail">Little chance of cuts in 2026 per market <span class="lbl-e">EST</span></div>
+    </div>
+  </div>
+
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Macro Cycle Dashboard (6 Dimensions)</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>Current Status</th><th>Impact on SoFi</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Consumer Credit Cycle</td><td class="amber">STRESS</td><td>Rising charge-offs pressure Lending segment; higher rates = lower origination demand</td></tr>
+        <tr><td class="highlight">Employment / Income</td><td class="amber">SOFTENING</td><td>SoFi targets HENRYs; AI-driven job losses (per MW) could pressure borrower base</td></tr>
+        <tr><td class="highlight">Interest Rate Cycle</td><td class="red">STICKY HIGH</td><td>NIM benefits from high rates (deposit/loan spread) but rate pressure on new originations</td></tr>
+        <tr><td class="highlight">Inflation (Input Costs)</td><td class="amber">RISING</td><td>Iran War oil shock → persistent inflation → Fed on hold → rate environment stays tough</td></tr>
+        <tr><td class="highlight">Fintech Regulatory</td><td class="amber">CAUTIOUS</td><td>OCC oversight provides stability but bank charter compliance adds cost</td></tr>
+        <tr><td class="highlight">AI Adoption Cycle</td><td class="green">ACCELERATING</td><td>AI in US fintech credit scoring = Phase 3; opportunity for cost reduction / underwriting improvement</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(255,181,71,0.08);border-radius:6px;border-left:3px solid var(--amber);">
+      <strong style="color:var(--amber);">MACRO COMPOSITE: HEADWIND</strong> — High rates + sticky inflation + potential AI disruption to SoFi's professional borrower base create a challenging near-term environment. NIM benefits from high rates partially offset by credit quality concerns and loan growth moderation.
+    </div>
+  </div>
+
+  <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+  
+  <div class="card card-stripe">
+    <div class="card-title">US Digital Banking / Fintech Sector</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th>Sector Base</th><th>Conditions</th><th>AI Impact</th></tr></thead>
+      <tbody>
+        <tr><td class="amber">Stress</td><td>8–10%</td><td>Recession risk, credit tightening, high charge-offs</td><td>AI for cost-cutting only; growth paused</td></tr>
+        <tr><td class="green">Base</td><td>12–16%</td><td>Soft landing, moderate consumer credit, stable employment</td><td>AI credit scoring expands credit access</td></tr>
+        <tr><td class="teal" style="color:var(--teal);">Acceleration</td><td>18–22%</td><td>Rate cuts, strong consumer, AI drives underwriting precision</td><td>AI-driven market expansion + cost reduction</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:10px;"><strong style="color:var(--text-secondary);">Sector growth ceiling:</strong> US nominal GDP ~5.5% as terminal anchor. Digital banking significantly outgrows nominal GDP for next 5–7 years (structural shift from traditional banking) before normalization. AI is <em>accelerating</em> sector growth by approximately +2–3% annually over base through superior credit underwriting and lower cost to serve. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Layer 3 — Company Alpha Sources</div>
+  
+  <div class="card card-stripe">
+    <div class="card-title">Alpha Source Assessment</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Market Share Gain</td><td class="green">ACTIVE</td><td>+4–6%</td><td>+2–3%</td><td>~13.7M members, still &lt;1% of US banking</td></tr>
+        <tr><td class="highlight">Bank Charter Cost Advantage</td><td class="green">ACTIVE</td><td>+3–5%</td><td>+2–3%</td><td>Deposit funding vs warehouse lines: 300–400bps NIM advantage</td></tr>
+        <tr><td class="highlight">Cross-Sell / Product Expansion</td><td class="green">ACTIVE</td><td>+2–3%</td><td>+3–5%</td><td>40% of new products from existing members; flywheel forming</td></tr>
+        <tr><td class="highlight">Galileo / B2B Platform</td><td class="amber">FORMING</td><td>+2–3%</td><td>+3–5%</td><td>160M enabled accounts; switching costs growing</td></tr>
+        <tr><td class="highlight">Stablecoin / Web3</td><td class="amber">POTENTIAL</td><td>0%</td><td>+1–2%</td><td>SoFi USD stablecoin launched; very early</td></tr>
+        <tr><td class="highlight">AI Alpha (6a+6b+6c)</td><td class="amber">FEATURE</td><td>+1–2%</td><td>+1–2%</td><td>ML fraud detection (Galileo -35% fraud); credit scoring; no confirmed flywheel</td></tr>
+        <tr><td style="font-weight:600;">Total Alpha</td><td>—</td><td>+12–19%</td><td>+12–20%</td><td>On top of sector base growth</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Growth Rate Summary Matrix</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Macro State</td><td>GDP 1.0–1.5%</td><td>GDP ~2.2%</td><td>GDP ~3.0%+</td></tr>
+        <tr><td class="highlight">US CPI</td><td>3.5–4%</td><td>~3.3%</td><td>~2.5%</td></tr>
+        <tr><td class="highlight">Sector Growth</td><td>8–10%</td><td>12–16%</td><td>18–22%</td></tr>
+        <tr><td class="highlight">Company Alpha</td><td>+6–8%</td><td>+12–15%</td><td>+15–19%</td></tr>
+        <tr><td class="highlight">AI Alpha (6a+6b+6c)</td><td>+0–1%</td><td>+1–2%</td><td>+2–3%</td></tr>
+        <tr><td class="highlight">Stage 1 Rev CAGR (3yr)</td><td>15–18%</td><td>25–30%</td><td>35–40%</td></tr>
+        <tr><td class="highlight">Stage 2 Growth</td><td>8–10%</td><td>12–15%</td><td>16–18%</td></tr>
+        <tr><td class="highlight">Terminal Growth</td><td>3.5%</td><td>4.0%</td><td>4.5%</td></tr>
+        <tr><td class="highlight">Margin Direction</td><td>Compress</td><td>Stable/Expand</td><td>Expand to 20%+</td></tr>
+        <tr><td class="highlight">Key Risk</td><td>Credit losses spike</td><td>MW restatement</td><td>Regulatory tightening</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:12px;font-size:13px;color:var(--text-muted);">
+      <strong style="color:var(--text-secondary);">Sensitivity:</strong> A 1x change in P/S multiple changes IV by approximately $2.83/share (at $3.6B revenue / 1.27B shares). A 1% change in terminal net margin changes fair value by approximately $3–5/share on a normalized earnings basis. <span class="lbl-e">ESTIMATED</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 2: FINANCIALS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab2">
+  <div class="section-title">Revenue &amp; Profitability History</div>
+  
+  <div class="card card-stripe">
+    <div class="card-title">5-Year Revenue &amp; Net Income Track <span class="lbl-v">VRF</span></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Year</th><th>Net Revenue (GAAP)</th><th>YoY Growth</th><th>Net Income</th><th>Net Margin</th><th>Adj EBITDA</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">FY2020</td><td>$565M</td><td>—</td><td class="red">−$224M</td><td class="red">NM</td><td>−$197M</td></tr>
+        <tr><td class="highlight">FY2021</td><td>$985M</td><td class="green">+74%</td><td class="red">−$484M</td><td class="red">NM</td><td>−$375M</td></tr>
+        <tr><td class="highlight">FY2022</td><td>$1,574M</td><td class="green">+60%</td><td class="red">−$320M</td><td class="red">NM</td><td>−$110M</td></tr>
+        <tr><td class="highlight">FY2023</td><td>$2,123M</td><td class="green">+35%</td><td class="red">−$301M</td><td class="red">NM</td><td>+$432M</td></tr>
+        <tr><td class="highlight">FY2024</td><td>$2,675M</td><td class="green">+26%</td><td class="green">+$499M†</td><td class="amber">18.7%†</td><td>+$739M</td></tr>
+        <tr><td class="highlight">FY2025 (adj)</td><td>~$3,600M</td><td class="green">+38%</td><td class="green">+$481M‡</td><td class="amber">13.4%‡</td><td>+$1,050M⚠</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-muted);">
+      † FY2024 net income includes ~$271M non-recurring deferred tax asset recognition. True operating EPS = $0.15 adjusted diluted (per company). ‡ FY2025 includes similar deferred tax impacts. ⚠ FY2025 Adj EBITDA of $1.05B contested by Muddy Waters, who alleges true figure ~$103M. <span class="lbl-u">UNRESOLVED</span><br>
+      5-year Revenue CAGR (FY2020–FY2025): ~45% [adjusted] <span class="lbl-e">ESTIMATED</span>
+    </div>
+  </div>
+
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Segment Revenue Detail (FY2024 → Q4 FY2025) <span class="lbl-v">VRF</span></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>FY2024</th><th>FY2025 (est.)</th><th>Growth</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Total Adj Net Revenue</td><td>$2,600M</td><td>$3,600M</td><td class="green">+38%</td></tr>
+        <tr><td>Lending Segment</td><td>~$1,459M</td><td>~$1,510M</td><td class="amber">+11%</td></tr>
+        <tr><td>Financial Services</td><td>~$756M</td><td>~$1,630M est.</td><td class="green">+115%</td></tr>
+        <tr><td>Tech Platform (Galileo)</td><td>$395M</td><td>~$460M est.</td><td class="green">+16%</td></tr>
+        <tr><td>Fee-Based Revenue</td><td>$970M (+74% YoY)</td><td>~$1,800M est.</td><td class="green">+85%</td></tr>
+        <tr><td>Q4 FY2025 Revenue</td><td>—</td><td>$1,013M (adj)</td><td class="green">+37%</td></tr>
+        <tr><td>Q4 FY2025 Fee Revenue</td><td>—</td><td>$443M (+63% YoY)</td><td class="green">+63%</td></tr>
+        <tr><td>Loan Originations FY2025</td><td>$23B</td><td>&gt;$36B (+46% Q4)</td><td class="green">+56%</td></tr>
+        <tr><td>Net Interest Margin</td><td>~6.0%</td><td>~5.8% est.</td><td class="amber">−</td></tr>
+        <tr><td>Deposits (mid-2025)</td><td>$18.6B (end-2024)</td><td>~$29.5B</td><td class="green">+58%</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section-title">Financial Fortress Scorecard</div>
+  
+  <div class="risk-box">
+    <div class="risk-title">⚠ Framework Adaptation for Digital Bank</div>
+    <div class="risk-text">SoFi is classified as a bank holding company. Standard ROIC/FCF metrics are structurally distorted because deposit-funded lending creates negative working capital and high apparent leverage. P/B Gordon Growth Model is the primary valuation tool (see Tab 5). ROE is more meaningful than ROIC for banks. Standard Cat B scorecard applied with bank-appropriate adjustments.</div>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Financial Fortress — Standard Tests</div>
+    <div class="scorecard-item"><span class="scorecard-label">ROE ≥ 15% for 5 consecutive years</span><span class="scorecard-grade grade-fail">FAIL</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">ROE (TTM): ~4.6% — early profitability stage, improving trajectory</span><span class="scorecard-grade grade-marginal">MARGINAL</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">ROIC > WACC: ROIC ~0.90% vs WACC ~12% — not yet economically profitable</span><span class="scorecard-grade grade-fail">FAIL</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Net debt: Significant deposit-backed debt by design (banking model)</span><span class="scorecard-grade grade-marginal">MARGINAL</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Net profit margin: FY2025 ~13.4% GAAP (includes tax benefits), adj ~6–8%</span><span class="scorecard-grade grade-marginal">MARGINAL</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">FCF positive and growing: FCF complicated for bank; loan originations consume capital</span><span class="scorecard-grade grade-marginal">MARGINAL</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Revenue growth 5yr CAGR ~45% >> sector CAGR 15–20%</span><span class="scorecard-grade grade-pass">PASS</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Recurring revenue: Growing toward fee-based (49% of adj revenue in FY2025)</span><span class="scorecard-grade grade-pass">PASS</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Shareholder dilution: 16.3% share count increase in past year — significant</span><span class="scorecard-grade grade-fail">FAIL</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Capital-light model: Bank model is capital-intensive; Galileo segment is capital-light</span><span class="scorecard-grade grade-marginal">MARGINAL</span></div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(245,158,11,0.08);border-radius:6px;">
+      <strong style="color:var(--amber);">Financial Fortress Grade: C+</strong> — Still building toward fortress-level metrics. Bank charter creates structural advantages (NIM, deposit funding) but the business is not yet generating durable above-WACC returns on capital. The path to ROE &gt;15% is credible (target FY2027–2028 on clean scenario) but not yet proven.
+    </div>
+  </div>
+
+  <div class="oe-box">
+    <div class="card-title">Normalized Operating Metrics (Bank-Appropriate)</div>
+    <table>
+      <tbody>
+        <tr><td class="highlight" style="width:40%;">Adjusted Diluted EPS (FY2025)</td><td>$0.15 (ex deferred tax) <span class="lbl-v">VRF</span></td></tr>
+        <tr><td class="highlight">Adjusted Diluted EPS (FY2024)</td><td>$0.05 <span class="lbl-v">VRF</span></td></tr>
+        <tr><td class="highlight">Adj EBITDA Margin (FY2025)</td><td>~29% (reported) — contested by Muddy Waters ⚠ <span class="lbl-u">UNRESOLVED</span></td></tr>
+        <tr><td class="highlight">Adjusted EBITDA (FY2025)</td><td>$1.05B reported vs ~$103M (Muddy Waters estimate)</td></tr>
+        <tr><td class="highlight">Tangible Book Value/Share (est.)</td><td>~$3.00–3.50 per share <span class="lbl-e">ESTIMATED</span></td></tr>
+        <tr><td class="highlight">P/TBV at $16.22</td><td>~4.6–5.4x — premium for growth <span class="lbl-e">ESTIMATED</span></td></tr>
+        <tr><td class="highlight">Net Interest Margin</td><td>~6.02% (Q4 2023 stated); est. ~5.7–6.0% FY2025 <span class="lbl-e">ESTIMATED</span></td></tr>
+        <tr><td class="highlight">Analyst Consensus FY2026 EPS</td><td>~$0.18–0.22 adjusted <span class="lbl-e">ESTIMATED</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">O'Glove Earnings Quality Deep-Dive</div>
+
+  <div class="card card-stripe-red">
+    <div class="card-title" style="color:var(--fail-red);">Earnings Quality Assessment</div>
+    
+    <div class="scorecard-item">
+      <span class="scorecard-label"><strong>TEST 1 — FCF Conversion (5yr):</strong> Operating cash flow vs net income. Bank FCF complex — loan originations absorb cash. Adjusted CFO shows improving trend but opaque due to loan sale/transfer accounting. <span class="lbl-e">ESTIMATED</span></span>
+      <span class="scorecard-grade grade-marginal">MARGINAL</span>
+    </div>
+    <div class="scorecard-item">
+      <span class="scorecard-label"><strong>TEST 2 — Loan Quality / DSO Equivalent:</strong> Muddy Waters alleges actual personal loan charge-off rate ~6.1% vs reported 2.89%. Specific allegation of defaulted loans parked in unconsolidated entities to suppress reported losses. If true → significant DSO-equivalent manipulation. <span class="lbl-u">UNRESOLVED</span></span>
+      <span class="scorecard-grade grade-fail">FAIL ⚠</span>
+    </div>
+    <div class="scorecard-item">
+      <span class="scorecard-label"><strong>TEST 3 — Inventory/Loan Portfolio Health:</strong> Q4 2025: $10.5B originations (first &gt;$10B quarter). Net cumulative losses on recent vintages 3.8% (well below 5.25% 2017 vintage at same point). Company's own data suggests improving credit quality. Contradicts Muddy Waters claim. <span class="lbl-v">VRF (company data)</span></span>
+      <span class="scorecard-grade grade-pass">PASS (claimed)</span>
+    </div>
+    <div class="scorecard-item">
+      <span class="scorecard-label"><strong>TEST 4 — Accounting Policy Stability:</strong> CRITICAL FLAG. MW alleges: (a) $312M JPMorgan loan booked as "sale" but is a secured borrowing per UCC filings; (b) incorrect discount rate on student loans; (c) EBITDA inflated via fair value marks tied to management bonuses. SoFi has NOT directly addressed specific claims. Test 4 failure → flag in Pillar 3. <span class="lbl-u">UNRESOLVED</span></span>
+      <span class="scorecard-grade grade-fail">FAIL ⚠</span>
+    </div>
+    <div class="scorecard-item">
+      <span class="scorecard-label"><strong>TEST 5 — Gross Margin / Revenue Quality Consistency:</strong> Fee-based revenue growing from 37% (FY2023) to 49% (FY2025) of total — positive structural shift. Gross margin trending positively. Revenue quality improving. However, "fair value gains" on loans are non-cash and subjective. <span class="lbl-e">ESTIMATED</span></span>
+      <span class="scorecard-grade grade-marginal">MARGINAL</span>
+    </div>
+
+    <div style="margin-top:16px;padding:14px;background:rgba(239,68,68,0.1);border-radius:8px;border:1px solid rgba(239,68,68,0.3);">
+      <strong style="color:var(--fail-red);">Overall Earnings Quality: SUSPECT</strong><br>
+      <span style="font-size:13px;color:var(--text-secondary);">O'Glove tests 2 and 4 fail due to Muddy Waters allegations that are specific, detailed, and unaddressed by management with factual counter-evidence. The key accounting uncertainties (loan classification, charge-off reporting, EBITDA composition) are material for a bank holding company. Under SUSPECT treatment: widen margin of safety by +5%; rely more heavily on tangible book value than reported earnings. If subsequent auditor review or regulatory examination confirms restatement → upgrade to UNRELIABLE and widen MoS by 10%.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 3: MOAT -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab3">
+  <div class="section-title">Economic Moat Analysis</div>
+  
+  <div class="moat-card">
+    <div class="moat-name">🏦 National Bank Charter (OCC-Licensed)</div>
+    <div class="moat-stars">★★★★☆</div>
+    <div class="moat-desc">Obtained February 2022 after 18+ months regulatory process. Allows SoFi to hold federally insured deposits (now ~$29.5B) and fund loans at ~4–5% cost vs 7–9% for non-bank fintech competitors. This 300–400 basis point funding cost advantage is structural and near-impossible for pure fintechs to replicate without their own bank charter. NIM expanded to 6.02% at peak. The charter creates a genuine narrow moat. <span class="lbl-v">VRF</span></div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-name">⚙️ Galileo Technology Platform (B2B Fintech Infrastructure)</div>
+    <div class="moat-stars">★★★☆☆</div>
+    <div class="moat-desc">Galileo serves 160M+ enabled accounts globally via open APIs, powering card issuing, payment processing, and program management for hundreds of fintechs, challenger banks, and enterprise brands (US Treasury Direct Express program, Southwest Airlines Rapid Rewards debit, hotel loyalty programs). ML fraud detection reduces fraud 35% for Galileo clients. Technisys adds cloud-native core banking. Switching costs are moderate — changing core banking is expensive and risky for clients. Growing B2B revenue, but not yet a dominant platform moat. <span class="lbl-v">VRF</span></div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-name">🔗 Member Ecosystem / Cross-Sell Flywheel</div>
+    <div class="moat-stars">★★☆☆☆</div>
+    <div class="moat-desc">13.7M members with 20M+ products. 40% of new products opened by existing members (cross-buy rate +7pp YoY). One-stop-shop model creates mild switching costs as more financial relationships are consolidated. However, at 13.7M members vs ~80M+ for Chase, the member data advantage is limited relative to large banks. Cross-sell momentum is positive but the flywheel is early-stage. <span class="lbl-e">ESTIMATED</span></div>
+  </div>
+
+  <div class="moat-card">
+    <div class="moat-name">🎯 Brand (HENRY Market Positioning)</div>
+    <div class="moat-stars">★★☆☆☆</div>
+    <div class="moat-desc">SoFi targets High Earners Not Rich Yet — young professionals with strong income trajectories and financial discipline. This positioning creates a higher-quality credit pool than mass-market banks. Student loan refinancing origin creates early relationship with professionals before they accumulate wealth. Brand recognition is growing but not yet a durable intangible moat. <span class="lbl-e">ESTIMATED</span></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="card card-stripe">
+    <div class="card-title">ROIC as Moat Proof (5-Year)</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Year</th><th>ROIC</th><th>ROE</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">FY2020</td><td class="red">Deeply Negative</td><td class="red">NM</td><td class="red">No moat (pre-charter)</td></tr>
+        <tr><td class="highlight">FY2021</td><td class="red">Deeply Negative</td><td class="red">NM</td><td class="red">No moat (pre-charter)</td></tr>
+        <tr><td class="highlight">FY2022</td><td class="red">Negative</td><td class="red">NM</td><td class="amber">Charter obtained; moat building</td></tr>
+        <tr><td class="highlight">FY2023</td><td class="red">Near Zero</td><td class="red">NM</td><td class="amber">First profitable quarter Q4</td></tr>
+        <tr><td class="highlight">FY2024</td><td class="amber">~0.5%</td><td class="amber">~5%</td><td class="amber">Narrow moat forming</td></tr>
+        <tr><td class="highlight">FY2025 (TTM)</td><td class="amber">~0.90%</td><td class="amber">~4.6%</td><td class="amber">ROIC still below WACC (~12%)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px;">ROIC remains well below WACC — the moat is structural (charter, Galileo) but not yet proven in financial returns. Trajectory matters: ROIC moving from deeply negative → 0.9% in 3 years is progress. Target: ROIC > WACC (12%) by FY2027–28. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <!-- FLYWHEEL BOX -->
+  <div class="flywheel-box">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-size:12px;color:var(--text-muted);font-family:var(--font-display);text-transform:uppercase;letter-spacing:0.5px;">Data Flywheel Assessment</div>
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--amber);margin-top:4px;">AI FEATURE — NOT A MOAT</div>
+        <div style="font-size:14px;color:var(--text-muted);">Score: 2/10</div>
+      </div>
+      <span class="badge badge-neutral">⚪ FLYWHEEL: FEATURE ★</span>
+    </div>
+    <div class="flywheel-questions">
+      <div class="flywheel-q">
+        <span class="icon">✗</span>
+        <span><strong style="color:#fff;">Q1: Proprietary training data no competitor can access?</strong> SoFi has 13.7M member transaction records — valuable, but not structurally unique. Large US banks (Chase 80M+, BofA 60M+) have far more data. Credit bureaus (Experian, TransUnion) provide alternative data broadly. Galileo's fraud data is more proprietary. Score: 1/3</span>
+      </div>
+      <div class="flywheel-q">
+        <span class="icon">~</span>
+        <span><strong style="color:#fff;">Q2: AI measurably improves with more data/users?</strong> Galileo's ML fraud detection reduces fraud 35% for clients (cited in official press release) — this is measurable improvement. Credit scoring models likely improve with more outcome data (who defaulted). However no specific metrics showing accuracy improvement with scale have been disclosed. Partially confirmed. Score: 2/4</span>
+      </div>
+      <div class="flywheel-q">
+        <span class="icon">✗</span>
+        <span><strong style="color:#fff;">Q3: Does better AI attract more users, completing the loop?</strong> Weak loop. Members choose SoFi for rates, product breadth, and UX — not because SoFi's AI is demonstrably smarter than Chase's. The feedback loop between better AI → more members → better AI is not clearly established. Competitors with vastly more data could replicate or exceed SoFi's AI accuracy. Score: 0/3</span>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:13px;color:var(--text-muted);">
+      <strong style="color:var(--text-secondary);">Conclusion:</strong> SoFi uses AI as a tool for credit underwriting and fraud detection — this adds value but does not compound defensibility. The flywheel requires data that is uniquely SoFi's and demonstrably improves the model in a self-reinforcing way. At 13.7M members, SoFi is not yet at the data scale needed to outcompete large banks. Moat grade: NOT upgraded due to flywheel. <span class="lbl-e">ESTIMATED</span>
+    </div>
+  </div>
+
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Macro Moat Stress Test</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Moat Source</th><th>Stress Scenario</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Bank Charter</td><td>STRENGTHENS</td><td>In recession, charter allows access to Fed discount window and FDIC insurance. Competitors without charters face existential funding crises (SVB showed reverse risk for banks, but SoFi's retail deposit mix is more stable)</td></tr>
+        <tr><td class="highlight">Galileo Platform</td><td>HOLDS</td><td>Fintech clients are sticky (core banking switching is 12–18 month process). Revenue may slow but clients don't leave quickly</td></tr>
+        <tr><td class="highlight">Member Ecosystem</td><td>WEAKENS</td><td>Members default more, origination volumes fall, cross-sell slows</td></tr>
+        <tr><td class="highlight">HENRY Positioning</td><td>WEAKENS</td><td>AI job displacement threatens SoFi's core borrower base (Muddy Waters/Block specifically flagged this)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Moat Threats</div>
+    <div class="scorecard-item"><span class="scorecard-label">🔴 Large bank AI competition (Chase, BofA, Capital One) — vastly more data, superior scale</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">🔴 Chime, Robinhood, Affirm — adjacent fintech competitors with overlapping products</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">🔴 Credit quality risk — if MW charge-off allegations accurate, lending moat is illusory</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">🟡 Galileo client concentration — losing a large client (like Twitter/X) materially impacts Tech Platform</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">🟡 Student loan policy risk — government changes can eliminate one of SoFi's key origination channels</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 4: MANAGEMENT -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab4">
+  <div class="section-title">Management Assessment</div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Anthony Noto — CEO</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;">
+      Goldman Sachs partner → NFL CFO → Twitter CFO/COO → SoFi CEO (2018). Operator-class executive with financial services DNA. Led SoFi through bank charter application, SPAC listing, three acquisitions, and first full year of profitability. Has publicly articulated a clear 3-segment strategy (Lending + Financial Services + Tech Platform). Purchased $500K of stock on the open market immediately after Muddy Waters report — insider buy signal. Strong communicator with Wall Street.
+    </p>
+    <div class="scorecard-item"><span class="scorecard-label">✅ Bank charter achievement: Multi-year regulatory milestone, rare for fintechs</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">✅ Revenue diversification: Fee revenue grew from 37% → 49% of total in 2 years</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">✅ Capital allocation: Acquisitions of Galileo ($1.2B) and Technisys ($1.1B) are proving strategic value</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">✅ Insider buy: $500K personal stock purchase after MW report</span></div>
+  </div>
+
+  <div class="risk-box">
+    <div class="risk-title">🔴 Management Red Flags — Muddy Waters Allegations</div>
+    <div class="risk-text">
+      <strong>1. Prepaid Variable Forward Contracts (PVF):</strong> MW claims CEO Noto and CFO LaPointe have extracted $58.3M via prearranged stock sales (PVF contracts) while publicly buying $500K post-report. PVF contracts allow executives to monetize stock while appearing to "hold" it. This bonus extraction allegation is specific and concerning. <span class="lbl-u">UNRESOLVED</span><br><br>
+      <strong>2. Bonus Structure Tied to Fair Value Marks:</strong> MW alleges management compensation is tied to Adjusted EBITDA which includes fair value gains on loans that management marks. If true, this creates perverse incentives to inflate marks. SoFi has not denied the bonus structure linkage, only called the overall report "misleading." <span class="lbl-u">UNRESOLVED</span><br><br>
+      <strong>3. Failure to Answer 11 Specific Questions:</strong> MW sent 11 specific factual questions to SoFi's IR team. The company stopped communicating and issued only a blanket denial. A regulated bank holding company under OCC supervision choosing not to answer specific accounting questions about UCC filings is atypical. <span class="lbl-u">CONCERNING</span><br><br>
+      <strong>4. Significant Share Dilution:</strong> Shares outstanding grew 16.3% in the past year. Continuous dilution while insiders extract via PVF contracts represents a misalignment of interests. <span class="lbl-v">VRF (Simply Wall St)</span>
+    </div>
+  </div>
+
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Capital Allocation Assessment</div>
+    <div class="scorecard-item"><span class="scorecard-label">Galileo acquisition (2020, $1.2B): Strategic — created B2B platform moat</span><span class="scorecard-grade grade-pass">GOOD</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Technisys acquisition (2022, $1.1B): Early read positive — enables core banking for Galileo</span><span class="scorecard-grade grade-pass">GOOD</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Bank charter investment: Multi-year regulatory effort, transformational outcome</span><span class="scorecard-grade grade-pass">EXCELLENT</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Share issuance: Continuous dilution (16.3% YoY) — cheapens equity for existing holders</span><span class="scorecard-grade grade-fail">POOR</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Executive compensation: Alleged PVF extraction of $58.3M while shareholders diluted</span><span class="scorecard-grade grade-fail">CONCERNING</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Buybacks: None. Cash generated reinvested in growth — appropriate for growth stage</span><span class="scorecard-grade grade-marginal">NEUTRAL</span></div>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Management Grade: C</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;">
+      Anthony Noto is a credible operator with a strong strategic vision and a track record of execution (bank charter, revenue diversification, Galileo growth). However, the Muddy Waters allegations specifically targeting management bonus incentive alignment are disqualifying at a Pillar 3 level until resolved. The combination of (1) alleged bonus-driven fair value inflation, (2) $58.3M executive extraction via PVF while shareholders are diluted 16.3% annually, and (3) failure to address specific accounting questions creates a meaningful character question under the Buffett framework. Buffett requires trustworthy management above all. Grade: C — Promoter-level credibility concern flagged.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 5: VALUATION -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab5">
+  <div class="section-title">Pillar 4 — Valuation &amp; Margin of Safety</div>
+
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Current Price vs Key Reference Points</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Reference</th><th>Level</th><th>Current vs Reference</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Current Price (Apr 10, 2026)</td><td class="amber">~$16.22</td><td>—</td></tr>
+        <tr><td>All-Time High (Nov 12, 2025)</td><td>$32.73</td><td class="red">−50.4%</td></tr>
+        <tr><td>52-Week Low</td><td>$10.07</td><td class="green">+61% above</td></tr>
+        <tr><td>200-Day MA</td><td>~$23.38</td><td class="red">−30.6% below</td></tr>
+        <tr><td>50-Day MA</td><td>~$23.09</td><td class="red">−29.8% below</td></tr>
+        <tr><td>SPAC IPO Price</td><td>~$10.00</td><td class="green">+62% above</td></tr>
+        <tr><td>P/S (FY2025 adj rev $3.6B)</td><td>5.75x</td><td>Moderate for fintech; elevated for bank</td></tr>
+        <tr><td>P/E (GAAP FY2025 est.)</td><td>~43x</td><td class="amber">Elevated (includes tax benefits)</td></tr>
+        <tr><td>P/E (Adj EPS $0.15 FY2025)</td><td>~108x</td><td class="red">Expensive on true operating earnings</td></tr>
+        <tr><td>P/TBV (est. TBV/share $3.25)</td><td>~5.0x</td><td class="amber">Premium for growth stage</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:6px;">All price-based metrics as of approximately April 10–14, 2026. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">5-Method Valuation Framework (Cat B — Clean Scenario)</div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Method 1 — P/S Revenue Multiple</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Digital bank / fintech comps with similar growth profiles (Robinhood ~6x, SoFi pre-MW ~8-9x, Upstart ~3-4x, Affirm ~4-5x). SoFi's bank charter and path to profitability warrant premium to pure fintech. Given SUSPECT earnings quality, I apply conservative multiples.</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th>FY2026E Revenue</th><th>P/S Multiple</th><th>Equity Value/Share</th></tr></thead>
+      <tbody>
+        <tr><td class="amber">Stress (restatement + slowdown)</td><td>~$3.5B</td><td>2.0–3.0x</td><td class="red">$5.50–8.25</td></tr>
+        <tr><td class="green">Base (clean, growth continues)</td><td>~$4.2B</td><td>4.0–5.5x</td><td class="amber">$13.22–18.18</td></tr>
+        <tr><td style="color:var(--teal)">Acceleration (MW dismissed, re-rate)</td><td>~$4.5B</td><td>6.0–8.0x</td><td class="green">$21.26–28.35</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:6px;">Based on 1.27B diluted shares. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Method 2 — P/B Gordon Growth (Bank-Appropriate Primary)</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">P/B Gordon Growth = ROE / (Cost of Equity − g). For SoFi: current ROE ~4.6%, trajectory to ROE 12–15% by FY2028 on clean scenario. Cost of equity ~13% (WACC for Cat B). Terminal g = 4.0% (US nominal GDP × 0.72).</p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th>Target ROE</th><th>P/B Justified</th><th>TBV/Share est.</th><th>Implied Price</th></tr></thead>
+      <tbody>
+        <tr><td class="amber">Stress (ROE stays low ~6%)</td><td>6%</td><td>~0.7x</td><td>$3.25</td><td class="red">~$2.28</td></tr>
+        <tr><td class="green">Base (ROE 12% by FY2028)</td><td>12%</td><td>~1.5x</td><td>$4.00 (FY2028)</td><td class="amber">~$6.00 → PV ~$4.50</td></tr>
+        <tr><td style="color:var(--teal);">Acceleration (ROE 18% by FY2028)</td><td>18%</td><td>~2.5x</td><td>$4.50 (FY2028)</td><td class="green">~$11.25 → PV ~$8.50</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:6px;">P/B Gordon Growth suggests the bank-based valuation does not support current price on traditional metrics — growth premium vs current ROE is extreme. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Method 3 — Normalized Earnings Power (FY2028 Projection)</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th>FY2028 Revenue</th><th>Net Margin</th><th>Net Income</th><th>P/E Applied</th><th>Price (FY2028)</th><th>PV @ 13%</th></tr></thead>
+      <tbody>
+        <tr><td class="amber">Stress</td><td>$3.5B</td><td>5%</td><td>$175M</td><td>20x</td><td>$2.76/sh</td><td class="red">$1.92</td></tr>
+        <tr><td class="green">Base</td><td>$5.0B</td><td>12%</td><td>$600M</td><td>28x</td><td>$13.20/sh</td><td class="amber">$9.19</td></tr>
+        <tr><td style="color:var(--teal);">Acceleration</td><td>$6.5B</td><td>18%</td><td>$1,170M</td><td>35x</td><td>$32.20/sh</td><td class="green">$22.43</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:6px;">Based on 1.27B shares; 2-year PV discount at 13% cost of equity. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Method 4 — P/E Earnings Power (Current/Forward)</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th><th>P/E Applied</th><th>Implied Price</th></tr></thead>
+      <tbody>
+        <tr><td>FY2025 Adj EPS ($0.15)</td><td>$0.15</td><td>35x (growth fintech)</td><td class="amber">$5.25</td></tr>
+        <tr><td>FY2026E Adj EPS ($0.20)</td><td>~$0.20</td><td>40x</td><td class="amber">$8.00</td></tr>
+        <tr><td>FY2027E Adj EPS ($0.35 est.)</td><td>~$0.35</td><td>40x</td><td class="green">$14.00 → PV $11.06</td></tr>
+        <tr><td>FY2027E GAAP EPS ($0.50 est.)</td><td>~$0.50</td><td>30x</td><td class="green">$15.00 → PV $11.86</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:6px;">Adjusted EPS path depends heavily on whether Muddy Waters accounting concerns are validated. If EBITDA truly inflated, adjusted EPS also inflated. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Method 5 — Earnings Yield vs Bond Yield (ERP)</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>P/E (GAAP, FY2025 $0.38)</td><td>43x</td><td>Earnings Yield: 2.3%</td></tr>
+        <tr><td>P/E (Adj EPS, FY2025 $0.15)</td><td>108x</td><td>Adj Earnings Yield: 0.9%</td></tr>
+        <tr><td>US 10Y Treasury Yield</td><td>4.30% <span class="lbl-v">VRF</span></td><td>Risk-free benchmark</td></tr>
+        <tr><td>ERP (GAAP)</td><td class="red">−2.0%</td><td>Negative: Equity far less attractive than bonds</td></tr>
+        <tr><td>ERP (Adjusted)</td><td class="red">−3.4%</td><td class="red">Significantly negative — structural overvaluation signal</td></tr>
+        <tr><td>FCF Yield (est.)</td><td>~2–3%</td><td class="amber">Below bond yield; not attractive on yield basis</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:rgba(239,68,68,0.08);border-radius:6px;">
+      <strong style="color:var(--fail-red);">Negative ERP = Structural Overvaluation Signal.</strong> At current price, SoFi offers significantly less yield than risk-free US Treasuries. This is only justified if investors price in rapid earnings growth that closes the ERP gap. On current adjusted earnings, the stock requires ~3–4 years of 30%+ earnings growth to reach a neutral ERP. This is achievable on the bull case but priced aggressively given the accounting cloud.
+    </div>
+  </div>
+
+  <div class="card card-stripe-amber" style="margin-top:20px;">
+    <div class="card-title card-title-amber">5-Method Valuation Summary</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue Multiple (P/S)</td><td class="red">$5.50–8.25</td><td class="amber">$13.22–18.18</td><td class="green">$21.26–28.35</td></tr>
+        <tr><td>P/B Gordon Growth</td><td class="red">$2.28</td><td class="amber">$4.50</td><td class="green">$8.50</td></tr>
+        <tr><td>Normalized Earnings (FY2028)</td><td class="red">$1.92</td><td class="amber">$9.19</td><td class="green">$22.43</td></tr>
+        <tr><td>P/E Earnings Power</td><td class="red">$4.00</td><td class="amber">$11.06–14.00</td><td class="green">$15.00–20.00</td></tr>
+        <tr><td>Earnings Yield vs Bond</td><td class="red">Negative ERP</td><td class="amber">Neutral at ~$10</td><td class="green">Attractive at ~$7</td></tr>
+        <tr style="border-top:2px solid var(--amber);"><td class="highlight">Blended Base IV</td><td class="red">~$4–8</td><td class="amber">~$11–16</td><td class="green">~$20–25</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:14px;padding:12px 16px;background:rgba(245,158,11,0.08);border-radius:8px;border-left:3px solid var(--amber);">
+      <strong style="color:var(--amber);">Blended Base IV: ~$11–16 per share</strong> — Current price ($16.22) is near the TOP of the base intrinsic value range, suggesting limited margin of safety on the base case. Entry zone with adequate MoS (25%+) would be $8–12. Note: These are CLEAN SCENARIO IVs. If Muddy Waters restatement allegations are confirmed, stress IV applies (~$4–8 range) and represents severe downside from current levels.<br><br>
+      <strong style="color:var(--amber);">Earnings Quality Adjustment (SUSPECT):</strong> Widen MoS by additional 5% per O'Glove SUSPECT rating. Entry zone adjustment: clean base zone of $11–16 → SUSPECT-adjusted target entry ≤$10–13.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Peer Comparison</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Peer</th><th>Business</th><th>P/S (est.)</th><th>Revenue Growth</th><th>Profitability</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">SoFi (SOFI)</td><td>Digital bank + fintech infra</td><td>5.75x</td><td>+38% adj</td><td class="amber">GAAP profitable (contested)</td></tr>
+        <tr><td>Robinhood (HOOD)</td><td>Digital brokerage + bank</td><td>~4–5x</td><td>+25%+</td><td class="amber">GAAP profitable</td></tr>
+        <tr><td>Upstart (UPST)</td><td>AI lending platform</td><td>~3–4x</td><td>+20%+</td><td class="red">Still unprofitable</td></tr>
+        <tr><td>Affirm (AFRM)</td><td>BNPL + merchant platform</td><td>~4–5x</td><td>+40%</td><td class="amber">Approaching profit</td></tr>
+        <tr><td>Nu Holdings (NU)</td><td>LatAm digital bank</td><td>~5–6x</td><td>+40–50%</td><td class="green">Profitable, high ROIC</td></tr>
+        <tr><td>PayPal (PYPL)</td><td>Payments + Venmo</td><td>~2–3x</td><td>+5–8%</td><td class="green">Profitable, buybacks</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:6px;">SoFi trades at premium to most peers on P/S — justified only if growth continues and accounting concerns are resolved. Nu Holdings (NU) is a superior compar with confirmed profitability and 50%+ growth at similar multiples. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 6: VERDICT -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab6">
+  <div class="section-title">Four-Pillar Summary</div>
+  
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 1 — Moat</div>
+      <div class="pillar-grade amber">B</div>
+      <div class="pillar-desc">Bank charter (★★★★) + Galileo B2B (★★★). ROIC below WACC. Flywheel: FEATURE only.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 2 — Quality</div>
+      <div class="pillar-grade amber">C+</div>
+      <div class="pillar-desc">Early profitability. Dilution 16.3%. Earnings quality SUSPECT per O'Glove. Tests 2 &amp; 4 fail.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 3 — Management</div>
+      <div class="pillar-grade red">C</div>
+      <div class="pillar-desc">Credible operator but MW bonus alignment allegations + PVF extraction + 11 unanswered questions are concerning character flags.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 4 — Valuation</div>
+      <div class="pillar-grade amber">C</div>
+      <div class="pillar-desc">$16.22 = top of base IV range. Negative ERP. Limited MoS at current price. Entry zone: $10–13.</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-stars">★★★</div>
+    <div class="verdict-label">WATCH — Accounting Cloud Resolution Required</div>
+    <div class="verdict-quote">
+      "The most important quality for an investor is temperament, not intellect. You need a temperament that neither derives great pleasure from being with the crowd or against the crowd." — Warren Buffett
+    </div>
+    <div class="verdict-prose">
+      SoFi Technologies is a genuinely interesting business at a potentially interesting price. The bank charter is real, Galileo is growing, the 38% revenue growth rate is impressive, and the one-stop-shop financial superapp concept is well-executed. The stock's 50% decline from its November 2025 all-time high has compressed the valuation significantly, and at $16.22, it sits near the upper bound of our base intrinsic value range.
+      <br><br>
+      However, three issues prevent this from being a BUY at current price: <strong style="color:var(--fail-red);">(1) The Muddy Waters allegations are unresolved and specific.</strong> Specific UCC filings, charge-off calculations, and management bonus structure claims were made with detail. SoFi's blanket denials without directly addressing the 11 specific questions is inadequate. <strong style="color:var(--amber);">(2) Earnings quality is SUSPECT,</strong> requiring a wider margin of safety. On adjusted EPS ($0.15), the stock trades at 108x — deeply expensive even for a fast-growing fintech. The base case intrinsic value of ~$11–16 leaves minimal margin of safety at current price. <strong style="color:var(--amber);">(3) Management alignment is questionable</strong> given alleged PVF extraction and bonus incentive structure.
+      <br><br>
+      The path to BUY: If OCC/KPMG/auditors confirm no restatement required, if management directly addresses accounting questions, and if the price corrects to the $10–13 entry zone (providing 25%+ MoS to base IV), this becomes a high-conviction opportunity. The underlying business is building toward a superior position. The uncertainty is about whether the financial statements accurately reflect that business.
+    </div>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">WATCH → BUY Upgrade Conditions</div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">1</div>
+      <div class="upgrade-text"><strong>Accounting Cloud Resolved:</strong> External auditor (KPMG), OCC regulators, or SEC examination confirms no material restatement required for the $312M JPMorgan loan, charge-off reporting, or EBITDA composition. SoFi must directly and factually address each of Muddy Waters' 11 specific questions in a public forum.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">2</div>
+      <div class="upgrade-text"><strong>Price Corrects to Entry Zone:</strong> Price falls to $10–13 range, providing ≥25% margin of safety to base IV (~$13–16). At $12, the stock would trade at ~3.3x FY2025 adj revenue — attractive for a regulated digital bank growing at 30%+.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">3</div>
+      <div class="upgrade-text"><strong>Charge-Off Rate Stabilizes:</strong> Q1 2026 and Q2 2026 personal loan charge-off rate remains below 4.0% (as reported by SoFi) with transparent disclosure of methodology for loan transfers to off-balance-sheet entities. Two consecutive quarters of transparent, auditor-validated charge-off data.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">4</div>
+      <div class="upgrade-text"><strong>Revenue Growth Sustained:</strong> Q1 2026 adjusted net revenue grows ≥25% YoY with fee-based revenue at ≥50% of total, demonstrating continued structural shift away from lending spread income.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">5</div>
+      <div class="upgrade-text"><strong>Share Dilution Halts:</strong> Diluted share count growth slows to &lt;5% annually for 2 consecutive quarters, indicating company is generating sufficient operating cash flow to reduce dependence on equity issuance for funding growth.</div>
+    </div>
+  </div>
+
+  <div class="card card-stripe-red">
+    <div class="card-title" style="color:var(--fail-red);">WATCH → PASS / AVOID Downgrade Conditions</div>
+    <div class="upgrade-item">
+      <div class="upgrade-num" style="background:var(--fail-red);">!</div>
+      <div class="upgrade-text">SEC or OCC enforcement action initiated, OR independent auditor requires material restatement of EBITDA/net income → AVOID immediately.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num" style="background:var(--fail-red);">!</div>
+      <div class="upgrade-text">Personal loan charge-off rate confirmed &gt;5.5% by independent analysis or audited restatement → PASS (thesis broken).</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num" style="background:var(--fail-red);">!</div>
+      <div class="upgrade-text">Q1 2026 revenue growth decelerates below 15% YoY → re-evaluate growth thesis → PASS.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Series Table</div>
+  <div class="card">
+    <div class="tbl-wrap">
+    <table class="series-table">
+      <thead><tr><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry Zone</th><th>Base IV</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">SOFI</td><td>NASDAQ</td><td>B</td><td>⚪</td><td>B</td><td>C+</td><td>C</td><td>C</td><td class="amber">WATCH★★★</td><td>$10–13</td><td>$11–16</td></tr>
+        <tr><td class="highlight">UJJIVANSFB</td><td>NSE</td><td>D</td><td>🟢</td><td>B</td><td>B−</td><td>B</td><td>B−</td><td>WATCH★★★</td><td>₹42–52</td><td>~₹57</td></tr>
+        <tr><td class="highlight">WIPRO</td><td>NSE</td><td>C</td><td>🔴</td><td>B</td><td>B+</td><td>B</td><td>C</td><td>WATCH★★</td><td>₹133–150</td><td>~₹166</td></tr>
+        <tr><td class="highlight">JIOFIN</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>B−</td><td>B</td><td>C+</td><td>WATCH★★★</td><td>₹185–210</td><td>₹199</td></tr>
+        <tr><td class="highlight">PLTR</td><td>NASDAQ</td><td>F</td><td>🌀</td><td>B+</td><td>A−</td><td>B+</td><td>D+</td><td>WATCH★★★★</td><td>$85–100</td><td>~$87</td></tr>
+        <tr><td class="highlight">ABB India</td><td>NSE</td><td>C</td><td>🟢</td><td>B+</td><td>A−</td><td>B+</td><td>C+</td><td>WATCH★★★</td><td>₹4,200–4,800</td><td>~₹3,850</td></tr>
+        <tr><td class="highlight">IEX</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>A−</td><td>B</td><td>B−</td><td>WATCH★★★</td><td>₹105–115</td><td>₹143</td></tr>
+        <tr><td class="highlight">GOOGL</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>A−</td><td>B+</td><td>WATCH★★★★</td><td>~$292</td><td>—</td></tr>
+        <tr><td class="highlight">META</td><td>NASDAQ</td><td>C/B</td><td>🟢</td><td>—</td><td>—</td><td>—</td><td>—</td><td>BUY★★★★½</td><td>~$547</td><td>—</td></tr>
+        <tr><td class="highlight">MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>A</td><td>B+</td><td>WATCH★★★★</td><td>$316–360</td><td>~$360–395</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 7: TECHNICAL ANALYSIS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab7">
+  <div class="section-title">Section A — Price Structure &amp; Multi-Timeframe Trend</div>
+
+  <div class="card card-stripe-red">
+    <div class="card-title" style="color:var(--fail-red);">Multi-Timeframe Trend Table</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Timeframe</th><th>Trend</th><th>Status</th><th>Key Level</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Monthly</td><td class="red">BEARISH</td><td>Downtrend from $32.73 ATH (Nov 2025) → 50% decline in ~5 months</td><td>$10.07 major support</td></tr>
+        <tr><td class="highlight">Weekly</td><td class="red">BEARISH</td><td>Death cross (50W below 200W); weekly candles red; Muddy Waters catalyst</td><td>$15.00 psychological</td></tr>
+        <tr><td class="highlight">Daily</td><td class="amber">STABILIZING</td><td>Pivot bottom March 30, 2026; +7% from that low; RSI approaching oversold</td><td>$16.12 short-term MA support</td></tr>
+        <tr><td class="highlight">Intraday</td><td class="amber">NEUTRAL</td><td>Average daily range 2.4%; high volatility (beta ~1.94)</td><td>Volume watching for capitulation</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section-title">Section B — Moving Average Dashboard</div>
+  
+  <div class="metric-grid">
+    <div class="metric-card red">
+      <div class="metric-label">20-Day EMA</div>
+      <div class="metric-value">~$20.57</div>
+      <div class="metric-sub">Price -21% below → SELL <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">50-Day MA</div>
+      <div class="metric-value">~$23.09</div>
+      <div class="metric-sub">Price -30% below → SELL <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">200-Day MA</div>
+      <div class="metric-value">~$23.38</div>
+      <div class="metric-sub">Price -31% below → SELL <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">Death Cross</div>
+      <div class="metric-value">ACTIVE</div>
+      <div class="metric-sub">50-DMA &lt; 200-DMA → bearish</div>
+    </div>
+  </div>
+
+  <div class="section-title">Section C — Volume &amp; OBV</div>
+  <div class="card card-stripe">
+    <div class="card-title">Volume Analysis</div>
+    <div class="scorecard-item"><span class="scorecard-label">Average daily volume: ~31–40M shares/day (high; reflects retail + institutional activity)</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">March 17, 2026: Muddy Waters report → spike volume + sharp intraday drop (key event)</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">March 30 pivot bottom: Volume dried up at lows (capitulation-like behavior) — minor positive signal</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">OBV: Declining trend consistent with distribution phase since Nov 2025 ATH</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Volume on up-days vs down-days: Not confirming recovery — no clear institutional re-accumulation signals visible</span></div>
+  </div>
+
+  <div class="section-title">Section D — Momentum Indicators</div>
+  <div class="metric-grid">
+    <div class="metric-card amber">
+      <div class="metric-label">RSI (14-day)</div>
+      <div class="metric-value">~33–34</div>
+      <div class="metric-sub">Approaching oversold; MACD bullish cross signal <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-label">MACD (12,26)</div>
+      <div class="metric-value">-1.61</div>
+      <div class="metric-sub">Below signal line → SELL <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">ADX (14)</div>
+      <div class="metric-value">38.54</div>
+      <div class="metric-sub">Strong trend; not overbought <span class="lbl-e">EST</span></div>
+    </div>
+    <div class="metric-card amber">
+      <div class="metric-label">CCI (14)</div>
+      <div class="metric-value">-60.42</div>
+      <div class="metric-sub">Neutral-bearish range <span class="lbl-e">EST</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Section E — Chart Patterns</div>
+  <div class="card card-stripe">
+    <div class="card-title">Pattern: Waterfall Decline (Post-ATH)</div>
+    <div class="scorecard-item"><span class="scorecard-label">Nov 2025 ATH $32.73 → Dec-Jan consolidation → Mar 17 MW report = gap down</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Mar 30 potential double-bottom at $15.xx support (watch for confirmation with volume)</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Resistance at $17.39 (short-term MA); $20.57 (20-EMA); $23.09 (50-DMA) — three layers above</span></div>
+    <div class="scorecard-item"><span class="scorecard-label">RSI divergence emerging: RSI not making new lows with price — minor bullish divergence <span class="lbl-e">EST</span></span></div>
+    <div class="scorecard-item"><span class="scorecard-label">Volume support: $15.87 has accumulated volume (identified as support level)</span></div>
+  </div>
+
+  <div class="section-title">Section F — Trade Structure</div>
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Entry Scenarios (Speculative — Accounting Cloud Active)</div>
+    <div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+      <strong style="color:var(--text-primary);">PRIMARY TRIGGER (Fundamental — requires MW resolution):</strong>
+      <div style="margin-top:6px;font-size:14px;color:var(--text-secondary);">Accounting cloud resolved (no restatement confirmed) + price falls to $10–13 + RSI &lt;35 + stabilization of charge-offs &lt;4%. Entry: $10–13 | SL: $9.00 | T1: $17 | T2: $22 | R:R: 1:2.5+</div>
+    </div>
+    <div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+      <strong style="color:var(--text-primary);">SECONDARY TRIGGER (Technical — speculative):</strong>
+      <div style="margin-top:6px;font-size:14px;color:var(--text-secondary);">Breakout above $17.39 (short-term MA) on 2x average volume + RSI crosses 40 upward + Q1 2026 earnings beat. Entry: $17.50 | SL: $15.50 | T1: $21 | T2: $25 | R:R: 1:2.5. Note: Higher risk while MW allegations unresolved.</div>
+    </div>
+    <div style="padding:10px 0;margin-top:6px;">
+      <strong style="color:var(--fail-red);">AVOID if:</strong> Any SEC enforcement signal, auditor-required restatement, or charge-off rate confirmed &gt;5.5%. These constitute thesis-breaking events.
+    </div>
+  </div>
+
+  <div class="section-title">Section G — Technical Composite Score</div>
+  <div class="card">
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>Score (1–5)</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Trend (multi-timeframe)</td><td class="red">1/5</td><td>Downtrend all timeframes; death cross active</td></tr>
+        <tr><td>Moving Averages</td><td class="red">1/5</td><td>All MAs above price; 0 buy signals</td></tr>
+        <tr><td>Volume / OBV</td><td class="amber">2/5</td><td>Volume drying up at lows; possible capitulation</td></tr>
+        <tr><td>Momentum (RSI/MACD)</td><td class="amber">2/5</td><td>RSI approaching oversold (33); MACD bearish</td></tr>
+        <tr><td>Chart Pattern</td><td class="amber">2/5</td><td>Potential double-bottom forming; needs confirmation</td></tr>
+        <tr><td>Support/Resistance</td><td class="amber">2/5</td><td>$15.87 volume support; $17.39 resistance</td></tr>
+        <tr style="border-top:1px solid rgba(0,212,160,0.3);"><td class="highlight">Total Score</td><td class="red">10/30 (33%)</td><td class="red">TECHNICALLY WEAK — Not yet a technical buy</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px;">Technical entry signal requires: RSI &lt;35 (near — current ~33) + price at $15.87 support + volume spike + fundamental catalyst (MW resolution or strong earnings). Composite score needs to reach ≥50% before technical buy signal is valid. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 8: SHAREHOLDING -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab8">
+  <div class="section-title">Section A — Insider &amp; Promoter Holdings</div>
+  
+  <div class="card card-stripe">
+    <div class="card-title">Ownership Structure (Current) <span class="lbl-e">ESTIMATED — based on most recent 13F data</span></div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Category</th><th>Ownership %</th><th>Trend</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Institutional Investors</td><td>~52.5%</td><td>—</td><td>Healthy institutional base</td></tr>
+        <tr><td class="highlight">Insiders (Officers/Directors)</td><td>~27.9%</td><td class="red">SELLING (PVF contracts)</td><td class="red">Insider extraction concern</td></tr>
+        <tr><td class="highlight">Retail / Public</td><td>~19.6%</td><td>—</td><td>High retail interest</td></tr>
+        <tr><td class="highlight">Delaware Project 10 LLC (SoftBank-linked)</td><td>~9.77% (117.8M shares)</td><td>—</td><td>Strategic anchor investor</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Top Institutional Holders (Estimated)</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Holder Type</th><th>Est. Position</th><th>Trend</th></tr></thead>
+      <tbody>
+        <tr><td>Delaware Project 10 LLC (SoftBank vehicle)</td><td>9.77% / 117.8M shares</td><td class="amber">Stable (long-term strategic)</td></tr>
+        <tr><td>Vanguard Group</td><td>~4–6% est.</td><td>Passive (index-linked)</td></tr>
+        <tr><td>BlackRock</td><td>~3–5% est.</td><td>Passive (index-linked)</td></tr>
+        <tr><td>Other Active Funds</td><td>~35%+ est.</td><td class="amber">Mixed (some reducing post-MW report)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section-title">Section B — Share Dilution Analysis</div>
+  <div class="card card-stripe-red">
+    <div class="card-title" style="color:var(--fail-red);">Share Count Growth — Significant Dilution Risk</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Year</th><th>Approx. Diluted Shares</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">FY2022</td><td>~900M</td><td>—</td></tr>
+        <tr><td class="highlight">FY2023</td><td>~940M</td><td class="amber">+4.4%</td></tr>
+        <tr><td class="highlight">FY2024</td><td>~1,090M</td><td class="red">+16.0%</td></tr>
+        <tr><td class="highlight">FY2025 (est.)</td><td>~1,270M</td><td class="red">+16.5%</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:10px;padding:10px 14px;background:rgba(239,68,68,0.08);border-radius:6px;">
+      <strong style="color:var(--fail-red);">16.3% annual share count growth</strong> means every year of ownership, your stake is diluted by 16%+ unless offset by equivalent growth in earnings per share. At current trajectory, this is a significant headwind to per-share value creation. <span class="lbl-v">VRF (Simply Wall St)</span>
+    </div>
+  </div>
+
+  <div class="section-title">Section C — Float &amp; Structural Supply/Demand</div>
+  <div class="card">
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th><th>Implication</th></tr></thead>
+      <tbody>
+        <tr><td class="highlight">Market Cap</td><td>~$20.7B</td><td>Large-cap territory — broad institutional eligibility</td></tr>
+        <tr><td class="highlight">Free Float</td><td>~72% (ex-insider)</td><td>Large free float = less price scarcity premium</td></tr>
+        <tr><td class="highlight">Short Interest</td><td>~10.1% (post-MW report)</td><td class="amber">Elevated — potential short squeeze catalyst if MW refuted</td></tr>
+        <tr><td class="highlight">Beta</td><td>~1.94</td><td>High volatility; 2x market moves typical</td></tr>
+        <tr><td class="highlight">Daily Volume</td><td>~31–40M shares</td><td>High liquidity; no slippage concerns</td></tr>
+        <tr><td class="highlight">Index Membership</td><td>Russell 1000/2000 components</td><td>Passive fund inclusion supports demand floor</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section-title">Section D — Shareholding Momentum &amp; Risk</div>
+  <div class="card">
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Score Component</th><th>Score</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Institutional quality of holders</td><td class="amber">45/100</td><td>Mixed quality; SoftBank anchor positive; others reducing?</td></tr>
+        <tr><td>Insider alignment</td><td class="red">20/100</td><td>Alleged PVF extraction; dilution ongoing</td></tr>
+        <tr><td>Short interest risk</td><td class="red">30/100</td><td>10.1% SI = elevated; MW report maintains pressure</td></tr>
+        <tr><td>Dilution trajectory</td><td class="red">25/100</td><td>16%+ annual dilution is very high</td></tr>
+        <tr><td>Ownership Momentum Score</td><td class="amber">35/100</td><td>No evidence of institutional accumulation post-MW</td></tr>
+        <tr><td>Shareholding Risk Score</td><td class="red">72/100 (High Risk)</td><td>Dilution + SI + insider alignment concern = elevated risk</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TAB 9: AI INTELLIGENCE -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab9">
+  <div class="section-title">Section A — AI Classification Dashboard</div>
+  
+  <div class="ai-dash">
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">Company Category</div>
+      <div class="ai-badge-value" style="color:var(--teal);">Cat B</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">High-Growth Compounder</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">AI Overlay Flag</div>
+      <div class="ai-badge-value" style="color:#8FA6CC;">⚪ NEUTRAL</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">AI as tool, not moat</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">Data Flywheel</div>
+      <div class="ai-badge-value" style="color:var(--amber);">FEATURE ★</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Score: 2/10</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">Adoption Phase</div>
+      <div class="ai-badge-value" style="color:var(--teal);">Phase 3</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">US Fintech AI Mainstream</div>
+    </div>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">AI Adoption Phase — US Digital Banking / Fintech</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px;">
+      <strong style="color:var(--teal);">Phase 3 — Inflection (20–40% adoption)</strong> <span class="lbl-e">ESTIMATED</span> — AI in US financial services credit scoring and fraud detection is now in Phase 3. AI credit models (Upstart, Capital One's Eno, SoFi's internal models) are demonstrably outperforming traditional FICO-based models in default prediction. AI fraud detection (Galileo's ML: 35% fraud reduction) is standard infrastructure for leading digital banks. The "winners" in this phase are the institutions with the most proprietary training data — which favors large incumbents (Chase, BofA) with massive head starts, and specialized AI lenders (Upstart) with deeper vertical expertise. SoFi sits in the middle — better than most, but not yet a clear winner.
+    </p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>AI Application</th><th>Phase</th><th>SoFi Position</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>AI credit scoring</td><td class="green">Phase 3</td><td>Deployed; outcomes-based training</td><td class="amber">User</td></tr>
+        <tr><td>AI fraud detection (Galileo)</td><td class="green">Phase 3–4</td><td>35% fraud reduction for Galileo clients</td><td class="green">Operator</td></tr>
+        <tr><td>AI customer service (Cyberbank Konecta)</td><td class="amber">Phase 2–3</td><td>24/7 AI digital assistants deployed</td><td class="amber">User</td></tr>
+        <tr><td>AI personalization / cross-sell</td><td class="amber">Phase 2</td><td>Member product recommendations</td><td class="amber">User</td></tr>
+        <tr><td>AI stablecoin / DeFi</td><td class="red">Phase 1</td><td>SoFi USD launched; very early</td><td class="red">Exploring</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+  
+  <div class="flywheel-box">
+    <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--amber);">Flywheel Verdict: AI FEATURE (Not a Moat)</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Score: 2/10 | Data Quality: 1/3 | Improvement Evidence: 1/4 | Loop Speed: 0/3</div>
+    
+    <div class="flywheel-questions" style="margin-top:16px;">
+      <div class="flywheel-q">
+        <span class="icon" style="color:var(--amber);">~</span>
+        <span>
+          <strong style="color:#fff;">Q1 — Proprietary Training Data:</strong> SoFi has transaction and credit data on 13.7M members (banking, investing, lending behaviors). This is proprietary in the sense that competitors don't have SoFi's specific dataset. However: (a) Credit bureau data (TransUnion, Equifax, Experian) provides alternative data to all lenders; (b) JPMorgan has 80M+ customer relationships; (c) Capital One has 100M+ customers with credit data; (d) Galileo's 160M enabled accounts across all clients provide cross-institutional pattern data that is broader in scope. <strong style="color:var(--amber);">Verdict: Partially proprietary, not uniquely exclusive. 1/3.</strong>
+        </span>
+      </div>
+      <div class="flywheel-q">
+        <span class="icon" style="color:var(--amber);">~</span>
+        <span>
+          <strong style="color:#fff;">Q2 — AI Improvement with Scale:</strong> Galileo's ML fraud detection "reducing fraud by 35% on average for Galileo clients" [VERIFIED — official SoFi press release]. This is measurable. SoFi's credit model also shows improving performance: recent vintages (Q4 2022–Q1 2024) show net cumulative losses of 3.8% vs 5.25% for 2017 vintage at same point — suggesting better underwriting [VERIFIED]. However: (a) the improvement could be due to tighter underwriting criteria, not AI improvement; (b) no specific metric linking model accuracy improvement to data scale. <strong style="color:var(--amber);">Verdict: Some improvement evidence but not clearly AI-driven. 1/4.</strong>
+        </span>
+      </div>
+      <div class="flywheel-q">
+        <span class="icon" style="color:var(--fail-red);">✗</span>
+        <span>
+          <strong style="color:#fff;">Q3 — Self-Reinforcing Loop:</strong> Does better AI attract more SoFi members? Members join SoFi primarily for: competitive savings rates, product breadth (one-stop-shop), and UX quality — not because SoFi's AI is explicitly better than Chase's. There's no disclosed mechanism where "AI improvement → demonstrably better rates/outcomes → more members → more AI training data → repeat." Galileo clients choose Galileo for API quality and partner ecosystem, not because the fraud detection improves every quarter. <strong style="color:var(--fail-red);">Verdict: No confirmed self-reinforcing AI loop. 0/3.</strong>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Section C — AI Value Chain Position</div>
+  
+  <div class="chain">
+    <div class="chain-item">
+      <div class="chain-level">LEVEL 1</div>
+      Infrastructure<br>(Chips, Data Centers)
+    </div>
+    <div class="chain-item">
+      <div class="chain-level">LEVEL 2</div>
+      Foundation Models<br>(OpenAI, Anthropic)
+    </div>
+    <div class="chain-item">
+      <div class="chain-level">LEVEL 3</div>
+      AI Platforms<br>(Palantir, Snowflake)
+    </div>
+    <div class="chain-item">
+      <div class="chain-level">LEVEL 4</div>
+      Vertical AI Apps<br>(Upstart, Niramai)
+    </div>
+    <div class="chain-item active">
+      <div class="chain-level">LEVEL 5 ← SoFi</div>
+      AI-Enabled Incumbent<br>(Bank + Platform)
+    </div>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">Level 5 — AI-Enabled Incumbent Implications</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;">
+      SoFi sits at Level 5 — an existing financial services business using AI to enhance operations and products. This is the most under-appreciated opportunity in the AI era and typically offers the best risk/reward. <strong style="color:#fff;">The investment thesis is NOT about AI</strong> — it's about: bank charter, deposit franchise, Galileo platform, and member growth. AI is additive (~1–2% alpha). Optimal investment horizon for Level 5 AI-enabled incumbents: <strong style="color:var(--teal);">7–10 years</strong> (compounding, not a quick trade). The caveat: SoFi is still early-stage vs true incumbents like JPMorgan or Capital One — it's more of a "Level 5 in formation."
+    </p>
+  </div>
+
+  <div class="section-title">Section D — US Fintech AI Context</div>
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Four AI Structural Factors Assessment</div>
+    <div class="scorecard-item">
+      <span class="scorecard-label"><strong>Payment Data at Scale:</strong> SoFi processes payments via Galileo for 160M+ enabled accounts. ACH, debit, credit data creates meaningful fraud detection training data. However, Visa/Mastercard and large banks have orders of magnitude more data. <span class="lbl-v">VRF</span></span>
+      <span class="scorecard-grade grade-marginal">PARTIAL</span>
+    </div>
+    <div class="scorecard-item">
+      <span class="scorecard-label"><strong>Outcome Labels for Credit:</strong> SoFi observes loan defaults across personal loans, student loans, home loans — this is the best type of training data (outcome-labeled). The key question is whether SoFi's 13.7M member dataset is sufficient to outperform larger banks. Answer: probably not yet, but closing the gap. <span class="lbl-e">EST</span></span>
+      <span class="scorecard-grade grade-marginal">PARTIAL</span>
+    </div>
+    <div class="scorecard-item">
+      <span class="scorecard-label"><strong>AI Talent:</strong> SoFi has a tech-forward culture and competes in San Francisco / NYC for engineering talent. Not disclosed to be an AI-research leader (no publications, no foundation model work). Uses ML for applied use cases. <span class="lbl-e">EST</span></span>
+      <span class="scorecard-grade grade-marginal">ADEQUATE</span>
+    </div>
+    <div class="scorecard-item">
+      <span class="scorecard-label"><strong>AI Disruption Threat to SoFi's Borrowers:</strong> Carson Block (MW) specifically identified this: AI-driven job displacement of knowledge workers (SoFi's core HENRY customer base) could increase defaults. A structural bear case. <span class="lbl-e">EST</span></span>
+      <span class="scorecard-grade grade-fail">RISK</span>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin:20px 0;">
+  <table>
+    <thead><tr><th>US Fintech AI Theme</th><th>Phase</th><th>SoFi Relevance</th></tr></thead>
+    <tbody>
+      <tr><td class="highlight">AI in banking/credit scoring</td><td class="green">Phase 3</td><td class="green">Directly — deployed in underwriting</td></tr>
+      <tr><td class="highlight">AI fraud detection</td><td class="green">Phase 3–4</td><td class="green">Directly — Galileo ML, 35% reduction</td></tr>
+      <tr><td class="highlight">AI customer service</td><td class="amber">Phase 2–3</td><td class="amber">Directly — Cyberbank Konecta</td></tr>
+      <tr><td class="highlight">AI-driven job displacement</td><td class="amber">Phase 2–3</td><td class="red">Indirect threat — HENRY borrower risk</td></tr>
+      <tr><td class="highlight">Stablecoin / DeFi AI</td><td class="red">Phase 1</td><td class="amber">Adjacent — SoFi USD launched</td></tr>
+      <tr><td class="highlight">AI in personal finance mgmt</td><td class="amber">Phase 2</td><td class="green">Directly — SoFi Relay product</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="section-title">Section E — AI Disruption Risk</div>
+  <div class="card card-stripe-red">
+    <div class="card-title" style="color:var(--fail-red);">Muddy Waters AI Threat Claim</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;">
+      Carson Block specifically warned that AI could displace up to 15% of knowledge workers, positioning SoFi as "ground zero" for loan repayment pressure. The HENRY customer base — SoFi's core — is disproportionately in white-collar, knowledge-worker roles that are most exposed to AI automation. If AI displaces 10–15% of SoFi's borrower base from stable income, default rates could increase materially. This is a legitimate macro risk that should be monitored via: (1) SoFi's charge-off rates quarterly; (2) US knowledge worker employment data; (3) HENRY cohort income stability metrics.
+    </p>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Threat Vector</th><th>Timeline</th><th>Revenue at Risk</th><th>Moat Resilience</th></tr></thead>
+      <tbody>
+        <tr><td>HENRY job displacement → defaults</td><td class="amber">3–5 years</td><td class="amber">Lending: ~42%</td><td class="amber">5/10 — bank charter limits severity</td></tr>
+        <tr><td>AI coding tools vs Galileo B2B</td><td class="amber">2–4 years</td><td class="amber">Tech Platform: ~12%</td><td class="green">7/10 — switching costs protect</td></tr>
+        <tr><td>AI financial advisor vs SoFi Invest</td><td class="green">5+ years</td><td>Financial Services: growing</td><td class="amber">4/10 — commoditizing product</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px;"><strong style="color:var(--text-secondary);">Moat Resilience Score: 6/10</strong> — SoFi's bank charter and Galileo switching costs provide meaningful resilience, but the HENRY borrower concentration is a real vulnerability. Not existential (banks survive recessions) but materially impactful to credit quality assumptions. <span class="lbl-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title">Section F — AI Opportunity Verdict</div>
+  
+  <div class="ai-score-ring">
+    <div class="ai-score-num">38</div>
+    <div class="ai-score-label">AI Opportunity Score / 100</div>
+  </div>
+
+  <div class="card card-stripe">
+    <div class="card-title">AI Score Breakdown</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Component</th><th>Score</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Data Flywheel Strength</td><td class="amber">7/20</td><td>Some ML evidence; not a confirmed flywheel vs large bank competition</td></tr>
+        <tr><td>Adoption Phase Timing</td><td class="amber">12/20</td><td>Phase 3 (not ideal entry — Phase 2→3 transition is best timing)</td></tr>
+        <tr><td>Value Chain Position</td><td class="amber">14/20</td><td>Level 5 (AI-enabled incumbent) = best risk/reward; but very early stage</td></tr>
+        <tr><td>Structural Advantage</td><td class="red">5/20</td><td>US fintech doesn't have India Stack advantages; talent not differentiated</td></tr>
+        <tr><td>AI Threat Resistance</td><td class="amber">10/20</td><td>Moderate: bank charter + Galileo protect; HENRY borrower risk is real</td></tr>
+        <tr style="border-top:1px solid rgba(0,212,160,0.3);"><td class="highlight">Total AI Score</td><td class="amber">38/100</td><td>MONITOR — AI neither materially helps nor hurts near-term thesis</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card card-stripe-amber">
+    <div class="card-title card-title-amber">Portfolio Role &amp; Investment Horizon</div>
+    <div style="padding:14px;background:rgba(245,158,11,0.08);border-radius:8px;margin-bottom:14px;">
+      <strong style="color:var(--amber);">AI Score 38/100 → MONITOR</strong><br>
+      <span style="font-size:14px;color:var(--text-secondary);">AI opportunity exists (Galileo platform, credit AI, Phase 3 timing) but uncertainty around accounting allegations, flywheel strength, and HENRY borrower risk prevents a higher AI confidence rating. Standard fundamental framework governs the investment decision. Invest on fundamentals (bank charter, growth, Galileo) — not on AI thesis. AI adds ~1–2% alpha at best; not the investment driver.</span>
+    </div>
+    <div>
+      <div class="scorecard-item"><span class="scorecard-label"><strong>Portfolio Role:</strong> MONITOR — Watchlist only until Muddy Waters cloud resolved</span></div>
+      <div class="scorecard-item"><span class="scorecard-label"><strong>Investment Horizon (if initiated):</strong> 5–7 years for Level 5 AI-enabled fintech bank. This is a compounding thesis — not a 12-month trade.</span></div>
+      <div class="scorecard-item"><span class="scorecard-label"><strong>Position Sizing (if initiated):</strong> Maximum 2–3% of portfolio given accounting cloud. Increase to 4–5% upon MW resolution.</span></div>
+      <div class="scorecard-item"><span class="scorecard-label"><strong>Key AI Metric to Watch:</strong> Galileo enabled account count and revenue per account — leading indicator of B2B platform moat strength.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="background:#081220;border-top:1px solid var(--border);padding:20px;text-align:center;margin-top:32px;">
+  <p style="font-size:12px;color:var(--text-muted);line-height:1.7;max-width:800px;margin:0 auto;">
+    <strong style="color:var(--text-secondary);">SEC Disclaimer:</strong> This report is for educational and research purposes only. It does not constitute investment advice or a solicitation to buy or sell securities. SoFi Technologies, Inc. (NASDAQ: SOFI) is a US-listed security subject to SEC regulations. Past performance is not indicative of future results. The author may or may not hold positions in securities mentioned. All investments involve risk, including possible loss of principal. Consult a qualified financial advisor before making investment decisions.<br><br>
+    <strong style="color:var(--text-secondary);">Data Notice:</strong> Financial data sourced from SEC filings (8-K, 10-K, 10-Q), company press releases, and public financial databases. All figures labeled [VERIFIED], [ESTIMATED], or [UNVERIFIED] per data confidence tier. The Muddy Waters allegations (March 2026) are unresolved as of report date (April 14, 2026) and represent material uncertainty. Accounting figures should be treated as SUSPECT pending auditor/regulatory resolution.<br><br>
+    <strong style="color:var(--text-secondary);">Fonts:</strong> Space Grotesk (display), Plus Jakarta Sans (body), JetBrains Mono (data) — Google Fonts. &nbsp;|&nbsp; <strong style="color:var(--text-secondary);">Series:</strong> Buffett Quality-Value Series v5.0 &nbsp;|&nbsp; <strong style="color:var(--text-secondary);">Generated:</strong> April 14, 2026
+  </p>
+</div>
+
+<script>
+  var TAB_BAR_TOP = 0;
+
+  window.addEventListener('load', function () {
+    var tabBar = document.getElementById('tab-bar');
+    if (tabBar) {
+      var el = tabBar, top = 0;
+      while (el) { top += el.offsetTop; el = el.offsetParent; }
+      TAB_BAR_TOP = top;
+    }
+  });
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(function (el) {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+    var target = document.getElementById(tabId);
+    if (target) { target.style.display = 'block'; }
+    var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+    if (activeBtn) { activeBtn.classList.add('active'); }
+    window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+  }
+
+  // Initialize first tab
+  document.getElementById('tab0').style.display = 'block';
+</script>
+</body>
+</html>

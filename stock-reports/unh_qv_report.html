@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNH — Buffett Quality-Value Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07080f;
+    --bg2: #0d0f1a;
+    --bg3: #131525;
+    --card: #111320;
+    --border: rgba(200,180,140,0.15);
+    --gold: #c8b48c;
+    --gold-dim: rgba(200,180,140,0.6);
+    --crimson: #c0392b;
+    --crimson-bright: #e74c3c;
+    --green: #27ae60;
+    --green-bright: #2ecc71;
+    --amber: #f39c12;
+    --blue: #2980b9;
+    --text: #e8e4dc;
+    --text-dim: rgba(232,228,220,0.55);
+    --text-muted: rgba(232,228,220,0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, #07080f 0%, #0d1020 50%, #0a0c18 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 44px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(192,57,43,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 200px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(200,180,140,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: start;
+    position: relative;
+  }
+
+  .ticker-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ticker-badge::after {
+    content: '';
+    display: inline-block;
+    width: 40px; height: 1px;
+    background: var(--gold);
+    opacity: 0.4;
+  }
+
+  .company-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 46px;
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .company-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .verdict-block {
+    text-align: right;
+    min-width: 220px;
+  }
+
+  .verdict-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .verdict-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border: 1px solid;
+    display: inline-block;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .verdict-watch { color: var(--amber); border-color: var(--amber); background: rgba(243,156,18,0.08); }
+
+  .stars { color: var(--gold); font-size: 18px; letter-spacing: 2px; }
+
+  .price-display {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 8px;
+  }
+  .price-change { font-size: 12px; color: var(--green); margin-top: 2px; }
+
+  .pillar-strip {
+    display: flex;
+    gap: 0;
+    margin-top: 28px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .pillar-item {
+    flex: 1;
+    padding: 14px 18px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+  .pillar-item:last-child { border-right: none; }
+  .pillar-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .pillar-grade {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .grade-a { color: var(--green-bright); }
+  .grade-aminus { color: var(--green); }
+  .grade-b { color: #3498db; }
+  .grade-bplus { color: #5dade2; }
+  .grade-bminus { color: #a9cce3; }
+  .grade-c { color: var(--amber); }
+  .grade-d { color: var(--crimson); }
+  .grade-f { color: #922b21; }
+
+  /* TABS */
+  .tabs-nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tabs-nav::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { color: var(--gold-dim); }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 40px 48px; max-width: 1200px; }
+  .tab-content.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title .icon { font-size: 16px; }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(200,180,140,0.06);
+    color: var(--text);
+    font-size: 13px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(200,180,140,0.03); }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .right { text-align: right; }
+  .center { text-align: center; }
+
+  /* METRIC GRID */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .metric-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+  }
+  .metric-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .metric-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
+  }
+  .metric-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  .metric-green { color: var(--green-bright); }
+  .metric-red { color: var(--crimson-bright); }
+  .metric-amber { color: var(--amber); }
+
+  /* BARS */
+  .bar-row { margin-bottom: 12px; }
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .bar-label span:last-child {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+  }
+  .bar-track {
+    height: 4px;
+    background: rgba(200,180,140,0.1);
+    border-radius: 2px;
+  }
+  .bar-fill {
+    height: 4px;
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+  .bar-green { background: var(--green); }
+  .bar-amber { background: var(--amber); }
+  .bar-red { background: var(--crimson); }
+  .bar-blue { background: var(--blue); }
+  .bar-gold { background: var(--gold); }
+
+  /* GRID 2-COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+  /* RISK ITEM */
+  .risk-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(200,180,140,0.06);
+  }
+  .risk-item:last-child { border-bottom: none; }
+  .risk-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .risk-high { background: var(--crimson-bright); }
+  .risk-med { background: var(--amber); }
+  .risk-low { background: var(--green); }
+  .risk-title { font-weight: 500; font-size: 13px; margin-bottom: 3px; }
+  .risk-desc { font-size: 12px; color: var(--text-dim); }
+
+  /* VALUATION CARD */
+  .val-method {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(200,180,140,0.07);
+  }
+  .val-method:last-child { border-bottom: none; }
+  .val-name { font-size: 13px; color: var(--text-dim); }
+  .val-range {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .val-weight {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    background: rgba(200,180,140,0.07);
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+
+  /* THESIS BOX */
+  .thesis-box {
+    border-left: 3px solid var(--gold);
+    padding: 16px 20px;
+    background: rgba(200,180,140,0.04);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    margin: 20px 0;
+  }
+
+  /* OVERLAY BADGE */
+  .overlay-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border: 1px solid;
+  }
+  .overlay-neutral { color: #aaa; border-color: #555; background: rgba(150,150,150,0.05); }
+
+  /* ALERT */
+  .alert {
+    border: 1px solid;
+    padding: 14px 18px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .alert-warning { border-color: rgba(243,156,18,0.4); background: rgba(243,156,18,0.06); color: var(--amber); }
+  .alert-danger { border-color: rgba(192,57,43,0.4); background: rgba(192,57,43,0.06); color: var(--crimson-bright); }
+  .alert-positive { border-color: rgba(39,174,96,0.4); background: rgba(39,174,96,0.06); color: var(--green-bright); }
+
+  /* FOOTER */
+  .report-footer {
+    padding: 24px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    background: var(--bg2);
+  }
+
+  /* MCR VISUAL */
+  .mcr-timeline { display: flex; gap: 4px; align-items: flex-end; height: 80px; margin: 16px 0; }
+  .mcr-bar {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .mcr-bar:hover { border-color: var(--gold-dim); }
+  .mcr-fill { width: 100%; }
+  .mcr-year {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    text-align: center;
+    position: absolute;
+    bottom: -18px;
+    width: 100%;
+  }
+  .mcr-pct {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    position: absolute;
+    top: -16px;
+    color: var(--text-dim);
+    text-align: center;
+    width: 100%;
+  }
+
+  /* SEGMENT CHART */
+  .segment-bar {
+    margin: 8px 0;
+  }
+
+  p { margin-bottom: 12px; color: var(--text-dim); font-size: 13px; }
+  strong { color: var(--text); }
+
+  .highlight { color: var(--gold); font-weight: 500; }
+  .red-text { color: var(--crimson-bright); }
+  .green-text { color: var(--green-bright); }
+  .amber-text { color: var(--amber); }
+
+  @media (max-width: 768px) {
+    .hero { padding: 28px 20px 24px; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .verdict-block { text-align: left; }
+    .company-name { font-size: 32px; }
+    .tab-content { padding: 24px 20px; }
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .pillar-strip { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="ticker-badge">NYSE: UNH &nbsp;·&nbsp; Healthcare &nbsp;·&nbsp; Category C</div>
+      <div class="company-name">UnitedHealth<br>Group</div>
+      <div class="company-sub">America's largest health insurer · Vertical integration play · Crisis recovery thesis</div>
+      <div style="margin-top:14px;">
+        <span class="overlay-badge overlay-neutral">⚪ AI NEUTRAL</span>
+      </div>
+    </div>
+    <div class="verdict-block">
+      <div class="verdict-label">Framework Verdict</div>
+      <div class="verdict-badge verdict-watch">WATCH</div>
+      <div class="stars">★★★★☆</div>
+      <div class="verdict-label" style="margin-top:12px;">Current Price (Apr 8, 2026)</div>
+      <div class="price-display">$303</div>
+      <div class="price-change">↑ +8.3% today · CMS 2027 rate hike catalyst</div>
+      <div style="margin-top:10px; font-size:11px; color:var(--text-muted); font-family:'IBM Plex Mono',monospace;">MoS Entry Zone: <span style="color:var(--gold);">$250–$310</span></div>
+    </div>
+  </div>
+
+  <!-- PILLAR STRIP -->
+  <div class="pillar-strip" style="margin-top:28px;">
+    <div class="pillar-item">
+      <div class="pillar-name">Moat</div>
+      <div class="pillar-grade grade-aminus">A−</div>
+    </div>
+    <div class="pillar-item">
+      <div class="pillar-name">Quality</div>
+      <div class="pillar-grade grade-bminus">B−</div>
+    </div>
+    <div class="pillar-item">
+      <div class="pillar-name">Management</div>
+      <div class="pillar-grade grade-bminus">B−</div>
+    </div>
+    <div class="pillar-item">
+      <div class="pillar-name">Valuation</div>
+      <div class="pillar-grade grade-bplus">B+</div>
+    </div>
+    <div class="pillar-item">
+      <div class="pillar-name">Market Cap</div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:18px; font-weight:600; color:var(--text);">$260B</div>
+    </div>
+    <div class="pillar-item">
+      <div class="pillar-name">FY2024 Revenue</div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:18px; font-weight:600; color:var(--text);">$400B</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab('overview',this)">01 · Overview</button>
+  <button class="tab-btn" onclick="switchTab('moat',this)">02 · Moat</button>
+  <button class="tab-btn" onclick="switchTab('quality',this)">03 · Quality</button>
+  <button class="tab-btn" onclick="switchTab('management',this)">04 · Management</button>
+  <button class="tab-btn" onclick="switchTab('valuation',this)">05 · Valuation</button>
+  <button class="tab-btn" onclick="switchTab('segments',this)">06 · Segments</button>
+  <button class="tab-btn" onclick="switchTab('risks',this)">07 · Risks</button>
+  <button class="tab-btn" onclick="switchTab('catalysts',this)">08 · Catalysts</button>
+  <button class="tab-btn" onclick="switchTab('ai',this)">09 · AI Overlay</button>
+  <button class="tab-btn" onclick="switchTab('verdict',this)">10 · Verdict</button>
+</div>
+
+<!-- TAB 1: OVERVIEW -->
+<div id="tab-overview" class="tab-content active">
+
+  <div class="alert alert-danger">
+    <span>🚨</span>
+    <div><strong>Crisis Context:</strong> UNH has fallen ~50% from its Dec 2024 peak of $622. Medical Cost Ratio exploded to 89.4% (from ~82% historical). DOJ investigation into Medicare billing. CEO resigned May 2025. This is an analysis of a high-quality business under severe stress. Today's +8% jump follows CMS finalizing 2027 Medicare Advantage rate increases.</div>
+  </div>
+
+  <div class="thesis-box">
+    "UnitedHealth Group is the largest and most vertically integrated health services company in the world — combining insurance, pharmacy benefits, care delivery and data analytics into a self-reinforcing flywheel. The 2025 collapse reflects operational crisis, not structural moat destruction. The question is whether this is a temporary trough or a permanent impairment."
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><span class="icon">🏥</span> Business At A Glance</div>
+      <p><strong>UnitedHealth Group</strong> is the largest US health insurer by membership and a Fortune 5 company by revenue. It operates through two primary platforms:</p>
+      <div class="risk-item">
+        <div class="risk-dot" style="background: var(--blue);"></div>
+        <div>
+          <div class="risk-title">UnitedHealthcare (75% of revenue)</div>
+          <div class="risk-desc">Health insurance for 50M+ US consumers across commercial, Medicare Advantage, and Medicaid markets. Revenue: $298B in FY2024.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-dot" style="background: var(--green);"></div>
+        <div>
+          <div class="risk-title">Optum (25% of revenue, higher margin)</div>
+          <div class="risk-desc">Three segments: <strong>Optum Rx</strong> (PBM/pharmacy), <strong>Optum Health</strong> (care delivery, 650K+ value-based patients), <strong>Optum Insight</strong> (data & analytics). The strategic jewel driving long-term value.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Key Snapshot — FY2024</div>
+      <div class="metric-grid" style="grid-template-columns: 1fr 1fr; gap:12px;">
+        <div class="metric-box">
+          <div class="metric-label">Revenue</div>
+          <div class="metric-value">$400B</div>
+          <div class="metric-sub">+7.7% YoY</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Adj. EPS</div>
+          <div class="metric-value">$27.66</div>
+          <div class="metric-sub">GAAP $15.51</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Op. Cash Flow</div>
+          <div class="metric-value">$24.2B</div>
+          <div class="metric-sub">1.6× net income</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Medical Members</div>
+          <div class="metric-value">50.1M</div>
+          <div class="metric-sub">+2.1M YoY</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📉</span> The 2025 Crisis — Timeline of Events</div>
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Event</th><th>Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">Dec 2024</td><td>Brian Thompson (UHC CEO) murdered in NYC</td><td class="red-text">Reputational, public outrage intensified</td></tr>
+        <tr><td class="mono">Feb 2024</td><td>Change Healthcare ransomware attack</td><td class="red-text">$9B+ emergency funding, 190M records compromised</td></tr>
+        <tr><td class="mono">Apr 2025</td><td>First guidance cut, MCR spike disclosed</td><td class="red-text">Stock -20% in month</td></tr>
+        <tr><td class="mono">May 2025</td><td>CEO Andrew Witty resigns "personal reasons"</td><td class="red-text">Confidence collapse, stock -15% in days</td></tr>
+        <tr><td class="mono">May 2025</td><td>DOJ criminal investigation reported</td><td class="red-text">Medicare billing probe, worst week since 1998</td></tr>
+        <tr><td class="mono">Jul 2025</td><td>Guidance slashed: EPS $30 → $16</td><td class="red-text">~50% earnings cut, stock hits ~$234</td></tr>
+        <tr><td class="mono">Aug 2025</td><td>Berkshire Hathaway buys 5M shares (~$1.6B)</td><td class="green-text">Validation signal; stock bounces</td></tr>
+        <tr><td class="mono">May 2025</td><td>Stephen Hemsley returns as CEO</td><td class="green-text">Original architect of vertical integration</td></tr>
+        <tr><td class="mono">Apr 2026</td><td>CMS finalizes 2027 Medicare Advantage rate hike</td><td class="green-text">+8% today, ~$13B additional insurer payments</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- TAB 2: MOAT -->
+<div id="tab-moat" class="tab-content">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🏰</span> Moat Assessment: A−</div>
+    <p>UnitedHealth has one of the widest economic moats in US healthcare. GuruFocus rates it 9/10 — "Wide Moat — Clear and robust." The moat has NOT been fundamentally damaged by the 2025 crisis, which is operational in nature. The structural advantages that took decades to build remain intact.</p>
+
+    <div class="two-col" style="margin-top:20px;">
+      <div>
+        <div class="section-label">Moat Sources — Strength Assessment</div>
+        <div class="bar-row"><div class="bar-label"><span>Scale Advantage</span><span>9/10</span></div><div class="bar-track"><div class="bar-fill bar-green" style="width:90%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Network Effects</span><span>8/10</span></div><div class="bar-track"><div class="bar-fill bar-green" style="width:80%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Switching Costs</span><span>8/10</span></div><div class="bar-track"><div class="bar-fill bar-green" style="width:80%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Data/Analytics Moat</span><span>8/10</span></div><div class="bar-track"><div class="bar-fill bar-blue" style="width:80%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Vertical Integration</span><span>9/10</span></div><div class="bar-track"><div class="bar-fill bar-gold" style="width:90%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Regulatory Barriers</span><span>7/10</span></div><div class="bar-track"><div class="bar-fill bar-amber" style="width:70%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Brand/Reputation (post-crisis)</span><span>5/10</span></div><div class="bar-track"><div class="bar-fill bar-red" style="width:50%"></div></div></div>
+      </div>
+      <div>
+        <div class="section-label">Network Scale Facts</div>
+        <table>
+          <tr><td>Medical members served</td><td class="mono right">50.1M</td></tr>
+          <tr><td>Total people touched by UNH enterprise</td><td class="mono right">148M</td></tr>
+          <tr><td>Healthcare professionals in network</td><td class="mono right">1.3M</td></tr>
+          <tr><td>Hospital contracts</td><td class="mono right">~6,500</td></tr>
+          <tr><td>Physicians employed by Optum</td><td class="mono right">~10,000</td></tr>
+          <tr><td>Value-based care patients (Optum)</td><td class="mono right">+650K (2025 target)</td></tr>
+          <tr><td>Pharmacy scripts (Optum Rx)</td><td class="mono right">395M+ adjusted/yr</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><span class="icon">⚙️</span> The Optum Flywheel</div>
+      <p>The core moat is the <strong>UNH flywheel</strong> — a self-reinforcing system no competitor has replicated at scale:</p>
+      <div style="background:var(--bg3); border:1px solid var(--border); padding:16px; text-align:center; font-family:'Cormorant Garamond',serif; font-size:15px; line-height:2; margin-top:10px;">
+        50M insurance members<br>
+        ↓<br>
+        Generates vast clinical data<br>
+        ↓<br>
+        Optum analytics improve outcomes<br>
+        ↓<br>
+        Lower costs → competitive premiums<br>
+        ↓<br>
+        Attract more members<br>
+        ↓<br>
+        <span style="color:var(--gold);">More data → Wider moat</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">⚔️</span> Competitive Positioning</div>
+      <p>No competitor has assembled the breadth of UNH's vertical stack. CVS/Aetna and Cigna/Express Scripts have attempted partial replication but lack the care delivery depth of Optum Health.</p>
+      <table>
+        <thead><tr><th>Competitor</th><th>Insurance</th><th>PBM</th><th>Care Delivery</th><th>Analytics</th></tr></thead>
+        <tbody>
+          <tr><td><strong>UNH / Optum</strong></td><td class="green-text">✓✓✓</td><td class="green-text">✓✓✓</td><td class="green-text">✓✓✓</td><td class="green-text">✓✓✓</td></tr>
+          <tr><td>CVS / Aetna</td><td class="amber-text">✓✓✓</td><td class="amber-text">✓✓✓</td><td class="amber-text">✓✓</td><td class="amber-text">✓✓</td></tr>
+          <tr><td>Cigna / ESI</td><td class="amber-text">✓✓</td><td class="amber-text">✓✓✓</td><td class="red-text">✓</td><td class="amber-text">✓✓</td></tr>
+          <tr><td>Elevance</td><td class="amber-text">✓✓✓</td><td class="red-text">✓</td><td class="red-text">✓</td><td class="amber-text">✓✓</td></tr>
+          <tr><td>Humana</td><td class="amber-text">✓✓</td><td class="red-text">✓</td><td class="amber-text">✓✓</td><td class="red-text">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">⚠️</span> Moat Risks — What Could Narrow It</div>
+    <div class="risk-item">
+      <div class="risk-dot risk-high"></div>
+      <div><div class="risk-title">DOJ Antitrust / Structural Breakup</div><div class="risk-desc">If regulators force separation of insurance and care delivery (Optum), the core vertical moat could be dismantled. This is tail risk, not base case, but cannot be dismissed given current political environment.</div></div>
+    </div>
+    <div class="risk-item">
+      <div class="risk-dot risk-high"></div>
+      <div><div class="risk-title">Medicare Advantage Policy Risk</div><div class="risk-desc">Congress or CMS could structurally restrict MA billing practices, permanently reducing the profitability of UNH's largest growth segment. The 2027 rate hike (today's catalyst) is a positive, but policy risk remains elevated.</div></div>
+    </div>
+    <div class="risk-item">
+      <div class="risk-dot risk-med"></div>
+      <div><div class="risk-title">Brand/Public Sentiment Damage</div><div class="risk-desc">The murder of Brian Thompson crystallized public anger at health insurers. This could accelerate regulation, union-organized employer switching, or political pressure on coverage denial practices.</div></div>
+    </div>
+    <div class="risk-item">
+      <div class="risk-dot risk-low"></div>
+      <div><div class="risk-title">Competitor Vertical Integration</div><div class="risk-desc">Amazon/One Medical, Walmart Health, and tech-enabled startups are building care delivery networks, though none approach UNH's scale within a decade's horizon.</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 3: QUALITY -->
+<div id="tab-quality" class="tab-content">
+
+  <div class="alert alert-warning">
+    <span>⚠️</span>
+    <div><strong>Quality Downgrade Notice:</strong> Financial quality has deteriorated sharply in 2025. FY2024 quality was B+ historically; the 2025 MCR explosion and guidance cuts represent a material quality impairment. Grade reflects current state, not peak.</div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-box">
+      <div class="metric-label">FY2024 Revenue</div>
+      <div class="metric-value">$400.3B</div>
+      <div class="metric-sub">+7.7% YoY from $371.6B</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">FY2024 Op. Cash Flow</div>
+      <div class="metric-value metric-green">$24.2B</div>
+      <div class="metric-sub">1.6× net income</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">FY2024 Adj. EPS</div>
+      <div class="metric-value">$27.66</div>
+      <div class="metric-sub">GAAP: $15.51 (cyberattack)</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">FY2024 Op. Margin</div>
+      <div class="metric-value metric-amber">8.1%</div>
+      <div class="metric-sub">Down from 8.7% (2023)</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">ROE</div>
+      <div class="metric-value">15–17%</div>
+      <div class="metric-sub">Historical range</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">ROIC</div>
+      <div class="metric-value metric-green">&gt;10%</div>
+      <div class="metric-sub">Efficient capital use</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">D/E Ratio</div>
+      <div class="metric-value metric-green">0.74×</div>
+      <div class="metric-sub">Conservative leverage</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">Revenue CAGR (5yr)</div>
+      <div class="metric-value metric-green">10.4%</div>
+      <div class="metric-sub">Consistent compounder</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">EPS CAGR (5yr)</div>
+      <div class="metric-value">~11.9%</div>
+      <div class="metric-sub">Pre-crisis trajectory</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><span class="icon">📈</span> Revenue & EPS History</div>
+      <table>
+        <thead><tr><th>Year</th><th class="right">Revenue</th><th class="right">Adj. EPS</th><th class="right">GAAP EPS</th><th class="right">Op. CFO</th></tr></thead>
+        <tbody>
+          <tr><td>FY2022</td><td class="mono right">$324B</td><td class="mono right">~$21.0</td><td class="mono right">~$21.0</td><td class="mono right">$22B</td></tr>
+          <tr><td>FY2023</td><td class="mono right">$371.6B</td><td class="mono right">$25.12</td><td class="mono right">$23.86</td><td class="mono right">$29.1B</td></tr>
+          <tr><td>FY2024</td><td class="mono right">$400.3B</td><td class="mono right">$27.66</td><td class="mono right amber-text">$15.51</td><td class="mono right">$24.2B</td></tr>
+          <tr><td class="red-text">FY2025E</td><td class="mono right">~$447B</td><td class="mono right red-text">~$16.00</td><td class="mono right">—</td><td class="mono right red-text">~$16B</td></tr>
+          <tr><td class="green-text">FY2026E</td><td class="mono right">~$480B+</td><td class="mono right green-text">$25–28?</td><td class="mono right">—</td><td class="mono right green-text">$24B+?</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px; color:var(--text-muted); margin-top:8px; font-style:italic;">*2025 EPS represents crisis trough; 2026 is mgmt guidance recovery target</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">💔</span> The MCR Crisis — Core Issue</div>
+      <div class="section-label">Medical Cost Ratio (MCR) — Lower is better for insurer profitability</div>
+      
+      <div class="mcr-timeline" style="height:100px; margin-bottom:30px;">
+        <div class="mcr-bar"><div class="mcr-fill bar-green" style="height:68%;"></div><div class="mcr-pct">82%</div><div class="mcr-year">2022</div></div>
+        <div class="mcr-bar"><div class="mcr-fill bar-green" style="height:72%;"></div><div class="mcr-pct">83%</div><div class="mcr-year">2023</div></div>
+        <div class="mcr-bar"><div class="mcr-fill" style="height:77%; background:var(--amber);"></div><div class="mcr-pct">84.5%</div><div class="mcr-year">2024</div></div>
+        <div class="mcr-bar"><div class="mcr-fill bar-red" style="height:89%;"></div><div class="mcr-pct">~88%</div><div class="mcr-year">2025E</div></div>
+        <div class="mcr-bar"><div class="mcr-fill" style="height:83%; background:var(--amber);"></div><div class="mcr-pct">~85%</div><div class="mcr-year">2026E</div></div>
+        <div class="mcr-bar"><div class="mcr-fill bar-green" style="height:73%;"></div><div class="mcr-pct">83–84%</div><div class="mcr-year">2027E</div></div>
+      </div>
+
+      <p>The MCR spike to <strong class="red-text">89.4% in Q2 2025</strong> (from ~82% historical) directly caused the earnings collapse. Every 100bps of MCR = ~$4B in incremental claims costs. Root causes:</p>
+      <ul style="font-size:12px; color:var(--text-dim); margin-left:16px; line-height:2;">
+        <li>Surge in Medicare Advantage utilization (deferred-care catch-up)</li>
+        <li>V-28 risk model transition underestimated</li>
+        <li>Underpriced 2025 Medicare plans (priced at 7.5% cost trend vs. reality)</li>
+        <li>Optum Health legacy contract repricing</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💰</span> Balance Sheet & Capital Allocation</div>
+    <div class="two-col">
+      <div>
+        <div class="section-label">Balance Sheet Strength</div>
+        <div class="bar-row"><div class="bar-label"><span>Leverage (D/E 0.74×)</span><span class="green-text">Conservative</span></div><div class="bar-track"><div class="bar-fill bar-green" style="width:74%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Interest Coverage (~8×)</span><span class="green-text">Adequate</span></div><div class="bar-track"><div class="bar-fill bar-green" style="width:80%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Current Ratio (0.83×)</span><span class="amber-text">Tight but OK</span></div><div class="bar-track"><div class="bar-fill bar-amber" style="width:55%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Net Debt/EBITDA (~4.7×)</span><span class="amber-text">Levered</span></div><div class="bar-track"><div class="bar-fill bar-amber" style="width:65%"></div></div></div>
+      </div>
+      <div>
+        <div class="section-label">Capital Return (FY2024)</div>
+        <table>
+          <tr><td>Share buybacks</td><td class="mono right green-text">$24B</td></tr>
+          <tr><td>Dividend yield (current)</td><td class="mono right">~3.1%</td></tr>
+          <tr><td>Quarterly dividend per share</td><td class="mono right">$2.21</td></tr>
+          <tr><td>Dividend payout ratio (2025)</td><td class="mono right amber-text">~65%</td></tr>
+          <tr><td>Investment grade rating</td><td class="mono right green-text">Yes</td></tr>
+        </table>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:8px;">Buyback pace likely to slow significantly in 2025 given earnings crisis</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab-management" class="tab-content">
+
+  <div class="alert alert-danger">
+    <span>🚨</span>
+    <div><strong>Leadership Disruption:</strong> Three major leadership events in 6 months — CEO murder of UHC division head (Dec 2024), CEO Andrew Witty resignation (May 2025), and return of founder-era CEO Hemsley. This is unusual turbulence for a Dow 30 company.</div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><span class="icon">👥</span> Current Leadership</div>
+      <table>
+        <thead><tr><th>Role</th><th>Person</th><th>Assessment</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>CEO</td>
+            <td><strong>Stephen Hemsley</strong><br><span style="font-size:11px; color:var(--text-dim);">Returned May 2025</span></td>
+            <td class="green-text">+++ Positive signal</td>
+          </tr>
+          <tr>
+            <td>CFO</td>
+            <td><strong>Wayne DeVeydt</strong><br><span style="font-size:11px; color:var(--text-dim);">New appointment</span></td>
+            <td class="amber-text">Watch — new to role</td>
+          </tr>
+          <tr>
+            <td>UHC CEO</td>
+            <td><strong>Post-Thompson</strong><br><span style="font-size:11px; color:var(--text-dim);">Brian Thompson killed Dec 2024</span></td>
+            <td class="red-text">Vacancy/transition risk</td>
+          </tr>
+          <tr>
+            <td>Previous CEO</td>
+            <td><strong>Andrew Witty</strong><br><span style="font-size:11px; color:var(--text-dim);">Resigned May 2025</span></td>
+            <td class="red-text">Credibility damaged</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">🧭</span> Hemsley Return — Why It Matters</div>
+      <p><strong>Stephen Hemsley</strong> was CEO from 2006–2017 and is considered the architect of UNH's vertical integration strategy. He built Optum from a small subsidiary into the company's strategic core. His return signals:</p>
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div><div class="risk-title">Deep institutional knowledge</div><div class="risk-desc">Understands the MCR dynamics and has navigated margin crises before. His playbook to fix the Medicare Advantage mis-pricing is credible.</div></div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div><div class="risk-title">Berkshire confidence signal</div><div class="risk-desc">Buffett's $1.6B purchase in Aug 2025 coincided with Hemsley's return. The timing suggests the management change was a key factor in Berkshire's conviction.</div></div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-dot risk-med"></div>
+        <div><div class="risk-title">Execution risk remains</div><div class="risk-desc">2026 Medicare plans are priced at a conservative 10% MCR trend (up from 7.5%). If trend continues to overshoot, recovery extends to 2027+.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🔍</span> Capital Allocation Track Record</div>
+    <div class="two-col">
+      <div>
+        <div class="section-label">Positive Track Record (Pre-Crisis)</div>
+        <div class="risk-item">
+          <div class="risk-dot risk-low"></div>
+          <div><div class="risk-title">$24B buybacks in FY2024</div><div class="risk-desc">Aggressive shareholder return — but arguably buybacks at $550+ stock were capital misallocation in hindsight.</div></div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-dot risk-low"></div>
+          <div><div class="risk-title">Optum investment thesis executed</div><div class="risk-desc">Optum grew from ~$20B to $100B+ revenue over a decade — compounding capital intelligently into high-margin services.</div></div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-dot risk-low"></div>
+          <div><div class="risk-title">10-year dividend CAGR ~15%</div><div class="risk-desc">Consistent dividend growth demonstrates earnings quality confidence — maintained through the crisis.</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Negative Signals (2024–2025)</div>
+        <div class="risk-item">
+          <div class="risk-dot risk-high"></div>
+          <div><div class="risk-title">MCR underestimation</div><div class="risk-desc">Management failed to anticipate the Medicare Advantage utilization surge and V-28 model impact. This is a serious actuarial and oversight failure.</div></div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-dot risk-high"></div>
+          <div><div class="risk-title">DOJ investigation — governance failure?</div><div class="risk-desc">Medicare billing practice probe raises questions about whether aggressive upcoding was a management-endorsed strategy that crossed legal lines.</div></div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-dot risk-med"></div>
+          <div><div class="risk-title">Guidance credibility collapse</div><div class="risk-desc">EPS guide cut from $30 → $16 in a single cycle is an exceptional failure of forecasting. Markets price in credibility discount.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📋</span> Governance Scorecard</div>
+    <table>
+      <thead><tr><th>Factor</th><th>Score</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Insider alignment (ownership)</td><td class="mono amber-text">B</td><td style="font-size:12px;">Institutional-dominated; management ownership adequate</td></tr>
+        <tr><td>Executive compensation structure</td><td class="mono amber-text">B−</td><td style="font-size:12px;">Pay at risk vs. EPS targets — targets missed severely</td></tr>
+        <tr><td>Board independence</td><td class="mono green-text">B+</td><td style="font-size:12px;">Independent majority; experienced healthcare directors</td></tr>
+        <tr><td>Transparency / disclosure quality</td><td class="mono amber-text">C+</td><td style="font-size:12px;">DOJ investigation disclosure timing questioned</td></tr>
+        <tr><td>Capital allocation (historical)</td><td class="mono green-text">B+</td><td style="font-size:12px;">Strong Optum build vs. $24B buybacks near peak valuation</td></tr>
+        <tr><td>Leadership stability (current)</td><td class="mono red-text">C</td><td style="font-size:12px;">3 major leadership events in 6 months — unusual</td></tr>
+        <tr><td>Regulatory relationship</td><td class="mono red-text">D+</td><td style="font-size:12px;">DOJ probe, CMS scrutiny, congressional criticism — elevated</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab-valuation" class="tab-content">
+
+  <div class="alert alert-positive">
+    <span>💡</span>
+    <div><strong>Valuation Context:</strong> At ~$303, UNH trades at ~19× crushed 2025 EPS of ~$16. On normalized 2026-27 earnings of $25-28, that's 11–12× — a significant discount to historical 22–24× and to peers. The question is entirely about whether earnings recover.</div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-box">
+      <div class="metric-label">Current Price</div>
+      <div class="metric-value">$303</div>
+      <div class="metric-sub">Apr 8, 2026 (post CMS)</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">P/E (2025 trough)</div>
+      <div class="metric-value metric-amber">~19×</div>
+      <div class="metric-sub">Based on EPS ~$16</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">P/E (normalized)</div>
+      <div class="metric-value metric-green">11–12×</div>
+      <div class="metric-sub">On $25-28 FY2026-27E EPS</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">Historical P/E</div>
+      <div class="metric-value">22–24×</div>
+      <div class="metric-sub">Pre-crisis premium multiple</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">Dividend Yield</div>
+      <div class="metric-value metric-green">3.1%</div>
+      <div class="metric-sub">$2.21/qtr → $8.84/yr</div>
+    </div>
+    <div class="metric-box">
+      <div class="metric-label">Analyst Target</div>
+      <div class="metric-value">$363</div>
+      <div class="metric-sub">Consensus (MarketBeat)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🔢</span> Five-Method Valuation Matrix</div>
+    <div class="section-label" style="margin-bottom:20px;">All values in USD per share — based on Apr 2026 analysis. Current price: $303</div>
+
+    <div class="val-method">
+      <div class="val-name">
+        <strong>1. Normalized P/E (Base Recovery)</strong><br>
+        <span style="font-size:11px; color:var(--text-muted);">FY2027E EPS $28 × 18× (discounted vs. historical 22×)</span>
+      </div>
+      <div class="val-range">$450–$504</div>
+      <div class="val-weight">30%</div>
+    </div>
+    <div class="val-method">
+      <div class="val-name">
+        <strong>2. DCF — Conservative (7% discount, 3% terminal)</strong><br>
+        <span style="font-size:11px; color:var(--text-muted);">FCF normalization to $20B by FY2027, 2% terminal growth</span>
+      </div>
+      <div class="val-range">$380–$440</div>
+      <div class="val-weight">25%</div>
+    </div>
+    <div class="val-method">
+      <div class="val-name">
+        <strong>3. EV/EBITDA — Peer Comparable</strong><br>
+        <span style="font-size:11px; color:var(--text-muted);">~10–12× normalized EBITDA vs. peers 12–15×</span>
+      </div>
+      <div class="val-range">$350–$420</div>
+      <div class="val-weight">20%</div>
+    </div>
+    <div class="val-method">
+      <div class="val-name">
+        <strong>4. Sum-of-Parts</strong><br>
+        <span style="font-size:11px; color:var(--text-muted);">Optum (standalone at 20×) + UHC (insurance at 12×) + holdco</span>
+      </div>
+      <div class="val-range">$420–$500</div>
+      <div class="val-weight">15%</div>
+    </div>
+    <div class="val-method">
+      <div class="val-name">
+        <strong>5. Dividend Discount Model</strong><br>
+        <span style="font-size:11px; color:var(--text-muted);">Dividend $8.84 growing at 8%, cost of equity 9%</span>
+      </div>
+      <div class="val-range">$300–$380</div>
+      <div class="val-weight">10%</div>
+    </div>
+
+    <div style="border-top: 1px solid var(--border); margin-top: 20px; padding-top: 20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="section-label">Weighted Intrinsic Value Estimate</div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:700; color:var(--gold);">$400 – $465</div>
+          <div style="font-size:12px; color:var(--text-dim); margin-top:4px;">Assumes successful MCR normalization and no structural regulatory change</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="section-label">Current Price vs. IV</div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:22px; color:var(--green-bright);">~35–53% upside</div>
+          <div style="font-size:12px; color:var(--text-dim);">From $303 to midpoint ~$432</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> MoS Entry Zone</div>
+      <table>
+        <tr><td>Bear case (DOJ fine + MCR stays high)</td><td class="mono right red-text">$160–$200</td></tr>
+        <tr><td>Base case IV</td><td class="mono right">$400–$465</td></tr>
+        <tr><td>Bull case (Optum re-rated, MCR 82%)</td><td class="mono right green-text">$520–$600</td></tr>
+        <tr><td style="font-weight:600; color:var(--gold);">MoS Entry Zone (30% discount to base)</td><td class="mono right" style="color:var(--gold); font-weight:600;">$260–$310</td></tr>
+        <tr><td>Current price (Apr 8, 2026)</td><td class="mono right amber-text">$303</td></tr>
+        <tr><td>Morningstar fair value (Oct 2025)</td><td class="mono right text-muted">$197 (seems stale/conservative)</td></tr>
+        <tr><td>Analyst consensus target</td><td class="mono right">$363</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px; color:var(--amber); margin-top:12px; font-style:italic;">⚠ Current price is near top of MoS zone. Entry risk has increased after today's +8% move.</div>
+  </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Scenario Analysis</div>
+      <table>
+        <thead><tr><th>Scenario</th><th>Prob.</th><th>2027 EPS</th><th>Multiple</th><th>Price</th></tr></thead>
+        <tbody>
+          <tr><td class="green-text">Bull — Full recovery</td><td class="mono center">30%</td><td class="mono right">$30</td><td class="mono right">20×</td><td class="mono right green-text">$600</td></tr>
+          <tr><td class="amber-text">Base — Partial recovery</td><td class="mono center">45%</td><td class="mono right">$26</td><td class="mono right">17×</td><td class="mono right amber-text">$442</td></tr>
+          <tr><td>Conservative — Slow grind</td><td class="mono center">15%</td><td class="mono right">$20</td><td class="mono right">14×</td><td class="mono right">$280</td></tr>
+          <tr><td class="red-text">Bear — DOJ penalties + structural</td><td class="mono center">10%</td><td class="mono right">$14</td><td class="mono right">11×</td><td class="mono right red-text">$154</td></tr>
+          <tr style="border-top: 2px solid var(--border)"><td><strong>Expected Value</strong></td><td></td><td></td><td></td><td class="mono right" style="color:var(--gold); font-weight:600;">~$432</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 6: SEGMENTS -->
+<div id="tab-segments" class="tab-content">
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><span class="icon">🏥</span> UnitedHealthcare — Insurance Core</div>
+      <div class="metric-grid" style="grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+        <div class="metric-box"><div class="metric-label">FY2024 Revenue</div><div class="metric-value">$298B</div><div class="metric-sub">75% of total</div></div>
+        <div class="metric-box"><div class="metric-label">Medical Members</div><div class="metric-value">50.1M</div><div class="metric-sub">Domestic</div></div>
+        <div class="metric-box"><div class="metric-label">Q2 2025 Rev</div><div class="metric-value">$86.1B</div><div class="metric-sub">+17% YoY</div></div>
+        <div class="metric-box"><div class="metric-label">Q2 2025 Op Margin</div><div class="metric-value metric-red">2.4%</div><div class="metric-sub">vs. 5.4% prior yr</div></div>
+      </div>
+      <p>UnitedHealthcare serves commercial employers, individuals, Medicare (primarily Medicare Advantage), and Medicaid. The <span class="red-text">Medicare Advantage MCR explosion</span> is the primary driver of profitability collapse. Revenue grew +17% while operating income halved — classic MCR squeeze.</p>
+      <p><strong>2026 Pricing Reset:</strong> UNH is pricing 2026 MA plans at a <strong>10% medical cost trend</strong> (up from 7.5% in 2025) and expects to lose ~1M members as it exits unprofitable contracts. This is painful near-term but necessary for margin recovery.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🔬</span> Optum — The Strategic Engine</div>
+      <div class="metric-grid" style="grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+        <div class="metric-box"><div class="metric-label">Optum Revenue (2024)</div><div class="metric-value">~$106B</div><div class="metric-sub">25% of group</div></div>
+        <div class="metric-box"><div class="metric-label">Optum Margin Profile</div><div class="metric-value metric-green">Higher</div><div class="metric-sub">vs. insurance</div></div>
+        <div class="metric-box"><div class="metric-label">Q2 2025 Optum Rev</div><div class="metric-value metric-red">-7% YoY</div><div class="metric-sub">$25.2B (down)</div></div>
+        <div class="metric-box"><div class="metric-label">Optum Op Margin (Q2 25)</div><div class="metric-value metric-red">2.5%</div><div class="metric-sub">vs. 7.1% prior yr</div></div>
+      </div>
+      <p>Optum stumbled in 2025 — the "insulation" narrative broke down as legacy contract repricing and Medicare funding cuts hit hard. <strong>This is the most concerning aspect</strong> — when even the high-quality Optum segment faces margin compression, the recovery thesis becomes less certain.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📦</span> Optum Sub-Segments</div>
+    <table>
+      <thead><tr><th>Segment</th><th>Business</th><th>Revenue (FY2024E)</th><th>Margin Profile</th><th>2025 Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Optum Rx</strong></td>
+          <td>Pharmacy benefit management; 395M+ scripts/yr</td>
+          <td class="mono">~$120B (incl. drug costs)</td>
+          <td class="amber-text">Thin but high volume</td>
+          <td>Facing PBM transparency legislation pressure</td>
+        </tr>
+        <tr>
+          <td><strong>Optum Health</strong></td>
+          <td>Care delivery; value-based; 90K physicians; primary care</td>
+          <td class="mono">~$25B</td>
+          <td class="amber-text">Improving (value-based)</td>
+          <td class="red-text">Margin hit from legacy contracts; 2.5% Q2 25</td>
+        </tr>
+        <tr>
+          <td><strong>Optum Insight</strong></td>
+          <td>Data analytics, technology; served 150M+ people</td>
+          <td class="mono">~$5B</td>
+          <td class="green-text">High margin (SaaS-like)</td>
+          <td>Resilient; AI investment opportunity</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px; font-size:12px; color:var(--text-dim);">
+      <strong>Optum Insight</strong> is arguably the most strategically valuable asset — a healthcare data and analytics platform serving payers, providers, and pharma. At scale, this resembles a platform business with recurring revenue. It is the segment most likely to benefit from AI investments.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🌍</span> Revenue Mix & Geographic Diversification</div>
+    <div class="two-col">
+      <div>
+        <div class="section-label">Segment Revenue Mix (FY2024 Approximate)</div>
+        <div class="bar-row"><div class="bar-label"><span>UnitedHealthcare</span><span>~$298B (75%)</span></div><div class="bar-track"><div class="bar-fill bar-blue" style="width:75%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Optum Rx</span><span>~$70B (17%)</span></div><div class="bar-track"><div class="bar-fill bar-green" style="width:17%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Optum Health</span><span>~$27B (7%)</span></div><div class="bar-track"><div class="bar-fill bar-amber" style="width:7%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Optum Insight</span><span>~$5B (1%)</span></div><div class="bar-track"><div class="bar-fill bar-gold" style="width:1%"></div></div></div>
+      </div>
+      <div>
+        <div class="section-label">Geographic Exposure</div>
+        <table>
+          <tr><td>United States revenue</td><td class="mono right">~99%</td></tr>
+          <tr><td>International (Latin America)</td><td class="mono right red-text">Exited Brazil 2024</td></tr>
+          <tr><td>Global members</td><td class="mono right">1M outside US</td></tr>
+          <tr><td>US Medicare & Medicaid reliance</td><td class="mono right amber-text">~40% of members</td></tr>
+        </table>
+        <p style="margin-top:8px; font-size:11px; color:var(--text-muted);">High US government program reliance is a two-edged sword: stable volume but high regulatory exposure.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 7: RISKS -->
+<div id="tab-risks" class="tab-content">
+
+  <div class="alert alert-danger">
+    <span>🔴</span>
+    <div><strong>Risk Concentration Alert:</strong> UNH currently has an unusually high density of concurrent material risks — regulatory, operational, leadership, and reputational. This is not a normal risk profile for a defensive healthcare company. Treat accordingly.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">⚠️</span> Risk Registry — Full Assessment</div>
+
+    <div class="risk-item">
+      <div class="risk-dot risk-high"></div>
+      <div>
+        <div class="risk-title">DOJ Criminal Investigation — Medicare Advantage Billing</div>
+        <div class="risk-desc">Active federal criminal investigation into Medicare Advantage billing practices (upcoding / risk score inflation). If proven, could result in fines, operational restrictions, and permanent Medicare rate cuts. UNH confirmed it is cooperating. This is the <strong>single largest tail risk</strong> — potential fines could be in the billions; structural restrictions could be permanent margin headwinds. Timeline: Unknown, possibly 2026-2027.</div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <div class="risk-dot risk-high"></div>
+      <div>
+        <div class="risk-title">MCR Normalization — Non-Recovery Risk</div>
+        <div class="risk-desc">The base recovery thesis assumes MCR returns to ~83-84% by 2027. If utilization stays elevated (aging population, Ozempic-driven demand normalization, post-COVID deferred care), the MCR may settle structurally higher at 86-87%, permanently compressing margins. Management 2026 pricing at 10% cost trend gives some protection, but no guarantee.</div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <div class="risk-dot risk-high"></div>
+      <div>
+        <div class="risk-title">PBM Regulation — Optum Rx Structural Risk</div>
+        <div class="risk-desc">Congressional and FTC pressure on pharmacy benefit managers to disclose spread pricing and rebate arrangements. Proposed transparency legislation could force PBMs to pass through drug cost savings, compressing Optum Rx margins meaningfully. This could permanently impair a key Optum revenue stream.</div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <div class="risk-dot risk-med"></div>
+      <div>
+        <div class="risk-title">Antitrust / Vertical Breakup Risk</div>
+        <div class="risk-desc">Given UNH's scale (148M people touched, 1.3M provider contracts), antitrust regulators could attempt to separate Optum from UnitedHealthcare. While unlikely near-term, a Democratic administration could revisit this. A breakup would likely unlock value (both pieces trade higher separately) but introduces significant execution risk.</div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <div class="risk-dot risk-med"></div>
+      <div>
+        <div class="risk-title">Medicare Advantage Rate & Policy Volatility</div>
+        <div class="risk-desc">CMS can reset MA rates annually. Today's CMS finalization of 2027 MA rate (+~5.06% benchmark, $13B additional) is positive — but the 2025 cuts were a key margin driver of the crisis. One-directional government dependence at scale creates asymmetric policy risk.</div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <div class="risk-dot risk-med"></div>
+      <div>
+        <div class="risk-title">Reputational / Brand Damage</div>
+        <div class="risk-desc">The Thompson murder crystallized public anger at health insurers' coverage denial practices. Political pressure to regulate denial rates, mandatory coverage mandates, and public option alternatives have all gained momentum. Long-term, UNH's ability to operate its current coverage model may face legislative restrictions.</div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <div class="risk-dot risk-med"></div>
+      <div>
+        <div class="risk-title">Change Healthcare Cybersecurity Tail Risk</div>
+        <div class="risk-desc">The Feb 2024 ransomware attack was the largest US healthcare cyberattack (190M records compromised). Litigation from providers and patients is ongoing. Total liability could be $5-15B over time (regulatory fines + lawsuits + remediation). Already cost $9B+ in emergency funding.</div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <div class="risk-dot risk-low"></div>
+      <div>
+        <div class="risk-title">AI Disruption of Healthcare Administration</div>
+        <div class="risk-desc">AI prior authorization, claims processing, and care coordination automation could reduce UNH's competitive advantage in data-driven cost management. Conversely, Optum Insight is positioned to benefit from this disruption as a vendor. Net effect: likely neutral to slightly positive over 5 years.</div>
+      </div>
+    </div>
+
+    <div class="risk-item">
+      <div class="risk-dot risk-low"></div>
+      <div>
+        <div class="risk-title">Leadership / Execution Continuity</div>
+        <div class="risk-desc">Hemsley is 72. His return is a crisis management signal, not a long-term solution. Succession planning clarity will be needed. CFO DeVeydt is new. The bench has been disrupted by the series of departures and the Thompson murder.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 8: CATALYSTS -->
+<div id="tab-catalysts" class="tab-content">
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><span class="icon">🚀</span> Near-Term Catalysts (0–12 Months)</div>
+
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div>
+          <div class="risk-title">✅ CMS 2027 MA Rate Finalization (TODAY)</div>
+          <div class="risk-desc">CMS finalized a ~5.06% benchmark rate increase for 2027 Medicare Advantage, adding ~$13B to insurer payments. UNH jumped 8% intraday. This directly improves 2026 pricing viability and gives management a visible path to margin recovery.</div>
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div>
+          <div class="risk-title">Apr 21, 2026 — Q1 2026 Earnings</div>
+          <div class="risk-desc">The most critical near-term event. First quarter under new pricing regime. Markets need to see MCR stabilization at or below 85%. Any positive MCR signal could re-rate the stock 15-20%. Negative surprise = significant downside.</div>
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <div class="risk-dot risk-med"></div>
+        <div>
+          <div class="risk-title">DOJ Investigation Resolution</div>
+          <div class="risk-desc">Settlement announcement (if any) would remove uncertainty. Markets are likely pricing in $5-10B fine. Settlement below that range = positive re-rating. Formal indictment or ongoing probe = continued overhang.</div>
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div>
+          <div class="risk-title">Berkshire Hathaway Position Update</div>
+          <div class="risk-desc">13-F filing will reveal if Berkshire added to its Aug 2025 position. Any increase would be a strong buy signal. Buffett's initial $1.6B purchase validated the recovery thesis.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🌱</span> Medium-Term Catalysts (12–36 Months)</div>
+
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div>
+          <div class="risk-title">MCR Normalization to 83-84% Range</div>
+          <div class="risk-desc">The primary thesis driver. If 2026 MA plans priced at 10% MCR trend succeed, and utilization normalizes post-2025 surge, UNH could print $26-28 EPS in 2026-27. At 18×, that's $468-504.</div>
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div>
+          <div class="risk-title">Optum Insight AI Monetization</div>
+          <div class="risk-desc">Optum Insight holds the largest clinical dataset in the US. AI-enabled drug discovery partnerships, population health analytics, and administrative automation represent significant untapped revenue potential. Management referenced AI investments in recent communications.</div>
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <div class="risk-dot risk-med"></div>
+        <div>
+          <div class="risk-title">Value-Based Care Scale — Optum Health</div>
+          <div class="risk-desc">Target of 650K new value-based patients in 2025 alone. As Optum Health scales, it becomes a high-quality earnings stream uncorrelated with MCR. This transition from fee-for-service to value-based improves earnings quality over time.</div>
+        </div>
+      </div>
+
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div>
+          <div class="risk-title">Demographics — Aging Population Tailwind</div>
+          <div class="risk-desc">Baby Boomers aging into Medicare creates a structural volume tailwind for MA plans. Despite near-term MCR challenges, long-term membership growth outlook remains intact. UNH is best positioned to capture this.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📅</span> Key Events Calendar</div>
+    <table>
+      <thead><tr><th>Date</th><th>Event</th><th>Significance for Thesis</th></tr></thead>
+      <tbody>
+        <tr><td class="mono green-text">Apr 8, 2026</td><td>CMS 2027 MA Rate Finalization</td><td class="green-text">✅ Positive — $13B boost to insurer payments; thesis catalyst</td></tr>
+        <tr><td class="mono amber-text">Apr 21, 2026</td><td>Q1 2026 Earnings Report</td><td class="amber-text">🔑 Critical — MCR data will make or break recovery thesis</td></tr>
+        <tr><td class="mono">Q2 2026</td><td>Mid-year DOJ investigation update</td><td class="amber-text">⚠️ Key risk event — any escalation = downside</td></tr>
+        <tr><td class="mono">Jul 2026</td><td>Q2 2026 Earnings</td><td>Second data point on MCR normalization</td></tr>
+        <tr><td class="mono">Nov 2026</td><td>US Midterm political environment</td><td class="amber-text">Policy risk for MA program future</td></tr>
+        <tr><td class="mono">Jan 2027</td><td>Full FY2026 results</td><td class="green-text">Verdict on recovery thesis</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- TAB 9: AI OVERLAY -->
+<div id="tab-ai" class="tab-content">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🤖</span> AI Overlay Assessment: ⚪ NEUTRAL</div>
+    <p>UnitedHealth Group does not qualify as a Category F AI-native company nor as a Category C AI Widener per the strict framework thresholds. It is assessed as <strong>⚪ NEUTRAL</strong> — AI will impact its business but is not the primary value driver in the 3-year investment horizon.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="section-label">AI as a Value Driver — Current Assessment</div>
+        <div class="bar-row"><div class="bar-label"><span>Optum Insight data analytics capability</span><span>Strong</span></div><div class="bar-track"><div class="bar-fill bar-green" style="width:75%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>AI prior authorization (administrative)</span><span>Moderate</span></div><div class="bar-track"><div class="bar-fill bar-amber" style="width:55%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>Predictive analytics for MCR management</span><span>Moderate</span></div><div class="bar-track"><div class="bar-fill bar-amber" style="width:60%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>AI drug discovery / R&D pipeline</span><span>Early</span></div><div class="bar-track"><div class="bar-fill bar-blue" style="width:25%"></div></div></div>
+        <div class="bar-row"><div class="bar-label"><span>GenAI clinical documentation (Optum)</span><span>Early</span></div><div class="bar-track"><div class="bar-fill bar-blue" style="width:30%"></div></div></div>
+      </div>
+      <div>
+        <div class="section-label">AI Risk Factors</div>
+        <div class="risk-item">
+          <div class="risk-dot risk-med"></div>
+          <div><div class="risk-title">AI Prior Authorization Scrutiny</div><div class="risk-desc">UNH uses AI for coverage decision automation. Congressional scrutiny of AI-driven denials is intensifying. Regulatory restrictions on AI in claims processing could increase costs.</div></div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-dot risk-low"></div>
+          <div><div class="risk-title">Competitive AI moats may narrow</div><div class="risk-desc">As healthcare analytics commoditize, Optum Insight's data advantage must be continuously refreshed. Pure-play healthcare AI companies like Tempus and Flatiron are well-funded competitors.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💡</span> Optum Insight — The Latent AI Asset</div>
+    <p><strong>Optum Insight</strong> is the most AI-relevant asset in the UNH portfolio. It manages clinical and claims data for 148M+ people, processes 90% of US medical claims, and provides analytics to payers, providers, and pharma companies.</p>
+    <div class="two-col">
+      <div>
+        <p><strong>Why this matters for AI:</strong></p>
+        <ul style="font-size:12px; color:var(--text-dim); margin-left:16px; line-height:2.2;">
+          <li>Proprietary longitudinal health records at population scale</li>
+          <li>Real-world evidence data for drug companies</li>
+          <li>AI-powered care management → lower medical costs (thesis link)</li>
+          <li>SaaS-like contracts with hospitals (sticky, recurring)</li>
+          <li>Natural language processing for clinical notes</li>
+        </ul>
+      </div>
+      <div>
+        <p><strong>Potential AI upside scenarios:</strong></p>
+        <ul style="font-size:12px; color:var(--text-dim); margin-left:16px; line-height:2.2;">
+          <li>If Optum Insight monetizes data via pharma partnerships at scale → $10-15B segment</li>
+          <li>AI-driven MCR reduction of 100-200bps → $4-8B annual earnings uplift</li>
+          <li>Population health AI sold to government/payers → SaaS multiple expansion</li>
+          <li>Spin-off or IPO of Optum Insight could realize "hidden" value</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-positive" style="margin-top:16px;">
+      <span>💡</span>
+      <div>AI upside from Optum Insight is real but unquantified and unlikely to materially change the investment thesis within 24 months. The near-term thesis is pure MCR recovery and DOJ resolution, not AI optionality. AI is a bonus in the bull case.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 10: VERDICT -->
+<div id="tab-verdict" class="tab-content">
+
+  <div class="two-col" style="margin-bottom:20px;">
+    <div class="card" style="text-align:center; padding:40px;">
+      <div class="verdict-label">Framework Verdict</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:52px; font-weight:700; color:var(--amber); margin:8px 0;">WATCH</div>
+      <div class="stars" style="font-size:28px; margin-bottom:16px;">★★★★☆</div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-muted);">Category C · ⚪ AI Neutral · NYSE:UNH</div>
+      <div style="margin-top:24px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim);">
+        MoS Entry Zone: <span style="color:var(--gold); font-size:16px; font-weight:600;">$260–$310</span>
+      </div>
+      <div style="font-size:11px; color:var(--amber); margin-top:8px;">Current $303 is near the top of entry zone after today's move</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">📋</span> Pillar Summary Card</div>
+      <table>
+        <thead><tr><th>Pillar</th><th class="center">Grade</th><th>Key Finding</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Moat</strong></td>
+            <td class="center" style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700;" class="grade-aminus">A−</td>
+            <td style="font-size:12px;">Widest moat in managed care. Vertical integration + scale + data = durable. NOT fundamentally damaged by 2025 crisis.</td>
+          </tr>
+          <tr>
+            <td><strong>Quality</strong></td>
+            <td class="center" style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:var(--text);">B−</td>
+            <td style="font-size:12px;">FY2024 was B+ historically; 2025 MCR crisis degraded to B−. Cash generation remains strong. Leverage manageable. MCR is the key watch metric.</td>
+          </tr>
+          <tr>
+            <td><strong>Management</strong></td>
+            <td class="center" style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:var(--text);">B−</td>
+            <td style="font-size:12px;">Hemsley return is a positive signal; historical capital allocation was excellent. But the 2025 MCR failure and DOJ probe are material governance concerns.</td>
+          </tr>
+          <tr>
+            <td><strong>Valuation</strong></td>
+            <td class="center" style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:#5dade2;">B+</td>
+            <td style="font-size:12px;">At 11-12× normalized earnings, significantly below historical 22-24× and peers. Attractive IF earnings recover. Risk: "value trap" if MCR doesn't normalize.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="thesis-box">
+    "UnitedHealth Group is America's most powerful healthcare platform in crisis — not collapse. The moat is structurally intact, Hemsley has returned to fix what Witty broke, and the CMS rate environment is turning favorable. This is a fallen quality compounder that Buffett is already buying at lower prices. The thesis is simple: if you believe MCR normalizes to 84% by 2027 and the DOJ investigation settles without existential penalties, UNH at $260-310 is worth $432 in 2 years. The 3.1% dividend provides income while you wait."
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title"><span class="icon">✅</span> The Bull Case — Why This Works</div>
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div><div class="risk-title">Moat is intact and unreplicable</div><div class="risk-desc">50M members + Optum + 1.3M providers + data = nobody can build this in a decade. The 2025 crisis was operational, not structural.</div></div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div><div class="risk-title">Hemsley knows exactly what to fix</div><div class="risk-desc">He built the vertical integration model. He knows where the MCR bodies are buried. Conservative 10% 2026 MA pricing is the right playbook.</div></div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div><div class="risk-title">Buffett buying at lower prices</div><div class="risk-desc">Berkshire bought at ~$265-285. That's a margin of safety signal from the world's most credible value investor.</div></div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-dot risk-low"></div>
+        <div><div class="risk-title">CMS 2027 rate hike removes key overhang</div><div class="risk-desc">Today's finalization provides pricing certainty for management. The 5%+ MA rate increase improves 2026 plan profitability.</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">❌</span> The Bear Case — Why This Fails</div>
+      <div class="risk-item">
+        <div class="risk-dot risk-high"></div>
+        <div><div class="risk-title">DOJ investigation escalates</div><div class="risk-desc">Criminal indictment or massive fine ($20B+) would fundamentally change the business and potentially require divestiture of Optum from UHC.</div></div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-dot risk-high"></div>
+        <div><div class="risk-title">MCR stays structurally elevated</div><div class="risk-desc">If the 88-89% MCR is the new normal (aging population permanently drives higher utilization), UNH's business model is impaired and EPS is structurally $16-20 forever.</div></div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-dot risk-med"></div>
+        <div><div class="risk-title">Political environment worsens</div><div class="risk-desc">Medicare Advantage could be structurally restricted by legislation. Public option debate could intensify. Denial rate regulations could permanently increase claim costs.</div></div>
+      </div>
+      <div class="risk-item">
+        <div class="risk-dot risk-med"></div>
+        <div><div class="risk-title">Optum doesn't recover</div><div class="risk-desc">If Optum Health's legacy contract issues linger into 2026 and margins stay depressed, the valuation support from the "hidden Optum gem" thesis evaporates.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📋</span> Investment Conditions & Monitoring Checklist</div>
+    <table>
+      <thead><tr><th>Condition</th><th>Current Status</th><th>Buy Trigger If...</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>MCR trajectory</td>
+          <td class="amber-text">Crisis (88-89%)</td>
+          <td>Q1 2026 MCR ≤85%, showing directional improvement</td>
+        </tr>
+        <tr>
+          <td>DOJ investigation</td>
+          <td class="red-text">Active — cooperating</td>
+          <td>Settlement announced below $10B with no operational restrictions</td>
+        </tr>
+        <tr>
+          <td>CMS policy</td>
+          <td class="green-text">Today's 2027 rate hike ✅</td>
+          <td>Already triggered — positive signal received</td>
+        </tr>
+        <tr>
+          <td>EPS guidance reinstatement</td>
+          <td class="red-text">Withdrawn (no 2025 guide)</td>
+          <td>Management provides credible FY2026 guide with MCR range</td>
+        </tr>
+        <tr>
+          <td>Optum Health margin</td>
+          <td class="red-text">2.5% (Q2 2025)</td>
+          <td>Optum Health margin recovering to 5%+ by H2 2026</td>
+        </tr>
+        <tr>
+          <td>Berkshire position</td>
+          <td class="green-text">5M shares Aug 2025</td>
+          <td>Increase in next 13-F = strong validation</td>
+        </tr>
+        <tr>
+          <td>Stock price</td>
+          <td class="amber-text">$303 (top of MoS zone)</td>
+          <td>Re-entry opportunity on any pullback to $250-270</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💬</span> One-Line Thesis</div>
+    <div style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; line-height:1.5; color:var(--text); padding:8px 0;">
+      America's most powerful healthcare platform at ~11× normalized earnings — an operational crisis, not a moat crisis — where Berkshire is already a buyer and the recovery playbook is credible.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📝</span> Framework Comparison Notes</div>
+    <p><strong>Category C — Established Diversified Platform:</strong> UNH is not an AI-native company (Category F) nor a commodity (Category E). Its Optum data/analytics assets give it AI optionality but the core value driver is insurance economics and vertical integration. Category C is appropriate.</p>
+    <p><strong>Buffett Applicability:</strong> This is exactly the type of situation the Buffett framework was designed for — a high-quality, moated business with temporarily depressed earnings. The key question is whether "temporarily" is the right word. Duration of MCR normalization is the key uncertainty.</p>
+    <p><strong>vs. Other Portfolio Names:</strong> Higher quality moat than BAJAJHFL/SHADOWFAX; lower quality certainty than MELI (which has cleaner trajectory). More comparable to GOOGL/MSFT at a "depressed quality" moment — but with more existential risk from the DOJ probe.</p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="report-footer">
+  <div>Buffett Quality-Value Series v5.0 · NYSE:UNH · Analysis Date: April 8, 2026</div>
+  <div>Data: UNH 8-K filings, CNBC, Trefis, Benzinga, KoalaGains, Finimize, TradingView</div>
+  <div>Not investment advice · File: unh_qv_report.html</div>
+</div>
+
+<script>
+function switchTab(id, btn) {
+  // Hide all tabs
+  var tabs = document.querySelectorAll('.tab-content');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].classList.remove('active');
+  }
+  // Remove active from buttons
+  var btns = document.querySelectorAll('.tab-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.remove('active');
+  }
+  // Show selected tab
+  var target = document.getElementById('tab-' + id);
+  if (target && target.offsetParent !== null || true) {
+    target.classList.add('active');
+  }
+  if (btn) btn.classList.add('active');
+  
+  // Scroll to top of content
+  window.scrollTo({ top: document.querySelector('.tabs-nav').offsetTop - 10, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

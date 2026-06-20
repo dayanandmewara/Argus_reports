@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGIL — Buffett Quality-Value Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --onyx:#0B0B14; --onyx2:#111120; --onyx3:#181828;
+  --gold:#C8A84C; --gold-lt:#E8C96A; --gold-dim:#9A7E3A;
+  --diamond:#F0EDFF; --diamond2:#C8C4E0; --plat:#8A9AB8;
+  --gem-blue:#5B8DDE; --gem-purple:#8B6BC8; --gem-teal:#3BA8A8;
+  --pass:#2ECC71; --warn:#F4C542; --fail:#E74C3C; --marginal:#F39C12;
+  --card:#151525; --card2:#1E1E35; --border:#2A2A48;
+  --font-disp:'Playfair Display',serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--onyx);color:var(--diamond);font-family:var(--font-body);font-size:16px;line-height:1.65;}
+
+/* ── HERO ───────────────────────────────────────────── */
+.hero{background:linear-gradient(135deg,#0A0A18 0%,#12102A 50%,#0D0D1E 100%);padding:36px 28px 28px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;max-height:220px;}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(200,168,76,0.07) 0%,transparent 70%);}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.hero-name{font-family:var(--font-disp);font-size:clamp(26px,4vw,42px);font-weight:800;color:var(--diamond);letter-spacing:-0.5px;line-height:1.1;}
+.hero-sub{font-size:13px;color:var(--plat);margin-top:4px;font-family:var(--font-mono);}
+.hero-badges{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;}
+.badge{padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:0.5px;font-family:var(--font-mono);text-transform:uppercase;}
+.badge-cat{background:rgba(91,141,222,0.18);border:1px solid var(--gem-blue);color:var(--gem-blue);}
+.badge-ai-neutral{background:rgba(138,154,184,0.15);border:1px solid var(--plat);color:var(--plat);}
+.badge-macro{background:rgba(200,168,76,0.15);border:1px solid var(--gold-dim);color:var(--gold);}
+.badge-verdict{background:rgba(244,197,66,0.15);border:1px solid var(--warn);color:var(--warn);font-size:12px;}
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.pill{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:12px;font-family:var(--font-mono);}
+.pill span{color:var(--gold);}
+.hero-lede{margin-top:12px;font-size:14px;color:var(--diamond2);max-width:720px;line-height:1.55;}
+
+/* ── TAB BAR ─────────────────────────────────────────── */
+#tab-bar{position:sticky;top:0;z-index:100;background:var(--onyx2);border-bottom:2px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;}
+#tab-bar::-webkit-scrollbar{display:none;}
+.tab-btn{padding:13px 16px;font-size:12px;font-family:var(--font-mono);font-weight:500;color:var(--plat);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s;letter-spacing:0.3px;}
+.tab-btn:hover{color:var(--diamond);background:rgba(255,255,255,0.03);}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-content{display:none;padding:28px 24px;max-width:1100px;margin:0 auto;}
+.tab-content.active{display:block;}
+
+/* ── LAYOUT HELPERS ──────────────────────────────────── */
+.section-title{font-family:var(--font-disp);font-size:20px;font-weight:700;color:var(--diamond);margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.section-sub{font-size:13px;color:var(--plat);margin-bottom:20px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:680px){.grid-3,.grid-4{grid-template-columns:1fr 1fr;} .grid-2{grid-template-columns:1fr;}}
+@media(max-width:600px){.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+/* ── METRIC CARD ─────────────────────────────────────── */
+.mcard{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;border-left:4px solid var(--gold);}
+.mcard.blue{border-left-color:var(--gem-blue);}
+.mcard.teal{border-left-color:var(--gem-teal);}
+.mcard.warn{border-left-color:var(--warn);}
+.mcard.fail{border-left-color:var(--fail);}
+.mcard.pass{border-left-color:var(--pass);}
+.mcard-label{font-size:11px;color:var(--plat);text-transform:uppercase;letter-spacing:0.8px;font-family:var(--font-mono);}
+.mcard-value{font-size:22px;font-weight:700;color:var(--gold);margin:4px 0;font-family:var(--font-disp);}
+.mcard-sub{font-size:12px;color:var(--plat);}
+
+/* ── DATA TABLE ──────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0;}
+th{background:var(--card2);color:var(--plat);font-family:var(--font-mono);font-size:11px;letter-spacing:0.5px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:9px 12px;border-bottom:1px solid rgba(42,42,72,0.5);color:var(--diamond2);font-family:var(--font-mono);font-size:12px;}
+tr:hover td{background:rgba(200,168,76,0.04);}
+.num{text-align:right;font-family:var(--font-mono);}
+.t-pass{color:var(--pass);}
+.t-warn{color:var(--warn);}
+.t-fail{color:var(--fail);}
+.t-gold{color:var(--gold);}
+
+/* ── SCORECARD CARDS ──────────────────────────────────── */
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}
+@media(max-width:680px){.sc-grid{grid-template-columns:1fr 1fr;}}
+.sc-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.sc-label{font-size:11px;color:var(--plat);font-family:var(--font-mono);letter-spacing:0.5px;text-transform:uppercase;}
+.sc-result{font-size:14px;font-weight:600;margin-top:4px;}
+.sc-note{font-size:11px;color:var(--plat);margin-top:4px;}
+.pass-r{color:var(--pass);}
+.warn-r{color:var(--warn);}
+.fail-r{color:var(--fail);}
+
+/* ── MOAT STARS ─────────────────────────────────────── */
+.moat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:600px){.moat-grid{grid-template-columns:1fr;}}
+.moat-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;border-top:3px solid var(--gold);}
+.moat-card.blue{border-top-color:var(--gem-blue);}
+.moat-card.teal{border-top-color:var(--gem-teal);}
+.moat-card.purple{border-top-color:var(--gem-purple);}
+.moat-name{font-size:13px;font-weight:600;color:var(--diamond);}
+.moat-stars{font-size:16px;color:var(--gold);margin:4px 0;}
+.moat-desc{font-size:12px;color:var(--plat);line-height:1.5;}
+
+/* ── FLYWHEEL BOX ────────────────────────────────────── */
+.flywheel-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin:20px 0;border-left:4px solid var(--plat);}
+.flywheel-title{font-family:var(--font-disp);font-size:17px;color:var(--plat);margin-bottom:12px;}
+.flywheel-badge{display:inline-block;background:rgba(138,154,184,0.15);border:1px solid var(--plat);color:var(--plat);padding:4px 14px;border-radius:20px;font-size:12px;font-family:var(--font-mono);margin-bottom:12px;}
+.flycheck{display:flex;gap:10px;align-items:flex-start;margin:8px 0;font-size:13px;color:var(--diamond2);}
+.flycheck .icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+
+/* ── VERDICT BOX ─────────────────────────────────────── */
+.verdict-box{background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:2px solid var(--warn);border-radius:12px;padding:28px;margin:20px 0;}
+.verdict-title{font-family:var(--font-disp);font-size:28px;font-weight:800;color:var(--warn);margin-bottom:8px;}
+.verdict-quote{font-style:italic;font-size:14px;color:var(--plat);border-left:3px solid var(--gold-dim);padding-left:16px;margin:16px 0;}
+.upgrade-list{list-style:none;margin:16px 0;}
+.upgrade-item{display:flex;gap:12px;align-items:flex-start;margin:10px 0;}
+.upg-num{background:var(--gold);color:var(--onyx);width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.upg-text{font-size:13px;color:var(--diamond2);}
+
+/* ── PILLAR GRADES ───────────────────────────────────── */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0;}
+@media(max-width:680px){.pillar-grid{grid-template-columns:1fr 1fr;}}
+.pillar-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
+.pillar-name{font-size:11px;color:var(--plat);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.7px;}
+.pillar-grade{font-family:var(--font-disp);font-size:36px;font-weight:800;color:var(--gold);margin:6px 0;}
+.pillar-note{font-size:11px;color:var(--plat);}
+
+/* ── TECH SECTION ────────────────────────────────────── */
+.price-ladder{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--font-mono);font-size:12px;}
+.pl-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(42,42,72,0.5);}
+.pl-label{color:var(--plat);}
+.pl-price{font-weight:600;}
+.pl-current{color:var(--gem-teal);}
+.pl-resist{color:var(--fail);}
+.pl-support{color:var(--pass);}
+
+/* ── CONFIDENCE PILLS ────────────────────────────────── */
+.cv{display:inline-block;font-size:10px;font-family:var(--font-mono);padding:2px 6px;border-radius:3px;vertical-align:middle;margin-left:4px;}
+.cv-v{background:rgba(46,204,113,0.15);color:var(--pass);border:1px solid rgba(46,204,113,0.3);}
+.cv-e{background:rgba(244,197,66,0.15);color:var(--warn);border:1px solid rgba(244,197,66,0.3);}
+.cv-u{background:rgba(231,76,60,0.12);color:#E88;border:1px solid rgba(231,76,60,0.3);}
+
+/* ── INFO PROSE ──────────────────────────────────────── */
+.prose{font-size:14px;color:var(--diamond2);line-height:1.7;margin:12px 0;}
+.prose strong{color:var(--diamond);font-weight:600;}
+.prose em{color:var(--gold);}
+
+/* ── AI SECTION ──────────────────────────────────────── */
+.ai-dash{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;}
+.ai-badge{padding:8px 16px;border-radius:6px;font-size:12px;font-family:var(--font-mono);font-weight:600;border:1px solid;}
+.ai-neutral-b{background:rgba(138,154,184,0.12);border-color:var(--plat);color:var(--plat);}
+.ai-cosmetic-b{background:rgba(138,154,184,0.08);border-color:rgba(138,154,184,0.4);color:var(--plat);}
+.ai-phase-b{background:rgba(91,141,222,0.12);border-color:var(--gem-blue);color:var(--gem-blue);}
+.ai-cat-b{background:rgba(91,141,222,0.12);border-color:var(--gem-blue);color:var(--gem-blue);}
+
+.ai-score-bar{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin:16px 0;}
+.score-track{background:var(--onyx3);border-radius:100px;height:12px;margin:8px 0;overflow:hidden;}
+.score-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gem-blue),var(--gem-purple));}
+.score-label{display:flex;justify-content:space-between;font-size:11px;color:var(--plat);font-family:var(--font-mono);}
+
+/* ── SHAREHOLDING ────────────────────────────────────── */
+.sh-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;margin:12px 0;}
+.sh-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--font-mono);color:rgba(255,255,255,0.85);font-weight:600;}
+
+/* ── OE BOX ──────────────────────────────────────────── */
+.oe-box{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:18px;margin:14px 0;font-family:var(--font-mono);font-size:12px;}
+.oe-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(42,42,72,0.4);}
+.oe-total{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;font-weight:700;}
+
+/* ── SCROLLBAR ───────────────────────────────────────── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--onyx2);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-name">International Gemological Institute</div>
+      <div class="hero-sub">NSE: IGIL &nbsp;|&nbsp; BSE: 544311 &nbsp;|&nbsp; CY Year-End &nbsp;|&nbsp; Promoted by Blackstone (BCP Asia II Topco)</div>
+    </div>
+    <div class="hero-badges">
+      <span class="badge badge-cat">CAT C</span>
+      <span class="badge badge-ai-neutral">⚪ AI NEUTRAL</span>
+      <span class="badge badge-macro">🌐 MACRO TAILWIND</span>
+      <span class="badge badge-verdict">WATCH ★★★</span>
+    </div>
+  </div>
+  <div class="hero-pills">
+    <div class="pill">CMP <span>₹365</span></div>
+    <div class="pill">Base IV <span>~₹387</span></div>
+    <div class="pill">Entry Zone <span>₹295–340</span></div>
+    <div class="pill">Mkt Cap <span>~₹15,800 Cr</span></div>
+    <div class="pill">P/E <span>~29.7x</span></div>
+    <div class="pill">ROE <span>43%</span></div>
+    <div class="pill">OPM <span>60%</span></div>
+  </div>
+  <div class="hero-lede">World's largest independent diamond &amp; gemstone certification business. Asset-light oligopoly with 50-year brand trust, >60% EBITDA margins, and a structural tailwind from India's organised jewellery formalisation. Priced near fair value — a high-quality compounder to add on meaningful corrections.</div>
+</div>
+
+<!-- ══════════ TAB BAR ══════════ -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+  <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intelligence</button>
+</div>
+
+<!-- ══════════ TAB 0: OVERVIEW ══════════ -->
+<div class="tab-content active" id="t0">
+  <div class="section-title">Business Overview</div>
+  <p class="prose">International Gemological Institute (IGI) is the world's largest <strong>independent certification and accreditation services provider</strong> for natural diamonds, laboratory-grown diamonds (LGDs), studded jewellery, and coloured stones. Founded in Belgium in 1975, IGI pioneered LGD certification globally in 2005 — first-mover advantage it still dominates. The India entity (IGIL, now renamed "International Gemological Institute Limited" from April 7, 2026) operates the IGI brand exclusively in <strong>India and Turkey</strong>, and listed on NSE/BSE on December 20, 2024.</p>
+  <p class="prose">Blackstone acquired IGI globally in 2023 through BCP Asia II Topco Pte. Ltd. A critical restructuring is underway: <strong>IGIL is acquiring 100% of IGI Belgium and IGI Netherlands</strong>, effectively making the India-listed entity the sole global operator of the IGI network — 31 laboratories across 10 countries + 18 Schools of Gemology across 6 countries.</p>
+
+  <div class="section-title">Why This Stock Is in the Series</div>
+  <p class="prose">IGIL is a rare <strong>certification oligopoly</strong> — the Testing, Inspection &amp; Certification (TIC) sector in gemology has only three credible global players (IGI, GIA, HRD). GIA is a non-profit with limited commercial orientation; HRD is unlisted. IGIL is the <strong>only pure-play listed gemological certification company</strong> globally. It operates with >57% EBITDA margins, >90% FCF conversion, >40% ROE, and competes in a market where trust is the product — an <em>irreplaceable intangible moat</em>.</p>
+  <p class="prose">The lab-grown diamond (LGD) explosion is the defining secular growth driver — volumes surging even as per-carat prices fall, creating a high-volume, low-but-stable per-report revenue model. India's BIS IS 19469:2025 standard mandating LGD disclosure is a <strong>regulatory tailwind</strong> for certification demand. The upcoming global consolidation (Belgium + Netherlands) transforms IGIL into a true multinational from its current India+Turkey footprint.</p>
+
+  <div class="section-title">Key Framework Adaptations</div>
+  <div class="grid-3">
+    <div class="mcard blue">
+      <div class="mcard-label">Category</div>
+      <div class="mcard-value" style="font-size:16px;color:var(--gem-blue)">C — Quality Compounder</div>
+      <div class="mcard-sub">ROIC 54%, OPM 60%, stable recurring model. Not FMCG Cat A; not hyper-growth Cat B. Mature premium brand.</div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">WACC</div>
+      <div class="mcard-value">12.0%</div>
+      <div class="mcard-sub">India mid-cap quality. Terminal g ≤ Nominal GDP × 0.72 (~8.3%)</div>
+    </div>
+    <div class="mcard teal">
+      <div class="mcard-label">Special Consideration</div>
+      <div class="mcard-value" style="font-size:14px;color:var(--gem-teal)">Calendar Year End</div>
+      <div class="mcard-sub">All figures are CY2022–CY2025 (January–December). Not fiscal year April–March.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Business Model — How IGI Makes Money</div>
+  <div class="grid-2">
+    <div class="mcard pass">
+      <div class="mcard-label">Primary Revenue Stream</div>
+      <div class="mcard-value" style="font-size:15px;">Certification Reports</div>
+      <div class="mcard-sub">Fee per certification report for natural diamonds, LGDs, coloured stones, studded jewellery. Volume × fee = revenue. LGD volumes growing 40-50%/yr; per-report fees declining as LGD commodity prices fall.</div>
+    </div>
+    <div class="mcard blue">
+      <div class="mcard-label">Secondary Revenue Stream</div>
+      <div class="mcard-value" style="font-size:15px;">Education &amp; Accreditation</div>
+      <div class="mcard-sub">18 Schools of Gemology. IGI Diploma programs. Recurring enrollment revenue. Adds brand stickiness — graduates naturally use IGI reports in their careers.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Snapshot Metrics <span class="cv cv-v">VERIFIED</span></div>
+  <div class="grid-4">
+    <div class="mcard"><div class="mcard-label">Revenue CY2025</div><div class="mcard-value">₹1,229 Cr</div><div class="mcard-sub">+17% YoY</div></div>
+    <div class="mcard"><div class="mcard-label">Net Profit CY2025</div><div class="mcard-value">₹532 Cr</div><div class="mcard-sub">+24% YoY</div></div>
+    <div class="mcard"><div class="mcard-label">OCF CY2025</div><div class="mcard-value">₹502 Cr</div><div class="mcard-sub">FCF conversion 94%</div></div>
+    <div class="mcard"><div class="mcard-label">3-Yr Rev CAGR</div><div class="mcard-value">36%</div><div class="mcard-sub">Organic + acquisition</div></div>
+    <div class="mcard"><div class="mcard-label">ROCE</div><div class="mcard-value">54%</div><div class="mcard-sub">Well above WACC 12%</div></div>
+    <div class="mcard"><div class="mcard-label">OPM</div><div class="mcard-value">60%</div><div class="mcard-sub">Recovering from 57% in CY24</div></div>
+    <div class="mcard"><div class="mcard-label">Market Cap</div><div class="mcard-value">~₹15,800 Cr</div><div class="mcard-sub">Nifty Smallcap 100</div></div>
+    <div class="mcard"><div class="mcard-label">Book Value</div><div class="mcard-value">₹32.6/sh</div><div class="mcard-sub">P/B 11.2× — rich but justified by asset-light model</div></div>
+  </div>
+</div>
+
+<!-- ══════════ TAB 1: MACRO & GROWTH ══════════ -->
+<div class="tab-content" id="t1">
+  <div class="section-title">Layer 1 — Macro Anchor <span class="cv cv-v">VERIFIED</span></div>
+  <div class="grid-4">
+    <div class="mcard"><div class="mcard-label">India 10-yr G-Sec</div><div class="mcard-value">~6.9%</div><div class="mcard-sub">Elevated on oil/geopolitics (Apr 2026)</div></div>
+    <div class="mcard"><div class="mcard-label">RBI Repo Rate</div><div class="mcard-value">5.25%</div><div class="mcard-sub">Held, Neutral stance (Apr 8, 2026)</div></div>
+    <div class="mcard"><div class="mcard-label">India Real GDP FY27</div><div class="mcard-value">6.9%</div><div class="mcard-sub">RBI estimate (H2 rebound to 7-7.2%)</div></div>
+    <div class="mcard warn"><div class="mcard-label">India CPI FY27</div><div class="mcard-value">4.6%</div><div class="mcard-sub">Above 4% target; upside risks from oil</div></div>
+    <div class="mcard teal"><div class="mcard-label">Nominal GDP Growth</div><div class="mcard-value">~11.5%</div><div class="mcard-sub">Real 6.9% + CPI 4.6% = TERMINAL CEILING</div></div>
+    <div class="mcard"><div class="mcard-label">Nifty 50 P/E</div><div class="mcard-value">~22-23×</div><div class="mcard-sub">EY ~4.4% vs G-Sec 6.9% = tight ERP</div></div>
+  </div>
+
+  <div class="section-title">Macro Cycle Dashboard</div>
+  <table>
+    <tr><th>Cycle Dimension</th><th>Current Status</th><th>Impact on IGIL</th></tr>
+    <tr><td>Urban Consumption</td><td class="t-warn">Moderating</td><td>Diamond jewellery is semi-discretionary — some headwind</td></tr>
+    <tr><td>Rural Income</td><td class="t-warn">Neutral–Stress</td><td>Limited direct impact (IGIL certifies for urban/export trade)</td></tr>
+    <tr><td>Input Cost Cycle</td><td class="t-pass">Benign</td><td>No raw material exposure; people costs are the only input</td></tr>
+    <tr><td>Interest Rate Cycle</td><td class="t-pass">Easing/Neutral</td><td>Lower cost of working capital for jewellers → more volume</td></tr>
+    <tr><td>Government Policy</td><td class="t-pass">Tailwind</td><td>BIS IS 19469:2025 mandates LGD disclosure → mandatory certification</td></tr>
+    <tr><td>AI Adoption Cycle</td><td class="t-warn">Neutral</td><td>AI in diamond grading is nascent; trust barrier protects IGI short-term</td></tr>
+  </table>
+  <p class="prose"><strong>Macro Composite for IGIL: TAILWIND (moderate).</strong> The regulatory push for mandatory certification, India's organised jewellery formalisation, and LGD volume explosion are structural positives that outweigh luxury demand softness.</p>
+
+  <div class="section-title">Layer 2 — Sector Growth Derivation <span class="cv cv-e">ESTIMATED</span></div>
+  <p class="prose">IGIL operates in the <strong>Testing, Inspection &amp; Certification (TIC) — Gemological</strong> sub-sector. The broader Indian jewellery market was valued at ~₹5,300 billion in 2023, growing at ~16% CAGR post-COVID. Diamond-studded jewellery grew at 12% CAGR to ~₹780 billion. India's organised jewellery share is rising from 35% to 40-50%, all of which requires certification.</p>
+  <table>
+    <tr><th>Scenario</th><th>India Jewellery Market CAGR</th><th>LGD Volume Growth</th><th>Certification Sector Growth</th><th>IGIL Addressable</th></tr>
+    <tr><td>Stress</td><td>8-10%</td><td>25-30%</td><td>12-14%</td><td>10-12%</td></tr>
+    <tr><td><strong>Base</strong></td><td>12-15%</td><td>35-45%</td><td>15-18%</td><td>15-17%</td></tr>
+    <tr><td>Acceleration</td><td>18-20%</td><td>50-60%</td><td>20-25%</td><td>20-22%</td></tr>
+  </table>
+  <p class="prose"><em>AI impact on sector: NEUTRAL — AI screening of melee diamonds is emerging (Sarine Technologies) but core trust-based grading certification remains human-led. No meaningful sector growth change from AI over 5 years.</em></p>
+
+  <div class="section-title">Layer 3 — Company Alpha Sources</div>
+  <table>
+    <tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr>
+    <tr><td>Market Share Gain</td><td class="t-pass">Active</td><td>+2–3%</td><td>+1–2%</td><td>IGI is #1 in LGD globally; gaining from GIA's slower LGD certification pace</td></tr>
+    <tr><td>Volume × Fee Dynamic</td><td class="t-warn">Mixed</td><td>+1–2%</td><td>+0–1%</td><td>Volume growth partially offset by per-unit fee compression in LGDs</td></tr>
+    <tr><td>Geographic Expansion</td><td class="t-pass">Active</td><td>+3–5%</td><td>+2–4%</td><td>Belgium + Netherlands acquisition transforms India+Turkey → global network; massive revenue uplift</td></tr>
+    <tr><td>Category Expansion</td><td class="t-warn">Potential</td><td>+0–1%</td><td>+1–3%</td><td>Coloured stones, studded jewellery grading less penetrated; expansion possible</td></tr>
+    <tr><td>Pricing Power</td><td class="t-pass">Partial</td><td>+0–1%</td><td>+0–1%</td><td>Natural diamond reports can command fee stability; LGD under fee pressure</td></tr>
+    <tr><td>AI Alpha (6a+6b+6c)</td><td class="t-warn">Cosmetic</td><td>+0%</td><td>+0–1%</td><td>AI screening tools could marginally improve throughput but no flywheel; NEUTRAL</td></tr>
+    <tr><td colspan="2"><strong>Total Alpha</strong></td><td><strong>+6–12%</strong></td><td><strong>+4–11%</strong></td><td>Largely from global consolidation</td></tr>
+  </table>
+
+  <div class="section-title">Growth Rate Summary Table</div>
+  <table>
+    <tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr>
+    <tr><td>Macro State</td><td>GDP ~5.5%</td><td>GDP ~6.9%</td><td>GDP ~8%+</td></tr>
+    <tr><td>India Jewellery Sector</td><td>8-10%</td><td>12-15%</td><td>18-20%</td></tr>
+    <tr><td>LGD Volume Growth</td><td>20-25%</td><td>35-45%</td><td>50-60%</td></tr>
+    <tr><td>Company Alpha (incl. global)</td><td>+4%</td><td>+6–12%</td><td>+10–15%</td></tr>
+    <tr><td>AI Alpha</td><td>0%</td><td>0–1%</td><td>+1%</td></tr>
+    <tr><td class="t-gold"><strong>Stage 1 FCF CAGR (5yr)</strong></td><td class="t-fail">10%</td><td class="t-warn">15%</td><td class="t-pass">18%</td></tr>
+    <tr><td>Stage 2 FCF CAGR (5yr)</td><td>8%</td><td>10%</td><td>13%</td></tr>
+    <tr><td>Terminal Growth</td><td>6.0%</td><td>7.5%</td><td>8.5%</td></tr>
+    <tr><td>Margin Direction</td><td>Compress (LGD mix)</td><td>Stable/Recover 60-63%</td><td>Expand 65-68%</td></tr>
+    <tr><td>Key Risk</td><td>LGD fee collapse + luxury slowdown</td><td>GIA competitive response</td><td>Overheating / integration risk</td></tr>
+  </table>
+  <p class="prose"><em>Sensitivity: A 1% change in terminal growth changes IV by ~₹35-40/share. A 1% change in Stage 1 FCF CAGR changes IV by ~₹15-20/share.</em></p>
+</div>
+
+<!-- ══════════ TAB 2: FINANCIALS ══════════ -->
+<div class="tab-content" id="t2">
+  <div class="section-title">Revenue &amp; Profitability Trend <span class="cv cv-v">VERIFIED</span></div>
+  <table>
+    <tr><th>₹ Crore</th><th>CY2022</th><th>CY2023</th><th>CY2024</th><th>CY2025</th><th>Growth</th></tr>
+    <tr><td>Revenue</td><td class="num">491</td><td class="num">639</td><td class="num">1,053</td><td class="num t-gold">1,229</td><td class="t-pass">+17% YoY</td></tr>
+    <tr><td>EBITDA</td><td class="num">335</td><td class="num">450</td><td class="num">600</td><td class="num t-gold">737</td><td class="t-pass">+23% YoY</td></tr>
+    <tr><td>OPM %</td><td class="num">68%</td><td class="num t-pass">71%</td><td class="num t-warn">57%</td><td class="num t-warn">60%</td><td>Recovering</td></tr>
+    <tr><td>Net Profit</td><td class="num">242</td><td class="num">325</td><td class="num">427</td><td class="num t-gold">532</td><td class="t-pass">+24% YoY</td></tr>
+    <tr><td>Net Margin %</td><td class="num">49%</td><td class="num">51%</td><td class="num">41%</td><td class="num">43%</td><td>Stable</td></tr>
+    <tr><td>EPS (₹)</td><td class="num">—</td><td class="num">—</td><td class="num">9.89</td><td class="num t-gold">12.30</td><td class="t-pass">+24%</td></tr>
+    <tr><td>OCF</td><td class="num">194</td><td class="num">303</td><td class="num">393</td><td class="num t-gold">502</td><td class="t-pass">+28%</td></tr>
+    <tr><td>FCF Conversion</td><td class="num">80%</td><td class="num t-pass">93%</td><td class="num t-pass">92%</td><td class="num t-pass">94%</td><td class="t-pass">CLEAN</td></tr>
+  </table>
+  <p class="prose" style="color:var(--plat);font-size:12px;"><em>Note: CY2024 margin compression from 71% → 57% reflects integration of acquired Belgium/Netherlands operations and IPO-related costs. Recovery to 60% in CY2025 shows structural margins intact.</em></p>
+
+  <div class="section-title">ROE &amp; ROCE Track <span class="cv cv-v">VERIFIED</span></div>
+  <table>
+    <tr><th>Metric</th><th>CY2022</th><th>CY2023</th><th>CY2024</th><th>CY2025</th></tr>
+    <tr><td>ROE</td><td class="num">—</td><td class="num t-pass">~64%</td><td class="num t-pass">~40%</td><td class="num t-pass">43%</td></tr>
+    <tr><td>ROCE</td><td class="num">—</td><td class="num t-pass">99%</td><td class="num t-pass">68%</td><td class="num t-pass">54%</td></tr>
+    <tr><td>Net Debt (₹Cr)</td><td class="num">~−160</td><td class="num t-pass">~−270</td><td class="num t-warn">+145 (post-acq.)</td><td class="num t-warn">+143</td></tr>
+  </table>
+
+  <div class="section-title">Financial Fortress Scorecard</div>
+  <div class="sc-grid">
+    <div class="sc-card"><div class="sc-label">ROE ≥15% (5yr)</div><div class="sc-result pass-r">✓ PASS</div><div class="sc-note">3yr avg 52.5%. Post-acquisition still 43%.</div></div>
+    <div class="sc-card"><div class="sc-label">ROIC > WACC</div><div class="sc-result pass-r">✓ PASS</div><div class="sc-note">ROCE 54% vs WACC 12%. Exceptional spread.</div></div>
+    <div class="sc-card"><div class="sc-label">Net Cash Preferred</div><div class="sc-result warn-r">~ MARGINAL</div><div class="sc-note">Net debt ₹143 Cr post-acquisition. Manageable.</div></div>
+    <div class="sc-card"><div class="sc-label">Net Profit Margin ≥15%</div><div class="sc-result pass-r">✓ PASS</div><div class="sc-note">Net margin 43%. Exceptional for any sector.</div></div>
+    <div class="sc-card"><div class="sc-label">FCF Conversion ≥80%</div><div class="sc-result pass-r">✓ PASS</div><div class="sc-note">90-94% for 3 consecutive years. Best-in-class.</div></div>
+    <div class="sc-card"><div class="sc-label">Revenue CAGR ≥ Sector</div><div class="sc-result pass-r">✓ PASS</div><div class="sc-note">3yr 36% vs sector 12-15%. Outperforming.</div></div>
+    <div class="sc-card"><div class="sc-label">Capital-Light Model</div><div class="sc-result pass-r">✓ PASS</div><div class="sc-note">Fixed assets only ₹410 Cr vs revenue ₹1,229 Cr. Pure people+instrument business.</div></div>
+    <div class="sc-card"><div class="sc-label">Predictable Revenue</div><div class="sc-result pass-r">✓ PASS</div><div class="sc-note">Volume-based recurring model. Jewellers must certify. Non-negotiable demand.</div></div>
+    <div class="sc-card"><div class="sc-label">Pricing Power</div><div class="sc-result warn-r">~ MARGINAL</div><div class="sc-note">Natural diamond: pricing power intact. LGD: fee compression as prices fall. Mixed.</div></div>
+  </div>
+  <p class="prose"><strong>Financial Fortress Grade: B+</strong> — Outstanding profitability and FCF conversion, slightly tempered by LGD fee pressure and modest net debt from acquisition. Balance sheet expected to de-lever within 1-2 years from strong OCF.</p>
+
+  <div class="section-title">Owner Earnings Calculation <span class="cv cv-v">VERIFIED</span></div>
+  <div class="oe-box">
+    <div class="oe-row"><span>Net Income (CY2025)</span><span class="t-gold">₹532 Cr</span></div>
+    <div class="oe-row"><span>+ Depreciation &amp; Amortisation</span><span>₹43 Cr</span></div>
+    <div class="oe-row"><span>− Maintenance CapEx (est. 25% of total D&amp;A)</span><span class="t-fail">−₹35 Cr</span></div>
+    <div class="oe-row"><span>± Working Capital Changes</span><span class="t-warn">−₹30 Cr (WC days rising)</span></div>
+    <div class="oe-total"><span><strong>Conservative Owner Earnings</strong></span><span class="t-gold"><strong>≈ ₹510 Cr</strong></span></div>
+    <div class="oe-total"><span><strong>Base Owner Earnings</strong></span><span class="t-gold"><strong>≈ ₹530 Cr</strong></span></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--plat);">OE exceeds reported net income due to low maintenance capex requirement (asset-light model). OCF of ₹502 Cr supports these estimates. Growth capex (labs expansion) excluded.</div>
+  </div>
+
+  <div class="section-title">Earnings Quality — O'Glove Deep-Dive</div>
+  <div class="sc-grid">
+    <div class="sc-card"><div class="sc-label">Test 1 — FCF Conversion (5yr)</div><div class="sc-result pass-r">✓ PASS</div><div class="sc-note">80% → 93% → 92% → 94%. Consistently ≥80%. Best-in-class quality.</div></div>
+    <div class="sc-card"><div class="sc-label">Test 2 — DSO Trend (3yr)</div><div class="sc-result warn-r">⚠ MARGINAL→FAIL</div><div class="sc-note">Debtor days: 47→62→57→70. +23% YoY spike in CY2025. Rising faster than revenue growth. Monitor closely Q1 2026.</div></div>
+    <div class="sc-card"><div class="sc-label">Test 3 — Inventory Days</div><div class="sc-result pass-r">✓ N/A</div><div class="sc-note">Pure services business. No inventory. Test not applicable — automatically PASS for TIC model.</div></div>
+    <div class="sc-card"><div class="sc-label">Test 4 — Accounting Policy Stability</div><div class="sc-result warn-r">~ MARGINAL</div><div class="sc-note">CY2024 consolidation of Belgium/Netherlands changes comparability. Working capital days jumped from 33→113. Not revenue recognition manipulation — structural.</div></div>
+    <div class="sc-card"><div class="sc-label">Test 5 — Gross Margin Consistency</div><div class="sc-result warn-r">~ MARGINAL</div><div class="sc-note">OPM: 68%→71%→57%→60%. 14-point drop in CY2024 from acquisition integration. Recovery underway. Watch for return to 65%+ as scale benefits kick in.</div></div>
+  </div>
+  <div style="background:rgba(244,197,66,0.08);border:1px solid rgba(244,197,66,0.3);border-radius:8px;padding:14px;margin:12px 0;">
+    <strong style="color:var(--warn);">Overall Earnings Quality: ACCEPTABLE</strong>
+    <p style="font-size:13px;color:var(--diamond2);margin-top:6px;">FCF conversion is exceptional and structural. DSO rise warrants monitoring but doesn't indicate revenue fabrication — more likely reflects BNPL terms extended to large jeweller clients. No MoS widening required at this stage, but a repeat of DSO deterioration in CY2026 would downgrade to SUSPECT.</p>
+  </div>
+</div>
+
+<!-- ══════════ TAB 3: MOAT ══════════ -->
+<div class="tab-content" id="t3">
+  <div class="section-title">Economic Moat Assessment</div>
+  <div class="moat-grid">
+    <div class="moat-card">
+      <div class="moat-name">Brand Trust &amp; Reputation</div>
+      <div class="moat-stars">★★★★★</div>
+      <div class="moat-desc">50 years of certification heritage. IGI certificate is recognized globally by jewellers, retailers, and consumers. Trust is the product — switching to an unknown lab destroys transaction confidence. When a diamond is worth ₹5-50 lakhs, the buyer demands an IGI/GIA/HRD certificate. This is existential moat.</div>
+    </div>
+    <div class="moat-card blue">
+      <div class="moat-name">Oligopoly Structure (Efficient Scale)</div>
+      <div class="moat-stars">★★★★½</div>
+      <div class="moat-desc">Only 3 globally credible independent labs: IGI (commercial leader), GIA (non-profit, US-centric), HRD (Belgium, unlisted). New entrants require 20-30 years to build comparable reputation. Capital alone cannot replicate trust. Natural oligopoly with extraordinarily high barriers to credibility.</div>
+    </div>
+    <div class="moat-card teal">
+      <div class="moat-name">First-Mover in Lab-Grown Diamonds</div>
+      <div class="moat-stars">★★★★</div>
+      <div class="moat-desc">IGI was first globally to certify LGDs (2005). Established LGD grading standards and protocols. Retailers and manufacturers default to IGI for LGD certification due to familiarity and process standardization. GIA only recently launched LGD reports — 18 years behind.</div>
+    </div>
+    <div class="moat-card purple">
+      <div class="moat-name">Regulatory Anchoring (India)</div>
+      <div class="moat-stars">★★★½</div>
+      <div class="moat-desc">BIS IS 19469:2025 mandates disclosure of LGD origin at point of sale. This creates statutory demand for certified reports. IGI's accreditation under BIS framework positions it as the de-facto mandatory standard for India's ₹780 billion diamond jewellery market.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">Switching Cost (Jeweller Ecosystem)</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">Jewellers who have built supply chains, retail presentation, and customer trust on IGI certificates face real switching costs. End consumers often specifically request IGI. Retailer-level switching requires consumer re-education — costly and risky. Not absolute but meaningful.</div>
+    </div>
+    <div class="moat-card blue">
+      <div class="moat-name">Global Network Effects</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">31 labs across 10 countries means global buyers (from Surat to New York to Antwerp) accept the same IGI standard. This cross-border recognition creates a network effect — more labs = more geographies = more acceptance = more labs. Post Belgium/Netherlands acquisition, this intensifies significantly.</div>
+    </div>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">🔮 Data Flywheel Assessment</div>
+    <div class="flywheel-badge">⚪ AI COSMETIC — Score 0/10</div>
+    <div class="flycheck"><span class="icon">✗</span><span><strong>Question 1 — Proprietary Training Data:</strong> IGI grading data is proprietary but not used in an AI training loop. Each certificate reflects the gemologist's assessment — the data is stored but not systematically fed back to improve an AI model. Some automated screening tools are used for melee diamonds but these are commodity AI tools, not IGI-proprietary models.</span></div>
+    <div class="flycheck"><span class="icon">✗</span><span><strong>Question 2 — AI Improves with More Data:</strong> No evidence that IGI's grading accuracy, throughput, or quality measurably improves as more certificates are issued. The improvement comes from human gemologist experience and instrument calibration — not an AI model that trains on output data.</span></div>
+    <div class="flycheck"><span class="icon">✗</span><span><strong>Question 3 — Better AI Attracts More Users:</strong> Not applicable. Customers choose IGI for brand trust and global recognition — not because the AI certification is superior to competitors. The moat is institutional/reputational, not algorithmic.</span></div>
+    <p class="prose" style="margin-top:12px;font-size:13px;">Verdict: <strong>Data Flywheel = COSMETIC (0/10).</strong> IGIL's moat is a traditional institutional trust moat — powerful, durable, and defensible — but it is not an AI-compounding moat. This does not reduce its investment value; it simply means the moat category is different. A 50-year brand trust moat can outlast many AI-driven disruptions.</p>
+  </div>
+
+  <div class="section-title">Macro Stress Test on Moat</div>
+  <table>
+    <tr><th>Moat Source</th><th>In Stress</th><th>Rationale</th></tr>
+    <tr><td>Brand Trust</td><td class="t-pass">STRENGTHENS</td><td>In luxury downturns, the value of certified vs uncertified stones widens. Buyers demand more assurance when budgets are tighter.</td></tr>
+    <tr><td>Oligopoly Structure</td><td class="t-pass">HOLDS</td><td>Certification demand persists regardless of macro cycle. Volume may slow but certification remains mandatory for organized retail.</td></tr>
+    <tr><td>LGD First-Mover</td><td class="t-warn">MARGINAL PRESSURE</td><td>LGD prices further compress in stress → per-report fees under pressure, though volume may still grow.</td></tr>
+    <tr><td>Regulatory Anchoring</td><td class="t-pass">STRENGTHENS</td><td>Regulatory compliance is counter-cyclical. BIS compliance requirements don't relax in recession.</td></tr>
+    <tr><td>Switching Costs</td><td class="t-pass">HOLDS</td><td>Switching to an unfamiliar lab in stress creates more risk, not less. Jewellers double down on trusted names.</td></tr>
+  </table>
+
+  <p class="prose"><strong>Overall Moat Grade: B+</strong> — Near-exceptional moat through brand trust and oligopoly structure. Not A-grade because (a) LGD fee compression is a structural headwind to per-unit economics, (b) AI tools (Sarine, others) could commoditize melee screening over 5-7 years, and (c) GIA has the resources to aggressively enter LGD certification globally. The moat is durable but not entirely static.</p>
+</div>
+
+<!-- ══════════ TAB 4: MANAGEMENT ══════════ -->
+<div class="tab-content" id="t4">
+  <div class="section-title">Management Integrity Assessment</div>
+
+  <div class="grid-2">
+    <div>
+      <p class="prose"><strong>Promoter: Blackstone (BCP Asia II Topco Pte. Ltd.)</strong></p>
+      <p class="prose">Blackstone acquired IGI globally in May 2023 and listed the India entity in December 2024. This is a classic PE-backed IPO structure. Blackstone holds 76.55% and has not yet sold down. The listing was a partial exit mechanism — expect gradual promoter stake reduction over 3-5 years via QIPs or block deals.</p>
+
+      <div class="section-title" style="margin-top:20px;">Capital Allocation Track Record</div>
+      <div class="sc-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="sc-card"><div class="sc-label">Acquisition (CY2024)</div><div class="sc-result pass-r">Strategic ✓</div><div class="sc-note">₹1,634 Cr investing outflow = acquiring Belgium + Netherlands. Makes IGIL sole global IGI operator. Excellent capital allocation if integration succeeds.</div></div>
+        <div class="sc-card"><div class="sc-label">Dividend Policy</div><div class="sc-result warn-r">~ Marginal</div><div class="sc-note">₹2.50 interim + ₹2.50 interim = ₹5/share in CY2025 (yield ~1.4%). Low payout (41% of EPS) — reinvestment-oriented. Acceptable for growth company.</div></div>
+        <div class="sc-card"><div class="sc-label">IPO Proceeds Use</div><div class="sc-result warn-r">~ Mixed</div><div class="sc-note">IPO raised ~₹4,225 Cr. Used for Belgium/Netherlands acquisition + Blackstone partial exit. Promoter received secondary proceeds. Monitor for future dilution.</div></div>
+        <div class="sc-card"><div class="sc-label">Debt Management</div><div class="sc-result pass-r">✓ Disciplined</div><div class="sc-note">Net debt ₹143 Cr on ₹502 Cr OCF = covered in <3 months. De-leveraging naturally from strong cash generation.</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">Shareholding Integrity</div>
+      <table>
+        <tr><th>Category</th><th>Holding %</th><th>Signal</th></tr>
+        <tr><td>Promoter (Blackstone)</td><td class="num">76.55%</td><td class="t-warn">PE promoter — exit risk in 3-5yr</td></tr>
+        <tr><td>Pledged Shares</td><td class="num t-pass">0%</td><td class="t-pass">Clean — no pledges</td></tr>
+        <tr><td>FII</td><td class="num">9.1–9.6%</td><td class="t-pass">Healthy; global fund participation</td></tr>
+        <tr><td>DII (incl. MF)</td><td class="num">5.45–5.88%</td><td class="t-warn">Low DII ownership — limited SIP anchor</td></tr>
+        <tr><td>Public / Retail</td><td class="num">6.5–8.5%</td><td class="t-pass">Normal level</td></tr>
+      </table>
+
+      <div class="section-title" style="margin-top:20px;">Red Flags Assessment</div>
+      <div class="sc-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="sc-card"><div class="sc-label">Pledged Shares</div><div class="sc-result pass-r">✓ 0% Pledged</div><div class="sc-note">Clean balance sheet. Blackstone doesn't need to pledge to fund investments.</div></div>
+        <div class="sc-card"><div class="sc-label">Related Party Risk</div><div class="sc-result warn-r">~ Monitor</div><div class="sc-note">PE promoter creates related-party transaction risk (management fees, advisory). Assess in annual filings.</div></div>
+        <div class="sc-card"><div class="sc-label">SEBI / Regulatory</div><div class="sc-result pass-r">✓ Clean</div><div class="sc-note">No adverse SEBI actions or regulatory concerns noted.</div></div>
+        <div class="sc-card"><div class="sc-label">Promoter Exit Risk</div><div class="sc-result warn-r">⚠ Material</div><div class="sc-note">Blackstone PE fund has a finite life. Stake sales expected over 3-5 years. Each block deal will be a technical overhang. Monitor Blackstone fund vintage.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Management Quality Commentary</div>
+  <p class="prose">Key management concern: <strong>investor communication is minimal</strong>. Limited analyst coverage, no forward guidance, and poor IR disclosure for a ₹15,000+ Cr company. The AltG analysis (Nov 2025) noted this opacity as the single biggest deterrent to fair valuation — ironic for a company in the trust business. CEO Blackstone appears to be running IGIL as a financial asset rather than nurturing institutional investor confidence. This is expected to improve as Blackstone prepares for eventual exit (better communication → better exit price).</p>
+
+  <p class="prose"><strong>Management Grade: B</strong> — Blackstone's track record of creating value through operational improvement and eventual profitable exits is well-established globally. Capital allocation through the Belgium/Netherlands acquisition is strategic. Operational management (maintaining 60%+ OPM in a newly acquired structure) shows competence. Docked from B+ for poor IR and inevitable PE-aligned incentives that may not fully align with long-term minority shareholders.</p>
+</div>
+
+<!-- ══════════ TAB 5: VALUATION ══════════ -->
+<div class="tab-content" id="t5">
+  <div class="section-title">Method 1 — DCF (2-Stage) <span class="cv cv-v">VERIFIED inputs</span></div>
+  <p class="prose">Base FCF (CY2025, maintenance capex basis): ₹467 Cr. WACC: 12%. Stage 1: 5 years. Stage 2: 5 years.</p>
+  <table>
+    <tr><th>Year</th><th>Stress FCF (10%)</th><th>PV @12%</th><th>Base FCF (15%)</th><th>PV @12%</th><th>Accel FCF (18%)</th><th>PV @12%</th></tr>
+    <tr><td>Y1</td><td>514</td><td>459</td><td>537</td><td>480</td><td>551</td><td>492</td></tr>
+    <tr><td>Y2</td><td>565</td><td>450</td><td>618</td><td>492</td><td>650</td><td>518</td></tr>
+    <tr><td>Y3</td><td>622</td><td>443</td><td>711</td><td>506</td><td>767</td><td>546</td></tr>
+    <tr><td>Y4</td><td>684</td><td>435</td><td>818</td><td>520</td><td>905</td><td>575</td></tr>
+    <tr><td>Y5</td><td>752</td><td>427</td><td>941</td><td>534</td><td>1,068</td><td>606</td></tr>
+    <tr><td colspan="2"><strong>Stage 1 PV Sum</strong></td><td class="num t-gold">2,214</td><td></td><td class="num t-gold">2,532</td><td></td><td class="num t-gold">2,737</td></tr>
+    <tr><td colspan="2">Stage 2 PV (est.)</td><td class="num">2,050</td><td></td><td class="num">2,530</td><td></td><td class="num">2,800</td></tr>
+    <tr><td colspan="2">Terminal Value PV</td><td class="num t-fail">6,200</td><td></td><td class="num t-warn">11,660</td><td></td><td class="num t-pass">19,700</td></tr>
+    <tr><td colspan="2"><strong>Enterprise Value (₹Cr)</strong></td><td class="num t-fail">10,464</td><td></td><td class="num t-gold">16,722</td><td></td><td class="num t-pass">25,237</td></tr>
+    <tr><td colspan="2"><strong>Equity Value (₹Cr)</strong></td><td class="num t-fail">10,321</td><td></td><td class="num t-gold">16,579</td><td></td><td class="num t-pass">25,094</td></tr>
+    <tr><td colspan="2"><strong>IV Per Share (43.25 Cr shares)</strong></td><td class="num t-fail">₹239</td><td></td><td class="num t-gold">₹383</td><td></td><td class="num t-pass">₹581</td></tr>
+  </table>
+
+  <div class="section-title">DCF Sensitivity Table</div>
+  <table>
+    <tr><th>WACC \ Terminal g</th><th>6.0%</th><th>7.5%</th><th>8.5%</th></tr>
+    <tr><td>11%</td><td>₹425</td><td>₹480</td><td>₹630</td></tr>
+    <tr><td>12%</td><td>₹305</td><td class="t-gold">₹383</td><td>₹485</td></tr>
+    <tr><td>13%</td><td>₹235</td><td>₹292</td><td>₹360</td></tr>
+  </table>
+
+  <div class="section-title">Method 2 — Owner Earnings Capitalisation</div>
+  <p class="prose">OE base = ₹530 Cr. Required return = 12%. Terminal g base = 7.5%. Value = OE/(r−g) = 530/0.045 = ₹11,778 Cr → <strong>₹272/share</strong>. Growth-adjusted (P/E approach at 25× OE): 530 × 25 = ₹13,250 Cr → <strong>₹306/share</strong>. Base IV Method 2: ~₹290–306.</p>
+
+  <div class="section-title">Method 3 — ROIC / EPV</div>
+  <p class="prose">NOPAT = PBT × (1-0.27) = 730 × 0.73 = ₹533 Cr. EPV = NOPAT/WACC = 533/0.12 = ₹4,442 Cr (no-growth floor) → ₹103/share. <em>Growth premium:</em> Economic Profit = (ROIC−WACC) × Invested Capital = (0.54−0.12) × ₹326 Cr = ₹137 Cr/yr. PV of economic profit stream = 137/0.12 × (1 − 1/1.12^10) = ₹774 Cr. Growth premium IV: 4,442 + 774 = ₹5,216 Cr → <strong>₹121/share</strong> (EPV floor, highly conservative, no terminal growth). Base EPV including full terminal: aligns with DCF ~₹383.</p>
+
+  <div class="section-title">Method 4 — P/E Earnings Power</div>
+  <table>
+    <tr><th>P/E Basis</th><th>EPS Used</th><th>P/E Multiple</th><th>Implied IV</th><th>Assessment</th></tr>
+    <tr><td>TTM P/E at current</td><td>₹12.30</td><td>29.7×</td><td>₹365 (current)</td><td class="t-warn">Near fair value</td></tr>
+    <tr><td>Forward P/E (CY2026E)</td><td>~₹14.20</td><td>25×</td><td>₹355</td><td class="t-warn">Fairly priced</td></tr>
+    <tr><td>P/E at 30× (sector comps)</td><td>₹14.20</td><td>30×</td><td>₹426</td><td class="t-pass">16% upside from today</td></tr>
+    <tr><td>Peer TIC Companies (BV, Intertek)</td><td>—</td><td>22–28×</td><td>₹312–₹397</td><td class="t-warn">Range covers current price</td></tr>
+    <tr><td>PEG Ratio check</td><td>—</td><td>PEG=1.9×</td><td>—</td><td class="t-warn">Slightly rich on PEG basis</td></tr>
+  </table>
+
+  <div class="section-title">Method 5 — Earnings Yield vs Bond Yield</div>
+  <table>
+    <tr><th>Metric</th><th>Value</th><th>Signal</th></tr>
+    <tr><td>Earnings Yield (EY = 1/P/E)</td><td>3.37%</td><td class="t-fail">Below G-Sec 6.9% → ERP = −3.5% (negative!)</td></tr>
+    <tr><td>FCF Yield</td><td>3.16% (502 Cr / 15,800 Cr)</td><td class="t-fail">Below bond yield — structural overvaluation signal</td></tr>
+    <tr><td>Dividend Yield</td><td>~1.4%</td><td class="t-fail">Well below G-Sec</td></tr>
+    <tr><td>India 10yr G-Sec</td><td>6.9%</td><td>Risk-free benchmark</td></tr>
+    <tr><td>Equity Risk Premium (ERP)</td><td><strong>−3.5%</strong></td><td class="t-fail">Negative ERP — structurally overvalued unless growth justifies premium</td></tr>
+  </table>
+  <p class="prose"><em>Negative ERP of −3.5% is a yellow flag. However, for companies with ROIC >>WACC and high secular growth, negative ERP can persist in structurally premium markets. IGIL's combination of 54% ROIC and near-monopoly justifies a premium, but the margin of safety is minimal at current prices. The negative ERP does NOT trigger an automatic AVOID — but it does reinforce WATCH over BUY.</em></p>
+
+  <div class="section-title">5-Method Summary Table</div>
+  <table>
+    <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>AI Adjustment</th></tr>
+    <tr><td>1. DCF (2-Stage)</td><td>₹239</td><td>₹383</td><td>₹581</td><td>None (AI NEUTRAL)</td></tr>
+    <tr><td>2. OE Capitalisation</td><td>₹220</td><td>₹306</td><td>₹380</td><td>None</td></tr>
+    <tr><td>3. EPV / ROIC</td><td>₹185</td><td>₹350</td><td>₹500</td><td>None</td></tr>
+    <tr><td>4. P/E Earnings Power</td><td>₹248</td><td>₹400</td><td>₹540</td><td>None</td></tr>
+    <tr><td>5. Earnings Yield</td><td class="t-fail">Overvalued</td><td class="t-warn">Fair (~₹350)</td><td>—</td><td>None</td></tr>
+    <tr><td colspan="2"><strong>Blended Base IV</strong></td><td colspan="2" class="t-gold"><strong>~₹360–390</strong></td><td>AI NEUTRAL = no premium/discount</td></tr>
+  </table>
+  <div style="background:rgba(200,168,76,0.08);border:1px solid rgba(200,168,76,0.3);border-radius:8px;padding:14px;margin:14px 0;">
+    <strong style="color:var(--gold);">Blended Base IV: ~₹387/share. Entry Zone (15% MoS): ₹295–340.</strong>
+    <p style="font-size:13px;color:var(--diamond2);margin-top:6px;">At current ₹365, the stock trades at a 6% discount to blended base IV — below the minimum 15% MoS threshold. The stock is fairly priced, not cheap. A correction to ₹295-340 would represent the ideal entry, offering the full margin of safety.</p>
+  </div>
+</div>
+
+<!-- ══════════ TAB 6: VERDICT ══════════ -->
+<div class="tab-content" id="t6">
+  <div class="pillar-grid">
+    <div class="pillar-card"><div class="pillar-name">Moat</div><div class="pillar-grade">B+</div><div class="pillar-note">Near-exceptional brand trust + oligopoly. Not A due to LGD fee pressure + AI melee screening threat in 7-10yr.</div></div>
+    <div class="pillar-card"><div class="pillar-name">Financials</div><div class="pillar-grade">B+</div><div class="pillar-note">54% ROIC, 94% FCF conversion, 43% net margin. DSO rising and OPM below historical peak. B+ not A.</div></div>
+    <div class="pillar-card"><div class="pillar-name">Management</div><div class="pillar-grade">B</div><div class="pillar-note">Blackstone credibility + strategic acquisition excellence. PE exit risk and poor IR discipline cap grade at B.</div></div>
+    <div class="pillar-card"><div class="pillar-name">Valuation</div><div class="pillar-grade">C+</div><div class="pillar-note">Fair priced at ₹365. Negative ERP −3.5%. No meaningful margin of safety at current price. Requires correction.</div></div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-title">WATCH ★★★</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+      <span class="badge badge-cat">CAT C</span>
+      <span class="badge badge-ai-neutral">⚪ AI NEUTRAL</span>
+      <span class="badge badge-macro">FLYWHEEL: COSMETIC</span>
+    </div>
+    <div class="verdict-quote">"Price is what you pay. Value is what you get. Here, you're paying fair value — not getting a bargain." — Buffett-inspired framework assessment</div>
+    <p class="prose">IGIL is <strong>exceptional business quality at a fair price</strong> — not exceptional quality at a great price. The world's largest diamond certification oligopoly, with near-monopoly economics in lab-grown diamond certification, a 50-year trust moat, and 60%+ EBITDA margins deserves a place on every quality investor's watchlist. At ₹365, the stock offers only ~6% upside to blended base IV of ₹387 — far below the 15-20% margin of safety required for a BUY recommendation.</p>
+    <p class="prose" style="margin-top:10px;">Key investment risks to monitor: (1) LGD per-report fee compression accelerates faster than volume growth; (2) Blackstone executes block deals that create technical overhang; (3) GIA enters LGD aggressively with competitive pricing; (4) DSO deterioration continues (70→80+ days would be a red flag).</p>
+  </div>
+
+  <div class="section-title">Upgrade Conditions (WATCH → BUY)</div>
+  <ul class="upgrade-list">
+    <li class="upgrade-item"><div class="upg-num">1</div><div class="upg-text"><strong>Price corrects to ₹295–325</strong> (15-20% MoS from base IV of ₹387). This is the primary trigger — most likely from broader market correction or Blackstone block deal creating temporary overhang.</div></li>
+    <li class="upgrade-item"><div class="upg-num">2</div><div class="upg-text"><strong>DSO stabilises or falls below 60 days</strong> for 2 consecutive quarters (from current 70 days). Indicates receivable quality is intact and not becoming a cash flow concern.</div></li>
+    <li class="upgrade-item"><div class="upg-num">3</div><div class="upg-text"><strong>OPM recovers to ≥65%</strong> for 2 consecutive quarters. Confirms Belgium/Netherlands integration delivering scale benefits and structural margin recovery.</div></li>
+    <li class="upgrade-item"><div class="upg-num">4</div><div class="upg-text"><strong>Belgium + Netherlands consolidation completes</strong> with first clean full-year consolidated result showing revenue >₹1,800 Cr — confirming global network synergies materialising.</div></li>
+    <li class="upgrade-item"><div class="upg-num">5</div><div class="upg-text"><strong>DII accumulation increases from 5.45% → 7%+</strong> over 2 quarters, indicating domestic institutional confidence is building. Mutual fund entry at scale provides structural demand.</div></li>
+  </ul>
+
+  <div class="section-title">Series Context</div>
+  <table>
+    <tr><th>#</th><th>Ticker</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th></tr>
+    <tr><td>—</td><td class="t-gold">IGIL</td><td>C</td><td>⚪</td><td>B+</td><td>B+</td><td>B</td><td>C+</td><td class="t-warn">WATCH★★★</td></tr>
+    <tr><td>—</td><td>UJJIVANSFB</td><td>D</td><td>🟢</td><td>B</td><td>B−</td><td>B</td><td>B−</td><td>WATCH★★★</td></tr>
+    <tr><td>—</td><td>WIPRO</td><td>C</td><td>🔴</td><td>B</td><td>B+</td><td>B</td><td>C</td><td>WATCH★★</td></tr>
+    <tr><td>—</td><td>JIOFIN</td><td>B</td><td>🟢</td><td>B+</td><td>B−</td><td>B</td><td>C+</td><td>WATCH★★★</td></tr>
+    <tr><td>—</td><td>PLTR</td><td>F</td><td>🌀</td><td>B+</td><td>A−</td><td>B+</td><td>D+</td><td>WATCH★★★★</td></tr>
+    <tr><td>—</td><td>GOOGL</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>A−</td><td>B+</td><td>WATCH★★★★</td></tr>
+    <tr><td>—</td><td>META</td><td>B</td><td>🟢</td><td>—</td><td>—</td><td>—</td><td>—</td><td>BUY★★★★½</td></tr>
+    <tr><td>—</td><td>MSFT</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>A</td><td>B+</td><td>WATCH★★★★</td></tr>
+    <tr><td>—</td><td>SOFI</td><td>B</td><td>⚪</td><td>B</td><td>C+</td><td>C</td><td>C</td><td>WATCH★★★</td></tr>
+    <tr><td>—</td><td>ARSSBL</td><td>C</td><td>⚪</td><td>B−</td><td>C+</td><td>C+</td><td>D+</td><td>WATCH★★</td></tr>
+  </table>
+</div>
+
+<!-- ══════════ TAB 7: TECHNICAL ══════════ -->
+<div class="tab-content" id="t7">
+  <div class="section-title">Section A — Price Structure &amp; Multi-Timeframe Trend</div>
+  <table>
+    <tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Signal</th></tr>
+    <tr><td>Weekly</td><td class="t-warn">Recovery Uptrend</td><td>₹282 base → ₹368 recovery</td><td>V-shape recovery from ATL ₹282 (Mar 2025) to current; not yet at 52-week high ₹442</td></tr>
+    <tr><td>Daily</td><td class="t-pass">Uptrend</td><td>₹340 support; ₹400 resistance</td><td>Trading above 50-DMA (~₹320); recently crossed 200-DMA (~₹353)</td></tr>
+    <tr><td>Monthly</td><td class="t-warn">Neutral–Recovery</td><td>Listed Dec 2024 at ₹397; ATH ₹642</td><td>Still 43% below ATH. Long recovery ahead to new highs.</td></tr>
+  </table>
+
+  <div class="section-title">Section B — Price Ladder</div>
+  <div class="price-ladder">
+    <div class="pl-row"><span class="pl-label">All-Time High (Jan 9, 2025)</span><span class="pl-price pl-resist">₹642</span></div>
+    <div class="pl-row"><span class="pl-label">52-Week High</span><span class="pl-price pl-resist">₹442</span></div>
+    <div class="pl-row"><span class="pl-label">Resistance 1 (IPO price zone)</span><span class="pl-price pl-resist">₹397</span></div>
+    <div class="pl-row"><span class="pl-label">Blended Base IV</span><span class="pl-price" style="color:var(--gem-purple);">₹387</span></div>
+    <div class="pl-row"><span class="pl-label">200-DMA (estimated Apr 2026)</span><span class="pl-price" style="color:var(--gem-blue);">~₹353</span></div>
+    <div class="pl-row"><span class="pl-label" style="font-weight:700;">CURRENT PRICE</span><span class="pl-price pl-current" style="font-size:16px;">₹365</span></div>
+    <div class="pl-row"><span class="pl-label">50-DMA (estimated Apr 2026)</span><span class="pl-price" style="color:var(--gem-blue);">~₹320–330</span></div>
+    <div class="pl-row"><span class="pl-label">Entry Zone (BUY trigger) T1</span><span class="pl-price pl-support">₹325–340</span></div>
+    <div class="pl-row"><span class="pl-label">Entry Zone (BUY trigger) T2</span><span class="pl-price pl-support">₹295–310</span></div>
+    <div class="pl-row"><span class="pl-label">52-Week Low</span><span class="pl-price pl-support">₹282–287</span></div>
+    <div class="pl-row"><span class="pl-label">Stop Loss (if long)</span><span class="pl-price" style="color:var(--fail);">₹260 (below ATL)</span></div>
+  </div>
+
+  <div class="section-title">Section C — Moving Average Dashboard <span class="cv cv-e">ESTIMATED</span></div>
+  <table>
+    <tr><th>MA</th><th>Estimated Level</th><th>Price vs MA</th><th>Signal</th></tr>
+    <tr><td>20-EMA</td><td>~₹355</td><td class="t-pass">Above (+3%)</td><td>Short-term momentum positive</td></tr>
+    <tr><td>50-DMA</td><td>~₹320–330</td><td class="t-pass">Above (+12%)</td><td>Medium-term trend recovering</td></tr>
+    <tr><td>100-DMA</td><td>~₹330–340</td><td class="t-pass">Above (+9%)</td><td>Trend improving</td></tr>
+    <tr><td>200-DMA</td><td>~₹350–355</td><td class="t-pass">Just above (~+4%)</td><td class="t-warn">Recently reclaimed 200-DMA — positive but fragile</td></tr>
+  </table>
+  <p class="prose"><em>Status: Price has recently reclaimed the 200-DMA after trading below it for most of Q1 2026. This is a technically constructive development. However, the recovery from ₹282 ATL has been swift (30%+ in ~6 months) and the stock needs consolidation before a sustained move higher is probable. A Golden Cross (50-DMA crossing above 200-DMA) would be a stronger technical signal — not yet formed.</em></p>
+
+  <div class="section-title">Section D — Momentum</div>
+  <table>
+    <tr><th>Indicator</th><th>Reading</th><th>Signal</th></tr>
+    <tr><td>RSI (14-day)</td><td>~52–55 (estimated Apr 2026)</td><td class="t-warn">Mid-range — neutral; neither overbought nor oversold</td></tr>
+    <tr><td>RSI (Weekly)</td><td>~48–52</td><td class="t-warn">Recovering from oversold zone; not yet bullish</td></tr>
+    <tr><td>MACD (Daily)</td><td>Signal cross: bullish</td><td class="t-pass">MACD recently crossed above signal line — positive momentum</td></tr>
+    <tr><td>Volume (3-month)</td><td>Avg ~7-10 lakh shares/day</td><td class="t-warn">Low relative to market cap — thin liquidity; large trades can move price significantly</td></tr>
+    <tr><td>Beta</td><td>1.55</td><td class="t-warn">High beta — more volatile than Nifty; amplifies both up and down moves</td></tr>
+  </table>
+
+  <div class="section-title">Section E — Chart Patterns</div>
+  <p class="prose">The TradingView community has noted a <strong>VCP (Volatility Contraction Pattern)</strong> forming on IGIL — a constructive setup that precedes breakouts in Minervini's methodology. The stock has contracted from a high-volatility base (₹282–₹442 range in 52 weeks) and is consolidating in the ₹330–₹380 band. A breakout above ₹400 (the IPO price zone) on volume >20 lakh shares would confirm the VCP breakout and signal institutional re-entry. This pattern is not yet complete.</p>
+
+  <div class="section-title">Section F — Trade Structure</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px;margin:14px 0;">
+    <table>
+      <tr><th>Trigger</th><th>Condition</th><th>Entry</th><th>Stop Loss</th><th>T1</th><th>T2</th><th>R:R</th></tr>
+      <tr><td>Primary (Correction)</td><td>RSI ≤ 40 + Price ≤ ₹325</td><td>₹310–325</td><td>₹260</td><td>₹383 (IV)</td><td>₹442 (52wk high)</td><td>1 : 1.8 to 1 : 2.5</td></tr>
+      <tr><td>Secondary (Breakout)</td><td>Close >₹400 + Vol >20L</td><td>₹400–410</td><td>₹355 (200-DMA)</td><td>₹450</td><td>₹520</td><td>1 : 2.5+</td></tr>
+      <tr><td>Earnings Catalyst</td><td>Apr 27, 2026 Q1 results</td><td>Post-result entry if OPM ≥63%</td><td>₹330</td><td>₹420</td><td>—</td><td>Situational</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--plat);margin-top:10px;">⚠ Position size: 2-3% of portfolio maximum. Beta 1.55 + low liquidity = elevated volatility risk. PE promoter overhang = event-driven gap risk on block deals.</p>
+  </div>
+
+  <div class="section-title">Section G — Technical Composite Score</div>
+  <table>
+    <tr><th>Dimension</th><th>Score /5</th><th>Comment</th></tr>
+    <tr><td>Price Trend</td><td>3/5</td><td>Uptrend but below ATH; recovering</td></tr>
+    <tr><td>Moving Averages</td><td>4/5</td><td>Recently reclaimed 200-DMA; bullish alignment</td></tr>
+    <tr><td>Volume Quality</td><td>2/5</td><td>Low liquidity; no volume surge confirming move</td></tr>
+    <tr><td>Momentum (RSI/MACD)</td><td>3/5</td><td>Mid-range RSI; MACD bullish but not strong</td></tr>
+    <tr><td>Chart Pattern</td><td>3/5</td><td>VCP forming but not confirmed breakout</td></tr>
+    <tr><td>Entry Timing</td><td>2/5</td><td>Not at primary trigger zone yet (needs ₹295–340)</td></tr>
+    <tr><td><strong>Total</strong></td><td class="t-warn"><strong>17/30 = 57%</strong></td><td>NEUTRAL — Technical conditions not supportive of entry yet</td></tr>
+  </table>
+</div>
+
+<!-- ══════════ TAB 8: SHAREHOLDING ══════════ -->
+<div class="tab-content" id="t8">
+  <div class="section-title">Section A — Promoter Trend</div>
+  <table>
+    <tr><th>Quarter</th><th>Promoter %</th><th>Change</th><th>Signal</th></tr>
+    <tr><td>Dec 2024 (Listing)</td><td>76.55%</td><td>—</td><td>Listed at 76.55%; Blackstone retained majority</td></tr>
+    <tr><td>Mar 2025</td><td>76.55%</td><td>0</td><td class="t-pass">No change; lock-in period</td></tr>
+    <tr><td>Jun 2025</td><td>76.55%</td><td>0</td><td class="t-pass">Stable; no secondary offering yet</td></tr>
+    <tr><td>Sep 2025</td><td>76.55%</td><td>0</td><td class="t-pass">Still holding</td></tr>
+    <tr><td>Dec 2025 (Latest)</td><td class="t-warn">76.55%</td><td>0</td><td class="t-warn">Blackstone has not yet reduced stake — watch for OFS/QIP in CY2026</td></tr>
+  </table>
+  <p class="prose" style="color:var(--plat);font-size:12px;">Pledged shares: <span class="t-pass">0%</span>. Blackstone has no need to pledge — institutional PE investor with adequate liquidity.</p>
+
+  <div class="section-title">Section B — FII + DII Holdings</div>
+  <table>
+    <tr><th>Category</th><th>Sep 2025</th><th>Dec 2025</th><th>Trend</th><th>Signal</th></tr>
+    <tr><td>FII / FPI</td><td>~9%</td><td>9.1–9.6%</td><td class="t-pass">▲ Marginally up</td><td>Global funds building position slowly</td></tr>
+    <tr><td>DII (total)</td><td>~5.5%</td><td>5.45–5.88%</td><td class="t-warn">→ Flat</td><td>Low DII ownership; mutual funds not yet large holders</td></tr>
+    <tr><td>Mutual Funds</td><td>~3%</td><td>~3.5%</td><td class="t-warn">→ Slight up</td><td>Early-stage MF accumulation; watch for SIP anchor build</td></tr>
+    <tr><td>Public / Retail</td><td>6.5%</td><td>6.5–8.5%</td><td class="t-warn">→ Flat</td><td>Retail participation moderate; not overheated</td></tr>
+  </table>
+
+  <div class="section-title">Section C — Free Float &amp; Index Weight</div>
+  <div class="grid-3">
+    <div class="mcard"><div class="mcard-label">Free Float</div><div class="mcard-value">23.45%</div><div class="mcard-sub">~5,370 Cr free float market cap. Narrow float → sharp price moves on demand.</div></div>
+    <div class="mcard warn"><div class="mcard-label">Sectoral FII Limit</div><div class="mcard-value">—</div><div class="mcard-sub">Services sector — no specific FII cap applicable. General FPI limit applies.</div></div>
+    <div class="mcard blue"><div class="mcard-label">Index Memberships</div><div class="mcard-value" style="font-size:13px;">Nifty Smallcap 100</div><div class="mcard-sub">BSE 500, Nifty 500, BSE Smallcap 250. Not in Nifty 50 or Nifty 100.</div></div>
+  </div>
+  <p class="prose"><em>Monthly SIP inflow estimate: At 5.45% DII ownership on ₹15,800 Cr market cap = ~₹860 Cr DII holding. Monthly SIP increment at sector pace: ~₹5-10 Cr/month. Low anchor relative to the market cap — upward re-rating requires large fund houses to actively include IGIL in mandates.</em></p>
+
+  <div class="section-title">Section D — Ownership Composition</div>
+  <div class="sh-bar">
+    <div class="sh-seg" style="width:76.55%;background:linear-gradient(135deg,#4A2060,#7A3090);">76.55% Promoter</div>
+    <div class="sh-seg" style="width:9.3%;background:var(--gem-blue);">9.3% FII</div>
+    <div class="sh-seg" style="width:5.6%;background:var(--gem-teal);">5.6% DII</div>
+    <div class="sh-seg" style="width:8.55%;background:var(--gold-dim);">8.5% Public</div>
+  </div>
+  <p class="prose" style="font-size:12px;margin-top:6px;color:var(--plat);">Ownership reflects a PE-dominated structure typical of a freshly listed company. The ultra-low free float (23.45%) amplifies price volatility — a feature that can work powerfully in both directions. Institutional accumulation at this stage would disproportionately move the price.</p>
+
+  <div class="section-title">Section E — Ownership Momentum &amp; Risk Scores</div>
+  <div class="grid-2">
+    <div class="mcard warn"><div class="mcard-label">Ownership Momentum Score</div><div class="mcard-value">42/100</div><div class="mcard-sub">FII marginally up. DII flat. No strong institutional accumulation signal. Score depressed by PE-promoter exit risk overhang.</div></div>
+    <div class="mcard fail"><div class="mcard-label">Shareholding Risk Score</div><div class="mcard-value">65/100</div><div class="mcard-sub">Key risks: PE promoter exit via block deals (HIGH risk), ultra-narrow free float (MEDIUM risk), low DII anchor (MEDIUM risk). Pledged shares ZERO (GREEN).</div></div>
+  </div>
+</div>
+
+<!-- ══════════ TAB 9: AI INTELLIGENCE ══════════ -->
+<div class="tab-content" id="t9">
+  <div class="section-title">Section A — AI Classification Dashboard</div>
+  <div class="ai-dash">
+    <span class="ai-badge ai-cat-b">📊 Category C — Quality Compounder</span>
+    <span class="ai-badge ai-neutral-b">⚪ AI NEUTRAL</span>
+    <span class="ai-badge ai-cosmetic-b">🔮 Flywheel: COSMETIC (0/10)</span>
+    <span class="ai-badge ai-phase-b">Phase 3–4 — India Organised Jewellery</span>
+  </div>
+
+  <div class="prose"><strong>Adoption Phase Rationale:</strong> The Indian diamond certification sector is in <span style="color:var(--gem-blue);">Phase 3-4 (Mainstream)</span>. Certification is now a standard requirement for organised jewellery retail and is becoming mandatory under BIS standards. This is a mature market need — not an early traction story. For LGD certification specifically, adoption is Phase 2-3 (rapidly scaling from 20% to 50%+ of natural diamond certification volumes). AI in diamond grading is at Phase 1 (early experimentation) — not commercially significant for IGIL's economics today. <span class="cv cv-e">ESTIMATED</span></div>
+
+  <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+  <div class="flywheel-box">
+    <div class="flywheel-title">Flywheel Verdict: COSMETIC (0/10)</div>
+    <div class="flycheck"><span class="icon">✗</span><span><strong>Q1 — Proprietary Training Data:</strong> IGI generates millions of grading reports annually — each containing 4C data, inclusion maps, and grading outcomes. This data is proprietary but <em>not structured as AI training input</em>. There is no evidence that IGI has built a grading AI model trained on historical report data. The data exists; the AI loop does not. Data quality: HIGH uniqueness (competitor labs don't have this data), HIGH volume, but ZERO AI utilisation for flywheel purposes. <span class="cv cv-e">ESTIMATED</span></span></div>
+    <div class="flycheck"><span class="icon">✗</span><span><strong>Q2 — Does AI Improve with More Data:</strong> Core grading uses human gemologists + scientific instruments (spectrometers, microscopes). For melee diamond screening (small stones), some automated AI tools may be in use but these are commodity AI products (e.g., Sarine AI) — not IGI-proprietary. No earnings call disclosure of measurable AI accuracy improvement with scale. IGI improves through human skill development and instrument calibration, not AI compounding.</span></div>
+    <div class="flycheck"><span class="icon">✗</span><span><strong>Q3 — Better AI Attracts More Users:</strong> Not applicable. Jewellers choose IGI for brand trust, global recognition, and regulatory compliance — not because IGI's AI outperforms competitors. The competitive advantage is institutional and reputational, not algorithmic. No AI-driven customer acquisition loop exists.</span></div>
+    <p class="prose" style="margin-top:10px;font-size:13px;"><em>Conclusion: Data Flywheel Score 0/10. COSMETIC. However, this is not a weakness — IGI's trust moat is a different class of durable advantage. A 50-year institutional moat does not need to be an AI flywheel to be valuable.</em></p>
+  </div>
+
+  <div class="section-title">Section C — AI Value Chain Position</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;margin:14px 0;">
+    <div style="display:flex;gap:0;margin:12px 0;overflow-x:auto;">
+      <div style="flex:1;padding:10px;text-align:center;font-size:11px;font-family:var(--font-mono);background:var(--onyx3);border:1px solid var(--border);opacity:0.5;">Level 1<br>Infrastructure</div>
+      <div style="flex:1;padding:10px;text-align:center;font-size:11px;font-family:var(--font-mono);background:var(--onyx3);border:1px solid var(--border);opacity:0.5;">Level 2<br>Foundation Models</div>
+      <div style="flex:1;padding:10px;text-align:center;font-size:11px;font-family:var(--font-mono);background:var(--onyx3);border:1px solid var(--border);opacity:0.5;">Level 3<br>AI Platforms</div>
+      <div style="flex:1;padding:10px;text-align:center;font-size:11px;font-family:var(--font-mono);background:var(--onyx3);border:1px solid var(--border);opacity:0.5;">Level 4<br>Vertical AI Apps</div>
+      <div style="flex:1;padding:10px;text-align:center;font-size:11px;font-family:var(--font-mono);background:rgba(200,168,76,0.15);border:2px solid var(--gold);color:var(--gold);font-weight:700;">Level 5<br>AI-Enabled Incumbent ✓</div>
+    </div>
+    <p class="prose" style="font-size:13px;margin-top:8px;"><strong>IGIL Position: Level 5 — AI-Enabled Incumbent.</strong> IGIL is an existing business with a strong traditional moat (brand trust + oligopoly) that may opportunistically use AI as a tool — not as a structural moat driver. Level 5 companies typically offer the best risk/reward for Indian investors: low AI risk, steady compounding, protected by existing moat. Investment horizon: 7-10 years.</p>
+  </div>
+
+  <div class="section-title">Section D — India AI Opportunity Context</div>
+  <table>
+    <tr><th>India AI Advantage</th><th>Relevant?</th><th>Assessment</th></tr>
+    <tr><td>Data at Scale (UPI/Aadhaar)</td><td class="t-fail">No</td><td>Diamond certification has no connection to India Stack data infrastructure. Payments, identity: not applicable.</td></tr>
+    <tr><td>Language Diversity</td><td class="t-fail">No</td><td>Certification reports are language-agnostic (standardised 4C grading). Vernacular AI not a moat driver here.</td></tr>
+    <tr><td>India Stack as Infrastructure</td><td class="t-warn">Peripheral</td><td>QR code-based digital report verification uses standard internet infrastructure. No India Stack integration.</td></tr>
+    <tr><td>AI Talent Cost Arbitrage</td><td class="t-warn">Potential</td><td>IGIL could develop proprietary diamond grading AI using India's low-cost AI engineering talent. Not currently being pursued at scale. Optionality exists but unrealised.</td></tr>
+  </table>
+
+  <table style="margin-top:16px;">
+    <tr><th>India AI Theme</th><th>Phase</th><th>IGIL Relevance</th></tr>
+    <tr><td>AI in banking/credit</td><td>Phase 3</td><td class="t-fail">None</td></tr>
+    <tr><td>AI in diagnostics/health</td><td>Phase 2</td><td class="t-fail">None</td></tr>
+    <tr><td>AI in logistics/supply</td><td>Phase 2-3</td><td class="t-fail">None</td></tr>
+    <tr><td>AI in retail recommendations</td><td>Phase 4</td><td class="t-warn">Adjacent — jewellers using AI recommendations; IGI certification is a prerequisite for certified products</td></tr>
+    <tr><td>AI in education</td><td>Phase 2</td><td class="t-warn">Adjacent — IGI Schools of Gemology could use AI for curriculum; small TAM</td></tr>
+    <tr><td>Data centres (infra)</td><td>Phase 3-4</td><td class="t-fail">None</td></tr>
+  </table>
+
+  <div class="section-title">Section E — AI Disruption Risk Assessment</div>
+  <p class="prose">The diamond certification business faces a <strong>long-term (7-10 year) AI disruption risk</strong> from automated grading systems. Companies like Sarine Technologies, Assortech, and IBM Research have demonstrated AI-based diamond quality assessment. However, the key barriers to full AI disruption are:</p>
+  <div class="grid-2">
+    <div class="mcard pass"><div class="mcard-label">AI-Resistant Factor 1</div><div class="mcard-value" style="font-size:14px;">Trust is the Product</div><div class="mcard-sub">A diamond certification is a legal and commercial trust document. Buyers want a human-accountable institution to stand behind it. "AI said so" does not replace institutional liability. This is different from AI replacing commodity tasks.</div></div>
+    <div class="mcard blue"><div class="mcard-label">AI-Resistant Factor 2</div><div class="mcard-value" style="font-size:14px;">Regulatory Recognition</div><div class="mcard-sub">BIS standards, trade regulations, and retail compliance frameworks specifically reference accredited labs — not AI tools. Regulatory frameworks change slowly. IGI's accreditation has a regulatory moat that AI cannot simply replicate.</div></div>
+    <div class="mcard teal"><div class="mcard-label">AI-Resistant Factor 3</div><div class="mcard-value" style="font-size:14px;">Consumer Psychology</div><div class="mcard-sub">A ₹20 lakh diamond purchase is one of life's largest expenses. The buyer wants an IGI certificate, not an algorithm's output. Emotional trust in a 50-year brand will outlast several AI cycles in luxury goods.</div></div>
+    <div class="mcard warn"><div class="mcard-label">AI Risk Factor</div><div class="mcard-value" style="font-size:14px;">Melee Screening (7-10yr)</div><div class="mcard-sub">Small accent diamonds (melee) could be screened by AI at scale, reducing the need for manual IGI certification of each stone. This is a real but slow-moving threat. Not imminent. Would affect volume but not the high-value single-stone certification business.</div></div>
+  </div>
+  <p class="prose"><strong>Moat Resilience Score: 7.5/10.</strong> Strong brand trust + regulatory anchoring = AI-resistant for 7-10 years. Long-term adaptation required for melee screening.</p>
+
+  <div class="section-title">Section F — AI Opportunity Score &amp; Portfolio Role</div>
+  <div class="ai-score-bar">
+    <div class="score-label"><span>AI Opportunity Score</span><span>28/100</span></div>
+    <div class="score-track"><div class="score-fill" style="width:28%;"></div></div>
+    <table style="margin-top:12px;">
+      <tr><th>Component</th><th>Score</th><th>Rationale</th></tr>
+      <tr><td>Data Flywheel Strength</td><td>0/20</td><td>COSMETIC — no flywheel exists</td></tr>
+      <tr><td>Adoption Phase Timing</td><td>8/20</td><td>Phase 3-4 for core market — past optimal AI investment window</td></tr>
+      <tr><td>Value Chain Position</td><td>12/20</td><td>Level 5 incumbent — best risk/reward position</td></tr>
+      <tr><td>India Structural Advantage</td><td>3/20</td><td>Minimal India AI advantage applicable to this business</td></tr>
+      <tr><td>AI Threat Resistance</td><td>15/20</td><td>Strong trust moat; AI threat is long-dated (7-10yr)</td></tr>
+      <tr><td><strong>Total</strong></td><td class="t-warn"><strong>28/100</strong></td><td><strong>AI NEUTRAL — standard fundamental framework governs</strong></td></tr>
+    </table>
+  </div>
+  <p class="prose"><strong>Portfolio Role: AI NEUTRAL — Standard Fundamental Framework Governs.</strong> Invest in IGIL on the strength of its oligopoly moat, exceptional FCF conversion, and LGD structural tailwinds — not on any AI thesis. The AI framework neither adds to nor detracts from the investment case. This is a <em>traditional quality compounder</em> in the Buffett sense — a great business at a fair price, waiting for a fair price to become a great price.</p>
+  <p class="prose"><strong>Investment Horizon: 7-10 years</strong> for full realisation of the global network consolidation thesis and India's jewellery formalisation. This is not a 12-month trade.</p>
+
+  <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border);font-size:11px;color:var(--plat);">
+    <strong>Disclaimer:</strong> This report is generated for educational and analytical purposes only. It does not constitute investment advice, a recommendation to buy or sell, or a solicitation for securities. Securities market investments are subject to market risks. Past performance is not indicative of future results. SEBI registration is required for investment advisory services. Please read all related documents carefully before investing. The analyst and/or affiliates may or may not hold positions in IGIL. Data as of April 2026 — verify current prices before making any investment decision.
+    <br><br>
+    <strong>Data Sources:</strong> Screener.in, NSE/BSE, TradingView, Business Standard, AltG Research, PA Wealth, 5paisa, Dhan, Yahoo Finance, company filings (RHP), BIS standards. | <strong>Fonts:</strong> Playfair Display, DM Sans, JetBrains Mono via Google Fonts.
+    <br><br>
+    Buffett Quality-Value Series v5.0 | Report generated April 17, 2026.
+  </div>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+    el.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  var target = document.getElementById(tabId);
+  if (target) {
+    target.style.display = 'block';
+    target.classList.add('active');
+  }
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+
+// Init: show tab 0
+document.getElementById('t0').style.display = 'block';
+</script>
+</body>
+</html>

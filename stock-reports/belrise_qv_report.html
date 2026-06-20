@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELRISE — Buffett Quality-Value Series</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forge: #E8621A;
+  --forge-dim: #B8491000;
+  --midnight: #12161F;
+  --slate: #1C2333;
+  --chrome: #8A9BB0;
+  --chrome-light: #C4D0DE;
+  --cream: #F3EFE8;
+  --white: #FFFFFF;
+  --pass: #2ECC71;
+  --marginal: #F0A500;
+  --fail: #E74C3C;
+  --verified: #27AE60;
+  --estimated: #E67E22;
+  --unverified: #C0392B;
+  --card-bg: #1E2535;
+  --card-bg2: #252D3E;
+  --border: rgba(138,155,176,0.18);
+  --text-primary: #F3EFE8;
+  --text-secondary: #8A9BB0;
+  --text-muted: #6A80A0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--midnight);color:var(--text-primary);font-family:'Lato',sans-serif;font-size:16px;line-height:1.65;}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;}
+code,pre,.mono{font-family:'JetBrains Mono',monospace;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0A0E16 0%,#12161F 50%,#1a1020 100%);padding:48px 32px 36px;position:relative;overflow:hidden;max-height:220px;}
+.hero::before{content:'';position:absolute;top:-60px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(232,98,26,0.12) 0%,transparent 70%);pointer-events:none;}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;max-width:1200px;margin:0 auto;}
+.hero-ticker{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--forge);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;}
+.hero-name{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:var(--cream);line-height:1.1;}
+.hero-sub{font-size:13px;color:var(--chrome);margin-top:6px;letter-spacing:1px;}
+.hero-lede{font-size:13px;color:var(--chrome-light);margin-top:8px;max-width:600px;}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
+.badge-cat{background:rgba(232,98,26,0.15);border:1px solid var(--forge);color:var(--forge);}
+.badge-ai{background:rgba(138,155,176,0.12);border:1px solid var(--chrome);color:var(--chrome-light);}
+.badge-macro{background:rgba(240,165,0,0.12);border:1px solid var(--marginal);color:var(--marginal);}
+.badge-verdict{background:rgba(240,165,0,0.12);border:1px solid var(--marginal);color:var(--marginal);}
+.data-pills{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+.data-pill{background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:6px 12px;text-align:right;}
+.dp-label{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
+.dp-value{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;color:var(--cream);}
+
+/* TAB BAR */
+#tab-bar{position:sticky;top:0;z-index:100;background:var(--slate);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap;}
+.tab-btn{display:inline-block;padding:13px 16px;font-size:12px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;color:var(--chrome);background:none;border:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab-btn:hover{color:var(--cream);background:rgba(255,255,255,0.04);}
+.tab-btn.active{color:var(--forge);border-bottom-color:var(--forge);}
+
+/* CONTENT */
+.tab-content{display:none;max-width:1200px;margin:0 auto;padding:32px 24px;}
+.tab-content.active-tab{display:block;}
+
+/* SECTION TITLES */
+.section-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--cream);margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.section-subtitle{font-size:13px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-bottom:16px;}
+.spacer{height:32px;}
+
+/* CARDS */
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:16px;}
+.card-stripe{border-top:3px solid var(--forge);}
+.card-stripe-pass{border-top:3px solid var(--pass);}
+.card-stripe-warn{border-top:3px solid var(--marginal);}
+.card-stripe-fail{border-top:3px solid var(--fail);}
+.card-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--chrome);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.card-value{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:600;color:var(--cream);}
+.card-note{font-size:12px;color:var(--text-muted);margin-top:6px;}
+
+/* GRIDS */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;}
+.data-table th{background:var(--card-bg2);color:var(--chrome);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+.data-table td{padding:9px 14px;border-bottom:1px solid rgba(138,155,176,0.08);color:var(--chrome-light);font-family:'JetBrains Mono',monospace;font-size:12px;}
+.data-table tr:hover td{background:rgba(232,98,26,0.04);}
+.td-label{color:var(--cream);font-weight:600;}
+
+/* CONFIDENCE LABELS */
+.verified,.est,.unverf{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:0.5px;}
+.verified{background:rgba(46,204,113,0.12);color:var(--verified);border:1px solid rgba(46,204,113,0.3);}
+.est{background:rgba(230,126,34,0.12);color:var(--estimated);border:1px solid rgba(230,126,34,0.3);}
+.unverf{background:rgba(192,57,43,0.12);color:var(--unverified);border:1px solid rgba(192,57,43,0.3);}
+
+/* SCORECARD ITEMS */
+.score-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(138,155,176,0.08);}
+.score-label{font-size:13px;color:var(--chrome-light);}
+.score-badge{padding:4px 12px;border-radius:4px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;}
+.sb-pass{background:rgba(46,204,113,0.15);color:var(--pass);border:1px solid rgba(46,204,113,0.3);}
+.sb-marg{background:rgba(240,165,0,0.15);color:var(--marginal);border:1px solid rgba(240,165,0,0.3);}
+.sb-fail{background:rgba(231,76,60,0.15);color:var(--fail);border:1px solid rgba(231,76,60,0.3);}
+
+/* PILLAR GRADES */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.pillar-card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:center;}
+.pillar-name{font-size:10px;color:var(--chrome);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:8px;}
+.pillar-grade{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:var(--forge);}
+.pillar-desc{font-size:11px;color:var(--text-muted);margin-top:4px;}
+
+/* VERDICT BOX */
+.verdict-box{background:linear-gradient(135deg,#1A1E2B,#1C2030);border:1px solid var(--border);border-left:4px solid var(--marginal);border-radius:8px;padding:28px;margin-bottom:24px;}
+.verdict-stars{font-size:28px;color:var(--marginal);margin-bottom:10px;}
+.verdict-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--cream);margin-bottom:12px;}
+.verdict-text{font-size:14px;color:var(--chrome-light);line-height:1.8;}
+
+/* UPGRADE CONDITIONS */
+.upgrade-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(138,155,176,0.08);}
+.upgrade-num{background:var(--forge);color:white;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace;}
+.upgrade-text{font-size:13px;color:var(--chrome-light);}
+
+/* MOAT STARS */
+.moat-item{padding:14px 0;border-bottom:1px solid rgba(138,155,176,0.08);}
+.moat-name{font-size:14px;color:var(--cream);font-weight:700;margin-bottom:4px;}
+.moat-stars{color:var(--forge);font-size:14px;}
+.moat-desc{font-size:12px;color:var(--chrome);margin-top:4px;}
+
+/* FLYWHEEL BOX */
+.flywheel-box{background:var(--card-bg2);border:1px solid var(--border);border-left:3px solid var(--chrome);border-radius:8px;padding:20px;margin-bottom:16px;}
+.flywheel-badge{display:inline-block;padding:4px 14px;background:rgba(138,155,176,0.12);border:1px solid var(--chrome);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--chrome);margin-bottom:10px;}
+
+/* SERIES TABLE */
+.series-table{width:100%;border-collapse:collapse;font-size:11px;overflow-x:auto;}
+.series-table th{background:#0D1017;color:var(--chrome);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--border);}
+.series-table td{padding:7px 10px;border-bottom:1px solid rgba(138,155,176,0.06);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--chrome-light);}
+.series-table tr.current-row td{background:rgba(232,98,26,0.06);color:var(--cream);}
+
+/* MACRO TABLE */
+.macro-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(138,155,176,0.08);}
+.macro-label{font-size:13px;color:var(--chrome-light);}
+.macro-val{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cream);}
+
+/* SCENARIO GRID */
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.scenario-card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.sc-stress{border-top:3px solid var(--fail);}
+.sc-base{border-top:3px solid var(--marginal);}
+.sc-accel{border-top:3px solid var(--pass);}
+.sc-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.sc-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px solid rgba(138,155,176,0.06);}
+.sc-row-label{color:var(--chrome);}
+.sc-row-val{font-family:'JetBrains Mono',monospace;color:var(--cream);}
+
+/* TA SECTIONS */
+.ta-section{margin-bottom:24px;}
+.ta-label{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--forge);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.price-ladder .level{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-left:3px solid transparent;margin-bottom:4px;border-radius:0 4px 4px 0;}
+.level-support{border-left-color:var(--pass);background:rgba(46,204,113,0.05);}
+.level-resistance{border-left-color:var(--fail);background:rgba(231,76,60,0.05);}
+.level-current{border-left-color:var(--forge);background:rgba(232,98,26,0.08);}
+.level-label{font-size:12px;color:var(--chrome);}
+.level-price{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cream);}
+
+/* SHAREHOLDING */
+.sh-bar{height:8px;border-radius:4px;background:var(--card-bg2);overflow:hidden;margin:8px 0;}
+.sh-fill{height:100%;border-radius:4px;}
+
+/* FOOTER */
+.footer{background:#0A0E16;border-top:1px solid var(--border);padding:32px 24px;margin-top:48px;}
+.footer-text{font-size:11px;color:var(--text-muted);line-height:1.8;max-width:900px;margin:0 auto;}
+
+/* AI TAB */
+.ai-badge-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px;}
+.ai-badge-card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;text-align:center;min-width:140px;}
+.ai-badge-label{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+.ai-badge-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;}
+
+/* VALUE CHAIN */
+.value-chain{display:flex;gap:0;margin-bottom:24px;overflow-x:auto;}
+.vc-level{flex:1;padding:12px 10px;text-align:center;border:1px solid var(--border);border-right:none;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--chrome);transition:all .2s;min-width:90px;}
+.vc-level:last-child{border-right:1px solid var(--border);}
+.vc-level.vc-active{background:rgba(232,98,26,0.12);border-color:var(--forge);color:var(--forge);}
+.vc-level-num{font-size:18px;font-weight:700;margin-bottom:4px;}
+.vc-level-name{font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+
+/* AI SCORE GAUGE */
+.ai-score-container{display:flex;align-items:center;gap:24px;padding:20px;}
+.ai-score-num{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;color:var(--marginal);}
+.ai-score-label{font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;letter-spacing:1px;}
+.ai-score-bar{flex:1;height:12px;background:var(--card-bg2);border-radius:6px;overflow:hidden;}
+.ai-score-fill{height:100%;background:linear-gradient(90deg,var(--fail),var(--marginal));border-radius:6px;}
+
+/* THEME GRID */
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
+.theme-cell{background:var(--card-bg);padding:10px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;}
+.theme-name{color:var(--chrome);margin-bottom:3px;}
+.theme-rel{color:var(--cream);font-weight:600;}
+
+@media(max-width:680px){
+  .grid-3,.grid-4,.pillar-grid,.scenario-grid{grid-template-columns:1fr;}
+  .grid-2{grid-template-columns:1fr;}
+  .hero-grid{grid-template-columns:1fr;}
+  .data-pills{display:none;}
+  .hero-name{font-size:1.6rem;}
+  .value-chain{flex-direction:column;}
+  .theme-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .tab-btn{padding:10px 12px;font-size:10px;}
+  .tab-content{padding:20px 16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-ticker">NSE: BELRISE &nbsp;·&nbsp; AUTO ANCILLARY &nbsp;·&nbsp; CAT C &nbsp;·&nbsp; Report: April 2026</div>
+      <h1 class="hero-name">Belrise Industries</h1>
+      <div class="hero-sub">Sheet Metal · Polymers · Suspension · Aerospace &amp; Defence</div>
+      <div class="badge-row">
+        <span class="badge badge-cat">⚙ Category C</span>
+        <span class="badge badge-ai">⚪ AI Neutral</span>
+        <span class="badge badge-macro">⚠ Macro: Mixed</span>
+        <span class="badge badge-verdict">WATCH ★★★</span>
+      </div>
+      <div class="hero-lede">India's largest 2W sheet metal component supplier pivoting to diversified precision engineering — IPO proceeds eliminating debt, merger accretion incoming, and nascent aerospace/defence optionality. ROIC at threshold, entry zone being approached.</div>
+    </div>
+    <div class="data-pills">
+      <div class="data-pill">
+        <div class="dp-label">Price <span class="unverf">UNVERIFIED</span></div>
+        <div class="dp-value">₹160.67</div>
+      </div>
+      <div class="data-pill">
+        <div class="dp-label">Market Cap</div>
+        <div class="dp-value">~₹14,200 Cr</div>
+      </div>
+      <div class="data-pill">
+        <div class="dp-label">TTM P/E</div>
+        <div class="dp-value">27.6×</div>
+      </div>
+      <div class="data-pill">
+        <div class="dp-label">Base IV</div>
+        <div class="dp-value">~₹205</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intelligence</button>
+</div>
+
+<!-- ═══════════════════ TAB 0: OVERVIEW ═══════════════════ -->
+<div id="tab0" class="tab-content" style="display:block;">
+  <h2 class="section-title">Business Overview</h2>
+  <div class="grid-2">
+    <div class="card card-stripe">
+      <div class="card-title">Company DNA</div>
+      <p style="font-size:14px;color:var(--chrome-light);line-height:1.8;">Founded 1988 as Badve Engineering (renamed Belrise in 2022), listed on NSE/BSE in June 2025 via a ₹2,150 Cr all-fresh IPO. India's leading manufacturer of safety-critical automotive components — sheet metal chassis, exhaust systems, polymer body panels, and suspension assemblies — primarily for the 2-wheeler segment. <span class="verified">VERIFIED</span></p>
+    </div>
+    <div class="card card-stripe">
+      <div class="card-title">Why This Stock Is In The Series</div>
+      <p style="font-size:14px;color:var(--chrome-light);line-height:1.8;">Post-IPO balance sheet transformation (₹1,596 Cr debt reduction), EPS-accretive merger of two profitable promoter entities, and early-stage entry into aerospace &amp; defence manufacturing create a multi-year value creation narrative at a price approaching intrinsic value. An underanalysed IPO with significant FII accumulation ongoing.</p>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Revenue Mix (FY25)</div>
+      <div class="moat-item"><div class="moat-name">2-Wheeler Metal</div><div class="mono" style="color:var(--forge);font-size:13px;">81.3% of manufacturing</div></div>
+      <div class="moat-item"><div class="moat-name">Commercial Vehicles</div><div class="mono" style="color:var(--chrome);font-size:13px;">7.3%</div></div>
+      <div class="moat-item"><div class="moat-name">Passenger Vehicles</div><div class="mono" style="color:var(--chrome);font-size:13px;">4.4%</div></div>
+      <div class="moat-item"><div class="moat-name">3-Wheeler + Agri</div><div class="mono" style="color:var(--chrome);font-size:13px;">6.5%</div></div>
+      <div class="card-note">Manufacturing revenue: ₹6,594 Cr of ₹8,291 Cr total <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Key OEM Customers</div>
+      <div class="moat-item"><div class="moat-name">Bajaj Auto</div><div style="font-size:12px;color:var(--chrome);">Largest customer — metal + EV components</div></div>
+      <div class="moat-item"><div class="moat-name">Honda MSCI / Hero MotoCorp</div><div style="font-size:12px;color:var(--chrome);">#2 &amp; #3 — multi-product supply</div></div>
+      <div class="moat-item"><div class="moat-name">Tata Motors / JLR</div><div style="font-size:12px;color:var(--chrome);">4W body-in-white &amp; cross car beams</div></div>
+      <div class="moat-item"><div class="moat-name">Royal Enfield / Mahindra</div><div style="font-size:12px;color:var(--chrome);">Premium 2W + EV SUV components</div></div>
+      <div class="card-note">29 OEM customers globally (Dec 2024) <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Special Context</div>
+      <div class="moat-item"><div class="moat-name">🔧 IPO Deleveraging</div><div style="font-size:12px;color:var(--chrome);">Borrowings: ₹2,964Cr → ₹1,418Cr (Sep'25)</div></div>
+      <div class="moat-item"><div class="moat-name">🏭 Merger Accretion</div><div style="font-size:12px;color:var(--chrome);">+₹1,000Cr revenue, +₹110Cr PAT, 8.3x PE</div></div>
+      <div class="moat-item"><div class="moat-name">✈ Aerospace Entry</div><div style="font-size:12px;color:var(--chrome);">Acquired SDM (France), Chester Hall (UK)</div></div>
+      <div class="moat-item"><div class="moat-name">🛡 Defence Partnership</div><div style="font-size:12px;color:var(--chrome);">Plasan Sasa (Israel) — armour for India MoD</div></div>
+      <div class="card-note">EV content/vehicle: ₹3,000 contribution to new total ₹20,300 <span class="verified">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Manufacturing Footprint</h2>
+  <div class="card">
+    <div class="grid-4">
+      <div><div class="card-title">Indian Plants</div><div class="card-value">17</div><div class="card-note">Across 9 cities, 8 states</div></div>
+      <div><div class="card-title">Int'l Presence</div><div class="card-value">5</div><div class="card-note">Austria, Slovakia, UK, Japan, Thailand</div></div>
+      <div><div class="card-title">Content/Vehicle</div><div class="card-value">₹20.3K</div><div class="card-note">Post-merger, up from ₹17.3K</div></div>
+      <div><div class="card-title">Market Share (2W Metal)</div><div class="card-value">~24%</div><div class="card-note">Post-merger 2W plastics: ~25%</div></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Framework Classification</h2>
+  <div class="card card-stripe">
+    <p style="font-size:14px;color:var(--chrome-light);line-height:1.8;"><strong style="color:var(--cream);">Category C — Mature Quality Compounder:</strong> ROIC ~14% (narrow moat threshold), stable 12-13% EBITDA margins, predictable OEM demand, revenue CAGR 15% matching sector. Not a turnaround (profitable throughout) but not high-growth. Multiple transformation catalysts (merger, aerospace, EV) provide upside optionality. <strong style="color:var(--cream);">AI Overlay ⚪ NEUTRAL:</strong> IoT/automation deployed in manufacturing for efficiency; no proprietary training data, no data flywheel. EV transition is positive (EV-agnostic core products + new EV-specific wins). AI is a tool, not a moat.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 1: MACRO & GROWTH ═══════════════════ -->
+<div id="tab1" class="tab-content">
+  <h2 class="section-title">Layer 1 — Macro Anchor</h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">India Macro Dashboard (April 2026)</div>
+      <div class="macro-row"><span class="macro-label">10Y G-Sec Yield</span><span class="macro-val">~7.1% <span class="verified">VERIFIED</span></span></div>
+      <div class="macro-row"><span class="macro-label">RBI Repo Rate</span><span class="macro-val">5.25% (paused) <span class="verified">VERIFIED</span></span></div>
+      <div class="macro-row"><span class="macro-label">India CPI (2026E)</span><span class="macro-val">~4.6% <span class="est">ESTIMATED</span></span></div>
+      <div class="macro-row"><span class="macro-label">India Real GDP FY27E</span><span class="macro-val">~6.5–6.8% <span class="est">ESTIMATED</span></span></div>
+      <div class="macro-row"><span class="macro-label">India Nominal GDP</span><span class="macro-val">~11.1–11.4%</span></div>
+      <div class="macro-row"><span class="macro-label">Brent Crude</span><span class="macro-val">~$108/bbl (headwind) <span class="verified">VERIFIED</span></span></div>
+      <div class="macro-row"><span class="macro-label">Nifty 50 (Apr 8)</span><span class="macro-val">~21,500–22,200 <span class="est">ESTIMATED</span></span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Macro Cycle Status</div>
+      <div class="macro-row"><span class="macro-label">Rural Income Cycle</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--marginal);">Recovery — MSP hikes supportive</span></div>
+      <div class="macro-row"><span class="macro-label">Urban Consumption</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--marginal);">Neutral — IT wages stable</span></div>
+      <div class="macro-row"><span class="macro-label">Input Cost Cycle</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--fail);">Rising — steel/oil headwind</span></div>
+      <div class="macro-row"><span class="macro-label">Interest Rate Cycle</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--marginal);">Neutral — cuts paused (oil shock)</span></div>
+      <div class="macro-row"><span class="macro-label">Govt Capex Cycle</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--pass);">Tailwind — infra spending supports CV</span></div>
+      <div class="macro-row"><span class="macro-label">AI Adoption Cycle</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--chrome);">Low relevance for auto ancillary</span></div>
+      <div class="macro-row"><span class="macro-label">2W Volume Outlook</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--marginal);">6–10% vol growth expected FY27</span></div>
+      <div style="padding:10px 14px;font-size:12px;"><strong style="color:var(--cream);">Macro Composite: Mixed / Slight Headwind</strong><br><span style="color:var(--chrome);">Oil price surge → margin pressure → partially offset by debt savings.</span></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Layer 2 — Sector Growth Derivation</h2>
+  <div class="card">
+    <div class="card-title">Auto Ancillary Sector — India <span class="est">ESTIMATED</span></div>
+    <table class="data-table">
+      <tr><th>Scenario</th><th>Sector Base (Auto Ancillary)</th><th>AI Impact</th><th>Derived Sector Growth</th></tr>
+      <tr><td class="td-label">STRESS</td><td>7–9% (2W volume -5%; CV flat)</td><td>Neutral</td><td>7–8%</td></tr>
+      <tr><td class="td-label">BASE</td><td>10–13% (2W +6-8% vol; PV stable)</td><td>Neutral</td><td>10–12%</td></tr>
+      <tr><td class="td-label">ACCELERATION</td><td>13–17% (rural recovery; EV ramp)</td><td>Neutral</td><td>13–16%</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-muted);">AI cycle impact: <strong style="color:var(--chrome-light);">AI is neutral to slightly positive for auto ancillaries</strong> — manufacturing automation improves efficiency (±0%) but does not change the competitive landscape materially over 5 years.</p>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Layer 3 — Company Alpha Over Sector</h2>
+  <table class="data-table">
+    <tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr>
+    <tr><td class="td-label">Market Share Gain</td><td><span style="color:var(--pass)">Active</span></td><td>+1.5%</td><td>+0.5%</td><td>24% → potential 30%+ in 2W; post-merger plastics share 25%</td></tr>
+    <tr><td class="td-label">Premiumisation / Content</td><td><span style="color:var(--pass)">Active</span></td><td>+1.0%</td><td>+1.0%</td><td>Content/vehicle: ₹17.3K → ₹20.3K (+17%) drives revenue above volume</td></tr>
+    <tr><td class="td-label">Category / Product Expansion</td><td><span style="color:var(--pass)">Active</span></td><td>+2.0%</td><td>+2.5%</td><td>Aerospace, defence, 4W/CV doubling plan; copper bus bars (EV)</td></tr>
+    <tr><td class="td-label">Geographic Expansion</td><td><span style="color:var(--marginal)">Potential</span></td><td>+0.5%</td><td>+1.0%</td><td>SDM France; Chester Hall UK; H-One Japan (Japanese OEM penetration)</td></tr>
+    <tr><td class="td-label">Pricing Power</td><td><span style="color:var(--marginal)">Marginal</span></td><td>+0.5%</td><td>+0.5%</td><td>OEM price negotiations; steel pass-through typically with lag</td></tr>
+    <tr><td class="td-label">AI Alpha (6a+6b+6c)</td><td><span style="color:var(--chrome)">Minimal</span></td><td>+0%</td><td>+0%</td><td>IoT/automation = efficiency only; no flywheel, no market expansion</td></tr>
+    <tr style="background:rgba(232,98,26,0.05);"><td class="td-label">Total Alpha</td><td>—</td><td>+5.5%</td><td>+5.5%</td><td>Above-sector company growth premium</td></tr>
+  </table>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Growth Rate Summary</h2>
+  <div class="scenario-grid">
+    <div class="scenario-card sc-stress">
+      <div class="sc-title" style="color:var(--fail);">Scenario 1 — STRESS</div>
+      <div class="sc-row"><span class="sc-row-label">Macro State</span><span class="sc-row-val">GDP ~5.5%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Sector Growth</span><span class="sc-row-val">7–8%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Company Alpha</span><span class="sc-row-val">+3%</span></div>
+      <div class="sc-row"><span class="sc-row-label">AI Alpha</span><span class="sc-row-val">0%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Stage 1 FCF CAGR</span><span class="sc-row-val">9–10%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Stage 2 CAGR</span><span class="sc-row-val">7%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Terminal Growth</span><span class="sc-row-val">6%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Key Risk</span><span class="sc-row-val">Oil shock, 2W demand fall</span></div>
+    </div>
+    <div class="scenario-card sc-base">
+      <div class="sc-title" style="color:var(--marginal);">Scenario 2 — BASE</div>
+      <div class="sc-row"><span class="sc-row-label">Macro State</span><span class="sc-row-val">GDP ~6.8%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Sector Growth</span><span class="sc-row-val">10–12%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Company Alpha</span><span class="sc-row-val">+5.5%</span></div>
+      <div class="sc-row"><span class="sc-row-label">AI Alpha</span><span class="sc-row-val">0%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Stage 1 FCF CAGR</span><span class="sc-row-val">15%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Stage 2 CAGR</span><span class="sc-row-val">10%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Terminal Growth</span><span class="sc-row-val">7.5%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Key Risk</span><span class="sc-row-val">Customer concentration</span></div>
+    </div>
+    <div class="scenario-card sc-accel">
+      <div class="sc-title" style="color:var(--pass);">Scenario 3 — ACCELERATION</div>
+      <div class="sc-row"><span class="sc-row-label">Macro State</span><span class="sc-row-val">GDP ~8%+</span></div>
+      <div class="sc-row"><span class="sc-row-label">Sector Growth</span><span class="sc-row-val">13–16%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Company Alpha</span><span class="sc-row-val">+5.5%</span></div>
+      <div class="sc-row"><span class="sc-row-label">AI Alpha</span><span class="sc-row-val">0%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Stage 1 FCF CAGR</span><span class="sc-row-val">20%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Stage 2 CAGR</span><span class="sc-row-val">13%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Terminal Growth</span><span class="sc-row-val">8%</span></div>
+      <div class="sc-row"><span class="sc-row-label">Key Risk</span><span class="sc-row-val">Execution on aerospace</span></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">Sensitivity</div>
+    <p style="font-size:13px;color:var(--chrome-light);">A 1% change in terminal growth rate changes IV by approximately ±₹18–22 per share. A 1% change in Stage 1 growth changes IV by approximately ±₹8–12 per share. A 0.5% change in WACC changes IV by approximately ±₹15 per share.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 2: FINANCIALS ═══════════════════ -->
+<div id="tab2" class="tab-content">
+  <h2 class="section-title">Revenue &amp; Profit History</h2>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Metric (₹ Cr)</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>TTM (Mar'26E)</th></tr>
+      <tr><td class="td-label">Revenue</td><td>5,397</td><td>6,582</td><td>7,484</td><td>8,291</td><td>9,231 <span class="verified">V</span></td></tr>
+      <tr><td class="td-label">EBITDA</td><td>755</td><td>875</td><td>928</td><td>1,021</td><td>1,140</td></tr>
+      <tr><td class="td-label">OPM %</td><td>14%</td><td>13%</td><td>12%</td><td>12%</td><td>12%</td></tr>
+      <tr><td class="td-label">Interest</td><td>216</td><td>250</td><td>290</td><td>307</td><td>~200 (falling)</td></tr>
+      <tr><td class="td-label">D&amp;A</td><td>246</td><td>307</td><td>321</td><td>330</td><td>352</td></tr>
+      <tr><td class="td-label">Net Profit</td><td>262</td><td>314</td><td>314</td><td>355</td><td>477 <span class="verified">V</span></td></tr>
+      <tr><td class="td-label">Net Margin %</td><td>4.9%</td><td>4.8%</td><td>4.2%</td><td>4.3%</td><td>5.2%</td></tr>
+      <tr><td class="td-label">Op. Cash Flow</td><td>474</td><td>789</td><td>582</td><td>704</td><td>~750 est.</td></tr>
+      <tr><td class="td-label">Gross Borrowings</td><td>2,632</td><td>2,353</td><td>2,504</td><td>2,964</td><td>~1,418 (Sep'25)</td></tr>
+      <tr><td class="td-label">EPS (₹)</td><td>—</td><td>—</td><td>4.82</td><td>5.46</td><td>5.81</td></tr>
+      <tr><td class="td-label">ROCE %</td><td>—</td><td>14%</td><td>14%</td><td>14%</td><td>14.3%</td></tr>
+      <tr><td class="td-label">ROE %</td><td>—</td><td>—</td><td>—</td><td>14%</td><td>14.1%</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text-muted);padding:8px 14px;">All figures consolidated. FY25 audited. TTM includes Q1–Q3 FY26 actuals + Q4 estimate. <span class="verified">VERIFIED</span> from Screener/BSE filings.</p>
+  </div>
+
+  <h2 class="section-title">ROE &amp; ROIC Track</h2>
+  <div class="grid-4">
+    <div class="card card-stripe-warn"><div class="card-title">ROE FY23</div><div class="card-value">~13%</div><div class="card-note">Pre-IPO leverage</div></div>
+    <div class="card card-stripe-warn"><div class="card-title">ROE FY24</div><div class="card-value">~13%</div><div class="card-note">Stable</div></div>
+    <div class="card card-stripe-warn"><div class="card-title">ROE FY25</div><div class="card-value">14%</div><div class="card-note">Improving</div></div>
+    <div class="card card-stripe-pass"><div class="card-title">ROE Forward</div><div class="card-value">18–20%</div><div class="card-note">Post-deleveraging</div></div>
+  </div>
+  <div class="card card-stripe-warn" style="margin-top:8px;">
+    <p style="font-size:13px;color:var(--chrome-light);">ROIC has been consistently ~14% across FY23-FY25 — sitting at the narrow moat threshold (10-15% = weak/narrow). Forward ROIC should improve materially as: (1) interest burden falls from ₹307Cr→~₹130Cr, (2) merger adds high-ROIC businesses (13-14% margins), (3) operating leverage kicks in at higher revenue scale. Forward ROIC estimate: 16–19%.</p>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Financial Fortress Scorecard</h2>
+  <div class="card">
+    <div class="score-item"><span class="score-label">ROE ≥ 15% for 5 consecutive years</span><span class="score-badge sb-marg">~ MARGINAL</span></div>
+    <div class="score-item"><span class="score-label">ROIC &gt; WACC for 5 years (WACC ~12%)</span><span class="score-badge sb-fail">✗ FAIL — ROIC 14% ≈ WACC</span></div>
+    <div class="score-item"><span class="score-label">Net debt trajectory — improving rapidly</span><span class="score-badge sb-marg">~ MARGINAL → IMPROVING</span></div>
+    <div class="score-item"><span class="score-label">Net profit margin ≥ 15%</span><span class="score-badge sb-fail">✗ FAIL — 4–5%</span></div>
+    <div class="score-item"><span class="score-label">FCF positive &amp; growing</span><span class="score-badge sb-pass">✓ PASS — Op CFO positive, growing</span></div>
+    <div class="score-item"><span class="score-label">FCF conversion ≥ 80% of net income</span><span class="score-badge sb-pass">✓ PASS — 185–200% (high D&amp;A)</span></div>
+    <div class="score-item"><span class="score-label">Revenue CAGR ≥ sector CAGR</span><span class="score-badge sb-pass">✓ PASS — 15% vs sector 10–12%</span></div>
+    <div class="score-item"><span class="score-label">Pricing power proven</span><span class="score-badge sb-marg">~ MARGINAL — OEM-dependent</span></div>
+    <div class="score-item"><span class="score-label">Capital-light model</span><span class="score-badge sb-fail">✗ FAIL — Asset-heavy manufacturing</span></div>
+    <div class="score-item"><span class="score-label">Dividend payout &lt;80% of OE</span><span class="score-badge sb-pass">✓ PASS — 10% payout, conservative</span></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Owner Earnings (TTM Basis)</h2>
+  <div class="card card-stripe">
+    <div class="grid-2">
+      <div>
+        <div class="card-title">Conservative OE (TTM)</div>
+        <div class="macro-row"><span class="macro-label">Net Income</span><span class="macro-val">₹477 Cr</span></div>
+        <div class="macro-row"><span class="macro-label">+ D&amp;A</span><span class="macro-val">₹352 Cr</span></div>
+        <div class="macro-row"><span class="macro-label">– Maintenance CapEx (est.)</span><span class="macro-val">₹350 Cr</span></div>
+        <div class="macro-row"><span class="macro-label">± WC Changes</span><span class="macro-val">~₹0 Cr</span></div>
+        <div class="macro-row" style="border-top:1px solid var(--forge);"><span class="macro-label" style="color:var(--cream);font-weight:700;">Owner Earnings (Conservative)</span><span class="macro-val" style="color:var(--forge);font-size:16px;">₹479 Cr</span></div>
+      </div>
+      <div>
+        <div class="card-title">Forward Normalized OE</div>
+        <div class="macro-row"><span class="macro-label">Net Income (normalized)</span><span class="macro-val">₹477 Cr</span></div>
+        <div class="macro-row"><span class="macro-label">+ Interest Saving (IPO)</span><span class="macro-val">+₹120 Cr (after tax)</span></div>
+        <div class="macro-row"><span class="macro-label">+ Merger PAT</span><span class="macro-val">+₹110 Cr</span></div>
+        <div class="macro-row"><span class="macro-label">+ D&amp;A (post-merger)</span><span class="macro-val">~₹380 Cr</span></div>
+        <div class="macro-row"><span class="macro-label">– Maintenance CapEx</span><span class="macro-val">₹360 Cr</span></div>
+        <div class="macro-row" style="border-top:1px solid var(--pass);"><span class="macro-label" style="color:var(--cream);font-weight:700;">Forward Normalized OE</span><span class="macro-val" style="color:var(--pass);font-size:16px;">~₹727 Cr</span></div>
+      </div>
+    </div>
+    <div class="card-note" style="padding:12px 0 0;">Forward OE per share (~89 Cr shares): ₹8.17. Current price: ₹160. OE yield: 5.1%. <span class="est">ESTIMATED</span></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Earnings Quality — O'Glove Tests</h2>
+  <div class="card">
+    <div class="score-item">
+      <span class="score-label"><strong>Test 1 — FCF Conversion</strong> (Op CFO / Net Income): FY22: 181% | FY23: 251% | FY24: 185% | FY25: 198%</span>
+      <span class="score-badge sb-pass">✓ CLEAN PASS</span>
+    </div>
+    <div class="score-item">
+      <span class="score-label"><strong>Test 2 — DSO Trend</strong>: FY22: 63d | FY23: 71d | FY24: 60d | FY25: 70d — oscillating, not deteriorating.</span>
+      <span class="score-badge sb-marg">~ MARGINAL</span>
+    </div>
+    <div class="score-item">
+      <span class="score-label"><strong>Test 3 — Inventory Days</strong>: FY22: 40d | FY23: 39d | FY24: 38d | FY25: 42d — minimal creep, not alarming</span>
+      <span class="score-badge sb-pass">✓ PASS</span>
+    </div>
+    <div class="score-item">
+      <span class="score-label"><strong>Test 4 — Accounting Policy Stability</strong>: State subsidy income (₹120Cr in FY24, ₹88Cr 9M FY25) is a recurring but disclosed item. No policy changes boosting earnings.</span>
+      <span class="score-badge sb-marg">~ MARGINAL — subsidies watch</span>
+    </div>
+    <div class="score-item">
+      <span class="score-label"><strong>Test 5 — Gross Margin Consistency</strong>: OPM steady at 12-14% across 4 years despite steel/oil volatility. Manufacturing EBITDA ~14% = healthy.</span>
+      <span class="score-badge sb-pass">✓ PASS</span>
+    </div>
+    <div style="padding:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:14px;color:var(--cream);">Overall Earnings Quality</span>
+      <span class="score-badge sb-pass" style="font-size:13px;padding:6px 18px;">✓ CLEAN</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 3: MOAT ═══════════════════ -->
+<div id="tab3" class="tab-content">
+  <h2 class="section-title">Economic Moat Assessment — Pillar 1</h2>
+  <div class="grid-2">
+    <div class="card card-stripe">
+      <div class="card-title">Moat Sources — Rated ★ to ★★★★★</div>
+      <div class="moat-item">
+        <div class="moat-name">Market Leadership &amp; Scale — ★★★★</div>
+        <div class="moat-stars">★★★★</div>
+        <div class="moat-desc">24% market share in 2W sheet metal (largest in India). OEMs prefer multi-product vendors — Belrise supplies sheet metal + polymer + exhaust = stickier relationship. Post-merger: 25% plastics market share. Scale creates cost advantages in tooling, raw material procurement, and JIPM-certified quality systems.</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">OEM Switching Costs — ★★★</div>
+        <div class="moat-stars">★★★</div>
+        <div class="moat-desc">Safety-critical component supplier. Any replacement requires 12-18 month qualification process (PPAP, APQP). Bajaj Auto co-development (cathodic electro-deposition facility, EV steering columns) = embedded supply chain. Difficult to switch, especially for integrated assemblies.</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">Vertical Integration — ★★★</div>
+        <div class="moat-stars">★★★</div>
+        <div class="moat-desc">Covers full value chain — stamping, welding, surface treatment, plating, polymer injection, assembly. This reduces outsourcing leakage and gives cost control that pure assembly players lack. 17 facilities in 9 states = capacity advantage.</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">EV Transition Agnosticism — ★★★</div>
+        <div class="moat-stars">★★★</div>
+        <div class="moat-desc">Core products (chassis, exhaust, body panels) are largely EV-agnostic. Active EV wins: steering columns for Bajaj EV, body-in-white for Tata EV SUV, copper bus bars for EV powertrain (via Eximius). Content/vehicle actually rising in EV (structural differences).</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">Geographic Scope — ★★</div>
+        <div class="moat-stars">★★</div>
+        <div class="moat-desc">Austria, Slovakia, UK (Chester Hall), France (SDM), Japan, Thailand — limited but growing. Aerospace entry through SDM provides access to Airbus/Boeing supply chains. Defence through Plasan Sasa MoD opportunities.</div>
+      </div>
+    </div>
+    <div>
+      <div class="card card-stripe-warn">
+        <div class="card-title">ROIC as Moat Proof</div>
+        <table class="data-table">
+          <tr><th>Year</th><th>ROIC</th><th>Signal</th></tr>
+          <tr><td>FY23</td><td class="mono">14%</td><td style="color:var(--marginal)">Narrow Moat Threshold</td></tr>
+          <tr><td>FY24</td><td class="mono">14%</td><td style="color:var(--marginal)">Narrow Moat Threshold</td></tr>
+          <tr><td>FY25</td><td class="mono">14%</td><td style="color:var(--marginal)">Narrow Moat Threshold</td></tr>
+          <tr><td>TTM</td><td class="mono">14.3%</td><td style="color:var(--marginal)">Improving marginally</td></tr>
+          <tr><td>Forward (normalized)</td><td class="mono">17–19%</td><td style="color:var(--pass)">Narrow → Building Wide</td></tr>
+        </table>
+        <div class="card-note">ROIC at 14% = right at the weak/narrow boundary. Debt reduction + margin leverage should push to 17-19% forward = entering "wide moat" territory if sustained. <span class="est">ESTIMATED</span></div>
+      </div>
+      <div class="card card-stripe-fail" style="margin-top:16px;">
+        <div class="card-title">Moat Threats</div>
+        <div class="moat-item">
+          <div class="moat-name">🔴 Customer Concentration</div>
+          <div class="moat-desc">Top 3 OEMs = ~32-35% of revenue. Bajaj Auto likely ~20-25%. Any volume decline at Bajaj hits revenue materially. Mitigated by multi-product depth and 29 OEM clients.</div>
+        </div>
+        <div class="moat-item">
+          <div class="moat-name">🔴 Chinese Auto Parts Competition</div>
+          <div class="moat-desc">Chinese auto ancillaries expanding in India via JV/FDI. Price competition risk in commodity components. Belrise's safety-critical focus + JIPM quality = partial defence.</div>
+        </div>
+        <div class="moat-item">
+          <div class="moat-name">🟡 EV Disruption (Long-term)</div>
+          <div class="moat-desc">Exhaust systems obsolete in pure EV scenario. However: exhaust = only ~12% of revenue; BIW, chassis, polymer parts remain relevant. 5-10 year disruption timeline.</div>
+        </div>
+        <div class="moat-item">
+          <div class="moat-name">🟡 Raw Material Volatility</div>
+          <div class="moat-desc">Steel + polymer + aluminium = 60-65% of COGS. OEM pass-through typically with 1-2 quarter lag. Margin compression in high-oil environments.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Macro Moat Stress Test</h2>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Moat Source</th><th>STRESS Scenario</th><th>BASE Scenario</th><th>ACCEL Scenario</th></tr>
+      <tr><td class="td-label">Market Leadership</td><td style="color:var(--pass)">HOLDS — OEMs won't switch in downturn</td><td style="color:var(--pass)">STRENGTHENS</td><td style="color:var(--pass)">STRENGTHENS — volume amplifies share</td></tr>
+      <tr><td class="td-label">Switching Costs</td><td style="color:var(--pass)">HOLDS — qualification barrier remains</td><td style="color:var(--pass)">HOLDS</td><td style="color:var(--pass)">HOLDS</td></tr>
+      <tr><td class="td-label">Vertical Integration</td><td style="color:var(--marginal)">WEAKENS slightly — utilisation drops</td><td style="color:var(--pass)">HOLDS</td><td style="color:var(--pass)">STRENGTHENS</td></tr>
+      <tr><td class="td-label">EV Agnosticism</td><td style="color:var(--pass)">HOLDS — EV ramp continues regardless</td><td style="color:var(--pass)">HOLDS</td><td style="color:var(--pass)">STRENGTHENS</td></tr>
+    </table>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Data Flywheel Assessment</h2>
+  <div class="flywheel-box">
+    <div class="flywheel-badge">⚙ AI COSMETIC — No Data Flywheel</div>
+    <div class="grid-3" style="gap:12px;margin-top:12px;">
+      <div>
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:6px;font-family:'JetBrains Mono',monospace;">Q1: Proprietary Training Data?</div>
+        <div style="font-size:13px;color:var(--chrome-light);">❌ No proprietary AI training data. Manufacturing IoT data for process control exists but is operational, not a competitive AI asset competitors cannot replicate.</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:6px;font-family:'JetBrains Mono',monospace;">Q2: AI Improves with More Users?</div>
+        <div style="font-size:13px;color:var(--chrome-light);">❌ Manufacturing automation (IoT, automated lines) does not compound with scale in the flywheel sense. Quality improvements are from process discipline, not AI feedback loops.</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:6px;font-family:'JetBrains Mono',monospace;">Q3: Better AI Attracts More Customers?</div>
+        <div style="font-size:13px;color:var(--chrome-light);">❌ Customers (OEMs) choose Belrise for quality, cost, capacity, and relationships — not for AI capability. No flywheel loop present.</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:12px;background:rgba(138,155,176,0.05);border-radius:4px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">Flywheel Score: 0/10 &nbsp;|&nbsp; </span>
+      <span style="font-size:13px;color:var(--chrome-light);">AI is cosmetic — no moat grade change. Moat remains B- on fundamentals alone.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 4: MANAGEMENT ═══════════════════ -->
+<div id="tab4" class="tab-content">
+  <h2 class="section-title">Management Assessment — Pillar 3</h2>
+  <div class="grid-2">
+    <div class="card card-stripe-pass">
+      <div class="card-title">Strengths</div>
+      <div class="moat-item">
+        <div class="moat-name">✅ IPO Commitment Delivered</div>
+        <div class="moat-desc">IPO DRHP committed to debt reduction — ₹1,596 Cr repaid within one quarter of IPO. Rare in India: most IPO proceeds are misused. Shrikant Badve's credibility intact.</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">✅ Merger at Book Value — EPS Accretive</div>
+        <div class="moat-desc">Badve Autocomps + Eximius merged at ~8.3x P/E vs listed entity at 30x. No promoter wealth extraction — merger was done at fair value per independent valuer (EY). Positive capital allocation signal.</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">✅ Multi-Generational Vision</div>
+        <div class="moat-desc">Shrikant Badve (MD), son Sumedh active in aerospace/defence expansion. Succession appears planned. 35+ years in auto components = deep OEM relationships.</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">✅ JIPM Awards — Quality Culture</div>
+        <div class="moat-desc">Two JIPM (Total Productive Maintenance) awards from Japanese Institute of Plant Maintenance — globally recognized quality certification. Rare for Indian auto ancillary.</div>
+      </div>
+    </div>
+    <div class="card card-stripe-warn">
+      <div class="card-title">Concerns &amp; Watchpoints</div>
+      <div class="moat-item">
+        <div class="moat-name">⚠ Promoter Stake Reduction — Explained</div>
+        <div class="moat-desc">Sumedh Tools Pvt Ltd (promoter entity) sold 6.56% stake via block deal (Dec 23, 2025, ~₹900 Cr). Stated: "stake rationalisation, no change in control." Stock rose 13% on the news. Promoter holding: 73% → 66.46%. Still comfortable at 66%+, but monitor further cuts.</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">⚠ Related Party Transactions — Being Reduced</div>
+        <div class="moat-desc">Pre-merger, RPT with Badve Autocomps + Eximius = ₹1,151 Cr. Merger eliminates these = corporate governance improvement. Trading window closed Apr 1–48h post FY26 results = board meeting imminent.</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">⚠ Aerospace Execution Risk</div>
+        <div class="moat-desc">SDM (France) acquisition + Chester Hall (UK) + Plasan Sasa JV = entirely new domain. Aerospace quality standards (AS9100, NADCAP) are far more demanding. Management track record in aerospace = zero. Monitor carefully.</div>
+      </div>
+      <div class="moat-item">
+        <div class="moat-name">⚠ State Subsidies (₹88–120 Cr/yr)</div>
+        <div class="moat-desc">Maharashtra IPS + Karnataka + MP subsidies = ~1.5% of revenue. Recurring but not guaranteed. Any state policy change could reduce effective profitability. Disclosed transparently.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Shareholding Integrity</h2>
+  <div class="card">
+    <div class="score-item"><span class="score-label">Promoter holding (Dec 2025)</span><span class="score-badge sb-pass">66.46% — Comfortable</span></div>
+    <div class="score-item"><span class="score-label">Promoter pledged shares</span><span class="score-badge sb-pass">NIL — CRISIL A1+ confirms <span class="verified">V</span></span></div>
+    <div class="score-item"><span class="score-label">Promoter stake change trend</span><span class="score-badge sb-marg">-6.55% Dec'25 (block deal, explained)</span></div>
+    <div class="score-item"><span class="score-label">FII trend (Jun→Dec 2025)</span><span class="score-badge sb-pass">6.78% → 8.90% — Accumulating</span></div>
+    <div class="score-item"><span class="score-label">DII trend</span><span class="score-badge sb-pass">7.12% → 9.27% — Recovering</span></div>
+    <div class="score-item"><span class="score-label">IPO — Fresh issue (no OFS)</span><span class="score-badge sb-pass">Promoters did not sell in IPO</span></div>
+    <div class="score-item"><span class="score-label">Capital allocation: counter-cyclical?</span><span class="score-badge sb-marg">Neutral — growing capex in aerospace</span></div>
+  </div>
+
+  <div class="card card-stripe" style="margin-top:16px;">
+    <div class="card-title">Management Grade: B</div>
+    <p style="font-size:14px;color:var(--chrome-light);line-height:1.8;">Technically sound, IPO-disciplined, shareholder-friendly capital allocation. Concerns are execution risk in uncharted aerospace territory and the need to monitor further promoter stake changes. No red flags, no pledges, no fraud history. CRISIL CRISIL reaffirmed ratings with "improving financial risk profile" commentary.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 5: VALUATION ═══════════════════ -->
+<div id="tab5" class="tab-content">
+  <h2 class="section-title">Method 1 — DCF (2-Stage)</h2>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Year</th><th>Owner Earnings (₹ Cr) — Base</th><th>PV Factor (WACC 12.5%)</th><th>PV (₹ Cr)</th></tr>
+      <tr><td>Year 1</td><td class="mono">690</td><td class="mono">0.889</td><td class="mono">613</td></tr>
+      <tr><td>Year 2</td><td class="mono">794</td><td class="mono">0.790</td><td class="mono">627</td></tr>
+      <tr><td>Year 3</td><td class="mono">913</td><td class="mono">0.702</td><td class="mono">641</td></tr>
+      <tr><td>Year 4</td><td class="mono">1,050</td><td class="mono">0.624</td><td class="mono">655</td></tr>
+      <tr><td>Year 5</td><td class="mono">1,208</td><td class="mono">0.555</td><td class="mono">671</td></tr>
+      <tr><td>Year 6–10 (10% CAGR)</td><td class="mono">7,546 total</td><td class="mono">avg 0.426</td><td class="mono">3,215</td></tr>
+      <tr><td>Terminal Value (g=7.5%)</td><td class="mono">TV = ₹41,600 Cr</td><td class="mono">0.308</td><td class="mono">12,805</td></tr>
+      <tr style="background:rgba(232,98,26,0.08);"><td class="td-label">Enterprise Value</td><td class="mono">—</td><td class="mono">—</td><td class="mono">19,227 Cr</td></tr>
+      <tr><td>– Net Debt (Sep'25)</td><td class="mono">—</td><td class="mono">—</td><td class="mono">918 Cr</td></tr>
+      <tr style="background:rgba(46,204,113,0.05);"><td class="td-label">Equity Value</td><td class="mono">—</td><td class="mono">—</td><td class="mono">18,309 Cr</td></tr>
+      <tr style="background:rgba(46,204,113,0.08);"><td class="td-label">IV per share (~89 Cr)</td><td class="mono">—</td><td class="mono">—</td><td class="mono"><strong>₹206</strong></td></tr>
+    </table>
+    <div class="card-note">Base case OE starting point: ₹600 Cr (normalized post-deleveraging + merger). WACC 12.5%. Terminal g = 7.5% ≤ India Nominal GDP ~11%. <span class="est">ESTIMATED</span></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">DCF Sensitivity Table</h2>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>WACC ↓ / Terminal g →</th><th>g = 6%</th><th>g = 7.5%</th><th>g = 8.5%</th></tr>
+      <tr><td class="td-label">WACC 11.5%</td><td class="mono">₹210</td><td class="mono">₹242</td><td class="mono">₹275</td></tr>
+      <tr style="background:rgba(232,98,26,0.06);"><td class="td-label">WACC 12.5% (BASE)</td><td class="mono">₹175</td><td class="mono"><strong>₹206</strong></td><td class="mono">₹235</td></tr>
+      <tr><td class="td-label">WACC 13.5%</td><td class="mono">₹150</td><td class="mono">₹172</td><td class="mono">₹196</td></tr>
+    </table>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Method 2 — Owner Earnings Capitalisation</h2>
+  <div class="card">
+    <div class="grid-3">
+      <div class="scenario-card sc-stress"><div class="sc-title" style="color:var(--fail)">STRESS (g=6%, r=13.5%)</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--cream);margin:10px 0;">₹163</div><div style="font-size:12px;color:var(--chrome)">OE ₹479 Cr / 0.075</div></div>
+      <div class="scenario-card sc-base"><div class="sc-title" style="color:var(--marginal)">BASE (g=7.5%, r=12.5%)</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--cream);margin:10px 0;">₹204</div><div style="font-size:12px;color:var(--chrome)">OE ₹600 Cr / 0.05</div></div>
+      <div class="scenario-card sc-accel"><div class="sc-title" style="color:var(--pass)">ACCEL (g=8%, r=12%)</div><div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;color:var(--cream);margin:10px 0;">₹244</div><div style="font-size:12px;color:var(--chrome)">OE ₹727 Cr / 0.04</div></div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Method 3 — ROIC / Earnings Power Value</h2>
+  <div class="card">
+    <p style="font-size:13px;color:var(--chrome-light);">NOPAT (TTM, est.) = EBIT × (1-t) = ₹700 Cr × 0.75 = ₹525 Cr. EPV = NOPAT / WACC = ₹525 / 12.5% = ₹4,200 Cr. Growth premium at ROIC 14% vs WACC 12.5%: modest positive. EPV per share = ₹4,200 / 89 = ₹47.2 (no-growth floor). Growth premium (15% CAGR × 5yr) adds ~₹140/share. EPV Base: <strong style="color:var(--forge);">₹185–195</strong>. This is conservative — reflects current interest-burdened ROIC. Post-deleveraging EPV: ₹220–240.</p>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Method 4 — P/E Earnings Power</h2>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
+      <tr><td class="td-label">TTM EPS</td><td class="mono">₹5.81</td><td>At current price ₹160: 27.5× P/E</td></tr>
+      <tr><td class="td-label">Forward EPS (FY26E, post-merger, post-interest savings)</td><td class="mono">₹7.95–8.50</td><td>P/E at ₹160: 18.8–20.1×</td></tr>
+      <tr><td class="td-label">Sector P/E (auto ancillary, quality)</td><td class="mono">25–35×</td><td>Minda 38×, Gabriel 25×, Motherson 40×</td></tr>
+      <tr><td class="td-label">Fair P/E for Belrise (ROIC 14-17%, 15% growth)</td><td class="mono">22–28×</td><td>Below sector leaders = justified (ROIC discount)</td></tr>
+      <tr><td class="td-label">P/E target IV (25× on FY26 EPS ₹8.0)</td><td class="mono" style="color:var(--pass);">₹200</td><td>Base fair value</td></tr>
+      <tr><td class="td-label">PEG Ratio (P/E 27.5× / growth 15%)</td><td class="mono">1.83×</td><td>Slightly elevated vs 1.5× fair; reasonable post-correction</td></tr>
+      <tr><td class="td-label">AI premium/discount</td><td class="mono">0% (AI Neutral)</td><td>No adjustment warranted</td></tr>
+    </table>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Method 5 — Earnings Yield vs Bond Yield</h2>
+  <div class="card">
+    <div class="grid-3">
+      <div><div class="card-title">Earnings Yield (TTM)</div><div class="card-value">3.6%</div><div class="card-note">₹5.81 / ₹160</div></div>
+      <div><div class="card-title">FCF Yield (TTM)</div><div class="card-value">2.4%</div><div class="card-note">₹350 Cr FCF / ₹14,200 Cr mkt cap</div></div>
+      <div><div class="card-title">India 10Y G-Sec</div><div class="card-value">7.1%</div><div class="card-note">Risk-free rate <span class="verified">V</span></div></div>
+    </div>
+    <div style="margin-top:12px;padding:12px;background:rgba(231,76,60,0.06);border-radius:4px;border-left:3px solid var(--fail);">
+      <strong style="color:var(--cream);">Earnings yield (3.6%) &lt; G-Sec yield (7.1%) = Negative Equity Risk Premium on TTM earnings.</strong><br>
+      <span style="font-size:13px;color:var(--chrome-light);">However, forward EY (based on normalized ₹8.0 EPS) = 5.0% — still below G-Sec but within acceptable range for a growing company. Forward FCF yield post-normalization ~4.5%. ERP improves materially in 12-18 months as earnings ramp through. Not a BUY on yield alone — price must correct further or forward earnings must be confirmed.</span>
+    </div>
+    <div style="padding:12px 0 0;"><div class="card-title">Yield-on-Cost Table (at entry ₹155)</div>
+    <table class="data-table"><tr><th>Year</th><th>EPS (est.)</th><th>Yield on Cost</th></tr>
+    <tr><td>FY26</td><td class="mono">₹8.0</td><td class="mono">5.2%</td></tr>
+    <tr><td>FY28</td><td class="mono">₹11.0</td><td class="mono">7.1% (= G-Sec crossover)</td></tr>
+    <tr><td>FY30</td><td class="mono">₹15.0</td><td class="mono">9.7%</td></tr>
+    </table></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">5-Method Summary</h2>
+  <div class="card card-stripe">
+    <table class="data-table">
+      <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>AI Adj.</th></tr>
+      <tr><td class="td-label">DCF 2-Stage</td><td class="mono">₹175</td><td class="mono">₹206</td><td class="mono">₹260</td><td class="mono">0%</td></tr>
+      <tr><td class="td-label">OE Capitalisation</td><td class="mono">₹163</td><td class="mono">₹204</td><td class="mono">₹244</td><td class="mono">0%</td></tr>
+      <tr><td class="td-label">EPV / ROIC</td><td class="mono">₹160</td><td class="mono">₹190</td><td class="mono">₹230</td><td class="mono">0%</td></tr>
+      <tr><td class="td-label">P/E Power</td><td class="mono">₹170</td><td class="mono">₹200</td><td class="mono">₹240</td><td class="mono">0%</td></tr>
+      <tr><td class="td-label">EY / Bond yield</td><td>—</td><td>FY28 crossover</td><td>—</td><td class="mono">0%</td></tr>
+      <tr style="background:rgba(232,98,26,0.08);"><td class="td-label"><strong>BLENDED IV</strong></td><td class="mono"><strong>₹167</strong></td><td class="mono"><strong style="color:var(--forge);font-size:14px;">₹200</strong></td><td class="mono"><strong>₹244</strong></td><td class="mono">—</td></tr>
+      <tr><td class="td-label">Entry Zone (15-20% MoS)</td><td>—</td><td class="mono" style="color:var(--pass);">₹140–170</td><td>—</td><td>—</td></tr>
+    </table>
+    <div class="card-note">Current price ₹160.67 is AT the lower end of entry zone. Stress IV = ₹167 — meaning limited downside even in stress at current price. Meaningful margin of safety requires sustained price at ₹155 or below. <span class="est">ESTIMATED</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 6: VERDICT ═══════════════════ -->
+<div id="tab6" class="tab-content">
+  <h2 class="section-title">Four Pillar Summary</h2>
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 1 — Moat</div>
+      <div class="pillar-grade">B-</div>
+      <div class="pillar-desc">Narrow moat — ROIC at threshold (14%), market leadership in 2W metal, OEM switching costs moderate. No data flywheel. Post-deleveraging ROIC trajectory toward B.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 2 — Quality</div>
+      <div class="pillar-grade">B-</div>
+      <div class="pillar-desc">FCF positive, earnings quality CLEAN. Low net margin (4-5%) and ROIC at WACC drag score. Forward quality improves sharply with interest saving + merger accretion.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 3 — Management</div>
+      <div class="pillar-grade">B</div>
+      <div class="pillar-desc">IPO commitments delivered, no pledges, merger at fair value. Aerospace = new territory needing monitoring. Block deal explained; FII accumulation positive.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 4 — Valuation</div>
+      <div class="pillar-grade">B-</div>
+      <div class="pillar-desc">At ₹160, trading at blended stress IV. Base IV ₹200 = 25% upside. Forward P/E 19-20× is reasonable. Price approaching entry zone but not yet triggered primary RSI/DMA signals.</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-stars">★★★</div>
+    <div class="verdict-title">WATCH ★★★ — Entry Zone Being Approached</div>
+    <div class="verdict-text">
+      Belrise Industries is a technically sound, first-generation-promoter business undergoing a textbook post-IPO balance sheet transformation. Three pillars for value creation are visible: (1) debt elimination saving ~₹150 Cr/year in interest, (2) EPS-accretive merger at 8.3× P/E from promoter entities, and (3) aerospace/defence optionality that is not yet priced into the base case. At ₹160, the stock trades at its stressed intrinsic value — limited downside, modest margin of safety vs base IV of ₹200. However, the framework requires RSI below 40 or a definitive 200-DMA test before triggering a BUY. FY26 full-year results (board meeting post April 1, 2026) will be a significant catalyst — confirming the normalized earnings trajectory including merger accretion and interest savings. Await results; set accumulation alerts at ₹140–155.
+    </div>
+  </div>
+
+  <h2 class="section-title">WATCH → BUY Upgrade Conditions</h2>
+  <div class="card">
+    <div class="upgrade-item">
+      <div class="upgrade-num">1</div>
+      <div class="upgrade-text"><strong>Price ≤ ₹155 (20% discount to Base IV of ₹200)</strong> — triggers primary margin of safety zone with meaningful buffer. More compelling below ₹140.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">2</div>
+      <div class="upgrade-text"><strong>RSI (14-day daily) falls below 40</strong> — confirms technical oversold + institutional accumulation opportunity. Current RSI ~35-38 is close.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">3</div>
+      <div class="upgrade-text"><strong>FY26 full-year PAT ≥ ₹530 Cr (standalone, pre-merger)</strong> — confirms the normalized earnings trajectory post-deleveraging. Board meeting scheduled post April 1, 2026.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">4</div>
+      <div class="upgrade-text"><strong>NCLT merger approval for Badve Autocomps + Eximius received</strong> — merger court order received Jan 22, 2026; final approval will trigger EPS re-rating catalyst.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">5</div>
+      <div class="upgrade-text"><strong>Forward ROIC exceeds 18% for 2 consecutive quarters</strong> — confirms moat widening from narrow (14%) to meaningful wide moat (18%+) justifying multiple expansion toward 30×+.</div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Series Table</h2>
+  <div style="overflow-x:auto;">
+    <table class="series-table">
+      <tr><th>#</th><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry Zone</th><th>Base IV</th><th>Thesis</th></tr>
+      <tr><td>—</td><td>GOOGL</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>A-</td><td>B</td><td>WATCH ★★★★</td><td>~$190</td><td>~$292</td><td>Search moat + AI widener; ad-tech remedy only BUY blocker</td></tr>
+      <tr><td>—</td><td>MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>A</td><td>B</td><td>WATCH ★★★★</td><td>~$300</td><td>~$395</td><td>Cloud + AI widener; Azure moat deepening</td></tr>
+      <tr><td>—</td><td>META</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A-</td><td>A-</td><td>B+</td><td>B+</td><td>BUY STARTER ★★★★½</td><td>~$560</td><td>—</td><td>Litigation selloff entry; social graph + AI widener</td></tr>
+      <tr><td>—</td><td>AMZN</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>A-</td><td>B+</td><td>A-</td><td>B</td><td>WATCH ★★★★</td><td>—</td><td>—</td><td>AWS + e-comm flywheel; near primary BUY trigger</td></tr>
+      <tr><td>—</td><td>SYM</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>B+</td><td>B</td><td>B</td><td>B-</td><td>WATCH ★★★</td><td>$40–44</td><td>$44–46</td><td>AI warehouse robotics; $22.7B backlog; Phase 2→3</td></tr>
+      <tr><td>—</td><td>FTNT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>B+</td><td>A-</td><td>B+</td><td>B</td><td>WATCH ★★★★</td><td>Active entry zone</td><td>—</td><td>Cybersecurity; AI-widened threat detection moat</td></tr>
+      <tr><td>—</td><td>PANW</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>B+</td><td>A-</td><td>B+</td><td>B-</td><td>WATCH ★★★★</td><td>&lt;$140</td><td>—</td><td>Platform consolidation; wait for correction</td></tr>
+      <tr><td>—</td><td>CRWD</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>B+</td><td>B+</td><td>B</td><td>C+</td><td>WATCH ★★★</td><td>~50% correction</td><td>—</td><td>Endpoint AI; requires significant correction</td></tr>
+      <tr><td>—</td><td>IEX</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>A-</td><td>B</td><td>B-</td><td>WATCH ★★★</td><td>₹105–115</td><td>₹143</td><td>Power exchange monopoly; market coupling binary risk</td></tr>
+      <tr><td>—</td><td>TRAVELFOOD</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>A-</td><td>B</td><td>B</td><td>WATCH ★★★</td><td>₹1,000–1,100</td><td>₹1,420</td><td>Airport F&B monopoly; −427d CCC; ROIC 42%</td></tr>
+      <tr><td>—</td><td>BAJAJHFL</td><td>NSE</td><td>B</td><td>⚪</td><td>B</td><td>B+</td><td>B</td><td>B</td><td>WATCH ★★★</td><td>₹65–75</td><td>—</td><td>Housing finance; P/B valuation; growth NBFC</td></tr>
+      <tr><td>—</td><td>BANDHANBNK</td><td>NSE</td><td>D</td><td>⚪</td><td>B-</td><td>B</td><td>B-</td><td>B</td><td>WATCH ★★★</td><td>₹140–147</td><td>—</td><td>Microfinance turnaround; geographic reconc.</td></tr>
+      <tr><td>—</td><td>ITBEES</td><td>NSE</td><td>ETF</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>—</td><td>WATCH ★★★★</td><td>—</td><td>—</td><td>IT sector ETF; AI-widener basket exposure</td></tr>
+      <tr><td>—</td><td>NIFTYBEES</td><td>NSE</td><td>ETF</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>—</td><td>WATCH ★★★</td><td>—</td><td>—</td><td>Index core; SIP anchor</td></tr>
+      <tr><td>—</td><td>VGK</td><td>NYSE</td><td>ETF</td><td>⚪</td><td>—</td><td>—</td><td>—</td><td>—</td><td>WATCH ★★★</td><td>—</td><td>—</td><td>Europe ETF; valuation gap vs US</td></tr>
+      <tr><td>—</td><td>E2E</td><td>NSE</td><td>F</td><td>⚪</td><td>C+</td><td>C</td><td>C</td><td>C</td><td>WATCH ★★</td><td>₹1,400–1,700</td><td>—</td><td>GPU cloud; no data flywheel; promoter pledge AVOID flag</td></tr>
+      <tr><td>—</td><td>COIN</td><td>NASDAQ</td><td>D</td><td>⚪</td><td>B-</td><td>B-</td><td>B-</td><td>B-</td><td>WATCH ★★</td><td>$110–125</td><td>—</td><td>Crypto exchange; cyclical; regulatory risk</td></tr>
+      <tr class="current-row"><td>—</td><td><strong>BELRISE</strong></td><td>NSE</td><td>C</td><td>⚪</td><td>B-</td><td>B-</td><td>B</td><td>B-</td><td><strong>WATCH ★★★</strong></td><td><strong>₹140–165</strong></td><td><strong>₹200</strong></td><td>Auto ancillary IPO; debt-free pivot + merger accretion + aerospace optionality</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 7: TECHNICAL ═══════════════════ -->
+<div id="tab7" class="tab-content">
+  <h2 class="section-title">Section A — Price Structure &amp; Multi-Timeframe Trend</h2>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Timeframe</th><th>Trend</th><th>Status</th></tr>
+      <tr><td class="td-label">Weekly</td><td>Bullish (per Dow Theory)</td><td style="color:var(--pass)">Higher highs since IPO ₹89 → ₹200</td></tr>
+      <tr><td class="td-label">Monthly</td><td>Neutral / Topping</td><td style="color:var(--marginal)">Consolidation below ₹200 resistance</td></tr>
+      <tr><td class="td-label">Daily</td><td>Bearish — below key MAs</td><td style="color:var(--fail)">Price below 20-EMA &amp; 50-EMA</td></tr>
+    </table>
+  </div>
+
+  <h2 class="section-title">Section B — Price Ladder</h2>
+  <div class="price-ladder">
+    <div class="level level-resistance"><div class="level-label">Strong Resistance (52W High)</div><div class="level-price">₹200.90</div></div>
+    <div class="level level-resistance"><div class="level-label">Resistance (Mar 2026 peak)</div><div class="level-price">₹190–195</div></div>
+    <div class="level level-resistance"><div class="level-label">20-EMA (falling)</div><div class="level-price">~₹170</div></div>
+    <div class="level level-resistance"><div class="level-label">50-EMA</div><div class="level-price">~₹169</div></div>
+    <div class="level level-current"><div class="level-label">⟶ CURRENT PRICE (Apr 8)</div><div class="level-price">~₹160–161 <span class="unverf">UNVERIFIED</span></div></div>
+    <div class="level level-support"><div class="level-label">Support / Entry Zone Floor</div><div class="level-price">₹148–155</div></div>
+    <div class="level level-support"><div class="level-label">Strong Support / 200-DMA est.</div><div class="level-price">~₹135–140</div></div>
+    <div class="level level-support"><div class="level-label">52W Low (IPO base)</div><div class="level-price">₹89.15</div></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section C — Moving Average Dashboard</h2>
+  <div class="grid-4">
+    <div class="card"><div class="card-title">20-EMA</div><div class="card-value">~₹170</div><div class="card-note" style="color:var(--fail);">Price below — Bearish</div></div>
+    <div class="card"><div class="card-title">50-EMA</div><div class="card-value">~₹169</div><div class="card-note" style="color:var(--fail);">Price below — Bearish</div></div>
+    <div class="card"><div class="card-title">100-DMA (est.)</div><div class="card-value">~₹150</div><div class="card-note" style="color:var(--pass);">Price above — Bullish</div></div>
+    <div class="card"><div class="card-title">200-DMA (est.)</div><div class="card-value">~₹135</div><div class="card-note" style="color:var(--pass);">Price above — Strong Base</div></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section D — Momentum Indicators</h2>
+  <div class="card">
+    <div class="macro-row"><span class="macro-label">RSI (14-day)</span><span class="macro-val">~35–38 <span class="est">ESTIMATED</span></span></div>
+    <div class="macro-row"><span class="macro-label">RSI Signal</span><span class="macro-val" style="color:var(--marginal);">Approaching oversold — BUY zone threshold is RSI &lt;40</span></div>
+    <div class="macro-row"><span class="macro-label">MACD</span><span class="macro-val" style="color:var(--fail);">Slightly negative — weak sell signal</span></div>
+    <div class="macro-row"><span class="macro-label">ADX</span><span class="macro-val">~28 — Neutral momentum</span></div>
+    <div class="macro-row"><span class="macro-label">RSI Weekly</span><span class="macro-val" style="color:var(--marginal);">~45–50 — Neutral / declining</span></div>
+    <div class="macro-row"><span class="macro-label">RSI Divergence</span><span class="macro-val">None identified <span class="est">ESTIMATED</span></span></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section E — Chart Pattern</h2>
+  <div class="card">
+    <p style="font-size:14px;color:var(--chrome-light);line-height:1.8;">Current pattern: <strong style="color:var(--cream);">Correction from all-time high (₹200.90) — potential bull flag base forming at ₹150–165 range.</strong> Stock listed Jun 2025 at ₹89.15, rallied to ₹200.90 (125% gain in ~9 months). Currently pulling back ~20% from peak. Given the fundamental improvement catalyst (merger + interest savings), this correction could be building a base for the next leg. Pattern invalidation: close below ₹130 (200-DMA break = bearish signal).</p>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section F — Trade Structure</h2>
+  <div class="card card-stripe-pass">
+    <div class="grid-3">
+      <div>
+        <div class="card-title">Primary Trigger</div>
+        <div class="moat-item"><div class="moat-name">Condition</div><div class="moat-desc">RSI &lt;40 daily + Price ≤ ₹155 + FY26 results positive</div></div>
+        <div class="moat-item"><div class="moat-name">Entry Zone</div><div class="mono" style="font-size:14px;color:var(--pass);">₹140 – ₹165</div></div>
+        <div class="moat-item"><div class="moat-name">Stop Loss</div><div class="mono" style="font-size:14px;color:var(--fail);">₹125 (close below 200-DMA)</div></div>
+      </div>
+      <div>
+        <div class="card-title">Targets</div>
+        <div class="moat-item"><div class="moat-name">T1 (12 months)</div><div class="mono" style="font-size:14px;color:var(--marginal);">₹185–195</div></div>
+        <div class="moat-item"><div class="moat-name">T2 (24 months)</div><div class="mono" style="font-size:14px;color:var(--pass);">₹210–230</div></div>
+        <div class="moat-item"><div class="moat-name">R:R at ₹155 entry</div><div class="mono" style="font-size:14px;color:var(--pass);">1:2.6 (vs T1 ₹190)</div></div>
+      </div>
+      <div>
+        <div class="card-title">Position Sizing</div>
+        <div class="moat-item"><div class="moat-name">Max Position</div><div class="mono" style="font-size:14px;color:var(--chrome);">3–4% portfolio</div></div>
+        <div class="moat-item"><div class="moat-name">Entry Strategy</div><div class="mono" style="font-size:14px;color:var(--chrome);">SIP — 1/3 at trigger, 2/3 on dips</div></div>
+        <div class="moat-item"><div class="moat-name">Catalyst Watch</div><div class="moat-desc">FY26 results + merger NCLT order</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section G — Technical Composite Score</h2>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Dimension</th><th>Score /5</th><th>Comment</th></tr>
+      <tr><td class="td-label">Trend (Multi-TF)</td><td class="mono">3/5</td><td>Weekly bullish; daily bearish; monthly neutral</td></tr>
+      <tr><td class="td-label">MA Position</td><td class="mono">2/5</td><td>Below 20&amp;50-EMA; above 100&amp;200-DMA</td></tr>
+      <tr><td class="td-label">Momentum (RSI/MACD)</td><td class="mono">3/5</td><td>RSI approaching oversold (near buy signal)</td></tr>
+      <tr><td class="td-label">Volume</td><td class="mono">3/5</td><td>Block deal bought by institutions Dec 2025 = positive</td></tr>
+      <tr><td class="td-label">Pattern</td><td class="mono">3/5</td><td>Post-ATH correction typical; base forming</td></tr>
+      <tr><td class="td-label">Entry Trigger Readiness</td><td class="mono">3/5</td><td>Close to primary entry zone but not yet triggered</td></tr>
+      <tr style="background:rgba(232,98,26,0.08);"><td class="td-label">COMPOSITE SCORE</td><td class="mono"><strong>17/30 = 57%</strong></td><td>Approaching entry; not yet confirmed BUY signal</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 8: SHAREHOLDING ═══════════════════ -->
+<div id="tab8" class="tab-content">
+  <h2 class="section-title">Section A — Promoter Holding Trend</h2>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Quarter</th><th>Promoter %</th><th>Pledged</th><th>Signal</th></tr>
+      <tr><td>Jun 2025 (Post-IPO)</td><td class="mono">73.01%</td><td class="mono" style="color:var(--pass);">NIL</td><td style="color:var(--pass);">✓ No dilution at IPO</td></tr>
+      <tr><td>Sep 2025</td><td class="mono">73.01%</td><td class="mono" style="color:var(--pass);">NIL</td><td style="color:var(--pass);">✓ Stable</td></tr>
+      <tr><td>Dec 2025</td><td class="mono">66.46%</td><td class="mono" style="color:var(--pass);">NIL</td><td style="color:var(--marginal);">⚠ −6.55% (Sumedh Tools block deal — explained)</td></tr>
+    </table>
+    <div style="margin-top:12px;padding:12px;background:rgba(240,165,0,0.06);border-radius:4px;border-left:3px solid var(--marginal);">
+      <strong style="color:var(--cream);">Block Deal Context:</strong><span style="font-size:13px;color:var(--chrome-light);"> Sumedh Tools Pvt Ltd (promoter entity, not core Badve family) sold 5.83 Cr shares (~₹900 Cr) on Dec 23, 2025 via block deal. Company stated "stake rationalisation, no change in management or control." Stock rose 13% on the news — institutional buying absorbed the block. NIL pledge = financial strength confirmed by CRISIL A1+ commercial paper rating.</span>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section B — FII + DII Holdings</h2>
+  <div class="card">
+    <table class="data-table">
+      <tr><th>Category</th><th>Jun 2025</th><th>Sep 2025</th><th>Dec 2025</th><th>Trend</th></tr>
+      <tr><td class="td-label">FII / FPIs</td><td>6.78%</td><td>7.67%</td><td>8.90%</td><td style="color:var(--pass);">▲ Consistent accumulation</td></tr>
+      <tr><td class="td-label">DIIs (total)</td><td>7.12%</td><td>4.00%</td><td>9.27%</td><td style="color:var(--pass);">▲ Strong recovery Q3</td></tr>
+      <tr><td class="td-label">— of which Mutual Funds</td><td>—</td><td>~3–4%</td><td>~8.86%</td><td style="color:var(--pass);">▲ MF inflows significant</td></tr>
+      <tr><td class="td-label">Public / Retail</td><td>13.08%</td><td>15.32%</td><td>15.37%</td><td style="color:var(--marginal);">→ Stable / slight rise</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-muted);padding:8px 14px;">Institutional accumulation (FII +2.12% + MF 8.86%) over 6 months = strong conviction buying post-IPO. Market capitalisation ~₹14,200 Cr — eligible for Nifty Midcap 250 basket (part of Nifty Total Market). Sectoral FII limits: no known foreign ownership restrictions in auto ancillary.</p>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section C — Free Float &amp; Ownership Structure</h2>
+  <div class="grid-3">
+    <div class="card"><div class="card-title">Free Float</div><div class="card-value">~33.5%</div><div class="card-note">At Dec 2025; 66.46% promoter lock</div></div>
+    <div class="card"><div class="card-title">Institutional Holding</div><div class="card-value">18.2%</div><div class="card-note">FII 8.9% + DII 9.27%; increasing</div></div>
+    <div class="card"><div class="card-title">Monthly SIP Estimate</div><div class="card-value">~₹15–20 Cr</div><div class="card-note">Rough estimate; small-mid cap basket exposure <span class="est">ESTIMATED</span></div></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section D — Shareholding Composition Summary</h2>
+  <div class="card">
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;color:var(--chrome);">Promoters</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--cream);">66.46%</span></div>
+      <div class="sh-bar"><div class="sh-fill" style="width:66.46%;background:linear-gradient(90deg,var(--forge),#C0442A);"></div></div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;color:var(--chrome);">FIIs</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--cream);">8.90%</span></div>
+      <div class="sh-bar"><div class="sh-fill" style="width:8.9%;background:var(--pass);"></div></div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;color:var(--chrome);">DIIs / MFs</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--cream);">9.27%</span></div>
+      <div class="sh-bar"><div class="sh-fill" style="width:9.27%;background:var(--marginal);"></div></div>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;color:var(--chrome);">Public / Retail</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--cream);">15.37%</span></div>
+      <div class="sh-bar"><div class="sh-fill" style="width:15.37%;background:var(--chrome);"></div></div>
+    </div>
+    <div class="card-note" style="margin-top:8px;">Total shareholders: 2,14,976 (Dec 2025) <span class="verified">VERIFIED</span></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section E — Ownership Scores</h2>
+  <div class="grid-2">
+    <div class="card card-stripe-pass">
+      <div class="card-title">Ownership Momentum Score /100</div>
+      <div class="card-value" style="color:var(--pass);">72/100</div>
+      <div class="card-note">FII: +2.12% (strong) | DII: +2.15% (recovering) | Promoter: stable at 66%+ | Block deal explained | Institutional buying absorbed block deal cleanly</div>
+    </div>
+    <div class="card card-stripe-warn">
+      <div class="card-title">Shareholding Risk Score /100</div>
+      <div class="card-value" style="color:var(--marginal);">28/100</div>
+      <div class="card-note">NIL pledge (low risk) | Promoter stake in comfortable zone | Risk: further promoter rationalization possible | Small/mid-cap category = higher volatility |Low risk overall</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 9: AI INTELLIGENCE ═══════════════════ -->
+<div id="tab9" class="tab-content">
+  <h2 class="section-title">Section A — AI Classification Dashboard</h2>
+  <div class="ai-badge-row">
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">Category</div>
+      <div class="ai-badge-val" style="color:var(--forge);">C</div>
+      <div style="font-size:10px;color:var(--text-muted);">Mature Compounder</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">AI Overlay</div>
+      <div class="ai-badge-val" style="color:var(--chrome);">⚪ NEUTRAL</div>
+      <div style="font-size:10px;color:var(--text-muted);">AI = tool, not moat</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">Data Flywheel</div>
+      <div class="ai-badge-val" style="color:var(--chrome);">COSMETIC</div>
+      <div style="font-size:10px;color:var(--text-muted);">0/10 score</div>
+    </div>
+    <div class="ai-badge-card">
+      <div class="ai-badge-label">Adoption Phase</div>
+      <div class="ai-badge-val" style="color:var(--chrome);">Phase 1–2</div>
+      <div style="font-size:10px;color:var(--text-muted);">Mfg automation</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:8px;">
+    <div class="card-title">Adoption Phase Evidence — Manufacturing AI</div>
+    <p style="font-size:13px;color:var(--chrome-light);line-height:1.8;">Auto component manufacturing AI is in Phase 1-2 globally — primarily process automation (predictive maintenance, quality vision systems, robotic welding). Belrise uses IoT-enabled manufacturing lines, automated riveting, conveyorized powder coating. This is standard Industry 4.0, not a competitive AI advantage. JIPM-certified TPM processes are the actual quality differentiator — human-led, not AI-led. <span class="est">ESTIMATED</span></p>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section B — Data Flywheel Deep-Dive</h2>
+  <div class="flywheel-box">
+    <div class="flywheel-badge">COSMETIC — Manufacturing IoT Only</div>
+    <div class="grid-3" style="gap:12px;margin-top:12px;">
+      <div>
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:8px;font-family:'JetBrains Mono',monospace;">Q1: Proprietary Training Data?</div>
+        <p style="font-size:13px;color:var(--chrome-light);">Manufacturing process data (defect rates, tool wear, cycle times) exists but is: (a) not unique to Belrise, (b) not shared across customer relationships, (c) not improving an AI that serves multiple stakeholders. Every auto manufacturer collects similar data.</p>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:8px;font-family:'JetBrains Mono',monospace;">Q2: AI Improves with More Users?</div>
+        <p style="font-size:13px;color:var(--chrome-light);">No measurable AI improvement with more OEM customers. A new Tata Motors contract doesn't make Belrise's pressing machines smarter for Bajaj Auto. Manufacturing AI serves individual plant operations — not a cross-customer learning loop.</p>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:8px;font-family:'JetBrains Mono',monospace;">Q3: Better AI = More Customers?</div>
+        <p style="font-size:13px;color:var(--chrome-light);">OEMs choose Belrise for: (1) quality (JIPM, PPAP), (2) cost, (3) proximity (plants near OEM plants), (4) multi-product capability. Not for AI sophistication. No flywheel. The competitive moat is human-operational, not AI-driven.</p>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:10px;background:rgba(138,155,176,0.05);border-radius:4px;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);">Flywheel Score: 0/10 | Data Quality: 0/3 | Improvement Evidence: 0/4 | Loop Speed: 0/3</span>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section C — AI Value Chain Position</h2>
+  <div class="value-chain">
+    <div class="vc-level"><div class="vc-level-num">1</div><div class="vc-level-name">Infrastructure</div></div>
+    <div class="vc-level"><div class="vc-level-num">2</div><div class="vc-level-name">Foundation Models</div></div>
+    <div class="vc-level"><div class="vc-level-num">3</div><div class="vc-level-name">AI Platforms</div></div>
+    <div class="vc-level"><div class="vc-level-num">4</div><div class="vc-level-name">Vertical Apps</div></div>
+    <div class="vc-level vc-active"><div class="vc-level-num">5</div><div class="vc-level-name">AI-Enabled Incumbent</div></div>
+  </div>
+  <div class="card">
+    <p style="font-size:13px;color:var(--chrome-light);line-height:1.8;"><strong style="color:var(--cream);">Level 5 — AI-Enabled Incumbent (loosely).</strong> Belrise is an incumbent auto ancillary manufacturer using AI operationally. However, unlike HDFC Bank or Naukri (where AI is measurably widening the moat), Belrise's AI use is at the efficiency/cost level only. Investment implication: the value thesis rests entirely on the fundamental industrial story (IPO deleveraging, merger, aerospace) — not on AI. Investment horizon: 3-5 years for base thesis; 5-7 years for aerospace/defence thesis. Standard valuation framework governs.</p>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section D — India AI Opportunity Context</h2>
+  <div class="card">
+    <div class="score-item"><span class="score-label"><strong>Advantage 1 — India Stack (UPI/Aadhaar) data:</strong> No. Auto ancillary does not benefit from UPI/Aadhaar AI context.</span><span class="score-badge sb-fail">None</span></div>
+    <div class="score-item"><span class="score-label"><strong>Advantage 2 — Vernacular AI:</strong> No. Manufacturing operations are language-neutral; worker communications in local languages but not an AI TAM expansion.</span><span class="score-badge sb-fail">None</span></div>
+    <div class="score-item"><span class="score-label"><strong>Advantage 3 — India Stack as infrastructure:</strong> No direct benefit. ONDC/OCEN irrelevant for B2B component manufacturing.</span><span class="score-badge sb-fail">None</span></div>
+    <div class="score-item"><span class="score-label"><strong>Advantage 4 — AI Talent Cost Arbitrage:</strong> Indirect — uses lower-cost Indian engineering talent for mould design R&amp;D (Badve Autocomps known for in-house R&amp;D). Not an AI talent play per se.</span><span class="score-badge sb-marg">Peripheral</span></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">India AI Theme Table</h2>
+  <div class="theme-grid">
+    <div class="theme-cell"><div class="theme-name">AI in banking/credit</div><div class="theme-rel" style="color:var(--chrome);">None</div></div>
+    <div class="theme-cell"><div class="theme-name">AI in logistics/supply chain</div><div class="theme-rel" style="color:var(--marginal);">Adjacent — delivery route AI affects customers</div></div>
+    <div class="theme-cell"><div class="theme-name">AI in manufacturing (Industry 4.0)</div><div class="theme-rel" style="color:var(--marginal);">Adjacent — IoT quality control only</div></div>
+    <div class="theme-cell"><div class="theme-name">EV / Autonomous vehicles</div><div class="theme-rel" style="color:var(--pass);">Directly — EV-agnostic + new EV content wins</div></div>
+    <div class="theme-cell"><div class="theme-name">Aerospace AI</div><div class="theme-rel" style="color:var(--marginal);">Adjacent — SDM + Chester Hall entry</div></div>
+    <div class="theme-cell"><div class="theme-name">Defence AI / Smart weapons</div><div class="theme-rel" style="color:var(--marginal);">Adjacent — Plasan Sasa partnership (armour, not AI)</div></div>
+  </div>
+
+  <div class="spacer"></div>
+  <h2 class="section-title">Section F — AI Opportunity Verdict</h2>
+  <div class="card">
+    <div class="ai-score-container">
+      <div>
+        <div class="ai-score-label">AI Opportunity Score</div>
+        <div class="ai-score-num">22</div>
+        <div class="ai-score-label">/ 100</div>
+      </div>
+      <div style="flex:1;">
+        <div class="ai-score-bar"><div class="ai-score-fill" style="width:22%;"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);">
+          <span>Data Flywheel: 0/20</span>
+          <span>Phase Timing: 5/20</span>
+          <span>Value Chain: 7/20</span>
+          <span>India AI: 2/20</span>
+          <span>Threat Resistance: 8/20</span>
+        </div>
+      </div>
+    </div>
+    <div style="padding:16px;border-top:1px solid var(--border);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--chrome);margin-bottom:8px;">PORTFOLIO ROLE (AI Score 22/100)</div>
+      <div class="score-badge sb-marg" style="display:inline-block;font-size:13px;padding:8px 18px;margin-bottom:12px;">AI NEUTRAL — Standard Fundamental Framework Governs</div>
+      <p style="font-size:13px;color:var(--chrome-light);line-height:1.8;">Belrise scores 22/100 — AI is neither a meaningful opportunity nor a threat for this business. Invest or avoid on fundamentals alone. The EV transition is the most relevant "technology" tailwind — EV-agnostic products + new EV content wins (steering columns, copper bus bars, BIW for EV SUVs) provide organic growth uplift. AI does not change the thesis. <strong style="color:var(--cream);">Investment horizon: 3–5 years for base thesis.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-text">
+    <strong style="color:var(--chrome-light);">DISCLAIMER:</strong> This report is for educational and research purposes only and does not constitute investment advice. All data is sourced from public filings, news, and third-party platforms including Screener.in, BSE/NSE filings, CRISIL, and company press releases. Prices marked [UNVERIFIED] should be confirmed before acting. Intrinsic value estimates are the analyst's own calculations based on publicly available data and involve significant uncertainty. Past performance does not guarantee future results. This report is produced as part of the Buffett Quality-Value Series — an independent equity research initiative — and has no affiliation with SEBI-registered research analysts. Please consult a registered investment advisor before making investment decisions.
+    <br><br>
+    <strong style="color:var(--chrome-light);">DATA CONFIDENCE KEY:</strong> <span class="verified">VERIFIED</span> = official filings / live search | <span class="est">ESTIMATED</span> = cross-referenced, high confidence | <span class="unverf">UNVERIFIED</span> = limited source
+    <br><br>
+    <strong style="color:var(--chrome-light);">FRAMEWORK:</strong> Buffett Quality-Value Series v5.0 · Report generated April 8, 2026 · Ticker: BELRISE (NSE) · Fonts: Playfair Display, Lato, JetBrains Mono (Google Fonts)
+  </div>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

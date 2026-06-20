@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMCI — Buffett Quality-Value Report v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #0D1627;
+  --navy2:   #111E35;
+  --navy3:   #1A2B45;
+  --cyan:    #00C8E8;
+  --cyan2:   #00A8C8;
+  --bone:    #F0EBE0;
+  --bone2:   #D8D2C5;
+  --red:     #E8304A;
+  --gold:    #D4A017;
+  --green:   #28C98A;
+  --amber:   #F59E0B;
+  --slate:   #8A9AB8;
+  --white:   #FFFFFF;
+  --text:    #C8D4E8;
+  --font-display: 'Syne', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+  --font-body:    'Outfit', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;overflow-x:hidden}
+a{color:var(--cyan);text-decoration:none}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#060E1C 0%,#0D1627 50%,#091830 100%);padding:28px 32px 20px;border-bottom:1px solid rgba(0,200,232,0.15);position:relative;overflow:hidden;max-height:220px}
+.hero::before{content:'';position:absolute;top:-40px;right:-60px;width:320px;height:320px;background:radial-gradient(circle,rgba(0,200,232,0.08) 0%,transparent 70%);pointer-events:none}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.hero-name{font-family:var(--font-display);font-size:2.6rem;font-weight:800;color:var(--white);letter-spacing:-1px;line-height:1}
+.hero-sub{font-family:var(--font-mono);font-size:11px;color:var(--slate);margin-top:4px;letter-spacing:1px}
+.hero-lede{font-size:13px;color:var(--bone2);margin-top:8px;max-width:700px;line-height:1.5}
+.verdict-badge{padding:8px 18px;border-radius:6px;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
+.vb-pass{background:rgba(100,100,120,0.3);border:2px solid #666;color:#CCC}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--font-mono);letter-spacing:.5px}
+.badge-b{background:rgba(0,200,232,0.15);border:1px solid var(--cyan2);color:var(--cyan)}
+.badge-widener{background:rgba(40,201,138,0.15);border:1px solid var(--green);color:var(--green)}
+.badge-neutral{background:rgba(138,154,184,0.15);border:1px solid var(--slate);color:var(--slate)}
+.badge-threat{background:rgba(232,48,74,0.15);border:1px solid var(--red);color:var(--red)}
+.badge-warn{background:rgba(232,48,74,0.2);border:1px solid var(--red);color:#FF8898}
+.badge-gold{background:rgba(212,160,23,0.15);border:1px solid var(--gold);color:var(--gold)}
+.pill-v{padding:3px 9px;border-radius:10px;font-size:10px;font-family:var(--font-mono)}
+.pill-verified{background:rgba(40,201,138,0.2);color:var(--green)}
+.pill-estimated{background:rgba(245,158,11,0.2);color:var(--amber)}
+.pill-unverified{background:rgba(232,48,74,0.2);color:var(--red)}
+
+/* TAB BAR */
+#tab-bar{position:sticky;top:0;z-index:100;background:var(--navy2);border-bottom:1px solid rgba(0,200,232,0.12);display:flex;overflow-x:auto;gap:0;scrollbar-width:none}
+#tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:12px 16px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--slate);background:none;border:none;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s;flex-shrink:0}
+.tab-btn:hover{color:var(--cyan);background:rgba(0,200,232,0.05)}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+
+/* CONTENT */
+.tab-content{display:none;padding:28px 32px;max-width:1200px;margin:0 auto}
+.tab-content.first-active{display:block}
+
+/* SECTION */
+.section-title{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(0,200,232,0.15)}
+.subsection-title{font-family:var(--font-display);font-size:.95rem;font-weight:600;color:var(--cyan2);margin:20px 0 10px}
+
+/* GRID */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:680px){.grid-3,.grid-4,.grid-2{grid-template-columns:1fr}}
+@media(max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr)}}
+
+/* METRIC CARD */
+.metric-card{background:var(--navy2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px 16px}
+.metric-card.border-green{border-left:3px solid var(--green)}
+.metric-card.border-red{border-left:3px solid var(--red)}
+.metric-card.border-amber{border-left:3px solid var(--amber)}
+.metric-card.border-cyan{border-left:3px solid var(--cyan)}
+.metric-card.border-slate{border-left:3px solid var(--slate)}
+.metric-label{font-family:var(--font-mono);font-size:10px;color:var(--slate);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.metric-value{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--white);line-height:1.1}
+.metric-sub{font-size:11px;color:var(--slate);margin-top:3px}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+.data-table th{background:var(--navy3);color:var(--slate);font-family:var(--font-mono);font-size:10px;letter-spacing:.8px;padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,200,232,0.15)}
+.data-table td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--bone)}
+.data-table tr:hover td{background:rgba(0,200,232,0.03)}
+.data-table .highlight{color:var(--cyan);font-weight:600}
+.td-green{color:var(--green);font-weight:600}
+.td-red{color:var(--red);font-weight:600}
+.td-amber{color:var(--amber)}
+.td-gold{color:var(--gold)}
+
+/* SCORECARD */
+.scorecard{background:var(--navy2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:16px}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);gap:12px}
+.sc-row:last-child{border-bottom:none}
+.sc-label{font-size:13px;color:var(--bone);flex:1}
+.sc-badge{padding:3px 12px;border-radius:12px;font-family:var(--font-mono);font-size:11px;font-weight:700}
+.sc-pass{background:rgba(40,201,138,0.2);color:var(--green)}
+.sc-marginal{background:rgba(245,158,11,0.2);color:var(--amber)}
+.sc-fail{background:rgba(232,48,74,0.2);color:var(--red)}
+
+/* VERDICT BOX */
+.verdict-box{background:linear-gradient(135deg,#0A0F1E,#141E30);border:2px solid #555;border-radius:12px;padding:28px;margin:20px 0}
+.verdict-box.pass-box{border-color:#666}
+.verdict-title{font-family:var(--font-display);font-size:1.8rem;font-weight:800;color:#CCC;margin-bottom:8px}
+.verdict-stars{font-size:1.4rem;margin:6px 0}
+.verdict-quote{font-style:italic;color:var(--slate);border-left:3px solid #555;padding-left:16px;margin-top:16px;font-size:13px}
+
+/* MOAT CARD */
+.moat-card{background:var(--navy2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:16px}
+.moat-name{font-family:var(--font-display);font-size:.9rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.moat-stars{color:var(--gold);font-size:1rem;margin-bottom:6px}
+.moat-desc{font-size:12px;color:var(--slate);line-height:1.5}
+
+/* FLYWHEEL BOX */
+.flywheel-box{background:linear-gradient(135deg,rgba(0,200,232,0.08),rgba(13,22,39,0.95));border:2px solid rgba(0,200,232,0.3);border-radius:12px;padding:24px;margin:16px 0}
+.flywheel-title{font-family:var(--font-display);font-size:1.1rem;font-weight:800;color:var(--cyan);margin-bottom:12px}
+.flywheel-badge{display:inline-block;padding:6px 20px;border-radius:20px;font-family:var(--font-mono);font-weight:700;font-size:13px;margin-bottom:12px}
+.fb-feature{background:rgba(245,158,11,0.2);border:1px solid var(--amber);color:var(--amber)}
+
+/* PILLAR GRADES */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+@media(max-width:680px){.pillar-grid{grid-template-columns:repeat(2,1fr)}}
+.pillar-item{background:var(--navy2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center}
+.pillar-name{font-family:var(--font-mono);font-size:10px;color:var(--slate);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.pillar-grade{font-family:var(--font-display);font-size:2rem;font-weight:800}
+.pg-green{color:var(--green)}
+.pg-amber{color:var(--amber)}
+.pg-red{color:var(--red)}
+.pg-slate{color:var(--slate)}
+
+/* UPGRADE CONDITIONS */
+.upgrade-item{background:var(--navy2);border:1px solid rgba(0,200,232,0.1);border-radius:8px;padding:12px 16px;margin:8px 0;display:flex;align-items:flex-start;gap:12px}
+.upgrade-num{background:var(--cyan);color:var(--navy);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;font-weight:700;flex-shrink:0}
+.upgrade-text{font-size:13px;color:var(--bone)}
+
+/* AI Intelligence */
+.ai-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.ai-badge-large{padding:10px 20px;border-radius:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.5px}
+.aib-cat{background:rgba(0,200,232,0.15);border:2px solid var(--cyan);color:var(--cyan)}
+.aib-widener{background:rgba(40,201,138,0.15);border:2px solid var(--green);color:var(--green)}
+.aib-feature{background:rgba(245,158,11,0.15);border:2px solid var(--amber);color:var(--amber)}
+.aib-phase{background:rgba(138,154,184,0.15);border:2px solid var(--slate);color:var(--slate)}
+
+/* AI SCORE GAUGE */
+.score-gauge{background:var(--navy2);border:1px solid rgba(0,200,232,0.2);border-radius:12px;padding:24px;text-align:center}
+.gauge-num{font-family:var(--font-display);font-size:3.5rem;font-weight:800;color:var(--cyan);line-height:1}
+.gauge-label{font-size:12px;color:var(--slate);margin-top:4px}
+.gauge-bar{background:rgba(255,255,255,0.08);border-radius:4px;height:8px;margin:12px 0;overflow:hidden}
+.gauge-fill{height:100%;background:linear-gradient(90deg,var(--cyan2),var(--cyan));border-radius:4px;transition:width .5s ease}
+
+/* VALUE CHAIN */
+.value-chain{display:flex;gap:0;margin:16px 0;overflow-x:auto}
+.vc-level{flex:1;padding:12px 10px;text-align:center;border:1px solid rgba(255,255,255,0.07);font-size:11px;min-width:100px;position:relative}
+.vc-level.active{background:rgba(0,200,232,0.15);border-color:var(--cyan);color:var(--cyan);font-weight:700}
+.vc-level:not(.active){color:var(--slate);background:var(--navy2)}
+.vc-label{font-family:var(--font-mono);font-size:9px;display:block;margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase;opacity:.7}
+
+/* MACRO CYCLE */
+.macro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}
+@media(max-width:680px){.macro-grid{grid-template-columns:1fr}}
+.macro-item{background:var(--navy2);border-radius:8px;padding:14px;border:1px solid rgba(255,255,255,0.07)}
+.macro-dim{font-family:var(--font-mono);font-size:10px;color:var(--slate);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.macro-status{font-family:var(--font-display);font-size:.85rem;font-weight:700;margin-bottom:4px}
+.ms-neutral{color:var(--slate)}
+.ms-tailwind{color:var(--green)}
+.ms-headwind{color:var(--red)}
+.ms-recovery{color:var(--cyan)}
+.ms-boom{color:var(--gold)}
+.macro-note{font-size:11px;color:var(--slate)}
+
+/* ROE/ROIC CARDS */
+.year-cards{display:flex;gap:8px;overflow-x:auto;margin:10px 0;padding-bottom:4px}
+.year-card{background:var(--navy2);border-radius:8px;padding:12px 14px;min-width:110px;flex-shrink:0;border:1px solid rgba(255,255,255,0.07);text-align:center}
+.yc-year{font-family:var(--font-mono);font-size:10px;color:var(--slate);margin-bottom:4px;letter-spacing:.5px}
+.yc-val{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--white)}
+.yc-good{color:var(--green)}
+.yc-mid{color:var(--amber)}
+.yc-bad{color:var(--red)}
+
+/* OWNER EARNINGS */
+.oe-box{background:linear-gradient(135deg,rgba(212,160,23,0.08),var(--navy2));border:1px solid rgba(212,160,23,0.3);border-radius:10px;padding:20px;margin:16px 0}
+.oe-title{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:12px}
+.oe-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
+.oe-row:last-child{border-bottom:none;font-weight:700;color:var(--white)}
+
+/* TECHNICAL */
+.trade-box{background:linear-gradient(135deg,rgba(0,200,232,0.05),var(--navy2));border:1px solid rgba(0,200,232,0.2);border-radius:10px;padding:20px;margin:16px 0}
+.trade-title{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--cyan);margin-bottom:12px}
+
+/* SHAREHOLDING */
+.sh-card{background:var(--navy2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:16px}
+.sh-entity{font-size:13px;color:var(--bone);display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.sh-entity:last-child{border-bottom:none}
+
+/* SENSITIVITY TABLE */
+.sens-table{display:grid;grid-template-columns:auto repeat(5,1fr);gap:1px;background:rgba(255,255,255,0.07);border-radius:8px;overflow:hidden;margin:12px 0;font-size:12px}
+.sens-cell{background:var(--navy2);padding:8px 10px;text-align:center;font-family:var(--font-mono)}
+.sens-header{background:var(--navy3);color:var(--slate);font-size:10px;letter-spacing:.5px}
+.sens-best{background:rgba(40,201,138,0.1);color:var(--green)}
+.sens-worst{background:rgba(232,48,74,0.1);color:var(--red)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--navy)}
+::-webkit-scrollbar-thumb{background:rgba(0,200,232,0.3);border-radius:2px}
+
+/* FOOTER */
+.footer{background:var(--navy2);border-top:1px solid rgba(0,200,232,0.1);padding:20px 32px;font-size:11px;color:var(--slate);line-height:1.7;margin-top:40px}
+
+/* WARN BOX */
+.warn-box{background:rgba(232,48,74,0.08);border:1px solid rgba(232,48,74,0.3);border-radius:8px;padding:14px 16px;margin:12px 0;font-size:13px;color:#FF8898}
+.warn-title{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--red);letter-spacing:.5px;margin-bottom:6px}
+
+/* INFO BOX */
+.info-box{background:rgba(0,200,232,0.06);border:1px solid rgba(0,200,232,0.2);border-radius:8px;padding:14px 16px;margin:12px 0;font-size:13px;color:var(--bone)}
+
+p{margin-bottom:10px;color:var(--text);font-size:14px;line-height:1.7}
+
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-name">SMCI</div>
+      <div class="hero-sub">SUPER MICRO COMPUTER, INC. · NASDAQ · AI INFRASTRUCTURE HARDWARE · BUFFETT QV SERIES v5.0</div>
+      <div class="hero-lede">Pick-and-shovel AI server leader now trading 51% below its 52-week high — DLC thermal architecture advantage vs. an existential governance crisis: DOJ criminal charges against co-founder, securities class action, prior auditor failure, and export-control violations create a risk profile that keeps this compellingly cheap stock firmly in PASS territory.</div>
+    </div>
+    <div class="verdict-badge vb-pass">PASS ⚠</div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-b">CATEGORY B</span>
+    <span class="badge badge-widener">🟢 AI WIDENER</span>
+    <span class="badge badge-warn">⚠ DOJ INDICTMENT</span>
+    <span class="badge badge-gold">AI PHASE 2</span>
+    <span class="badge badge-neutral">NASDAQ</span>
+    <span class="pill-v pill-verified">VERIFIED</span>
+    <span class="pill-v pill-estimated">ESTIMATED</span>
+    <span class="pill-v pill-unverified">UNVERIFIED</span>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 OVERVIEW</button>
+  <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 MACRO</button>
+  <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 FINANCIALS</button>
+  <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 MOAT</button>
+  <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 MANAGEMENT</button>
+  <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 VALUATION</button>
+  <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 VERDICT</button>
+  <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 TECHNICAL</button>
+  <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 SHAREHOLDING</button>
+  <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 AI INTEL</button>
+</div>
+
+<!-- ═══════════ TAB 0 — OVERVIEW ═══════════ -->
+<div class="tab-content" id="t0" style="display:block">
+  <div class="section-title">Business Overview</div>
+  <div class="grid-2" style="margin-bottom:20px">
+    <div>
+      <p>Super Micro Computer (SMCI) designs and manufactures application-optimised server and storage solutions purpose-built for AI, cloud, edge, and enterprise workloads. Founded in 1993 by Charles Liang in San Jose, it has evolved from a motherboard specialist into a full-stack data-centre infrastructure provider. Its "Building Block" philosophy — modular, open-architecture components combining CPUs, GPUs, memory, storage, and cooling — enables customised rack-scale deployments at speed.</p>
+      <p>SMCI's differentiated edge is its <strong style="color:var(--cyan)">Direct Liquid Cooling (DLC)</strong> technology. As NVIDIA's Blackwell/Rubin GPUs push thermal envelopes beyond what air cooling can handle, SMCI's capacity of 3,000 DLC racks/month (total capacity 6,000 racks/month) positions it as the preferred integrator. Its ability to design, qualify, and ship GPU servers within 6 weeks of a new chip launch is structurally faster than rivals Dell, HPE, and Lenovo. <span class="pill-v pill-estimated">ESTIMATED</span></p>
+      <p>Revenue has compounded at >65% annually over the past 3 years — driven entirely by AI infrastructure capex from hyperscalers, Neo-clouds, CSPs, and sovereign AI programs — reaching $22B in FY2025 and tracking toward $40B in FY2026. SMCI commands approximately 10% of the global AI server market. <span class="pill-v pill-verified">VERIFIED</span></p>
+    </div>
+    <div>
+      <div class="warn-box">
+        <div class="warn-title">⚠ CRITICAL GOVERNANCE RISK — READ BEFORE PROCEEDING</div>
+        On March 19, 2026, the DOJ unsealed a criminal indictment against three SMCI-associated individuals — including co-founder and SVP Yih-Shyan "Wally" Liaw — for an alleged $2.5B scheme to illegally divert AI servers to China between 2024–2025. The company itself is NOT indicted and is cooperating. A securities class action has been filed (class period April 2024–March 2026). Prior to this: Ernst & Young resigned as auditor in 2024; BDO now auditing; material weaknesses in internal controls disclosed. The DOJ event caused a 33.3% single-day stock drop on March 20, 2026. This governance cloud is the single largest risk factor overriding an otherwise compelling valuation.
+      </div>
+      <div class="grid-2" style="margin-top:14px">
+        <div class="metric-card border-cyan">
+          <div class="metric-label">Current Price <span class="pill-v pill-verified" style="font-size:9px">LIVE</span></div>
+          <div class="metric-value">$30.37</div>
+          <div class="metric-sub">May 19, 2026 · NASDAQ</div>
+        </div>
+        <div class="metric-card border-red">
+          <div class="metric-label">vs. 52-Wk High</div>
+          <div class="metric-value" style="color:var(--red)">−51%</div>
+          <div class="metric-sub">High: $62.36 / Low: $19.48</div>
+        </div>
+        <div class="metric-card border-amber">
+          <div class="metric-label">Market Cap</div>
+          <div class="metric-value">$18.5B</div>
+          <div class="metric-sub">601M shares outstanding</div>
+        </div>
+        <div class="metric-card border-green">
+          <div class="metric-label">FY2026 Rev Guide</div>
+          <div class="metric-value">$39–40B</div>
+          <div class="metric-sub">+78% YoY (FY25: $22B)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Why This Stock — Series Rationale</div>
+  <p>SMCI sits at the most contested intersection in global equity markets: AI infrastructure demand (hyper-bullish) vs. governance integrity (deeply bearish). At $30.37, the stock trades at ~10x forward earnings — a hardware compounder valuation — despite an underlying business growing at software-like rates. The framework challenge is that SMCI is a hardware company with razor-thin gross margins (~10%) but extraordinary revenue scale velocity. The Quality-Value Series examines it precisely because the disconnect between business quality (improving) and governance quality (severely deteriorating) creates either a once-in-a-decade entry point or a value trap with legal tail risk. The framework adaptation needed: this is Category B (US growth compounder), WACC elevated to 12% for governance risk, Pillar 3 graded D, and a mandatory governance discount of 20% applied to all IV estimates.</p>
+
+  <div class="section-title" style="margin-top:20px">Key Metrics Snapshot <span class="pill-v pill-verified">VERIFIED / ESTIMATED</span></div>
+  <div class="grid-4">
+    <div class="metric-card border-cyan"><div class="metric-label">FY2025 Revenue</div><div class="metric-value">$22.0B</div><div class="metric-sub">+47% YoY · FY24: $14.9B</div></div>
+    <div class="metric-card border-amber"><div class="metric-label">FY2025 Net Income</div><div class="metric-value">$1.05B</div><div class="metric-sub">Net margin 4.8% · ↓ from 7.7%</div></div>
+    <div class="metric-card border-red"><div class="metric-label">TTM FCF</div><div class="metric-value" style="color:var(--red)">−$6.85B</div><div class="metric-sub">Working capital buildup</div></div>
+    <div class="metric-card border-green"><div class="metric-label">Q3 FY26 Revenue</div><div class="metric-value">$10.2B</div><div class="metric-sub">+123% YoY · Non-GAAP EPS $0.84</div></div>
+    <div class="metric-card border-slate"><div class="metric-label">Trailing P/E</div><div class="metric-value">15.9x</div><div class="metric-sub">Forward P/E: 10.4x</div></div>
+    <div class="metric-card border-amber"><div class="metric-label">TTM Gross Margin</div><div class="metric-value">10.0%</div><div class="metric-sub">↓ from 15.5% (Q3'24)</div></div>
+    <div class="metric-card border-slate"><div class="metric-label">ROE (TTM)</div><div class="metric-value">17.9%</div><div class="metric-sub">ROIC (TTM): 10.4%</div></div>
+    <div class="metric-card border-red"><div class="metric-label">Net Debt</div><div class="metric-value">$7.85B</div><div class="metric-sub">Cash $1.3B · Debt $8.8B</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 1 — MACRO & GROWTH ═══════════ -->
+<div class="tab-content" id="t1">
+  <div class="section-title">Layer 1 — US Macro Anchor <span class="pill-v pill-verified">LIVE SEARCH</span></div>
+  <div class="info-box">US Nominal GDP ≈ Real GDP (~2.2%) + CPI (~2.4%) ≈ 4.5–4.6% = absolute terminal growth ceiling. 10-Year Treasury yield: ~4.56% (jumped to a one-year high May 19, 2026 — headwind for growth multiple expansion). Fed stance: Elevated/Cautious. AI capex cycle: Stage 2 (hyper-scalers accelerating, enterprise beginning). WTI crude: ~$104/bbl (potential headwind for data-centre power costs).</div>
+
+  <div class="subsection-title">Macro Cycle Status — US Dimensions</div>
+  <div class="macro-grid">
+    <div class="macro-item"><div class="macro-dim">AI Capex Cycle</div><div class="macro-status ms-boom">BOOM</div><div class="macro-note">Microsoft, Meta, Google spending $145B+ combined; SMCI backlog at record high</div></div>
+    <div class="macro-item"><div class="macro-dim">Rate Cycle (Fed)</div><div class="macro-status ms-headwind">HEADWIND</div><div class="macro-note">10-yr Treasury 4.56% — multiple compression risk; 30% of SMCI's debt is floating</div></div>
+    <div class="macro-item"><div class="macro-dim">Geopolitical / Export</div><div class="macro-status ms-headwind">HEADWIND</div><div class="macro-note">US-China AI export controls tightening; DOJ indictment directly linked to China server diversion</div></div>
+    <div class="macro-item"><div class="macro-dim">US GDP</div><div class="macro-status ms-neutral">NEUTRAL</div><div class="macro-note">Real GDP ~2.2%; nominal ~4.5% — soft landing trajectory, no recession</div></div>
+    <div class="macro-item"><div class="macro-dim">Data Centre Power</div><div class="macro-status ms-headwind">HEADWIND</div><div class="macro-note">Power grid constraints in US + rising energy costs delay data-centre builds; SMCI's Q3 rev miss partly attributed to "site readiness delays"</div></div>
+    <div class="macro-item"><div class="macro-dim">AI Adoption Cycle</div><div class="macro-status ms-boom">BOOM / TAILWIND</div><div class="macro-note">Phase 2 (scale): GPU infrastructure spending still accelerating; SMCI directly benefits</div></div>
+  </div>
+  <div class="info-box">Macro Composite: <strong style="color:var(--amber)">MIXED</strong> — AI capex boom offsets rate headwinds and geopolitical risk. AI Cycle Impact: <strong style="color:var(--green)">OPPORTUNITY</strong> (direct infrastructure play).</div>
+
+  <div class="section-title" style="margin-top:24px">Layer 2 — Sector Growth Derivation</div>
+  <table class="data-table">
+    <thead><tr><th>Sector</th><th>Stress</th><th>Base</th><th>Accel</th><th>AI Impact</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>AI Server / GPU Infrastructure</td><td class="td-amber">35%</td><td class="td-green">55%</td><td class="td-green">75%</td><td class="td-green">WIDENER / CORE</td><td><span class="pill-v pill-estimated">ESTIMATED</span></td></tr>
+      <tr><td>Data Centre Equipment (Global)</td><td>18%</td><td>25%</td><td>35%</td><td class="td-green">WIDENER</td><td><span class="pill-v pill-estimated">ESTIMATED</span></td></tr>
+      <tr><td>AI Liquid Cooling Systems</td><td>40%</td><td>65%</td><td>90%</td><td class="td-green">CORE</td><td><span class="pill-v pill-estimated">ESTIMATED</span></td></tr>
+      <tr><td>Enterprise Server (Traditional)</td><td>3%</td><td>6%</td><td>9%</td><td class="td-amber">NEUTRAL</td><td><span class="pill-v pill-estimated">ESTIMATED</span></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--slate)">AI is <strong style="color:var(--green)">accelerating</strong> server/infra sector growth by an estimated +25–40pp over the 3–5yr base. The DLC sub-segment is tracking 30%+ data-centre adoption in next 12 months per SMCI mgmt. <span class="pill-v pill-verified">VERIFIED (earnings call)</span></p>
+
+  <div class="section-title" style="margin-top:24px">Layer 3 — Company Alpha Over Sector</div>
+  <table class="data-table">
+    <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Market share gain (AI servers)</td><td class="td-amber">Active</td><td class="td-green">+5%</td><td class="td-amber">+2%</td><td>~10% market share; opportunity to grow vs Dell/HPE</td></tr>
+      <tr><td>Premiumisation / DLC leadership</td><td class="td-green">Active</td><td class="td-green">+8%</td><td class="td-green">+5%</td><td>DLC commands higher ASP and design win stickiness</td></tr>
+      <tr><td>Category expansion (DCBBS / software)</td><td class="td-amber">Forming</td><td class="td-amber">+3%</td><td class="td-green">+6%</td><td>Data Centre Building Block Solutions; software/services now 5%+ of revenue</td></tr>
+      <tr><td>Geographic expansion (Europe, Sovereign)</td><td class="td-green">Active</td><td class="td-green">+4%</td><td class="td-green">+3%</td><td>Europe +105% YoY in Q3 FY26; Sovereign AI programs accelerating</td></tr>
+      <tr><td>Pricing power</td><td class="td-red">Limited</td><td class="td-red">−2%</td><td class="td-red">−1%</td><td>Gross margin compressed 15%→10%; fierce competition from Dell</td></tr>
+      <tr><td>AI Alpha (6a cost + 6b market + 6c flywheel)</td><td class="td-amber">Partial</td><td class="td-amber">+2%</td><td class="td-amber">+3%</td><td>AI tools in design automation; no proprietary AI flywheel</td></tr>
+      <tr><td><strong>Total Alpha</strong></td><td>—</td><td class="td-green"><strong>+20%</strong></td><td class="td-green"><strong>+18%</strong></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="margin-top:24px">Growth Rate Summary Table</div>
+  <table class="data-table">
+    <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr></thead>
+    <tbody>
+      <tr><td>US Macro (Nominal GDP)</td><td>3.5%</td><td>4.5%</td><td>5.5%</td></tr>
+      <tr><td>Sector growth (AI servers)</td><td>35%</td><td>55%</td><td>75%</td></tr>
+      <tr><td>Company alpha</td><td>+10%</td><td>+20%</td><td>+28%</td></tr>
+      <tr><td>AI alpha (6a+6b+6c)</td><td>+1%</td><td>+2%</td><td>+4%</td></tr>
+      <tr><td><strong>Stage 1 Revenue CAGR (FY26–30)</strong></td><td class="td-amber"><strong>18%</strong></td><td class="td-green"><strong>30%</strong></td><td class="td-green"><strong>42%</strong></td></tr>
+      <tr><td>Stage 2 FCF CAGR (FY31–35)</td><td>8%</td><td>12%</td><td>18%</td></tr>
+      <tr><td>Terminal growth</td><td>2.5%</td><td>3.5%</td><td>4.5%</td></tr>
+      <tr><td>Gross margin direction</td><td class="td-red">Compress 8–9%</td><td class="td-amber">Stable 10–11%</td><td class="td-green">Expand 12–14%</td></tr>
+      <tr><td>Key risk</td><td>Dell price war + DOJ escalation</td><td>Supply chain + margin</td><td>Execution on $40B guidance</td></tr>
+    </tbody>
+  </table>
+  <div class="info-box" style="font-size:12px">
+    Sensitivity checks: A 1% change in terminal growth rate changes IV by approximately <strong style="color:var(--cyan)">7–9%</strong>. A 1% change in Stage 1 growth changes IV by approximately <strong style="color:var(--cyan)">4–6%</strong>. A 1x change in EV/Revenue multiple changes IV by approximately <strong style="color:var(--cyan)">$18–22 per share</strong>.
+  </div>
+</div>
+
+<!-- ═══════════ TAB 2 — FINANCIALS ═══════════ -->
+<div class="tab-content" id="t2">
+  <div class="section-title">5-Year Revenue & Profitability Trend <span class="pill-v pill-verified">VERIFIED</span></div>
+  <table class="data-table">
+    <thead><tr><th>Fiscal Year (Jun 30)</th><th>Revenue</th><th>Rev Growth</th><th>Gross Profit</th><th>Gross Margin</th><th>Net Income</th><th>Net Margin</th></tr></thead>
+    <tbody>
+      <tr><td>FY2021</td><td>$3.56B</td><td>—</td><td>~$534M</td><td class="td-gold">15.0%</td><td>~$231M</td><td>6.5%</td></tr>
+      <tr><td>FY2022</td><td>$5.20B</td><td class="td-green">+46%</td><td>~$780M</td><td class="td-green">15.0%</td><td>~$302M</td><td>5.8%</td></tr>
+      <tr><td>FY2023</td><td>$7.12B</td><td class="td-green">+37%</td><td>~$1.21B</td><td class="td-green">17.0%</td><td>~$640M</td><td>9.0%</td></tr>
+      <tr><td>FY2024</td><td>$14.94B</td><td class="td-green">+110%</td><td>~$2.30B</td><td class="td-amber">15.4%</td><td>~$1.15B</td><td>7.7%</td></tr>
+      <tr><td>FY2025</td><td>$22.03B</td><td class="td-green">+47%</td><td>$2.44B</td><td class="td-red">11.1%</td><td>$1.05B</td><td>4.8%</td></tr>
+      <tr><td><strong>FY2026E</strong></td><td class="td-cyan"><strong>$38.9–40.4B</strong></td><td class="td-green"><strong>+78%</strong></td><td>~$4.0B</td><td class="td-red"><strong>~10%</strong></td><td>~$1.8B</td><td>~4.5%</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--slate)"><span class="pill-v pill-estimated">ESTIMATED</span> FY2021–2022 are estimated; FY2023–2025 are verified from SEC filings/press releases; FY2026 from company guidance (Q3 FY2026 earnings, May 5, 2026).</p>
+
+  <div class="subsection-title">ROE & ROIC — 5-Year Trend</div>
+  <div class="year-cards">
+    <div class="year-card"><div class="yc-year">FY21 ROE</div><div class="yc-val yc-mid">~18%</div></div>
+    <div class="year-card"><div class="yc-year">FY22 ROE</div><div class="yc-val yc-mid">~17%</div></div>
+    <div class="year-card"><div class="yc-year">FY23 ROE</div><div class="yc-val yc-good">~28%</div></div>
+    <div class="year-card"><div class="yc-year">FY24 ROE</div><div class="yc-val yc-good">~32%</div></div>
+    <div class="year-card"><div class="yc-year">FY25 ROE</div><div class="yc-val yc-mid">~17.9%</div></div>
+    <div class="year-card"><div class="yc-year">TTM ROIC</div><div class="yc-val yc-bad">10.4%</div></div>
+  </div>
+  <p style="font-size:12px;color:var(--slate)"><span class="pill-v pill-estimated">ESTIMATED</span> ROE peaked in FY2024 during peak margin cycle; ROIC declining as debt increases and margins compress. ROIC of 10.4% is marginally above a 10% WACC proxy — barely covering cost of capital. This is the key financial fortress weakness. <span class="pill-v pill-verified">VERIFIED (TTM)</span></p>
+
+  <div class="section-title" style="margin-top:24px">Financial Fortress Scorecard — Category B</div>
+  <div class="scorecard">
+    <div class="sc-row"><span class="sc-label">□ ROE ≥15% for 5 consecutive years</span><span class="sc-badge sc-marginal">MARGINAL</span></div>
+    <div class="sc-row"><span class="sc-label">□ ROIC > WACC for 5 consecutive years (WACC ~12%)</span><span class="sc-badge sc-fail">FAIL — 10.4% ROIC &lt; 12% WACC</span></div>
+    <div class="sc-row"><span class="sc-label">□ Net cash preferred (penalty for net debt)</span><span class="sc-badge sc-fail">FAIL — Net Debt $7.85B</span></div>
+    <div class="sc-row"><span class="sc-label">□ Net profit margin ≥15%</span><span class="sc-badge sc-fail">FAIL — 4.8% FY25</span></div>
+    <div class="sc-row"><span class="sc-label">□ FCF positive + growing (FCF conversion ≥80%)</span><span class="sc-badge sc-fail">FAIL — FCF −$6.85B TTM</span></div>
+    <div class="sc-row"><span class="sc-label">□ Owner earnings ≥ net income</span><span class="sc-badge sc-fail">FAIL — WC buildup overwhelms earnings</span></div>
+    <div class="sc-row"><span class="sc-label">□ Pricing power proven (raised prices without volume loss)</span><span class="sc-badge sc-fail">FAIL — Gross margin 17% → 10%</span></div>
+    <div class="sc-row"><span class="sc-label">□ Revenue CAGR ≥ macro-derived sector CAGR</span><span class="sc-badge sc-pass">PASS — 65% 3yr CAGR vs sector ~25%</span></div>
+    <div class="sc-row"><span class="sc-label">□ Predictable / recurring revenue</span><span class="sc-badge sc-fail">FAIL — Lumpy, project-based; 27% customer concentration</span></div>
+    <div class="sc-row"><span class="sc-label">□ Capital-light model (high ROIC, low reinvestment)</span><span class="sc-badge sc-fail">FAIL — Capital-intensive hardware; massive inventory</span></div>
+    <div class="sc-row"><span class="sc-label">□ Dividend payout &lt;80% owner earnings</span><span class="sc-badge sc-pass">PASS — No dividend paid</span></div>
+  </div>
+
+  <div class="oe-box" style="margin-top:20px">
+    <div class="oe-title">Owner Earnings Box — FY2025 <span class="pill-v pill-estimated" style="font-size:10px">ESTIMATED</span></div>
+    <div class="oe-row"><span>GAAP Net Income</span><span>+$1,050M</span></div>
+    <div class="oe-row"><span>+ Depreciation & Amortisation</span><span>+$105M</span></div>
+    <div class="oe-row"><span>+ Stock-Based Compensation</span><span>+$180M</span></div>
+    <div class="oe-row"><span>− Maintenance CapEx (~$100M est.)</span><span>−$100M</span></div>
+    <div class="oe-row"><span>± Working Capital Changes (massive build)</span><span>−$5,800M</span></div>
+    <div class="oe-row"><span style="color:var(--red)"><strong>Conservative Owner Earnings</strong></span><span style="color:var(--red)"><strong>≈ −$4,565M</strong></span></div>
+    <div class="oe-row"><span style="color:var(--amber)"><strong>Base Owner Earnings (ex WC anomaly)</strong></span><span style="color:var(--amber)"><strong>≈ +$1,235M</strong></span></div>
+    <div style="font-size:11px;color:var(--slate);margin-top:8px">Note: The negative WC swing reflects pre-building inventory for FY2026 backlog. Once recognised as revenue, FCF should normalise sharply. This is the key bull case — the WC build is a timing mismatch, not a structural cash burn.</div>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">Earnings Quality — O'Glove Framework</div>
+  <div class="grid-3" style="margin-bottom:16px">
+    <div class="scorecard">
+      <div class="sc-row"><span class="sc-label"><strong>Test 1 — FCF Conversion (5yr CFO/NI)</strong></span><span class="sc-badge sc-fail">FAIL</span></div>
+      <div style="font-size:12px;color:var(--slate);padding:8px 0">CFO deeply negative in FY2026 due to inventory buildup ($6.6B cash used in Q3 FY26 operations alone). Structural or timing? Management calls it timing.</div>
+    </div>
+    <div class="scorecard">
+      <div class="sc-row"><span class="sc-label"><strong>Test 2 — DSO Trend (AR days)</strong></span><span class="sc-badge sc-marginal">MARGINAL</span></div>
+      <div style="font-size:12px;color:var(--slate);padding:8px 0">AR has grown significantly with revenue, but DSO appears stable at ~30–35 days; no alarming stretch, though large customers creating concentration risk.</div>
+    </div>
+    <div class="scorecard">
+      <div class="sc-row"><span class="sc-label"><strong>Test 3 — Inventory Days</strong></span><span class="sc-badge sc-fail">FAIL</span></div>
+      <div style="font-size:12px;color:var(--slate);padding:8px 0">Inventory building rapidly while revenue also growing; management frames as backlog pre-build but creates FCF optics issues. Massive red flag on surface; context needed.</div>
+    </div>
+    <div class="scorecard">
+      <div class="sc-row"><span class="sc-label"><strong>Test 4 — Accounting Policy Stability</strong></span><span class="sc-badge sc-fail">FAIL</span></div>
+      <div style="font-size:12px;color:var(--slate);padding:8px 0">EY resigned as auditor (Oct 2024); BDO engaged. Material weaknesses in internal controls disclosed. Inventory reserve adjustments made. Prior SEC investigation ongoing.</div>
+    </div>
+    <div class="scorecard">
+      <div class="sc-row"><span class="sc-label"><strong>Test 5 — Gross Margin Consistency</strong></span><span class="sc-badge sc-fail">FAIL</span></div>
+      <div style="font-size:12px;color:var(--slate);padding:8px 0">Gross margin declined from 17% (FY23) to 9.5% (Q4 FY25) — a 750bps compression. Partly competition (Dell pricing), partly product mix (lower-margin GPU servers). Recovery to 10.1% in Q3 FY26 is encouraging but fragile.</div>
+    </div>
+    <div class="scorecard" style="background:rgba(232,48,74,0.08);border-color:rgba(232,48,74,0.3)">
+      <div class="sc-row"><span class="sc-label"><strong>Overall Earnings Quality</strong></span><span class="sc-badge sc-fail">UNRELIABLE</span></div>
+      <div style="font-size:12px;color:var(--red);padding:8px 0">UNRELIABLE → CFO-only earnings + widen MoS by 10% + lean PASS. All 5 tests fail or marginal. Accounting history is a major concern. Apply 10% additional MoS over Cat B baseline 20%.</div>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    <div class="warn-title">⚠ EARNINGS QUALITY ADJUSTMENT</div>
+    Earnings quality = UNRELIABLE. Per framework: use CFO-only normalised earnings, apply +10% additional MoS (total MoS 30% vs Cat B standard 20%). Quality-adjusted FY2025 EPS: ~$1.20 (vs reported $1.77). All IV estimates in Tab 5 reflect this quality adjustment.
+  </div>
+</div>
+
+<!-- ═══════════ TAB 3 — MOAT ═══════════ -->
+<div class="tab-content" id="t3">
+  <div class="section-title">Economic Moat Analysis — Category B</div>
+  <p>SMCI's moat is real but narrow — an engineering moat rooted in speed, modularity, and thermal architecture — rather than the structural lock-in of software or the scale advantages of commodity hardware giants. It is NOT a commodity (framework E) because its design architecture and DLC leadership create meaningful differentiation. But it is also NOT a wide-moat business because margins are thin, competitors are large, and the product itself (servers) depreciates rapidly. ROIC of 10.4% sits in the "weak moat" zone (&lt;15%), confirming the grade.</p>
+
+  <div class="grid-3" style="margin-bottom:20px">
+    <div class="moat-card">
+      <div class="moat-name">Engineering Speed / First-to-Market</div>
+      <div class="moat-stars">★★★★</div>
+      <div class="moat-desc">Building Block architecture enables GPU server design-to-production in &lt;6 weeks vs. competitors' 3–6 months. This time advantage drives design wins at hyperscalers launching new AI clusters. <span class="pill-v pill-estimated">ESTIMATED</span></div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">Direct Liquid Cooling (DLC) Technology</div>
+      <div class="moat-stars">★★★★</div>
+      <div class="moat-desc">Proprietary DLC architecture for Blackwell/Rubin GPUs. 3,000 DLC racks/month capacity at scale. Management expects &gt;30% of new data centres to adopt liquid cooling in next 12 months. Patents and thermal engineering expertise create 12–18 month lead time advantage. <span class="pill-v pill-verified">VERIFIED</span></div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">Modular/Open-Architecture Ecosystem</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">Building Block modularity means customers can upgrade individual components without full system replacement — creating moderate switching costs for enterprise customers already invested in the architecture. Reduces to ★★ vs hyperscalers who multi-source.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">US-Based Manufacturing Advantage</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">San Jose + Malaysia + Taiwan manufacturing. New US facilities positioning SMCI as the "Made-in-America" AI server option — relevant for US government AI contracts and sovereign AI programs. Tariff tailwind vs Asian competitors. <span class="pill-v pill-verified">VERIFIED (earnings call)</span></div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">NVIDIA Partnership (Tier-1 integrator)</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">SMCI is a preferred integration partner for NVIDIA GPU platforms (H100/H200/B200/GB200). Early access to reference designs accelerates time-to-market. RISK: NVIDIA is also supplier concentration (64.4% of purchases) — dependency creates fragility. <span class="pill-v pill-verified">VERIFIED (10-K)</span></div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-name">Intangible Assets / Brand</div>
+      <div class="moat-stars">★★</div>
+      <div class="moat-desc">Brand recognition in hyperscaler/AI infrastructure market. Not a consumer brand moat — pure enterprise reputation, which can deteriorate quickly with governance scandals. Current DOJ indictment actively eroding this intangible. Downgraded from ★★★.</div>
+    </div>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">DATA FLYWHEEL VERDICT</div>
+    <div class="flywheel-badge fb-feature">★ FEATURE — SCORE: 3/10</div>
+    <p style="font-size:13px">SMCI is a hardware company. It does NOT have a meaningful data flywheel. Evaluation:</p>
+    <div class="grid-3" style="margin-top:12px">
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:12px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--slate);margin-bottom:6px">Q1: PROPRIETARY DATA?</div>
+        <div style="color:var(--amber);font-weight:600;font-size:13px">⚠ PARTIAL</div>
+        <div style="font-size:12px;color:var(--slate)">Telemetry from installed server base (thermal, workload patterns). Not easily monetisable. Score: 1/3</div>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:12px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--slate);margin-bottom:6px">Q2: AI IMPROVES WITH USERS?</div>
+        <div style="color:var(--red);font-weight:600;font-size:13px">✗ NO</div>
+        <div style="font-size:12px;color:var(--slate)">More server deployments do not meaningfully improve SMCI's thermal engineering AI. Hardware manufacturing is not self-reinforcing. Score: 0/4</div>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:12px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--slate);margin-bottom:6px">Q3: BETTER AI → MORE USERS?</div>
+        <div style="color:var(--red);font-weight:600;font-size:13px">✗ NO</div>
+        <div style="font-size:12px;color:var(--slate)">No self-reinforcing loop. Each server deployment is largely independent. Score: 0/3</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--slate);margin-top:12px">SMCI's competitive advantage is engineering agility, not a data flywheel. Moat grade NOT upgraded. Classification: FEATURE (AI tools used for design automation and predictive maintenance internally, but no customer-facing flywheel).</p>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">Macro Stress Test — Moat Resilience</div>
+  <table class="data-table">
+    <thead><tr><th>Moat Source</th><th>Stress Scenario</th><th>Assessment</th><th>Justification</th></tr></thead>
+    <tbody>
+      <tr><td>Engineering speed / DLC</td><td>Dell/HPE catch up on DLC</td><td class="td-amber">WEAKENS</td><td>Engineering lead is replicable with resources; timeline 18–24 months</td></tr>
+      <tr><td>US Manufacturing</td><td>US-China trade escalation</td><td class="td-green">STRENGTHENS</td><td>Onshore manufacturing becomes a competitive requirement for US gov contracts</td></tr>
+      <tr><td>NVIDIA partnership</td><td>NVIDIA diversifies integrators</td><td class="td-red">WEAKENS</td><td>If NVIDIA favours Dell for volume, SMCI loses early access advantage</td></tr>
+      <tr><td>Building Block modularity</td><td>Hyperscalers shift to custom ASICs</td><td class="td-red">WEAKENS</td><td>Google TPUs, Meta MTIA reduce GPU server TAM for SMCI</td></tr>
+      <tr><td>Brand / Reputation</td><td>DOJ investigation escalates to company</td><td class="td-red">WEAKENS severely</td><td>Criminal charges against company would cause customer defections</td></tr>
+    </tbody>
+  </table>
+
+  <div class="subsection-title">Moat Grade: <span style="color:var(--amber)">B−</span></div>
+  <p style="font-size:13px">ROIC of 10.4% falls in the "weak moat" zone (10–15%). Engineering speed creates a real but narrow moat. DLC leadership is the strongest structural advantage — if maintained, justifies B− rather than C+. The governance overhang actively erodes the intangible/brand moat component.</p>
+</div>
+
+<!-- ═══════════ TAB 4 — MANAGEMENT ═══════════ -->
+<div class="tab-content" id="t4">
+  <div class="section-title">Management Assessment — Pillar 3</div>
+
+  <div class="warn-box" style="margin-bottom:20px">
+    <div class="warn-title">⚠ CRITICAL — ACTIVE GOVERNANCE CRISIS</div>
+    <strong>March 19, 2026 DOJ Indictment:</strong> Co-founder Yih-Shyan "Wally" Liaw (SVP of Business Development & Board Director), a Taiwan general manager, and a third-party contractor indicted for conspiring to divert ~$2.5B of AI servers to China in violation of US export control laws (2024–2025). Liaw resigned from the Board on March 20, 2026. The company itself is NOT yet charged but is cooperating. <br><br>
+    This is the second major governance failure in 18 months: Ernst & Young resigned as SMCI's auditor in October 2024 due to integrity concerns; material weaknesses in internal controls over financial reporting were subsequently disclosed. A securities class action was filed (April 30, 2024 – March 19, 2026 class period, deadline May 26, 2026).
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <div class="subsection-title" style="margin-top:0">Management Strengths</div>
+      <div class="scorecard">
+        <div class="sc-row"><span class="sc-label">Charles Liang — Founder/CEO, significant insider ownership</span><span class="sc-badge sc-pass">POSITIVE</span></div>
+        <div class="sc-row"><span class="sc-label">Engineering-first culture; "Building Block" philosophy is his invention</span><span class="sc-badge sc-pass">POSITIVE</span></div>
+        <div class="sc-row"><span class="sc-label">FY2026 guidance of $38.9–40.4B shows operational confidence; backlog at record high</span><span class="sc-badge sc-pass">POSITIVE</span></div>
+        <div class="sc-row"><span class="sc-label">Manufacturing diversification (Malaysia, Taiwan, US) shows strategic foresight</span><span class="sc-badge sc-pass">POSITIVE</span></div>
+        <div class="sc-row"><span class="sc-label">Prompt appointment of Chief Compliance Officer post-indictment</span><span class="sc-badge sc-marginal">MARGINAL</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="subsection-title" style="margin-top:0">Management Concerns</div>
+      <div class="scorecard">
+        <div class="sc-row"><span class="sc-label">Co-founder criminally indicted — systemic governance failure, not isolated incident</span><span class="sc-badge sc-fail">CRITICAL FAIL</span></div>
+        <div class="sc-row"><span class="sc-label">EY auditor resignation (2024) — unprecedented for major US public company</span><span class="sc-badge sc-fail">CRITICAL FAIL</span></div>
+        <div class="sc-row"><span class="sc-label">Material weaknesses in internal controls disclosed in 10-K</span><span class="sc-badge sc-fail">FAIL</span></div>
+        <div class="sc-row"><span class="sc-label">Prior Hindenburg Research short report (2024) — alleged accounting irregularities</span><span class="sc-badge sc-fail">FAIL</span></div>
+        <div class="sc-row"><span class="sc-label">SEC investigation still ongoing (separate from DOJ)</span><span class="sc-badge sc-fail">FAIL</span></div>
+        <div class="sc-row"><span class="sc-label">Single customer = 27% of quarterly revenue — no disclosed concentration risk management</span><span class="sc-badge sc-fail">FAIL</span></div>
+        <div class="sc-row"><span class="sc-label">SVP Worldwide Sales retiring (May 2026) — potential talent drain</span><span class="sc-badge sc-marginal">MARGINAL</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">Capital Allocation Assessment</div>
+  <table class="data-table">
+    <thead><tr><th>Category</th><th>Observation</th><th>Quality</th></tr></thead>
+    <tbody>
+      <tr><td>Debt financing</td><td>$700M convertible notes issued at 2.25% (2028); total debt $8.8B — aggressive leverage for a hardware company</td><td class="td-amber">MARGINAL</td></tr>
+      <tr><td>CapEx</td><td>$180–200M FY2026 plan for manufacturing expansion — conservative relative to revenue scale; lean asset model</td><td class="td-green">PASS</td></tr>
+      <tr><td>Share dilution</td><td>Diluted share count ~675M for Q4 FY26 (vs ~600M earlier) — some dilution from convertible notes</td><td class="td-amber">MARGINAL</td></tr>
+      <tr><td>No dividend</td><td>Appropriate for growth phase — retain and reinvest</td><td class="td-green">PASS</td></tr>
+      <tr><td>Working capital</td><td>Massive inventory/WC build is operationally correct (backlog-driven) but created severe FCF optics</td><td class="td-amber">MARGINAL</td></tr>
+      <tr><td>Export compliance</td><td>$2.5B alleged illegal exports — catastrophic capital allocation failure from governance perspective</td><td class="td-red">CRITICAL FAIL</td></tr>
+    </tbody>
+  </table>
+
+  <div class="subsection-title">Management Grade: <span style="color:var(--red)">D</span></div>
+  <p style="font-size:13px;color:var(--text)">Two audit failures, one criminal indictment of a co-founder, one SEC investigation, and an alleged $2.5B illegal export scheme constitute a fundamental breakdown of governance. Charles Liang's engineering brilliance and founder alignment do not offset the systematic integrity failures at the SVP and board level. Grade: D. If the company itself is charged by DOJ, this immediately downgrades to D− and triggers framework AVOID.</p>
+
+  <div class="info-box" style="margin-top:16px">
+    <strong>Pledges:</strong> No significant promoter pledges (US stock — no promoter structure). Insider ownership: Charles Liang holds a significant stake (~14% historically) — alignment is present but insufficient to override governance failures. <span class="pill-v pill-estimated">ESTIMATED</span>
+  </div>
+</div>
+
+<!-- ═══════════ TAB 5 — VALUATION ═══════════ -->
+<div class="tab-content" id="t5">
+  <div class="warn-box">
+    <div class="warn-title">⚠ PRE-VALUATION ADJUSTMENTS APPLIED</div>
+    Earnings Quality = UNRELIABLE → CFO-normalised earnings used. Additional +10% MoS applied (total MoS 30% vs Cat B standard 20%). Governance risk discount 20% applied to all IV estimates. WACC elevated to 12% (vs. 10–12% US growth range). Quality-adjusted FY2026E EPS: ~$2.40–2.80 (GAAP).
+  </div>
+
+  <div class="section-title" style="margin-top:16px">Method 1 — 2-Stage DCF <span class="pill-v pill-estimated">ESTIMATED</span></div>
+  <table class="data-table">
+    <thead><tr><th>Year</th><th>EPS (STRESS)</th><th>EPS (BASE)</th><th>EPS (ACCEL)</th><th>PV Factor (12%)</th><th>PV BASE</th></tr></thead>
+    <tbody>
+      <tr><td>FY2026E</td><td>$2.10</td><td>$2.65</td><td>$3.20</td><td>0.893</td><td>$2.37</td></tr>
+      <tr><td>FY2027E</td><td>$2.30</td><td>$3.20</td><td>$4.40</td><td>0.797</td><td>$2.55</td></tr>
+      <tr><td>FY2028E</td><td>$2.50</td><td>$3.80</td><td>$5.80</td><td>0.712</td><td>$2.71</td></tr>
+      <tr><td>FY2029E</td><td>$2.70</td><td>$4.30</td><td>$7.40</td><td>0.636</td><td>$2.73</td></tr>
+      <tr><td>FY2030E</td><td>$2.90</td><td>$4.80</td><td>$9.20</td><td>0.567</td><td>$2.72</td></tr>
+      <tr><td>Terminal (20x P/E)</td><td>$43.5 PV</td><td>$72.0 PV</td><td>$138 PV</td><td>0.567</td><td>$40.82</td></tr>
+      <tr><td><strong>Gross IV</strong></td><td><strong>$47</strong></td><td><strong>$57.9</strong></td><td><strong>$87</strong></td><td></td><td></td></tr>
+      <tr><td>Governance Discount (−20%)</td><td class="td-red">$37.6</td><td class="td-amber">$46.3</td><td class="td-green">$69.6</td><td></td><td></td></tr>
+      <tr><td><strong>MoS Entry (30% haircut)</strong></td><td class="td-red"><strong>$26.3</strong></td><td class="td-amber"><strong>$32.4</strong></td><td class="td-green"><strong>$48.7</strong></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="margin-top:24px">Method 2 — Owner Earnings Capitalisation</div>
+  <p style="font-size:13px">Normalised Owner Earnings (ex WC anomaly): ~$1.3B = $1.93/share. Required Return 12%, macro-derived g 3.5%. Value = OE / (r − g) = $1.93 / 0.085 = <strong style="color:var(--cyan)">$22.7 per share</strong>. Post governance discount (−20%): <strong style="color:var(--amber)">$18.2</strong>. MoS entry (30%): <strong style="color:var(--red)">$12.7</strong>. This method severely penalises SMCI's thin margins and suggests caution. Floor value in stress scenario.</p>
+
+  <div class="section-title" style="margin-top:24px">Method 3 — EV/Revenue Multiple (Cat B adapted)</div>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th>FY2026 Revenue</th><th>EV/Rev Multiple</th><th>Implied EV</th><th>Less Debt $7.85B</th><th>Equity Value</th><th>Per Share (675M)</th></tr></thead>
+    <tbody>
+      <tr><td>Stress</td><td>$38.9B</td><td>0.5x</td><td>$19.5B</td><td>−$7.85B</td><td>$11.6B</td><td class="td-red">$17.2</td></tr>
+      <tr><td>Base</td><td>$40.0B</td><td>0.75x</td><td>$30.0B</td><td>−$7.85B</td><td>$22.1B</td><td class="td-amber">$32.8</td></tr>
+      <tr><td>Accel</td><td>$40.4B</td><td>1.0x</td><td>$40.4B</td><td>−$7.85B</td><td>$32.6B</td><td class="td-green">$48.3</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--slate)">Current EV/Revenue (TTM $33.7B): 0.78x — near fair value at base scenario. Governance discount already partially priced. <span class="pill-v pill-verified">VERIFIED (market data)</span></p>
+
+  <div class="section-title" style="margin-top:24px">Method 4 — P/E Earnings Power</div>
+  <div class="grid-3">
+    <div class="metric-card border-cyan"><div class="metric-label">Forward P/E (FY26E)</div><div class="metric-value">10.4x</div><div class="metric-sub">At $30.37 / $2.92 consensus EPS</div></div>
+    <div class="metric-card border-amber"><div class="metric-label">5-yr Avg P/E (normalised)</div><div class="metric-value">~22x</div><div class="metric-sub">Stock trading 53% below hist. avg P/E</div></div>
+    <div class="metric-card border-slate"><div class="metric-label">PEG Ratio</div><div class="metric-value">0.38</div><div class="metric-sub">Deeply undervalued on growth-adj basis</div></div>
+  </div>
+  <p style="font-size:13px;margin-top:12px">If governance resolves and SMCI re-rates to 15x forward EPS of $2.92, IV = <strong style="color:var(--green)">$43.8</strong>. If it re-rates to 20x (historical norm), IV = <strong style="color:var(--green)">$58.4</strong>. Both are well above current price, making this optically compelling — but only if the legal overhang lifts.</p>
+
+  <div class="section-title" style="margin-top:24px">Method 5 — Earnings Yield vs Treasury</div>
+  <table class="data-table">
+    <thead><tr><th>Metric</th><th>SMCI</th><th>10-yr Treasury</th><th>ERP</th></tr></thead>
+    <tbody>
+      <tr><td>Forward Earnings Yield (FY26E)</td><td class="td-green">9.6%</td><td>4.56%</td><td class="td-green">+5.0% positive ERP</td></tr>
+      <tr><td>FCF Yield (normalised)</td><td class="td-amber">6.5%</td><td>4.56%</td><td class="td-amber">+2.0% positive ERP</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="margin-top:24px">5-Method Summary Table</div>
+  <table class="data-table">
+    <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>Governance Disc.</th><th>MoS Entry</th></tr></thead>
+    <tbody>
+      <tr><td>DCF (2-Stage)</td><td class="td-red">$37.6</td><td class="td-amber">$46.3</td><td class="td-green">$69.6</td><td>−20%</td><td class="td-amber">$32.4</td></tr>
+      <tr><td>Owner Earnings Cap.</td><td class="td-red">$12.7</td><td class="td-amber">$18.2</td><td class="td-green">$28</td><td>−20%</td><td class="td-red">$12.7</td></tr>
+      <tr><td>EV/Revenue Multiple</td><td class="td-red">$17.2</td><td class="td-amber">$32.8</td><td class="td-green">$48.3</td><td>baked in</td><td class="td-amber">$22.9</td></tr>
+      <tr><td>P/E Earnings Power</td><td class="td-red">$28</td><td class="td-amber">$43.8</td><td class="td-green">$58.4</td><td>−20%</td><td class="td-amber">$30.7</td></tr>
+      <tr><td>Earnings Yield</td><td colspan="3" style="color:var(--slate)">Positive ERP — earnings yield supports value vs treasuries</td><td>—</td><td>—</td></tr>
+      <tr><td><strong>Blended Base IV (ex OE floor)</strong></td><td class="td-red"><strong>$22</strong></td><td class="td-amber"><strong>$38</strong></td><td class="td-green"><strong>$56</strong></td><td></td><td></td></tr>
+      <tr><td><strong>MoS Entry Zone (30% haircut)</strong></td><td class="td-red"><strong>$15–18</strong></td><td class="td-gold"><strong>$26–30</strong></td><td class="td-green"><strong>$39–46</strong></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="info-box"><strong>KEY OBSERVATION:</strong> At $30.37, SMCI is trading <em>at the upper end of its base MoS entry zone</em> ($26–30). Valuation is no longer the barrier — governance is. If DOJ resolves without corporate indictment, this is potentially a 40–90% re-rate opportunity. If DOJ charges the company itself, downside to $12–18 (OE capitalisation stress floor).</div>
+
+  <div class="section-title" style="margin-top:24px">DCF Sensitivity (Base Case)</div>
+  <div class="sens-table">
+    <div class="sens-cell sens-header">WACC \ Term g</div>
+    <div class="sens-cell sens-header">2.0%</div>
+    <div class="sens-cell sens-header">2.5%</div>
+    <div class="sens-cell sens-header">3.5%</div>
+    <div class="sens-cell sens-header">4.0%</div>
+    <div class="sens-cell sens-header">4.5%</div>
+    <div class="sens-cell">10%</div><div class="sens-cell sens-best">$53</div><div class="sens-cell sens-best">$56</div><div class="sens-cell sens-best">$65</div><div class="sens-cell sens-best">$70</div><div class="sens-cell sens-best">$78</div>
+    <div class="sens-cell">11%</div><div class="sens-cell">$44</div><div class="sens-cell">$47</div><div class="sens-cell">$54</div><div class="sens-cell">$58</div><div class="sens-cell sens-best">$63</div>
+    <div class="sens-cell" style="color:var(--cyan)">12% (base)</div><div class="sens-cell">$37</div><div class="sens-cell">$39</div><div class="sens-cell sens-best">$46</div><div class="sens-cell">$49</div><div class="sens-cell">$53</div>
+    <div class="sens-cell">13%</div><div class="sens-cell sens-worst">$31</div><div class="sens-cell">$33</div><div class="sens-cell">$39</div><div class="sens-cell">$41</div><div class="sens-cell">$45</div>
+    <div class="sens-cell">14%</div><div class="sens-cell sens-worst">$26</div><div class="sens-cell sens-worst">$28</div><div class="sens-cell">$32</div><div class="sens-cell">$34</div><div class="sens-cell">$37</div>
+  </div>
+  <p style="font-size:11px;color:var(--slate)">All values post-governance discount (−20%) and pre-MoS haircut. Current price $30.37 = roughly in the 13–14% WACC / 3.5% g zone — confirming stock is pricing in substantial governance risk premium.</p>
+
+  <div class="info-box" style="margin-top:16px">
+    <strong>Base IV: ~$38 | MoS Entry Zone: $26–30 | Current Price: $30.37</strong><br>
+    SMCI is at the MoS entry zone — IF governance resolves. The market is correctly pricing in governance risk. The investment thesis is binary: (1) DOJ resolves without company indictment → significant upside, (2) DOJ charges the company → substantial downside to $12–18.
+  </div>
+</div>
+
+<!-- ═══════════ TAB 6 — VERDICT ═══════════ -->
+<div class="tab-content" id="t6">
+  <div class="section-title">Four-Pillar Grades</div>
+  <div class="pillar-grid">
+    <div class="pillar-item"><div class="pillar-name">Moat</div><div class="pillar-grade pg-amber">B−</div><div style="font-size:11px;color:var(--slate);margin-top:4px">DLC + engineering speed; thin margins limit grade</div></div>
+    <div class="pillar-item"><div class="pillar-name">Quality</div><div class="pillar-grade pg-amber">C+</div><div style="font-size:11px;color:var(--slate);margin-top:4px">Revenue growth extraordinary; margins & FCF failing</div></div>
+    <div class="pillar-item"><div class="pillar-name">Management</div><div class="pillar-grade pg-red">D</div><div style="font-size:11px;color:var(--slate);margin-top:4px">DOJ indictment + auditor failure = critical governance break</div></div>
+    <div class="pillar-item"><div class="pillar-name">Valuation</div><div class="pillar-grade pg-amber">B+</div><div style="font-size:11px;color:var(--slate);margin-top:4px">10x forward P/E; at base MoS entry; binary outcome</div></div>
+  </div>
+
+  <div class="badges" style="margin:16px 0">
+    <span class="badge badge-b">CATEGORY B — HIGH-GROWTH GLOBAL COMPOUNDER</span>
+    <span class="badge badge-widener">🟢 AI WIDENER</span>
+    <span class="badge badge-warn">⚠ PILLAR 3 D GRADE</span>
+    <span class="badge badge-gold">FLYWHEEL: FEATURE</span>
+    <span class="badge badge-neutral">AI SCORE: 55/100</span>
+  </div>
+
+  <div class="verdict-box pass-box">
+    <div class="verdict-title">PASS ⚠</div>
+    <div class="verdict-stars">★★ / ★★★★★</div>
+    <p style="color:#CCC;margin-top:10px;font-size:14px">SMCI is an extraordinary revenue compounder trading at a genuinely cheap valuation — 10x forward earnings, 0.78x EV/Revenue, sitting at its base MoS entry zone. The AI infrastructure thesis is intact: DLC leadership, Building Block architecture, and a $40B FY2026 revenue guide backed by record backlog are all real. Yet the framework demands PASS because the governance situation constitutes an active red flag that overrides all other merits:</p>
+    <ul style="color:var(--bone2);font-size:13px;padding-left:20px;margin-top:8px;line-height:2">
+      <li>DOJ criminal indictment of co-founder for $2.5B illegal export scheme</li>
+      <li>Securities class action pending (deadline May 26, 2026)</li>
+      <li>Auditor resignation (EY, 2024) + material weaknesses in internal controls</li>
+      <li>SEC investigation ongoing</li>
+      <li>The company could be the next target of DOJ indictment</li>
+    </ul>
+    <div class="verdict-quote">
+      "Rule No.1: Never lose money. Rule No.2: Never forget Rule No.1." — Warren Buffett. <br>
+      SMCI's earnings quality is UNRELIABLE and management integrity has materially failed. No amount of revenue growth justifies owning a business where you cannot trust the numbers or the people running it — until trust is restored.
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">Upgrade Conditions — All Must Be Met to Reconsider</div>
+  <div class="upgrade-item"><div class="upgrade-num">1</div><div class="upgrade-text"><strong>DOJ resolves without corporate indictment:</strong> Department of Justice closes investigation or announces the company will not be charged — specifically, no deferred prosecution agreement (DPA) with criminal admission by SMCI as an entity.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">2</div><div class="upgrade-text"><strong>Material weakness remediation confirmed:</strong> BDO issues a clean opinion on FY2026 10-K with no material weaknesses in internal controls over financial reporting — filed on time and without qualification.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">3</div><div class="upgrade-text"><strong>Q4 FY2026 gross margin ≥ 9.0%:</strong> Confirms margin recovery is structural, not episodic. Reported in August 2026. Below 8% = bear case confirmed.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">4</div><div class="upgrade-text"><strong>Securities class action settled or dismissed:</strong> The class action (class period April 30, 2024 – March 19, 2026) is resolved without admissions. Outstanding legal liability quantified and manageable.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">5</div><div class="upgrade-text"><strong>FCF turns positive for 2 consecutive quarters:</strong> Confirms the WC build was timing-related and not structural cash burn. Target: CFO ≥ $500M per quarter for Q1+Q2 FY2027.</div></div>
+
+  <div class="section-title" style="margin-top:24px">Series Tracker</div>
+  <table class="data-table">
+    <thead><tr><th>Date</th><th>Stock</th><th>Verdict</th><th>Price at Analysis</th><th>Category</th><th>AI Overlay</th><th>Conditions Met</th></tr></thead>
+    <tbody>
+      <tr><td>May 20, 2026</td><td class="highlight">SMCI</td><td style="color:#CCC">PASS ⚠</td><td>$30.37</td><td>B</td><td class="td-green">🟢 WIDENER</td><td class="td-amber">0/5</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════ TAB 7 — TECHNICAL ═══════════ -->
+<div class="tab-content" id="t7">
+  <div class="section-title">A — Price Structure & Multi-Timeframe Trend</div>
+  <div class="grid-4">
+    <div class="metric-card border-red"><div class="metric-label">Current Price</div><div class="metric-value">$30.37</div><div class="metric-sub">May 19, 2026</div></div>
+    <div class="metric-card border-red"><div class="metric-label">52-Wk High</div><div class="metric-value">$62.36</div><div class="metric-sub">−51.3% from peak</div></div>
+    <div class="metric-card border-green"><div class="metric-label">52-Wk Low</div><div class="metric-value">$19.48</div><div class="metric-sub">+55.9% from trough</div></div>
+    <div class="metric-card border-amber"><div class="metric-label">YTD Performance</div><div class="metric-value">Flat</div><div class="metric-sub">+0% approx (began near $30)</div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:20px">B — Moving Average Dashboard</div>
+  <table class="data-table">
+    <thead><tr><th>MA Level</th><th>Value</th><th>Price vs MA</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>20-EMA (daily)</td><td>~$31.5 est.</td><td class="td-red">Below</td><td class="td-red">Bearish</td></tr>
+      <tr><td>50-DMA</td><td>$31.2</td><td class="td-red">Below</td><td class="td-red">Bearish</td></tr>
+      <tr><td>100-DMA</td><td>~$34 est.</td><td class="td-red">Below</td><td class="td-red">Bearish</td></tr>
+      <tr><td>200-DMA</td><td>$39.1</td><td class="td-red">Below (−22%)</td><td class="td-red">Bearish</td></tr>
+      <tr><td>Death Cross</td><td>50-DMA &lt; 200-DMA</td><td class="td-red">CONFIRMED</td><td class="td-red">Macro Bearish</td></tr>
+    </tbody>
+  </table>
+  <div class="warn-box">Death Cross confirmed (50 DMA $31.2 &lt; 200 DMA $39.1). Stock is below all major moving averages. Technically, this is a DOWNTREND structure. Bull case requires recapturing 50-DMA ($31.2) and then 100-DMA ($34) as resistance levels.</div>
+
+  <div class="section-title" style="margin-top:20px">C/D — Volume, RSI & Momentum</div>
+  <div class="grid-3">
+    <div class="metric-card border-amber"><div class="metric-label">RSI (14-day)</div><div class="metric-value">46.2</div><div class="metric-sub">Neutral territory — neither OB nor OS</div></div>
+    <div class="metric-card border-green"><div class="metric-label">MACD</div><div class="metric-value">Bullish</div><div class="metric-sub">MACD above signal line</div></div>
+    <div class="metric-card border-red"><div class="metric-label">Stochastic</div><div class="metric-value">Exit OB</div><div class="metric-sub">Exited overbought May 13 — bearish near-term</div></div>
+    <div class="metric-card border-amber"><div class="metric-label">Short Interest</div><div class="metric-value">14.4%</div><div class="metric-sub">86.79M shares short — elevated; short squeeze risk</div></div>
+    <div class="metric-card border-cyan"><div class="metric-label">Beta</div><div class="metric-value">1.68</div><div class="metric-sub">High volatility vs S&P 500</div></div>
+    <div class="metric-card border-slate"><div class="metric-label">Analyst Avg Target</div><div class="metric-value">$37.13</div><div class="metric-sub">+22% upside; 5 Buy / 3 Sell / 8 Hold</div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:20px">E — Chart Patterns</div>
+  <p>After the DOJ-induced collapse from ~$31 to $19.48 on March 20, 2026, SMCI formed a <strong style="color:var(--cyan)">V-bottom reversal</strong> pattern driven by the Q3 FY2026 earnings beat (May 5, 2026: +20% in after-hours). The stock attempted a recovery to $34–35 zone but has pulled back on broader market macro headwinds (oil spike, Treasury yield jump). The stock is now forming what appears to be a <strong style="color:var(--amber)">consolidation range</strong> between $28–34. Volume analysis: volume was highest on March 20 (capitulation) and May 5–6 (earnings reversal). Both events support a potential base formation, not continuation lower — but technicals alone cannot resolve the DOJ binary.</p>
+
+  <div class="trade-box">
+    <div class="trade-title">F — Trade Structure (Speculative — Governance Risk Acknowledged)</div>
+    <table class="data-table">
+      <thead><tr><th>Parameter</th><th>Level</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Entry (Speculative)</td><td class="td-amber">$26–28</td><td>Below current; MoS entry zone; near 52-wk low support</td></tr>
+        <tr><td>Stop Loss</td><td class="td-red">$18.00</td><td>Below 52-wk low of $19.48 — invalidates base</td></tr>
+        <tr><td>Target 1 (T1)</td><td class="td-green">$38–40</td><td>Base IV / 200-DMA recapture</td></tr>
+        <tr><td>Target 2 (T2)</td><td class="td-green">$50–55</td><td>Governance resolution + re-rating to 18x forward P/E</td></tr>
+        <tr><td>Risk-Reward</td><td class="td-green">1:2.8 at T1</td><td>From $27 entry: risk $9, reward $12–13</td></tr>
+        <tr><td>Position Size</td><td class="td-red">MAX 2% of portfolio</td><td>Governance risk → position size cap critical</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:var(--red);margin-top:8px">⚠ DO NOT trade based on this structure until at least 2 of the 5 Upgrade Conditions (Tab 6) are confirmed. This is for academic illustration only given PASS verdict.</p>
+  </div>
+
+  <div class="section-title" style="margin-top:20px">G — Technical Composite Score</div>
+  <table class="data-table">
+    <thead><tr><th>Dimension</th><th>Score /5</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Price structure (trend)</td><td class="td-red">1/5</td><td>Below all MAs; death cross confirmed</td></tr>
+      <tr><td>MA alignment</td><td class="td-red">1/5</td><td>All MAs bearish; price below 200 DMA by 22%</td></tr>
+      <tr><td>Volume / OBV</td><td class="td-amber">3/5</td><td>High-volume base formation post-DOJ drop</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td class="td-amber">3/5</td><td>RSI neutral; MACD briefly bullish but stochastic turning</td></tr>
+      <tr><td>Chart patterns</td><td class="td-amber">3/5</td><td>V-bottom reversal; consolidation range forming</td></tr>
+      <tr><td>Trade structure</td><td class="td-amber">2/5</td><td>Good R:R if entered at $26–28; but governance binary</td></tr>
+      <tr><td><strong>Composite</strong></td><td class="td-amber"><strong>13/30 (43%)</strong></td><td>Technically weak; base-building phase; not a buy signal</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════ TAB 8 — SHAREHOLDING ═══════════ -->
+<div class="tab-content" id="t8">
+  <div class="section-title">A — Institutional Ownership <span class="pill-v pill-verified">VERIFIED</span></div>
+  <div class="info-box">SMCI has 802 institutional owners and shareholders with 13D/G or 13F filings holding 332.3M shares (~55% of outstanding). Key institutions: Vanguard Group, BlackRock, Susquehanna International, State Street, Jane Street, Geode Capital, Morgan Stanley, Citadel. <strong style="color:var(--red)">Critical trend: In Q4 2025, UBS sold 74% of SMCI holdings and JPMorgan reduced its stake by over 81% following the governance concerns</strong> — institutional exodus is ongoing.</div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="sh-card">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--slate);letter-spacing:.5px;margin-bottom:10px">TOP INSTITUTIONAL HOLDERS (EST.) <span class="pill-v pill-estimated">ESTIMATED</span></div>
+      <div class="sh-entity"><span>Vanguard Group</span><span class="td-cyan">~7.5%</span></div>
+      <div class="sh-entity"><span>BlackRock</span><span class="td-cyan">~6.2%</span></div>
+      <div class="sh-entity"><span>State Street</span><span class="td-cyan">~3.1%</span></div>
+      <div class="sh-entity"><span>Geode Capital</span><span class="td-cyan">~1.8%</span></div>
+      <div class="sh-entity"><span>Charles Liang (Founder/CEO)</span><span style="color:var(--gold)">~14% est.</span></div>
+      <div class="sh-entity"><span>Other Institutional</span><span>~28%</span></div>
+      <div class="sh-entity"><span>Retail / Other</span><span>~39%</span></div>
+    </div>
+    <div class="sh-card">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--slate);letter-spacing:.5px;margin-bottom:10px">OWNERSHIP METRICS</div>
+      <div class="sh-entity"><span>Total Shares Outstanding</span><span>~601M (as of Mar 2026)</span></div>
+      <div class="sh-entity"><span>Diluted shares (Q4 FY26 est.)</span><span>~695M (convertible dilution)</span></div>
+      <div class="sh-entity"><span>Market Cap (@ $30.37)</span><span>~$18.5B</span></div>
+      <div class="sh-entity"><span>Free Float</span><span>~82% (ex Liang family)</span></div>
+      <div class="sh-entity"><span>Short Interest</span><span class="td-red">14.43% (86.79M shares)</span></div>
+      <div class="sh-entity"><span>Beta (1-yr)</span><span class="td-amber">1.68</span></div>
+      <div class="sh-entity"><span>10:1 Stock Split Date</span><span>October 1, 2024</span></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">B — Institutional Trend Analysis</div>
+  <div class="warn-box">
+    <div class="warn-title">⚠ INSTITUTIONAL EXODUS — SIGNIFICANT RED FLAG</div>
+    Q4 2025 and Q1 2026 saw major institutional selling following EY auditor resignation (Oct 2024) and DOJ indictment (March 2026). UBS (−74%), JPMorgan (−81%), D.E. Shaw (significant reduction) all reduced positions. This is a negative ownership momentum signal. Typically, institutional re-entry (minimum 2 consecutive quarters of building positions) is required before WATCH+ verdicts are appropriate.
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="metric-card border-red">
+      <div class="metric-label">Ownership Momentum Score</div>
+      <div class="metric-value" style="color:var(--red)">25/100</div>
+      <div class="metric-sub">Institutional selling; short interest elevated; founder holding stable</div>
+    </div>
+    <div class="metric-card border-amber">
+      <div class="metric-label">Shareholding Risk Score</div>
+      <div class="metric-value" style="color:var(--red)">78/100</div>
+      <div class="metric-sub">High short interest (14.4%) + customer concentration (27% one client) + institutional exodus = high risk</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:20px">C — Index & Market Parameters</div>
+  <table class="data-table">
+    <thead><tr><th>Index / Parameter</th><th>Status</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>S&P 500 Member</td><td class="td-amber">Under review</td><td>Was a member; governance concerns may affect index eligibility</td></tr>
+      <tr><td>NASDAQ-100 Member</td><td class="td-green">Yes</td><td>Passive index buying provides floor support</td></tr>
+      <tr><td>Large-Cap Status</td><td class="td-green">Yes ($10–200B)</td><td>Still qualifies despite correction</td></tr>
+      <tr><td>DOJ / SEC Investigation</td><td class="td-red">Active</td><td>May trigger index committee review</td></tr>
+      <tr><td>Short Squeeze Potential</td><td class="td-amber">Moderate</td><td>14.4% short float — any major positive catalyst could trigger covering</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════ TAB 9 — AI INTELLIGENCE ═══════════ -->
+<div class="tab-content" id="t9">
+  <div class="section-title">A — AI Classification Dashboard</div>
+  <div class="ai-badge-row">
+    <div class="ai-badge-large aib-cat">CATEGORY B — HIGH-GROWTH COMPOUNDER</div>
+    <div class="ai-badge-large aib-widener">🟢 AI WIDENER</div>
+    <div class="ai-badge-large aib-feature">FLYWHEEL: FEATURE ★</div>
+    <div class="ai-badge-large aib-phase">AI PHASE 2 — SCALING</div>
+  </div>
+  <p>SMCI is a <strong style="color:var(--cyan)">hardware-layer AI Widener</strong> — it is not an AI company itself but its core business is the physical infrastructure upon which AI runs. Every dollar of AI capex by hyperscalers and Neo-clouds creates direct demand for SMCI servers. DLC technology makes SMCI the preferred partner for next-generation GPU deployments, creating genuine (if replicable) competitive differentiation. AI adoption Phase 2 (Scaling) is the ideal phase for SMCI — massive infrastructure build-out with no end in sight. <span class="pill-v pill-verified">VERIFIED (earnings calls)</span></p>
+
+  <div class="section-title" style="margin-top:24px">B — Data Flywheel Deep-Dive</div>
+  <div class="flywheel-box">
+    <div class="flywheel-title">DATA FLYWHEEL ASSESSMENT — FEATURE (Score: 3/10)</div>
+    <div class="grid-3" style="margin-top:12px">
+      <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:14px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--slate);margin-bottom:8px">DATA QUALITY: 1/3</div>
+        <p style="font-size:12px">SMCI collects telemetry from installed server base — thermal performance, power efficiency, workload patterns. Volume: moderate (millions of servers). Uniqueness: LOW (competitors can collect similar data). Recency: HIGH (real-time). Outcome labels: poor (no feedback loop to improve AI for customers). Assessment: <span style="color:var(--amber)">MARGINAL DATA ASSET</span></p>
+      </div>
+      <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:14px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--slate);margin-bottom:8px">AI IMPROVEMENT: 0/4</div>
+        <p style="font-size:12px">More server deployments do NOT improve SMCI's engineering AI in any customer-facing way. Thermal simulation models improve marginally with more data but this is an internal engineering tool, not a customer value proposition. The core product (server hardware) does not become better as more customers use it. No evidence of data-driven product improvement at scale. <span style="color:var(--red)">FAIL</span></p>
+      </div>
+      <div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:14px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--slate);margin-bottom:8px">SELF-REINFORCING LOOP: 0/3</div>
+        <p style="font-size:12px">No feedback loop exists. Better servers attract customers based on performance specs and price, not AI capabilities. Once installed, SMCI servers do not generate proprietary data that flows back to improve SMCI's competitive position in a compounding way. <span style="color:var(--red)">FAIL</span></p>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--slate);margin-top:12px">SMCI's moat grade is NOT upgraded. Flywheel classification: FEATURE (AI tools used for internal engineering automation — server design simulation, thermal modeling, supply chain prediction — but these do not create compounding customer lock-in or a self-reinforcing competitive advantage).</p>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">C — AI Value Chain Position</div>
+  <div class="value-chain">
+    <div class="vc-level"><span class="vc-label">Level 1</span><strong>Infrastructure</strong><br><small style="color:var(--slate)">Nvidia, TSMC, AMD</small></div>
+    <div class="vc-level active"><span class="vc-label">Level 2 ← SMCI</span><strong>Integration / Systems</strong><br><small>AI server integrator; DLC rack systems; SMCI's level</small></div>
+    <div class="vc-level"><span class="vc-label">Level 3</span><strong>Platforms</strong><br><small style="color:var(--slate)">AWS, Azure, GCP, CoreWeave</small></div>
+    <div class="vc-level"><span class="vc-label">Level 4</span><strong>Vertical Apps</strong><br><small style="color:var(--slate)">Palantir, Snowflake, C3.ai</small></div>
+    <div class="vc-level"><span class="vc-label">Level 5</span><strong>AI-Enabled Incumbents</strong><br><small style="color:var(--slate)">Microsoft, Google, Meta</small></div>
+  </div>
+  <div class="info-box" style="margin-top:10px">
+    <strong>Level 2 (Integration) Investment Implications:</strong> Moderate duration (3–5yr investment horizon), commodity-adjacent risk (margins can erode as competition intensifies), but high cyclicality with AI capex cycle. Level 2 players benefit enormously in the scale phase (Phase 2) but face disintermediation risk if customers build direct chip-to-rack relationships (e.g., Google designing its own TPU clusters directly with ODMs). <span class="pill-v pill-estimated">ESTIMATED</span>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">D — India AI Opportunity (N/A for US Stock)</div>
+  <div class="info-box">SMCI is a US-listed company. India AI structural advantages assessment is not applicable. However, SMCI does have Sovereign AI exposure in India (Reliance, Tata partnerships for AI infrastructure are potential demand sources) — classified as international sovereign AI opportunity rather than India-Stack specific. <span class="pill-v pill-unverified">UNVERIFIED</span></div>
+
+  <div class="section-title" style="margin-top:24px">E — AI Threat Assessment (Not Applicable — Widener)</div>
+  <p style="font-size:13px">SMCI is not subject to AI threat in the traditional sense — it IS the infrastructure. The threat to SMCI is not AI disruption but rather: (1) commoditisation of server integration as Dell/HPE scale their DLC offerings, (2) hyperscaler verticalisation (designing their own servers via ODMs, bypassing integrators), and (3) new cooling technologies (immersion cooling vs DLC) potentially displacing SMCI's core advantage. These are business model risks, not AI disruption risks.</p>
+
+  <div class="section-title" style="margin-top:24px">F — AI Opportunity Score</div>
+  <div class="grid-2">
+    <div class="score-gauge">
+      <div class="gauge-num">55</div>
+      <div class="gauge-label">AI OPPORTUNITY SCORE / 100</div>
+      <div class="gauge-bar"><div class="gauge-fill" style="width:55%"></div></div>
+      <div style="font-size:12px;color:var(--amber);margin-top:8px;font-weight:600">PORTFOLIO ROLE: MONITOR (40–60)</div>
+      <div style="font-size:11px;color:var(--slate);margin-top:4px">High revenue leverage to AI capex cycle; limited flywheel; hardware margins; governance risk</div>
+    </div>
+    <div style="background:var(--navy2);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:16px">
+      <div class="subsection-title" style="margin-top:0">Score Breakdown</div>
+      <div class="sc-row"><span class="sc-label">Data Flywheel (/20)</span><span style="color:var(--red);font-weight:700">6/20</span></div>
+      <div class="sc-row"><span class="sc-label">Adoption Phase Timing (/20)</span><span style="color:var(--green);font-weight:700">16/20</span></div>
+      <div class="sc-row"><span class="sc-label">Value Chain Position (/20)</span><span style="color:var(--amber);font-weight:700">12/20</span></div>
+      <div class="sc-row"><span class="sc-label">AI Threat Resistance (/20)</span><span style="color:var(--amber);font-weight:700">13/20</span></div>
+      <div class="sc-row"><span class="sc-label">India Structural Advantage (/20)</span><span style="color:var(--slate);font-weight:700">8/20 (N/A adj.)</span></div>
+      <div class="sc-row" style="border-top:1px solid rgba(0,200,232,0.2);margin-top:4px;padding-top:8px"><span class="sc-label"><strong>Investment Horizon</strong></span><span style="color:var(--cyan);font-weight:700">3–5yr</span></div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:16px">
+    <strong>AI Investment Thesis in One Line:</strong> SMCI is the pick-and-shovel play on the AI infrastructure buildout — you don't need to predict which AI model wins, just that AI training and inference require massive compute — but at 10% gross margins and with co-founders facing criminal charges, the pick-and-shovel has a very rusty handle.
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>DISCLAIMER:</strong> This report is generated for informational and educational purposes only under the Buffett Quality-Value Series v5.0 analytical framework. It does not constitute investment advice, a solicitation to buy or sell securities, or a recommendation of any kind. All projections and estimates are forward-looking and subject to material uncertainty. Super Micro Computer, Inc. (SMCI) is subject to active DOJ investigation, securities class action litigation, and SEC inquiry — these create extraordinary legal uncertainty. Past performance is not indicative of future results. The author/system is not a registered investment advisor. This report has not been reviewed or approved by the SEC, FINRA, or any other regulatory authority. <strong>Do your own research. Consult a qualified financial advisor before investing.</strong><br><br>
+  Data sources: SEC filings (EDGAR), SMCI press releases, Q3 FY2026 earnings call transcript (May 5, 2026), Investing.com, StockAnalysis.com, Yahoo Finance, company 8-K filings. All verified data marked [VERIFIED]; estimates marked [ESTIMATED]; limited-source data marked [UNVERIFIED].<br><br>
+  Fonts: Syne (Display) · Space Mono (Monospace) · Outfit (Body) — Google Fonts. Report generated: May 20, 2026.
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

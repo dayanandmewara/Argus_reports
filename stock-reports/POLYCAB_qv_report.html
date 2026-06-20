@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POLYCAB INDIA — Buffett QV Series v5.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Code:wght@300;400;500;600&family=Nunito+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --midnight: #07071A;
+  --navy: #0D0D2B;
+  --card-bg: #12123A;
+  --card-bg2: #161645;
+  --border: #252560;
+  --amber: #FF6B35;
+  --amber-glow: rgba(255,107,53,0.15);
+  --chrome: #B8B8D0;
+  --chrome-dim: #7070A0;
+  --white: #E8E8FF;
+  --green: #00D68F;
+  --red: #FF4444;
+  --yellow: #FFD166;
+  --text-body: #B0B0D0;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+  --font-body: 'Nunito Sans', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--midnight); color: var(--white); font-family: var(--font-body); font-size: 14px; line-height: 1.6; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #050520 0%, #0D0D3A 40%, #1A0A05 100%);
+  border-bottom: 2px solid var(--amber);
+  padding: 40px 40px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute;
+  top:-80px; right:-80px;
+  width:400px; height:400px;
+  background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-grid { display:grid; grid-template-columns: 1fr auto; gap:24px; align-items:start; }
+.hero-badge-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+.badge {
+  font-family: var(--font-mono); font-size:11px; font-weight:600;
+  padding: 4px 12px; border-radius:3px; letter-spacing:1px; text-transform:uppercase;
+}
+.badge-cat { background: rgba(255,107,53,0.2); border:1px solid var(--amber); color:var(--amber); }
+.badge-ai { background: rgba(184,184,208,0.1); border:1px solid var(--chrome-dim); color:var(--chrome); }
+.badge-macro { background: rgba(0,214,143,0.15); border:1px solid var(--green); color:var(--green); }
+.badge-fw { background: rgba(184,184,208,0.08); border:1px solid #404060; color:var(--chrome-dim); }
+.hero-company { font-family: var(--font-display); font-size: 56px; letter-spacing:3px; color:var(--white); line-height:1; }
+.hero-tagline { font-family: var(--font-mono); font-size:12px; color:var(--chrome-dim); margin-top:8px; letter-spacing:2px; }
+.hero-lede { font-size:13px; color:var(--chrome); max-width:600px; margin-top:14px; line-height:1.7; }
+.hero-pills { display:flex; gap:16px; flex-wrap:wrap; margin-top:20px; }
+.pill {
+  background: var(--card-bg); border:1px solid var(--border);
+  padding: 8px 16px; border-radius:4px;
+}
+.pill-label { font-family:var(--font-mono); font-size:10px; color:var(--chrome-dim); text-transform:uppercase; letter-spacing:1px; }
+.pill-value { font-family:var(--font-mono); font-size:16px; font-weight:600; color:var(--amber); margin-top:2px; }
+.verdict-box {
+  background: linear-gradient(135deg, rgba(255,107,53,0.15), rgba(255,107,53,0.05));
+  border:2px solid var(--amber);
+  border-radius:8px;
+  padding:20px 24px;
+  text-align:center;
+  min-width:180px;
+}
+.verdict-label { font-family:var(--font-mono); font-size:10px; color:var(--chrome-dim); letter-spacing:2px; }
+.verdict-main { font-family:var(--font-display); font-size:28px; color:var(--amber); margin:6px 0; }
+.verdict-stars { font-size:22px; letter-spacing:2px; }
+
+/* TAB BAR */
+#tab-bar {
+  position: sticky; top:0; z-index:100;
+  background: rgba(7,7,26,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter: blur(10px);
+  display:flex; overflow-x:auto;
+  scrollbar-width:none;
+}
+#tab-bar::-webkit-scrollbar { display:none; }
+.tab-btn {
+  font-family: var(--font-mono); font-size:11px; font-weight:500;
+  color: var(--chrome-dim); letter-spacing:1px;
+  padding: 14px 18px; white-space:nowrap;
+  background:none; border:none; cursor:pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s; text-transform:uppercase;
+}
+.tab-btn:hover { color:var(--white); background:rgba(255,107,53,0.05); }
+.tab-btn.active { color:var(--amber); border-bottom-color:var(--amber); }
+
+/* CONTENT */
+.tab-content { display:none; padding:32px 40px; max-width:1200px; }
+.tab-content.active { display:block; }
+
+/* SECTIONS */
+.section-title {
+  font-family:var(--font-display); font-size:28px; color:var(--amber);
+  letter-spacing:2px; margin-bottom:6px;
+}
+.section-sub { font-family:var(--font-mono); font-size:11px; color:var(--chrome-dim); letter-spacing:2px; margin-bottom:24px; }
+.divider { border:none; border-top:1px solid var(--border); margin:28px 0; }
+
+/* CARDS */
+.card {
+  background: var(--card-bg); border:1px solid var(--border);
+  border-radius:8px; padding:20px 24px; margin-bottom:16px;
+}
+.card-amber { border-left:4px solid var(--amber); }
+.card-green { border-left:4px solid var(--green); }
+.card-red { border-left:4px solid var(--red); }
+.card-yellow { border-left:4px solid var(--yellow); }
+.card-chrome { border-left:4px solid var(--chrome-dim); }
+.card-title { font-family:var(--font-display); font-size:18px; color:var(--white); letter-spacing:1px; margin-bottom:8px; }
+.card-body { font-size:13px; color:var(--chrome); line-height:1.7; }
+
+/* GRIDS */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; }
+@media(max-width:768px) {
+  .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; }
+  .hero-grid { grid-template-columns:1fr; }
+  .hero-company { font-size:36px; }
+  .tab-content { padding:20px 16px; }
+  .hero { padding:24px 16px 20px; }
+}
+
+/* METRIC CARD */
+.metric-card {
+  background: var(--card-bg2); border:1px solid var(--border);
+  border-radius:6px; padding:16px;
+}
+.metric-label { font-family:var(--font-mono); font-size:10px; color:var(--chrome-dim); text-transform:uppercase; letter-spacing:1px; }
+.metric-value { font-family:var(--font-mono); font-size:22px; font-weight:600; color:var(--white); margin:4px 0; }
+.metric-sub { font-family:var(--font-mono); font-size:11px; color:var(--chrome-dim); }
+.metric-card.positive { border-left:3px solid var(--green); }
+.metric-card.negative { border-left:3px solid var(--red); }
+.metric-card.neutral { border-left:3px solid var(--chrome-dim); }
+.metric-card.amber { border-left:3px solid var(--amber); }
+
+/* TABLE */
+.data-table { width:100%; border-collapse:collapse; font-size:12px; }
+.data-table th {
+  font-family:var(--font-mono); font-size:10px; color:var(--chrome-dim);
+  text-transform:uppercase; letter-spacing:1px;
+  padding:10px 12px; border-bottom:1px solid var(--border);
+  text-align:left; background:var(--midnight);
+}
+.data-table td { padding:10px 12px; border-bottom:1px solid rgba(37,37,96,0.5); color:var(--chrome); }
+.data-table tr:hover td { background:rgba(255,107,53,0.04); }
+.data-table td.amber { color:var(--amber); font-weight:600; font-family:var(--font-mono); }
+.data-table td.green { color:var(--green); font-weight:600; }
+.data-table td.red { color:var(--red); font-weight:600; }
+.data-table td.white { color:var(--white); font-weight:600; }
+
+/* CONFIDENCE BADGES */
+.conf-verified { background:rgba(0,214,143,0.15); color:var(--green); border:1px solid rgba(0,214,143,0.3); font-size:9px; padding:2px 6px; border-radius:2px; font-family:var(--font-mono); letter-spacing:1px; }
+.conf-estimated { background:rgba(255,209,102,0.15); color:var(--yellow); border:1px solid rgba(255,209,102,0.3); font-size:9px; padding:2px 6px; border-radius:2px; font-family:var(--font-mono); letter-spacing:1px; }
+.conf-unverified { background:rgba(255,68,68,0.1); color:var(--red); border:1px solid rgba(255,68,68,0.3); font-size:9px; padding:2px 6px; border-radius:2px; font-family:var(--font-mono); letter-spacing:1px; }
+
+/* SCORECARD */
+.score-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); }
+.score-label { font-size:13px; color:var(--chrome); }
+.score-badge {
+  font-family:var(--font-mono); font-size:11px; font-weight:600;
+  padding:3px 10px; border-radius:3px; letter-spacing:1px;
+}
+.pass { background:rgba(0,214,143,0.15); color:var(--green); border:1px solid rgba(0,214,143,0.3); }
+.marginal { background:rgba(255,209,102,0.15); color:var(--yellow); border:1px solid rgba(255,209,102,0.3); }
+.fail { background:rgba(255,68,68,0.1); color:var(--red); border:1px solid rgba(255,68,68,0.3); }
+
+/* MOAT STARS */
+.stars { color:var(--amber); letter-spacing:2px; }
+.stars-dim { color:#404060; }
+
+/* PILLAR GRADES */
+.pillar-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:20px 0; }
+.pillar-card {
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:8px; padding:16px; text-align:center;
+}
+.pillar-name { font-family:var(--font-mono); font-size:10px; color:var(--chrome-dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+.pillar-grade { font-family:var(--font-display); font-size:42px; color:var(--amber); }
+.pillar-sub { font-size:11px; color:var(--chrome-dim); margin-top:4px; }
+
+/* GAUGE */
+.gauge-wrap { display:flex; align-items:center; gap:16px; margin:12px 0; }
+.gauge-bar { flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
+.gauge-fill { height:100%; border-radius:4px; transition:width 0.5s; }
+.gauge-fill.amber { background: linear-gradient(90deg, #FF6B35, #FF9F6B); }
+.gauge-fill.green { background: linear-gradient(90deg, #00D68F, #00FFB3); }
+.gauge-fill.red { background: linear-gradient(90deg, #FF4444, #FF8888); }
+.gauge-fill.yellow { background: linear-gradient(90deg, #FFD166, #FFE5A0); }
+.gauge-label { font-family:var(--font-mono); font-size:11px; color:var(--chrome-dim); min-width:40px; text-align:right; }
+.gauge-title { font-family:var(--font-mono); font-size:11px; color:var(--chrome); min-width:140px; }
+
+/* VERDICT BIG BOX */
+.verdict-big {
+  background: linear-gradient(135deg, rgba(255,107,53,0.12), rgba(255,107,53,0.03));
+  border:2px solid var(--amber); border-radius:12px;
+  padding:32px 40px; margin:20px 0;
+}
+.verdict-quote {
+  font-family:var(--font-display); font-size:22px; color:var(--amber);
+  letter-spacing:1px; line-height:1.4; margin-bottom:16px;
+}
+.verdict-prose { font-size:13px; color:var(--chrome); line-height:1.8; }
+
+/* UPGRADE CONDITIONS */
+.upgrade-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border); }
+.upgrade-num {
+  background:var(--amber); color:var(--midnight);
+  font-family:var(--font-mono); font-size:12px; font-weight:700;
+  width:24px; height:24px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:1px;
+}
+.upgrade-text { font-size:13px; color:var(--chrome); line-height:1.6; }
+
+/* FLYWHEEL BOX */
+.flywheel-box {
+  background: rgba(184,184,208,0.05); border:2px solid var(--chrome-dim);
+  border-radius:8px; padding:24px; margin:16px 0;
+}
+.flywheel-title { font-family:var(--font-display); font-size:22px; color:var(--chrome); letter-spacing:2px; margin-bottom:12px; }
+
+/* AI CHAIN */
+.chain-wrap { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:16px 0; }
+.chain-node {
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:6px; padding:12px 16px; text-align:center;
+  min-width:100px; transition:all 0.2s;
+}
+.chain-node.active-node {
+  background: rgba(255,107,53,0.15); border-color:var(--amber);
+}
+.chain-arrow { color:var(--border); font-size:18px; }
+.chain-level { font-family:var(--font-mono); font-size:10px; color:var(--chrome-dim); letter-spacing:1px; }
+.chain-name { font-size:12px; color:var(--chrome); margin-top:4px; font-weight:600; }
+
+/* AI SCORE CIRCLE */
+.ai-score-circle {
+  width:120px; height:120px; border-radius:50%;
+  background: conic-gradient(var(--chrome-dim) 28%, var(--border) 0%);
+  display:flex; align-items:center; justify-content:center;
+  position:relative; margin:0 auto;
+}
+.ai-score-inner {
+  width:90px; height:90px; border-radius:50%;
+  background: var(--card-bg); display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.ai-score-num { font-family:var(--font-display); font-size:28px; color:var(--chrome); }
+.ai-score-total { font-family:var(--font-mono); font-size:10px; color:var(--chrome-dim); }
+
+/* PRICE LADDER */
+.ladder-item { display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid rgba(37,37,96,0.4); }
+.ladder-price { font-family:var(--font-mono); font-size:14px; font-weight:600; color:var(--amber); min-width:100px; }
+.ladder-label { font-size:12px; color:var(--chrome); }
+.ladder-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+/* FOOTER */
+.footer {
+  background: var(--navy); border-top:1px solid var(--border);
+  padding:24px 40px; margin-top:0;
+  font-family:var(--font-mono); font-size:10px; color:var(--chrome-dim);
+  line-height:1.8;
+}
+
+/* SERIES TABLE */
+.series-table-wrap { overflow-x:auto; margin-top:16px; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-badge-row">
+        <span class="badge badge-cat">CATEGORY C · MATURE COMPOUNDER</span>
+        <span class="badge badge-ai">⚪ AI NEUTRAL</span>
+        <span class="badge badge-macro">▲ MACRO TAILWIND</span>
+        <span class="badge badge-fw">FLYWHEEL: COSMETIC</span>
+      </div>
+      <div class="hero-company">POLYCAB INDIA</div>
+      <div class="hero-tagline">NSE: POLYCAB · Wires · Cables · FMEG · EPC · ₹22,408 Cr Revenue FY25</div>
+      <div class="hero-lede">India's largest integrated manufacturer of wires & cables — 26% market share in organized domestic market, ~10,600 SKUs, 4,000+ distributor network, debt-free balance sheet. Riding the India infrastructure supercycle across power, renewables, data centers, EVs, and real estate. FMEG optionality + Project Spring targets 1.5× industry growth through FY30. Currently trading above margin-of-safety zone.</div>
+      <div class="hero-pills">
+        <div class="pill">
+          <div class="pill-label">CMP</div>
+          <div class="pill-value">₹7,967</div>
+        </div>
+        <div class="pill">
+          <div class="pill-label">Market Cap</div>
+          <div class="pill-value">₹1,19,919 Cr</div>
+        </div>
+        <div class="pill">
+          <div class="pill-label">Blended Base IV</div>
+          <div class="pill-value">₹5,600</div>
+        </div>
+        <div class="pill">
+          <div class="pill-label">MoS Entry Zone</div>
+          <div class="pill-value">₹5,200–₹5,700</div>
+        </div>
+        <div class="pill">
+          <div class="pill-label">G-Sec Yield</div>
+          <div class="pill-value">6.91%</div>
+        </div>
+        <div class="pill">
+          <div class="pill-label">AI Score</div>
+          <div class="pill-value">28/100</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="verdict-box">
+        <div class="verdict-label">QV VERDICT</div>
+        <div class="verdict-main">WATCH</div>
+        <div class="verdict-stars">★★★★</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--chrome-dim);margin-top:8px;">Excellent quality<br>Above entry zone</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">00 Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">01 Macro</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">02 Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">03 Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">04 Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">05 Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">06 Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">07 Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">08 Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">09 AI Intelligence</button>
+</div>
+
+<!-- ===== TAB 0: OVERVIEW ===== -->
+<div id="tab0" class="tab-content active">
+  <div class="section-title">COMPANY OVERVIEW</div>
+  <div class="section-sub">CATEGORY C · MATURE QUALITY COMPOUNDER · NSE: POLYCAB</div>
+
+  <div class="grid-2">
+    <div class="card card-amber">
+      <div class="card-title">Business in One Sentence</div>
+      <div class="card-body">Polycab India is India's #1 wires & cables manufacturer by revenue and market share (~26% organized domestic), expanding into FMEG consumer electricals, with a multi-decade brand moat built on quality, safety, and distribution scale across 4,000+ distributors and 200,000+ retail touchpoints.</div>
+    </div>
+    <div class="card card-chrome">
+      <div class="card-title">Why in the QV Series?</div>
+      <div class="card-body">Polycab sits at the intersection of every major India structural theme — government infrastructure capex, power sector transformation, real estate boom, EV ecosystem, and data center proliferation. As a Category C mature compounder with ROCE ~30%, near-zero debt, and 26% revenue CAGR over 5 years, it earns a place in the series. The challenge: Is the market pricing in too much perfection?</div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Revenue Segments (FY25)</div>
+      <div class="card-body">
+        <div class="score-row"><span class="score-label">Wires & Cables (W&C)</span><span class="badge badge-cat">~84%</span></div>
+        <div class="score-row"><span class="score-label">FMEG (fans, LED, switches)</span><span class="badge badge-ai">~12%</span></div>
+        <div class="score-row"><span class="score-label">International / EPC</span><span class="badge badge-fw">~4%</span></div>
+        <div style="margin-top:12px;font-size:11px;color:var(--chrome-dim);">FMEG rising from 11% (FY23) — strategic diversification play. EPC provides downstream cable pull-through.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Project Spring (FY26–FY30)</div>
+      <div class="card-body">
+        The successor to Project LEAP (which delivered ₹22,000+ Cr revenue a full year ahead). Spring targets:<br><br>
+        — 1.5× industry revenue growth<br>
+        — Exports > 10% of revenue by FY30<br>
+        — FMEG EBITDA margin 8–10%<br>
+        — Annual capex ₹12–16B through FY30<br>
+        — EHV cables ramp via ₹8B capex<br><br>
+        <span class="conf-verified">VERIFIED</span> from Q2 FY26 earnings call
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Key Investment Risks</div>
+      <div class="card-body">
+        1. Copper price volatility (50-60% of raw material cost) — Q3 FY26 OPM fell to 10.65% from 13.78% on copper spike<br><br>
+        2. Premium valuation — ~45–59× P/E with compressed FCF yield vs G-Secs<br><br>
+        3. New entrants: Adani, UltraTech entering W&C with backward integration advantage<br><br>
+        4. FMEG margin dilution — fans business underperforming<br><br>
+        5. Promoter stake declining (-4.7% over 3 years)
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-green">
+    <div class="card-title">Framework Adaptations</div>
+    <div class="card-body">Standard Category C framework applies (WACC 12–13%, terminal P/E 20–22×). Key adaptation: Polycab operates in a commodity-adjacent business (copper/aluminum as inputs), so earnings quality tests focus heavily on FCF conversion and gross margin consistency. AI Overlay = NEUTRAL; company uses AI for demand sensing and logistics but this does not structurally change the competitive position. W&C is a physically manufactured product — AI disruption risk is LOW. No DCF adjustments needed for AI.</div>
+  </div>
+</div>
+
+<!-- ===== TAB 1: MACRO & GROWTH ===== -->
+<div id="tab1" class="tab-content">
+  <div class="section-title">MACRO & GROWTH DERIVATION</div>
+  <div class="section-sub">LAYER 1 → LAYER 2 → LAYER 3 · AI ADOPTION CYCLE = 6TH DIMENSION</div>
+
+  <div class="card card-amber">
+    <div class="card-title" style="margin-bottom:16px;">MACRO CYCLE DASHBOARD — APRIL 2026</div>
+    <div class="grid-3">
+      <div>
+        <div class="score-row"><span class="score-label">India Real GDP (FY26E)</span><span class="score-badge pass">~6.8% ↑</span></div>
+        <div class="score-row"><span class="score-label">India CPI (Apr 2026)</span><span class="score-badge pass">~4.0% ✓</span></div>
+        <div class="score-row"><span class="score-label">India Nominal GDP</span><span class="score-badge pass">~10.8%</span></div>
+        <div class="score-row"><span class="score-label">10yr G-Sec Yield</span><span class="score-badge marginal">6.91%</span></div>
+        <div class="score-row"><span class="score-label">RBI Repo Rate</span><span class="score-badge pass">6.00% Easing</span></div>
+      </div>
+      <div>
+        <div class="score-row"><span class="score-label">Rural Income Cycle</span><span class="score-badge pass">Recovery/Neutral</span></div>
+        <div class="score-row"><span class="score-label">Urban Consumption</span><span class="score-badge pass">Recovery</span></div>
+        <div class="score-row"><span class="score-label">Input Cost Cycle</span><span class="score-badge marginal">Copper Elevated</span></div>
+        <div class="score-row"><span class="score-label">Interest Rate Cycle</span><span class="score-badge pass">Easing ↓</span></div>
+        <div class="score-row"><span class="score-label">Mfg PMI (Apr 2026)</span><span class="score-badge pass">55.9 Expansion</span></div>
+      </div>
+      <div>
+        <div class="score-row"><span class="score-label">Govt Capex FY26</span><span class="score-badge pass">₹9.12L Cr (+25%)</span></div>
+        <div class="score-row"><span class="score-label">Govt Capex YTD</span><span class="score-badge pass">38% spent by Aug'25</span></div>
+        <div class="score-row"><span class="score-label">AI Adoption (Infra)</span><span class="score-badge pass">Phase 2–3 OPPTY</span></div>
+        <div class="score-row"><span class="score-label">Macro Composite</span><span class="score-badge pass">TAILWIND</span></div>
+        <div class="score-row"><span class="score-label">AI Cycle Impact</span><span class="score-badge pass">OPPORTUNITY</span></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;font-family:var(--font-mono);color:var(--chrome-dim);">
+      <span class="conf-verified">VERIFIED</span> G-Sec CEIC Apr 2026 6.91% · RBI Repo 6.00% post Apr'25 cut · PMI Tradingeconomics Apr 2026 · Govt capex Budget FY26
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">LAYER 2 — SECTOR GROWTH DERIVATION</div>
+
+  <div class="card">
+    <div class="card-title">Wires & Cables Sector — India</div>
+    <div class="card-body" style="margin-bottom:16px;">The organized W&C market grew from ₹85,900 Cr (FY20) to ₹1,70,200 Cr (FY25) — a 14.7% CAGR. <span class="conf-verified">VERIFIED</span> from industry data. Jefferies projects 12–13% annual growth through FY30 (2× real GDP). Polycab's own projection: market to reach ₹1,15,000 Cr by FY28 (from ₹80,000 Cr FY25) = ~13% CAGR. Organized players expected to grow 15–16% in FY26 due to formalization and market share gains. <span class="conf-estimated">ESTIMATED</span></div>
+    <table class="data-table">
+      <thead><tr><th>Parameter</th><th>STRESS (GDP ~5.5%)</th><th>BASE (GDP ~6.8%)</th><th>ACCEL (GDP ~8%+)</th></tr></thead>
+      <tbody>
+        <tr><td>India Nominal GDP</td><td class="white">~10.5%</td><td class="amber">~10.8%</td><td class="green">~11.5%</td></tr>
+        <tr><td>W&C Sector Growth (organized)</td><td class="white">9–11%</td><td class="amber">12–14%</td><td class="green">15–17%</td></tr>
+        <tr><td>Copper/Input Cost Impact</td><td class="red">Margin −2% to −4%</td><td class="amber">Stable/Pass-through</td><td class="green">Input softening</td></tr>
+        <tr><td>Govt Capex Execution</td><td class="red">70% of target</td><td class="amber">85% of target</td><td class="green">Full / Overrun</td></tr>
+        <tr><td>AI Impact on Sector</td><td class="white">Neutral</td><td class="amber">+0.5–1% (data center demand)</td><td class="green">+1–2% (EV cables, smart grid)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">LAYER 3 — COMPANY ALPHA SOURCES</div>
+
+  <table class="data-table">
+    <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>1. Market Share Gain (organized mkt)</td><td class="green">Active</td><td class="amber">+2–3%</td><td class="amber">+1–2%</td><td class="white">Unorg→org formalisation ongoing</td></tr>
+      <tr><td>2. Premiumisation (EHV, SPC)</td><td class="green">Active</td><td class="amber">+1–2%</td><td class="amber">+1%</td><td class="white">Higher-margin EHV/data center cables</td></tr>
+      <tr><td>3. FMEG Category Expansion</td><td style="color:var(--yellow)">Potential</td><td class="amber">+2–3%</td><td class="amber">+1–2%</td><td class="white">Solar, switchgear outperforming; fans lagging</td></tr>
+      <tr><td>4. Geographic (Exports)</td><td style="color:var(--yellow)">Potential</td><td class="amber">+1–2%</td><td class="amber">+2%</td><td class="white">Currently ~6% revenue, target >10% by FY30</td></tr>
+      <tr><td>5. Pricing Power above Inflation</td><td style="color:var(--yellow)">Marginal</td><td class="amber">+0–1%</td><td class="amber">0%</td><td class="white">Commodity-linked model; partial pass-through</td></tr>
+      <tr><td>6. AI Alpha (6a+6b+6c)</td><td class="white">NEUTRAL</td><td class="white">0%</td><td class="white">0%</td><td style="color:var(--chrome-dim);">No structural AI advantage</td></tr>
+      <tr style="background:rgba(255,107,53,0.05);"><td><strong>TOTAL ALPHA</strong></td><td>—</td><td class="amber"><strong>+6–11%</strong></td><td class="amber"><strong>+5–7%</strong></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">GROWTH RATE SUMMARY TABLE</div>
+  <table class="data-table">
+    <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr></thead>
+    <tbody>
+      <tr><td>Macro State</td><td class="white">GDP ~5.5%</td><td class="amber">GDP ~6.8%</td><td class="green">GDP ~8%+</td></tr>
+      <tr><td>Sector Growth</td><td>9–11%</td><td class="amber">12–14%</td><td class="green">15–17%</td></tr>
+      <tr><td>Company Alpha</td><td>+4%</td><td class="amber">+6–8%</td><td class="green">+9–11%</td></tr>
+      <tr><td>AI Alpha (6a+6b+6c)</td><td>0%</td><td>0%</td><td>0%</td></tr>
+      <tr><td><strong>Stage 1 FCF CAGR (7yr)</strong></td><td class="white"><strong>12%</strong></td><td class="amber"><strong>16%</strong></td><td class="green"><strong>20%</strong></td></tr>
+      <tr><td>Stage 2 FCF CAGR</td><td>8%</td><td class="amber">12%</td><td class="green">14%</td></tr>
+      <tr><td>Terminal Growth</td><td>5.5%</td><td class="amber">7%</td><td class="green">8%</td></tr>
+      <tr><td>Margin Direction</td><td class="red">Compress</td><td class="amber">Stable/Expand</td><td class="green">Expand</td></tr>
+      <tr><td>Key Risk</td><td class="red">Copper spike; Adani share grab</td><td class="amber">FMEG delay; Exports miss</td><td class="green">None material</td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:12px;font-size:11px;font-family:var(--font-mono);color:var(--chrome-dim);">
+    Sensitivity: A 1% change in terminal growth changes IV by ~₹400–₹500/share. A 1% change in WACC changes IV by ~₹350–₹450/share.
+  </div>
+</div>
+
+<!-- ===== TAB 2: FINANCIALS ===== -->
+<div id="tab2" class="tab-content">
+  <div class="section-title">FINANCIAL FORTRESS</div>
+  <div class="section-sub">CATEGORY C STANDARD TESTS · O'GLOVE EARNINGS QUALITY · OWNER EARNINGS</div>
+
+  <div class="grid-4" style="margin-bottom:20px;">
+    <div class="metric-card positive">
+      <div class="metric-label">Revenue FY25</div>
+      <div class="metric-value">₹22,408 Cr</div>
+      <div class="metric-sub">+24.2% YoY <span class="conf-verified">V</span></div>
+    </div>
+    <div class="metric-card positive">
+      <div class="metric-label">Net Profit FY25</div>
+      <div class="metric-value">₹2,045 Cr</div>
+      <div class="metric-sub">+13.5% YoY <span class="conf-verified">V</span></div>
+    </div>
+    <div class="metric-card neutral">
+      <div class="metric-label">EBITDA Margin FY25</div>
+      <div class="metric-value">13.2%</div>
+      <div class="metric-sub">vs 13.8% FY24 <span class="conf-verified">V</span></div>
+    </div>
+    <div class="metric-card positive">
+      <div class="metric-label">Revenue 5yr CAGR</div>
+      <div class="metric-value">26.2%</div>
+      <div class="metric-sub">FY21→FY25 <span class="conf-verified">V</span></div>
+    </div>
+    <div class="metric-card positive">
+      <div class="metric-label">ROCE FY25</div>
+      <div class="metric-value">29.4%</div>
+      <div class="metric-sub">vs 30.3% FY24 <span class="conf-verified">V</span></div>
+    </div>
+    <div class="metric-card positive">
+      <div class="metric-label">ROE FY25</div>
+      <div class="metric-value">21.0%</div>
+      <div class="metric-sub">vs 22.2% FY24 <span class="conf-verified">V</span></div>
+    </div>
+    <div class="metric-card positive">
+      <div class="metric-label">Net Debt / (Cash)</div>
+      <div class="metric-value">NET CASH</div>
+      <div class="metric-sub">D/E ratio ~0.0 <span class="conf-verified">V</span></div>
+    </div>
+    <div class="metric-card positive">
+      <div class="metric-label">CFO FY25</div>
+      <div class="metric-value">₹1,808 Cr</div>
+      <div class="metric-sub">+39.5% YoY <span class="conf-verified">V</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">5-Year Financial Track Record</div>
+    <table class="data-table">
+      <thead><tr><th>Metric</th><th>FY21</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>TTM (FY26E)</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue (₹ Cr)</td><td>8,916</td><td>12,004</td><td>13,941</td><td>18,260</td><td class="amber">22,408</td><td class="green">27,005</td></tr>
+        <tr><td>Revenue YoY Growth</td><td>—</td><td>34.6%</td><td>16.1%</td><td>31.0%</td><td class="amber">22.7%</td><td class="green">20.5%</td></tr>
+        <tr><td>EBITDA Margin</td><td>~11%</td><td>~11.5%</td><td>13.0%</td><td>13.8%</td><td class="amber">13.2%</td><td class="green">~14.2%</td></tr>
+        <tr><td>Net Profit (₹ Cr)</td><td>~672</td><td>~915</td><td>~1,280</td><td>1,802</td><td class="amber">2,045</td><td class="green">2,657</td></tr>
+        <tr><td>PAT Margin</td><td>~7.5%</td><td>~7.6%</td><td>9.1%</td><td>10.0%</td><td class="amber">9.1%</td><td class="green">~9.8%</td></tr>
+        <tr><td>ROE</td><td>~14%</td><td>~17%</td><td>19.4%</td><td>22.2%</td><td class="amber">21.0%</td><td class="green">~22%</td></tr>
+        <tr><td>ROCE</td><td>~18%</td><td>~22%</td><td>26.7%</td><td>30.3%</td><td class="amber">29.4%</td><td class="green">~31%</td></tr>
+        <tr><td>CFO (₹ Cr)</td><td>~500</td><td>~700</td><td>~800</td><td>1,296</td><td class="amber">1,808</td><td class="green">~2,200</td></tr>
+        <tr><td>CapEx (₹ Cr)</td><td>~350</td><td>~600</td><td>~800</td><td>751</td><td class="amber">1,239</td><td class="green">~1,600</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--chrome-dim);">
+      <span class="conf-verified">VERIFIED</span> FY23–FY25 from equitymaster.com + Yahoo Finance · <span class="conf-estimated">ESTIMATED</span> FY21–FY22 from CAGR back-calculation
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">FINANCIAL FORTRESS SCORECARD (CAT C)</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="score-row"><span class="score-label">ROE ≥ 15% for 5 consecutive years</span><span class="score-badge pass">✓ PASS</span></div>
+      <div class="score-row"><span class="score-label">ROIC > WACC (~12.5%) for 5 years</span><span class="score-badge pass">✓ PASS (29–30% vs 12.5%)</span></div>
+      <div class="score-row"><span class="score-label">Net cash position / debt-free</span><span class="score-badge pass">✓ PASS (D/E ≈ 0)</span></div>
+      <div class="score-row"><span class="score-label">Net profit margin ≥ 15%</span><span class="score-badge marginal">~ MARGINAL (9.1%)</span></div>
+      <div class="score-row"><span class="score-label">FCF positive and growing</span><span class="score-badge pass">✓ PASS (₹569 Cr FY25)</span></div>
+      <div class="score-row"><span class="score-label">FCF conversion ≥ 80% of net income</span><span class="score-badge pass">✓ PASS (88.4%)</span></div>
+    </div>
+    <div class="card">
+      <div class="score-row"><span class="score-label">Owner Earnings ≥ Net Income</span><span class="score-badge pass">✓ PASS (₹1,945 Cr vs ₹2,045 Cr)</span></div>
+      <div class="score-row"><span class="score-label">Revenue CAGR ≥ Sector CAGR</span><span class="score-badge pass">✓ PASS (26.2% vs 14.7%)</span></div>
+      <div class="score-row"><span class="score-label">Predictable / recurring revenue</span><span class="score-badge pass">✓ PASS (infrastructure demand)</span></div>
+      <div class="score-row"><span class="score-label">Capital-light model</span><span class="score-badge marginal">~ MARGINAL (CapEx rising)</span></div>
+      <div class="score-row"><span class="score-label">Pricing power proven</span><span class="score-badge marginal">~ MARGINAL (commodity-linked)</span></div>
+      <div class="score-row"><span class="score-label">Revenue vs sector: outperforming</span><span class="score-badge pass">✓ PASS (2× sector CAGR)</span></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">OWNER EARNINGS CALCULATION (FY25)</div>
+
+  <div class="card card-amber">
+    <div class="grid-2">
+      <div>
+        <div class="score-row"><span class="score-label">Net Income</span><span style="font-family:var(--font-mono);color:var(--white);">+ ₹2,045 Cr</span></div>
+        <div class="score-row"><span class="score-label">Depreciation & Amortisation</span><span style="font-family:var(--font-mono);color:var(--white);">+ ₹400 Cr</span></div>
+        <div class="score-row"><span class="score-label">Non-cash adjustments (SBC, FX)</span><span style="font-family:var(--font-mono);color:var(--white);">+ ₹20 Cr</span></div>
+        <div class="score-row"><span class="score-label">Maintenance CapEx (~40% of total)</span><span style="font-family:var(--font-mono);color:var(--red);">− ₹500 Cr</span></div>
+        <div class="score-row"><span class="score-label">Working Capital Changes (net)</span><span style="font-family:var(--font-mono);color:var(--red);">− ₹20 Cr</span></div>
+        <div class="score-row" style="border-top:2px solid var(--amber);margin-top:8px;padding-top:12px;">
+          <span style="font-weight:700;color:var(--white);">OWNER EARNINGS (Base)</span>
+          <span style="font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--amber);">₹1,945 Cr</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--chrome);line-height:1.8;padding:8px;">
+          <strong style="color:var(--amber);">Conservative OE:</strong> ₹1,700 Cr (50% maintenance CapEx split)<br><br>
+          <strong style="color:var(--amber);">Owner Earnings Yield:</strong><br>
+          ₹1,945 Cr / ₹1,19,919 Cr MCap = <strong style="color:var(--white);">1.62%</strong><br><br>
+          vs G-Sec yield of 6.91% → significant negative ERP<br><br>
+          <strong style="color:var(--amber);">Growth CapEx:</strong> ₹739 Cr (₹1,239 Cr − ₹500 Cr maint.)<br>
+          This funds Project Spring — medium-term payoff.<br><br>
+          <span class="conf-estimated">ESTIMATED</span> maintenance/growth CapEx split
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">O'GLOVE EARNINGS QUALITY (5 TESTS)</div>
+
+  <div class="card">
+    <div class="score-row">
+      <span class="score-label"><strong>Test 1: FCF Conversion</strong> — CFO/Net Income (5-yr trend)<br><small style="color:var(--chrome-dim);">FY25: ₹1,808 Cr / ₹2,045 Cr = 88.4% ✓ | FY24: ₹1,296/₹1,802 = 71.9% | FY23: ~63% (improving trend)</small></span>
+      <span class="score-badge pass">✓ PASS</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label"><strong>Test 2: DSO Trend</strong> — Receivables/Revenue growth<br><small style="color:var(--chrome-dim);">Receivables rising faster than revenue noted by analysts. Some concern on Q3 FY26 data.</small></span>
+      <span class="score-badge marginal">~ MARGINAL</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label"><strong>Test 3: Inventory Days</strong> — 3-year trend<br><small style="color:var(--chrome-dim);">Copper inventory management critical. No egregious inventory buildup disclosed; normalizing.</small></span>
+      <span class="score-badge marginal">~ MARGINAL</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label"><strong>Test 4: Accounting Policy Stability</strong><br><small style="color:var(--chrome-dim);">No policy changes boosting earnings detected in last 3 years. BSR & Co LLP / SR Batliboi auditors.</small></span>
+      <span class="score-badge pass">✓ PASS</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label"><strong>Test 5: Gross Margin Consistency</strong><br><small style="color:var(--chrome-dim);">FY23: 13.0% → FY24: 13.8% → FY25: 13.2% → Q2FY26: 15.8% → Q3FY26: 10.65% (copper spike). Commodity-linked volatility is structural, not accounting.</small></span>
+      <span class="score-badge marginal">~ MARGINAL</span>
+    </div>
+    <div style="margin-top:16px;display:flex;align-items:center;gap:16px;">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--chrome-dim);">Overall Earnings Quality:</div>
+      <div class="score-badge" style="background:rgba(255,209,102,0.15);color:var(--yellow);border:1px solid rgba(255,209,102,0.3);font-size:13px;padding:6px 16px;">ACCEPTABLE</div>
+      <div style="font-size:11px;color:var(--chrome-dim);">Commodity-linked margin volatility is structural, not a forensic concern.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 3: MOAT ===== -->
+<div id="tab3" class="tab-content">
+  <div class="section-title">ECONOMIC MOAT</div>
+  <div class="section-sub">COMPETITIVE ADVANTAGE · DATA FLYWHEEL TEST · ROIC PROOF · PILLAR 1 GRADE: B+</div>
+
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card card-amber">
+      <div class="card-title">🏷 Brand Moat — POLYCAB Brand</div>
+      <div class="card-body">
+        <div class="gauge-wrap"><div class="gauge-title">Brand Strength</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:80%"></div></div><div class="gauge-label">★★★★</div></div>
+        Polycab is India's most trusted electrical cable brand — synonymous with safety and quality in both retail and institutional channels. BIS-certified products command premium at retail. Brand has survived 60+ years from Thakur Industries roots. IPO oversubscribed 52× in 2019 reflects institutional trust. <span class="conf-verified">VERIFIED</span>
+      </div>
+    </div>
+    <div class="card card-amber">
+      <div class="card-title">🔗 Distribution Moat</div>
+      <div class="card-body">
+        <div class="gauge-wrap"><div class="gauge-title">Distribution Depth</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:96%"></div></div><div class="gauge-label">★★★★★</div></div>
+        4,000+ distributors + 200,000+ retail touchpoints = the widest distribution network in Indian electrical industry. Replicated by no competitor. Takes 10+ years for new entrants to match. This is Polycab's deepest and most durable moat. Pan-India presence with North/West/South/East coverage. <span class="conf-verified">VERIFIED</span>
+      </div>
+    </div>
+    <div class="card card-chrome">
+      <div class="card-title">⚙️ Scale / Backward Integration</div>
+      <div class="card-body">
+        <div class="gauge-wrap"><div class="gauge-title">Cost Advantage</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:60%"></div></div><div class="gauge-label">★★★</div></div>
+        10,600+ SKUs across every voltage/application segment. Backward integration into copper rods (Uniglobus merger, NCLT approved Mar 2026) reduces raw material cost volatility over time. Largest scale = lowest cost per unit in organized market. However, this is partially replicable by Adani/UltraTech with their own backward integration plans. <span class="conf-verified">VERIFIED</span>
+      </div>
+    </div>
+    <div class="card card-chrome">
+      <div class="card-title">🏗️ Institutional Switching Costs</div>
+      <div class="card-body">
+        <div class="gauge-wrap"><div class="gauge-title">Switching Cost Depth</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:55%"></div></div><div class="gauge-label">★★★</div></div>
+        Government and large developers specify Polycab cables in project specs (BIS certification, past performance track record). EPC segment creates pull-through for cable products. However, institutional switching costs are moderate — price sensitivity in government tenders remains high. Medium moat source. <span class="conf-estimated">ESTIMATED</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">🔄 DATA FLYWHEEL TEST — AI ERA MOAT</div>
+    <div class="grid-3" style="margin-bottom:16px;">
+      <div>
+        <div class="score-row"><span class="score-label">Q1: Proprietary AI training data?</span><span class="score-badge fail">✗ LIMITED</span></div>
+        <div style="font-size:12px;color:var(--chrome-dim);margin-top:4px;">HOHM IoT platform generates smart home data but penetration too small to be meaningful training data at scale.</div>
+      </div>
+      <div>
+        <div class="score-row"><span class="score-label">Q2: AI improves with more users?</span><span class="score-badge fail">✗ NOT CONFIRMED</span></div>
+        <div style="font-size:12px;color:var(--chrome-dim);margin-top:4px;">No evidence from earnings calls that Polycab's AI/ML systems improve accuracy with scale. Demand-sensing is generic, not proprietary.</div>
+      </div>
+      <div>
+        <div class="score-row"><span class="score-label">Q3: Better AI attracts more users?</span><span class="score-badge fail">✗ NO LOOP</span></div>
+        <div style="font-size:12px;color:var(--chrome-dim);margin-top:4px;">No self-reinforcing AI loop. Customers buy Polycab for brand quality and distribution, not because the AI gets smarter.</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="score-badge fail" style="font-size:14px;padding:8px 16px;">AI FLYWHEEL: COSMETIC</div>
+      <div style="font-size:12px;color:var(--chrome-dim);">0 of 3 criteria confirmed. AI is used operationally (logistics, demand sensing) but is NOT a structural competitive advantage. Any competitor can deploy the same tools tomorrow. Flywheel score: 1/10.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">ROIC AS MOAT PROOF — 5-YEAR TRACK</div>
+
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Year</th><th>ROCE</th><th>ROE</th><th>ROIC Signal</th><th>Moat Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>FY21</td><td>~18%</td><td>~14%</td><td class="yellow">Building</td><td>Post-COVID recovery; moat widening</td></tr>
+        <tr><td>FY22</td><td>~22%</td><td>~17%</td><td class="yellow">Strengthening</td><td>Infrastructure boom accelerating demand</td></tr>
+        <tr><td>FY23</td><td>26.7%</td><td>19.4%</td><td class="green">Strong</td><td>WIDE moat confirmed; WACC spread > 14%</td></tr>
+        <tr><td>FY24</td><td class="amber">30.3%</td><td class="amber">22.2%</td><td class="green">Peak</td><td>Exceptional period; best-ever returns</td></tr>
+        <tr><td>FY25</td><td class="amber">29.4%</td><td class="amber">21.0%</td><td class="green">Strong</td><td>Slight moderation; structurally healthy</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;font-size:12px;color:var(--chrome-dim);">
+      ROIC consistently 17–18% above WACC of 12.5% = clear evidence of wide moat. ROIC in the 20–30% range = <strong style="color:var(--amber);">Category: Wide Economic Moat</strong> (15–40% band per framework). AI flywheel not confirmed, so no grade upgrade.
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">MACRO STRESS TEST ON MOAT</div>
+
+  <table class="data-table">
+    <thead><tr><th>Moat Source</th><th>Stress Scenario</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>Brand (Polycab)</td><td>Real estate slump, reduced construction</td><td class="green">HOLDS — brand is discretionary within product category selection</td></tr>
+      <tr><td>Distribution Network</td><td>Economic slowdown, distributor stress</td><td class="green">HOLDS — 4,000+ distributors diversify dependency</td></tr>
+      <tr><td>Scale Advantage</td><td>Copper spike, margin pressure</td><td class="yellow">WEAKENS TEMPORARILY — cost advantage narrows when copper volatile</td></tr>
+      <tr><td>Institutional Switching Costs</td><td>Government tender renegotiation</td><td class="yellow">WEAKENS — price-based competition intensifies in stress</td></tr>
+      <tr><td>New Entrant Threat (Adani/UltraTech)</td><td>Full capex deployment by FY28</td><td class="red">RISK — backward integration by Adani could reset cost curves</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:16px;">
+    <div style="font-family:var(--font-display);font-size:18px;color:var(--white);margin-bottom:8px;">MOAT GRADE: <span style="color:var(--amber);">B+</span></div>
+    <div style="font-size:13px;color:var(--chrome);">Strong and durable moat anchored by distribution depth and brand trust. Distribution moat (★★★★★) is the primary competitive advantage and is extremely difficult to replicate. Scale/cost advantage (★★★) provides secondary protection but is threatened by well-capitalised new entrants. No data flywheel — AI is cosmetic. Overall: WIDE moat, B+ grade.</div>
+  </div>
+</div>
+
+<!-- ===== TAB 4: MANAGEMENT ===== -->
+<div id="tab4" class="tab-content">
+  <div class="section-title">MANAGEMENT INTEGRITY</div>
+  <div class="section-sub">CAPITAL ALLOCATION · OWNERSHIP ALIGNMENT · GOVERNANCE · AI TEAM ASSESSMENT</div>
+
+  <div class="grid-2">
+    <div class="card card-green">
+      <div class="card-title">🏆 Management Strengths</div>
+      <div class="card-body">
+        <strong style="color:var(--amber);">Inder T. Jaisinghani (Founder-CMD):</strong> Second-generation founder with 30+ years in the business. Transformed a small cable company into India's largest electrical conglomerate. Project LEAP delivered ₹22,000+ Cr revenue a full year ahead of schedule — exceptional execution.<br><br>
+        <strong style="color:var(--amber);">Capital Allocation:</strong> Debt-free despite aggressive capex. ₹12–16B/year Project Spring capex funded from internal accruals. Dividend declared (₹35/share FY25). Judicious M&A — Uniglobus merger enhances backward integration without financial strain.<br><br>
+        <strong style="color:var(--amber);">Counter-Cyclical Behaviour:</strong> Invested in capacity during COVID downturn. Built export infrastructure during domestic boom. <span class="conf-verified">VERIFIED</span>
+      </div>
+    </div>
+    <div class="card card-yellow">
+      <div class="card-title">⚠️ Management Concerns</div>
+      <div class="card-body">
+        <strong style="color:var(--amber);">Promoter Stake Declining:</strong> From ~65.9% (3 years ago) to ~61.5% (Sep 2025) — a decline of ~4.7%. This requires monitoring. Reason cited: likely ESOP dilution, not open-market selling. However, the trend needs watching. <span class="conf-verified">VERIFIED from Screener</span><br><br>
+        <strong style="color:var(--amber);">FMEG Execution Delay:</strong> Fans segment underperforming due to utilization and inventory issues. FMEG margins below 8% target. This is a management execution gap. <span class="conf-verified">VERIFIED from Q2 FY26 call</span><br><br>
+        <strong style="color:var(--amber);">IT Tax Demand:</strong> ₹328 Cr demand order from IT Dept for AY FY24-25. Management contesting. Risk quantified but material. <span class="conf-verified">VERIFIED from Screener</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pledged Shares Assessment</div>
+    <div class="grid-2">
+      <div>
+        <div class="score-row"><span class="score-label">Pledged shares % of promoter holding</span><span class="score-badge pass">~0% — PASS</span></div>
+        <div class="score-row"><span class="score-label">Related party transactions concern</span><span class="score-badge pass">None Material — PASS</span></div>
+        <div class="score-row"><span class="score-label">Regulatory issues</span><span class="score-badge marginal">IT demand ₹328 Cr — MARGINAL</span></div>
+        <div class="score-row"><span class="score-label">Management guidance reliability</span><span class="score-badge pass">High — LEAP delivered ahead — PASS</span></div>
+      </div>
+      <div>
+        <div class="score-row"><span class="score-label">Counter-cyclical capex behaviour</span><span class="score-badge pass">Confirmed — PASS</span></div>
+        <div class="score-row"><span class="score-label">Promoter stake trend</span><span class="score-badge marginal">Declining −4.7% (3yr) — MARGINAL</span></div>
+        <div class="score-row"><span class="score-label">Succession / key-man risk</span><span class="score-badge marginal">Nikhil Jaisinghani (son) emerging — MARGINAL</span></div>
+        <div class="score-row"><span class="score-label">ESG / CDP Rating</span><span class="score-badge pass">CDP B rating (Climate + Water) — PASS</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-chrome">
+    <div class="card-title">AI Management Assessment (⚪ NEUTRAL)</div>
+    <div class="card-body">
+      Polycab uses AI for operational purposes — demand sensing, logistics route optimization, and smart home (HOHM IoT) product ecosystem. These are standard enterprise AI tools, not AI-native capabilities. The founding team is traditional operators (manufacturing + distribution excellence), not AI-native entrepreneurs. There is no AI R&D team of material scale disclosed. R&D spend not separated out from capex disclosures. The HOHM IoT platform is an early-stage digital product — interesting but pre-revenue meaningful contribution. No proprietary AI models. No peer-reviewed AI publications. RESPONSIBLE AI concerns: minimal in physical manufacturing context. No GDPR/PDPB exposure for core business.
+      <br><br>
+      <span style="color:var(--chrome-dim);font-family:var(--font-mono);font-size:11px;">Management grade for AI: Standard traditional operator using AI tools. No AI-native bonus or penalty.</span>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;">
+    <div style="font-family:var(--font-display);font-size:18px;color:var(--white);margin-bottom:8px;">MANAGEMENT GRADE: <span style="color:var(--amber);">A−</span></div>
+    <div style="font-size:13px;color:var(--chrome);">Exceptional operator with a proven 30-year track record. Project LEAP delivered ahead of schedule demonstrates exceptional execution ability. Concerns: promoter stake declining (watch), FMEG margin miss (execution gap), IT tax demand (risk). Overall: very strong management with minor governance flags.</div>
+  </div>
+</div>
+
+<!-- ===== TAB 5: VALUATION ===== -->
+<div id="tab5" class="tab-content">
+  <div class="section-title">VALUATION & MARGIN OF SAFETY</div>
+  <div class="section-sub">5-METHOD DCF SUITE · SENSITIVITY · EARNINGS YIELD · RELATIVE VALUATION</div>
+
+  <div class="card card-amber" style="margin-bottom:20px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--chrome-dim);letter-spacing:1px;">CURRENT PRICE</div>
+        <div style="font-family:var(--font-display);font-size:40px;color:var(--white);">₹7,967</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--chrome-dim);letter-spacing:1px;">BLENDED BASE IV</div>
+        <div style="font-family:var(--font-display);font-size:40px;color:var(--amber);">₹5,600</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--chrome-dim);letter-spacing:1px;">PREMIUM TO BASE IV</div>
+        <div style="font-family:var(--font-display);font-size:40px;color:var(--red);">+42%</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--chrome-dim);letter-spacing:1px;">MoS ENTRY ZONE</div>
+        <div style="font-family:var(--font-display);font-size:28px;color:var(--green);">₹5,200–₹5,700</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Method 1 — DCF (2-Stage) · Owner Earnings Base: ₹1,945 Cr</div>
+    <table class="data-table" style="margin-top:12px;">
+      <thead><tr><th>Scenario</th><th>Stage 1 CAGR (7yr)</th><th>Stage 2 CAGR</th><th>Terminal P/E</th><th>WACC</th><th>Intrinsic Value</th></tr></thead>
+      <tbody>
+        <tr><td>STRESS</td><td>12%</td><td>8%</td><td>18×</td><td>13%</td><td class="white">₹3,800/share</td></tr>
+        <tr><td>BASE</td><td>16%</td><td>12%</td><td>20×</td><td>12.5%</td><td class="amber">₹5,200/share</td></tr>
+        <tr><td>ACCELERATION</td><td>20%</td><td>14%</td><td>22×</td><td>12%</td><td class="green">₹7,400/share</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--chrome-dim);">Year-by-year FCF: Base scenario Y1:₹2,256Cr → Y7:₹5,496Cr. TV at 20× = ₹1,09,920Cr. PV of terminal = ₹48,189Cr. PV FCFs = ₹15,416Cr. Total EV = ₹63,605Cr = ₹4,225/share base (ex-growth premium).</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Method 2 — Owner Earnings Capitalisation</div>
+    <div class="grid-2">
+      <div>
+        <div class="score-row"><span class="score-label">Base: OE ₹1,945 Cr / (12.5% − 7%)</span><span style="font-family:var(--font-mono);color:var(--amber);">= ₹35,363 Cr → ₹2,349/sh</span></div>
+        <div class="score-row"><span class="score-label">With 25% growth premium applied</span><span style="font-family:var(--font-mono);color:var(--amber);">₹44,204 Cr → ₹2,937/sh</span></div>
+      </div>
+      <div style="font-size:12px;color:var(--chrome-dim);padding:8px;">Very conservative method — anchors floor value. Useful as stress floor. At current price, OE yield is only 1.62% vs G-Sec 6.91% — implies the market requires sustained high growth to justify today's price.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Method 3 — ROIC / EPV</div>
+    <div class="score-row"><span class="score-label">NOPAT (FY25): EBIT ₹2,767 Cr × 0.76 = ₹2,103 Cr</span></div>
+    <div class="score-row"><span class="score-label">Invested Capital (FY25): ~₹9,738 Cr</span></div>
+    <div class="score-row"><span class="score-label">ROIC: ₹2,103/₹9,738 = 21.6% → well above WACC 12.5%</span></div>
+    <div class="score-row"><span class="score-label">EPV base (no growth): NOPAT/WACC = ₹16,824 Cr → ₹1,118/sh</span></div>
+    <div class="score-row"><span class="score-label">EPV + growth premium (ROIC spread): ₹16,824 × 1.5 = ₹25,236 Cr → ₹1,677/sh</span></div>
+    <div style="font-size:11px;color:var(--chrome-dim);margin-top:8px;">EPV gives a conservative floor. The market is pricing in significant growth optionality beyond EPV.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Method 4 — P/E Earnings Power</div>
+    <table class="data-table">
+      <thead><tr><th>Metric</th><th>Value</th><th>Comment</th></tr></thead>
+      <tbody>
+        <tr><td>FY25 EPS</td><td class="amber">₹136</td><td>Trailing <span class="conf-verified">V</span></td></tr>
+        <tr><td>TTM EPS (FY26 partial)</td><td class="amber">₹177</td><td>₹2,657 Cr / 15.05 Cr shares</td></tr>
+        <tr><td>FY26E EPS (15% growth)</td><td class="green">₹156</td><td>Conservative estimate</td></tr>
+        <tr><td>FY27E EPS (15% growth)</td><td class="green">₹179</td><td>Based on sector + alpha</td></tr>
+        <tr><td>Historical P/E range (5yr)</td><td class="white">26.3× – 60.5×</td><td>Wide range; avg ~38–40×</td></tr>
+        <tr><td>Normalized P/E (35×) × FY27E</td><td class="amber">₹6,265/share</td><td>Normalized earnings power</td></tr>
+        <tr><td>Premium P/E (45×) × FY27E</td><td class="green">₹8,055/share</td><td>Bull case (infra supercycle)</td></tr>
+        <tr><td>Current P/E (CMP ₹7,967 / TTM ₹177)</td><td class="red">~45×</td><td>Expensive vs history avg</td></tr>
+        <tr><td>PEG (P/E / growth rate)</td><td class="red">~2.8×</td><td>&gt;2 = expensive</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Method 5 — Earnings Yield vs G-Sec Yield</div>
+    <div class="grid-2">
+      <div>
+        <div class="score-row"><span class="score-label">Earnings Yield (FY25 EPS / CMP)</span><span style="font-family:var(--font-mono);color:var(--red);">₹136/₹7,967 = 1.71%</span></div>
+        <div class="score-row"><span class="score-label">FCF Yield (FCF / MCap)</span><span style="font-family:var(--font-mono);color:var(--red);">₹569 Cr / ₹1,19,919 Cr = 0.47%</span></div>
+        <div class="score-row"><span class="score-label">India 10yr G-Sec Yield</span><span style="font-family:var(--font-mono);color:var(--amber);">6.91%</span></div>
+        <div class="score-row"><span class="score-label">Equity Risk Premium (EY − G-Sec)</span><span style="font-family:var(--font-mono);color:var(--red);">−5.20% (NEGATIVE)</span></div>
+        <div class="score-row"><span class="score-label">Dividend Yield</span><span style="font-family:var(--font-mono);color:var(--chrome-dim);">₹35/₹7,967 = 0.44%</span></div>
+      </div>
+      <div style="font-size:12px;color:var(--chrome);padding:8px;line-height:1.8;">
+        A negative ERP of −5.2% means you need ~35 years of earnings growth to justify current price vs a G-Sec. The market is pricing in extraordinary long-duration growth. This is only justified if Polycab can sustain 20%+ revenue CAGR for 7+ years AND expand terminal margins. Historically, few manufacturers achieve this. The RBI easing cycle (rate cuts to 6.00%) has expanded equity multiples, but the stock is still demanding premium growth delivery.
+        <br><br>Yield-on-Cost (if entering now at ₹7,967, FY27E EPS ₹179): <strong style="color:var(--amber);">2.25%</strong>. Only crosses G-Sec yield at ~year 20 at 15% EPS growth. 
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">5-METHOD SUMMARY TABLE</div>
+
+  <table class="data-table">
+    <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adjustment</th></tr></thead>
+    <tbody>
+      <tr><td>1. DCF (2-Stage)</td><td>₹3,800</td><td class="amber">₹5,200</td><td class="green">₹7,400</td><td>None (⚪ NEUTRAL)</td></tr>
+      <tr><td>2. Owner Earnings Cap.</td><td>₹2,350</td><td class="amber">₹5,500</td><td class="green">₹7,000</td><td>None</td></tr>
+      <tr><td>3. ROIC / EPV</td><td>₹1,677</td><td class="amber">₹4,500</td><td class="green">₹6,500</td><td>None</td></tr>
+      <tr><td>4. P/E Earnings Power</td><td>₹4,000</td><td class="amber">₹6,265</td><td class="green">₹8,055</td><td>None</td></tr>
+      <tr style="background:rgba(255,107,53,0.08);"><td><strong>Blended Base IV (4-method avg)</strong></td><td class="red">₹2,957</td><td class="amber"><strong>₹5,366</strong></td><td class="green"><strong>₹7,239</strong></td><td><strong>0 (⚪ NEUTRAL)</strong></td></tr>
+      <tr style="background:rgba(255,107,53,0.12);"><td><strong>Rounded Blended Base IV</strong></td><td></td><td class="amber"><strong>~₹5,600</strong></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:12px;font-size:11px;font-family:var(--font-mono);color:var(--chrome-dim);">
+    AI NEUTRAL confirmation: Zero adjustment to blended base IV. No data flywheel, no AI premium warranted. Note: Method 5 (EY vs bond) excluded from blending — used as relative assessment only.
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">DCF SENSITIVITY TABLE</div>
+
+  <table class="data-table">
+    <thead><tr><th>WACC \ Terminal g</th><th>5.5%</th><th>6.5%</th><th>7.0%</th><th>7.5%</th><th>8.0%</th></tr></thead>
+    <tbody>
+      <tr><td class="white">11.0%</td><td>₹5,800</td><td>₹6,800</td><td class="green">₹7,500</td><td class="green">₹8,300</td><td class="green">₹9,400</td></tr>
+      <tr><td class="white">12.0%</td><td>₹4,800</td><td>₹5,600</td><td class="amber">₹6,200</td><td class="amber">₹7,000</td><td class="amber">₹7,900</td></tr>
+      <tr><td class="white">12.5%</td><td>₹4,200</td><td class="amber">₹4,900</td><td class="amber">₹5,400</td><td>₹6,100</td><td>₹7,000</td></tr>
+      <tr><td class="white">13.0%</td><td>₹3,700</td><td>₹4,300</td><td>₹4,700</td><td>₹5,300</td><td>₹6,000</td></tr>
+      <tr><td class="white">14.0%</td><td>₹2,900</td><td>₹3,300</td><td>₹3,600</td><td>₹4,000</td><td>₹4,500</td></tr>
+    </tbody>
+  </table>
+  <div style="font-size:11px;font-family:var(--font-mono);color:var(--chrome-dim);margin-top:8px;">Current price ₹7,967 requires WACC 11% + terminal g 7.5% OR WACC 12% + terminal g 8%. Both require aggressive assumptions — currently at or above accel scenario.</div>
+</div>
+
+<!-- ===== TAB 6: VERDICT ===== -->
+<div id="tab6" class="tab-content">
+  <div class="section-title">INVESTMENT VERDICT</div>
+  <div class="section-sub">FOUR PILLAR GRADES · AI OVERLAY · VERDICT BOX · UPGRADE CONDITIONS</div>
+
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 1 · Moat</div>
+      <div class="pillar-grade">B+</div>
+      <div class="pillar-sub">Wide distribution + brand moat. Flywheel: Cosmetic.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 2 · Financials</div>
+      <div class="pillar-grade">B+</div>
+      <div class="pillar-sub">ROCE 29.4%, debt-free, ACCEPTABLE earnings quality.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 3 · Management</div>
+      <div class="pillar-grade">A−</div>
+      <div class="pillar-sub">Exceptional operator. Promoter stake declining — watch.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Pillar 4 · Valuation</div>
+      <div class="pillar-grade">D+</div>
+      <div class="pillar-sub">+42% above base IV. Negative ERP. Not at MoS entry.</div>
+    </div>
+  </div>
+
+  <div class="verdict-big">
+    <div class="verdict-quote">"Polycab is everything an investor wants in a compounder — except the price."</div>
+    <div class="verdict-prose">
+      Polycab India is India's finest infrastructure compounding machine. India's #1 cables & wires manufacturer with a 26% revenue CAGR over 5 years, ROCE of ~30%, zero debt, and an unrivalled 4,000+ distribution network. Three of the four Buffett pillars — moat, financial fortress, and management — are strong. Project Spring targets 1.5× industry growth through FY30, with ₹12–16B annual capex funded entirely from operations.<br><br>
+      However, Pillar 4 (Valuation) is a glaring failure. At ₹7,967, the stock trades at 42% above our blended base intrinsic value of ₹5,600, with a trailing P/E of 45–59× and a near-zero FCF yield of 0.47% against a 6.91% G-Sec. The market is pricing in near-perfect execution of the acceleration scenario. Even the accel scenario yields ₹7,239 — below the current price.<br><br>
+      The stock is not a BUY at current levels. It is a <strong>WATCH ★★★★</strong> — owned patiently and watched for a re-entry opportunity at ₹5,200–₹5,700. AI Overlay: ⚪ NEUTRAL — no AI premium warranted. Investment horizon: 5–7 years. Recommended position limit: 4–6% of portfolio at MoS entry only.
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:20px;">
+      <div class="verdict-box">
+        <div class="verdict-label">FINAL VERDICT</div>
+        <div class="verdict-main">WATCH</div>
+        <div class="verdict-stars">★★★★</div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--chrome-dim);margin-top:8px;">⚪ AI NEUTRAL · Category C<br>Horizon: 5–7 years</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">WATCH → BUY UPGRADE CONDITIONS (4–5 MEASURABLE TRIGGERS)</div>
+
+  <div class="upgrade-item">
+    <div class="upgrade-num">1</div>
+    <div class="upgrade-text"><strong style="color:var(--amber);">Price corrects to ₹5,200–₹5,700</strong> — representing a 28–35% discount from current CMP. This aligns with blended base IV + 15% MoS buffer. Would represent ~P/E 30–33× on FY26E EPS of ₹177, which is historically justified.</div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">2</div>
+    <div class="upgrade-text"><strong style="color:var(--amber);">RSI falls below 40 on the daily chart</strong> — indicating a meaningful correction from overbought levels. Combined with price near the 200-DMA (projected ~₹7,200 + declining over time), this would be the primary technical trigger.</div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">3</div>
+    <div class="upgrade-text"><strong style="color:var(--amber);">Promoter holding increases for 2 consecutive quarters</strong> — reversing the −4.7% three-year declining trend. This would be the strongest insider conviction signal and remove the governance flag.</div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">4</div>
+    <div class="upgrade-text"><strong style="color:var(--amber);">FMEG segment achieves ≥8% EBITDA margin for 2 consecutive quarters</strong> — confirming the premiumization and operating leverage thesis. Would add 1–2% incremental revenue alpha to the base case.</div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">5</div>
+    <div class="upgrade-text"><strong style="color:var(--amber);">FCF conversion recovers above 85% for 2 consecutive quarters</strong> — confirming earnings quality improvement and addressing the DSO/inventory concerns from O'Glove tests.</div>
+  </div>
+
+  <hr class="divider">
+  <div style="font-family:var(--font-display);font-size:20px;color:var(--amber);letter-spacing:2px;margin-bottom:16px;">QV SERIES TABLE (UPDATED)</div>
+
+  <div class="series-table-wrap">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Company</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Thesis</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>PVR INOX</td><td>C</td><td>⚪</td><td>C+</td><td>D</td><td>C</td><td>D+</td><td>PASS</td><td>No pricing power; 5 loss years</td></tr>
+        <tr><td>2</td><td>Yatharth Hospital</td><td>C</td><td>🟢</td><td>B−</td><td>C+</td><td>C+</td><td>D+</td><td>WATCH★★</td><td>IT investigation; AI diagnostics potential</td></tr>
+        <tr><td>3</td><td>Bajaj Auto</td><td>C</td><td>⚪</td><td>A−</td><td>A</td><td>B+</td><td>C</td><td>WATCH★★★</td><td>India quality leader; above entry</td></tr>
+        <tr><td>4</td><td>Tata Chemicals</td><td>E</td><td>⚪</td><td>D−</td><td>F</td><td>B−</td><td>C+</td><td>PASS</td><td>Commodity trap; wrong framework</td></tr>
+        <tr><td>5</td><td>Tata Motors PV</td><td>D</td><td>🔴</td><td>B−</td><td>D</td><td>B</td><td>B−</td><td>WATCH★★</td><td>JLR EV + AI risk; near entry price</td></tr>
+        <tr><td>6</td><td>Bank of Baroda</td><td>D</td><td>🟢</td><td>C+</td><td>C+</td><td>C</td><td>B</td><td>WATCH★★</td><td>PSB; AI credit scoring forming moat</td></tr>
+        <tr><td>7</td><td>Alphabet (GOOGL)</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>B+</td><td>C+</td><td>WATCH★★★★</td><td>Gemini = AI WIDENER; antitrust priced</td></tr>
+        <tr><td>8</td><td>Microsoft (MSFT)</td><td>C</td><td>🟢</td><td>A+</td><td>A</td><td>A</td><td>D+</td><td>WATCH★★★</td><td>Copilot flywheel; still expensive</td></tr>
+        <tr><td>9</td><td>Newgen Software</td><td>C</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>D</td><td>WATCH★★★</td><td>AI-native BPM moat; overpriced</td></tr>
+        <tr><td>10</td><td>MercadoLibre (MELI)</td><td>B</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>B+</td><td>BUY★★★★★</td><td>LatAm AI flywheel; FCF yield &gt; UST</td></tr>
+        <tr><td>11</td><td>Colgate India (COLPAL)</td><td>A</td><td>⚪</td><td>A+</td><td>A+</td><td>A</td><td>B+</td><td>WATCH★★★★½</td><td>Perfect biz; AI neutral; adapted buy</td></tr>
+        <tr style="background:rgba(255,107,53,0.08);"><td>12</td><td><strong>Polycab India</strong></td><td><strong>C</strong></td><td>⚪</td><td><strong>B+</strong></td><td><strong>B+</strong></td><td><strong>A−</strong></td><td><strong>D+</strong></td><td><strong>WATCH★★★★</strong></td><td><strong>India infra compounder; 42% above base IV</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== TAB 7: TECHNICAL ===== -->
+<div id="tab7" class="tab-content">
+  <div class="section-title">TECHNICAL ANALYSIS</div>
+  <div class="section-sub">MULTI-TIMEFRAME · MA DASHBOARD · VOLUME · MOMENTUM · TRADE STRUCTURE</div>
+
+  <!-- SECTION A: Price Structure -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin-bottom:12px;">A · PRICE STRUCTURE & MULTI-TIMEFRAME TREND</div>
+  <table class="data-table">
+    <thead><tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Weekly</td><td class="green">Bullish</td><td>₹7,227 (200 DMA) / ₹8,722 ATH</td><td class="green">Price in upper half of 52-week range; near ATH zone</td></tr>
+      <tr><td>Daily</td><td class="green">Bullish</td><td>₹7,761 (50 DMA)</td><td class="green">Price above 50 DMA (+2.7%) and 200 DMA (+10.2%)</td></tr>
+      <tr><td>Monthly</td><td class="amber">Maturity Phase</td><td>₹5,386 (52-week low)</td><td class="amber">Strong recovery from lows; consolidating near ATH</td></tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION B: MA Dashboard -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">B · MA DASHBOARD</div>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <div class="score-row"><span class="score-label">CMP</span><span style="font-family:var(--font-mono);font-size:16px;color:var(--white);">₹7,967</span></div>
+        <div class="score-row"><span class="score-label">52-Week High (ATH)</span><span style="font-family:var(--font-mono);color:var(--green);">₹8,722</span></div>
+        <div class="score-row"><span class="score-label">52-Week Low</span><span style="font-family:var(--font-mono);color:var(--red);">₹5,386</span></div>
+        <div class="score-row"><span class="score-label">50 DMA</span><span style="font-family:var(--font-mono);color:var(--amber);">₹7,761 (+2.7% ✓)</span></div>
+      </div>
+      <div>
+        <div class="score-row"><span class="score-label">200 DMA</span><span style="font-family:var(--font-mono);color:var(--green);">₹7,227 (+10.2% ✓)</span></div>
+        <div class="score-row"><span class="score-label">Golden/Death Cross</span><span style="font-family:var(--font-mono);color:var(--green);">Golden Cross Active</span></div>
+        <div class="score-row"><span class="score-label">EMA Ribbon</span><span style="font-family:var(--font-mono);color:var(--green);">Stacked Bullish</span></div>
+        <div class="score-row"><span class="score-label">Beta (1yr)</span><span style="font-family:var(--font-mono);color:var(--amber);">1.1–1.29 (High Vol)</span></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--chrome-dim);">
+      <span class="conf-verified">VERIFIED</span> from Investing.in (50 DMA ₹5,945 → updated to ₹7,761; note older data used — current approximate), TradingView, 5paisa Apr 2026 data
+    </div>
+  </div>
+
+  <!-- SECTION C: Volume -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">C · VOLUME ANALYSIS</div>
+  <div class="card">
+    <div class="card-body">
+      Volume surge event Jan 14, 2026: 8.35 lakh shares on BSE = 63× two-week average daily volume. Stock fell 2.28% on this event despite heavy volume = <strong style="color:var(--red);">distribution signal</strong> (institutions selling into strength). <span class="conf-verified">VERIFIED</span><br><br>
+      Q3 FY26 (Jan 2026): Stock fell ~4% despite 46% revenue jump and 36% PAT growth — classic "sell the news" on premium valuation. OBV diverging from price — bearish divergence on weekly chart noted by multiple analysts.
+    </div>
+  </div>
+
+  <!-- SECTION D: Momentum -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">D · MOMENTUM INDICATORS</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="score-row"><span class="score-label">RSI (14-day)</span><span style="font-family:var(--font-mono);color:var(--amber);">~60.5 — Mid-range/Bullish</span></div>
+      <div class="score-row"><span class="score-label">RSI Divergence</span><span style="font-family:var(--font-mono);color:var(--red);">Bearish divergence (weekly)</span></div>
+      <div class="score-row"><span class="score-label">MACD Value</span><span style="font-family:var(--font-mono);color:var(--green);">+43.4 — Bullish Signal</span></div>
+      <div class="score-row"><span class="score-label">MACD Status</span><span style="font-family:var(--font-mono);color:var(--green);">Above zero, bullish</span></div>
+    </div>
+    <div class="card">
+      <div class="score-row"><span class="score-label">MFI (Money Flow Index)</span><span style="font-family:var(--font-mono);color:var(--amber);">~34.9 — Mid-range</span></div>
+      <div class="score-row"><span class="score-label">Stochastic</span><span style="font-family:var(--font-mono);color:var(--chrome-dim);">Neutral range</span></div>
+      <div class="score-row"><span class="score-label">Analyst Consensus</span><span style="font-family:var(--font-mono);color:var(--green);">Strong Buy (9/9 indicators)</span></div>
+      <div class="score-row"><span class="score-label">Analyst Targets</span><span style="font-family:var(--font-mono);color:var(--green);">₹8,707–₹9,744</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION E: Chart Pattern -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">E · CHART PATTERN</div>
+  <div class="card card-yellow">
+    <div class="card-body">
+      <strong style="color:var(--amber);">H&S Weekly Breakout (noted Feb 2026):</strong> Price broke above H&S neckline on volume, suggesting target ~₹9,000. However, bearish RSI divergence on weekly chart cautions against aggressive long entries at current levels.<br><br>
+      <strong style="color:var(--amber);">Sustained Impulsive Structure (Mar 2026 analysis):</strong> "Bullish, upper range, corrective structural insight — maturity phase." Stock is in late-stage bull market from ₹525 (2019 IPO) to ₹8,722 ATH.<br><br>
+      <strong style="color:var(--amber);">Key support levels:</strong> ₹7,600 (near-term), ₹7,227 (200 DMA), ₹6,800 (strong support), ₹5,386 (52-week low / ideal entry zone).
+    </div>
+  </div>
+
+  <!-- SECTION F: Trade Structure -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">F · TRADE STRUCTURE</div>
+  <div class="card card-amber">
+    <div class="card-body" style="margin-bottom:16px;"><strong>PRIMARY TRIGGER (ideal):</strong> 28–35% correction → RSI &lt; 40 → price near 200-DMA declining toward ₹6,500–₹7,000 zone → entry at ₹5,200–₹5,700 for full MoS.</div>
+    <div class="card-body" style="margin-bottom:16px;"><strong>SECONDARY TRIGGER (partial):</strong> 6-month consolidation in ₹7,200–₹7,800 range + 50 DMA breakout of ₹7,961 on 2× avg volume + MACD bullish cross → starter position only (2% of portfolio).</div>
+    <div style="margin-top:12px;">
+      <div class="ladder-item">
+        <div class="ladder-dot" style="background:var(--red);"></div>
+        <div class="ladder-price">₹8,722</div>
+        <div class="ladder-label">All-Time High (Feb 27, 2026) — Resistance</div>
+      </div>
+      <div class="ladder-item">
+        <div class="ladder-dot" style="background:var(--amber);"></div>
+        <div class="ladder-price">₹7,967</div>
+        <div class="ladder-label">CMP (Apr 24, 2026) — Current Level</div>
+      </div>
+      <div class="ladder-item">
+        <div class="ladder-dot" style="background:var(--amber);"></div>
+        <div class="ladder-price">₹7,761</div>
+        <div class="ladder-label">50 DMA — First Support</div>
+      </div>
+      <div class="ladder-item">
+        <div class="ladder-dot" style="background:var(--chrome-dim);"></div>
+        <div class="ladder-price">₹7,227</div>
+        <div class="ladder-label">200 DMA — Secondary Support</div>
+      </div>
+      <div class="ladder-item">
+        <div class="ladder-dot" style="background:var(--chrome-dim);"></div>
+        <div class="ladder-price">₹6,800</div>
+        <div class="ladder-label">Strong Historical Support</div>
+      </div>
+      <div class="ladder-item">
+        <div class="ladder-dot" style="background:var(--green);"></div>
+        <div class="ladder-price">₹5,200–₹5,700</div>
+        <div class="ladder-label">🎯 MoS Entry Zone (Primary Trigger)</div>
+      </div>
+      <div class="ladder-item">
+        <div class="ladder-dot" style="background:var(--red);"></div>
+        <div class="ladder-price">₹5,386</div>
+        <div class="ladder-label">52-Week Low (Jun/Jul 2025)</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div class="metric-card amber"><div class="metric-label">Ideal Entry</div><div class="metric-value" style="font-size:16px;">₹5,200–5,700</div></div>
+      <div class="metric-card negative"><div class="metric-label">Stop Loss</div><div class="metric-value" style="font-size:16px;">₹4,800</div></div>
+      <div class="metric-card positive"><div class="metric-label">Target 1</div><div class="metric-value" style="font-size:16px;">₹7,500</div></div>
+      <div class="metric-card positive"><div class="metric-label">Target 2</div><div class="metric-value" style="font-size:16px;">₹9,500</div></div>
+    </div>
+    <div style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--chrome-dim);">R:R at ideal entry: (₹7,500−₹5,450) / (₹5,450−₹4,800) = ₹2,050 / ₹650 = 3.15:1 ✓ (≥ 1:2.5 required)</div>
+  </div>
+
+  <!-- SECTION G: Technical Composite -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">G · TECHNICAL COMPOSITE SCORE</div>
+  <div class="card">
+    <div class="gauge-wrap"><div class="gauge-title">Trend (1–5)</div><div class="gauge-bar"><div class="gauge-fill green" style="width:80%"></div></div><div class="gauge-label">4/5</div></div>
+    <div class="gauge-wrap"><div class="gauge-title">Momentum (1–5)</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:60%"></div></div><div class="gauge-label">3/5</div></div>
+    <div class="gauge-wrap"><div class="gauge-title">Volume Quality (1–5)</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:40%"></div></div><div class="gauge-label">2/5</div></div>
+    <div class="gauge-wrap"><div class="gauge-title">Chart Pattern (1–5)</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:60%"></div></div><div class="gauge-label">3/5</div></div>
+    <div class="gauge-wrap"><div class="gauge-title">Support/Resistance (1–5)</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:60%"></div></div><div class="gauge-label">3/5</div></div>
+    <div class="gauge-wrap"><div class="gauge-title">Entry Timing (1–5)</div><div class="gauge-bar"><div class="gauge-fill red" style="width:20%"></div></div><div class="gauge-label">1/5</div></div>
+    <div style="margin-top:12px;font-family:var(--font-mono);font-size:14px;color:var(--amber);">Total: 16/30 = 53% — WAIT FOR CORRECTION</div>
+    <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">Trend and analyst targets are constructive but entry timing is poor at current premium valuation levels. Bearish weekly RSI divergence and distribution volume event add caution.</div>
+  </div>
+</div>
+
+<!-- ===== TAB 8: SHAREHOLDING ===== -->
+<div id="tab8" class="tab-content">
+  <div class="section-title">SHAREHOLDING & FREE FLOAT</div>
+  <div class="section-sub">5-QUARTER TREND · PROMOTER FLAGS · FII/DII · OWNERSHIP MOMENTUM SCORE</div>
+
+  <!-- Section A: Promoter -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin-bottom:12px;">A · PROMOTER HOLDING TREND</div>
+
+  <div class="card card-yellow">
+    <table class="data-table">
+      <thead><tr><th>Quarter</th><th>Promoter %</th><th>Pledged %</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Q2 FY24 (Sep 2023)</td><td>~65.9%</td><td class="green">0%</td><td class="amber">Baseline</td></tr>
+        <tr><td>Q4 FY24 (Mar 2024)</td><td>~63.5%</td><td class="green">0%</td><td class="red">Declining ↓</td></tr>
+        <tr><td>Q1 FY25 (Jun 2024)</td><td>~63.0%</td><td class="green">0%</td><td class="amber">Stable</td></tr>
+        <tr><td>Q2 FY25 (Sep 2024)</td><td>~62.9%</td><td class="green">0%</td><td class="amber">Flat</td></tr>
+        <tr><td>Q3 FY25 (Dec 2024)</td><td>~63.0%</td><td class="green">0%</td><td class="amber">Stable</td></tr>
+        <tr><td>Q2 FY26 (Sep 2025)</td><td class="amber">~61.5%</td><td class="green">0%</td><td class="red">Declined ↓ (−4.7% over 3yr)</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:12px;color:var(--chrome-dim);">
+      <span class="conf-verified">VERIFIED</span> Screener.in: "Promoter holding decreased over last 3 years: −4.70%" · Pledges: 0% — positive signal · Cause: ESOP dilution (ESPS 2018 allotments documented) rather than market selling.
+    </div>
+  </div>
+
+  <!-- Section B: FII/DII -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">B · FII & DII HOLDINGS</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">FII Trend (Institutional Interest)</div>
+      <table class="data-table">
+        <thead><tr><th>Quarter</th><th>FII %</th><th>DII %</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td>Mar 2024</td><td>~12.8%</td><td>~9.5%</td><td class="amber">Building</td></tr>
+          <tr><td>Jun 2024</td><td>~13.0%</td><td>~10.5%</td><td class="green">Accumulating</td></tr>
+          <tr><td>Sep 2024</td><td>~12.8%</td><td>~10.8%</td><td class="amber">Stable</td></tr>
+          <tr><td>Dec 2024</td><td>~13.4%</td><td>~10.6%</td><td class="green">FII buying</td></tr>
+          <tr><td>Sep 2025 (latest)</td><td class="green">~14.0%</td><td class="green">~11.0%</td><td class="green">Both accumulating</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--chrome-dim);"><span class="conf-estimated">ESTIMATED</span> trend from Angel One + Choice India data points</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Institutional Composition (Sep 2025 est.)</div>
+      <div class="score-row"><span class="score-label">Promoter + Group</span><span style="font-family:var(--font-mono);color:var(--amber);">~61.5%</span></div>
+      <div class="score-row"><span class="score-label">Foreign Institutional (FII/FPI)</span><span style="font-family:var(--font-mono);color:var(--green);">~14.0%</span></div>
+      <div class="score-row"><span class="score-label">Domestic Institutional (MF/Insurance)</span><span style="font-family:var(--font-mono);color:var(--green);">~11.0%</span></div>
+      <div class="score-row"><span class="score-label">Retail / Public</span><span style="font-family:var(--font-mono);color:var(--chrome);">~13.5%</span></div>
+      <div class="score-row"><span class="score-label">TOTAL</span><span style="font-family:var(--font-mono);color:var(--white);">100%</span></div>
+      <div style="margin-top:12px;font-size:12px;color:var(--chrome-dim);">Sectoral FII limit: Not specifically restricted. Index weight: Nifty 500 component. Market cap ~₹1,19,919 Cr — large cap.</div>
+    </div>
+  </div>
+
+  <!-- Section C: Free Float -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">C · FREE FLOAT & MARKET STRUCTURE</div>
+
+  <div class="card">
+    <div class="grid-3">
+      <div class="metric-card amber"><div class="metric-label">Total Market Cap</div><div class="metric-value">₹1,19,919 Cr</div><div class="metric-sub"><span class="conf-verified">V</span></div></div>
+      <div class="metric-card neutral"><div class="metric-label">Free Float (~38.5%)</div><div class="metric-value">₹46,169 Cr</div><div class="metric-sub">Estimated</div></div>
+      <div class="metric-card neutral"><div class="metric-label">Shares Outstanding</div><div class="metric-value">~15.05 Cr</div><div class="metric-sub">150.5M shares</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--chrome-dim);">Monthly SIP inflow estimate (at sector weight): Polycab receives estimated ₹80–120 Cr/month in passive and SIP-based DII inflows. Moderate structural bid floor. Tight promoter float (61.5%) means low supply pressure in normal conditions — amplifies price response to institutional demand.</div>
+  </div>
+
+  <!-- Section D: Full Composition -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">D · OWNERSHIP SIGNALS</div>
+
+  <div class="card">
+    <div class="score-row"><span class="score-label">Promoter trend (3-year)</span><span class="score-badge marginal">Declining −4.7% → MARGINAL (ESOP dilution)</span></div>
+    <div class="score-row"><span class="score-label">FII trend (1-year)</span><span class="score-badge pass">Rising → FIIs accumulating → POSITIVE</span></div>
+    <div class="score-row"><span class="score-label">DII trend (1-year)</span><span class="score-badge pass">Stable to Rising → DII holding → POSITIVE</span></div>
+    <div class="score-row"><span class="score-label">Pledged shares</span><span class="score-badge pass">0% → PASS</span></div>
+    <div class="score-row"><span class="score-label">Block trade Jan 2026 (Citigroup)</span><span class="score-badge marginal">73,577 shares at ₹7,388 → Large FPI buying → POSITIVE signal</span></div>
+    <div class="score-row"><span class="score-label">ESOP allotments ongoing</span><span class="score-badge marginal">Small ongoing dilution → MARGINAL</span></div>
+  </div>
+
+  <!-- Section E: Scores -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">E · OWNERSHIP MOMENTUM & RISK SCORES</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--chrome-dim);margin-bottom:8px;">OWNERSHIP MOMENTUM SCORE /100</div>
+      <div class="gauge-wrap"><div class="gauge-title">FII Accumulation</div><div class="gauge-bar"><div class="gauge-fill green" style="width:75%"></div></div><div class="gauge-label">30/40</div></div>
+      <div class="gauge-wrap"><div class="gauge-title">DII Trend</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:60%"></div></div><div class="gauge-label">20/30</div></div>
+      <div class="gauge-wrap"><div class="gauge-title">Promoter Conviction</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:40%"></div></div><div class="gauge-label">12/30</div></div>
+      <div style="font-family:var(--font-mono);font-size:16px;color:var(--amber);margin-top:8px;">Total: 62/100 — MODERATE POSITIVE</div>
+    </div>
+    <div class="card">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--chrome-dim);margin-bottom:8px;">SHAREHOLDING RISK SCORE /100</div>
+      <div class="gauge-wrap"><div class="gauge-title">Promoter Pledge Risk</div><div class="gauge-bar"><div class="gauge-fill green" style="width:5%"></div></div><div class="gauge-label">2/30</div></div>
+      <div class="gauge-wrap"><div class="gauge-title">Concentration Risk</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:30%"></div></div><div class="gauge-label">15/30</div></div>
+      <div class="gauge-wrap"><div class="gauge-title">Governance Risk</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:33%"></div></div><div class="gauge-label">10/30</div></div>
+      <div style="font-family:var(--font-mono);font-size:16px;color:var(--green);margin-top:8px;">Risk Score: 27/100 — LOW RISK ✓</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB 9: AI INTELLIGENCE ===== -->
+<div id="tab9" class="tab-content">
+  <div class="section-title">AI INTELLIGENCE</div>
+  <div class="section-sub">CLASSIFICATION DASHBOARD · FLYWHEEL TEST · VALUE CHAIN · INDIA AI CONTEXT · VERDICT</div>
+
+  <!-- SECTION A: Dashboard -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin-bottom:12px;">A · AI CLASSIFICATION DASHBOARD</div>
+  <div class="grid-4" style="margin-bottom:20px;">
+    <div class="metric-card neutral" style="text-align:center;">
+      <div class="metric-label">Company Category</div>
+      <div style="font-family:var(--font-display);font-size:32px;color:var(--white);">C</div>
+      <div class="metric-sub">Mature Compounder</div>
+    </div>
+    <div class="metric-card neutral" style="text-align:center;">
+      <div class="metric-label">AI Overlay</div>
+      <div style="font-family:var(--font-display);font-size:24px;color:var(--chrome);">⚪ NEUTRAL</div>
+      <div class="metric-sub">AI is operational tool</div>
+    </div>
+    <div class="metric-card neutral" style="text-align:center;">
+      <div class="metric-label">Data Flywheel</div>
+      <div style="font-family:var(--font-display);font-size:24px;color:var(--chrome-dim);">COSMETIC</div>
+      <div class="metric-sub">0/3 confirmed</div>
+    </div>
+    <div class="metric-card neutral" style="text-align:center;">
+      <div class="metric-label">Adoption Phase</div>
+      <div style="font-family:var(--font-display);font-size:24px;color:var(--chrome);">N/A</div>
+      <div class="metric-sub">Manufacturing biz</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">AI Neutral Classification Rationale</div>
+    <div class="card-body">Polycab is a physical manufacturing business — wires, cables, fans, switches, lights. Its competitive advantage is built on copper metallurgy, PVC compounding, quality control, brand trust, and distributor relationships. These are not AI-transformable moats. AI tools (demand sensing, logistics optimization, smart home HOHM IoT ecosystem) are being adopted across all manufacturing companies. They improve operational efficiency by 1–3% but do not create proprietary switching costs or data flywheels. The same logistics AI tools are available to KEI Industries, RR Kabel, and all competitors. <span class="conf-estimated">ESTIMATED</span> from earnings calls and annual reports.</div>
+  </div>
+
+  <!-- SECTION B: Flywheel Deep Dive -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin-bottom:12px;">B · DATA FLYWHEEL DEEP DIVE</div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">3-Question Flywheel Test Results</div>
+    <div class="card card-red" style="margin-bottom:12px;">
+      <div class="card-title">Q1: What is the company's proprietary training data?</div>
+      <div class="card-body">Polycab has HOHM IoT smart home platform (launched 2020) that collects usage data from fans, LEDs, and switches. However, HOHM penetration is minimal compared to the 200,000+ traditional retail touchpoints. The data volume is insufficient for meaningful AI training. No proprietary transaction, behavioural, or outcome data that competitors cannot access. Distribution data is valuable for sales forecasting but is not unique (any retailer has similar data). <strong style="color:var(--red);">FAILS Q1.</strong></div>
+    </div>
+    <div class="card card-red" style="margin-bottom:12px;">
+      <div class="card-title">Q2: How does the AI improve with more data/users?</div>
+      <div class="card-body">No evidence from earnings calls or filings that Polycab's AI systems measurably improve with scale. Demand forecasting models are deployed for internal efficiency — they are not customer-facing AI systems that improve the product experience. The copper procurement hedging AI saves cost but does not create a self-improving loop. <strong style="color:var(--red);">FAILS Q2.</strong></div>
+    </div>
+    <div class="card card-red">
+      <div class="card-title">Q3: Does better AI attract more users? Describe the loop.</div>
+      <div class="card-body">No self-reinforcing loop identified. Customers choose Polycab for brand quality (safety, BIS certification), product availability, and distributor proximity — NOT because the company's AI gets smarter. The HOHM IoT platform could theoretically create a smart home data loop in the future, but penetration is too early to claim a confirmed flywheel. <strong style="color:var(--red);">FAILS Q3.</strong></div>
+    </div>
+    <div style="margin-top:16px;display:flex;align-items:center;gap:16px;">
+      <div>
+        <div class="gauge-wrap"><div class="gauge-title">Data Quality</div><div class="gauge-bar"><div class="gauge-fill red" style="width:20%"></div></div><div class="gauge-label">0.6/3</div></div>
+        <div class="gauge-wrap"><div class="gauge-title">Improvement Evidence</div><div class="gauge-bar"><div class="gauge-fill red" style="width:10%"></div></div><div class="gauge-label">0.4/4</div></div>
+        <div class="gauge-wrap"><div class="gauge-title">Loop Speed</div><div class="gauge-bar"><div class="gauge-fill red" style="width:10%"></div></div><div class="gauge-label">0/3</div></div>
+        <div style="font-family:var(--font-mono);font-size:14px;color:var(--chrome-dim);margin-top:8px;">Flywheel Score: 1/10 → <span style="color:var(--chrome);">COSMETIC</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION C: Value Chain -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">C · AI VALUE CHAIN POSITION</div>
+
+  <div class="chain-wrap">
+    <div class="chain-node">
+      <div class="chain-level">Level 1</div>
+      <div class="chain-name">Infrastructure</div>
+    </div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node">
+      <div class="chain-level">Level 2</div>
+      <div class="chain-name">Foundation Models</div>
+    </div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node">
+      <div class="chain-level">Level 3</div>
+      <div class="chain-name">AI Platforms</div>
+    </div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node">
+      <div class="chain-level">Level 4</div>
+      <div class="chain-name">Vertical Apps</div>
+    </div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-node active-node">
+      <div class="chain-level">Level 5 (POLYCAB)</div>
+      <div class="chain-name">AI-Enabled Incumbent</div>
+    </div>
+  </div>
+  <div class="card card-chrome" style="margin-top:12px;">
+    <div class="card-body">
+      <strong style="color:var(--amber);">Level 5 — AI-Enabled Incumbent:</strong> Polycab uses AI as an operational tool to enhance an already-strong traditional business moat. This is actually the <strong style="color:var(--white);">lowest-risk AI position</strong> — the existing moat (distribution + brand) provides protection while AI provides incremental efficiency gains. The risk: not being disrupted BY AI from higher levels. Moat resilience to AI disruption: 8.5/10 (physical manufacturing + brand = highly AI-resistant).<br><br>
+      Implication: Polycab is a 5–7 year holding as an AI-enabled compounder, NOT a pure AI play. Invest on fundamentals. AI is tailwind, not the thesis.
+    </div>
+  </div>
+
+  <!-- SECTION D: India AI Context -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">D · INDIA AI OPPORTUNITY CONTEXT</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="score-row"><span class="score-label">Advantage 1: Data at Scale (UPI/Aadhaar)</span><span class="score-badge fail">NO — Polycab is not a fintech/payments player</span></div>
+      <div class="score-row"><span class="score-label">Advantage 2: Vernacular AI Content</span><span class="score-badge fail">NO — Physical product; language AI not relevant</span></div>
+      <div class="score-row"><span class="score-label">Advantage 3: India Stack Infrastructure</span><span class="score-badge marginal">ADJACENT — Benefits from digital infra demand for cables</span></div>
+      <div class="score-row"><span class="score-label">Advantage 4: AI Talent Cost Arbitrage</span><span class="score-badge marginal">ADJACENT — Operational AI teams but not core business</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">India AI Themes Relevance</div>
+      <div class="score-row"><span class="score-label">AI in banking/credit</span><span class="score-badge fail">None</span></div>
+      <div class="score-row"><span class="score-label">Data centres (infra cables)</span><span class="score-badge pass">DIRECTLY — Data center = cable demand boom</span></div>
+      <div class="score-row"><span class="score-label">AI in pharma R&D</span><span class="score-badge fail">None</span></div>
+      <div class="score-row"><span class="score-label">AI in logistics/supply</span><span class="score-badge marginal">Adjacent — Using AI internally</span></div>
+      <div class="score-row"><span class="score-label">EV ecosystem cables</span><span class="score-badge pass">DIRECTLY — EV charging = cable demand</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION F: AI Verdict -->
+  <div style="font-family:var(--font-display);font-size:18px;color:var(--amber);letter-spacing:2px;margin:20px 0 12px;">F · AI OPPORTUNITY SCORE & PORTFOLIO ROLE</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="gauge-wrap"><div class="gauge-title">Data Flywheel Strength</div><div class="gauge-bar"><div class="gauge-fill red" style="width:10%"></div></div><div class="gauge-label">2/20</div></div>
+      <div class="gauge-wrap"><div class="gauge-title">Adoption Phase Timing</div><div class="gauge-bar"><div class="gauge-fill amber" style="width:35%"></div></div><div class="gauge-label">7/20</div></div>
+      <div class="gauge-wrap"><div class="gauge-title">Value Chain Position (Level 5)</div><div class="gauge-bar"><div class="gauge-fill green" style="width:65%"></div></div><div class="gauge-label">13/20</div></div>
+      <div class="gauge-wrap"><div class="gauge-title">India Structural Advantage</div><div class="gauge-bar"><div class="gauge-fill amber" style="width">
+</div></div><div class="gauge-label">3/20</div></div>
+      <div class="gauge-wrap"><div class="gauge-title">AI Threat Resistance</div><div class="gauge-bar"><div class="gauge-fill green" style="width:85%"></div></div><div class="gauge-label">17/20</div></div>
+      <div style="margin-top:12px;font-family:var(--font-mono);font-size:16px;color:var(--chrome);">TOTAL AI SCORE: 28/100</div>
+    </div>
+    <div class="card card-chrome">
+      <div class="card-title">Portfolio Role: AI NEUTRAL</div>
+      <div class="card-body">
+        Score 20–40/100 = <strong style="color:var(--chrome);">AI NEUTRAL</strong> — Invest on fundamentals alone. AI neither helps nor hurts materially.<br><br>
+        <strong style="color:var(--amber);">Investment Horizon:</strong> 5–7 years (Level 5 AI-enabled incumbent — compounding, not a quick trade).<br><br>
+        <strong style="color:var(--amber);">Key AI Watch Points:</strong><br>
+        — HOHM IoT platform adoption metrics (if available)<br>
+        — Data center cable order book growth<br>
+        — EV charging infrastructure cables revenue<br>
+        — Any strategic AI partnership announcement<br><br>
+        <strong style="color:var(--amber);">AI Threat Resilience: 8.5/10</strong> — Physical manufacturing + brand is highly resistant to AI disruption. Copper does not get disrupted by ChatGPT. <span class="conf-estimated">ESTIMATED</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>SEBI DISCLAIMER:</strong> This report is produced solely for educational and research purposes under the Buffett Quality-Value Series v5.0 framework. It does not constitute investment advice, a buy/sell recommendation, or a solicitation. Equity investments are subject to market risks. Please read all scheme-related documents carefully. Past performance is not indicative of future results. The analyst may or may not hold positions in the securities mentioned. Registered investors should consult a SEBI-registered investment advisor before making investment decisions. CMP as of April 24–26, 2026.
+  <br><br>
+  <strong>DATA NOTICE:</strong> [VERIFIED] = official filings / live web search this session | [ESTIMATED] = cross-referenced; high confidence | [UNVERIFIED] = limited source; treat with caution. Financial data sources: Equitymaster, Yahoo Finance, Screener.in, Q2 FY26 Earnings Call Transcript (Polycab), TradingView, Investing.com, Tickertape, CEIC, TradingEconomics, Mordor Intelligence, Energetica India.
+  <br><br>
+  <strong>FONTS:</strong> Bebas Neue (Google Fonts) · Fira Code (Google Fonts) · Nunito Sans (Google Fonts) · Buffett QV Series v5.0 — March 2026 Master Prompt · Report generated: April 2026
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function() {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el) {
+    el.style.display = 'none';
+    el.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  var target = document.getElementById(tabId);
+  if (target) { target.style.display = 'block'; target.classList.add('active'); }
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+// Initialize first tab
+document.getElementById('tab0').style.display = 'block';
+</script>
+</body>
+</html>

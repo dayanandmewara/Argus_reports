@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SWSOLAR — Buffett Quality-Value Analysis v5.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg:       #0F1C2E;
+  --c-surface:  #162438;
+  --c-card:     #1A2D45;
+  --c-border:   #253D58;
+  --c-amber:    #F0A614;
+  --c-amber-dim:#B87B10;
+  --c-slate:    #5A8FAF;
+  --c-pale:     #F2EDE4;
+  --c-muted:    #8BA4BF;
+  --c-green:    #4CAF82;
+  --c-red:      #E05454;
+  --c-orange:   #E07A30;
+  --c-verified: #4CAF82;
+  --c-estimated:#E0C030;
+  --c-unverified:#E05454;
+  --ff-display: 'Bebas Neue', sans-serif;
+  --ff-body:    'Crimson Pro', Georgia, serif;
+  --ff-mono:    'JetBrains Mono', monospace;
+  --radius:     6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--c-bg);
+  color: var(--c-pale);
+  font-family: var(--ff-body);
+  font-size: 16px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* ─── HERO ─── */
+.hero {
+  background: linear-gradient(135deg, #071016 0%, #0E2238 50%, #142E48 100%);
+  border-bottom: 2px solid var(--c-amber);
+  padding: 32px 28px 24px;
+  position: relative;
+  overflow: hidden;
+  max-height: 220px;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: 0; right: 0; width: 40%; height: 100%;
+  background: radial-gradient(ellipse at top right, rgba(240,166,20,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; max-width: 1100px; }
+.hero-company { font-family: var(--ff-display); font-size: clamp(2rem, 5vw, 3.8rem); color: #fff; letter-spacing: 2px; line-height: 1; }
+.hero-sub { font-family: var(--ff-mono); font-size: 0.75rem; color: var(--c-amber); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+.hero-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.badge {
+  font-family: var(--ff-mono); font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 2px; font-weight: 700;
+}
+.badge-cat  { background: var(--c-amber); color: #000; }
+.badge-ai   { background: #2A3D2A; color: #6DD97A; border: 1px solid #4CAF82; }
+.badge-warn { background: #3D2A0D; color: var(--c-amber); border: 1px solid var(--c-amber); }
+.badge-watch{ background: #1E3A5F; color: #6BB8E0; border: 1px solid var(--c-slate); }
+.badge-verdict { background: var(--c-slate); color: #fff; font-size: 0.8rem; padding: 4px 14px; }
+.hero-pills { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+.hero-pill {
+  font-family: var(--ff-mono); font-size: 0.7rem; color: var(--c-muted);
+}
+.hero-pill span { color: var(--c-pale); font-weight: 500; }
+.hero-right { text-align: right; }
+.hero-price { font-family: var(--ff-display); font-size: 2.2rem; color: var(--c-amber); }
+.hero-change { font-family: var(--ff-mono); font-size: 0.7rem; color: var(--c-red); }
+.hero-lede { font-size: 0.9rem; color: var(--c-muted); margin-top: 6px; max-width: 700px; font-style: italic; }
+
+/* ─── TAB BAR ─── */
+#tab-bar {
+  background: var(--c-surface);
+  border-bottom: 1px solid var(--c-border);
+  position: sticky; top: 0; z-index: 100;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+#tab-bar::-webkit-scrollbar { display: none; }
+.tab-nav { display: flex; gap: 0; min-width: max-content; }
+.tab-btn {
+  font-family: var(--ff-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 1px;
+  padding: 12px 16px; background: none; border: none; color: var(--c-muted);
+  cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent;
+  transition: all .2s;
+}
+.tab-btn:hover { color: var(--c-pale); background: rgba(255,255,255,0.03); }
+.tab-btn.active { color: var(--c-amber); border-bottom-color: var(--c-amber); }
+
+/* ─── CONTENT ─── */
+.tab-content { display: none; max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+.tab-content.active-tab { display: block; }
+
+h2 { font-family: var(--ff-display); font-size: 1.8rem; color: var(--c-amber); letter-spacing: 2px; margin-bottom: 6px; }
+h3 { font-family: var(--ff-display); font-size: 1.1rem; letter-spacing: 1.5px; color: var(--c-pale); margin: 24px 0 10px; }
+h4 { font-family: var(--ff-mono); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--c-amber); margin: 18px 0 8px; }
+p  { margin-bottom: 12px; color: var(--c-muted); font-size: 0.95rem; }
+p strong, p b { color: var(--c-pale); }
+
+/* ─── CARDS ─── */
+.card { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+.card-amber { border-left: 3px solid var(--c-amber); }
+.card-green { border-left: 3px solid var(--c-green); }
+.card-red   { border-left: 3px solid var(--c-red); }
+.card-slate { border-left: 3px solid var(--c-slate); }
+
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin: 16px 0; }
+.metric { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 12px 14px; }
+.metric-label { font-family: var(--ff-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--c-muted); }
+.metric-value { font-family: var(--ff-mono); font-size: 1.15rem; color: var(--c-pale); font-weight: 700; margin-top: 2px; }
+.metric-sub { font-family: var(--ff-mono); font-size: 0.65rem; color: var(--c-muted); margin-top: 2px; }
+.metric.pass  { border-left: 3px solid var(--c-green); }
+.metric.warn  { border-left: 3px solid var(--c-orange); }
+.metric.fail  { border-left: 3px solid var(--c-red); }
+
+/* ─── DATA LABELS ─── */
+.lv { display: inline; font-family: var(--ff-mono); font-size: 0.6rem; padding: 1px 5px; border-radius: 2px; vertical-align: middle; }
+.lv-v { background: rgba(76,175,130,0.2); color: var(--c-green); border: 1px solid var(--c-green); }
+.lv-e { background: rgba(224,192,48,0.15); color: var(--c-estimated); border: 1px solid var(--c-estimated); }
+.lv-u { background: rgba(224,84,84,0.15); color: var(--c-red); border: 1px solid var(--c-red); }
+
+/* ─── TABLES ─── */
+.tbl-wrap { overflow-x: auto; margin: 12px 0; }
+table { width: 100%; border-collapse: collapse; font-family: var(--ff-mono); font-size: 0.75rem; }
+th { background: var(--c-surface); color: var(--c-amber); text-transform: uppercase; letter-spacing: 1px; padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--c-border); }
+th:first-child { text-align: left; }
+td { padding: 7px 10px; border-bottom: 1px solid rgba(37,61,88,0.5); color: var(--c-muted); text-align: right; }
+td:first-child { text-align: left; color: var(--c-pale); }
+tr:hover td { background: rgba(255,255,255,0.02); }
+.td-pos { color: var(--c-green); }
+.td-neg { color: var(--c-red); }
+.td-warn{ color: var(--c-orange); }
+.td-hl  { color: var(--c-amber); font-weight: 700; }
+
+/* ─── SCORECARD ITEMS ─── */
+.scorecard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin: 12px 0; }
+.sc-item { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+.sc-label { font-size: 0.85rem; color: var(--c-pale); }
+.sc-label small { display: block; font-size: 0.7rem; color: var(--c-muted); font-family: var(--ff-mono); margin-top: 2px; }
+.sc-pass { font-family: var(--ff-mono); font-size: 0.7rem; padding: 3px 8px; border-radius: 2px; font-weight: 700; }
+.sc-pass.pass  { background: rgba(76,175,130,0.2); color: var(--c-green); }
+.sc-pass.marg  { background: rgba(224,122,48,0.2); color: var(--c-orange); }
+.sc-pass.fail  { background: rgba(224,84,84,0.2); color: var(--c-red); }
+
+/* ─── MOAT STARS ─── */
+.moat-item { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
+.moat-header { display: flex; justify-content: space-between; align-items: center; }
+.moat-name { font-family: var(--ff-mono); font-size: 0.8rem; color: var(--c-pale); text-transform: uppercase; letter-spacing: 1px; }
+.moat-stars { color: var(--c-amber); font-size: 1rem; }
+.moat-body { font-size: 0.88rem; color: var(--c-muted); margin-top: 6px; }
+
+/* ─── VERDICT BOX ─── */
+.verdict-box {
+  background: linear-gradient(135deg, #1A2D45, #0F1C2E);
+  border: 2px solid var(--c-slate);
+  border-radius: 8px; padding: 28px; margin: 20px 0;
+}
+.verdict-stars { font-family: var(--ff-display); font-size: 2.5rem; color: var(--c-slate); letter-spacing: 3px; }
+.verdict-title { font-family: var(--ff-display); font-size: 1.8rem; color: var(--c-pale); letter-spacing: 2px; margin: 6px 0; }
+.verdict-quote { font-style: italic; color: var(--c-muted); border-left: 3px solid var(--c-amber); padding-left: 14px; margin: 14px 0; font-size: 0.95rem; }
+.upgrade-list { list-style: none; margin-top: 12px; }
+.upgrade-list li { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 0.85rem; color: var(--c-muted); }
+.upgrade-num { font-family: var(--ff-mono); font-size: 0.65rem; background: var(--c-amber); color: #000; padding: 2px 6px; border-radius: 2px; flex-shrink: 0; margin-top: 2px; font-weight: 700; }
+
+/* ─── SCENARIO TABLE ─── */
+.scenario-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--c-border); border-radius: var(--radius); overflow: hidden; margin: 12px 0; }
+.scenario-col { background: var(--c-card); padding: 14px; }
+.scenario-col:first-child { background: #1A2030; }
+.scenario-col:last-child  { background: #1A2820; }
+.scenario-label { font-family: var(--ff-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.scenario-col:first-child .scenario-label { color: var(--c-red); }
+.scenario-col:nth-child(2)  .scenario-label { color: var(--c-amber); }
+.scenario-col:last-child  .scenario-label { color: var(--c-green); }
+.scenario-row { margin-top: 8px; }
+.scenario-key { font-family: var(--ff-mono); font-size: 0.62rem; color: var(--c-muted); }
+.scenario-val { font-family: var(--ff-mono); font-size: 0.82rem; color: var(--c-pale); }
+
+/* ─── FLYWHEEL BOX ─── */
+.flywheel-box { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 20px; margin: 16px 0; }
+.flywheel-title { font-family: var(--ff-display); font-size: 1.2rem; color: var(--c-muted); letter-spacing: 2px; }
+.flywheel-badge { font-family: var(--ff-mono); font-size: 0.7rem; background: rgba(90,143,175,0.15); color: var(--c-slate); border: 1px solid var(--c-slate); padding: 2px 10px; border-radius: 2px; margin-top: 6px; display: inline-block; }
+.flywheel-score { font-family: var(--ff-display); font-size: 2rem; color: var(--c-muted); margin: 10px 0 4px; }
+
+/* ─── SHAREHOLDING TREND ─── */
+.sh-track { display: flex; gap: 6px; margin: 8px 0; align-items: center; }
+.sh-bar-wrap { flex: 1; background: var(--c-border); border-radius: 2px; height: 8px; }
+.sh-bar { height: 8px; border-radius: 2px; background: var(--c-amber); transition: width .4s; }
+.sh-pct { font-family: var(--ff-mono); font-size: 0.65rem; color: var(--c-pale); min-width: 45px; text-align: right; }
+.sh-label { font-family: var(--ff-mono); font-size: 0.62rem; color: var(--c-muted); min-width: 90px; }
+
+/* ─── AI ─── */
+.ai-badges { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+.ai-badge { padding: 6px 14px; border-radius: var(--radius); font-family: var(--ff-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+.ai-neutral { background: rgba(90,143,175,0.15); color: var(--c-slate); border: 1px solid var(--c-slate); }
+.ai-widener { background: rgba(76,175,130,0.15); color: var(--c-green); border: 1px solid var(--c-green); }
+.ai-threat  { background: rgba(224,84,84,0.15); color: var(--c-red); border: 1px solid var(--c-red); }
+
+/* ─── CHAIN DIAGRAM ─── */
+.chain { display: flex; gap: 0; margin: 14px 0; flex-wrap: wrap; }
+.chain-item { flex: 1; min-width: 110px; padding: 10px; background: var(--c-surface); border: 1px solid var(--c-border); text-align: center; position: relative; }
+.chain-item.active { background: rgba(90,143,175,0.15); border-color: var(--c-slate); }
+.chain-level { font-family: var(--ff-mono); font-size: 0.55rem; color: var(--c-muted); }
+.chain-name  { font-family: var(--ff-mono); font-size: 0.65rem; color: var(--c-pale); margin-top: 2px; }
+
+/* ─── MA DASHBOARD ─── */
+.ma-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 12px 0; }
+.ma-item { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 10px 12px; }
+.ma-label { font-family: var(--ff-mono); font-size: 0.6rem; color: var(--c-muted); text-transform: uppercase; }
+.ma-value { font-family: var(--ff-mono); font-size: 0.95rem; color: var(--c-pale); margin: 2px 0; }
+.ma-status { font-family: var(--ff-mono); font-size: 0.6rem; }
+.ma-below { color: var(--c-red); }
+.ma-above { color: var(--c-green); }
+
+/* ─── RSI GAUGE ─── */
+.rsi-gauge { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 16px; margin: 12px 0; }
+.rsi-bar-bg { background: linear-gradient(to right, var(--c-green) 0%, var(--c-estimated) 30%, var(--c-orange) 70%, var(--c-red) 100%); height: 10px; border-radius: 5px; position: relative; }
+.rsi-needle { position: absolute; top: -4px; width: 3px; height: 18px; background: #fff; border-radius: 2px; transform: translateX(-50%); }
+.rsi-zones { display: flex; justify-content: space-between; font-family: var(--ff-mono); font-size: 0.58rem; color: var(--c-muted); margin-top: 4px; }
+
+/* ─── ALERT BOX ─── */
+.alert { border: 1px solid; border-radius: var(--radius); padding: 12px 16px; margin: 12px 0; font-size: 0.88rem; }
+.alert-amber { border-color: var(--c-amber); background: rgba(240,166,20,0.06); color: var(--c-amber); }
+.alert-red   { border-color: var(--c-red); background: rgba(224,84,84,0.06); color: var(--c-red); }
+.alert-green { border-color: var(--c-green); background: rgba(76,175,130,0.06); color: var(--c-green); }
+.alert-slate { border-color: var(--c-slate); background: rgba(90,143,175,0.06); color: var(--c-slate); }
+
+/* ─── PILLAR GRADES ─── */
+.pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+.pillar { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 16px; text-align: center; }
+.pillar-name { font-family: var(--ff-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: var(--c-muted); }
+.pillar-grade { font-family: var(--ff-display); font-size: 2.5rem; }
+.grade-a { color: var(--c-green); }
+.grade-b { color: var(--c-amber); }
+.grade-c { color: var(--c-orange); }
+.grade-d { color: var(--c-red); }
+
+/* ─── TRADE BOX ─── */
+.trade-box { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 18px; margin: 12px 0; }
+.trade-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
+.trade-item .trade-lbl { font-family: var(--ff-mono); font-size: 0.58rem; color: var(--c-muted); text-transform: uppercase; }
+.trade-item .trade-val { font-family: var(--ff-mono); font-size: 1rem; color: var(--c-pale); }
+
+/* ─── UTILS ─── */
+.divider { border: none; border-top: 1px solid var(--c-border); margin: 24px 0; }
+.tag { display: inline-block; font-family: var(--ff-mono); font-size: 0.6rem; background: var(--c-border); color: var(--c-muted); padding: 2px 7px; border-radius: 2px; margin: 2px; }
+.series-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.series-table th { background: var(--c-surface); color: var(--c-amber); font-family: var(--ff-mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 1px; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--c-border); }
+.series-table td { padding: 8px 10px; font-family: var(--ff-mono); font-size: 0.72rem; border-bottom: 1px solid rgba(37,61,88,0.4); color: var(--c-muted); }
+.series-table td:first-child { color: var(--c-pale); font-weight: 700; }
+.ai-score-bar { background: var(--c-border); border-radius: 4px; height: 14px; margin: 6px 0; }
+.ai-score-fill { height: 14px; border-radius: 4px; background: linear-gradient(to right, var(--c-red), var(--c-orange), var(--c-amber)); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 680px) {
+  .pillar-grid { grid-template-columns: repeat(2,1fr); }
+  .scenario-grid { grid-template-columns: 1fr; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-right { text-align: left; margin-top: 8px; }
+  .chain { flex-direction: column; }
+}
+@media (max-width: 600px) {
+  .metric-grid { grid-template-columns: 1fr 1fr; }
+  .scorecard-grid { grid-template-columns: 1fr; }
+  .ma-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ─── FOOTER ─── */
+.footer { background: var(--c-surface); border-top: 1px solid var(--c-border); padding: 24px 20px; font-family: var(--ff-mono); font-size: 0.65rem; color: var(--c-muted); line-height: 1.8; max-width: 1100px; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-company">SWSOLAR</div>
+      <div class="hero-sub">Sterling & Wilson Renewable Energy · NSE · BUFFETT Q-V SERIES v5.0</div>
+      <div class="hero-badges">
+        <span class="badge badge-cat">CATEGORY D — TURNAROUND</span>
+        <span class="badge badge-ai">⚪ AI NEUTRAL</span>
+        <span class="badge badge-warn">⚠ PLEDGES 27.6%</span>
+        <span class="badge badge-watch">WATCH ★★★</span>
+      </div>
+      <div class="hero-pills">
+        <span class="hero-pill">MCap <span>₹3,800 Cr</span></span>
+        <span class="hero-pill">52W H/L <span>₹349 / ₹158</span></span>
+        <span class="hero-pill">FY26 Orders <span>₹10,062 Cr+</span></span>
+        <span class="hero-pill">OB Unexec <span>₹10,413 Cr</span></span>
+        <span class="hero-pill">Analysis <span>23 Apr 2026</span></span>
+      </div>
+      <div class="hero-lede">Global pure-play solar EPC recovering from a ₹2,600 Cr loss cycle — Reliance-backed turnaround with record order inflows but persistent margin volatility and promoter pledge risk. Board meeting TODAY for Q4 FY26 results.</div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-price">₹162 <span class="lv lv-u">UNVERIFIED</span></div>
+      <div class="hero-change">▼ −53% from 52W High</div>
+      <div style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--c-muted);margin-top:4px;">P/E: 48x TTM | P/S: 0.47x | P/B: 8x</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TAB BAR ═══════════════════════ -->
+<div id="tab-bar">
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro & Growth</button>
+    <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+    <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intelligence</button>
+  </nav>
+</div>
+
+<!-- ═══════════════════════ TAB 0: OVERVIEW ═══════════════════════ -->
+<div class="tab-content active-tab" id="t0">
+<h2>OVERVIEW</h2>
+<div class="card card-amber">
+  <h4>WHY THIS STOCK IS IN THE SERIES</h4>
+  <p>SWSOLAR sits at the intersection of India's most powerful structural macro theme — the <strong>500 GW renewable energy target by 2030</strong> — and a deeply damaged balance sheet that has been partially rescued by Reliance Industries. The FY21–FY24 working capital implosion (₹2,592 Cr aggregate losses) destroyed the stock from its IPO price. What emerges in FY25–26 is a turnaround thesis: record order inflows, an Adani partnership, Reliance backstop, and the first profitable year in four. Whether the business model can sustain margins above 4% is the pivotal question.</p>
+</div>
+
+<div class="metric-grid">
+  <div class="metric warn"><div class="metric-label">Current Price</div><div class="metric-value">₹162</div><div class="metric-sub">UNVERIFIED · Apr 2026</div></div>
+  <div class="metric"><div class="metric-label">Market Cap</div><div class="metric-value">₹3,800 Cr</div><div class="metric-sub">ESTIMATED · free float ~60%</div></div>
+  <div class="metric pass"><div class="metric-label">FY26 Order Inflow</div><div class="metric-value">₹10,062 Cr+</div><div class="metric-sub">VERIFIED · >FY26 annual target</div></div>
+  <div class="metric warn"><div class="metric-label">Unexecuted Order Book</div><div class="metric-value">₹10,413 Cr</div><div class="metric-sub">VERIFIED · Q3 FY26</div></div>
+  <div class="metric pass"><div class="metric-label">9M FY26 Revenue</div><div class="metric-value">₹5,602 Cr</div><div class="metric-sub">VERIFIED · +48% YoY</div></div>
+  <div class="metric warn"><div class="metric-label">OPM (FY25)</div><div class="metric-value">4%</div><div class="metric-sub">VERIFIED · Guidance: 4–6%</div></div>
+  <div class="metric fail"><div class="metric-label">Promoter Pledge</div><div class="metric-value">27.6%</div><div class="metric-sub">VERIFIED · Of promoter holding</div></div>
+  <div class="metric"><div class="metric-label">Reliance Stake</div><div class="metric-value">32.5%</div><div class="metric-sub">VERIFIED · As of Mar 2025</div></div>
+</div>
+
+<h3>BUSINESS MODEL</h3>
+<div class="card">
+  <p>Sterling & Wilson Renewable Energy (SWREL) is a <strong>global pure-play solar EPC (Engineering, Procurement & Construction)</strong> company providing end-to-end services for utility-scale solar, floating solar, hybrid, battery storage, and wind projects. It also operates a growing <strong>Operations & Maintenance (O&M)</strong> portfolio that has crossed 10 GW — a more stable, recurring revenue stream.</p>
+  <p>The company operates in India, South Africa, Europe, MENA, Southeast Asia, and Latin America. As of Q3 FY26, <strong>75% of the order book is domestic</strong>. The EPC business is inherently thin-margin (4–6% EBITDA) and working capital intensive — the core vulnerability in its 2021–23 crisis. Gross margins of ~9.5–10.1% are driven by the spread between contract value and direct project costs (modules, civil works, logistics).</p>
+  <p><strong>Revenue split:</strong> ~95% EPC, ~5% O&M (growing). O&M represents the long-term value creation lever — it is recurring, less capital-intensive, and where most EPC companies build sticky moats over time.</p>
+</div>
+
+<h3>TURNAROUND NARRATIVE — KEY MILESTONES</h3>
+<div class="tbl-wrap"><table>
+  <tr><th>Year</th><th>Event</th><th>Impact</th></tr>
+  <tr><td>FY20–FY22</td><td>COVID + overseas project delays + Shapoorji cash crunch</td><td class="td-neg">₹1,200+ Cr losses; working capital crisis</td></tr>
+  <tr><td>FY23</td><td>Revenue collapsed to ₹2,015 Cr; ₹1,175 Cr loss</td><td class="td-neg">Near-death experience for the company</td></tr>
+  <tr><td>FY22</td><td>Reliance Industries acquires 40% stake</td><td class="td-pos">Balance sheet rescue; credibility restored</td></tr>
+  <tr><td>FY24</td><td>Revenue recovers to ₹3,035 Cr; loss narrows to ₹211 Cr</td><td class="td-warn">Recovery underway; still loss-making</td></tr>
+  <tr><td>FY25</td><td>Revenue surges to ₹6,302 Cr; first profit ₹86 Cr</td><td class="td-pos">Turnaround confirmed — first profitable year</td></tr>
+  <tr><td>Q2 FY26</td><td>₹478 Cr net loss from US subsidiary legal settlement</td><td class="td-neg">Legacy issue; management calls it one-time</td></tr>
+  <tr><td>Q3 FY26</td><td>Revenue ₹2,092 Cr (highest-ever Q3); orders ₹3,086 Cr</td><td class="td-pos">Operational momentum intact</td></tr>
+  <tr><td>FY26</td><td>Adani Green 1 GW+ partnership; Coal India 875 MW order; ₹10,062 Cr inflows</td><td class="td-pos">Structural upgrade to order pipeline quality</td></tr>
+  <tr><td>23 Apr 2026</td><td><strong>Board Meeting TODAY — Q4 FY26 results</strong></td><td class="td-hl">Key monitorable event</td></tr>
+</table></div>
+
+<div class="alert alert-amber">
+  <strong>⚡ TIMING NOTE:</strong> The board is meeting today (23 April 2026) to approve Q4 FY26 audited results. An investor call is scheduled for 24 April 2026. The verdict in this report is based on available data through Q3 FY26. Q4 results could materially change the thesis direction.
+</div>
+
+<h3>CATEGORY & FRAMEWORK ADAPTATION</h3>
+<div class="card card-slate">
+  <h4>CATEGORY D — TURNAROUND / SPECIAL SITUATION</h4>
+  <p><strong>Rationale:</strong> SWSOLAR fails standard Buffett quality thresholds — negative 3-year ROE (−76.2%), weak ROIC, no consistent FCF, thin and volatile margins. It qualifies as Category D because the below-threshold metrics are meaningfully improving (FY25: first profit, FY26: record orders), the thesis is event-driven (Reliance backing + India 500 GW target), and institutional re-entry is the key confirming signal.</p>
+  <p><strong>Framework adaptation:</strong> Standard DCF is unreliable given earnings volatility. Primary valuation tools: (1) Normalised EV/EBITDA at mid-cycle margin, (2) P/Sales vs EPC peers, (3) EV/Order Book, (4) Earnings power at 5% EBITDA. Volume analysis and promoter/FII behaviour are PRIMARY confirmation signals. Margin of safety widens to 25–30% for Category D.</p>
+  <p><strong>AI Overlay: ⚪ NEUTRAL.</strong> SWSOLAR uses digital tools (project management software, remote monitoring, drone-based inspection) but has no structural AI moat. The recent appointment of an SVP-IT (Jan 2026) suggests digital infrastructure investment but this is operational efficiency, not a moat-building AI deployment.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════ TAB 1: MACRO & GROWTH ═══════════════════════ -->
+<div class="tab-content" id="t1">
+<h2>MACRO & GROWTH</h2>
+
+<h3>LAYER 1 — MACRO ANCHOR</h3>
+<div class="metric-grid">
+  <div class="metric pass"><div class="metric-label">India Real GDP (RBI FY27)</div><div class="metric-value">6.9%</div><div class="metric-sub">VERIFIED · RBI Apr 2026</div></div>
+  <div class="metric pass"><div class="metric-label">India CPI (late 2025)</div><div class="metric-value">~3.5%</div><div class="metric-sub">ESTIMATED · recovering from 0.25% lows</div></div>
+  <div class="metric pass"><div class="metric-label">India Nominal GDP</div><div class="metric-value">~10.4%</div><div class="metric-sub">Real GDP + CPI · Terminal ceiling</div></div>
+  <div class="metric warn"><div class="metric-label">10-Year G-Sec Yield</div><div class="metric-value">6.87–6.90%</div><div class="metric-sub">VERIFIED · Apr 2026</div></div>
+  <div class="metric warn"><div class="metric-label">RBI Repo Rate</div><div class="metric-value">~5.75%</div><div class="metric-sub">ESTIMATED · post 125bps cuts FY25</div></div>
+  <div class="metric pass"><div class="metric-label">Govt Capex (RE focus)</div><div class="metric-value">₹35,000 Cr+</div><div class="metric-sub">VERIFIED · Budget 2025-26 allocation</div></div>
+</div>
+
+<div class="card">
+  <h4>MACRO CYCLE STATUS DASHBOARD</h4>
+  <div class="tbl-wrap"><table>
+    <tr><th>Cycle Dimension</th><th>Current Status</th><th>SWSOLAR Impact</th></tr>
+    <tr><td>Rural Income</td><td class="td-pos">Recovery / Neutral</td><td>Indirect — rural electrification pushes solar demand</td></tr>
+    <tr><td>Urban Consumption</td><td class="td-warn">Neutral → Recovery</td><td>Commercial/industrial solar uptick</td></tr>
+    <tr><td>Input Cost (Modules)</td><td class="td-pos">Falling / Stable</td><td class="td-pos">Positive — China module glut keeps module prices low, aiding EPC economics</td></tr>
+    <tr><td>Interest Rate Cycle (RBI)</td><td class="td-pos">Easing (125bps cut)</td><td class="td-pos">Lower cost of capital for solar project developers → faster tendering</td></tr>
+    <tr><td>Government Capex (RE)</td><td class="td-pos">Accelerating</td><td class="td-pos">500 GW target → EPC demand structural</td></tr>
+    <tr><td>AI Adoption Cycle</td><td>Low relevance</td><td>AI NEUTRAL — monitoring/digital tools only</td></tr>
+    <tr><td>West Asia Conflict</td><td class="td-warn">Ceasefire fragile</td><td class="td-warn">Oil price spike risk → G-Sec yield pressure → RE project viability risk</td></tr>
+  </table></div>
+  <div class="alert alert-green" style="margin-top:12px;"><strong>MACRO COMPOSITE FOR SWSOLAR: TAILWIND.</strong> Lower module costs + RBI easing + government 500 GW target + Adani/PSU demand creates multi-year structural demand for solar EPC. Key risk: oil price spike (West Asia) could raise G-Sec yields, compress RE project IRRs, and slow tendering temporarily.</div>
+</div>
+
+<h3>LAYER 2 — SECTOR GROWTH DERIVATION</h3>
+<div class="card card-amber">
+  <h4>SECTOR: INDIA SOLAR EPC / RENEWABLES EPC</h4>
+  <p><b>Historical:</b> India's installed RE capacity grew at 18.5% CAGR FY16–FY26 (to 250 GW by Oct 2025). <span class="lv lv-v">VERIFIED</span> Solar capacity alone: 129.92 GW as of Oct 2025. India added 23.83 GW of solar in FY25 alone.</p>
+  <p><b>Projected:</b> India must add ~170–200 GW more solar by 2030 to meet the 500 GW non-fossil target. India solar EPC market expected to grow at 19% CAGR through 2031. Global solar EPC CAGR: 11.6% (2026–2035). <span class="lv lv-e">ESTIMATED</span></p>
+  <p><b>AI impact on sector:</b> AI is accelerating project design, site assessment, and grid management. Net sector impact: <strong>AI NEUTRAL to mild WIDENER</strong> for operational efficiency. Not a structural growth accelerant for EPC revenue.</p>
+</div>
+
+<div class="tbl-wrap"><table>
+  <tr><th>Scenario</th><th>Macro State</th><th>Sector EPC CAGR</th><th>SWSOLAR Alpha</th><th>Stage 1 Revenue CAGR</th></tr>
+  <tr><td class="td-neg">STRESS</td><td>GDP ~5.5%, Oil spike, RE slowdown</td><td>10–12%</td><td>+2%</td><td class="td-neg">12–14%</td></tr>
+  <tr><td class="td-warn">BASE</td><td>GDP ~6.9%, stable oil, 500 GW on track</td><td>16–19%</td><td>+4%</td><td class="td-warn">20–23%</td></tr>
+  <tr><td class="td-pos">ACCEL.</td><td>GDP ~8%, cheap oil, capex surge</td><td>22–25%</td><td>+5%</td><td class="td-pos">27–30%</td></tr>
+</table></div>
+
+<h3>LAYER 3 — COMPANY ALPHA OVER SECTOR</h3>
+<div class="tbl-wrap"><table>
+  <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 (Yr 1–5)</th><th>Stage 2 (Yr 6–10)</th></tr>
+  <tr><td>Market Share Gain (domestic)</td><td class="td-pos">Active — Adani, Coal India wins signal market position</td><td class="td-pos">+2–3%</td><td>+1%</td></tr>
+  <tr><td>Premiumisation</td><td>N/A — EPC is commoditised pricing</td><td>0%</td><td>0%</td></tr>
+  <tr><td>Category / Segment Expansion</td><td class="td-warn">Potential — Battery BESS, Wind, Floating Solar</td><td>+1%</td><td>+2%</td></tr>
+  <tr><td>Geographic Expansion</td><td class="td-warn">Active in South Africa, MENA — early stage</td><td>+1%</td><td>+2%</td></tr>
+  <tr><td>Pricing Power</td><td class="td-neg">Exhausted — EPC is tendered/bid; no pricing power</td><td>0%</td><td>0%</td></tr>
+  <tr><td>AI Alpha (6a+6b+6c)</td><td>AI NEUTRAL — no structural AI moat</td><td>0%</td><td>0%</td></tr>
+  <tr><td><b>Total Alpha</b></td><td>—</td><td><b>+4%</b></td><td><b>+5%</b></td></tr>
+</table></div>
+
+<h3>GROWTH RATE SUMMARY TABLE</h3>
+<div class="scenario-grid">
+  <div class="scenario-col">
+    <div class="scenario-label">⬇ STRESS</div>
+    <div class="scenario-row"><div class="scenario-key">Macro</div><div class="scenario-val">GDP ~5.5%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Sector EPC</div><div class="scenario-val">10–12%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Company Alpha</div><div class="scenario-val">+2%</div></div>
+    <div class="scenario-row"><div class="scenario-key">AI Alpha</div><div class="scenario-val">0%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Stage 1 Rev CAGR</div><div class="scenario-val">12–14%</div></div>
+    <div class="scenario-row"><div class="scenario-key">EBITDA Margin</div><div class="scenario-val">3–4%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Terminal g</div><div class="scenario-val">6.5%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Key Risk</div><div class="scenario-val">Oil spike; RE slowdown</div></div>
+  </div>
+  <div class="scenario-col">
+    <div class="scenario-label">— BASE</div>
+    <div class="scenario-row"><div class="scenario-key">Macro</div><div class="scenario-val">GDP ~6.9%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Sector EPC</div><div class="scenario-val">16–19%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Company Alpha</div><div class="scenario-val">+4%</div></div>
+    <div class="scenario-row"><div class="scenario-key">AI Alpha</div><div class="scenario-val">0%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Stage 1 Rev CAGR</div><div class="scenario-val">20–23%</div></div>
+    <div class="scenario-row"><div class="scenario-key">EBITDA Margin</div><div class="scenario-val">5–6%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Terminal g</div><div class="scenario-val">7.5%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Key Risk</div><div class="scenario-val">Margin execution; legal legacy</div></div>
+  </div>
+  <div class="scenario-col">
+    <div class="scenario-label">⬆ ACCEL.</div>
+    <div class="scenario-row"><div class="scenario-key">Macro</div><div class="scenario-val">GDP ~8%+</div></div>
+    <div class="scenario-row"><div class="scenario-key">Sector EPC</div><div class="scenario-val">22–25%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Company Alpha</div><div class="scenario-val">+5%</div></div>
+    <div class="scenario-row"><div class="scenario-key">AI Alpha</div><div class="scenario-val">0%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Stage 1 Rev CAGR</div><div class="scenario-val">27–30%</div></div>
+    <div class="scenario-row"><div class="scenario-key">EBITDA Margin</div><div class="scenario-val">6–8%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Terminal g</div><div class="scenario-val">8%</div></div>
+    <div class="scenario-row"><div class="scenario-key">Key Risk</div><div class="scenario-val">Execution capacity; competition</div></div>
+  </div>
+</div>
+<div class="alert alert-amber" style="margin-top:10px;"><strong>SENSITIVITY:</strong> A 1% change in EBITDA margin target changes normalised EPS by ~₹4–5. The most critical variable is NOT revenue growth (order book provides visibility) but margin sustainability — every 1% of EBITDA margin = ~₹90 Cr EBITDA on a ₹9,000 Cr revenue base.</div>
+</div>
+
+<!-- ═══════════════════════ TAB 2: FINANCIALS ═══════════════════════ -->
+<div class="tab-content" id="t2">
+<h2>FINANCIALS</h2>
+
+<h3>PROFIT & LOSS — 8 YEAR HISTORY</h3>
+<div class="tbl-wrap"><table>
+  <tr><th>Year</th><th>Revenue (₹ Cr)</th><th>EBITDA (₹ Cr)</th><th>OPM %</th><th>Net Profit (₹ Cr)</th><th>EPS (₹)</th></tr>
+  <tr><td>FY19</td><td>8,240</td><td>658</td><td class="td-pos">8%</td><td class="td-pos">638</td><td class="td-pos">39.85</td></tr>
+  <tr><td>FY20</td><td>5,575</td><td>329</td><td class="td-warn">6%</td><td class="td-pos">304</td><td class="td-pos">19.34</td></tr>
+  <tr><td>FY21</td><td>5,081</td><td>−377</td><td class="td-neg">−7%</td><td class="td-neg">−290</td><td class="td-neg">−17.80</td></tr>
+  <tr><td>FY22</td><td>5,199</td><td>−903</td><td class="td-neg">−17%</td><td class="td-neg">−916</td><td class="td-neg">−47.94</td></tr>
+  <tr><td>FY23</td><td>2,015</td><td>−1,124</td><td class="td-neg">−56%</td><td class="td-neg">−1,175</td><td class="td-neg">−61.65</td></tr>
+  <tr><td>FY24</td><td>3,035</td><td>−7</td><td class="td-warn">~0%</td><td class="td-neg">−211</td><td class="td-neg">−9.09</td></tr>
+  <tr><td>FY25</td><td>6,302</td><td>264</td><td class="td-pos">4%</td><td class="td-pos">86</td><td class="td-pos">3.49</td></tr>
+  <tr><td>FY26 (9M)</td><td>5,602</td><td>~290</td><td class="td-pos">~4–5%</td><td class="td-neg">−433 (legacy)</td><td class="td-neg">−18.6</td></tr>
+  <tr><td class="td-hl">TTM</td><td class="td-hl">~8,122</td><td class="td-hl">~370</td><td class="td-hl">~4.5%</td><td class="td-neg">−382</td><td class="td-neg">−16.64</td></tr>
+</table></div>
+<p style="font-size:0.75rem;color:var(--c-muted);">Source: Screener.in consolidated data <span class="lv lv-v">VERIFIED</span>. TTM NP distorted by Q2 FY26 one-time ₹478 Cr US legal settlement.</p>
+
+<h3>CATEGORY D — FINANCIAL FORTRESS SCORECARD</h3>
+<div class="scorecard-grid">
+  <div class="sc-item"><div class="sc-label">ROE ≥ 15% for 5 years<small>3-yr avg: −76.2% | FY25: 8.2%</small></div><span class="sc-pass fail">✗ FAIL</span></div>
+  <div class="sc-item"><div class="sc-label">ROIC > WACC<small>ROIC 8.5% vs WACC ~13–14%</small></div><span class="sc-pass fail">✗ FAIL</span></div>
+  <div class="sc-item"><div class="sc-label">Net Cash / Low Debt<small>D/E: 0.94 | Debt risk: medium</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Net Profit Margin ≥ 15%<small>FY25 NP margin: 1.4%</small></div><span class="sc-pass fail">✗ FAIL</span></div>
+  <div class="sc-item"><div class="sc-label">FCF Positive & Growing<small>FY25 op CFO positive; volatile</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Revenue CAGR ≥ Sector<small>5yr CAGR: 2% vs sector 16–19%</small></div><span class="sc-pass fail">✗ FAIL</span></div>
+  <div class="sc-item"><div class="sc-label">Pricing Power Demonstrated<small>EPC is bid-based; no pricing power</small></div><span class="sc-pass fail">✗ FAIL</span></div>
+  <div class="sc-item"><div class="sc-label">Capital-Light Model<small>Working capital intensive; moderate CapEx</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Revenue Growth > Sector<small>TTM +64% YoY — accelerating strongly</small></div><span class="sc-pass pass">✓ PASS (recent)</span></div>
+  <div class="sc-item"><div class="sc-label">Predictable Revenue<small>Order book provides 12–18M visibility</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Gross Margin Consistency<small>~9.5–10.1% for 9M FY26 — improving</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">No Red Flags / Pledges<small>27.6% of promoter holding pledged</small></div><span class="sc-pass fail">✗ FAIL</span></div>
+</div>
+
+<div class="alert alert-amber"><strong>SCORECARD CONTEXT:</strong> For Category D turnarounds, failing standard tests is expected and priced in. The question is the <em>direction of travel</em>: FY25 is the first profitable year; operational EBITDA is up 115% YoY for 9M FY26; gross margins are stable at ~10%. The turnaround is real but fragile.</div>
+
+<h3>ROE / ROIC — 5 YEAR TRACK</h3>
+<div class="metric-grid">
+  <div class="metric fail"><div class="metric-label">FY21 ROE</div><div class="metric-value">NEG</div><div class="metric-sub">Deep loss year</div></div>
+  <div class="metric fail"><div class="metric-label">FY22 ROE</div><div class="metric-value">NEG</div><div class="metric-sub">−₹916 Cr loss</div></div>
+  <div class="metric fail"><div class="metric-label">FY23 ROE</div><div class="metric-value">NEG</div><div class="metric-sub">Worst year −₹1,175 Cr</div></div>
+  <div class="metric warn"><div class="metric-label">FY24 ROE</div><div class="metric-value">NEG</div><div class="metric-sub">Still negative; improving</div></div>
+  <div class="metric pass"><div class="metric-label">FY25 ROE</div><div class="metric-value">8.2%</div><div class="metric-sub">First positive year</div></div>
+  <div class="metric warn"><div class="metric-label">Current ROIC</div><div class="metric-value">8.5%</div><div class="metric-sub">Below WACC of ~13%</div></div>
+</div>
+
+<h3>OWNER EARNINGS (NORMALISED — BASE CASE)</h3>
+<div class="card card-amber">
+  <p>Standard owner earnings not meaningful given volatile GAAP history. Using normalised approach for Category D:</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Component</th><th>Stress (₹ Cr)</th><th>Base (₹ Cr)</th><th>Accel. (₹ Cr)</th></tr>
+    <tr><td>Revenue (FY27E)</td><td>8,500</td><td>10,500</td><td>13,000</td></tr>
+    <tr><td>EBITDA margin</td><td>3.5%</td><td>5.0%</td><td>7.0%</td></tr>
+    <tr><td>EBITDA</td><td>298</td><td>525</td><td>910</td></tr>
+    <tr><td>Less: Interest</td><td>−140</td><td>−130</td><td>−120</td></tr>
+    <tr><td>Less: D&A</td><td>−14</td><td>−14</td><td>−14</td></tr>
+    <tr><td>PBT (normalised)</td><td>144</td><td>381</td><td>776</td></tr>
+    <tr><td>Tax @30%</td><td>−43</td><td>−114</td><td>−233</td></tr>
+    <tr><td><b>Normalised PAT</b></td><td class="td-neg"><b>~101</b></td><td class="td-warn"><b>~267</b></td><td class="td-pos"><b>~543</b></td></tr>
+    <tr><td>Shares (Cr)</td><td>23.4</td><td>23.4</td><td>23.4</td></tr>
+    <tr><td><b>Normalised EPS (₹)</b></td><td class="td-neg"><b>4.3</b></td><td class="td-warn"><b>11.4</b></td><td class="td-pos"><b>23.2</b></td></tr>
+  </table></div>
+</div>
+
+<h3>EARNINGS QUALITY — O'GLOVE DEEP-DIVE</h3>
+<div class="scorecard-grid">
+  <div class="sc-item"><div class="sc-label">Test 1 — FCF Conversion<small>FY25 Op CFO / Net Income ratio volatile; FY25 positive; FY26 distorted by legal</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Test 2 — DSO Trend<small>Improved: 105 → 72.6 days (positive signal)</small></div><span class="sc-pass pass">✓ IMPROVING</span></div>
+  <div class="sc-item"><div class="sc-label">Test 3 — Inventory Days<small>Working capital: 48.6 → 24.9 days (positive)</small></div><span class="sc-pass pass">✓ IMPROVING</span></div>
+  <div class="sc-item"><div class="sc-label">Test 4 — Accounting Policy<small>No boosting policy changes detected; legacy legal now fully disclosed</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Test 5 — Gross Margin Consistency<small>9.5–10.1% stable across 9M FY26; FY25 10.1%</small></div><span class="sc-pass pass">✓ PASS</span></div>
+</div>
+<div class="card" style="margin-top:12px;">
+  <h4>OVERALL EARNINGS QUALITY: <span style="color:var(--c-orange);">ACCEPTABLE (improving)</span></h4>
+  <p>The Q2 FY26 net loss of ₹478 Cr was driven by a one-time US subsidiary arbitration loss (USD 55 Mn) — disclosed fully in the earnings call. DSO improvement and working capital reduction are genuine operational quality improvements. Gross margin stability at ~10% is encouraging. The business is not yet CLEAN — earnings visibility is limited by EPC project timing — but the trajectory is from SUSPECT to ACCEPTABLE.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════ TAB 3: MOAT ═══════════════════════ -->
+<div class="tab-content" id="t3">
+<h2>ECONOMIC MOAT</h2>
+
+<div class="alert alert-amber"><strong>MOAT CONTEXT FOR CATEGORY D:</strong> EPC businesses are inherently low-moat. The Buffett framework applied here asks: what, if anything, makes SWSOLAR durably competitive in the long term? The honest answer is: limited structural moat today, but some building blocks exist in O&M, Reliance relationships, and execution track record.</div>
+
+<div class="moat-item">
+  <div class="moat-header"><div class="moat-name">Switching Costs</div><div class="moat-stars">★★☆☆☆</div></div>
+  <div class="moat-body">Negligible in EPC (project-by-project basis). However, <strong>O&M contracts create switching costs</strong> — once SWSOLAR builds a plant and maintains it, the operator faces risk in switching maintenance providers. The 10+ GW O&M portfolio is the most durable competitive asset.</div>
+</div>
+<div class="moat-item">
+  <div class="moat-header"><div class="moat-name">Network Effects</div><div class="moat-stars">★☆☆☆☆</div></div>
+  <div class="moat-body">None. EPC is a linear service business. Each project is independent. Network effects do not compound in this sector.</div>
+</div>
+<div class="moat-item">
+  <div class="moat-header"><div class="moat-name">Cost Advantages</div><div class="moat-stars">★★★☆☆</div></div>
+  <div class="moat-body">SWSOLAR's global procurement scale (especially solar modules) gives some cost edge over smaller domestic EPC players. Reliance Industries relationship may confer supply chain advantages going forward. However, Larsen & Toubro and other large EPC players have equal or better procurement. <em>Narrow advantage vs peers.</em></div>
+</div>
+<div class="moat-item">
+  <div class="moat-header"><div class="moat-name">Intangible Assets (Track Record, Global Credentials)</div><div class="moat-stars">★★★☆☆</div></div>
+  <div class="moat-body">20+ GW commissioned globally since inception. International project experience (South Africa, MENA, Europe) is a genuine differentiator for global developers. The Adani Green partnership signals credibility at the highest level of domestic demand. However, the 2021–23 crisis dented reputation significantly — rebuilding trust takes time.</div>
+</div>
+<div class="moat-item">
+  <div class="moat-header"><div class="moat-name">Efficient Scale / Reliance Moat</div><div class="moat-stars">★★★☆☆</div></div>
+  <div class="moat-body">Reliance Industries (32.5% promoter) represents a unique strategic moat ingredient: captive demand for Reliance's own massive RE ambitions, balance sheet backstop, procurement synergies. This is an <em>institutional moat</em> — no other solar EPC has a parent with Reliance's ambitions and resources. However, Reliance orders have not yet materialised at scale — this remains forward-looking.</div>
+</div>
+<div class="moat-item">
+  <div class="moat-header"><div class="moat-name">O&M Recurring Revenue Moat (Building)</div><div class="moat-stars">★★★☆☆</div></div>
+  <div class="moat-body">10+ GW O&M portfolio crossed in FY26. This is a genuine, low-capital, recurring revenue stream that grows with every project commissioned. At scale (say 30 GW), O&M revenues could provide a meaningful earnings floor. This is where moat is being built — not in EPC itself.</div>
+</div>
+
+<div class="flywheel-box">
+  <div class="flywheel-title">DATA FLYWHEEL TEST</div>
+  <div class="flywheel-badge">AI FEATURE, NOT MOAT ★</div>
+  <div style="margin-top:12px;font-size:0.85rem;color:var(--c-muted);">
+    <p><b>Q1: Proprietary training data?</b> SWSOLAR has plant performance data across 20+ GW of projects globally. This is useful for O&M predictive maintenance but not unique — major EPC players all accumulate similar data. <span style="color:var(--c-orange);">PARTIAL</span></p>
+    <p><b>Q2: Does AI improve with more users/data?</b> Drone inspection data and plant performance monitoring could theoretically feed a predictive maintenance AI. However, SWSOLAR has not disclosed any such AI model or measurable improvement in maintenance accuracy. <span style="color:var(--c-red);">NOT CONFIRMED</span></p>
+    <p><b>Q3: Does better AI attract more users?</b> No evidence of any flywheel loop. O&M contracts are won through relationships and price, not AI capability. <span style="color:var(--c-red);">NOT CONFIRMED</span></p>
+  </div>
+  <div class="flywheel-score">2/10</div>
+  <p style="font-size:0.8rem;color:var(--c-muted);">Weak flywheel. AI is a potential operational tool but not a moat builder. AI Overlay remains ⚪ NEUTRAL.</p>
+</div>
+
+<h3>ROIC TREND (MOAT PROOF)</h3>
+<div class="metric-grid">
+  <div class="metric fail"><div class="metric-label">FY21–24 ROIC</div><div class="metric-value">NEG</div><div class="metric-sub">ROIC < WACC by large margin</div></div>
+  <div class="metric warn"><div class="metric-label">FY25 ROIC</div><div class="metric-value">~8.5%</div><div class="metric-sub">Below WACC ~13%; improving</div></div>
+  <div class="metric warn"><div class="metric-label">ROCE FY25</div><div class="metric-value">17%</div><div class="metric-sub">Above RBI repo; below WACC</div></div>
+  <div class="metric"><div class="metric-label">Moat Assessment</div><div class="metric-value">NARROW</div><div class="metric-sub">Building — not yet durable</div></div>
+</div>
+
+<h3>MACRO STRESS TEST — MOAT RESILIENCE</h3>
+<div class="tbl-wrap"><table>
+  <tr><th>Moat Source</th><th>In Stress (Oil spike, RE slowdown)</th></tr>
+  <tr><td>O&M Revenue</td><td class="td-pos">HOLDS — contracts are long-term; revenues sticky even in downturn</td></tr>
+  <tr><td>Adani Relationship</td><td class="td-warn">WEAKENS if Adani capex cycle slows; but Khavda is committed multi-year</td></tr>
+  <tr><td>Reliance Backstop</td><td class="td-pos">STRENGTHENS — Reliance has greater ability to support in downturns</td></tr>
+  <tr><td>Track Record</td><td class="td-warn">WEAKENS if margin compression forces project abandonment or disputes</td></tr>
+  <tr><td>Cost Advantage</td><td class="td-warn">HOLDS but narrows as all EPC players feel cost pressure</td></tr>
+</table></div>
+
+<h3>SHAREHOLDING AS MOAT AMPLIFIER</h3>
+<div class="card card-slate">
+  <p>Free float of ~60% combined with Reliance's 32.5% anchor is a <strong>moderate structural amplifier</strong>. Reliance's presence provides institutional credibility and prevents hostile actions. However, the <strong>27.6% promoter pledge</strong> (Shapoorji Pallonji legacy) creates a supply overhang risk — if pledges are called, shares could flood the market. This is a moat WEAKENER in stress scenarios.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════ TAB 4: MANAGEMENT ═══════════════════════ -->
+<div class="tab-content" id="t4">
+<h2>MANAGEMENT INTEGRITY</h2>
+
+<h3>PROMOTER STRUCTURE</h3>
+<div class="card card-amber">
+  <p><strong>Reliance Industries (32.5%)</strong> — Strategic acquirer since FY22. Reliance's investment thesis is tied to its own 100 GW renewable energy ambitions. As SWSOLAR's largest promoter, Reliance brings: balance sheet credibility, potential captive project demand, supply chain synergies. Reliance's backing has been the single most important factor in the turnaround.<br><br>
+  <strong>Shapoorji Pallonji Group (6.9%)</strong> — Legacy promoter, reduced from higher levels. SP's financial difficulties (and pledge of shares) represent the key governance risk. Promoter holding has decreased -27% over 3 years.</p>
+</div>
+
+<h3>MANAGEMENT ASSESSMENT</h3>
+<div class="scorecard-grid">
+  <div class="sc-item"><div class="sc-label">Capital Allocation Quality<small>Focus on margin quality over top-line; EBITDA margin guidance 4–6%</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Guidance Reliability<small>FY26 order inflow guidance raised 3x (15% → 60%+ YoY); exceeded</small></div><span class="sc-pass pass">✓ PASS (order book)</span></div>
+  <div class="sc-item"><div class="sc-label">Promoter Ownership<small>Total promoter 39.4%; declining trend (−27% over 3 years)</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Pledged Shares<small>27.6% of promoter holding pledged — MARGINAL/concern</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">Transparency on Legacy Issues<small>US subsidiary arbitration: disclosed fully in Q2 FY26 earnings call</small></div><span class="sc-pass pass">✓ PASS</span></div>
+  <div class="sc-item"><div class="sc-label">Counter-Cyclical Behaviour<small>Prioritised margin quality in FY24 (revenue lower but fewer bad contracts)</small></div><span class="sc-pass pass">✓ PASS</span></div>
+  <div class="sc-item"><div class="sc-label">IT / Digital Investment<small>SVP-IT appointed Jan 2026; ₹475 Cr term loan raised — focused on execution</small></div><span class="sc-pass marg">~ MARGINAL</span></div>
+  <div class="sc-item"><div class="sc-label">No Equity Dilution<small>Management explicitly stated no fresh equity raise planned</small></div><span class="sc-pass pass">✓ PASS</span></div>
+</div>
+
+<div class="alert alert-amber">
+  <strong>PLEDGED SHARES — KEY RISK:</strong> 27.6% of Shapoorji Pallonji's holding is pledged. SP Group's financial situation remains under pressure. If lenders call pledges, this could result in forced selling of shares — a meaningful short-term price risk. This is the single largest governance red flag. At current prices (₹162), the pledge risk is elevated because lower prices reduce the collateral cushion.
+</div>
+
+<h3>MANAGEMENT QUOTES (Q3 FY26 EARNINGS CALL)</h3>
+<div class="card">
+  <div class="verdict-quote">"We prefer to chase margin rather than chasing only the top-line growth... Our conscious decision to prioritize quality of earnings over aggressive bidding is a principle that remains central to our operating philosophy." — C.K. Thakur, Global CEO, Q3 FY26 Call <span class="lv lv-v">VERIFIED</span></div>
+  <div class="verdict-quote">"We have already achieved INR 6,929 crores of new orders this fiscal till date... we are increasing our order inflow guidance to more than ₹11,000 crores in this fiscal, which is more than 60% year-on-year growth." — Q3 FY26 Earnings Call <span class="lv lv-v">VERIFIED</span></div>
+</div>
+
+<h3>CAPITAL ALLOCATION ASSESSMENT</h3>
+<div class="card">
+  <p>Management has shown disciplined restraint in the post-crisis period — avoiding aggressive bidding at zero-margin contracts (the mistake of FY20–22) and focusing instead on selective, quality projects with explicit margin targets. The Adani partnership and Coal India first order demonstrate access to marquee domestic clients. The company is NOT planning equity dilution, instead using bank credit lines and a ₹475 Cr term loan — manageable leverage for the recovery phase.</p>
+  <p><strong>Red flags history:</strong> The US subsidiary legal dispute (USD 55 Mn) was a significant but ultimately resolved legacy issue. Management's full disclosure in the earnings call is a positive governance signal. The South Africa USD 34 Mn PCG issued in April 2026 for subsidiary working capital is manageable.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════ TAB 5: VALUATION ═══════════════════════ -->
+<div class="tab-content" id="t5">
+<h2>VALUATION & MARGIN OF SAFETY</h2>
+<div class="alert alert-slate"><strong>CATEGORY D VALUATION NOTE:</strong> Standard DCF is unreliable given volatile earnings history. Four methods are used: (1) EV/EBITDA normalised, (2) P/Sales vs EPC peers, (3) EV/Order Book, (4) Normalised P/E earnings power. WACC used: 13.5% (Category D, high risk, pledged shares discount).</div>
+
+<h3>METHOD 1 — NORMALISED EV/EBITDA</h3>
+<div class="card">
+  <p>Solar EPC peers (KEC International, Kalpataru, ACME Solar) trade at <strong>15–25x EV/EBITDA</strong> on normalised margins. Given SWSOLAR's lower moat quality, higher leverage risk, and pledge overhang, a discount to peers is warranted.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Scenario</th><th>FY27E Revenue</th><th>EBITDA Margin</th><th>EBITDA (₹ Cr)</th><th>EV/EBITDA Multiple</th><th>EV (₹ Cr)</th><th>Net Debt (₹ Cr)</th><th>Equity IV (₹ Cr)</th><th>IV per Share</th></tr>
+    <tr><td class="td-neg">STRESS</td><td>₹8,500</td><td>3.5%</td><td>298</td><td>10x</td><td>2,975</td><td>700</td><td>2,275</td><td class="td-neg">₹97</td></tr>
+    <tr><td class="td-warn">BASE</td><td>₹10,500</td><td>5.0%</td><td>525</td><td>15x</td><td>7,875</td><td>600</td><td>7,275</td><td class="td-warn">₹311</td></tr>
+    <tr><td class="td-pos">ACCEL.</td><td>₹13,000</td><td>7.0%</td><td>910</td><td>18x</td><td>16,380</td><td>500</td><td>15,880</td><td class="td-pos">₹679</td></tr>
+  </table></div>
+</div>
+
+<h3>METHOD 2 — P/SALES (EPC PEER COMPARISON)</h3>
+<div class="card">
+  <p>EPC companies typically trade at <strong>0.3–0.8x annual revenue</strong> depending on order book quality and margin trajectory. SWSOLAR's Reliance backing and Adani partnership may justify a premium within this range.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Scenario</th><th>FY27E Revenue</th><th>P/S Multiple</th><th>Market Cap IV</th><th>IV per Share</th></tr>
+    <tr><td class="td-neg">STRESS</td><td>₹8,500 Cr</td><td>0.3x</td><td>₹2,550 Cr</td><td class="td-neg">₹109</td></tr>
+    <tr><td class="td-warn">BASE</td><td>₹10,500 Cr</td><td>0.5x</td><td>₹5,250 Cr</td><td class="td-warn">₹224</td></tr>
+    <tr><td class="td-pos">ACCEL.</td><td>₹13,000 Cr</td><td>0.7x</td><td>₹9,100 Cr</td><td class="td-pos">₹389</td></tr>
+  </table></div>
+</div>
+
+<h3>METHOD 3 — NORMALISED P/E EARNINGS POWER</h3>
+<div class="card">
+  <p>Using normalised EPS from Tab 2 at mid-cycle margins. EPC peers trade at <strong>12–20x normalised P/E</strong>. SWSOLAR deserves a discount for lower moat and pledge risk.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Scenario</th><th>Normalised EPS (FY27E)</th><th>P/E Multiple</th><th>IV per Share</th></tr>
+    <tr><td class="td-neg">STRESS</td><td>₹4.3</td><td>12x</td><td class="td-neg">₹52</td></tr>
+    <tr><td class="td-warn">BASE</td><td>₹11.4</td><td>18x</td><td class="td-warn">₹205</td></tr>
+    <tr><td class="td-pos">ACCEL.</td><td>₹23.2</td><td>22x</td><td class="td-pos">₹510</td></tr>
+  </table></div>
+</div>
+
+<h3>METHOD 4 — EV/ORDER BOOK</h3>
+<div class="card">
+  <p>EPC companies are often valued at a fraction of their active order book. Current unexecuted order book: <strong>₹10,413 Cr</strong>. At typical execution horizon of 18–24 months, this represents substantial revenue visibility.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Scenario</th><th>Order Book</th><th>EV/OB Multiple</th><th>EV</th><th>IV per Share</th></tr>
+    <tr><td class="td-neg">STRESS</td><td>₹10,413 Cr</td><td>0.2x</td><td>₹2,083 Cr</td><td class="td-neg">₹89</td></tr>
+    <tr><td class="td-warn">BASE</td><td>₹10,413 Cr</td><td>0.4x</td><td>₹4,165 Cr</td><td class="td-warn">₹178</td></tr>
+    <tr><td class="td-pos">ACCEL.</td><td>₹13,000 Cr</td><td>0.5x</td><td>₹6,500 Cr</td><td class="td-pos">₹278</td></tr>
+  </table></div>
+</div>
+
+<h3>5-METHOD SUMMARY TABLE</h3>
+<div class="tbl-wrap"><table>
+  <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>AI Adjustment</th></tr>
+  <tr><td>EV/EBITDA Normalised</td><td class="td-neg">₹97</td><td class="td-warn">₹311</td><td class="td-pos">₹679</td><td>None (AI NEUTRAL)</td></tr>
+  <tr><td>P/Sales Peer</td><td class="td-neg">₹109</td><td class="td-warn">₹224</td><td class="td-pos">₹389</td><td>None</td></tr>
+  <tr><td>Normalised P/E</td><td class="td-neg">₹52</td><td class="td-warn">₹205</td><td class="td-pos">₹510</td><td>None</td></tr>
+  <tr><td>EV/Order Book</td><td class="td-neg">₹89</td><td class="td-warn">₹178</td><td class="td-pos">₹278</td><td>None</td></tr>
+  <tr><td class="td-hl"><b>Blended IV</b></td><td class="td-neg"><b>~₹87</b></td><td class="td-warn"><b>~₹230</b></td><td class="td-pos"><b>~₹464</b></td><td><b>No AI premium</b></td></tr>
+</table></div>
+
+<div class="card card-amber">
+  <h4>MARGIN OF SAFETY ANALYSIS</h4>
+  <p>Current price: ~₹162 <span class="lv lv-u">UNVERIFIED</span></p>
+  <p><strong>vs Stress IV (₹87):</strong> Current price is 86% ABOVE stress IV — no safety margin in worst case.</p>
+  <p><strong>vs Base IV (₹230):</strong> Current price is 30% BELOW base IV — meaningful margin of safety IF the base case materialises. This is the bull case rationale.</p>
+  <p><strong>vs Accel. IV (₹464):</strong> Massive upside if 7% EBITDA margins are sustained on ₹13,000 Cr revenues — essentially a multi-year compounding thesis.</p>
+  <p><strong>Entry Zone (with 25% MoS on Base IV):</strong> ₹163–173. The stock is currently at/near the ENTRY ZONE for a Category D position-building opportunity — but only with strict stop-loss discipline.</p>
+</div>
+
+<h3>EARNINGS YIELD vs G-SEC BENCHMARK</h3>
+<div class="metric-grid">
+  <div class="metric"><div class="metric-label">Trailing P/E</div><div class="metric-value">48x</div><div class="metric-sub">Distorted by Q2 FY26 loss</div></div>
+  <div class="metric warn"><div class="metric-label">Earnings Yield (TTM)</div><div class="metric-value">2.1%</div><div class="metric-sub">vs G-Sec 6.87% — expensive</div></div>
+  <div class="metric warn"><div class="metric-label">Normalised EY (Base)</div><div class="metric-value">7.0%</div><div class="metric-sub">₹11.4 EPS / ₹162 price</div></div>
+  <div class="metric pass"><div class="metric-label">G-Sec Yield</div><div class="metric-value">6.87%</div><div class="metric-sub">VERIFIED · Apr 2026</div></div>
+  <div class="metric pass"><div class="metric-label">Equity Risk Premium</div><div class="metric-value">0.1%</div><div class="metric-sub">Normalised EY − G-Sec · barely positive</div></div>
+  <div class="metric"><div class="metric-label">P/S (TTM)</div><div class="metric-value">0.47x</div><div class="metric-sub">Reasonable for EPC; not cheap</div></div>
+</div>
+</div>
+
+<!-- ═══════════════════════ TAB 6: VERDICT ═══════════════════════ -->
+<div class="tab-content" id="t6">
+<h2>VERDICT</h2>
+
+<div class="pillar-grid">
+  <div class="pillar"><div class="pillar-name">Moat</div><div class="pillar-grade grade-c">C+</div><p style="font-size:0.7rem;color:var(--c-muted);">Narrow; O&M building; Reliance anchor</p></div>
+  <div class="pillar"><div class="pillar-name">Financial Fortress</div><div class="pillar-grade grade-c">C</div><p style="font-size:0.7rem;color:var(--c-muted);">Recovering; FY25 first profit; margins thin</p></div>
+  <div class="pillar"><div class="pillar-name">Management</div><div class="pillar-grade grade-c">C+</div><p style="font-size:0.7rem;color:var(--c-muted);">Disciplined; pledges remain concern</p></div>
+  <div class="pillar"><div class="pillar-name">Valuation</div><div class="pillar-grade grade-b">B−</div><p style="font-size:0.7rem;color:var(--c-muted);">Near entry zone vs Base IV; risk asymmetric</p></div>
+</div>
+
+<div class="verdict-box">
+  <div class="verdict-stars">★★★</div>
+  <div class="verdict-title">WATCH — CATEGORY D TURNAROUND</div>
+  <div style="font-family:var(--ff-mono);font-size:0.65rem;color:var(--c-slate);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">AI OVERLAY: ⚪ NEUTRAL · CONDITIONS MET: 3 of 5 · HORIZON: 3–5yr</div>
+  <div class="verdict-quote">"The turnaround at SWSOLAR is real — record order inflows, the first profitable FY in four years, and structural demand from India's 500 GW mission. What it is NOT yet is predictably profitable. The Q2 FY26 loss from a US legal settlement, persistent promoter pledge risk, and EPC's inherent thin margins make this a watch-with-strict-conditions, not a buy. At ₹162, the price is near the base-case entry zone — but confirmation of margin normalisation in Q4 FY26 (results due today) is the gating condition. Do not chase before seeing the data."</div>
+  <p style="color:var(--c-muted);font-size:0.88rem;margin-top:8px;"><strong style="color:var(--c-pale);">Bear case:</strong> EBITDA margins stay at 3–4%, pledges get called, FII selling continues → ₹87–109 (stress IV). <strong style="color:var(--c-pale);">Bull case:</strong> Margins stabilise at 5–6%, Reliance captive orders flow, O&M crosses 15 GW → ₹230–311 (base/upper IV). The current price of ₹162 sits at the hinge of this distribution — a bet on the turnaround solidifying.</p>
+</div>
+
+<h3>WATCH → BUY UPGRADE CONDITIONS</h3>
+<ul class="upgrade-list">
+  <li><span class="upgrade-num">1</span>Q4 FY26 EBITDA margin ≥ 5% for two consecutive quarters (Q3 FY26: ~3.2%) — confirms management guidance is achievable.</li>
+  <li><span class="upgrade-num">2</span>Promoter pledge ratio falls below 15% (currently 27.6%) — reduction signals SP Group stress easing and removes overhang.</li>
+  <li><span class="upgrade-num">3</span>Reliance Industries places first direct project order with SWSOLAR ≥ ₹2,000 Cr — activates the primary bull case of captive demand.</li>
+  <li><span class="upgrade-num">4</span>FII holdings stabilise or increase for 2 consecutive quarters — institutional re-entry confirmation.</li>
+  <li><span class="upgrade-num">5</span>FCF conversion ≥ 70% of EBITDA for 2 consecutive quarters — confirms that operational earnings are not being consumed by working capital.</li>
+</ul>
+
+<div class="alert alert-amber" style="margin-top:12px;"><strong>⚡ TODAY'S CATALYST:</strong> Q4 FY26 results are being presented to the board TODAY (April 23, 2026) and will be disclosed to investors on April 24, 2026. If Q4 EBITDA margin prints ≥5% AND FY26 revenue exits above ₹8,500 Cr, Condition #1 is on its way to being met. This report should be re-reviewed post-results.</div>
+
+<hr class="divider">
+<h3>COMPARABLE SERIES — WATCH / BUY TRACKER</h3>
+<table class="series-table">
+  <tr>
+    <th>Ticker</th><th>Company</th><th>Cat</th><th>AI</th><th>Verdict</th><th>Entry Zone</th><th>Base IV</th><th>Horizon</th>
+  </tr>
+  <tr>
+    <td>SWSOLAR</td><td>Sterling & Wilson</td><td>D</td><td>⚪</td><td>WATCH ★★★</td><td>₹155–175</td><td>₹230</td><td>3–5yr</td>
+  </tr>
+</table>
+</div>
+
+<!-- ═══════════════════════ TAB 7: TECHNICAL ═══════════════════════ -->
+<div class="tab-content" id="t7">
+<h2>TECHNICAL ANALYSIS</h2>
+
+<div class="alert alert-amber"><strong>CATEGORY D TA NOTE:</strong> For turnarounds, VOLUME ANALYSIS is the primary tool — institutional re-entry signals matter more than RSI/MA signals. The stock must show sustained high-volume recovery days, not just price rebounds on thin volumes.</div>
+
+<h3>SECTION A — PRICE STRUCTURE & MULTI-TIMEFRAME TREND</h3>
+<div class="tbl-wrap"><table>
+  <tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Signal</th></tr>
+  <tr><td>Weekly (Long-term)</td><td class="td-neg">Bearish — lower highs</td><td>₹348 high unrecovered</td><td class="td-neg">SELL/WAIT</td></tr>
+  <tr><td>Daily (Medium)</td><td class="td-warn">Neutral — near 52W lows</td><td>₹158 support / ₹215 resistance</td><td class="td-warn">WATCH</td></tr>
+  <tr><td>Hourly (Short)</td><td class="td-warn">Volatile — board result pending</td><td>Today: ₹162-168 range</td><td class="td-warn">EVENT RISK</td></tr>
+</table></div>
+
+<h3>PRICE LADDER</h3>
+<div class="card">
+  <div class="tbl-wrap"><table>
+    <tr><th>Level</th><th>Price (₹)</th><th>Significance</th></tr>
+    <tr><td>All-Time High</td><td class="td-pos">~₹824</td><td>May 2024 high — very distant resistance</td></tr>
+    <tr><td>52-Week High</td><td class="td-warn">₹348.90</td><td>Key overhead resistance</td></tr>
+    <tr><td>Analyst Avg Target</td><td class="td-warn">₹307.50</td><td>Consensus — 89% upside from current</td></tr>
+    <tr><td>Strong Resistance</td><td>₹215–220</td><td>Previous support, now resistance; 50-DMA zone</td></tr>
+    <tr><td>Mild Resistance</td><td>₹190–195</td><td>Recent consolidation zone</td></tr>
+    <tr><td>CURRENT PRICE</td><td class="td-hl">~₹162</td><td>Near 52-Week Low zone</td></tr>
+    <tr><td>Support 1</td><td>₹158–160</td><td>52-Week Low — critical support; double-bottom possible</td></tr>
+    <tr><td>Support 2</td><td>₹140–145</td><td>Stress case / capitulation zone</td></tr>
+    <tr><td>Base Case Entry</td><td class="td-pos">₹155–175</td><td>Base IV − 25% MoS zone</td></tr>
+  </table></div>
+</div>
+
+<h3>SECTION B — MOVING AVERAGE DASHBOARD</h3>
+<div class="ma-grid">
+  <div class="ma-item"><div class="ma-label">20-EMA</div><div class="ma-value">~₹168</div><div class="ma-status ma-below">Price BELOW — bearish ST</div></div>
+  <div class="ma-item"><div class="ma-label">50-DMA</div><div class="ma-value">~₹192</div><div class="ma-status ma-below">Price BELOW — bearish MT</div></div>
+  <div class="ma-item"><div class="ma-label">100-DMA</div><div class="ma-value">~₹220</div><div class="ma-status ma-below">Price BELOW — bearish</div></div>
+  <div class="ma-item"><div class="ma-label">200-DMA</div><div class="ma-value">~₹260</div><div class="ma-status ma-below">Price BELOW — bearish LT</div></div>
+  <div class="ma-item"><div class="ma-label">200-WMA</div><div class="ma-value">~₹280</div><div class="ma-status ma-below">Price BELOW — deep value</div></div>
+  <div class="ma-item"><div class="ma-label">MA Cross Status</div><div class="ma-value">Death ✗</div><div class="ma-status ma-below">50 < 200 DMA — bearish</div></div>
+</div>
+<div class="alert alert-amber" style="margin-top:8px;"><span class="lv lv-e">ESTIMATED</span> MA levels derived from price trajectory: ₹349 (Sep), ₹214 (Dec), ₹172 (Mar), ~₹162 (Apr 2026). Confirm with live chart before trading.</div>
+
+<h3>SECTION C — VOLUME ANALYSIS</h3>
+<div class="card">
+  <p><strong>Recent significant volume events:</strong></p>
+  <p>• <strong>April 2026 (order announcement):</strong> 91.9 lakh shares traded vs 20-day avg of 23.3 lakh — <strong>4x average</strong> on ₹3,550 Cr Coal India order. Stock surged 9.87% intraday. This is a positive institutional interest signal. <span class="lv lv-v">VERIFIED</span></p>
+  <p>• <strong>Recent trend:</strong> MF shareholding down 90.11%, FII down 30.81% over past year — significant institutional distribution. Volume on down days appears higher than up days — distribution pattern.</p>
+  <p><strong>OBV Verdict:</strong> Declining — net distribution phase. The April 2026 order-volume spike is a potential inflection point to watch, but one day does not make a trend. Need 2+ weeks of sustained institutional buying to confirm trend reversal.</p>
+</div>
+
+<h3>SECTION D — MOMENTUM</h3>
+<div class="rsi-gauge">
+  <h4 style="margin:0 0 10px;">RSI (14-day) — ESTIMATED</h4>
+  <div class="rsi-bar-bg">
+    <div class="rsi-needle" style="left:28%"></div>
+  </div>
+  <div class="rsi-zones"><span>Oversold 30</span><span>Neutral 50</span><span>Overbought 70</span></div>
+  <p style="font-family:var(--ff-mono);font-size:0.7rem;color:var(--c-muted);margin-top:8px;">RSI ~28–33 <span class="lv lv-e">ESTIMATED</span> — approaching oversold territory. Selling momentum described as "losing strength" (MunafaSutra). Near oversold = potential short-term bounce zone but NOT a buy signal without fundamental catalyst (Q4 results).</p>
+</div>
+
+<div class="card" style="margin-top:12px;">
+  <h4>MACD STATUS</h4>
+  <p>Short-term MACD in initial sell territory but weakening. Signal still bearish. A MACD bullish crossover would be the first technical confirmation of momentum shift — currently absent. Weekly MACD negative. <span class="lv lv-e">ESTIMATED</span></p>
+</div>
+
+<h3>SECTION E — CHART PATTERNS</h3>
+<div class="card card-amber">
+  <p><strong>Descending Channel:</strong> The stock is in a descending channel from the ₹349 high (Sep 2025). Price is approaching the lower boundary of this channel near ₹158–165. A break ABOVE ₹215–220 on sustained volume would confirm channel breakout and be the first technical upgrade trigger.</p>
+  <p><strong>Potential Double Bottom:</strong> If price holds ₹158 and bounces twice, a double bottom formation could emerge (target: ~₹215). This needs confirmation candle on high volume AFTER Q4 results disclosure.</p>
+  <p><strong>Long-term base:</strong> Historical high ₹824 (May 2024) → current ₹162 = 80% drawdown. Such deep corrections sometimes precede large recoveries in turnaround plays, but timing is unpredictable.</p>
+</div>
+
+<h3>SECTION F — TRADE STRUCTURE</h3>
+<div class="trade-box">
+  <h4>PRIMARY TRIGGER (Category D — Institutional Re-entry Confirmation)</h4>
+  <div class="trade-grid">
+    <div class="trade-item"><div class="trade-lbl">Entry Zone</div><div class="trade-val">₹155–175</div></div>
+    <div class="trade-item"><div class="trade-lbl">Stop Loss</div><div class="trade-val">₹140</div></div>
+    <div class="trade-item"><div class="trade-lbl">Target 1</div><div class="trade-val">₹215</div></div>
+    <div class="trade-item"><div class="trade-lbl">Target 2</div><div class="trade-val">₹290</div></div>
+    <div class="trade-item"><div class="trade-lbl">R:R Ratio</div><div class="trade-val">2.5:1</div></div>
+    <div class="trade-item"><div class="trade-lbl">Max Position</div><div class="trade-val">2–3% portfolio</div></div>
+  </div>
+  <p style="font-size:0.8rem;color:var(--c-red);margin-top:10px;"><strong>DO NOT ENTER before Q4 FY26 results (April 24, 2026).</strong> The trigger conditions require: (1) Q4 EBITDA margin ≥ 5%, AND (2) 2 consecutive days of above-average volume recovery post-results. Entry ONLY after both confirmed.</p>
+  <h4 style="margin-top:16px;">SECONDARY TRIGGER</h4>
+  <p style="font-size:0.85rem;color:var(--c-muted);">Break above ₹215 on 2x average volume with 50-DMA turning up — would signal institutional re-entry and begin a new uptrend. At that point, a momentum/breakout entry is justified with ₹190 stop-loss and ₹280–310 target.</p>
+</div>
+
+<h3>SECTION G — TECHNICAL COMPOSITE SCORE</h3>
+<div class="tbl-wrap"><table>
+  <tr><th>Dimension</th><th>Score (1–5)</th><th>Comment</th></tr>
+  <tr><td>Price Trend</td><td class="td-neg">1</td><td>Below all major MAs; descending channel</td></tr>
+  <tr><td>Volume / OBV</td><td class="td-warn">2</td><td>Distribution dominant; one order-spike positive</td></tr>
+  <tr><td>Momentum (RSI/MACD)</td><td class="td-warn">2</td><td>Oversold approaching; no bullish cross yet</td></tr>
+  <tr><td>Chart Pattern</td><td class="td-warn">2</td><td>Potential double-bottom forming; unconfirmed</td></tr>
+  <tr><td>Support/Resistance</td><td class="td-warn">2</td><td>At critical support ₹158; needs hold</td></tr>
+  <tr><td>Catalyst / Event</td><td class="td-warn">3</td><td>Q4 results TODAY — binary event</td></tr>
+  <tr><td class="td-hl"><b>Total</b></td><td class="td-warn"><b>12/30 — 40%</b></td><td class="td-warn"><b>Bearish but at inflection point</b></td></tr>
+</table></div>
+</div>
+
+<!-- ═══════════════════════ TAB 8: SHAREHOLDING ═══════════════════════ -->
+<div class="tab-content" id="t8">
+<h2>SHAREHOLDING & FREE FLOAT ANALYSIS</h2>
+
+<h3>SECTION A — PROMOTER HOLDING TREND (5 QUARTERS)</h3>
+<div class="alert alert-red"><strong>KEY RISK:</strong> 27.6% of promoter holding is pledged — primarily Shapoorji Pallonji legacy. Promoter holding has decreased 27% over 3 years. This is the primary governance risk in this analysis.</div>
+
+<div class="tbl-wrap"><table>
+  <tr><th>Quarter</th><th>Promoter %</th><th>Reliance</th><th>SP Group</th><th>Pledged %</th><th>Signal</th></tr>
+  <tr><td>Q3 FY25 (Dec 24)</td><td>~40%</td><td>~35%</td><td>~5%</td><td>~25%</td><td class="td-warn">—</td></tr>
+  <tr><td>Q4 FY25 (Mar 25)</td><td>~39.4%</td><td>32.5%</td><td>6.9%</td><td>27.6%</td><td class="td-warn">Declining</td></tr>
+  <tr><td>Q1 FY26 (Jun 25)</td><td>~39%</td><td>~32%</td><td>~7%</td><td>~27%</td><td class="td-warn">Stable/declining</td></tr>
+  <tr><td>Q2 FY26 (Sep 25)</td><td>~38.5%</td><td>~31.5%</td><td>~7%</td><td>~27.6%</td><td class="td-warn">US legal impact</td></tr>
+  <tr><td>Q3 FY26 (Dec 25)</td><td>~38.5%</td><td>~31.5%</td><td>~7%</td><td>~27.6%</td><td class="td-warn">Stable — no change</td></tr>
+</table></div>
+<p style="font-size:0.75rem;color:var(--c-muted);">Q3 FY26 and earlier quarters: <span class="lv lv-e">ESTIMATED</span> based on trend. Mar 2025 data: <span class="lv lv-v">VERIFIED</span> via Screener.</p>
+
+<h3>SECTION B — FII + DII TREND</h3>
+<div class="alert alert-red"><strong>INSTITUTIONAL EXIT:</strong> FII holdings down 30.81% in past year; Mutual Fund holdings down 90.11% — massive institutional distribution. This is a key negative signal indicating large-money doubt about the turnaround timeline.</div>
+
+<div class="tbl-wrap"><table>
+  <tr><th>Quarter</th><th>FII %</th><th>DII/MF %</th><th>Retail %</th><th>Combined Signal</th></tr>
+  <tr><td>Q3 FY25</td><td>~12%</td><td>~10%</td><td>~38%</td><td class="td-warn">Stable</td></tr>
+  <tr><td>Q4 FY25</td><td>~10%</td><td>~8%</td><td>~42%</td><td class="td-neg">FII selling</td></tr>
+  <tr><td>Q1 FY26</td><td>~9%</td><td>~5%</td><td>~45%</td><td class="td-neg">Both selling</td></tr>
+  <tr><td>Q2 FY26</td><td>~8%</td><td>~3%</td><td>~49%</td><td class="td-neg">Heavy distribution</td></tr>
+  <tr><td>Q3 FY26 (est.)</td><td>~7–8%</td><td>~1–3%</td><td>~50%</td><td class="td-neg">Retail dominant</td></tr>
+</table></div>
+<p style="font-size:0.75rem;color:var(--c-muted);"><span class="lv lv-e">ESTIMATED</span> — based on reported trend data. Exact Q3 FY26 numbers pending Q4 disclosure.</p>
+
+<h3>SECTION C — FREE FLOAT & MARKET STRUCTURE</h3>
+<div class="metric-grid">
+  <div class="metric"><div class="metric-label">Total Market Cap</div><div class="metric-value">~₹3,800 Cr</div><div class="metric-sub">ESTIMATED · Apr 2026</div></div>
+  <div class="metric"><div class="metric-label">Promoter Holding</div><div class="metric-value">~38.5%</div><div class="metric-sub">ESTIMATED</div></div>
+  <div class="metric"><div class="metric-label">Free Float Market Cap</div><div class="metric-value">~₹2,330 Cr</div><div class="metric-sub">ESTIMATED · 61.5% of MCap</div></div>
+  <div class="metric fail"><div class="metric-label">Beta</div><div class="metric-value">1.92</div><div class="metric-sub">VERIFIED · High volatility stock</div></div>
+  <div class="metric"><div class="metric-label">Avg Daily Vol</div><div class="metric-value">~16–23L</div><div class="metric-sub">ESTIMATED · NSE</div></div>
+  <div class="metric"><div class="metric-label">Index Membership</div><div class="metric-value">BSE500</div><div class="metric-sub">Nifty Microcap 250</div></div>
+</div>
+
+<h3>SECTION D — SHAREHOLDING COMPOSITION</h3>
+<div style="margin:16px 0;">
+  <div style="margin-bottom:8px;"><div class="sh-label" style="color:var(--c-pale);font-weight:700;">Promoters (~38.5%)</div><div class="sh-track"><div class="sh-label">Reliance (32.5%)</div><div class="sh-bar-wrap"><div class="sh-bar" style="width:32.5%;background:var(--c-amber)"></div></div><div class="sh-pct">32.5%</div></div><div class="sh-track"><div class="sh-label">SP Group (6%)</div><div class="sh-bar-wrap"><div class="sh-bar" style="width:6%;background:var(--c-amber-dim)"></div></div><div class="sh-pct">6%</div></div></div>
+  <div class="sh-track"><div class="sh-label">FII (~7–8%)</div><div class="sh-bar-wrap"><div class="sh-bar" style="width:8%;background:var(--c-slate)"></div></div><div class="sh-pct">~8% ↓</div></div>
+  <div class="sh-track"><div class="sh-label">DII/MF (~1–3%)</div><div class="sh-bar-wrap"><div class="sh-bar" style="width:2%;background:var(--c-green)"></div></div><div class="sh-pct">~2% ↓↓</div></div>
+  <div class="sh-track"><div class="sh-label">Retail/Other (~50%)</div><div class="sh-bar-wrap"><div class="sh-bar" style="width:50%;background:var(--c-muted)"></div></div><div class="sh-pct">~50% ↑</div></div>
+</div>
+
+<h3>SECTION E — OWNERSHIP MOMENTUM & RISK SCORES</h3>
+<div class="metric-grid">
+  <div class="metric fail"><div class="metric-label">Ownership Momentum Score</div><div class="metric-value">22/100</div><div class="metric-sub">FII + MF both distributing; very bearish</div></div>
+  <div class="metric fail"><div class="metric-label">Shareholding Risk Score</div><div class="metric-value">71/100</div><div class="metric-sub">Pledges + FII exit + retail dominant</div></div>
+</div>
+<div class="card card-red">
+  <h4>SHAREHOLDING SUMMARY: BEARISH</h4>
+  <p>The shareholding structure tells a clear cautionary story: smart money (FII, MF) has been selling consistently while retail has been buying. This is the classic distribution pattern before a stock stabilises at a bottom. The <strong>pledge risk</strong> is the wildcard — if SP Group pledges are called, it could force additional promoter selling. For a BUY upgrade, we need to see FII holdings stabilise for 2+ consecutive quarters.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════ TAB 9: AI INTELLIGENCE ═══════════════════════ -->
+<div class="tab-content" id="t9">
+<h2>AI INTELLIGENCE</h2>
+<p style="color:var(--c-muted);"><em>For AI NEUTRAL companies, Tab 9 covers Section A (classification dashboard) and Section F (verdict) with brief intermediate assessment.</em></p>
+
+<h3>SECTION A — AI CLASSIFICATION DASHBOARD</h3>
+<div class="ai-badges">
+  <span class="ai-badge ai-neutral">Category: D (Turnaround)</span>
+  <span class="ai-badge ai-neutral">AI Overlay: ⚪ NEUTRAL</span>
+  <span class="ai-badge ai-neutral">Flywheel: COSMETIC</span>
+  <span class="ai-badge ai-neutral">Adoption Phase: N/A (not an AI sector)</span>
+</div>
+
+<div class="card" style="margin-top:14px;">
+  <h4>AI DEPLOYMENT ASSESSMENT</h4>
+  <p><strong>Current AI use (confirmed):</strong> SWSOLAR uses drone-based plant inspection, remote monitoring dashboards, and project management software across its EPC and O&M operations. The appointment of a Senior VP–IT (January 2026) suggests digital infrastructure investment. <span class="lv lv-e">ESTIMATED</span></p>
+  <p><strong>AI partnerships / products:</strong> No AI-specific product launches or named partnerships detected in the last 2 years. Focus is on operational technology, not AI-native products. <span class="lv lv-e">ESTIMATED</span></p>
+  <p><strong>AI R&D spend:</strong> Not disclosed separately. Likely < 1% of revenue. EPC companies are not AI R&D spenders. <span class="lv lv-e">ESTIMATED</span></p>
+  <p><strong>Competitor AI threat:</strong> Low. Competitors (L&T, KEC) are at similar AI maturity levels. AI does not confer a material competitive advantage in project bidding (tenders are price-driven) or project execution (skilled labor and supply chain matter more).</p>
+  <p><strong>India AI ecosystem:</strong> SWSOLAR is NOT part of India Stack / UPI / Aadhaar AI opportunity. It operates in physical infrastructure (solar plants) not digital financial infrastructure. <strong>No AI ecosystem relevance.</strong></p>
+</div>
+
+<h3>SECTION B — DATA FLYWHEEL (BRIEF — AI NEUTRAL)</h3>
+<div class="flywheel-box">
+  <div class="flywheel-title">DATA FLYWHEEL VERDICT</div>
+  <div class="flywheel-badge">COSMETIC — AI IS A TOOL, NOT A MOAT</div>
+  <div class="flywheel-score">0/10</div>
+  <p style="font-size:0.85rem;color:var(--c-muted);">No proprietary AI training data, no measurable AI improvement with scale, no feedback loop. SWSOLAR uses standard industrial IoT and monitoring tools available to any EPC company. The company's competitive advantage will not be built on AI — it will be built on execution quality, relationships, and scale.</p>
+</div>
+
+<h3>SECTION C — AI VALUE CHAIN POSITION</h3>
+<div class="chain">
+  <div class="chain-item"><div class="chain-level">Level 1</div><div class="chain-name">Infrastructure</div></div>
+  <div class="chain-item"><div class="chain-level">Level 2</div><div class="chain-name">Foundation Models</div></div>
+  <div class="chain-item"><div class="chain-level">Level 3</div><div class="chain-name">AI Platforms</div></div>
+  <div class="chain-item"><div class="chain-level">Level 4</div><div class="chain-name">AI Applications</div></div>
+  <div class="chain-item active"><div class="chain-level">Level 5 (Adjacent)</div><div class="chain-name">AI-Enabled Incumbent (weak)</div></div>
+</div>
+<p style="font-size:0.85rem;color:var(--c-muted);margin-top:8px;">SWSOLAR is at best a <strong>weak Level 5</strong> — an existing business using digital tools without structural AI enabling. The company's value proposition is physical execution, not digital intelligence. AI value chain position is not relevant to the investment thesis.</p>
+
+<h3>SECTION D — INDIA AI OPPORTUNITY CONTEXT</h3>
+<div class="tbl-wrap"><table>
+  <tr><th>India AI Advantage</th><th>SWSOLAR Relevance</th><th>Verdict</th></tr>
+  <tr><td>UPI / India Stack data flywheel</td><td>None — physical infrastructure company</td><td class="td-neg">NO</td></tr>
+  <tr><td>Vernacular AI (85% of India)</td><td>None — B2B EPC contracts</td><td class="td-neg">NO</td></tr>
+  <tr><td>India Stack as free infra</td><td>None — not a digital service</td><td class="td-neg">NO</td></tr>
+  <tr><td>India AI talent cost arbitrage</td><td>Marginal — digital monitoring team</td><td class="td-warn">ADJACENT</td></tr>
+</table></div>
+
+<div class="tbl-wrap" style="margin-top:14px;"><table>
+  <tr><th>India AI Theme</th><th>Phase</th><th>SWSOLAR Relevance</th></tr>
+  <tr><td>AI in banking/credit</td><td>Phase 3</td><td class="td-neg">None</td></tr>
+  <tr><td>AI in logistics/supply chain</td><td>Phase 2–3</td><td class="td-warn">Adjacent — project supply chain</td></tr>
+  <tr><td>AI in data centres (infra)</td><td>Phase 3–4</td><td class="td-warn">Adjacent — solar powers data centres</td></tr>
+  <tr><td>All other themes</td><td>Various</td><td class="td-neg">None</td></tr>
+</table></div>
+
+<h3>SECTION F — AI OPPORTUNITY VERDICT</h3>
+<div class="card">
+  <h4>AI OPPORTUNITY SCORE</h4>
+  <div class="ai-score-bar"><div class="ai-score-fill" style="width:18%"></div></div>
+  <div style="font-family:var(--ff-mono);font-size:0.7rem;color:var(--c-muted);margin:6px 0 14px;">18/100 — AI NEUTRAL (AI does not affect the investment thesis)</div>
+  <div class="tbl-wrap"><table>
+    <tr><th>Component</th><th>Score</th><th>Comment</th></tr>
+    <tr><td>Data Flywheel</td><td>0/20</td><td>No flywheel exists</td></tr>
+    <tr><td>Adoption Phase Timing</td><td>0/20</td><td>Not an AI adoption sector</td></tr>
+    <tr><td>Value Chain Position</td><td>8/20</td><td>Adjacent to energy infrastructure which powers AI data centres</td></tr>
+    <tr><td>India Structural Advantage</td><td>5/20</td><td>India RE build-out creates indirect AI data centre demand</td></tr>
+    <tr><td>AI Threat Resistance</td><td>15/20</td><td>Core EPC business not AI-disruptable in <5 years</td></tr>
+    <tr><td class="td-hl"><b>TOTAL</b></td><td class="td-warn"><b>28/100</b></td><td>AI NEUTRAL — standard fundamental framework governs</td></tr>
+  </table></div>
+</div>
+
+<div class="card card-slate" style="margin-top:12px;">
+  <h4>PORTFOLIO ROLE</h4>
+  <p><strong>AI NEUTRAL — Standard fundamental framework governs.</strong> Invest (or not) purely on the Category D turnaround thesis. AI neither helps nor hurts. The solar sector is a beneficiary of the AI data centre buildout (data centres need massive power → renewable contracts → EPC demand) but this is a second-order effect, not direct AI moat for SWSOLAR.</p>
+  <p><strong>Investment Horizon:</strong> 3–5 years. EPC turnarounds require multi-year patience for margin normalisation. Not a 12-month trade.</p>
+</div>
+</div>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<div class="footer">
+  <strong>DISCLAIMER:</strong> This report is generated for educational and informational purposes only and does not constitute investment advice, a solicitation, or a recommendation to buy or sell any security. SEBI Registration required for investment advisory services. Past performance is not indicative of future results. The report is based on publicly available information and estimated data with confidence labels ([VERIFIED]/[ESTIMATED]/[UNVERIFIED]). All figures should be independently verified before making investment decisions. Stock prices marked [UNVERIFIED] are approximate and subject to change.<br><br>
+  <strong>DATA SOURCES:</strong> Screener.in (consolidated financials), Yahoo Finance, TradingView, Whalesbook, SaurEnergy, Q3 FY26 Earnings Call Transcript (Alpha Spread/Yahoo Finance), IBEF, RBI monetary policy commentary, Deloitte India Outlook Jan 2026, HDFC MF Monetary Policy Review Apr 2026, ResearchNester/GMI Insights (Solar EPC market data).<br><br>
+  <strong>FRAMEWORK:</strong> Buffett Quality-Value Series v5.0 | Analysis Date: 23 April 2026 | Report: SWSOLAR_qv_report.html | Board meeting for Q4 FY26 results: 23 April 2026 (today). Re-review recommended post Q4 results disclosure on 24 April 2026.<br><br>
+  Fonts: Bebas Neue / Crimson Pro / JetBrains Mono via Google Fonts.
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+    el.classList.remove('active-tab');
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  var panel = document.getElementById(tabId);
+  if (panel) {
+    panel.style.display = 'block';
+    panel.classList.add('active-tab');
+  }
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

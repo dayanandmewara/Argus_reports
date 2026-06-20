@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSLL — Buffett Quality-Value Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D1F1B;
+    --bg2: #122820;
+    --card: #162F28;
+    --card2: #1C3D32;
+    --border: rgba(90,180,130,0.18);
+    --accent: #3DCC8A;
+    --accent2: #F5B841;
+    --accent3: #E84A4A;
+    --text: #E8F2EE;
+    --text2: #A8C4B8;
+    --text3: #6A9080;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Playfair Display', serif;
+    --sans: 'DM Sans', sans-serif;
+    --pass: #3DCC8A;
+    --fail: #E84A4A;
+    --warn: #F5B841;
+    --neutral: #7CA9C0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0D1F1B 0%, #0A2E1A 60%, #0D1F1B 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 32px 20px;
+    max-height: 220px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(61,204,138,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  .ticker-block { display: flex; flex-direction: column; gap: 4px; }
+  .ticker-label { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; }
+  .ticker-name { font-family: var(--serif); font-size: 26px; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .ticker-sub { font-family: var(--mono); font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .verdict-block { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .verdict-badge {
+    background: rgba(245,184,65,0.12);
+    border: 1.5px solid var(--accent2);
+    color: var(--accent2);
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    padding: 5px 14px; border-radius: 4px; letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badges-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .badge {
+    font-family: var(--mono); font-size: 10px; font-weight: 500;
+    padding: 3px 10px; border-radius: 3px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .badge-cat { background: rgba(61,204,138,0.12); border: 1px solid rgba(61,204,138,0.35); color: var(--accent); }
+  .badge-neutral { background: rgba(124,169,192,0.12); border: 1px solid rgba(124,169,192,0.35); color: var(--neutral); }
+  .badge-macro { background: rgba(61,204,138,0.10); border: 1px solid rgba(61,204,138,0.25); color: var(--accent); }
+  .hero-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .pill {
+    font-family: var(--mono); font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: 12px;
+  }
+  .pill-v { background: rgba(61,204,138,0.15); color: var(--accent); }
+  .pill-e { background: rgba(245,184,65,0.15); color: var(--accent2); }
+  .pill-u { background: rgba(232,74,74,0.15); color: var(--accent3); }
+  .hero-lede { font-size: 13px; color: var(--text2); margin-top: 8px; font-style: italic; line-height: 1.5; max-width: 800px; }
+
+  /* TAB BAR */
+  #tab-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,31,27,0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; overflow-x: auto; gap: 0;
+    scrollbar-width: none;
+  }
+  #tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px;
+    padding: 12px 18px; border: none; background: none;
+    cursor: pointer; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn:hover { color: var(--text2); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 28px 32px; max-width: 1100px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* SECTION */
+  .section-title {
+    font-family: var(--serif); font-size: 18px; font-weight: 700;
+    color: var(--accent); margin-bottom: 16px; margin-top: 28px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title:first-child { margin-top: 0; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* METRIC GRID */
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .metric-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+    border-left: 3px solid var(--accent);
+  }
+  .metric-card.warn { border-left-color: var(--accent2); }
+  .metric-card.fail { border-left-color: var(--accent3); }
+  .metric-card.neutral { border-left-color: var(--neutral); }
+  .metric-label { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .metric-value { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--text); }
+  .metric-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
+  th { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); padding: 8px 12px; background: var(--card2); border-bottom: 1px solid var(--border); text-align: left; }
+  td { padding: 8px 12px; border-bottom: 1px solid rgba(90,180,130,0.08); color: var(--text2); font-family: var(--mono); font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(61,204,138,0.03); }
+  .tbl-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+
+  /* SCORECARD ITEMS */
+  .scorecard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .sc-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .sc-label { font-size: 13px; color: var(--text2); }
+  .sc-badge { font-family: var(--mono); font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 3px; }
+  .pass { background: rgba(61,204,138,0.15); color: var(--pass); }
+  .marginal { background: rgba(245,184,65,0.15); color: var(--warn); }
+  .fail-badge { background: rgba(232,74,74,0.15); color: var(--fail); }
+
+  /* MOAT CARDS */
+  .moat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .moat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px;
+  }
+  .moat-card-title { font-family: var(--serif); font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .moat-stars { color: var(--accent2); font-size: 14px; margin-bottom: 6px; }
+  .moat-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+  /* FLYWHEEL BOX */
+  .flywheel-box {
+    background: linear-gradient(135deg, var(--card) 0%, rgba(28,61,50,0.8) 100%);
+    border: 2px solid var(--accent);
+    border-radius: 10px; padding: 20px 24px; margin-bottom: 20px;
+  }
+  .flywheel-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
+  .flywheel-badge { display: inline-block; font-family: var(--mono); font-size: 12px; font-weight: 500; padding: 4px 14px; border-radius: 4px; margin-bottom: 12px; }
+  .flywheel-cosmetic { background: rgba(124,169,192,0.15); border: 1px solid var(--neutral); color: var(--neutral); }
+  .flywheel-q { font-family: var(--mono); font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; margin-bottom: 4px; }
+  .flywheel-a { font-size: 13px; color: var(--text2); }
+
+  /* VERDICT BOX */
+  .verdict-box {
+    background: #0A1F15;
+    border: 2px solid var(--accent2);
+    border-radius: 10px; padding: 24px 28px; margin-bottom: 24px;
+  }
+  .verdict-main { font-family: var(--serif); font-size: 28px; font-weight: 900; color: var(--accent2); margin-bottom: 8px; }
+  .verdict-quote { font-style: italic; font-size: 14px; color: var(--text3); border-left: 2px solid var(--accent2); padding-left: 12px; margin: 12px 0; }
+  .verdict-thesis { font-size: 15px; color: var(--text2); line-height: 1.6; }
+
+  /* PILLAR GRADES */
+  .pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .pillar-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px; text-align: center;
+  }
+  .pillar-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 6px; }
+  .pillar-grade { font-family: var(--serif); font-size: 32px; font-weight: 700; color: var(--accent); }
+  .pillar-desc { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+  /* UPGRADE CONDITIONS */
+  .upgrade-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .upgrade-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 16px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .upgrade-num {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    background: rgba(61,204,138,0.15); color: var(--accent);
+    border-radius: 4px; padding: 2px 8px; white-space: nowrap;
+    min-width: 28px; text-align: center; margin-top: 1px;
+  }
+  .upgrade-text { font-size: 14px; color: var(--text2); line-height: 1.5; }
+
+  /* OE BOX */
+  .oe-box {
+    background: rgba(61,204,138,0.06); border: 1px solid rgba(61,204,138,0.2);
+    border-radius: 8px; padding: 18px 22px; margin-bottom: 20px;
+  }
+  .oe-title { font-family: var(--mono); font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .oe-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(90,180,130,0.08); font-size: 13px; }
+  .oe-row:last-child { border-bottom: none; font-weight: 600; color: var(--accent); }
+  .oe-row span:first-child { color: var(--text2); }
+  .oe-row span:last-child { font-family: var(--mono); }
+
+  /* DCF TABLE */
+  .dcf-table { font-size: 12px; }
+  .dcf-table td, .dcf-table th { padding: 6px 10px; }
+
+  /* SCENARIO TABS */
+  .scenario-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .scenario-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px;
+    border-top: 3px solid var(--neutral);
+  }
+  .scenario-card.base { border-top-color: var(--accent); }
+  .scenario-card.bull { border-top-color: var(--accent2); }
+  .scenario-card.bear { border-top-color: var(--accent3); }
+  .scenario-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 6px; }
+  .scenario-iv { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--text); }
+  .scenario-desc { font-size: 12px; color: var(--text3); margin-top: 6px; }
+
+  /* SHAREHOLDING */
+  .sh-trend { display: flex; gap: 4px; align-items: flex-end; height: 60px; }
+  .sh-bar { background: var(--accent); width: 24px; border-radius: 2px 2px 0 0; position: relative; }
+  .sh-bar:hover::after { content: attr(data-val); position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--accent); background: var(--card); padding: 2px 4px; border-radius: 2px; white-space: nowrap; }
+
+  /* AI SECTION */
+  .ai-score-ring {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(var(--neutral) 0deg, var(--neutral) 151deg, var(--card2) 151deg);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .ai-score-inner {
+    width: 90px; height: 90px;
+    background: var(--bg);
+    border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .ai-score-num { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--text); }
+  .ai-score-label { font-family: var(--mono); font-size: 9px; color: var(--text3); text-transform: uppercase; }
+
+  /* VALUE CHAIN */
+  .value-chain { display: flex; gap: 0; margin-bottom: 20px; overflow-x: auto; }
+  .vc-level {
+    flex: 1; min-width: 120px; padding: 12px 10px; text-align: center;
+    border: 1px solid var(--border);
+    border-right: none; background: var(--card);
+    position: relative;
+  }
+  .vc-level:last-child { border-right: 1px solid var(--border); border-radius: 0 6px 6px 0; }
+  .vc-level:first-child { border-radius: 6px 0 0 6px; }
+  .vc-level.highlight { background: rgba(61,204,138,0.08); border-color: rgba(61,204,138,0.3); }
+  .vc-num { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+  .vc-name { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
+  .vc-eg { font-size: 10px; color: var(--text3); }
+  .vc-tag { font-family: var(--mono); font-size: 9px; color: var(--accent); background: rgba(61,204,138,0.1); padding: 2px 6px; border-radius: 3px; margin-top: 4px; display: inline-block; }
+
+  /* GROWTH TABLE */
+  .growth-grid { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+  .growth-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; background: var(--card2); padding: 8px 16px; font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; gap: 12px; }
+  .growth-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid rgba(90,180,130,0.06); gap: 12px; font-size: 13px; }
+  .growth-row:last-child { border-bottom: none; }
+  .growth-row .label { color: var(--text2); }
+  .growth-row .val { font-family: var(--mono); color: var(--text); }
+  .growth-row .stress { color: var(--accent3); }
+  .growth-row .base-v { color: var(--accent); }
+  .growth-row .accel { color: var(--accent2); }
+
+  /* TECHNICAL */
+  .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .tech-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .tech-label { font-family: var(--mono); font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .tech-value { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--text); }
+  .tech-signal { font-size: 11px; margin-top: 3px; }
+  .bull { color: var(--pass); }
+  .bear { color: var(--fail); }
+  .neut { color: var(--neutral); }
+
+  /* PROGRESS BAR */
+  .progress-bar { height: 6px; background: var(--card2); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+
+  /* INFO BOX */
+  .info-box {
+    background: rgba(124,169,192,0.06); border: 1px solid rgba(124,169,192,0.2);
+    border-radius: 6px; padding: 12px 16px; margin-bottom: 14px;
+    font-size: 13px; color: var(--text2); line-height: 1.6;
+  }
+  .warn-box {
+    background: rgba(245,184,65,0.06); border: 1px solid rgba(245,184,65,0.2);
+    border-radius: 6px; padding: 12px 16px; margin-bottom: 14px;
+    font-size: 13px; color: var(--text2); line-height: 1.6;
+  }
+  .fail-box {
+    background: rgba(232,74,74,0.06); border: 1px solid rgba(232,74,74,0.2);
+    border-radius: 6px; padding: 12px 16px; margin-bottom: 14px;
+    font-size: 13px; color: var(--text2); line-height: 1.6;
+  }
+
+  /* TRACKER TABLE */
+  .tracker-row { display: grid; grid-template-columns: 80px 1fr 80px 60px 60px 80px 80px; gap: 8px; padding: 10px 16px; border-bottom: 1px solid rgba(90,180,130,0.06); font-size: 12px; align-items: center; }
+  .tracker-header { background: var(--card2); font-family: var(--mono); font-size: 10px; text-transform: uppercase; color: var(--text3); letter-spacing: 1px; }
+
+  /* FOOTER */
+  footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 16px 32px; font-size: 11px; color: var(--text3); line-height: 1.6; }
+
+  @media (max-width: 680px) {
+    .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    .pillar-grid { grid-template-columns: repeat(2, 1fr); }
+    .moat-grid { grid-template-columns: 1fr; }
+    .scorecard { grid-template-columns: 1fr; }
+    .scenario-row { grid-template-columns: 1fr; }
+    .tech-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero { max-height: none; padding: 20px 18px; }
+    .tab-content { padding: 20px 16px; }
+    .growth-header, .growth-row { grid-template-columns: 2fr 1fr 1fr; }
+    .growth-header > :last-child, .growth-row > :last-child { display: none; }
+  }
+  @media (max-width: 600px) {
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .ticker-name { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="ticker-block">
+      <div class="ticker-label">NSE: JSLL &nbsp;|&nbsp; Buffett QV Series</div>
+      <div class="ticker-name">Jeena Sikho Lifecare</div>
+      <div class="ticker-sub">Ayurvedic Healthcare &amp; Wellness &nbsp;·&nbsp; Nifty Microcap 250, Nifty Total Market, Nifty Smallcap 500</div>
+    </div>
+    <div class="verdict-block">
+      <div class="verdict-badge">⭐⭐⭐ WATCH</div>
+      <div class="badges-row">
+        <span class="badge badge-cat">Cat C — Healthcare Compounder</span>
+        <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+        <span class="badge badge-macro">📈 Macro Tailwind</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-pills">
+    <span class="pill pill-v">VERIFIED: Price &amp; Shareholding</span>
+    <span class="pill pill-e">ESTIMATED: ROIC, FCF</span>
+    <span class="pill pill-e">ESTIMATED: Owner Earnings</span>
+    <span class="pill pill-u">UNVERIFIED: DCF assumptions</span>
+  </div>
+  <div class="hero-lede">India's fastest-scaling clinical Ayurveda network — explosive growth, exceptional ROIC, but rising debtors and earnings quality flags demand a measured entry.</div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content" style="display:block;">
+  <div class="section-title">Business Overview</div>
+  <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px;">
+    Jeena Sikho Lifecare Limited (JSLL), founded in 2009 by Acharya Manish Ji and headquartered in Zirakpur, Punjab, is India's largest organised clinical Ayurveda network operating under the <strong style="color:var(--accent)">'Shuddhi'</strong> brand. As of Q3 FY26, JSLL operates <strong>58 hospitals</strong> and <strong>59 clinics/daycare centres</strong> across 23 states and 100+ cities with 2,290 operational beds (2,800 total capacity). The company runs a dual-engine model: <em>Ayurveda Healthcare Services</em> (IPD, OPD, Panchakarma, VOPD) and <em>Ayurveda Healthcare Products</em> (330+ SKUs under AYUSH compliance, ~85% gross margin). Services and products contribute approximately 49% and 51% of revenue respectively as of 9M FY26.
+  </p>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-label">Current Price [VERIFIED]</div>
+      <div class="metric-value">₹639</div>
+      <div class="metric-sub">As of May 15, 2026</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Market Cap [VERIFIED]</div>
+      <div class="metric-value">₹7,944 Cr</div>
+      <div class="metric-sub">NSE Smallcap | Microcap 250</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">P/E (TTM) [ESTIMATED]</div>
+      <div class="metric-value">~38x</div>
+      <div class="metric-sub">EPS TTM ~₹17; 3yr avg PE ~71x</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Revenue TTM [VERIFIED]</div>
+      <div class="metric-value">₹725 Cr</div>
+      <div class="metric-sub">FY25: ₹475 Cr; FY24: ₹324 Cr</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">PAT TTM [VERIFIED]</div>
+      <div class="metric-value">₹204 Cr</div>
+      <div class="metric-sub">PAT margin ~28% TTM</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">ROIC TTM [ESTIMATED]</div>
+      <div class="metric-value">54%</div>
+      <div class="metric-sub">ROE: 36.8% | Gross margin: 90%</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Net Cash [VERIFIED]</div>
+      <div class="metric-value">₹18 Cr</div>
+      <div class="metric-sub">Debt: ₹10.7 Cr | Cash: ₹29 Cr</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">Debtor Days [VERIFIED]</div>
+      <div class="metric-value">76 days</div>
+      <div class="metric-sub">↑ from 54 days — RED FLAG</div>
+    </div>
+  </div>
+
+  <div class="section-title">Category Classification</div>
+  <div class="info-box">
+    <strong style="color:var(--accent)">Category C — Domestic Quality Compounder (Healthcare/AYUSH)</strong><br>
+    JSLL is classified Cat C despite ROIC exceeding the 40% upper boundary of Cat C, because: (1) it lacks the non-discretionary consumer monopoly characteristics of Cat A; (2) it is not a global-scale revenue compounder (Cat B); (3) the core business is domestically bounded clinical Ayurveda with India-specific regulatory and brand moats. WACC 12–14%. Terminal P/E 18–22x. MoS 20%. Framework adaptation: given exceptional growth phase (beds 460→2,290 in 2.5 years), Stage 1 DCF uses higher growth but caps at Stage 2 sector pace.
+  </div>
+
+  <div class="section-title">Why This Stock — Series Rationale</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--pass);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">✓ Bull Case</div>
+      <ul style="font-size:13px;color:var(--text2);line-height:1.8;padding-left:14px;">
+        <li>Clinical Ayurveda secular tailwind: 16% sector CAGR to 2033</li>
+        <li>Explosive FY26 inflection — Q3 PAT margin 30%, EBITDA 45%</li>
+        <li>Dual-engine model: 85% gross margin products cross-fund hospital expansion</li>
+        <li>Near-zero debt; net cash balance sheet</li>
+        <li>Chronic disease burden (diabetes, hypertension) → Ayurveda long-term management tailwind</li>
+        <li>Hub-and-spoke model scales efficiently; operating leverage from higher occupancy</li>
+      </ul>
+    </div>
+    <div style="background:var(--card);border:1px solid rgba(232,74,74,0.2);border-radius:8px;padding:16px;">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--fail);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">✗ Bear Case / Key Risks</div>
+      <ul style="font-size:13px;color:var(--text2);line-height:1.8;padding-left:14px;">
+        <li>Earnings quality flags: "high non-cash earnings" per Simply Wall St</li>
+        <li>Debtor days rising 54→76; AR tripled (₹34 Cr → ₹98 Cr) faster than revenue</li>
+        <li>Promoter stake declining 3 consecutive quarters: 67.9%→65.8%→63.5%</li>
+        <li>Bed occupancy only 38% in FY24; massive fixed cost if occupancy stalls</li>
+        <li>Rapid bed expansion creates execution/quality control risk</li>
+        <li>Internal auditor change (Dec 2025) — governance monitoring needed</li>
+        <li>Stock highly volatile: moves 9.7% weekly (top 10% most volatile on NSE)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <div class="section-title">Layer 1 — Macro Cycle Dashboard</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
+    <div class="metric-card">
+      <div class="metric-label">Rural Income Cycle</div>
+      <div class="metric-value" style="font-size:14px;color:var(--accent)">TAILWIND</div>
+      <div class="metric-sub">Normal monsoon expected FY26; MSP hikes supportive. North India patient base benefits.</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Urban Consumption</div>
+      <div class="metric-value" style="font-size:14px;color:var(--accent)">TAILWIND</div>
+      <div class="metric-sub">Urban professional seeking alternative healthcare; premiumisation of wellness.</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Input Cost Cycle</div>
+      <div class="metric-value" style="font-size:14px;color:var(--accent)">TAILWIND</div>
+      <div class="metric-sub">Herbal/ayurvedic raw material costs stable; JSLL improving gross margins YoY.</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">RBI Rate Cycle</div>
+      <div class="metric-value" style="font-size:14px;color:var(--accent)">EASING</div>
+      <div class="metric-sub">Repo rate 5.25%, neutral stance. CPI inflation 0.71–2.1% in H2 FY26. Positive for discretionary health spends.</div>
+    </div>
+    <div class="metric-card neutral">
+      <div class="metric-label">Government Capex Cycle</div>
+      <div class="metric-value" style="font-size:14px;color:var(--neutral)">NEUTRAL</div>
+      <div class="metric-sub">AYUSH budget growing; government promoting Yoga/Ayurveda globally but not direct capex for JSLL.</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">AI Adoption Cycle</div>
+      <div class="metric-value" style="font-size:14px;color:var(--neutral)">NEUTRAL–OPP</div>
+      <div class="metric-sub">AI in healthcare diagnostics: Phase 2-3 globally. JSLL using for operational efficiency (CRM/VOPD). Not yet moat-building.</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>Macro Composite: 🟢 TAILWIND</strong> | <strong>AI Cycle Impact: ⚪ NEUTRAL</strong><br>
+    India Real GDP FY26E: 6.8% | India CPI FY26E: ~2.6% (RBI revised down) | India Nominal GDP: ~9.4%
+    10-yr G-Sec yield: ~7.0–7.1% (May 2026) | Nifty P/E: ~21–23x (Nifty 50 broad market)
+  </div>
+
+  <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+  <div class="growth-grid">
+    <div class="growth-header">
+      <span>Parameter</span>
+      <span class="stress">STRESS</span>
+      <span class="base-v">BASE</span>
+      <span class="accel">ACCEL</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">India Macro GDP</span>
+      <span class="val stress">5.5%</span>
+      <span class="val base-v">6.8%</span>
+      <span class="val accel">8%+</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">AYUSH/Healthcare Sector CAGR</span>
+      <span class="val stress">10–12%</span>
+      <span class="val base-v">14–18%</span>
+      <span class="val accel">20–25%</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">AI Sector Adjustment [NEUTRAL]</span>
+      <span class="val stress">0%</span>
+      <span class="val base-v">0%</span>
+      <span class="val accel">0%</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">Market Share Gain Alpha [Active]</span>
+      <span class="val stress">+3%</span>
+      <span class="val base-v">+6%</span>
+      <span class="val accel">+10%</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">Bed Expansion Alpha [Active]</span>
+      <span class="val stress">+5%</span>
+      <span class="val base-v">+10%</span>
+      <span class="val accel">+18%</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">Occupancy Uplift Alpha [Active]</span>
+      <span class="val stress">+3%</span>
+      <span class="val base-v">+7%</span>
+      <span class="val accel">+12%</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">AI Alpha (6a+6b+6c) [Feature]</span>
+      <span class="val stress">0%</span>
+      <span class="val base-v">+1%</span>
+      <span class="val accel">+2%</span>
+    </div>
+    <div class="growth-row" style="background:rgba(61,204,138,0.04);font-weight:600;">
+      <span class="label">Stage 1 Revenue CAGR (FY26–28)</span>
+      <span class="val stress">21%</span>
+      <span class="val base-v">38%</span>
+      <span class="val accel">57%</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">Stage 2 Revenue CAGR (FY29–33)</span>
+      <span class="val stress">12%</span>
+      <span class="val base-v">18%</span>
+      <span class="val accel">24%</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">Terminal Growth (g)</span>
+      <span class="val stress">7%</span>
+      <span class="val base-v">8.5%</span>
+      <span class="val accel">9.5%</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">PAT Margin Direction</span>
+      <span class="val stress">Compress (18%)</span>
+      <span class="val base-v">Expand (28%)</span>
+      <span class="val accel">Expand (33%)</span>
+    </div>
+    <div class="growth-row">
+      <span class="label">Key Risk</span>
+      <span class="val stress">Occupancy stall</span>
+      <span class="val base-v">Execution discipline</span>
+      <span class="val accel">Competitive entry</span>
+    </div>
+  </div>
+
+  <div class="section-title">Company Alpha Sources</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Market Share Gain</td><td style="color:var(--accent)">Active</td><td>+6%</td><td>+4%</td><td>Largest organised Ayurveda chain; clinical vs lifestyle differentiation</td></tr>
+        <tr><td>Bed Expansion</td><td style="color:var(--accent)">Active</td><td>+10%</td><td>+5%</td><td>460→2,290 beds in 2.5yr; 475 more in pipeline</td></tr>
+        <tr><td>Occupancy Uplift</td><td style="color:var(--accent)">Active</td><td>+7%</td><td>+3%</td><td>38% FY24 → targeting 55%+; massive operating leverage</td></tr>
+        <tr><td>Product Portfolio Expansion</td><td style="color:var(--accent)">Active</td><td>+3%</td><td>+2%</td><td>250→330+ SKUs; AYUSH compliant; hospital cross-sell</td></tr>
+        <tr><td>Geographic Expansion</td><td style="color:var(--accent)">Active</td><td>+4%</td><td>+2%</td><td>21→23 states; Vietnam MOU; international nascent</td></tr>
+        <tr><td>AI Alpha (6a: Efficiency)</td><td style="color:var(--neutral)">Potential</td><td>+1%</td><td>+1%</td><td>Salesforce CRM: 50% call center improvement; VOPD 1,000 sessions/mo</td></tr>
+        <tr><td>AI Alpha (6b: Market Expansion)</td><td style="color:var(--neutral)">Feature</td><td>0%</td><td>+1%</td><td>VOPD expands geographic reach digitally</td></tr>
+        <tr><td>AI Alpha (6c: Flywheel)</td><td style="color:var(--accent3)">Cosmetic</td><td>0%</td><td>0%</td><td>No proprietary patient data flywheel confirmed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>Sensitivity:</strong> A 1% change in terminal growth rate changes IV by approximately 8–10%.<br>
+    A 1% change in Stage 1 revenue growth changes IV by approximately 4–5%.<br>
+    AYUSH sector projected CAGR 16.17% (2025–2033), reaching ₹3,605 billion by 2033 [ESTIMATED].
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <div class="section-title">Revenue &amp; Earnings History [VERIFIED]</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Year</th><th>Revenue (₹ Cr)</th><th>YoY %</th><th>PAT (₹ Cr)</th><th>PAT Margin</th><th>EPS (₹)</th><th>Shares (Cr)</th></tr></thead>
+      <tbody>
+        <tr><td>FY20</td><td>94.4</td><td>—</td><td>5.7</td><td>6.0%</td><td>~0.63</td><td>9.1</td></tr>
+        <tr><td>FY21</td><td>135.8</td><td>+44%</td><td>10.2</td><td>7.5%</td><td>~1.12</td><td>9.1</td></tr>
+        <tr><td>FY22</td><td>146.6</td><td>+8%</td><td>11.2</td><td>7.6%</td><td>~1.23</td><td>9.1</td></tr>
+        <tr><td>FY23</td><td>203.9</td><td>+39%</td><td>33.7</td><td>16.5%</td><td>~2.71</td><td>12.43</td></tr>
+        <tr><td>FY24</td><td>324.4</td><td>+59%</td><td>69.2</td><td>21.3%</td><td>~5.57</td><td>12.43</td></tr>
+        <tr><td>FY25</td><td>~475</td><td>~+46%</td><td>~90.7</td><td>~19.1%</td><td>~7.30</td><td>12.43</td></tr>
+        <tr><td>Q1 FY26 (Apr–Jun 25)</td><td>~170</td><td>—</td><td>~45</td><td>~26%</td><td>~3.62</td><td>12.43</td></tr>
+        <tr><td>Q2 FY26 (Jul–Sep 25)</td><td>189.85</td><td>+66% YoY</td><td>58.79</td><td>30.9%</td><td>~4.73</td><td>12.43</td></tr>
+        <tr><td>Q3 FY26 (Oct–Dec 25)</td><td>221.66</td><td>+92% YoY</td><td>66.73</td><td>30.1%</td><td>5.37</td><td>12.43</td></tr>
+        <tr style="background:rgba(61,204,138,0.05);font-weight:600;"><td>TTM (to Dec 25)</td><td>~725</td><td>—</td><td>~204</td><td>~28%</td><td>~17</td><td>12.43</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">ROE &amp; ROIC — 5-Year Cards [ESTIMATED]</div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px;">
+    <div class="metric-card"><div class="metric-label">FY21</div><div class="metric-value" style="font-size:14px;">ROE: 7%</div><div class="metric-sub">ROIC: ~9%</div></div>
+    <div class="metric-card"><div class="metric-label">FY22</div><div class="metric-value" style="font-size:14px;">ROE: 9%</div><div class="metric-sub">ROIC: ~11%</div></div>
+    <div class="metric-card"><div class="metric-label">FY23</div><div class="metric-value" style="font-size:14px;">ROE: 22%</div><div class="metric-sub">ROIC: ~28%</div></div>
+    <div class="metric-card"><div class="metric-label">FY24</div><div class="metric-value" style="font-size:14px;">ROE: 33%</div><div class="metric-sub">ROIC: ~42%</div></div>
+    <div class="metric-card"><div class="metric-label">TTM</div><div class="metric-value" style="font-size:14px;color:var(--accent);">ROE: 36.8%</div><div class="metric-sub">ROIC: ~54%</div></div>
+  </div>
+
+  <div class="section-title">Financial Fortress Scorecard [ESTIMATED]</div>
+  <div class="scorecard">
+    <div class="sc-item"><span class="sc-label">ROE ≥15% for 5 years</span><span class="sc-badge marginal">MARGINAL</span></div>
+    <div class="sc-item"><span class="sc-label">ROIC &gt; WACC (13%) for 5 years</span><span class="sc-badge marginal">MARGINAL</span></div>
+    <div class="sc-item"><span class="sc-label">Net Cash Position</span><span class="sc-badge pass">PASS</span></div>
+    <div class="sc-item"><span class="sc-label">Net Profit Margin ≥15%</span><span class="sc-badge pass">PASS (28% TTM)</span></div>
+    <div class="sc-item"><span class="sc-label">FCF Positive &amp; Growing</span><span class="sc-badge marginal">MARGINAL</span></div>
+    <div class="sc-item"><span class="sc-label">Pricing Power Proven</span><span class="sc-badge pass">PASS</span></div>
+    <div class="sc-item"><span class="sc-label">Revenue CAGR ≥ Sector (14–18%)</span><span class="sc-badge pass">PASS (40%+)</span></div>
+    <div class="sc-item"><span class="sc-label">Dividend Payout &lt;80% of OE</span><span class="sc-badge pass">PASS (~15%)</span></div>
+    <div class="sc-item"><span class="sc-label">Capital-Light Model</span><span class="sc-badge marginal">MARGINAL</span></div>
+    <div class="sc-item"><span class="sc-label">Recurring Revenue (patient loyalty)</span><span class="sc-badge marginal">MARGINAL</span></div>
+  </div>
+
+  <div class="section-title">Owner Earnings Estimate — FY26E [ESTIMATED]</div>
+  <div class="oe-box">
+    <div class="oe-title">Owner Earnings Construction (FY26 Base Case)</div>
+    <div class="oe-row"><span>Net Income (FY26E)</span><span>₹245 Cr</span></div>
+    <div class="oe-row"><span>+ D&A (estimated)</span><span>+ ₹22 Cr</span></div>
+    <div class="oe-row"><span>+ Non-cash SBC</span><span>+ ₹0 Cr</span></div>
+    <div class="oe-row"><span>− Maintenance CapEx (beds/equipment)</span><span>− ₹60 Cr</span></div>
+    <div class="oe-row"><span>± Working Capital Changes (AR risk)</span><span>− ₹30 Cr</span></div>
+    <div class="oe-row"><span><strong>Conservative Owner Earnings</strong></span><span>~₹177 Cr</span></div>
+    <div class="oe-row"><span><strong>Base Owner Earnings</strong></span><span>~₹210 Cr</span></div>
+  </div>
+  <div class="warn-box">⚠ Maintenance vs growth CapEx split is unclear from public filings; estimates carry high uncertainty. Rapid bed addition inflates growth CapEx significantly.</div>
+
+  <div class="section-title">O'Glove Earnings Quality Framework [ESTIMATED]</div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;">
+    <div class="metric-card warn">
+      <div class="metric-label">Test 1 — FCF Conversion</div>
+      <div class="metric-value" style="font-size:13px;color:var(--warn)">MARGINAL</div>
+      <div class="metric-sub">Non-cash earnings flagged; CFO/NI ratio below PASS threshold — needs filing verification</div>
+    </div>
+    <div class="metric-card fail">
+      <div class="metric-label">Test 2 — DSO Trend</div>
+      <div class="metric-value" style="font-size:13px;color:var(--fail)">FAIL</div>
+      <div class="metric-sub">Debtor days 54→76 (+41% YoY rise); AR tripled while revenue doubled</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Test 3 — Inventory Days</div>
+      <div class="metric-value" style="font-size:13px;color:var(--accent)">PASS</div>
+      <div class="metric-sub">Ayurvedic product inventory appears stable; no significant deterioration cited</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">Test 4 — Accounting Policy</div>
+      <div class="metric-value" style="font-size:13px;color:var(--warn)">WATCH</div>
+      <div class="metric-sub">Internal auditor changed Dec 2025 (Mazars LLP replacing prior firm) — monitor next 2 quarters</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Test 5 — Gross Margin Trend</div>
+      <div class="metric-value" style="font-size:13px;color:var(--accent)">PASS</div>
+      <div class="metric-sub">Gross margin 90%+ (products); EBITDA margin expanding from 26%→45%+ in FY26</div>
+    </div>
+  </div>
+  <div class="fail-box">
+    <strong>O'Glove Overall: SUSPECT</strong> — Two concerns (FCF conversion + DSO deterioration). Action: quality-adjust earnings downward by 10–15%; widen MoS by 5%. Hard blocker for full position sizing — do not add Tier 2/3 until O'Glove improves to ACCEPTABLE for 2 consecutive quarters.
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <div class="section-title">Moat Assessment — Grade: B−</div>
+  <div class="moat-grid">
+    <div class="moat-card">
+      <div class="moat-card-title">Brand &amp; Founder Moat</div>
+      <div class="moat-stars">★★★★</div>
+      <div class="moat-desc">Acharya Manish Ji is a highly regarded Ayurvedic practitioner with a significant following. 'Shuddhi' brand has strong recognition in clinical Ayurveda. AYUSH brand trust is hard to replicate quickly.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-card-title">Hub-and-Spoke Network</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">58 hospitals + 59 clinics across 23 states. Clinic-to-hospital patient funnel creates a semi-captive patient journey. Replication requires significant upfront capital and physician recruitment.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-card-title">Proprietary Product Portfolio</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">330+ AYUSH-compliant SKUs; 85–90% gross margin. Unique formulations developed under Acharya Manish Ji's supervision. Hospital-to-product cross-sell creates sticky revenue.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-card-title">Switching Costs (Patient)</div>
+      <div class="moat-stars">★★</div>
+      <div class="moat-desc">Ayurveda treatment protocols are multi-month commitments (Panchakarma). Patients who see results are less likely to switch. But clinical outcomes are not scientifically standardised — a risk.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-card-title">Cost Advantage (vs Allopathy)</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">Ayurvedic care is significantly more affordable than allopathic hospital stays. JSLL positions as accessible healthcare for chronic disease — strong value proposition for tier 2/3 India.</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-card-title">First-Mover / Scale</div>
+      <div class="moat-stars">★★★</div>
+      <div class="moat-desc">Largest organised Ayurveda hospital network in India. Clinical (vs lifestyle/spa) Ayurveda is a largely uncontested space. Government AYUSH policy tailwind reinforces market position.</div>
+    </div>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">🔄 Data Flywheel Assessment</div>
+    <div class="flywheel-badge flywheel-cosmetic">COSMETIC (0/3) — No Confirmed Flywheel</div>
+    <div class="flywheel-q">Q1: Proprietary Training Data?</div>
+    <div class="flywheel-a">JSLL has patient records from 58 hospitals but there is no evidence of a structured proprietary AI training dataset. Competitors could accumulate similar clinical records. Patient data is not yet systematised for AI training purposes. [UNVERIFIED]</div>
+    <div class="flywheel-q">Q2: Does AI Improve With More Users?</div>
+    <div class="flywheel-a">Currently NO. The Salesforce CRM integration improves call center efficiency but does not learn patient-level treatment outcomes in a way that improves care quality as patient volume grows. [UNVERIFIED]</div>
+    <div class="flywheel-q">Q3: Does Better AI Attract More Users?</div>
+    <div class="flywheel-a">NO. JSLL's patient acquisition is driven by brand reputation, geographic presence, and word-of-mouth — not AI superiority. The Salesforce tools improve retention but are not patient-facing differentiation. [ESTIMATED]</div>
+    <div style="margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--text3);">Flywheel Score: 1/10 — Data quality: 0/3 | Improvement evidence: 1/4 | Loop speed: 0/3</div>
+  </div>
+
+  <div class="section-title">ROIC Trend (Moat Proof)</div>
+  <div class="info-box">FY21: ~9% | FY22: ~11% | FY23: ~28% | FY24: ~42% | TTM: ~54% — <strong style="color:var(--accent)">Accelerating ROIC confirms moat is widening</strong>, driven by operating leverage from occupancy improvement and product margin expansion. However, sustained ROIC above 50% in a healthcare services + products model is unusually high and may normalise as growth CapEx increases.</div>
+
+  <div class="section-title">Macro Stress Test</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Moat Source</th><th>STRENGTHENS</th><th>HOLDS</th><th>WEAKENS</th><th>Stress Scenario</th></tr></thead>
+      <tbody>
+        <tr><td>Brand / Founder</td><td>—</td><td>✓ HOLDS</td><td>—</td><td>Brand tied to founder — key person risk if Acharya Manish exits</td></tr>
+        <tr><td>Hub-and-Spoke Network</td><td>—</td><td>—</td><td>✓ WEAKENS</td><td>Low occupancy in macro downturn = high fixed cost pressure</td></tr>
+        <tr><td>Product Portfolio</td><td>✓ STRENGTHENS</td><td>—</td><td>—</td><td>FMCG-like product revenue is relatively recession-resilient</td></tr>
+        <tr><td>Cost Advantage</td><td>✓ STRENGTHENS</td><td>—</td><td>—</td><td>Patients trade down from allopathy in economic stress</td></tr>
+        <tr><td>First-Mover Scale</td><td>—</td><td>✓ HOLDS</td><td>—</td><td>Scale is real but not insurmountable; Patanjali, Baidyanath could compete</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <div class="section-title">Management Assessment — Grade: B</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+    <div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--pass);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">✓ Strengths</div>
+      <div class="info-box" style="margin-bottom:8px;">
+        <strong>Founder-Led with Vision:</strong> Acharya Manish Ji's clinical Ayurveda expertise and personal brand equity are core moat assets. Founder-led companies typically allocate capital with longer-term conviction.
+      </div>
+      <div class="info-box" style="margin-bottom:8px;">
+        <strong>Modest CEO Pay:</strong> CEO compensation ~₹24M in FY25, below median for similarly-sized companies per Simply Wall St. Indicates culture of frugality and alignment with shareholders.
+      </div>
+      <div class="info-box" style="margin-bottom:8px;">
+        <strong>Capital Allocation — Growth Mode:</strong> Profits reinvested into bed expansion (460→2,290 beds in 2.5 yrs). Low dividend payout ratio (~15%) appropriate for high-ROIC growth phase.
+      </div>
+      <div class="info-box">
+        <strong>Technology Adoption:</strong> Salesforce partnership demonstrates willingness to professionalise operations. Appointment of Investor Relations agency (GoIndia Advisors, May 2026) signals investor-friendliness.
+      </div>
+    </div>
+    <div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--fail);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">⚠ Concerns</div>
+      <div class="warn-box" style="margin-bottom:8px;">
+        <strong>Promoter Stake Declining:</strong> 67.9% (Mar 24) → 65.8% (Sep 24) → 63.5% (Mar 25). Three consecutive quarterly declines. No public explanation for stake reduction. This is a yellow flag requiring monitoring.
+      </div>
+      <div class="warn-box" style="margin-bottom:8px;">
+        <strong>Internal Auditor Change:</strong> December 2025 — replacing Deepak K Garg &amp; Associates with M/s Forvis Mazars LLP. Upgrading to a larger firm could be positive (better governance), but the timing during rapid growth needs monitoring.
+      </div>
+      <div class="warn-box" style="margin-bottom:8px;">
+        <strong>Land Sale (May 2026):</strong> Approved sale of 48 bigha non-operational land in Patiala for ₹24 Cr. Selling land during an aggressive expansion phase is unusual and may signal capital needs or portfolio cleanup.
+      </div>
+      <div class="warn-box">
+        <strong>Key Person Risk:</strong> Significant dependence on Acharya Manish Ji's clinical authority and personal brand. No clarity on succession plan or depth of management bench.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Pledged Shares</div>
+  <div class="scorecard" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="sc-item"><span class="sc-label">Promoter Pledged %</span><span class="sc-badge pass">0% — PASS</span></div>
+    <div class="sc-item"><span class="sc-label">Promoter Holding Trend</span><span class="sc-badge fail-badge">DECLINING ↓ — WATCH</span></div>
+    <div class="sc-item"><span class="sc-label">FII Holding Trend</span><span class="sc-badge pass">RISING ↑ — POSITIVE</span></div>
+  </div>
+
+  <div class="section-title">Guidance Reliability [ESTIMATED]</div>
+  <div class="info-box">
+    Company guided ₹400 Cr revenue and 25% PAT margin for FY25. Actual FY25 revenue ~₹475 Cr (+19% beat on revenue) but PAT margin ~19% (below 25% guidance). Bed count guidance of 3,000 by Dec 2025 — actual 2,290 by Q3 FY26 (below target). Management guidance has delivery gaps — apply 15–20% discount to forward projections.
+  </div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <div class="section-title">Method 1 — DCF (2-Stage) [ESTIMATED]</div>
+  <div class="info-box">WACC: 13% (Cat C, India small-cap risk premium). Stage 1 (FY26–FY29): Revenue CAGR 38% base, PAT margin 28%. Stage 2 (FY30–FY34): Revenue CAGR 15% base, PAT margin 25%. Terminal P/E: 20x (Cat C mid-range). O'Glove SUSPECT adjustment: earnings haircut of 10%.</div>
+  <div class="tbl-wrap">
+    <table class="dcf-table">
+      <thead><tr><th>Year</th><th>Revenue (₹ Cr)</th><th>PAT (₹ Cr)</th><th>FCF est (₹ Cr)</th><th>PV Factor (13%)</th><th>PV of FCF (₹ Cr)</th></tr></thead>
+      <tbody>
+        <tr><td>FY26E</td><td>830</td><td>235</td><td>165</td><td>0.885</td><td>146</td></tr>
+        <tr><td>FY27E</td><td>1,145</td><td>325</td><td>228</td><td>0.783</td><td>179</td></tr>
+        <tr><td>FY28E</td><td>1,580</td><td>445</td><td>312</td><td>0.693</td><td>216</td></tr>
+        <tr><td>FY29E</td><td>1,820</td><td>510</td><td>357</td><td>0.613</td><td>219</td></tr>
+        <tr><td>FY30–34E Terminal</td><td>—</td><td>—</td><td>~2,100 (PV)</td><td>—</td><td>2,100</td></tr>
+        <tr style="font-weight:600;background:rgba(61,204,138,0.05)"><td colspan="4">Total IV (sum of PVs)</td><td>—</td><td>~₹2,860 Cr</td></tr>
+        <tr style="font-weight:600;"><td colspan="4">IV Per Share (12.43 Cr shares)</td><td>—</td><td>~₹230/sh</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="warn-box">Note: JSLL at current price ₹639 is trading at a significant premium to pure DCF IV due to scarcity premium, growth optionality, and the fact that most current earnings are reinvested into expansion (not captured as FCF). This is characteristic of high-ROIC growth compounders — EV/Earnings is a better lens here.</div>
+
+  <div class="section-title">Method 2 — Owner Earnings Capitalisation [ESTIMATED]</div>
+  <div class="info-box">
+    OE FY26E: ₹210 Cr (base) / ₹177 Cr (conservative, O'Glove adjusted)<br>
+    Required Return: 13% | Terminal g: 8.5%<br>
+    <strong>Value = OE / (r – g) = ₹210 / (0.13 – 0.085) = ₹210 / 0.045 = ₹4,667 Cr</strong> → <strong>IV/share: ₹375</strong><br>
+    Conservative: ₹177 / 0.045 = ₹3,933 Cr → IV/share: <strong>₹316</strong>
+  </div>
+
+  <div class="section-title">Method 3 — P/E Earnings Power [ESTIMATED]</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>Stress</th><th>Base</th><th>Accel</th></tr></thead>
+      <tbody>
+        <tr><td>FY27E EPS</td><td>₹22</td><td>₹28</td><td>₹38</td></tr>
+        <tr><td>Fair P/E Applied</td><td>18x</td><td>22x</td><td>28x</td></tr>
+        <tr><td>IV Per Share</td><td>₹396</td><td>₹616</td><td>₹1,064</td></tr>
+        <tr><td>3yr avg P/E (historical)</td><td colspan="3">~71x (elevated due to re-rating; not sustainable)</td></tr>
+        <tr><td>Current P/E (TTM)</td><td colspan="3">~38x | FY26E P/E: ~32x</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Method 4 — Earnings Yield vs Bond Yield [ESTIMATED]</div>
+  <div class="info-box">
+    FCF Yield (TTM estimate): ~2.2% (₹175 Cr FCF / ₹7,944 Cr market cap)<br>
+    Earnings Yield: 1/38 = ~2.6% vs 10-yr G-Sec: 7.1%<br>
+    Earnings Risk Premium (ERP): 2.6% − 7.1% = <strong style="color:var(--fail)">−4.5%</strong> — Negative ERP signals stock is pricing in high-conviction growth expectations. Justified ONLY if FY27-28 EPS growth stays at 30%+. Current earnings yield does NOT compensate for risk vs bonds — wait for correction.
+  </div>
+
+  <div class="section-title">5-Method Valuation Summary</div>
+  <div class="scenario-row">
+    <div class="scenario-card bear">
+      <div class="scenario-label">Stress / Bear IV</div>
+      <div class="scenario-iv">₹300–350</div>
+      <div class="scenario-desc">Occupancy stalls, margins compress to 18%, WACC 14%, terminal P/E 16x</div>
+    </div>
+    <div class="scenario-card base">
+      <div class="scenario-label">Base IV (Blended)</div>
+      <div class="scenario-iv">₹450–620</div>
+      <div class="scenario-desc">Revenue CAGR 38%, PAT margin 28%, 13% WACC, terminal P/E 20x, O'Glove haircut applied</div>
+    </div>
+    <div class="scenario-card bull">
+      <div class="scenario-label">Accel / Bull IV</div>
+      <div class="scenario-iv">₹850–1,100</div>
+      <div class="scenario-desc">FY27-28 earnings beat, occupancy 60%+, margin 30%+, multiple expansion to 28x forward</div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adjustment</th></tr></thead>
+      <tbody>
+        <tr><td>DCF (2-Stage)</td><td>₹160</td><td>₹230</td><td>₹380</td><td>None (NEUTRAL)</td></tr>
+        <tr><td>Owner Earnings Cap</td><td>₹260</td><td>₹375</td><td>₹560</td><td>None</td></tr>
+        <tr><td>P/E Earnings Power</td><td>₹396</td><td>₹616</td><td>₹1,064</td><td>None</td></tr>
+        <tr><td>Earnings Yield</td><td>Negative ERP — AVOID at current price</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr style="font-weight:600;background:rgba(61,204,138,0.05)"><td>Blended Base IV (3 methods)</td><td>₹270</td><td>₹407</td><td>₹668</td><td>None (AI NEUTRAL)</td></tr>
+        <tr><td>MoS Entry Price (20% below Base IV)</td><td>—</td><td><strong>₹326</strong></td><td>—</td><td>O'Glove SUSPECT: add 5% MoS</td></tr>
+        <tr style="font-weight:600;background:rgba(232,74,74,0.05)"><td>Adjusted MoS Entry Price</td><td>—</td><td><strong>₹310</strong></td><td>—</td><td>O'Glove haircut applied</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="fail-box">
+    <strong>Current Price ₹639 is ~2x the base MoS entry price (₹310–326).</strong> The stock is pricing in near-perfect execution of the FY27-28 earnings acceleration. At current levels, you are paying an Accel scenario price for what carries SUSPECT earnings quality risk. The market's P/E re-rating from 71x→38x is progress, but the intrinsic value does not support the current price under conservative assumptions.
+  </div>
+
+  <div class="section-title">Relative Valuation Signal</div>
+  <div class="metric-grid">
+    <div class="metric-card warn">
+      <div class="metric-label">Current P/E (TTM)</div>
+      <div class="metric-value">38x</div>
+      <div class="metric-sub">3yr avg: 71x — 47% discount to own history 🟢</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">EV/EBITDA</div>
+      <div class="metric-value">~31x TTM</div>
+      <div class="metric-sub">3yr avg EV/EBITDA: 75x — also steep discount 🟢</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">P/B Ratio</div>
+      <div class="metric-value">~29x</div>
+      <div class="metric-sub">22.5x on standalone. Extremely elevated vs assets.</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">Price vs Base IV</div>
+      <div class="metric-value">+57% premium</div>
+      <div class="metric-sub">₹639 vs ₹407 base IV — significantly overvalued</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <div class="section-title">Four Pillar Grades</div>
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 1 — Economic Moat</div>
+      <div class="pillar-grade">B−</div>
+      <div class="pillar-desc">Founder brand + network + products. Narrow moat with concentration risk. No flywheel.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 2 — Financial Fortress</div>
+      <div class="pillar-grade">C+</div>
+      <div class="pillar-desc">High ROIC &amp; revenue growth but O'Glove SUSPECT, rising debtors, weak FCF conversion.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 3 — Management</div>
+      <div class="pillar-grade">B−</div>
+      <div class="pillar-desc">Founder-led, modest pay, growth-oriented. But stake declining, guidance gaps, key-person risk.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-label">Pillar 4 — Valuation</div>
+      <div class="pillar-grade">D+</div>
+      <div class="pillar-desc">Price ~2x conservative base IV. Negative ERP. Requires near-perfect execution to justify current price.</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-main">⭐⭐⭐ WATCH</div>
+    <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+      <span class="badge badge-cat">Cat C — Healthcare Compounder</span>
+      <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+      <span class="badge" style="background:rgba(61,204,138,0.1);border:1px solid rgba(61,204,138,0.3);color:var(--accent);">Macro TAILWIND</span>
+      <span class="badge" style="background:rgba(232,74,74,0.1);border:1px solid rgba(232,74,74,0.3);color:var(--fail);">O'Glove SUSPECT</span>
+    </div>
+    <div class="verdict-thesis">
+      Jeena Sikho is building something genuinely differentiated — clinical Ayurveda at scale, backed by a decade of compounding growth and an operationally improving Q3 FY26. The economics are exceptional (54% ROIC, 45% EBITDA margins, net cash). But at ₹639, the price implies perfect execution of a highly ambitious bed expansion and occupancy ramp — while earnings quality signals demand caution. The correct posture is patient observation: <strong>initiate only below ₹380 (base MoS zone)</strong> with full sizing possible below ₹310 (O'Glove-adjusted MoS). A correction toward these levels is possible given the 52-week high of ₹2,427.
+    </div>
+    <div class="verdict-quote">"Price is what you pay, value is what you get. The best company in the world is a poor investment if you pay too much." — Warren Buffett</div>
+  </div>
+
+  <div class="section-title">Upgrade to BUY — Conditions Required</div>
+  <div class="upgrade-list">
+    <div class="upgrade-item">
+      <div class="upgrade-num">1</div>
+      <div class="upgrade-text"><strong>Price corrects to ₹380 or below</strong> (base IV MoS entry zone; 20% below blended ₹407 base IV). Begin Tier 1 sizing (40–50%) on O'Glove ACCEPTABLE confirmation. Hard floor: do not buy above ₹450.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">2</div>
+      <div class="upgrade-text"><strong>Debtor days stabilise or decline for 2 consecutive quarters</strong> (current 76 days must return to below 60 days to pass Test 2). Watch Q4 FY26 and Q1 FY27 balance sheets on Screener.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">3</div>
+      <div class="upgrade-text"><strong>FCF conversion ≥70% of net income for 2 consecutive quarters</strong> — resolving the "high non-cash earnings" concern. This requires CFO/PAT to improve materially from current MARGINAL status.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">4</div>
+      <div class="upgrade-text"><strong>Promoter stake stabilises or increases for 2 consecutive quarters</strong> — currently at 63.5% after 3 quarters of decline. Any further reduction without explanation widens the thesis gap.</div>
+    </div>
+    <div class="upgrade-item">
+      <div class="upgrade-num">5</div>
+      <div class="upgrade-text"><strong>Bed occupancy crosses 55%+ and is confirmed in management commentary</strong> — the key operational lever that will validate operating leverage thesis. Q4 FY26 earnings call is the first likely confirmation point.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Series Tracker</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Ticker</th><th>Company</th><th>Cat</th><th>AI</th><th>Verdict</th><th>Base IV</th><th>MoS Entry</th><th>Current</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--accent)">JSLL</td>
+          <td>Jeena Sikho Lifecare</td>
+          <td>C</td>
+          <td>⚪ NEUTRAL</td>
+          <td style="color:var(--accent2)">WATCH ★★★</td>
+          <td style="font-family:var(--mono)">₹407</td>
+          <td style="font-family:var(--mono)">₹310–380</td>
+          <td style="font-family:var(--mono);color:var(--warn)">₹639</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <div class="section-title">A — Price Structure [VERIFIED]</div>
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-label">Current Price</div>
+      <div class="metric-value">₹639</div>
+      <div class="metric-sub">May 15, 2026 close</div>
+    </div>
+    <div class="metric-card fail">
+      <div class="metric-label">52-Week High</div>
+      <div class="metric-value">₹849.50</div>
+      <div class="metric-sub">Price is −25% from 52W high</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">52-Week Low</div>
+      <div class="metric-value">₹376</div>
+      <div class="metric-sub">Price is +70% above 52W low</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="metric-label">1-Year Return</div>
+      <div class="metric-value">+35.75%</div>
+      <div class="metric-sub">Volatile: moves 9.7% per week</div>
+    </div>
+  </div>
+
+  <div class="section-title">B — Moving Average Dashboard [ESTIMATED]</div>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tech-label">20-EMA (Short-term)</div>
+      <div class="tech-value">~₹650</div>
+      <div class="tech-signal neut">Price near 20-EMA — consolidating</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-label">50-DMA</div>
+      <div class="tech-value">~₹680</div>
+      <div class="tech-signal bear">Price below 50-DMA — weak short-term</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-label">100-DMA</div>
+      <div class="tech-value">~₹700</div>
+      <div class="tech-signal bear">Price below 100-DMA — bearish bias</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-label">200-DMA</div>
+      <div class="tech-value">~₹600</div>
+      <div class="tech-signal bull">Price above 200-DMA — long-term uptrend intact</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-label">MA Bias Overall</div>
+      <div class="tech-value">MIXED</div>
+      <div class="tech-signal neut">Above 200-DMA but below 50 &amp; 100-DMA</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-label">Beta (5Y Monthly)</div>
+      <div class="tech-value">1.19</div>
+      <div class="tech-signal warn">High beta — amplifies market moves both ways</div>
+    </div>
+  </div>
+
+  <div class="section-title">D — Momentum Indicators [ESTIMATED]</div>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tech-label">RSI (14-day)</div>
+      <div class="tech-value">~45</div>
+      <div class="tech-signal neut">Approaching neutral; below 40 = primary buy zone</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-label">1-Month Return</div>
+      <div class="tech-value">−6.17%</div>
+      <div class="tech-signal bear">Short-term momentum bearish</div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-label">Volume (Avg 3mo)</div>
+      <div class="tech-value">~3.46 L/day</div>
+      <div class="tech-signal neut">Healthy liquidity for mid-small cap</div>
+    </div>
+  </div>
+
+  <div class="section-title">F — Trade Structure (for Upgrade Conditions Met)</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Parameter</th><th>Tier 1 Entry</th><th>Tier 2 Entry</th><th>Tier 3 Entry</th></tr></thead>
+      <tbody>
+        <tr><td>Entry Price</td><td>₹380 (Base MoS)</td><td>₹330 (O'Glove Adj MoS)</td><td>₹295 (Stress MoS)</td></tr>
+        <tr><td>Stop-Loss</td><td>₹310 (−18.4%)</td><td>₹275 (−16.7%)</td><td>₹250 (−15.3%)</td></tr>
+        <tr><td>Target 1</td><td>₹500 (+31.6%)</td><td>₹450 (+36.4%)</td><td>₹400 (+35.6%)</td></tr>
+        <tr><td>Target 2</td><td>₹620 (+63.2%)</td><td>₹580 (+75.8%)</td><td>₹520 (+76.3%)</td></tr>
+        <tr><td>R:R Ratio</td><td>1:2.7</td><td>1:2.9</td><td>1:3.3</td></tr>
+        <tr><td>Position Size</td><td>40–50% of allocation</td><td>30–35%</td><td>15–25%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">G — Technical Composite Score</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>Score (0–5)</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Price Structure (vs 52W)</td><td>3/5</td><td>25% below high; 70% above low. Midrange.</td></tr>
+        <tr><td>MA Trend (above 200-DMA)</td><td>3/5</td><td>Above 200-DMA but below 50/100-DMA</td></tr>
+        <tr><td>Volume Profile</td><td>3/5</td><td>Adequate liquidity, no unusual events</td></tr>
+        <tr><td>Momentum (RSI/MACD)</td><td>2/5</td><td>Short-term momentum weak; RSI ~45</td></tr>
+        <tr><td>Chart Pattern</td><td>2/5</td><td>Correcting from highs; no clear base yet</td></tr>
+        <tr><td>Risk/Reward at Current Price</td><td>1/5</td><td>Negative ERP; price 2x above base IV</td></tr>
+        <tr style="font-weight:600;background:rgba(61,204,138,0.05)"><td>COMPOSITE SCORE</td><td>14/30 = 47%</td><td>Neutral-to-negative; wait for better entry</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <div class="section-title">A — Promoter Trend [VERIFIED]</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Quarter</th><th>Promoter %</th><th>Pledged %</th><th>Change</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Apr 2022 (IPO)</td><td>65.9%</td><td>0%</td><td>—</td><td>—</td></tr>
+        <tr><td>Sep 2022</td><td>65.9%</td><td>0%</td><td>—</td><td>Stable ✓</td></tr>
+        <tr><td>Mar 2023</td><td>66.2%</td><td>0%</td><td>+0.3%</td><td>Buying ✓</td></tr>
+        <tr><td>Sep 2023</td><td>67.9%</td><td>0%</td><td>+1.7%</td><td>Buying ✓</td></tr>
+        <tr><td>Mar 2024</td><td>67.9%</td><td>0%</td><td>—</td><td>Stable ✓</td></tr>
+        <tr><td>Sep 2024</td><td style="color:var(--warn)">65.8%</td><td>0%</td><td>−2.1%</td><td style="color:var(--warn)">Declining ⚠</td></tr>
+        <tr><td>Mar 2025</td><td style="color:var(--fail)">63.5%</td><td>0%</td><td>−2.3%</td><td style="color:var(--fail)">Declining ⚠</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="warn-box">No pledged shares (positive), but unexplained promoter stake reduction of 4.4 percentage points over 2 quarters is a significant yellow flag. Investigation required — check BSE filings for Form SH-12 (promoter transactions).</div>
+
+  <div class="section-title">B — FII &amp; DII Trend [VERIFIED]</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Quarter</th><th>FII %</th><th>DII %</th><th>Retail %</th><th>FII Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Mar 2023</td><td>0.0%</td><td>0.0%</td><td>33.8%</td><td>No institutional</td></tr>
+        <tr><td>Sep 2023</td><td>2.0%</td><td>0.0%</td><td>30.1%</td><td>FII entering ✓</td></tr>
+        <tr><td>Mar 2024</td><td>0.3%</td><td>0.0%</td><td>31.8%</td><td>FII retreated ⚠</td></tr>
+        <tr><td>Sep 2024</td><td>4.1%</td><td>0.1%</td><td>30.0%</td><td>FII building ✓</td></tr>
+        <tr><td>Mar 2025</td><td style="color:var(--accent)">6.0%</td><td>0.2%</td><td>30.4%</td><td style="color:var(--accent)">FII accumulating ✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-box">FII rising from 0% to 6% is a significant positive signal. DII at only 0.2% — very low mutual fund penetration. As JSLL migrates from Nifty Microcap 250 to potential smallcap/midcap indices, DII/MF inflows could provide a structural re-rating catalyst.</div>
+
+  <div class="section-title">D — Ownership Composition (Mar 2025)</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Promoters</div><div class="metric-value">63.5%</div><div class="metric-sub">7.90 Cr shares; 0% pledged</div></div>
+    <div class="metric-card"><div class="metric-label">FII/FPI</div><div class="metric-value">6.0%</div><div class="metric-sub">Rapid rise from near-zero; institutional interest building</div></div>
+    <div class="metric-card neutral"><div class="metric-label">DII / MF</div><div class="metric-value">0.2%</div><div class="metric-sub">Very low; potential upside catalyst as MFs discover</div></div>
+    <div class="metric-card"><div class="metric-label">Public / Retail</div><div class="metric-value">30.3%</div><div class="metric-sub">High retail — stock volatile &amp; sentiment-driven</div></div>
+  </div>
+
+  <div class="section-title">E — Ownership Scores</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px;">OWNERSHIP MOMENTUM SCORE</div>
+      <div style="font-size:28px;font-family:var(--serif);color:var(--accent);margin-bottom:4px;">55/100</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px;">FII rising (+ve) offset by promoter declining (−ve)</div>
+    </div>
+    <div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-bottom:6px;">SHAREHOLDING RISK SCORE</div>
+      <div style="font-size:28px;font-family:var(--serif);color:var(--accent2);margin-bottom:4px;">42/100</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:42%;background:var(--accent2)"></div></div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px;">High retail % (volatility risk); low DII cushion; promoter declining</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <div class="section-title">A — AI Classification Dashboard</div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 18px;min-width:140px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Category</div>
+      <div style="font-size:13px;font-weight:600;color:var(--accent)">C — Healthcare Compounder</div>
+    </div>
+    <div style="background:var(--card);border:1px solid rgba(124,169,192,0.3);border-radius:8px;padding:14px 18px;min-width:140px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">AI Overlay</div>
+      <div style="font-size:13px;font-weight:600;color:var(--neutral)">⚪ AI NEUTRAL</div>
+    </div>
+    <div style="background:var(--card);border:1px solid rgba(124,169,192,0.3);border-radius:8px;padding:14px 18px;min-width:140px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Flywheel</div>
+      <div style="font-size:13px;font-weight:600;color:var(--neutral)">COSMETIC</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 18px;min-width:140px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">AI Phase</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text)">Phase 1–2 (Adoption)</div>
+    </div>
+  </div>
+
+  <div class="section-title">B — AI Deployment Analysis</div>
+  <div class="info-box">
+    <strong>Salesforce Partnership (Sep 2025):</strong> JSLL integrated Salesforce Service Cloud and Marketing Cloud via partner Quadrafort Technologies. Results:<br>
+    • 50% improvement in call center response times [VERIFIED — earnings call]<br>
+    • 1,000+ monthly VOPD (Virtual Outpatient Department) sessions [VERIFIED]<br>
+    • AI-driven health marketing campaigns reaching millions<br>
+    • Plans for Agentforce integration for service request management<br>
+    • Predictive analytics for treatment plan optimisation (planned, not live)
+  </div>
+  <div class="warn-box">
+    <strong>AI Assessment: Operational Efficiency Only.</strong> Salesforce is a third-party AI CRM platform. There is no proprietary AI model, no patient outcome data flywheel, and no evidence of clinical AI differentiation. The AI benefits are real but <em>replicable</em> — any competitor can deploy the same Salesforce tools. This is AI NEUTRAL, not WIDENER.
+  </div>
+
+  <div class="section-title">C — AI Value Chain Position</div>
+  <div class="value-chain">
+    <div class="vc-level">
+      <div class="vc-num">Level 1</div>
+      <div class="vc-name">Infrastructure</div>
+      <div class="vc-eg">NVIDIA, AWS</div>
+    </div>
+    <div class="vc-level">
+      <div class="vc-num">Level 2</div>
+      <div class="vc-name">Foundation Models</div>
+      <div class="vc-eg">OpenAI, Google</div>
+    </div>
+    <div class="vc-level">
+      <div class="vc-num">Level 3</div>
+      <div class="vc-name">Platforms / Tools</div>
+      <div class="vc-eg">Salesforce, MS Copilot</div>
+    </div>
+    <div class="vc-level">
+      <div class="vc-num">Level 4</div>
+      <div class="vc-name">Vertical Apps</div>
+      <div class="vc-eg">AI Health SaaS</div>
+    </div>
+    <div class="vc-level highlight">
+      <div class="vc-num">Level 5</div>
+      <div class="vc-name">AI-Enabled Incumbent</div>
+      <div class="vc-eg">JSLL — here</div>
+      <div class="vc-tag">JSLL position</div>
+    </div>
+  </div>
+  <div class="info-box">JSLL sits at Level 5 — an AI-enabled incumbent using third-party AI platforms to improve operational efficiency. Investment implication: No AI moat premium. Horizon 5–7 years (based on healthcare service category). Risk: Level 3 platform dependency — if Salesforce changes pricing, JSLL's AI advantage is affected.</div>
+
+  <div class="section-title">D — India AI Opportunity Assessment</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Structural Advantage</th><th>JSLL Relevance</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td>India Stack (UPI/Aadhaar data access)</td><td>Marginal — patient identity verification</td><td style="color:var(--neutral)">LIMITED</td></tr>
+        <tr><td>Vernacular AI Benefit</td><td>HIGH — rural/tier 2/3 patient base; non-English VOPD critical</td><td style="color:var(--accent)">YES — Strong</td></tr>
+        <tr><td>ONDC/OCEN/DigiLocker Integration</td><td>Low — healthcare financing not yet integrated</td><td style="color:var(--text3)">MINIMAL</td></tr>
+        <tr><td>AI Talent Cost Arbitrage</td><td>Not relevant — JSLL is not building AI tech</td><td style="color:var(--text3)">N/A</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">F — AI Opportunity Score</div>
+  <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:20px;">
+    <div class="ai-score-ring">
+      <div class="ai-score-inner">
+        <div class="ai-score-num">42</div>
+        <div class="ai-score-label">/100</div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:200px;">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Score Breakdown</div>
+      <div class="oe-row"><span>Data Flywheel</span><span style="font-family:var(--mono)">2/20</span></div>
+      <div class="oe-row"><span>Adoption Phase Timing</span><span style="font-family:var(--mono)">10/20</span></div>
+      <div class="oe-row"><span>Value Chain Position (L5)</span><span style="font-family:var(--mono)">12/20</span></div>
+      <div class="oe-row"><span>India Structural Advantage</span><span style="font-family:var(--mono)">10/20</span></div>
+      <div class="oe-row"><span>AI Threat Resistance</span><span style="font-family:var(--mono)">8/20</span></div>
+      <div class="oe-row" style="font-weight:600;"><span>Portfolio Role: MONITOR</span><span style="font-family:var(--mono)">42/100</span></div>
+    </div>
+  </div>
+  <div class="info-box">
+    <strong>Portfolio Role: MONITOR (40–60 range)</strong><br>
+    Investment Horizon: 5–7 years (Level 5 AI-enabled incumbent, healthcare sector). JSLL's AI story is operational improvement, not moat creation. The vernacular AI opportunity (non-English VOPD) is the most interesting structural advantage — watch for proprietary AI clinical data initiatives in future quarters.
+  </div>
+</div>
+
+<footer>
+  <strong>SEBI Disclaimer:</strong> This report is prepared solely for informational and educational purposes under the Buffett Quality-Value Series research framework. It does not constitute investment advice, a solicitation, or a recommendation to buy or sell any securities. Equity investments are subject to market risks. Past performance is not indicative of future results. All financial data is sourced from publicly available information and may carry estimation error. Please conduct independent due diligence or consult a SEBI-registered investment advisor before making investment decisions. SEBI Registration No. of analyst: N/A — this is a personal research framework.<br><br>
+  <strong>Data Notice:</strong> Price data as of May 15, 2026. Financial data from Screener.in, StockAnalysis.com, Simply Wall St, Trendlyne, Tijori Finance, Tickertape, and company filings. All forward estimates are the author's projections. [VERIFIED] data confirmed from live search; [ESTIMATED] data cross-referenced; [UNVERIFIED] from limited sources.<br><br>
+  Fonts: Playfair Display, DM Mono, DM Sans via Google Fonts. Report generated: May 18, 2026.
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

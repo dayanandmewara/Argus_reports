@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CP Plus (CPPLUS) — Buffett Quality-Value Report v5.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0F16;
+    --panel: #121B27;
+    --card: #182334;
+    --border: #253448;
+    --amber: #F0A500;
+    --amber-dim: #B87800;
+    --green: #3DD68C;
+    --red: #E05C5C;
+    --teal: #4ECDC4;
+    --blue: #5B9BD5;
+    --text: #D8E3F0;
+    --muted: #7A9BB5;
+    --white: #F0F4FA;
+    --verified: #3DD68C;
+    --estimated: #F0A500;
+    --unverified: #E05C5C;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0A0F16 0%, #0D1E2E 40%, #0F2338 70%, #0A1620 100%);
+    border-bottom: 2px solid var(--amber);
+    padding: 32px 40px 24px;
+    position: relative;
+    overflow: hidden;
+    max-height: 220px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -40px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(240,165,0,0.07) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; }
+  .hero-left h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 44px;
+    letter-spacing: 3px;
+    color: var(--white);
+    line-height: 1;
+  }
+  .hero-left h1 span { color: var(--amber); }
+  .hero-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .pill-cat { background: rgba(91,155,213,0.15); border: 1px solid var(--blue); color: var(--blue); }
+  .pill-ai { background: rgba(61,214,140,0.12); border: 1px solid var(--green); color: var(--green); }
+  .pill-macro { background: rgba(240,165,0,0.12); border: 1px solid var(--amber); color: var(--amber); }
+  .pill-warn { background: rgba(224,92,92,0.12); border: 1px solid var(--red); color: var(--red); }
+
+  .hero-right { text-align: right; }
+  .verdict-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    padding: 8px 20px;
+    border: 2px solid var(--amber);
+    color: var(--amber);
+    background: rgba(240,165,0,0.08);
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .price-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .price-tag span { color: var(--white); font-weight: 700; }
+
+  /* DATA CONFIDENCE PILLS */
+  .v { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 1px 5px; border-radius: 2px; font-weight: 700; display: inline-block; vertical-align: middle; margin-left: 3px; }
+  .v-v { background: rgba(61,214,140,0.15); color: var(--verified); border: 1px solid var(--verified); }
+  .v-e { background: rgba(240,165,0,0.12); color: var(--estimated); border: 1px solid var(--estimated); }
+  .v-u { background: rgba(224,92,92,0.12); color: var(--unverified); border: 1px solid var(--unverified); }
+
+  /* TAB BAR */
+  #tab-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #0D1520;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 20px;
+    scrollbar-width: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  #tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 12px 14px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn:hover { color: var(--white); }
+  .tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 32px 40px; max-width: 1200px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* SECTION */
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--amber);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+  }
+
+  /* GRID */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px;
+  }
+  .card-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .card-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+  .card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .card-border-green { border-left: 3px solid var(--green); }
+  .card-border-red { border-left: 3px solid var(--red); }
+  .card-border-amber { border-left: 3px solid var(--amber); }
+  .card-border-teal { border-left: 3px solid var(--teal); }
+  .card-border-blue { border-left: 3px solid var(--blue); }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--amber);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+  }
+  .data-table td { padding: 9px 12px; border-bottom: 1px solid rgba(37,52,72,0.5); font-size: 13px; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .data-table .num { font-family: 'JetBrains Mono', monospace; text-align: right; }
+  .data-table .pos { color: var(--green); }
+  .data-table .neg { color: var(--red); }
+  .data-table .hl { color: var(--amber); font-weight: 600; }
+
+  /* PASS/FAIL badges */
+  .pass { background: rgba(61,214,140,0.12); color: var(--green); border: 1px solid rgba(61,214,140,0.3); padding: 2px 8px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; }
+  .marginal { background: rgba(240,165,0,0.1); color: var(--amber); border: 1px solid rgba(240,165,0,0.3); padding: 2px 8px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; }
+  .fail { background: rgba(224,92,92,0.1); color: var(--red); border: 1px solid rgba(224,92,92,0.3); padding: 2px 8px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; }
+
+  /* PILLAR GRADES */
+  .pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .pillar-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+  }
+  .pillar-grade {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    color: var(--amber);
+  }
+  .pillar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .pillar-name {
+    font-size: 12px;
+    color: var(--text);
+    margin-top: 4px;
+  }
+
+  /* VERDICT BOX */
+  .verdict-box {
+    background: linear-gradient(135deg, #0D1520 0%, #152030 100%);
+    border: 2px solid var(--amber);
+    border-radius: 4px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .verdict-box::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(240,165,0,0.08) 0%, transparent 70%);
+  }
+  .verdict-main {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--amber);
+    letter-spacing: 3px;
+    line-height: 1;
+  }
+  .verdict-sub { font-size: 14px; color: var(--text); margin-top: 12px; line-height: 1.8; }
+  .verdict-quote {
+    font-family: 'Lora', Georgia, serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 13px;
+    border-left: 3px solid var(--amber);
+    padding-left: 16px;
+    margin-top: 20px;
+  }
+
+  /* STARS */
+  .stars { color: var(--amber); font-size: 20px; letter-spacing: 2px; }
+
+  /* MOAT STARS */
+  .moat-star { color: var(--amber); }
+  .moat-star-empty { color: var(--border); }
+
+  /* MACRO BADGE */
+  .macro-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .badge-green { background: rgba(61,214,140,0.12); color: var(--green); border: 1px solid rgba(61,214,140,0.3); }
+  .badge-amber { background: rgba(240,165,0,0.10); color: var(--amber); border: 1px solid rgba(240,165,0,0.3); }
+  .badge-red { background: rgba(224,92,92,0.10); color: var(--red); border: 1px solid rgba(224,92,92,0.3); }
+  .badge-teal { background: rgba(78,205,196,0.10); color: var(--teal); border: 1px solid rgba(78,205,196,0.3); }
+  .badge-blue { background: rgba(91,155,213,0.10); color: var(--blue); border: 1px solid rgba(91,155,213,0.3); }
+  .badge-grey { background: rgba(122,155,181,0.10); color: var(--muted); border: 1px solid rgba(122,155,181,0.3); }
+
+  /* FLYWHEEL BOX */
+  .flywheel-box {
+    background: var(--card);
+    border: 2px solid var(--teal);
+    border-radius: 4px;
+    padding: 24px;
+  }
+  .flywheel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--teal);
+    letter-spacing: 2px;
+  }
+
+  /* OE BOX */
+  .oe-box {
+    background: linear-gradient(135deg, #101C2A 0%, #162535 100%);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--amber);
+    border-radius: 4px;
+    padding: 20px;
+  }
+  .oe-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(37,52,72,0.4); font-size: 13px; }
+  .oe-total { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--amber); }
+
+  /* UPGRADE CONDITIONS */
+  .condition { 
+    display: flex; 
+    align-items: flex-start; 
+    gap: 12px; 
+    padding: 12px 16px; 
+    background: var(--card); 
+    border: 1px solid var(--border); 
+    border-radius: 4px; 
+    margin-bottom: 10px; 
+  }
+  .cond-num {
+    background: var(--amber);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .cond-text { font-size: 13px; color: var(--text); }
+
+  /* GAUGE */
+  .gauge-wrap { display: flex; align-items: center; gap: 16px; }
+  .gauge-bar-bg { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .gauge-bar-fill { height: 100%; background: linear-gradient(90deg, var(--green) 0%, var(--amber) 60%, var(--red) 100%); border-radius: 4px; }
+
+  /* MA CARDS */
+  .ma-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px;
+    text-align: center;
+  }
+  .ma-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); text-transform: uppercase; }
+  .ma-val { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--white); }
+  .ma-status { font-size: 11px; margin-top: 2px; }
+
+  /* HIGHLIGHT */
+  .hl-amber { color: var(--amber); font-weight: 600; }
+  .hl-green { color: var(--green); }
+  .hl-red { color: var(--red); }
+  .hl-teal { color: var(--teal); }
+  .hl-blue { color: var(--blue); }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* ALERT BOX */
+  .alert-box {
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .alert-amber { background: rgba(240,165,0,0.07); border: 1px solid rgba(240,165,0,0.3); color: var(--text); }
+  .alert-green { background: rgba(61,214,140,0.07); border: 1px solid rgba(61,214,140,0.3); color: var(--text); }
+  .alert-red { background: rgba(224,92,92,0.07); border: 1px solid rgba(224,92,92,0.3); color: var(--text); }
+
+  /* FOOTER */
+  .footer {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    padding: 20px 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* SERIES TABLE */
+  .series-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .series-table th { font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; color: var(--amber); padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+  .series-table td { padding: 8px 10px; border-bottom: 1px solid rgba(37,52,72,0.4); }
+  .series-table tr.active-row { background: rgba(240,165,0,0.05); }
+
+  /* SCORE CIRCLE */
+  .score-circle {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    border: 3px solid var(--amber);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--amber);
+    flex-shrink: 0;
+  }
+  .score-circle small { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  /* MOAT SOURCE CARD */
+  .moat-source {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .moat-source-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .moat-name { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--white); }
+  .moat-rating { font-size: 16px; }
+
+  /* VALUE CHAIN */
+  .vchain { display: flex; gap: 0; margin: 16px 0; }
+  .vchain-level {
+    flex: 1;
+    padding: 14px 8px;
+    border: 1px solid var(--border);
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--card);
+    cursor: default;
+    transition: background 0.2s;
+  }
+  .vchain-level:not(:first-child) { border-left: none; }
+  .vchain-level.active {
+    background: rgba(240,165,0,0.12);
+    color: var(--amber);
+    border-color: var(--amber);
+    position: relative;
+  }
+  .vchain-level .lv-num { font-size: 18px; color: var(--white); font-family: 'Bebas Neue', sans-serif; display: block; }
+
+  /* RSI GAUGE */
+  .rsi-gauge { position: relative; height: 24px; background: linear-gradient(90deg, var(--red) 0%, var(--amber) 30%, var(--green) 50%, var(--amber) 70%, var(--red) 100%); border-radius: 12px; margin: 8px 0; }
+  .rsi-marker { position: absolute; top: -4px; width: 8px; height: 32px; background: var(--white); border-radius: 4px; transform: translateX(-50%); }
+
+  /* YOC TABLE */
+  .yoc-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .yoc-cell { flex: 1; background: var(--card); border: 1px solid var(--border); padding: 8px; text-align: center; border-radius: 2px; }
+  .yoc-yr { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); }
+  .yoc-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--green); }
+
+  /* RESPONSIVE */
+  @media (max-width: 680px) {
+    .hero { padding: 20px; max-height: none; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-right { text-align: left; }
+    .tab-content { padding: 20px; }
+    .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+    .pillar-grid { grid-template-columns: 1fr 1fr; }
+    .vchain { flex-direction: column; }
+    .vchain-level:not(:first-child) { border-left: 1px solid var(--border); border-top: none; }
+  }
+  @media (max-width: 600px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .pillar-grid { grid-template-columns: 1fr; }
+    .hero-left h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <h1>CP <span>PLUS</span></h1>
+      <div class="hero-sub">NSE: CPPLUS &nbsp;|&nbsp; ADITYA INFOTECH LIMITED &nbsp;|&nbsp; BSE: 544466 &nbsp;|&nbsp; BUFFETT QUALITY-VALUE v5.0</div>
+      <div class="hero-pills">
+        <span class="pill pill-cat">CATEGORY B · HIGH-GROWTH COMPOUNDER</span>
+        <span class="pill pill-ai">🟢 AI WIDENER</span>
+        <span class="pill pill-macro">MACRO: TAILWIND</span>
+        <span class="pill pill-macro">SECTOR: 19–20% CAGR</span>
+        <span class="pill pill-warn">FCF: IMPROVING</span>
+        <span class="pill pill-cat">IPO: AUG 2025</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="verdict-badge">WATCH ★★★★</div>
+      <div class="price-tag">CMP <span>~₹1,904</span> &nbsp;|&nbsp; 52W Range: <span>₹1,015 – ₹2,100</span></div>
+      <div class="price-tag">Market Cap <span>~₹22,316 Cr</span> &nbsp;|&nbsp; Base IV <span>₹1,620</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">00 OVERVIEW</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">01 MACRO</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">02 FINANCIALS</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">03 MOAT</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">04 MGMT</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">05 VALUATION</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">06 VERDICT</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">07 TECHNICAL</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">08 SHAREHOLDING</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">09 AI INTEL</button>
+</div>
+
+<!-- ═══════════════════════════════════════════ TAB 0: OVERVIEW ═══ -->
+<div id="tab0" class="tab-content active">
+
+  <div class="section">
+    <div class="section-title">Company Overview</div>
+    <div class="grid-2" style="gap:20px">
+      <div>
+        <p style="font-size:14px;line-height:1.9;color:var(--text)">
+          Aditya Infotech Limited (AIL) is India's largest provider of video security and surveillance products under its flagship brand <span class="hl-amber">CP Plus</span>. With a <span class="hl-amber">20.8% market share</span> by revenue in FY2025, it dominates domestic surveillance — beating global giants like Hikvision and Dahua, particularly in government procurement where its <span class="hl-amber">STQC certification leadership</span> creates a structural moat against foreign competition. <span class="v v-v">VERIFIED</span>
+        </p>
+        <p style="font-size:14px;line-height:1.9;color:var(--text);margin-top:12px">
+          Listed in August 2025 via a ₹1,300Cr IPO (₹500Cr fresh + ₹800Cr OFS), AIL used IPO proceeds to slash debt from ₹457Cr to ~₹128Cr. The Kadapa (Andhra Pradesh) integrated manufacturing facility — producing <span class="hl-amber">2.5 million units/month</span> — gives CP Plus a decisive "Make in India" edge in an era of Chinese brand restrictions. Strategic partnerships with <span class="hl-amber">L&T Semiconductor</span> and <span class="hl-amber">Qualcomm</span> for AI-powered Vision SoCs deepen the technology moat. <span class="v v-v">VERIFIED</span>
+        </p>
+      </div>
+      <div>
+        <div class="card card-border-amber" style="margin-bottom:14px">
+          <div class="card-header">Business Segments</div>
+          <table class="data-table" style="margin-top:4px">
+            <tr><td>🔷 IP Cameras (Smart/AI-enabled)</td><td class="num hl-amber">Fastest Growing</td></tr>
+            <tr><td>🔷 Analog / HD Cameras</td><td class="num hl-amber">Volume Leader</td></tr>
+            <tr><td>🔷 NVR/DVR Systems</td><td class="num">Bundled</td></tr>
+            <tr><td>🔷 Access Control & Alarms</td><td class="num">Expanding</td></tr>
+            <tr><td>🔷 Security-as-a-Service (SaaS)</td><td class="num hl-green">Emerging Lever</td></tr>
+          </table>
+        </div>
+        <div class="alert-amber">
+          <strong>⚡ STQC Catalyst (April 9, 2026):</strong> Mandatory STQC certification effective April 9, 2026 for all government CCTV procurement. CP Plus has India's largest STQC-certified product portfolio. Foreign competitors (Hikvision, Dahua) effectively excluded from public tenders — this is the single most powerful near-term moat catalyst.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Why This Stock Is In The Series</div>
+    <div class="grid-3" style="gap:14px">
+      <div class="card card-border-amber">
+        <div class="card-header">🏭 Manufacturing Moat</div>
+        <p style="font-size:13px">Largest integrated surveillance manufacturing plant in India. 2.5M units/month capacity. PLI + STQC compliance gives pricing power over imported alternatives.</p>
+      </div>
+      <div class="card card-border-teal">
+        <div class="card-header">🤖 AI Camera Transition</div>
+        <p style="font-size:13px">Launched CP Plus AI — edge AI video analytics. L&T Semiconductor partnership for 9M AI SoC-powered cameras over 3 years. Qualcomm collaboration for video intelligence. AI is widening the moat.</p>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">📈 Sector Tailwind</div>
+        <p style="font-size:13px">India CCTV market: $4.8B in 2025, growing at ~20% CAGR to $14.25B by 2031. Smart Cities, 100+ CCTV cities, rising safety awareness = secular demand growth. <span class="v v-v">VERIFIED</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Key Data Snapshot</div>
+    <div class="grid-4" style="gap:12px">
+      <div class="card card-border-amber">
+        <div class="card-header">Current Price</div>
+        <div class="card-val">₹1,904</div>
+        <div class="card-sub">Apr 9, 2026 <span class="v v-e">EST</span></div>
+      </div>
+      <div class="card card-border-blue">
+        <div class="card-header">Market Cap</div>
+        <div class="card-val">₹22,316Cr</div>
+        <div class="card-sub">~$2.7Bn USD</div>
+      </div>
+      <div class="card card-border-red">
+        <div class="card-header">TTM P/E</div>
+        <div class="card-val">88x</div>
+        <div class="card-sub">Core P/E ~114x (ex one-off)</div>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">Revenue CAGR 3yr</div>
+        <div class="card-val">24%</div>
+        <div class="card-sub">FY22–FY25 <span class="v v-v">VERIFIED</span></div>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">EBITDA Margin</div>
+        <div class="card-val">12%</div>
+        <div class="card-sub">Q3FY26 (expanding from 8%)</div>
+      </div>
+      <div class="card card-border-teal">
+        <div class="card-header">ROCE</div>
+        <div class="card-val">19.5%</div>
+        <div class="card-sub">TTM <span class="v v-v">VERIFIED</span></div>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">Net Debt</div>
+        <div class="card-val">~₹128Cr</div>
+        <div class="card-sub">Post-IPO (Sep 2025)</div>
+      </div>
+      <div class="card card-border-blue">
+        <div class="card-header">Promoter Holding</div>
+        <div class="card-val">76.9%</div>
+        <div class="card-sub">Mar 2026 <span class="v v-v">VERIFIED</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Framework Adaptation Note</div>
+    <div class="alert-amber">
+      <strong>CATEGORY B — HIGH-GROWTH COMPOUNDER:</strong> Revenue CAGR >20%, expanding EBITDA margins, large underpenetrated market. This is NOT Category F because: (1) gross margins are hardware-level (~35-40% gross, ~8-12% EBITDA) not software-level; (2) AI is a moat widener not the core business. Standard 5-method valuation applies. STQC + AI overlay justifies premium vs peers. FCF conversion is the critical watch metric — currently weak due to heavy CapEx phase. IPO listing in Aug 2025 means limited listed price history; use pre-IPO financials from DRHP for longer-term trend.
+    </div>
+  </div>
+
+</div><!-- end tab0 -->
+
+<!-- ═══════════════════════════════════════════ TAB 1: MACRO ═══ -->
+<div id="tab1" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Layer 1 — Macro Anchor (India)</div>
+    <div class="grid-4" style="gap:12px;margin-bottom:20px">
+      <div class="card card-border-green">
+        <div class="card-header">India Real GDP FY26E</div>
+        <div class="card-val">6.8–7.3%</div>
+        <div class="card-sub">RBI revised up (Oct 2025) <span class="v v-v">VERIFIED</span></div>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">India CPI FY26E</div>
+        <div class="card-val">2.6%</div>
+        <div class="card-sub">Multi-year low. RBI target 4% <span class="v v-v">VERIFIED</span></div>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">India Nominal GDP</div>
+        <div class="card-val">~9.4–10%</div>
+        <div class="card-sub">= Real 7% + CPI 2.6–3%. Terminal ceiling.</div>
+      </div>
+      <div class="card card-border-blue">
+        <div class="card-header">10-yr G-Sec Yield</div>
+        <div class="card-val">~6.9–7.0%</div>
+        <div class="card-sub">Pressured by crude/geopolitics <span class="v v-e">EST</span></div>
+      </div>
+      <div class="card card-border-blue">
+        <div class="card-header">Nifty 50 P/E</div>
+        <div class="card-val">21.3x</div>
+        <div class="card-sub">Apr 15, 2026 — fairly valued <span class="v v-v">VERIFIED</span></div>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">Repo Rate</div>
+        <div class="card-val">5.25–5.5%</div>
+        <div class="card-sub">Easing cycle. Demand supportive.</div>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">Brent Crude</div>
+        <div class="card-val">~$95–102</div>
+        <div class="card-sub">US-Iran tensions. Input cost risk.</div>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">Earnings Yield Gap</div>
+        <div class="card-val">Negative</div>
+        <div class="card-sub">G-Sec 6.9% &gt; Nifty EY 4.7%. Cautionary signal.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">Macro Cycle Status Dashboard — 6 Dimensions</div>
+      <table class="data-table">
+        <thead><tr><th>Dimension</th><th>Current Status</th><th>Impact on CPPLUS</th><th>Direction</th></tr></thead>
+        <tbody>
+          <tr><td>🌾 Rural Income Cycle</td><td><span class="badge-green">RECOVERY</span></td><td>Above-normal monsoon FY26; MSP hikes; rural CCTV demand expanding</td><td class="hl-green">+1 to +2%</td></tr>
+          <tr><td>🏙️ Urban Consumption</td><td><span class="badge-green">BOOM</span></td><td>Urban safety awareness, housing construction, commercial CCTV upgrades</td><td class="hl-green">+2 to +3%</td></tr>
+          <tr><td>⚡ Input Cost Cycle</td><td><span class="badge-amber">STABLE</span></td><td>Component costs stabilising; crude & semiconductor prices moderate. Margin support.</td><td class="hl-green">+1 to +2%</td></tr>
+          <tr><td>🏦 Interest Rate (RBI)</td><td><span class="badge-green">EASING</span></td><td>Lower EMIs support housing/commercial expansion → more CCTV orders. Debt cost falling.</td><td class="hl-green">Positive</td></tr>
+          <tr><td>🏗️ Govt Capex Cycle</td><td><span class="badge-green">STRONG</span></td><td>Smart Cities Mission, Safe City programs, airport/metro expansion = direct demand for CP Plus</td><td class="hl-green">+3 to +5%</td></tr>
+          <tr><td>🤖 AI Adoption Cycle</td><td><span class="badge-teal">ACCELERATING</span></td><td>AI surveillance market in Phase 3. STQC mandate creates regulatory moat. Edge AI demand rising.</td><td class="hl-teal">Structural tailwind</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert-green">
+      <strong>MACRO COMPOSITE FOR CPPLUS: STRONG TAILWIND</strong> — 5 of 6 macro dimensions are supportive. The only risk is crude oil-driven input cost pressure if Iran tensions persist. India nominal GDP ~9.5% is the terminal ceiling for revenue growth.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+    <div class="card">
+      <div class="card-header">India Surveillance / CCTV Market — Sector Parameters</div>
+      <table class="data-table">
+        <thead><tr><th>Source / Report</th><th>Market Size 2025</th><th>Market Size 2031E</th><th>CAGR</th></tr></thead>
+        <tbody>
+          <tr><td>Mordor Intelligence (CCTV) <span class="v v-v">VERIFIED</span></td><td>$4.8Bn</td><td>$14.25Bn (2031)</td><td class="num hl-amber">19.9%</td></tr>
+          <tr><td>Mordor Intelligence (IP Cameras) <span class="v v-v">VERIFIED</span></td><td>$2.17Bn</td><td>$4.19Bn (2030)</td><td class="num hl-amber">14.1%</td></tr>
+          <tr><td>Persistence Market Research <span class="v v-e">EST</span></td><td>$2.4Bn</td><td>$8.2Bn (2033)</td><td class="num hl-amber">19.1%</td></tr>
+          <tr><td>Market Research Future <span class="v v-e">EST</span></td><td>$4.4Bn</td><td>$7.12Bn (2030)</td><td class="num hl-amber">10.1%</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;margin-top:12px;color:var(--muted)">Best-estimate sector CAGR: <span class="hl-amber">18–20% for 2026–2031</span>. Upper bound driven by AI cameras, VSaaS, Smart Cities. Lower bound if Chinese brands re-enter after STQC relaxation.</p>
+    </div>
+
+    <div style="margin-top:16px">
+      <table class="data-table" style="background:var(--card);border-radius:4px">
+        <thead><tr><th>Scenario</th><th>India GDP</th><th>Sector Base</th><th>Sector Growth</th><th>Key Risk</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge-red">STRESS</span></td><td>5.5%</td><td>12–15%</td><td class="hl-amber">12–15%</td><td>Chinese brands return; PLI delays</td></tr>
+          <tr><td><span class="badge-amber">BASE</span></td><td>6.8–7%</td><td>19–20%</td><td class="hl-green">18–20%</td><td>Input cost pressure; margin dilution</td></tr>
+          <tr><td><span class="badge-green">ACCEL</span></td><td>8%+</td><td>22–25%</td><td class="hl-green">22–25%</td><td>Smart City saturation in 2-3 yrs</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="alert-amber" style="margin-top:12px">
+      <strong>AI Sector Impact:</strong> AI is <em>accelerating</em> the sector's base growth rate by approximately +3 to +5 percentage points over the next 5 years. AI-enabled cameras command 30–50% price premium over standard cameras, expanding revenue per unit significantly.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 3 — Company Alpha Over Sector</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Mechanism</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr></thead>
+      <tbody>
+        <tr><td>Market Share Gain</td><td><span class="badge-green">ACTIVE</span></td><td>STQC mandate excludes Chinese; CP Plus → from 20.8% to 30%+ govt share</td><td class="num hl-green">+3 to +5%</td><td class="num">+1 to +2%</td></tr>
+        <tr><td>Premium Mix Shift</td><td><span class="badge-amber">POTENTIAL</span></td><td>IP / AI cameras growing faster; avg realisation ↑ 20-30% vs analog</td><td class="num hl-amber">+2 to +3%</td><td class="num hl-amber">+3 to +4%</td></tr>
+        <tr><td>Category Expansion</td><td><span class="badge-amber">ACTIVE</span></td><td>Access control, video door phones, fire alarms, VSaaS cloud layer</td><td class="num">+1 to +2%</td><td class="num">+2 to +3%</td></tr>
+        <tr><td>Geographic Expansion</td><td><span class="badge-amber">EARLY</span></td><td>Taiwan subsidiary (Sep 2025) for exports; SAARC + Middle East push</td><td class="num">+0.5 to +1%</td><td class="num">+2 to +4%</td></tr>
+        <tr><td>Pricing Power</td><td><span class="badge-amber">MODERATE</span></td><td>STQC + brand premium in govt tenders; input cost pass-through ability</td><td class="num">+1 to +1.5%</td><td class="num">+1 to +2%</td></tr>
+        <tr><td>🤖 AI Alpha (6a+6b+6c)</td><td><span class="badge-teal">FORMING</span></td><td>AI cameras at premium ASP; L&T SoC = cost reduction; VSaaS = recurring</td><td class="num hl-teal">+2 to +3%</td><td class="num hl-teal">+4 to +6%</td></tr>
+        <tr style="background:rgba(240,165,0,0.05)"><td><strong>Total Alpha</strong></td><td>—</td><td>—</td><td class="num hl-amber"><strong>+9 to +15%</strong></td><td class="num hl-amber"><strong>+13 to +21%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Growth Rate Summary Table</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Parameter</th><th class="num">🔴 STRESS</th><th class="num">🟡 BASE</th><th class="num">🟢 ACCEL.</th></tr></thead>
+      <tbody>
+        <tr><td>Macro State</td><td class="num">GDP ~5.5%</td><td class="num">GDP ~6.8%</td><td class="num">GDP ~8%+</td></tr>
+        <tr><td>Sector Growth (CCTV India)</td><td class="num">12–15%</td><td class="num">18–20%</td><td class="num">22–25%</td></tr>
+        <tr><td>Company Alpha</td><td class="num">+5%</td><td class="num">+10%</td><td class="num">+15%</td></tr>
+        <tr><td>AI Alpha (6a+6b+6c)</td><td class="num">+1%</td><td class="num">+2 to +3%</td><td class="num">+4 to +6%</td></tr>
+        <tr><td>Stage 1 Revenue CAGR (3yr)</td><td class="num hl-amber">18–20%</td><td class="num hl-green">28–32%</td><td class="num hl-green">38–42%</td></tr>
+        <tr><td>Stage 2 Revenue CAGR (3–5yr)</td><td class="num">12–14%</td><td class="num">18–20%</td><td class="num">22–25%</td></tr>
+        <tr><td>EBITDA Margin Trajectory</td><td class="num">8–10% (stable)</td><td class="num">12–15% (expand)</td><td class="num">15–18% (strong)</td></tr>
+        <tr><td>Terminal Revenue Growth</td><td class="num">6.2%</td><td class="num">7.2%</td><td class="num">7.8%</td></tr>
+        <tr><td>Terminal (India Nominal × factor)</td><td class="num">GDP × 0.65</td><td class="num">GDP × 0.72</td><td class="num">GDP × 0.78</td></tr>
+        <tr><td>Key Risk</td><td class="num">China re-entry, STQC relaxation</td><td class="num">FCF conversion pace</td><td class="num">Execution bandwidth</td></tr>
+      </tbody>
+    </table>
+    <div class="alert-amber" style="margin-top:12px">
+      <strong>Sensitivity:</strong> A 1% change in terminal revenue growth changes base IV by ~8–10%. A 1% change in Stage 1 CAGR changes IV by ~4–6%. EBITDA margin is the critical swing factor: each 1% margin expansion adds ~₹70-90 per share to base IV.
+    </div>
+  </div>
+</div><!-- end tab1 -->
+
+<!-- ═══════════════════════════════════════════ TAB 2: FINANCIALS ═══ -->
+<div id="tab2" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Revenue & Profit History <span class="v v-v">VERIFIED</span></div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Year</th><th class="num">Revenue (₹Cr)</th><th class="num">YoY Gr%</th><th class="num">EBITDA (₹Cr)</th><th class="num">EBITDA%</th><th class="num">Core PAT (₹Cr)</th><th class="num">ROE%</th></tr></thead>
+      <tbody>
+        <tr><td>FY2020</td><td class="num">1,238</td><td class="num">—</td><td class="num">57</td><td class="num">4.6%</td><td class="num hl-red">17</td><td class="num">—</td></tr>
+        <tr><td>FY2021</td><td class="num">1,149</td><td class="num neg">-7.2%</td><td class="num">56</td><td class="num">4.9%</td><td class="num">29</td><td class="num">—</td></tr>
+        <tr><td>FY2022</td><td class="num">1,646</td><td class="num pos">+43.3%</td><td class="num">133</td><td class="num">8.1%</td><td class="num pos">97</td><td class="num">—</td></tr>
+        <tr><td>FY2023</td><td class="num">2,285</td><td class="num pos">+38.8%</td><td class="num">161</td><td class="num">7.0%</td><td class="num pos">108</td><td class="num">28.2%</td></tr>
+        <tr><td>FY2024</td><td class="num">2,782</td><td class="num pos">+21.7%</td><td class="num">223</td><td class="num">8.0%</td><td class="num pos">115</td><td class="num">26.4%</td></tr>
+        <tr style="background:rgba(240,165,0,0.05)"><td><strong>FY2025</strong></td><td class="num hl-amber">3,112</td><td class="num hl-green">+11.9%</td><td class="num hl-amber">248</td><td class="num">8.0%</td><td class="num hl-red">137*</td><td class="num">20.9%</td></tr>
+        <tr><td>TTM (Q4FY25–Q3FY26)</td><td class="num pos">3,776</td><td class="num pos">+21.3%</td><td class="num hl-green">407</td><td class="num hl-green">10.8%</td><td class="num pos">254†</td><td class="num pos">~25%</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">* FY25 Reported PAT ₹351Cr includes ₹252Cr one-time other income in Q2FY25. Core PAT adjusted to ~₹137Cr. † TTM PAT = last 4 quarters Q4FY25+Q1FY26+Q2FY26+Q3FY26.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cash Flow & FCF Conversion</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Year</th><th class="num">CFO (₹Cr)</th><th class="num">CapEx (₹Cr)</th><th class="num">FCF (₹Cr)</th><th class="num">CFO/PAT</th><th>Quality Signal</th></tr></thead>
+      <tbody>
+        <tr><td>FY2020</td><td class="num">80</td><td class="num">(2)</td><td class="num pos">78</td><td class="num hl-green">471%</td><td><span class="pass">PASS</span></td></tr>
+        <tr><td>FY2021</td><td class="num">262</td><td class="num">(3)</td><td class="num pos">259</td><td class="num hl-green">903%</td><td><span class="pass">PASS</span></td></tr>
+        <tr><td>FY2022</td><td class="num">44</td><td class="num">(7)</td><td class="num pos">37</td><td class="num hl-amber">45%</td><td><span class="marginal">MARGINAL</span></td></tr>
+        <tr><td>FY2023</td><td class="num">56</td><td class="num">(7)</td><td class="num pos">49</td><td class="num hl-amber">52%</td><td><span class="marginal">MARGINAL</span></td></tr>
+        <tr><td>FY2024</td><td class="num neg">(180)</td><td class="num">(7)</td><td class="num neg">(187)</td><td class="num hl-red">-157%</td><td><span class="fail">FAIL</span></td></tr>
+        <tr><td>FY2025</td><td class="num">27</td><td class="num">(26)</td><td class="num pos">1</td><td class="num hl-red">8%</td><td><span class="fail">FAIL</span></td></tr>
+      </tbody>
+    </table>
+    <div class="alert-amber" style="margin-top:10px">
+      <strong>FCF Conversion Alert:</strong> FCF conversion has been consistently weak/negative since FY22 due to Kadapa factory build-out (Fixed Assets jumped from ₹70Cr FY24 → ₹740Cr FY25) and aggressive working capital expansion. This is a key watch metric. IPO proceeds (₹500Cr fresh issue) have improved the balance sheet materially. FCF recovery expected FY26-FY27 as CapEx normalises.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Financial Fortress Scorecard</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Test</th><th>Metric</th><th>Result</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>ROE ≥ 15% (3yr avg)</td><td>3yr avg ROE 28.5%</td><td class="hl-green">28.5% (adj ~22%)</td><td><span class="pass">PASS</span></td></tr>
+        <tr><td>ROIC &gt; WACC (13%)</td><td>ROCE 19.5% TTM</td><td class="hl-green">19.5% &gt; 13%</td><td><span class="pass">PASS</span></td></tr>
+        <tr><td>Net Debt Status</td><td>Debt ₹128Cr / Equity ₹1,587Cr</td><td class="hl-green">Almost Debt-Free</td><td><span class="pass">PASS</span></td></tr>
+        <tr><td>Net Profit Margin ≥ 15%</td><td>Core PAT margin ~4–5%</td><td class="hl-red">3.6–5% (hardware biz)</td><td><span class="fail">FAIL ※</span></td></tr>
+        <tr><td>FCF Positive & Growing</td><td>FY24 negative, FY25 near-zero</td><td class="hl-amber">Recovering</td><td><span class="marginal">MARGINAL</span></td></tr>
+        <tr><td>FCF Conversion ≥ 80%</td><td>FY25: 8%</td><td class="hl-red">Well below threshold</td><td><span class="fail">FAIL</span></td></tr>
+        <tr><td>Revenue Growth vs Sector</td><td>Revenue 3yr CAGR 24% vs sector ~20%</td><td class="hl-green">Outperforming</td><td><span class="pass">PASS</span></td></tr>
+        <tr><td>Capital-Light Model</td><td>Fixed assets ₹740Cr; high CapEx phase</td><td class="hl-amber">CapEx-heavy currently</td><td><span class="marginal">MARGINAL</span></td></tr>
+        <tr><td>Dividend / Capital Return</td><td>No dividend; 0% payout</td><td class="hl-amber">Retaining for growth</td><td><span class="marginal">MARGINAL ※</span></td></tr>
+        <tr><td>EBITDA Margin Trend</td><td>FY20: 4.6% → Q3FY26: 12.3%</td><td class="hl-green">Strong expansion</td><td><span class="pass">PASS</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">※ Hardware manufacturing businesses are structurally 3–8% PAT margin. Judged against peers (Dixon, Amber), margins are competitive. FCF weakness is CapEx-phase, not structural earnings quality issue.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Owner Earnings Estimate (FY26E)</div>
+    <div class="oe-box">
+      <div class="oe-row"><span>Net Income (FY26E core estimate)</span><span class="hl-amber">₹310 Cr</span></div>
+      <div class="oe-row"><span>+ Depreciation & Amortisation</span><span>₹50 Cr</span></div>
+      <div class="oe-row"><span>+ Non-cash items (SBC, FX)</span><span>₹5 Cr</span></div>
+      <div class="oe-row"><span>− Maintenance CapEx (est ~1.2% of revenue)</span><span class="hl-red">−₹50 Cr</span></div>
+      <div class="oe-row"><span>± Working Capital Change (improving)</span><span>−₹30 Cr</span></div>
+      <div class="oe-row" style="border:none"><span><strong>= Owner Earnings (FY26E)</strong></span><span class="oe-total">₹285 Cr</span></div>
+      <p style="font-size:12px;color:var(--muted);margin-top:8px">Owner Earnings / Share (12Cr shares): <span class="hl-amber">₹23.8/share</span> &nbsp;|&nbsp; Owner Earnings Yield at ₹1,904: <span class="hl-amber">1.25%</span> — well below the 6.9% G-Sec yield, confirming premium growth valuation.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Earnings Quality — O'Glove Framework</div>
+    <div class="grid-3" style="gap:14px">
+      <div class="card card-border-amber">
+        <div class="card-header">Test 1 — FCF Conversion (5yr)</div>
+        <p style="font-size:13px">FY21: 903% (cash release), FY22: 45%, FY23: 52%, FY24: -157%, FY25: 8%. Trend deteriorating due to Kadapa CapEx. NOT an earnings quality issue — capex cycle explains it. <strong>Improving in FY26.</strong></p>
+        <br><span class="marginal">MARGINAL</span>
+      </div>
+      <div class="card card-border-red">
+        <div class="card-header">Test 2 — DSO Trend (3yr)</div>
+        <p style="font-size:13px">Debtor Days: FY20:98, FY21:120, FY22:116, FY23:98, FY24:96, FY25:122. FY25 jump to 122 days from 96 is concerning — government/channel receivables building up. Monitor for collection risk.</p>
+        <br><span class="fail">FLAG</span>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">Test 3 — Inventory Days</div>
+        <p style="font-size:13px">Inventory levels increased significantly with Kadapa facility ramp-up. Working capital intensity increased FY23–FY25. STQC inventory build pre-enforcement likely explains FY25 spike. Monitor if normalization occurs in FY26.</p>
+        <br><span class="marginal">MARGINAL</span>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">Test 4 — Accounting Policy</div>
+        <p style="font-size:13px">No major accounting policy changes detected. FY25 'Other Income' ₹252Cr anomaly in Q2FY25 requires explanation (likely from stake disposition / related-party transaction). Disclosed in filings.</p>
+        <br><span class="marginal">MARGINAL</span>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">Test 5 — Gross Margin Consistency</div>
+        <p style="font-size:13px">EBITDA margin trend: FY20: 4.6% → FY22: 8.1% → FY23: 7.0% → FY24: 8.0% → Q3FY26: 12.3%. Consistent improvement with product mix shift toward IP cameras. No margin manipulation detected.</p>
+        <br><span class="pass">PASS</span>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">Overall Quality Rating</div>
+        <div class="card-val" style="font-size:36px">ACCEPTABLE</div>
+        <p style="font-size:12px;color:var(--muted)">FCF weakness + DSO spike are CapEx-phase artifacts, not structural. Margin trend is honest. No manipulation evidence. Apply standard MoS (20% for Cat B).</p>
+      </div>
+    </div>
+  </div>
+</div><!-- end tab2 -->
+
+<!-- ═══════════════════════════════════════════ TAB 3: MOAT ═══ -->
+<div id="tab3" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Moat Assessment — Overall Grade: B+</div>
+    <div class="grid-2" style="gap:16px">
+      <div>
+        <div class="moat-source">
+          <div class="moat-source-top">
+            <span class="moat-name">🏭 Manufacturing Scale / Cost Advantage</span>
+            <span class="moat-rating"><span class="moat-star">★★★★</span><span class="moat-star-empty">★</span></span>
+          </div>
+          <p style="font-size:13px">Kadapa plant — 2.5M units/month. Largest integrated surveillance manufacturing in India. PLI scheme benefits. Cost per unit structurally lower than importers. <strong>STQC compliance at scale</strong> creates barrier that small competitors cannot easily replicate. <span class="v v-v">VERIFIED</span></p>
+        </div>
+        <div class="moat-source">
+          <div class="moat-source-top">
+            <span class="moat-name">📋 STQC / Regulatory Moat</span>
+            <span class="moat-rating"><span class="moat-star">★★★★★</span></span>
+          </div>
+          <p style="font-size:13px"><strong>Critical new moat (April 2026):</strong> Only 35 foreign camera models cleared STQC by May 2025. CP Plus has India's LARGEST STQC-certified portfolio. Government procurement (the fastest growing segment) now structurally mandates STQC — effectively excluding Hikvision/Dahua. This is a temporary but powerful regulatory moat that could last 3–5 years. <span class="v v-v">VERIFIED</span></p>
+        </div>
+        <div class="moat-source">
+          <div class="moat-source-top">
+            <span class="moat-name">🏷️ Brand / Distribution Network</span>
+            <span class="moat-rating"><span class="moat-star">★★★★</span><span class="moat-star-empty">★</span></span>
+          </div>
+          <p style="font-size:13px">India's most recognised surveillance brand. Pan-India distribution covering 70,000+ installers/channel partners. CP Plus Galaxy retail stores. Dominant in tier 2–4 cities. Brand moat is strong but not impenetrable — Hikvision still has strong retail/private sector presence. <span class="v v-e">EST</span></p>
+        </div>
+      </div>
+      <div>
+        <div class="moat-source">
+          <div class="moat-source-top">
+            <span class="moat-name">🤖 AI Technology / Partnerships</span>
+            <span class="moat-rating"><span class="moat-star">★★★</span><span class="moat-star-empty">★★</span></span>
+          </div>
+          <p style="font-size:13px">L&T Semiconductor (Vision AI SoC) + Qualcomm (AI video intelligence) partnerships create technology differentiation. 9M AI cameras over 3 years. However, AI moat is FORMING — data flywheel not yet confirmed (see Tab 9). Technology edge can be replicated by competitors over 2–3 years. <span class="v v-v">VERIFIED</span></p>
+        </div>
+        <div class="moat-source">
+          <div class="moat-source-top">
+            <span class="moat-name">🔄 Switching Costs</span>
+            <span class="moat-rating"><span class="moat-star">★★★</span><span class="moat-star-empty">★★</span></span>
+          </div>
+          <p style="font-size:13px">Enterprise / government clients with deployed NVR/VMS systems face integration costs when switching brands. Channel loyalty is moderate — installers tend to stick with one brand per project. Service network (pan-India) creates retention. VSaaS would create stronger recurring switching costs if scaled. <span class="v v-e">EST</span></p>
+        </div>
+        <div class="moat-source">
+          <div class="moat-source-top">
+            <span class="moat-name">⚠️ Moat Threats</span>
+            <span class="moat-rating"><span class="moat-red">🔴</span></span>
+          </div>
+          <p style="font-size:13px">1. Chinese brand re-entry if STQC policy relaxed post trade negotiations<br>2. Hikvision/Dahua India JV or local manufacturing replication<br>3. Global players (Axis, Bosch, Honeywell) expanding presence<br>4. AI commoditisation if L&T/Qualcomm SoCs become widely available<br>5. Taiwanese ODM white-labelling for Indian brands</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLYWHEEL BOX -->
+  <div class="section">
+    <div class="flywheel-box">
+      <div class="flywheel-title">🌀 DATA FLYWHEEL ASSESSMENT</div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:20px">
+        <div class="score-circle" style="border-color:var(--amber)">4<small>/10</small></div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;margin-bottom:6px"><span class="badge-amber">DATA FLYWHEEL FORMING ★★★</span></div>
+          <p style="font-size:13px">CP Plus is building toward a data flywheel but has not yet confirmed all three criteria. The L&T/Qualcomm AI camera deployment creates a potential flywheel as AI video analytics improves with more installations — but this requires centralised data collection which is not yet operational at scale.</p>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="grid-3" style="gap:12px;margin-top:4px">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);margin-bottom:6px">Q1: PROPRIETARY DATA?</div>
+          <p style="font-size:13px">CP Plus cameras generate surveillance footage at millions of locations. However, this data resides at client premises — not in a centralised CP Plus training dataset. <strong>VSaaS (cloud layer) would change this fundamentally.</strong></p>
+          <span class="marginal" style="margin-top:6px;display:inline-block">PARTIAL ★★</span>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);margin-bottom:6px">Q2: AI IMPROVES WITH MORE DATA?</div>
+          <p style="font-size:13px">AI video analytics (object detection, facial recognition, anomaly detection) does improve with more labelled training data. L&T SoC cameras are AI-enabled. However, CP Plus has not disclosed specific accuracy improvement metrics. <span class="v v-u">UNVERIFIED</span></p>
+          <span class="marginal" style="margin-top:6px;display:inline-block">FORMING ★★</span>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);margin-bottom:6px">Q3: BETTER AI = MORE USERS?</div>
+          <p style="font-size:13px">Currently, the loop is: better STQC compliance + brand trust → more govt orders → more installations → more data potential. Not yet a true data-driven loop. <strong>VSaaS cloud platform is the key unlock.</strong> Watch Q4FY26 earnings call for VSaaS metrics.</p>
+          <span class="marginal" style="margin-top:6px;display:inline-block">NOT YET ★</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ROIC as Moat Proof</div>
+    <div class="grid-4" style="gap:12px">
+      <div class="card card-border-amber"><div class="card-header">FY22 ROCE</div><div class="card-val" style="color:var(--green)">—</div><div class="card-sub">Pre-CapEx phase</div></div>
+      <div class="card card-border-amber"><div class="card-header">FY23 ROCE</div><div class="card-val" style="color:var(--green)">~22%</div><div class="card-sub">Strong</div></div>
+      <div class="card card-border-amber"><div class="card-header">FY24 ROCE</div><div class="card-val" style="color:var(--amber)">~18%</div><div class="card-sub">CapEx drag</div></div>
+      <div class="card card-border-amber"><div class="card-header">FY25/TTM ROCE</div><div class="card-val" style="color:var(--green)">19.5%</div><div class="card-sub">Recovering <span class="v v-v">VERIFIED</span></div></div>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:12px">ROIC 19.5% &gt; WACC 13% = <span class="hl-green">economic value creation confirmed</span>. Narrower than Cat A FMCG stocks but solid for a capital-intensive hardware manufacturer. ROIC should improve as Kadapa utilisation rises from ~60% → 90%.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Macro Stress Test</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Moat Source</th><th>In Macro Stress</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td>Manufacturing Scale / STQC</td><td>STQC moat independent of macro; govt procurement resilient</td><td><span class="pass">STRENGTHENS</span></td></tr>
+        <tr><td>Brand / Distribution</td><td>Price sensitivity increases in stress; premium products slow; volume stays</td><td><span class="marginal">HOLDS</span></td></tr>
+        <tr><td>AI Technology</td><td>Enterprise AI capex delays in stress; govt still procures</td><td><span class="marginal">HOLDS</span></td></tr>
+        <tr><td>Switching Costs</td><td>Multi-year government contracts lock in revenue; residential slower</td><td><span class="pass">STRENGTHENS</span></td></tr>
+      </tbody>
+    </table>
+    <div class="alert-green" style="margin-top:10px">The STQC regulatory moat is <strong>counter-cyclical</strong> — government surveillance spend is non-discretionary. In a macro stress, CP Plus loses retail/SME volume but government contracts provide a floor. This makes the moat more resilient than a pure consumer brand.</div>
+  </div>
+</div><!-- end tab3 -->
+
+<!-- ═══════════════════════════════════════════ TAB 4: MANAGEMENT ═══ -->
+<div id="tab4" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Leadership Team</div>
+    <div class="grid-3" style="gap:14px">
+      <div class="card card-border-amber">
+        <div class="card-header">Aditya Khemka — Managing Director</div>
+        <p style="font-size:13px">Founder-family driven. Promoter trust structure holds 76.91%. March 27, 2026: Aditya Khemka Trust acquired 1.60Cr shares (13.62%) — a massive promoter buy signal during market uncertainty. Aligned with long-term value creation. <span class="v v-v">VERIFIED</span></p>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">Hari Shanker Khemka — Chairperson</div>
+        <p style="font-size:13px">Patriarch of the Khemka family. 30+ years in electronics/surveillance. Originally CP Plus was founded as a German entity (CP Plus GmbH, Hamburg) — indicative of international ambitions from inception. Taiwan subsidiary (Sep 2025) confirms global growth vision. <span class="v v-e">EST</span></p>
+      </div>
+      <div class="card card-border-teal">
+        <div class="card-header">Capital Allocation Track Record</div>
+        <p style="font-size:13px">Built Kadapa manufacturing (₹670Cr+ CapEx). Acquired AIL Dixon 100% from Dixon Technologies (2024) to internalise electronics manufacturing. JV with Orient Cables (2026) for cables. Strategic, focused on vertical integration.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Shareholding Integrity Assessment</div>
+    <div class="grid-4" style="gap:12px">
+      <div class="card card-border-green">
+        <div class="card-header">Promoter Pledging</div>
+        <div class="card-val" style="color:var(--green)">~0%</div>
+        <div class="card-sub">No pledged shares disclosed <span class="v v-e">EST</span></div>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">Promoter Trend</div>
+        <div class="card-val" style="font-size:20px;color:var(--green)">BUYING</div>
+        <div class="card-sub">Trust acquired 1.6Cr shares Mar 2026</div>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">Related Party Risk</div>
+        <div class="card-val" style="font-size:20px;color:var(--amber)">LOW-MOD</div>
+        <div class="card-sub">Standard family business RPTs. No red flags.</div>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">CRISIL Rating</div>
+        <div class="card-val" style="font-size:20px;color:var(--green)">A/STABLE</div>
+        <div class="card-sub">April 2026 on ₹555Cr bank loans <span class="v v-v">VERIFIED</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Management Strengths & Concerns</div>
+    <div class="grid-2" style="gap:16px">
+      <div>
+        <div class="section-title" style="font-size:14px;color:var(--green);border-color:var(--green)">✅ Strengths</div>
+        <ul style="font-size:13px;padding-left:18px;line-height:2">
+          <li>Founder-led with skin-in-the-game (76.91% holding)</li>
+          <li>Massive insider buy (March 2026) during market uncertainty = high conviction</li>
+          <li>Kadapa manufacturing vision executed against plan</li>
+          <li>Successfully navigated STQC compliance ahead of competition</li>
+          <li>Strategic partnerships secured (L&T, Qualcomm) — shows tech ecosystem credibility</li>
+          <li>IPO structured sensibly: fresh issue for debt paydown, not excessive OFS</li>
+          <li>Counter-cyclical government contracts built into revenue mix</li>
+          <li>Orient Cables JV shows vertical integration thinking</li>
+        </ul>
+      </div>
+      <div>
+        <div class="section-title" style="font-size:14px;color:var(--amber);border-color:var(--amber)">⚠️ Concerns</div>
+        <ul style="font-size:13px;padding-left:18px;line-height:2">
+          <li>₹252Cr "Other Income" in Q2FY25 — source unclear; needs better disclosure</li>
+          <li>Debtor Days jumped to 122 days in FY25 — collection efficiency concern</li>
+          <li>No dividend policy — entirely growth-reinvestment focus (acceptable at this stage)</li>
+          <li>Working capital management has been inconsistent (FY24 large negative FCF)</li>
+          <li>Company is freshly listed (Aug 2025) — limited public market accountability track record</li>
+          <li>Heavy promoter concentration limits institutional float supply</li>
+          <li>Taiwan subsidiary signals international ambition but execution risk exists</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Guidance Reliability</div>
+    <div class="alert-green">
+      Management delivered on Q1FY26 guidance: "strong revenue growth, profitability, and margin expansion." Q1FY26 revenue ₹740Cr (+16.4% YoY) and EBITDA margin 8.7% (+180bps YoY) matched or exceeded guidance. Q3FY26 record sales ₹1,139Cr and EBITDA ₹140Cr represent consecutive quarter records. Management credibility: <strong>IMPROVING</strong>. Counter-cyclical behaviour: <strong>DEMONSTRATED</strong> — acquisitions (AIL Dixon) made at reasonable valuations. <span class="v v-v">VERIFIED</span>
+    </div>
+  </div>
+</div><!-- end tab4 -->
+
+<!-- ═══════════════════════════════════════════ TAB 5: VALUATION ═══ -->
+<div id="tab5" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Current Valuation Context</div>
+    <div class="grid-4" style="gap:12px">
+      <div class="card card-border-red"><div class="card-header">TTM P/E (reported)</div><div class="card-val">~88x</div><div class="card-sub">Inflated by one-time FY25 income</div></div>
+      <div class="card card-border-red"><div class="card-header">TTM P/E (core)</div><div class="card-val">~114x</div><div class="card-sub">Adjusted for ₹252Cr one-time</div></div>
+      <div class="card card-border-amber"><div class="card-header">Forward P/E (FY27E)</div><div class="card-val">~55–65x</div><div class="card-sub">At ₹30–35 EPS est</div></div>
+      <div class="card card-border-amber"><div class="card-header">EV/EBITDA (TTM)</div><div class="card-val">~54x</div><div class="card-sub">EV ₹22,000Cr / EBITDA ₹407Cr</div></div>
+      <div class="card card-border-amber"><div class="card-header">EV/Revenue (FY26E)</div><div class="card-val">~5.4x</div><div class="card-sub">On ₹4,000Cr FY26 rev est</div></div>
+      <div class="card card-border-red"><div class="card-header">Price/Book</div><div class="card-val">~14x</div><div class="card-sub">Book value ₹135/share</div></div>
+      <div class="card card-border-amber"><div class="card-header">FCF Yield</div><div class="card-val">~0.7%</div><div class="card-sub">₹150Cr FCF est / ₹22,316Cr mktcap</div></div>
+      <div class="card card-border-green"><div class="card-header">Rev Growth Needed</div><div class="card-val">~25%+</div><div class="card-sub">To justify current valuation</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 1 — 2-Stage DCF</div>
+    <div class="alert-amber" style="margin-bottom:12px"><strong>WACC: 13%</strong> (Category B: 12–14% range; 13% = 9.5% equity risk premium + 6.9% risk-free - beta adjustment for small-cap growth). Terminal g: India Nominal GDP × 0.72 = 7.0% (base).</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Year</th><th class="num">Rev (₹Cr)</th><th class="num">EBITDA%</th><th class="num">NOPAT (₹Cr)</th><th class="num">FCF (₹Cr)</th><th class="num">Disc Factor</th><th class="num">PV FCF (₹Cr)</th></tr></thead>
+      <tbody>
+        <tr><td>FY26E</td><td class="num">4,000</td><td class="num">11%</td><td class="num">330</td><td class="num">150</td><td class="num">0.885</td><td class="num">133</td></tr>
+        <tr><td>FY27E</td><td class="num">4,900</td><td class="num">13%</td><td class="num">477</td><td class="num">280</td><td class="num">0.783</td><td class="num">219</td></tr>
+        <tr><td>FY28E</td><td class="num">5,900</td><td class="num">14%</td><td class="num">621</td><td class="num">420</td><td class="num">0.693</td><td class="num">291</td></tr>
+        <tr><td>FY29E</td><td class="num">7,100</td><td class="num">14.5%</td><td class="num">774</td><td class="num">560</td><td class="num">0.613</td><td class="num">343</td></tr>
+        <tr><td>FY30E</td><td class="num">8,500</td><td class="num">15%</td><td class="num">956</td><td class="num">700</td><td class="num">0.543</td><td class="num">380</td></tr>
+        <tr style="background:rgba(240,165,0,0.05)"><td><strong>Stage 1 PV Sum</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="num hl-amber"><strong>1,366</strong></td></tr>
+        <tr><td>Terminal Value (FY30 FCF × (1+7%) / (13%-7%))</td><td>—</td><td>—</td><td>—</td><td>₹700Cr × 1.07 / 0.06 = ₹12,483Cr</td><td class="num">0.543</td><td class="num hl-amber">6,778</td></tr>
+        <tr style="background:rgba(240,165,0,0.08)"><td><strong>Total EV (₹Cr)</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="num hl-amber"><strong>8,144</strong></td></tr>
+        <tr><td>+ Net Cash</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="num pos">200</td></tr>
+        <tr><td>Equity Value (₹Cr)</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="num hl-amber">8,344</td></tr>
+        <tr style="background:rgba(61,214,140,0.05)"><td><strong>Per Share (12Cr shares)</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td class="num hl-green"><strong>₹695</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="alert-red" style="margin-top:10px"><strong>DCF Note:</strong> Pure DCF gives ₹695/share — far below current price of ₹1,904. This is because (1) current FCF is near-zero (weak conversion), and (2) DCF doesn't capture the P/E re-rating potential as the company scales. A P/E-based approach is more appropriate for this stage of the company. DCF serves as a floor valuation. If margins expand to 18% by FY30, FCF doubles → IV rises to ~₹1,100/share DCF basis.</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px;margin-top:12px">
+      <thead><tr><th>Sensitivity</th><th class="num">WACC 11%</th><th class="num">WACC 12%</th><th class="num">WACC 13%</th><th class="num">WACC 14%</th></tr></thead>
+      <tbody>
+        <tr><td>Terminal g 6%</td><td class="num">₹930</td><td class="num">₹810</td><td class="num">₹720</td><td class="num">₹650</td></tr>
+        <tr><td>Terminal g 7%</td><td class="num">₹1,100</td><td class="num">₹930</td><td class="num">₹810</td><td class="num">₹710</td></tr>
+        <tr><td>Terminal g 8%</td><td class="num">₹1,380</td><td class="num">₹1,130</td><td class="num">₹960</td><td class="num">₹820</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 2 — Owner Earnings Capitalisation</div>
+    <p style="font-size:13px;margin-bottom:12px">Owner Earnings FY26E: ₹285Cr (₹23.8/share). Required Return (Category B): 14%. Growth (base): 7%. Capitalisation value = OE / (14% - 7%) = OE / 7%.</p>
+    <div class="grid-3" style="gap:14px">
+      <div class="card card-border-red"><div class="card-header">Stress (g=5.5%)</div><div class="card-val">₹285Cr / 8.5% = ₹3,353Cr</div><div class="card-sub">Per share: <span class="hl-amber">₹563</span> — shows current valuation extremely stretched</div></div>
+      <div class="card card-border-amber"><div class="card-header">Base (g=7%)</div><div class="card-val">₹285Cr / 7% = ₹4,071Cr</div><div class="card-sub">Per share: <span class="hl-amber">₹685</span></div></div>
+      <div class="card card-border-green"><div class="card-header">Accel (g=8%)</div><div class="card-val">₹285Cr / 6% = ₹4,750Cr</div><div class="card-sub">Per share: <span class="hl-amber">₹798</span></div></div>
+    </div>
+    <div class="alert-amber" style="margin-top:10px">OE capitalisation gives ₹563–798/share. Significantly below current price. This confirms: you are paying for FY27–FY29 earnings today. That's acceptable IF growth delivers. The question is what P/E multiple expansion occurs as margins improve.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 3 — P/E Earnings Power (Forward Multiple Approach)</div>
+    <p style="font-size:13px;margin-bottom:12px">More appropriate for growth companies. Using forward EPS estimates with justified P/E for a high-growth hardware/AI-security company.</p>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>EPS Year</th><th class="num">EPS Est</th><th class="num">At 35x</th><th class="num">At 45x</th><th class="num">At 55x</th><th class="num">At 65x</th></tr></thead>
+      <tbody>
+        <tr><td>FY26E (Core)</td><td class="num">₹25.8</td><td class="num hl-red">₹903</td><td class="num hl-amber">₹1,161</td><td class="num hl-amber">₹1,419</td><td class="num hl-amber">₹1,677</td></tr>
+        <tr><td>FY27E</td><td class="num">₹33–38</td><td class="num hl-amber">₹1,225</td><td class="num hl-amber">₹1,575</td><td class="num hl-green">₹1,925</td><td class="num hl-green">₹2,275</td></tr>
+        <tr><td>FY28E</td><td class="num">₹45–52</td><td class="num hl-amber">₹1,680</td><td class="num hl-green">₹2,160</td><td class="num hl-green">₹2,640</td><td class="num hl-green">₹3,120</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">Peer multiples: Dixon Technologies (hardware, similar profile) trades 80–100x. But Dixon has better FCF. CP Plus at 55–65x FY27E = <span class="hl-amber">₹1,925–2,275</span> — near current price. This means you need to believe in full execution AND sustain premium multiples to generate returns from current levels.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 4 — Earnings Yield vs Bond Yield</div>
+    <div class="grid-4" style="gap:12px">
+      <div class="card card-border-red"><div class="card-header">Earnings Yield (TTM Core)</div><div class="card-val" style="color:var(--red)">0.88%</div><div class="card-sub">At ₹1,904 / core EPS ₹16.8</div></div>
+      <div class="card card-border-amber"><div class="card-header">Forward EY (FY27E)</div><div class="card-val" style="color:var(--amber)">1.75–2.0%</div><div class="card-sub">At ₹33–38 FY27 EPS est</div></div>
+      <div class="card card-border-red"><div class="card-header">India G-Sec 10yr</div><div class="card-val" style="color:var(--red)">~6.9%</div><div class="card-sub">Risk-free rate reference</div></div>
+      <div class="card card-border-red"><div class="card-header">Equity Risk Premium</div><div class="card-val" style="color:var(--red)">Very Low</div><div class="card-sub">EY 2% vs G-Sec 6.9% = -490bps</div></div>
+    </div>
+    <div class="alert-red" style="margin-top:10px"><strong>Yield Signal:</strong> At current prices, equity yield (0.88–2%) is far below the risk-free rate (6.9%). This is only justified if EPS grows 3–5× over 5 years — which IS plausible given the growth trajectory, but requires flawless execution. Standard entry would be at EY closer to 3–4% (implied price: ₹1,400–1,600).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 5 — 5-Method Summary & Blended IV</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Method</th><th class="num">Stress IV</th><th class="num">Base IV</th><th class="num">Accel. IV</th><th>Weight</th></tr></thead>
+      <tbody>
+        <tr><td>DCF (2-Stage)</td><td class="num hl-red">₹590</td><td class="num hl-amber">₹810</td><td class="num hl-amber">₹1,100</td><td>20%</td></tr>
+        <tr><td>OE Capitalisation</td><td class="num hl-red">₹563</td><td class="num hl-amber">₹685</td><td class="num hl-amber">₹798</td><td>15%</td></tr>
+        <tr><td>ROIC / EPV</td><td class="num hl-red">₹650</td><td class="num hl-amber">₹900</td><td class="num hl-green">₹1,200</td><td>15%</td></tr>
+        <tr><td>P/E Earnings Power (FY27E)</td><td class="num hl-amber">₹1,050</td><td class="num hl-green">₹1,650</td><td class="num hl-green">₹2,280</td><td>35%</td></tr>
+        <tr><td>EV/Revenue (FY27E, 5x base)</td><td class="num hl-amber">₹1,020</td><td class="num hl-green">₹1,700</td><td class="num hl-green">₹2,200</td><td>15%</td></tr>
+        <tr style="background:rgba(240,165,0,0.08)"><td><strong>Blended IV</strong></td><td class="num hl-amber"><strong>₹835</strong></td><td class="num hl-green"><strong>₹1,320</strong></td><td class="num hl-green"><strong>₹1,840</strong></td><td><strong>100%</strong></td></tr>
+        <tr><td><em>AI WIDENER Premium (+15% on base)</em></td><td>—</td><td class="num hl-teal">+₹198</td><td class="num hl-teal">+₹276</td><td>STQC + AI flywheel forming</td></tr>
+        <tr style="background:rgba(61,214,140,0.05)"><td><strong>Adjusted Blended IV</strong></td><td class="num hl-amber"><strong>₹835</strong></td><td class="num hl-green"><strong>₹1,518</strong></td><td class="num hl-green"><strong>₹2,116</strong></td><td>—</td></tr>
+        <tr><td>Entry Price (20% MoS — Cat B)</td><td>—</td><td class="num hl-amber"><strong>₹1,215</strong></td><td>—</td><td>Target accumulation zone</td></tr>
+      </tbody>
+    </table>
+    <div class="alert-amber" style="margin-top:10px">
+      <strong>Valuation Conclusion:</strong> At ₹1,904 (Apr 9) and ATH ₹2,100+ (Apr 15), the stock is trading <strong>25–40% above base adjusted IV of ₹1,518</strong> and <strong>57% above entry price of ₹1,215</strong>. The growth story is real and compelling but the price already embeds significant optimism. This is a <strong>WATCH</strong> stock — enter on correction, not at current ATH. The acceleration scenario IV of ₹2,116 implies only marginal upside from ATH ₹2,100 even in the best case.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Peer Comparison</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Company</th><th class="num">Rev CAGR 3yr</th><th class="num">EBITDA%</th><th class="num">P/E</th><th class="num">EV/Rev</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr class="active-row"><td><strong>CP Plus (CPPLUS)</strong></td><td class="num hl-green">24%</td><td class="num hl-amber">10.8% (TTM)</td><td class="num hl-red">88x (core: 114x)</td><td class="num hl-red">5.4x</td><td>STQC moat; IPO FY25</td></tr>
+        <tr><td>Dixon Technologies</td><td class="num">30%+</td><td class="num">4–5%</td><td class="num">70–80x</td><td class="num">1.5–2x</td><td>EMS leader; lower margin</td></tr>
+        <tr><td>Amber Enterprises</td><td class="num">20%</td><td class="num">5–7%</td><td class="num">50–60x</td><td class="num">1.0–1.5x</td><td>AC components; similar profile</td></tr>
+        <tr><td>Hikvision (Global)</td><td class="num">8–12%</td><td class="num">22–25%</td><td class="num">18–20x</td><td class="num">2.5–3x</td><td>Much higher margin; global scale</td></tr>
+        <tr><td>Axis Communications</td><td class="num">10–12%</td><td class="num">15–20%</td><td class="num">25–30x</td><td class="num">3–4x</td><td>Premium brand; not India-listed</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">CP Plus trades at significant premium to EMS peers on EV/Revenue. Justified by surveillance-specific moat (STQC), higher brand premium, and sector CAGR of 20%. But PAT margin needs to reach 8–10% for P/E to normalise to peer range.</p>
+  </div>
+</div><!-- end tab5 -->
+
+<!-- ═══════════════════════════════════════════ TAB 6: VERDICT ═══ -->
+<div id="tab6" class="tab-content">
+
+  <div class="section">
+    <div class="pillar-grid">
+      <div class="pillar-card">
+        <div class="pillar-grade">B+</div>
+        <div class="pillar-label">PILLAR 1</div>
+        <div class="pillar-name">Economic Moat</div>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px">STQC regulatory moat ★★★★★; Brand ★★★★; Manufacturing scale ★★★★. AI flywheel forming. Moat widening with AI partnerships.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-grade" style="color:var(--amber)">B</div>
+        <div class="pillar-label">PILLAR 2</div>
+        <div class="pillar-name">Financial Fortress</div>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px">Revenue growth strong. EBITDA expanding. FCF weak but improving. Debt nearly cleared post-IPO. PAT margin needs to reach 8%+ for PASS status.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-grade" style="color:var(--green)">B+</div>
+        <div class="pillar-label">PILLAR 3</div>
+        <div class="pillar-name">Management Integrity</div>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px">Founder-led; massive insider buy Mar 2026. No pledges. CRISIL A/Stable. One-time income needs better disclosure. Capital allocation mostly sound.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-grade" style="color:var(--red)">C+</div>
+        <div class="pillar-label">PILLAR 4</div>
+        <div class="pillar-name">Valuation & MoS</div>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px">At ATH ₹2,100 — 25-40% above base IV ₹1,518. No margin of safety at current price. Excellent company, wrong entry point. Wait for correction.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="verdict-box">
+      <div class="verdict-main">WATCH ★★★★</div>
+      <div class="stars">★★★★☆</div>
+      <div class="verdict-sub">
+        <strong>CP Plus is an exceptional India growth story trading at a rich premium.</strong> All three quality pillars (Moat, Financials, Management) score B or better. The STQC regulatory moat is real, the AI camera transition is underway, the sector CAGR is ~20%, and promoter conviction is demonstrated. However, at ₹1,904–2,100 (ATH territory), you are paying FY28 earnings at FY26 prices with no margin of safety. The base adjusted IV is ₹1,518, implying the stock needs to correct 20–25% before offering a compelling risk-reward. This is a stock to <strong>own, but not at any price</strong>.
+      </div>
+      <div class="verdict-quote">
+        "The stock market is a device for transferring money from the impatient to the patient." — Warren Buffett
+        <br><br>
+        "In surveillance, data is the new oil. But unlike oil, it compounds. The company that accumulates the most proprietary surveillance intelligence from millions of cameras will build the most defensible AI business in Indian security." — AI Framework Principle
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Watch → Buy Upgrade Conditions</div>
+    <div class="condition">
+      <div class="cond-num">1</div>
+      <div class="cond-text"><strong>Price corrects to ₹1,500–1,600</strong> (20–25% below base IV of ₹1,518–1,620; 20-DMA ~₹1,715 as first support, then ATH base near ₹1,500). This is the primary entry trigger.</div>
+    </div>
+    <div class="condition">
+      <div class="cond-num">2</div>
+      <div class="cond-text"><strong>FCF conversion recovers to ≥50%</strong> for two consecutive quarters — confirming CapEx phase is complete and working capital normalising. Currently FY25: 8%. FY26 Q1–Q2 should show improvement.</div>
+    </div>
+    <div class="condition">
+      <div class="cond-num">3</div>
+      <div class="cond-text"><strong>EBITDA margin sustains ≥12% for two consecutive full quarters</strong> — confirming structural margin expansion is not seasonal. Q3FY26 was 12.3%; need Q4FY26 + Q1FY27 ≥12% to confirm.</div>
+    </div>
+    <div class="condition">
+      <div class="cond-num">4</div>
+      <div class="cond-text"><strong>DSO normalises below 100 days</strong> — FY25 jump to 122 days needs to reverse, confirming collection efficiency is intact and no channel stuffing occurring.</div>
+    </div>
+    <div class="condition">
+      <div class="cond-num">5</div>
+      <div class="cond-text"><strong>VSaaS / AI recurring revenue exceeds ₹100Cr annualised</strong> — confirmation that software-layer economics are developing, which would justify a structural P/E re-rating toward 70–80x.</div>
+    </div>
+
+    <div class="alert-amber" style="margin-top:16px">
+      <strong>AI-Specific Upgrade Trigger:</strong> Data flywheel confirmation — any disclosure from management of centralised AI model improvement metrics (e.g., "our AI video analytics false-positive rate declined from X% to Y% as we added more camera installations") would upgrade the flywheel from FORMING to CONFIRMED, adding ₹200–300/share to base IV and moving to BUY — AI CONVICTION.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Category B Series Context</div>
+    <table class="series-table">
+      <thead><tr><th>Ticker</th><th>Company</th><th>Category</th><th>AI</th><th>Verdict</th><th>Base IV</th><th>CMP</th><th>MoS%</th></tr></thead>
+      <tbody>
+        <tr class="active-row"><td class="hl-amber">CPPLUS</td><td class="hl-amber">Aditya Infotech / CP Plus</td><td><span class="badge-blue">B</span></td><td>🟢</td><td>WATCH ★★★★</td><td>₹1,518</td><td>₹1,904</td><td class="hl-red">-25%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- end tab6 -->
+
+<!-- ═══════════════════════════════════════════ TAB 7: TECHNICAL ═══ -->
+<div id="tab7" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Section A — Price Structure & Multi-Timeframe Trend</div>
+    <div class="grid-3" style="gap:14px">
+      <div class="card card-border-amber">
+        <div class="card-header">52-Week Range</div>
+        <div class="card-val" style="font-size:22px">₹1,015 – ₹2,100</div>
+        <div class="card-sub">ATH achieved Apr 15, 2026 at ₹2,100.5. +107% from 52-wk low. <span class="v v-v">VERIFIED</span></div>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">IPO Price Reference</div>
+        <div class="card-val" style="font-size:22px">~₹1,015</div>
+        <div class="card-sub">Listed Aug 5, 2025. Price ~doubled from listing range in 8 months.</div>
+      </div>
+      <div class="card card-border-red">
+        <div class="card-header">YTD Return vs Sensex</div>
+        <div class="card-val" style="color:var(--green)">+31.3%</div>
+        <div class="card-sub">vs Sensex -9.83% YTD. Massive outperformance. <span class="v v-v">VERIFIED</span></div>
+      </div>
+    </div>
+    <table class="data-table" style="background:var(--card);border-radius:4px;margin-top:14px">
+      <thead><tr><th>Timeframe</th><th>Trend</th><th>Signal</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>Daily (short-term)</td><td><span class="badge-amber">MILDLY BULLISH</span></td><td>Above all MAs; weekly RSI divergence</td><td>Watch for consolidation</td></tr>
+        <tr><td>Weekly (medium)</td><td><span class="badge-green">BULLISH</span></td><td>MACD bullish; BB expanding; monthly OBV bullish</td><td>Uptrend intact</td></tr>
+        <tr><td>Monthly (long)</td><td><span class="badge-green">STRONGLY BULLISH</span></td><td>Dow Theory bullish; OBV accumulation</td><td>Long-term uptrend confirmed</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Moving Average Dashboard</div>
+    <div class="grid-4" style="gap:12px">
+      <div class="ma-card">
+        <div class="ma-label">20-DMA</div>
+        <div class="ma-val">~₹1,715</div>
+        <div class="ma-status hl-green">Price ABOVE ▲</div>
+        <div style="font-size:11px;color:var(--muted)">First support level</div>
+      </div>
+      <div class="ma-card">
+        <div class="ma-label">50-DMA</div>
+        <div class="ma-val">~₹1,650</div>
+        <div class="ma-status hl-green">Price ABOVE ▲</div>
+        <div style="font-size:11px;color:var(--muted)">Strong support</div>
+      </div>
+      <div class="ma-card">
+        <div class="ma-label">100-DMA</div>
+        <div class="ma-val">~₹1,563</div>
+        <div class="ma-status hl-green">Price ABOVE ▲</div>
+        <div style="font-size:11px;color:var(--muted)">Major support</div>
+      </div>
+      <div class="ma-card">
+        <div class="ma-label">200-DMA</div>
+        <div class="ma-val">~₹1,350</div>
+        <div class="ma-status hl-green">Price ABOVE ▲</div>
+        <div style="font-size:11px;color:var(--muted)">Long-term trend <span class="v v-e">EST</span></div>
+      </div>
+    </div>
+    <div class="alert-green" style="margin-top:10px">Stock is trading above ALL key moving averages (5/20/50/100/200 DMA) — strongest possible MA alignment. A "Golden Cross" (50>200) is confirmed. Price is ~37-40% above 200-DMA, indicating extension from long-term trend. <span class="v v-v">VERIFIED</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — Volume & OBV Analysis</div>
+    <div class="grid-3" style="gap:14px">
+      <div class="card card-border-green">
+        <div class="card-header">Delivery Volume Surge</div>
+        <p style="font-size:13px">Delivery volume surged +116% vs 5-day average on ATH day. High delivery % = institutional accumulation, not speculative trades. <span class="v v-v">VERIFIED</span></p>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">OBV Status</div>
+        <p style="font-size:13px">OBV bullish on <strong>weekly AND monthly</strong> timeframes. Consistent accumulation pattern since listing. No distribution top detected. Weekly OBV trend less clear — monitor.</p>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">Volume Profile</div>
+        <p style="font-size:13px">Significant volume events: ATH breakout Apr 9–15, 2026. IPO allocation period (Aug 2025). Q3FY26 results (strong earnings). Pattern consistent with institutional discovery.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — Momentum (RSI / MACD)</div>
+    <div class="grid-2" style="gap:16px">
+      <div class="card card-border-amber">
+        <div class="card-header">RSI-14 (Daily) — Approaching Overbought</div>
+        <div style="margin:12px 0">
+          <div class="rsi-gauge"><div class="rsi-marker" style="left:72%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)"><span>0</span><span>30 (oversold)</span><span>50</span><span>70 (overbought)</span><span>100</span></div>
+        </div>
+        <p style="font-size:13px">Daily RSI estimated ~68–72 at ATH levels. Approaching overbought (>70). <strong>Weekly RSI shows bearish divergence</strong> — price making new highs but RSI not confirming. This is a caution signal for near-term. Monthly RSI remains bullish. <span class="v v-e">EST</span></p>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">MACD & Trend Indicators</div>
+        <p style="font-size:13px;line-height:2">Weekly MACD: <span class="hl-green">BULLISH SIGNAL</span> — positive crossover confirmed.<br>
+        Bollinger Bands (Weekly): <span class="hl-green">EXPANDING</span> — price pushing upper band = strong momentum.<br>
+        Dow Theory (Monthly): <span class="hl-green">BULLISH</span> — higher highs + higher lows confirmed.<br>
+        Stochastic: <span class="hl-amber">OVERBOUGHT</span> — watch for potential short-term consolidation.<br>
+        <span class="v v-v">VERIFIED</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section E — Chart Pattern</div>
+    <div class="card card-border-amber">
+      <div class="card-header">Pattern: Staircase Uptrend / ATH Breakout — Newly Listed</div>
+      <p style="font-size:13px;line-height:1.9">Since listing at ~₹1,015 (Aug 2025), the stock has formed a <strong>staircase uptrend</strong> — periods of consolidation followed by sharp breakouts on earnings catalysts. Q3FY26 record results (Nov 2025) triggered the ₹1,500→₹1,760 run. Apr 2026 ATH breakout above ₹1,980 on continued strong quarterly results. The pattern is consistent with <strong>institutional accumulation phase</strong> in a newly-listed quality growth stock. No head-and-shoulders or distribution patterns detected. <span class="v v-v">VERIFIED</span></p>
+      <p style="font-size:13px;margin-top:8px"><strong>Key Levels:</strong> Support 1: ₹1,715 (20-DMA) | Support 2: ₹1,560 (100-DMA) | Support 3: ₹1,350 (200-DMA) | Invalidation: Close below ₹1,500 on high volume.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — Trade Structure</div>
+    <div class="card card-border-amber">
+      <div class="card-header">WATCH — No New Entry at Current ATH</div>
+      <div class="grid-2" style="gap:14px;margin-top:8px">
+        <div>
+          <p style="font-size:13px"><strong>Primary Trigger (Wait for):</strong><br>
+          • Price corrects to ₹1,500–1,600 (15–21% pullback)<br>
+          • RSI drops below 50 on daily chart<br>
+          • Price holds 100-DMA (₹1,560) as support on retest<br>
+          • Volume dry-up on decline (no distribution)</p>
+          <br>
+          <p style="font-size:13px"><strong>Secondary Trigger:</strong><br>
+          • Consolidation sideways 2–3 months at ₹1,700–1,900<br>
+          • RSI resets to 50–55 from overbought<br>
+          • Volume-backed breakout above ₹2,100 ATH</p>
+        </div>
+        <div>
+          <p style="font-size:13px"><strong>Entry Zone:</strong> ₹1,500–1,600<br>
+          <strong>Stop Loss:</strong> ₹1,380 (below 200-DMA)<br>
+          <strong>Target 1:</strong> ₹1,850 (+16–23%)<br>
+          <strong>Target 2:</strong> ₹2,200 (+37–47%)<br>
+          <strong>R:R Ratio:</strong> ~1:2.7 (meets 1:2.5 minimum)<br><br>
+          <strong>Position Sizing:</strong> Cat B high-growth = 3–5% portfolio weight. New listing (<1yr listed) warrants smaller initial position; scale up on profit delivery confirmation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section G — Technical Composite Score</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Dimension</th><th class="num">Score /5</th><th>Comment</th></tr></thead>
+      <tbody>
+        <tr><td>Price Trend</td><td class="num hl-green">5/5</td><td>Above all MAs; ATH territory; strong uptrend</td></tr>
+        <tr><td>Volume/OBV</td><td class="num hl-green">4/5</td><td>Delivery surge; monthly OBV bullish; weekly OBV mixed</td></tr>
+        <tr><td>Momentum (RSI/MACD)</td><td class="num hl-amber">3/5</td><td>MACD bullish but RSI showing bearish divergence at ATH</td></tr>
+        <tr><td>Chart Pattern</td><td class="num hl-green">4/5</td><td>Clean staircase uptrend; no distribution; ATH breakout valid</td></tr>
+        <tr><td>Support/Resistance</td><td class="num hl-amber">3/5</td><td>At ATH = no resistance above. Significant drop to supports.</td></tr>
+        <tr><td>Entry Risk/Reward</td><td class="num hl-red">2/5</td><td>At current price: R:R poor. Need correction for optimal entry.</td></tr>
+        <tr style="background:rgba(240,165,0,0.05)"><td><strong>Total Score</strong></td><td class="num hl-amber"><strong>21/30 = 70%</strong></td><td><strong>Technically BULLISH but EXTENDED. Wait for reset.</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- end tab7 -->
+
+<!-- ═══════════════════════════════════════════ TAB 8: SHAREHOLDING ═══ -->
+<div id="tab8" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Section A — Promoter Holding Trend</div>
+    <div class="alert-green" style="margin-bottom:14px"><strong>Critical Signal (Mar 27, 2026):</strong> Aditya Khemka Trust acquired 1,60,43,999 shares (13.62% of company) via open market/block deal. This is an extraordinary insider buy — the promoter family acquiring 13.62% of the company at market prices. Maximum conviction signal. <span class="v v-v">VERIFIED</span></div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Quarter</th><th class="num">Promoter%</th><th class="num">Change</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Pre-IPO (Jul 2025)</td><td class="num">~90%+</td><td class="num">—</td><td>Pre-listing</td></tr>
+        <tr><td>Q1FY26 (Sep 2025)</td><td class="num">~77.12%</td><td class="num hl-red">-13%</td><td><span class="marginal">IPO dilution</span></td></tr>
+        <tr><td>Q2FY26 (Dec 2025)</td><td class="num">76.91%</td><td class="num neg">-0.21%</td><td><span class="marginal">Marginal decrease</span></td></tr>
+        <tr><td>Q3FY26 (Mar 2026)</td><td class="num hl-green">~90%+?*</td><td class="num hl-green">+13.62% acq</td><td><span class="pass">MASSIVE BUY</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--muted);margin-top:6px">* Q3FY26 shareholding data filed as Regulation 29(1) disclosure showing 13.62% acquisition. Official Q4FY26 shareholding report will confirm the net promoter%. Pledging: 0% — no pledged shares. <span class="badge-green">LOW RISK</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Institutional Holdings (Dec 2025)</div>
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>Investor Category</th><th class="num">Holding%</th><th class="num">Approx Value (₹Cr)</th><th>Trend</th></tr></thead>
+      <tbody>
+        <tr><td>Promoter + Family</td><td class="num hl-amber">76.91%</td><td class="num hl-amber">₹17,153Cr</td><td><span class="pass">BUYING ▲▲</span></td></tr>
+        <tr><td>Mutual Funds (DII)</td><td class="num hl-green">9.37%</td><td class="num">₹2,091Cr</td><td><span class="pass">BUILDING ▲</span></td></tr>
+        <tr><td>FII / FPI</td><td class="num hl-amber">4.37%</td><td class="num">₹975Cr</td><td><span class="marginal">EARLY STAGE</span></td></tr>
+        <tr><td>Insurance / DII-Other</td><td class="num">0.42%</td><td class="num">₹94Cr</td><td>Minimal</td></tr>
+        <tr><td>Retail / Public</td><td class="num">8.53%</td><td class="num">₹1,904Cr</td><td>Stable</td></tr>
+      </tbody>
+    </table>
+    <div class="alert-amber" style="margin-top:10px">
+      <strong>FII Headroom:</strong> FII at 4.37% — still very early in institutional ownership. As CP Plus gains international recognition (Taiwan subsidiary, AI partnerships), FII could build from 4% to 15%+, providing a significant structural price driver. Sectoral FII limit: not SEBI-restricted; general 74% limit with significant headroom.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — Free Float & SIP Mechanics</div>
+    <div class="grid-4" style="gap:12px">
+      <div class="card card-border-amber">
+        <div class="card-header">Free Float</div>
+        <div class="card-val" style="font-size:24px">~23%</div>
+        <div class="card-sub">Of total ~12Cr shares ≈ 2.76Cr float shares</div>
+      </div>
+      <div class="card card-border-amber">
+        <div class="card-header">Float Value</div>
+        <div class="card-val" style="font-size:24px">~₹5,163Cr</div>
+        <div class="card-sub">At ₹1,904. Very tight — price amplification strong</div>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">Index Membership</div>
+        <div class="card-val" style="font-size:16px">Nifty 500</div>
+        <div class="card-sub">Nifty SmallCap 250, BSE AllCap, MidSmallcap 400</div>
+      </div>
+      <div class="card card-border-green">
+        <div class="card-header">Mutual Fund SIP</div>
+        <div class="card-val" style="font-size:16px">Eligible</div>
+        <div class="card-sub">SmallCap category; ~₹20-25Cr est. monthly SIP inflow</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — Ownership Architecture Summary</div>
+    <div class="card">
+      <p style="font-size:13px;line-height:2">
+        The shareholding architecture of CP Plus is <strong>extremely tight</strong>. With 76.91% with promoters and 9.37% with mutual funds, only ~13.7% of shares are truly "tradeable" in the market on any given day. This extreme scarcity of supply is a key reason the stock has doubled since listing — even modest institutional buying can create significant price appreciation. The downside of this structure: when sentiment turns, the illiquid nature can cause sharp corrections.
+        <br><br>
+        <strong>Ownership Momentum Score: 82/100</strong> — Promoter buying at ATH is the highest conviction signal possible. MF accumulation ongoing. FII at 4.37% = massive runway for institutional ownership expansion. STQC catalyst could trigger MSCI small-cap inclusion over next 12–18 months.
+        <br><br>
+        <strong>Shareholding Risk Score: 22/100 (Low)</strong> — Zero pledging. Promoter buying. CRISIL A/Stable. New listing risks (limited liquidity history) partially offset by strong institutional validation.
+      </p>
+    </div>
+  </div>
+</div><!-- end tab8 -->
+
+<!-- ═══════════════════════════════════════════ TAB 9: AI INTEL ═══ -->
+<div id="tab9" class="tab-content">
+
+  <div class="section">
+    <div class="section-title">Section A — AI Classification Dashboard</div>
+    <div class="grid-4" style="gap:14px">
+      <div class="card" style="border:2px solid var(--blue);text-align:center;padding:20px">
+        <div class="card-header">Category</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--blue)">B</div>
+        <div style="font-size:12px;color:var(--muted)">High-Growth Compounder</div>
+      </div>
+      <div class="card" style="border:2px solid var(--green);text-align:center;padding:20px">
+        <div class="card-header">AI Overlay</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--green)">🟢 WIDENER</div>
+        <div style="font-size:12px;color:var(--muted)">AI deepening existing moat</div>
+      </div>
+      <div class="card" style="border:2px solid var(--amber);text-align:center;padding:20px">
+        <div class="card-header">Data Flywheel</div>
+        <div style="font-size:22px;margin:8px 0">★★★</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber)">FORMING</div>
+      </div>
+      <div class="card" style="border:2px solid var(--teal);text-align:center;padding:20px">
+        <div class="card-header">Adoption Phase</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--teal)">3</div>
+        <div style="font-size:12px;color:var(--muted)">AI surveillance: Inflection</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;border:1px solid var(--teal)">
+      <div class="card-header">Adoption Phase 3 Evidence — AI Surveillance in India</div>
+      <p style="font-size:13px;line-height:1.9">India's AI surveillance sector is in <strong>Phase 3 — Inflection (20–40% adoption)</strong>. Evidence: (1) STQC mandate effective April 9, 2026 = government mandating AI-capable standards. (2) 76,000 cameras in 100 cities with command-and-control centers. (3) Facial recognition deployed in Delhi Metro, Bengaluru police, UP Safe City. (4) AI-enabled cameras are the fastest-growing segment in the India CCTV market. (5) L&T, Qualcomm both partnering with CP Plus for AI SoCs = industry-level validation. Winners are clearly emerging (CP Plus in domestic; Hikvision/Axis internationally). Phase 3 is where the <strong>biggest investment returns are generated</strong> — CP Plus is correctly positioned. <span class="v v-e">EST</span></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+
+    <div class="flywheel-box">
+      <div class="flywheel-title">Flywheel Score: 4/10 — FORMING</div>
+      <hr class="divider">
+
+      <div style="margin-bottom:20px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);margin-bottom:8px">QUESTION 1: What is the proprietary training data? (Score: 1/3)</div>
+        <p style="font-size:13px;line-height:1.9">CP Plus cameras capture footage across millions of residential, commercial, and government locations. <strong>However, this data is stored at client premises — not in a centralised CP Plus AI training dataset.</strong> The L&T SoC-powered cameras process video analytically at the edge (edge AI) — meaning the AI runs locally in the camera, not in a centralised cloud where CP Plus learns from all its customers' data. The <strong>VSaaS (Video Surveillance as a Service)</strong> cloud product would change this fundamentally — cloud-hosted video analytics would create a centralised training pool. VSaaS is currently in early stages. <span class="v v-u">UNVERIFIED</span></p>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);margin-bottom:8px">QUESTION 2: How does the AI improve with more data? (Score: 2/4)</div>
+        <p style="font-size:13px;line-height:1.9">AI video analytics (object detection, crowd counting, facial recognition, anomaly detection) structurally improves with more diverse training data. The L&T Semiconductor Vision AI SoC is capable of 8-megapixel AI-enabled surveillance. Qualcomm partnership announced December 2025 specifically focuses on "AI video intelligence." <strong>CP Plus has not publicly disclosed specific AI model accuracy improvement metrics.</strong> The partnership with L&T SoC is promising but the actual improvement mechanism is not yet publicly documented. <span class="v v-e">EST</span></p>
+      </div>
+
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);margin-bottom:8px">QUESTION 3: Does better AI attract more users? (Score: 1/3)</div>
+        <p style="font-size:13px;line-height:1.9">Currently, the flywheel is <strong>regulatory-driven, not data-driven</strong>: STQC certification → government wins → more installations → more field data potential. This is a prerequisite for a data flywheel but not the flywheel itself. <strong>The unlock mechanism is VSaaS:</strong> once CP Plus runs a cloud video analytics platform, every camera on the network improves the model for all other cameras. This is the Naukri/Zomato moment for CP Plus surveillance AI. <strong>Key watch: any VSaaS revenue disclosure or AI platform announcement.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — AI Value Chain Position</div>
+    <div class="vchain">
+      <div class="vchain-level">
+        <span class="lv-num">1</span>
+        INFRA
+        <div style="font-size:9px;margin-top:4px">Semiconductors Power</div>
+      </div>
+      <div class="vchain-level">
+        <span class="lv-num">2</span>
+        MODELS
+        <div style="font-size:9px;margin-top:4px">Foundation AI</div>
+      </div>
+      <div class="vchain-level">
+        <span class="lv-num">3</span>
+        PLATFORMS
+        <div style="font-size:9px;margin-top:4px">Middleware</div>
+      </div>
+      <div class="vchain-level active">
+        <span class="lv-num">4</span>
+        ⭐ VERTICALS
+        <div style="font-size:9px;margin-top:4px">CP PLUS is HERE</div>
+      </div>
+      <div class="vchain-level">
+        <span class="lv-num">5</span>
+        INCUMBENTS
+        <div style="font-size:9px;margin-top:4px">AI-enabled</div>
+      </div>
+    </div>
+    <div class="alert-teal" style="margin-top:10px;background:rgba(78,205,196,0.07);border:1px solid rgba(78,205,196,0.3)">
+      <strong>Level 4 — AI Vertical Application (Surveillance Domain):</strong> CP Plus is building domain-specific AI for the surveillance vertical — the most defensible position in the AI value chain. Domain expertise (knowing surveillance workflows, Indian law enforcement requirements, smart city integrations) is hard to replicate. Risk: if foundation model commoditisation makes "any camera smart," brand + manufacturing scale matters more than AI code. CP Plus's manufacturing moat (Kadapa + STQC) would then be the differentiator. <strong>Investment horizon: 5–7 years to full AI payoff.</strong>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — India AI Opportunity Context</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header">4 India AI Advantages Assessment</div>
+      <table class="data-table">
+        <thead><tr><th>Advantage</th><th>Applicable?</th><th>Explanation</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Data at Scale (UPI/Aadhaar)</td>
+            <td><span class="badge-amber">ADJACENT</span></td>
+            <td>Not directly. CP Plus surveillance data is separate from India Stack. However, SAFE CITY integration with Aadhaar-based facial recognition could become a bridge.</td>
+          </tr>
+          <tr>
+            <td>Language Diversity (Vernacular AI)</td>
+            <td><span class="badge-red">NOT APPLICABLE</span></td>
+            <td>Video surveillance is visual, not linguistic. Language diversity advantage does not apply directly.</td>
+          </tr>
+          <tr>
+            <td>India Stack as Infrastructure</td>
+            <td><span class="badge-amber">PARTIAL</span></td>
+            <td>CP Plus integrates with Smart City Command & Control Centers — which run on India Stack-adjacent infrastructure. ICCC integration is a key go-to-market channel.</td>
+          </tr>
+          <tr>
+            <td>AI Talent Cost Arbitrage</td>
+            <td><span class="badge-green">YES</span></td>
+            <td>India AI/ML engineers at 30–40% of US cost. AIL's R&D in India leverages this for CV/AI model development. L&T SoC partnership was India-designed — talent cost advantage embedded.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <table class="data-table" style="background:var(--card);border-radius:4px">
+      <thead><tr><th>India AI Theme</th><th>Phase</th><th>CP Plus Relevance</th></tr></thead>
+      <tbody>
+        <tr><td>AI in banking/credit</td><td>Phase 3</td><td><span class="badge-grey">None</span></td></tr>
+        <tr><td>AI in logistics/supply</td><td>Phase 2–3</td><td><span class="badge-amber">Adjacent — warehouse monitoring</span></td></tr>
+        <tr><td>AI in diagnostics/health</td><td>Phase 2</td><td><span class="badge-grey">None</span></td></tr>
+        <tr><td>Data centres (infra)</td><td>Phase 3–4</td><td><span class="badge-amber">Adjacent — data centre security</span></td></tr>
+        <tr><td>AI in public safety / Smart City</td><td>Phase 3</td><td><span class="badge-green">DIRECTLY — Core Market ★★★★★</span></td></tr>
+        <tr><td>AI in transportation / traffic</td><td>Phase 3</td><td><span class="badge-green">DIRECTLY — Traffic ANPR cameras ★★★★</span></td></tr>
+        <tr><td>AI in defence / borders</td><td>Phase 2</td><td><span class="badge-green">DIRECTLY — Border security cameras ★★★</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section E — Competitive Moat vs AI Disruption Risk</div>
+    <div class="card card-border-green">
+      <div class="card-header">AI Disruption Assessment for CP Plus</div>
+      <p style="font-size:13px;line-height:1.9">
+        <strong>AI Disruption Risk for CP Plus: LOW–MEDIUM (Moat Resilience: 8/10)</strong><br><br>
+        CP Plus is not at AI disruption risk — it IS the AI story in India surveillance. The risks are more traditional competitive ones:
+        <br><br>
+        1. <span class="hl-amber">Chinese Brand Re-entry:</span> If STQC certification is relaxed (e.g., after India-China trade normalisation), Hikvision/Dahua could re-enter government procurement. This would erode the regulatory moat. <em>Timeline: 3–5 years, conditional on geopolitics.</em><br><br>
+        2. <span class="hl-amber">AI Model Commoditisation:</span> If foundation models (GPT-5-Vision, Gemini Ultra) can be embedded cheaply in any camera, the AI differentiation of CP Plus narrows. <em>Timeline: 5–7 years.</em><br><br>
+        3. <span class="hl-green">Moat strengths resistant to AI disruption:</span> Manufacturing scale at Kadapa (physical asset), STQC certification (regulatory), brand (30yr+), distribution (70,000+ installers), government relationships. These are NOT disrupted by AI — they are the platform ON WHICH AI is deployed.
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — AI Opportunity Verdict & Portfolio Role</div>
+    <div class="grid-2" style="gap:16px">
+      <div>
+        <table class="data-table" style="background:var(--card);border-radius:4px">
+          <thead><tr><th>AI Score Dimension</th><th class="num">Score</th></tr></thead>
+          <tbody>
+            <tr><td>Data Flywheel Strength</td><td class="num hl-amber">8/20 (FORMING)</td></tr>
+            <tr><td>Adoption Phase Timing</td><td class="num hl-green">17/20 (Phase 3)</td></tr>
+            <tr><td>Value Chain Position</td><td class="num hl-green">16/20 (Level 4 ✓)</td></tr>
+            <tr><td>India Structural Advantage</td><td class="num hl-amber">12/20 (PARTIAL)</td></tr>
+            <tr><td>AI Threat Resistance</td><td class="num hl-green">15/20 (Strong moat)</td></tr>
+            <tr style="background:rgba(240,165,0,0.06)"><td><strong>TOTAL AI SCORE</strong></td><td class="num hl-amber"><strong>68/100</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="score-circle" style="width:100px;height:100px;font-size:36px;border-color:var(--amber);margin:0 auto 12px">68<small>/100</small></div>
+        <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px">
+          <span class="badge-amber">STRATEGIC AI BET — 60–80 RANGE</span>
+        </div>
+        <p style="font-size:13px;margin-top:12px">Starter position (2–3% max) on correction. Wait for Phase 2→3 confirmed data flywheel signal before full position. Investment horizon: <strong>5–7 years</strong>. AI story gets stronger as VSaaS scales.</p>
+        <div class="alert-amber" style="margin-top:10px;font-size:12px">
+          <strong>Key Unlock:</strong> When CP Plus announces centralised AI analytics platform (VSaaS) with measurable AI improvement metrics, AI score upgrades to 80–85/100 → CORE AI HOLDING.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end tab9 -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>SEBI DISCLAIMER:</strong> This report is for educational and informational purposes only. It does not constitute investment advice, a solicitation, or a recommendation to buy or sell any security. Past performance is not indicative of future results. Investments in equities are subject to market risk. Please read all scheme-related documents carefully and consult a SEBI-registered investment advisor before making investment decisions. The author/analyst may or may not have positions in the securities mentioned. This analysis is based on publicly available information and data fetched from web sources as of April 17, 2026.
+  <br><br>
+  <strong>DATA SOURCES:</strong> NSE India, BSE India, Screener.in, Trendlyne, Tickertape, Mordor Intelligence, PIB, RBI, Aditya Infotech Exchange Filings.
+  &nbsp;|&nbsp; <strong>Data Confidence:</strong> <span style="color:var(--verified)">[VERIFIED] = official source this session</span> &nbsp;|&nbsp; <span style="color:var(--estimated)">[ESTIMATED] = cross-referenced</span> &nbsp;|&nbsp; <span style="color:var(--unverified)">[UNVERIFIED] = limited source</span>
+  <br><br>
+  <strong>FONTS:</strong> Bebas Neue / JetBrains Mono / Lora — Google Fonts &nbsp;|&nbsp; <strong>Framework:</strong> Buffett Quality-Value Series v5.0 &nbsp;|&nbsp; <strong>Report Date:</strong> April 17, 2026 &nbsp;|&nbsp; <strong>File:</strong> CPPLUS_qv_report.html
+</div>
+
+<script>
+  var TAB_BAR_TOP = 0;
+
+  window.addEventListener('load', function () {
+    var tabBar = document.getElementById('tab-bar');
+    if (tabBar) {
+      var el = tabBar, top = 0;
+      while (el) { top += el.offsetTop; el = el.offsetParent; }
+      TAB_BAR_TOP = top;
+    }
+  });
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(function (el) {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+    document.getElementById(tabId).style.display = 'block';
+    var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+    if (activeBtn) { activeBtn.classList.add('active'); }
+    window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

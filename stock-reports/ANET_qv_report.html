@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANET — Buffett Quality-Value Report | BQV Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080c12;
+  --surface:#0d1420;
+  --surface2:#121b2a;
+  --border:#1a2840;
+  --border2:#243550;
+  --text:#e8edf5;
+  --muted:#6b8099;
+  --accent:#00b8ff;
+  --accent2:#00e5c9;
+  --copper:#e07b39;
+  --copper2:#f59b56;
+  --green:#00d68f;
+  --red:#ff4d6d;
+  --yellow:#ffd666;
+  --purple:#a855f7;
+  --glow:rgba(0,184,255,0.15);
+  --glow2:rgba(0,229,201,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+
+/* CIRCUIT BACKGROUND */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background-image:
+    linear-gradient(rgba(0,184,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,184,255,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+
+/* TABS */
+.tab-bar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(8,12,18,0.96);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;overflow-x:auto;gap:0;
+  padding:0 16px;
+}
+.tab-bar::-webkit-scrollbar{height:3px}
+.tab-bar::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+.tab-btn{
+  flex:none;padding:12px 18px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;border:none;background:transparent;
+  color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;
+  transition:all 0.2s;white-space:nowrap;
+}
+.tab-btn:hover{color:var(--accent)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* PANELS */
+.panel{display:none;position:relative;z-index:1}
+.panel.active{display:block}
+.container{max-width:1100px;margin:0 auto;padding:40px 24px}
+
+/* HEADER CARD */
+.hero{
+  background:linear-gradient(135deg,#080f1e 0%,#0a1628 50%,#0d1f38 100%);
+  border:1px solid var(--border2);
+  border-radius:16px;padding:48px;
+  position:relative;overflow:hidden;margin-bottom:32px;
+}
+.hero::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(0,184,255,0.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-40px;left:40%;width:200px;height:200px;
+  background:radial-gradient(circle,rgba(0,229,201,0.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.ticker-badge{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#000;font-family:'Syne',sans-serif;font-weight:800;
+  font-size:11px;letter-spacing:0.15em;padding:4px 12px;border-radius:4px;
+  margin-bottom:16px;text-transform:uppercase;
+}
+.hero h1{
+  font-family:'Syne',sans-serif;font-size:52px;font-weight:800;
+  letter-spacing:-0.02em;color:#fff;line-height:1;margin-bottom:8px;
+}
+.hero h2{
+  font-family:'Instrument Serif',serif;font-size:22px;font-style:italic;
+  color:var(--accent2);margin-bottom:24px;font-weight:400;
+}
+.hero-meta{display:flex;gap:32px;flex-wrap:wrap;margin-bottom:32px}
+.hero-meta-item{display:flex;flex-direction:column;gap:4px}
+.hero-meta-item label{font-size:10px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase}
+.hero-meta-item span{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff}
+
+/* VERDICT BOX */
+.verdict-box{
+  display:inline-flex;align-items:center;gap:12px;
+  background:rgba(255,214,102,0.08);border:1px solid rgba(255,214,102,0.3);
+  border-radius:10px;padding:16px 24px;
+}
+.verdict-label{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--yellow)}
+.verdict-stars{font-size:18px;color:var(--yellow)}
+
+/* SCORECARD GRID */
+.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.score-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:20px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.score-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+}
+.score-card .grade{
+  font-family:'Syne',sans-serif;font-size:36px;font-weight:800;
+  color:var(--accent);line-height:1;margin-bottom:6px;
+}
+.score-card .label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
+
+/* AI OVERLAY */
+.ai-overlay{
+  background:linear-gradient(135deg,rgba(0,229,201,0.05),rgba(0,184,255,0.05));
+  border:1px solid rgba(0,229,201,0.2);
+  border-radius:12px;padding:20px 24px;margin-bottom:32px;
+  display:flex;align-items:center;gap:16px;
+}
+.ai-badge{font-size:28px}
+.ai-text h4{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--accent2);margin-bottom:4px}
+.ai-text p{color:var(--muted);font-size:12px}
+
+/* SECTION TITLES */
+.section-title{
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);
+  margin-bottom:20px;display:flex;align-items:center;gap:10px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* DATA BLOCKS */
+.data-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:10px 0;border-bottom:1px solid var(--border);
+}
+.data-row:last-child{border-bottom:none}
+.data-row .key{color:var(--muted);font-size:12px}
+.data-row .val{font-family:'Syne',sans-serif;font-weight:600;font-size:13px;color:#fff}
+.val.positive{color:var(--green)}
+.val.negative{color:var(--red)}
+.val.accent{color:var(--accent)}
+.val.copper{color:var(--copper2)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+.card-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.card-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+
+/* METRIC HIGHLIGHT */
+.metric-highlight{
+  background:linear-gradient(135deg,#0d1f38,#091528);
+  border:1px solid var(--border2);border-radius:10px;padding:16px;
+  display:flex;flex-direction:column;gap:4px;
+}
+.metric-highlight .big{
+  font-family:'Syne',sans-serif;font-size:28px;font-weight:800;
+  color:var(--accent2);line-height:1;
+}
+.metric-highlight .sub{font-size:11px;color:var(--muted)}
+.metric-highlight .chg{font-size:12px;color:var(--green);font-weight:600}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{
+  background:var(--surface2);color:var(--muted);
+  font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:10px 14px;text-align:right;border-bottom:1px solid var(--border);
+}
+.data-table th:first-child{text-align:left}
+.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;color:#cdd5e0}
+.data-table td:first-child{text-align:left;color:var(--muted)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(0,184,255,0.04)}
+.data-table .highlight td{color:var(--accent);font-weight:600}
+
+/* PROGRESS BAR */
+.progress-wrap{margin-bottom:14px}
+.progress-label{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px}
+.progress-label .pkey{color:var(--muted)}
+.progress-label .pval{color:#fff;font-weight:600}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-bar .fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.progress-bar .fill.copper{background:linear-gradient(90deg,var(--copper),var(--copper2))}
+.progress-bar .fill.green{background:linear-gradient(90deg,#00a86b,var(--green))}
+
+/* THESIS BLOCK */
+.thesis-block{
+  background:linear-gradient(135deg,rgba(0,184,255,0.04),rgba(0,229,201,0.04));
+  border-left:3px solid var(--accent);
+  border-radius:0 10px 10px 0;
+  padding:20px 24px;margin-bottom:24px;
+}
+.thesis-block p{font-family:'Instrument Serif',serif;font-size:16px;font-style:italic;
+  color:#cdd5e0;line-height:1.7}
+
+/* RISK PILL */
+.risk-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.risk-pill{
+  padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;
+  letter-spacing:0.05em;border:1px solid;
+}
+.risk-high{background:rgba(255,77,109,0.08);color:var(--red);border-color:rgba(255,77,109,0.25)}
+.risk-med{background:rgba(255,214,102,0.08);color:var(--yellow);border-color:rgba(255,214,102,0.25)}
+.risk-low{background:rgba(0,214,143,0.08);color:var(--green);border-color:rgba(0,214,143,0.25)}
+
+/* MOAT SOURCE */
+.moat-item{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:16px 20px;margin-bottom:12px;
+}
+.moat-item h4{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:0.08em;color:var(--accent);margin-bottom:6px;text-transform:uppercase}
+.moat-item p{color:var(--muted);font-size:12px;line-height:1.6}
+.moat-strength{
+  display:inline-block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:2px 8px;border-radius:3px;background:rgba(0,214,143,0.1);
+  color:var(--green);border:1px solid rgba(0,214,143,0.2);margin-top:8px;
+}
+
+/* VALUATION CARD */
+.val-method{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:16px;margin-bottom:12px;
+}
+.val-method-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.val-method-head h4{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--copper2)}
+.val-method-head span{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff}
+.val-method p{font-size:11px;color:var(--muted);line-height:1.5}
+.val-range{
+  display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;
+}
+.val-range span{color:var(--muted)}
+.val-range strong{color:var(--accent)}
+
+/* FLYWHEEL */
+.flywheel-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flywheel-item{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+}
+.flywheel-item h4{font-size:11px;color:var(--accent2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;font-weight:700}
+.flywheel-item p{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* WATCH CONDITIONS */
+.condition-item{
+  display:flex;gap:14px;align-items:flex-start;
+  padding:14px;background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:10px;
+}
+.condition-num{
+  width:28px;height:28px;border-radius:50%;flex:none;
+  background:rgba(0,184,255,0.1);border:1px solid rgba(0,184,255,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--accent);
+}
+.condition-text h4{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#fff;margin-bottom:4px}
+.condition-text p{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:var(--border2)}
+.timeline-item{position:relative;margin-bottom:24px}
+.timeline-item::before{
+  content:'';position:absolute;left:-22px;top:6px;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--accent);border:2px solid var(--bg);
+}
+.timeline-item h4{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.timeline-item p{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* BADGE */
+.badge{
+  display:inline-block;padding:3px 10px;border-radius:4px;font-size:11px;
+  font-weight:700;letter-spacing:0.06em;margin-right:6px;
+}
+.badge-buy{background:rgba(0,214,143,0.12);color:var(--green);border:1px solid rgba(0,214,143,0.3)}
+.badge-watch{background:rgba(255,214,102,0.12);color:var(--yellow);border:1px solid rgba(255,214,102,0.3)}
+.badge-avoid{background:rgba(255,77,109,0.12);color:var(--red);border:1px solid rgba(255,77,109,0.3)}
+
+/* NOTICE */
+.notice{
+  background:rgba(224,123,57,0.08);border:1px solid rgba(224,123,57,0.2);
+  border-radius:8px;padding:12px 16px;margin-bottom:16px;
+  font-size:12px;color:var(--copper2);
+}
+.notice strong{font-weight:700}
+
+/* Q TICKER */
+.q-ticker{
+  display:flex;gap:24px;background:rgba(0,184,255,0.04);
+  border:1px solid var(--border);border-radius:10px;padding:16px;
+  margin-bottom:24px;overflow-x:auto;
+}
+.q-tick-item{flex:none;text-align:center}
+.q-tick-item label{display:block;font-size:10px;color:var(--muted);letter-spacing:0.08em;margin-bottom:4px}
+.q-tick-item span{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--accent2)}
+
+/* SUMMARY GRID */
+.summary-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* FOOTER */
+.report-footer{
+  margin-top:48px;padding-top:24px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:11px;color:var(--muted);
+}
+
+@media(max-width:700px){
+  .score-grid{grid-template-columns:repeat(2,1fr)}
+  .card-2col,.card-3col,.flywheel-grid,.summary-2{grid-template-columns:1fr}
+  .hero h1{font-size:36px}
+}
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('t1',this)">① Overview</button>
+  <button class="tab-btn" onclick="showTab('t2',this)">② Moat</button>
+  <button class="tab-btn" onclick="showTab('t3',this)">③ Financials</button>
+  <button class="tab-btn" onclick="showTab('t4',this)">④ Management</button>
+  <button class="tab-btn" onclick="showTab('t5',this)">⑤ Valuation</button>
+  <button class="tab-btn" onclick="showTab('t6',this)">⑥ AI Overlay</button>
+  <button class="tab-btn" onclick="showTab('t7',this)">⑦ Risks</button>
+  <button class="tab-btn" onclick="showTab('t8',this)">⑧ Catalysts</button>
+  <button class="tab-btn" onclick="showTab('t9',this)">⑨ Watch Conditions</button>
+  <button class="tab-btn" onclick="showTab('t10',this)">⑩ Verdict</button>
+</div>
+
+<!-- ============================================================ TAB 1: OVERVIEW ============================================================ -->
+<div id="t1" class="panel active">
+<div class="container">
+
+<div class="hero">
+  <div class="ticker-badge">NYSE: ANET — BQV Series v5.0</div>
+  <h1>Arista Networks</h1>
+  <h2>The Ethernet Spine of the AI Era</h2>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><label>Sector</label><span>Networking / Infrastructure</span></div>
+    <div class="hero-meta-item"><label>Market</label><span>NYSE</span></div>
+    <div class="hero-meta-item"><label>Current Price</label><span>$142</span></div>
+    <div class="hero-meta-item"><label>Market Cap</label><span>~$185B</span></div>
+    <div class="hero-meta-item"><label>FY2025 Revenue</label><span>$9.01B</span></div>
+    <div class="hero-meta-item"><label>Analysis Date</label><span>May 19, 2026</span></div>
+  </div>
+  <div class="verdict-box">
+    <div class="verdict-label">WATCH ★★★★</div>
+    <div style="font-size:12px;color:var(--muted);max-width:400px;margin-left:8px">Exceptional business at fair value. Accumulate on meaningful pullbacks — target entry $100–115.</div>
+  </div>
+</div>
+
+<div class="score-grid">
+  <div class="score-card">
+    <div class="grade">A</div>
+    <div class="label">Moat</div>
+  </div>
+  <div class="score-card">
+    <div class="grade">A</div>
+    <div class="label">Financial Quality</div>
+  </div>
+  <div class="score-card">
+    <div class="grade">A-</div>
+    <div class="label">Management</div>
+  </div>
+  <div class="score-card">
+    <div class="grade" style="color:var(--copper2)">C+</div>
+    <div class="label">Valuation</div>
+  </div>
+</div>
+
+<div class="ai-overlay">
+  <div class="ai-badge">🟢</div>
+  <div class="ai-text">
+    <h4>AI OVERLAY: WIDENER</h4>
+    <p>AI is fundamentally expanding Arista's TAM. AI center networking revenue goal raised to $3.25B for 2026. The shift to 800GbE/1.6Tbps Ethernet for GPU clusters directly widens Arista's addressable market and moat.</p>
+  </div>
+</div>
+
+<div class="thesis-block">
+  <p>Arista is the operating system of the AI datacenter — a software-moated networking company hiding inside a hardware vendor body. EOS, its single-image OS that runs across every device, has become the de facto standard for hyperscalers and AI titans building 100K+ GPU clusters, creating switching costs so high that displacement risk is near zero at scale.</p>
+</div>
+
+<div class="section-title">Business Snapshot</div>
+
+<div class="q-ticker">
+  <div class="q-tick-item"><label>FY2025 Rev</label><span>$9.01B</span></div>
+  <div class="q-tick-item"><label>YoY Growth</label><span>+28.6%</span></div>
+  <div class="q-tick-item"><label>Gross Margin</label><span>64.1%</span></div>
+  <div class="q-tick-item"><label>Op. Margin</label><span>42.8%</span></div>
+  <div class="q-tick-item"><label>Net Income</label><span>$3.51B</span></div>
+  <div class="q-tick-item"><label>Net Cash</label><span>$12.35B</span></div>
+  <div class="q-tick-item"><label>FCF (TTM)</label><span>$5.28B</span></div>
+  <div class="q-tick-item"><label>2026 Guidance</label><span>$11.25B</span></div>
+</div>
+
+<div class="card-3col">
+  <div class="metric-highlight">
+    <div class="sub">FY2025 Revenue</div>
+    <div class="big">$9.01B</div>
+    <div class="chg">▲ 28.6% YoY</div>
+  </div>
+  <div class="metric-highlight">
+    <div class="sub">FCF Margin (TTM)</div>
+    <div class="big">~54%</div>
+    <div class="chg">Best-in-class hardware</div>
+  </div>
+  <div class="metric-highlight">
+    <div class="sub">Net Cash Position</div>
+    <div class="big">$12.35B</div>
+    <div class="chg">Zero financial debt</div>
+  </div>
+</div>
+
+<div class="section-title">Revenue Segments (FY2025)</div>
+<div class="card-2col">
+  <div class="card">
+    <div class="data-row"><span class="key">AI & Cloud Titans</span><span class="val positive">~48% of revenue</span></div>
+    <div class="data-row"><span class="key">Enterprise & Financials</span><span class="val accent">~32% of revenue</span></div>
+    <div class="data-row"><span class="key">AI & Specialty Providers</span><span class="val copper">~20% of revenue</span></div>
+    <div class="data-row"><span class="key">AI Centers Revenue 2025</span><span class="val positive">$1.5B (goal exceeded)</span></div>
+    <div class="data-row"><span class="key">Campus & Branch 2025</span><span class="val accent">$800M (goal exceeded)</span></div>
+  </div>
+  <div class="card">
+    <div class="data-row"><span class="key">Product Revenue</span><span class="val">~83% of total</span></div>
+    <div class="data-row"><span class="key">Service Revenue</span><span class="val accent">~17% of total (recurring)</span></div>
+    <div class="data-row"><span class="key">NA Geography</span><span class="val">~75% of revenue</span></div>
+    <div class="data-row"><span class="key">Intl Growth 2025</span><span class="val positive">>40% (Asia + Europe)</span></div>
+    <div class="data-row"><span class="key">2026 AI Goal (raised)</span><span class="val copper">$3.25B</span></div>
+  </div>
+</div>
+
+<div class="section-title">BQV Category Classification</div>
+<div class="card">
+  <div class="data-row"><span class="key">BQV Category</span><span class="val accent">Category B — High-Growth Compounder</span></div>
+  <div class="data-row"><span class="key">Revenue Growth (3yr CAGR)</span><span class="val positive">~27% annually</span></div>
+  <div class="data-row"><span class="key">Gross Margin</span><span class="val positive">64.1% GAAP | 64.6% Non-GAAP</span></div>
+  <div class="data-row"><span class="key">Capital Intensity</span><span class="val positive">Very Low (Capex ~$145M on $9B rev)</span></div>
+  <div class="data-row"><span class="key">Data Flywheel</span><span class="val accent">Confirmed — NetDL + EOS telemetry</span></div>
+</div>
+
+<div class="report-footer">
+  <span>ANET — Buffett Quality-Value Series v5.0</span>
+  <span>Analysis Date: May 19, 2026 | BQV Framework © Dayanand Research</span>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ TAB 2: MOAT ============================================================ -->
+<div id="t2" class="panel">
+<div class="container">
+
+<div class="section-title">Economic Moat Analysis — Grade: A</div>
+
+<div class="thesis-block">
+  <p>Arista's moat is a rare combination of software lock-in masquerading as hardware switching. The Extensible Operating System (EOS) — a single image running across every Arista device — is the true value nucleus. Once embedded at hyperscaler scale, EOS becomes the neural fabric of the datacenter, generating switching costs that make displacement near-impossible without a complete network re-architecture.</p>
+</div>
+
+<div class="moat-item">
+  <h4>🔒 Switching Cost Moat — EOS Lock-In</h4>
+  <p>EOS is a publish-subscribe, state-sharing networking OS with a single consistent software image across all platforms. Customers build automation, telemetry pipelines, and operational toolchains atop EOS. Ripping and replacing means re-training staff, rebuilding DevOps pipelines, and migrating years of operational data. At 100K GPU scale — as at Meta and Microsoft — switching costs approach billions in migration risk.</p>
+  <span class="moat-strength">Strength: Very High</span>
+</div>
+
+<div class="moat-item">
+  <h4>📡 Network Effects — CloudVision + NetDL</h4>
+  <p>CloudVision (the network management plane) aggregates telemetry from every port across a customer's global fleet. This creates a proprietary Network Data Lake (NetDL) — each incremental device makes the network smarter and the analytics richer. Over time, competitors can't replicate years of accumulated training data for AVA (Arista Virtual Assist), Arista's AI network copilot.</p>
+  <span class="moat-strength">Strength: High and Forming</span>
+</div>
+
+<div class="moat-item">
+  <h4>🏗️ AI Networking Standard — Ultra Ethernet Consortium</h4>
+  <p>Arista co-founded the Ultra Ethernet Consortium with Broadcom, Intel, Cisco, and AMD to build open AI fabric standards. Competing against Nvidia's InfiniBand proprietary stack, Arista is betting the AI networking future is Ethernet-based and open. As the largest pure-play Ethernet specialist with 800GbE and emerging 1.6Tbps portfolio, this is a structural tailwind — not just a positioning bet. Meta and Microsoft are standardizing on Arista Ethernet AI fabric.</p>
+  <span class="moat-strength">Strength: High</span>
+</div>
+
+<div class="moat-item">
+  <h4>💎 Intangible Assets — Engineering Brand & Talent</h4>
+  <p>Founded by networking legends (Andy Bechtolsheim, Kenneth Duda, David Cheriton), Arista has an engineering culture that attracts top networking talent. Its 93% NPS score in 2025 is unheard of in enterprise networking. The brand commands premium pricing — Arista switches cost more than comparable Cisco hardware, yet customers pay willingly for EOS reliability and zero-bug culture.</p>
+  <span class="moat-strength">Strength: High</span>
+</div>
+
+<div class="moat-item">
+  <h4>⚡ Merchant Silicon Strategy — Cost Moat</h4>
+  <p>By standardizing on Broadcom merchant silicon, Arista avoids the multi-billion R&D burden of custom ASIC design. This focuses all engineering capital on EOS software differentiation while matching competitors on raw hardware performance. The result: best-in-class gross margins (64%+) for a hardware company and faster time-to-market on each new generation.</p>
+  <span class="moat-strength">Strength: Medium-High</span>
+</div>
+
+<div class="section-title">Competitive Position</div>
+<div class="card-2col">
+  <div class="card">
+    <div class="section-title" style="font-size:11px">Vs. Cisco (Legacy)</div>
+    <div class="data-row"><span class="key">Revenue Growth</span><span class="val positive">ANET +28.6% vs CSCO ~flat</span></div>
+    <div class="data-row"><span class="key">Gross Margin</span><span class="val positive">ANET 64% vs CSCO 68% (CSCO software-heavy)</span></div>
+    <div class="data-row"><span class="key">AI Networking</span><span class="val positive">ANET dominant, CSCO legacy-weighted</span></div>
+    <div class="data-row"><span class="key">5yr Market Share</span><span class="val positive">ANET gaining rapidly in datacenter</span></div>
+  </div>
+  <div class="card">
+    <div class="section-title" style="font-size:11px">Vs. Nvidia InfiniBand (AI)</div>
+    <div class="data-row"><span class="key">Protocol</span><span class="val accent">Ethernet (open) vs InfiniBand (proprietary)</span></div>
+    <div class="data-row"><span class="key">Customer Lock-in</span><span class="val positive">ANET: software; Nvidia: hardware + software</span></div>
+    <div class="data-row"><span class="key">Meta, Microsoft</span><span class="val positive">Standardizing on ANET Ethernet fabric</span></div>
+    <div class="data-row"><span class="key">Coexistence Risk</span><span class="val accent">Low — different use cases, complementary</span></div>
+  </div>
+</div>
+
+<div class="section-title">Moat Durability Assessment</div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Switching Cost Depth</span><span class="pval">92/100</span></div><div class="progress-bar"><div class="fill" style="width:92%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Network Effects (Data Flywheel)</span><span class="pval">75/100</span></div><div class="progress-bar"><div class="fill" style="width:75%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Intangible Assets (EOS + Brand)</span><span class="pval">88/100</span></div><div class="progress-bar"><div class="fill" style="width:88%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Cost Advantage (Merchant Silicon)</span><span class="pval">72/100</span></div><div class="progress-bar"><div class="fill" style="width:72%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">AI Networking Standard Positioning</span><span class="pval">85/100</span></div><div class="progress-bar"><div class="fill" style="width:85%"></div></div></div>
+
+<div class="section-title">Data Flywheel Status</div>
+<div class="flywheel-grid">
+  <div class="flywheel-item"><h4>🔵 Confirmed Flywheel</h4><p>EOS telemetry → NetDL → AVA AI assists → better operational insights → more customers adopt CloudVision → more data. This cycle is confirmed and strengthening.</p></div>
+  <div class="flywheel-item"><h4>📊 Flywheel Score</h4><p style="font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--accent2)">8/10</p><p style="font-size:11px">Confirmed category. 150M+ cumulative ports → massive operational dataset.</p></div>
+  <div class="flywheel-item"><h4>🤖 AVA (AI Network Assist)</h4><p>Natural language interface for network ops, security queries, and observability. Trained on Arista's proprietary NetDL dataset — creating a defensible AI moat within the moat.</p></div>
+  <div class="flywheel-item"><h4>📈 Strengthening Dynamics</h4><p>150M cumulative ports shipped as of Q4 2025. Each port generates telemetry. At 1.6Tbps+ switches, data volume per port multiplies exponentially. Moat deepens with each cycle.</p></div>
+</div>
+
+<div class="report-footer">
+  <span>ANET — Moat Analysis</span>
+  <span>BQV Series v5.0 | May 2026</span>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ TAB 3: FINANCIALS ============================================================ -->
+<div id="t3" class="panel">
+<div class="container">
+
+<div class="section-title">Financial Quality — Grade: A</div>
+
+<div class="card-3col">
+  <div class="metric-highlight">
+    <div class="sub">FY2025 Revenue</div>
+    <div class="big">$9.01B</div>
+    <div class="chg">▲ +28.6% YoY</div>
+  </div>
+  <div class="metric-highlight">
+    <div class="sub">GAAP Gross Margin</div>
+    <div class="big">64.1%</div>
+    <div class="chg">vs 61.9% FY2023</div>
+  </div>
+  <div class="metric-highlight">
+    <div class="sub">GAAP Net Income</div>
+    <div class="big">$3.51B</div>
+    <div class="chg">▲ +23% YoY</div>
+  </div>
+</div>
+
+<div class="section-title">Revenue Growth History</div>
+<table class="data-table">
+  <thead><tr>
+    <th>Metric</th><th>FY2022</th><th>FY2023</th><th>FY2024</th><th>FY2025</th><th>Q1 2026</th>
+  </tr></thead>
+  <tbody>
+    <tr><td>Revenue ($B)</td><td>$4.38</td><td>$5.86</td><td>$7.00</td><td>$9.01</td><td>$2.71</td></tr>
+    <tr><td>YoY Growth</td><td>+48.6%</td><td>+33.8%</td><td>+19.5%</td><td>+28.6%</td><td>+35%</td></tr>
+    <tr class="highlight"><td>Gross Margin</td><td>61.1%</td><td>61.9%</td><td>64.1%</td><td>64.1%</td><td>63.7%</td></tr>
+    <tr><td>Operating Margin</td><td>~32%</td><td>~36%</td><td>~40.7%</td><td>42.8%</td><td>~43%</td></tr>
+    <tr><td>Net Income ($B)</td><td>$1.35</td><td>$2.09</td><td>$2.85</td><td>$3.51</td><td>$1.02</td></tr>
+    <tr class="highlight"><td>Net Margin</td><td>~31%</td><td>~36%</td><td>40.7%</td><td>39.0%</td><td>37.6%</td></tr>
+    <tr><td>EPS (Diluted, GAAP)</td><td>$1.07</td><td>$1.65</td><td>$2.23</td><td>$2.75</td><td>$0.81</td></tr>
+  </tbody>
+</table>
+
+<div class="section-title">Cash Flow Quality (O'Glove Framework)</div>
+<div class="card-2col">
+  <div class="card">
+    <div class="section-title" style="font-size:11px">Cash Flow Tests</div>
+    <div class="data-row"><span class="key">OCF FY2024</span><span class="val positive">$3.71B (130% of net income)</span></div>
+    <div class="data-row"><span class="key">FCF FY2024</span><span class="val positive">~$3.67B (52% FCF margin)</span></div>
+    <div class="data-row"><span class="key">FCF (TTM to Q1'26)</span><span class="val positive">$5.28B (54% of revenue)</span></div>
+    <div class="data-row"><span class="key">CFO/Op. Profit Ratio</span><span class="val positive">&gt;1.0x — excellent quality</span></div>
+    <div class="data-row"><span class="key">Capex Intensity</span><span class="val positive">~$145M on $9B rev = 1.6%</span></div>
+    <div class="data-row"><span class="key">Working Capital</span><span class="val positive">Clean — no concerning buildup</span></div>
+  </div>
+  <div class="card">
+    <div class="section-title" style="font-size:11px">Balance Sheet Fortress</div>
+    <div class="data-row"><span class="key">Cash + ST Investments</span><span class="val positive">$12.35B</span></div>
+    <div class="data-row"><span class="key">Total Debt</span><span class="val positive">~None (debt-free)</span></div>
+    <div class="data-row"><span class="key">Net Cash Position</span><span class="val positive">$12.35B ($9.81/share)</span></div>
+    <div class="data-row"><span class="key">Current Ratio</span><span class="val positive">~3.05x</span></div>
+    <div class="data-row"><span class="key">Interest Income (est.)</span><span class="val accent">~$400-500M annually</span></div>
+    <div class="data-row"><span class="key">Share Buyback Auth.</span><span class="val copper">$1.5B (May 2026) + prior</span></div>
+  </div>
+</div>
+
+<div class="section-title">Profitability Benchmarks</div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Gross Margin (64.1%)</span><span class="pval">100/100 vs hardware peers</span></div><div class="progress-bar"><div class="fill" style="width:100%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Operating Margin (42.8%)</span><span class="pval">100/100 vs sector</span></div><div class="progress-bar"><div class="fill" style="width:100%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">FCF Margin (~54% TTM)</span><span class="pval">100/100 extraordinary</span></div><div class="progress-bar"><div class="fill" style="width:100%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">ROIC (TTM ~237%)</span><span class="pval">100/100 — capital-light model</span></div><div class="progress-bar"><div class="fill" style="width:100%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">ROE (31.5%)</span><span class="pval">88/100</span></div><div class="progress-bar"><div class="fill green" style="width:88%"></div></div></div>
+
+<div class="section-title">Buffett Financial Quality Tests</div>
+<table class="data-table">
+  <thead><tr><th>Test</th><th>Threshold</th><th>ANET Actual</th><th>Pass?</th></tr></thead>
+  <tbody>
+    <tr><td>Gross Margin Consistency</td><td>&gt;40%</td><td>64.1% (expanding)</td><td style="color:var(--green)">✓ PASS</td></tr>
+    <tr><td>Net Margin Stability</td><td>&gt;15%</td><td>39% (FY2025)</td><td style="color:var(--green)">✓ PASS</td></tr>
+    <tr><td>Low Capex Intensity</td><td>&lt;20% of earnings</td><td>~4% of net income</td><td style="color:var(--green)">✓ PASS</td></tr>
+    <tr><td>Debt-Free / Low Debt</td><td>D/E &lt; 1x</td><td>Debt-free; net cash</td><td style="color:var(--green)">✓ PASS</td></tr>
+    <tr class="highlight"><td>FCF Conversion</td><td>CFO &gt; Net Income</td><td>130%+ conversion</td><td style="color:var(--green)">✓ PASS</td></tr>
+    <tr><td>Revenue Growth 5yr CAGR</td><td>&gt;10% sustained</td><td>~30% CAGR</td><td style="color:var(--green)">✓ PASS</td></tr>
+    <tr><td>Earnings Quality</td><td>No aggressive accounting</td><td>Clean; GAAP ≈ Non-GAAP</td><td style="color:var(--green)">✓ PASS</td></tr>
+    <tr><td>Share Count Trend</td><td>Flat or declining</td><td>Declining (-0.52% YoY via buybacks)</td><td style="color:var(--green)">✓ PASS</td></tr>
+  </tbody>
+</table>
+
+<div class="section-title">FY2026 Forward Outlook</div>
+<div class="card">
+  <div class="data-row"><span class="key">2026 Revenue Guidance (raised)</span><span class="val copper">$11.25B (+25% YoY)</span></div>
+  <div class="data-row"><span class="key">2026 AI Centers Goal (raised)</span><span class="val copper">$3.25B</span></div>
+  <div class="data-row"><span class="key">2026 Campus Revenue Goal</span><span class="val accent">$1.25B (maintained)</span></div>
+  <div class="data-row"><span class="key">Q2 2026 Revenue Guidance</span><span class="val positive">~$2.8B (+35% YoY est.)</span></div>
+  <div class="data-row"><span class="key">Non-GAAP Op. Margin Guidance 2026</span><span class="val positive">~46% (raised)</span></div>
+  <div class="data-row"><span class="key">Q1 2026 Actual Revenue</span><span class="val positive">$2.71B (+35% YoY, beat est. $2.62B)</span></div>
+  <div class="data-row"><span class="key">Q1 2026 Actual Net Income</span><span class="val positive">$1.02B (+26% YoY)</span></div>
+</div>
+
+<div class="notice"><strong>Note:</strong> Supply chain constraints on 800GbE components mentioned in Q1 2026 call — constraining shipments but not demand. Management confirmed strong backlog. Watch gross margin trajectory near-term (Q4 2025 GAAP GM dipped to 62.9%, recovered to 63.7% in Q1 2026).</div>
+
+<div class="report-footer">
+  <span>ANET — Financial Quality Analysis</span>
+  <span>BQV Series v5.0 | May 2026</span>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ TAB 4: MANAGEMENT ============================================================ -->
+<div id="t4" class="panel">
+<div class="container">
+
+<div class="section-title">Management Quality — Grade: A-</div>
+
+<div class="thesis-block">
+  <p>Jayshree Ullal is one of the most respected technology CEOs in the world — a rare founder-spirit operator who joined in 2008 and built Arista from a niche data-center startup into a $185B AI networking powerhouse. Her direct ownership (2.3%+) aligns deeply with shareholders. The leadership bench — Bechtolsheim, Duda, Nightingale — is industry elite.</p>
+</div>
+
+<div class="section-title">Key Leadership</div>
+<div class="card-2col">
+  <div class="card">
+    <div class="data-row"><span class="key">CEO & Chairperson</span><span class="val accent">Jayshree Ullal (since Oct 2008)</span></div>
+    <div class="data-row"><span class="key">Tenure</span><span class="val positive">~17.5 years — exceptional continuity</span></div>
+    <div class="data-row"><span class="key">CEO Compensation</span><span class="val">$8.95M (96.6% equity-linked)</span></div>
+    <div class="data-row"><span class="key">Say-on-Pay Approval</span><span class="val positive">93% (2024) — strong alignment</span></div>
+    <div class="data-row"><span class="key">Chief Architect</span><span class="val accent">Andy Bechtolsheim (co-founder, legend)</span></div>
+    <div class="data-row"><span class="key">President & CTO</span><span class="val">Kenneth Duda (co-founder, EOS architect)</span></div>
+    <div class="data-row"><span class="key">President & COO</span><span class="val">Todd Nightingale (ex-Cisco, proven)</span></div>
+    <div class="data-row"><span class="key">CFO</span><span class="val">Chantelle Breithaupt (disciplined, clear)</span></div>
+  </div>
+  <div class="card">
+    <div class="section-title" style="font-size:11px">Ownership & Skin in Game</div>
+    <div class="data-row"><span class="key">Ullal Total Holdings</span><span class="val positive">~37.35M shares ($5.0B value)</span></div>
+    <div class="data-row"><span class="key">Ullal % Ownership</span><span class="val positive">~2.97%</span></div>
+    <div class="data-row"><span class="key">Bechtolsheim Holdings</span><span class="val positive">~15.3% of company</span></div>
+    <div class="data-row"><span class="key">Combined Insider %</span><span class="val positive">~18–20% (very high)</span></div>
+    <div class="data-row"><span class="key">Promoter Pledge</span><span class="val positive">N/A — US listed, no pledge structure</span></div>
+    <div class="data-row"><span class="key">Insider Selling Pattern</span><span class="val accent">Pre-planned 10b5-1 (normal)</span></div>
+  </div>
+</div>
+
+<div class="section-title">Capital Allocation Track Record</div>
+<div class="card">
+  <div class="data-row"><span class="key">Debt Policy</span><span class="val positive">Zero debt maintained throughout growth — exemplary</span></div>
+  <div class="data-row"><span class="key">Buyback Program</span><span class="val positive">$1.5B authorized May 2026 + prior programs. Q1 2025: $787M repurchased (record quarter)</span></div>
+  <div class="data-row"><span class="key">Dividend</span><span class="val accent">None — reinvests FCF into R&D and buybacks (correct for growth phase)</span></div>
+  <div class="data-row"><span class="key">M&A Philosophy</span><span class="val positive">Disciplined bolt-ons only; no value-destructive mega-deals</span></div>
+  <div class="data-row"><span class="key">R&D Investment</span><span class="val accent">~$235M/qtr — sustained innovation culture</span></div>
+  <div class="data-row"><span class="key">Guidance Accuracy</span><span class="val positive">Consistently beats; 2024 initial guide 10-12%, delivered 19.5%</span></div>
+</div>
+
+<div class="section-title">Management Quality Scorecard</div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Founder-Spirit Culture & Vision</span><span class="pval">95/100</span></div><div class="progress-bar"><div class="fill" style="width:95%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Capital Allocation Discipline</span><span class="pval">90/100</span></div><div class="progress-bar"><div class="fill" style="width:90%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Operational Execution vs Guidance</span><span class="pval">92/100</span></div><div class="progress-bar"><div class="fill" style="width:92%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Transparency & Investor Communication</span><span class="pval">88/100</span></div><div class="progress-bar"><div class="fill" style="width:88%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Insider Ownership Alignment</span><span class="pval">96/100</span></div><div class="progress-bar"><div class="fill" style="width:96%"></div></div></div>
+
+<div class="section-title">Governance Notes</div>
+<div class="card">
+  <div class="data-row"><span class="key">Board Independence</span><span class="val positive">Majority independent directors</span></div>
+  <div class="data-row"><span class="key">Audit Quality</span><span class="val positive">Clean audit history; no restatements</span></div>
+  <div class="data-row"><span class="key">Dual-Class Shares</span><span class="val accent">Single class — no super-voting concern</span></div>
+  <div class="data-row"><span class="key">Customer Concentration Risk</span><span class="val accent">Microsoft + Meta = ~35-40% of revenue (watch item)</span></div>
+  <div class="data-row"><span class="key">Insider Selling (10b5-1)</span><span class="val accent">Systematic pre-planned — not concerning. Ullal retains $5B+ in shares.</span></div>
+  <div class="data-row"><span class="key">Management Derating Factor</span><span class="val positive">None material — A- on customer concentration risk only</span></div>
+</div>
+
+<div class="notice"><strong>Grade Rationale (A- vs A):</strong> Deducted half-grade for customer concentration risk. Microsoft and Meta combined represent ~35–40% of revenue. Loss or spend reduction from either would materially impact near-term results. All other governance and leadership metrics are near-perfect.</div>
+
+<div class="report-footer">
+  <span>ANET — Management Analysis</span>
+  <span>BQV Series v5.0 | May 2026</span>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ TAB 5: VALUATION ============================================================ -->
+<div id="t5" class="panel">
+<div class="container">
+
+<div class="section-title">Valuation — Grade: C+ (Fair to Slightly Rich)</div>
+
+<div class="notice"><strong>Framework Note:</strong> Arista is capital-light with near-zero capex. FCF margin exceeds net margin. Owner Earnings ≈ FCF (~$5.28B TTM). DCF uses Owner Earnings as the primary anchor; PE/PEG as cross-checks.</div>
+
+<div class="section-title">Current Market Pricing</div>
+<div class="q-ticker">
+  <div class="q-tick-item"><label>Price (May 20, 2026)</label><span>~$142</span></div>
+  <div class="q-tick-item"><label>Market Cap</label><span>~$185B</span></div>
+  <div class="q-tick-item"><label>EV</label><span>~$172B</span></div>
+  <div class="q-tick-item"><label>TTM P/E</label><span>~48–50x</span></div>
+  <div class="q-tick-item"><label>Fwd P/E (FY26)</label><span>~39x</span></div>
+  <div class="q-tick-item"><label>EV/FCF</label><span>~32.7x</span></div>
+  <div class="q-tick-item"><label>PEG Ratio</label><span>~2.03x</span></div>
+  <div class="q-tick-item"><label>EV/EBITDA</label><span>~40.8x</span></div>
+</div>
+
+<div class="section-title">Valuation Methods</div>
+
+<div class="val-method">
+  <div class="val-method-head">
+    <h4>Method 1 — Owner Earnings DCF (Base Case)</h4>
+    <span>$115–135</span>
+  </div>
+  <p>Base: TTM FCF = $5.28B. Terminal growth 4%. WACC 9%. Growth phases: Yr 1–5 avg 22% (guided 25% 2026, decelerating gently); Yr 6–10 avg 12%; Terminal 4%. Equity value per share = ~$115–135 (post net cash adjustment ~$9.81/share). Current price $142 trades at ~5–20% premium to DCF base.</p>
+  <div class="val-range"><span>Bear:</span><strong>$95</strong><span>| Base:</span><strong>$120</strong><span>| Bull:</span><strong>$160</strong></div>
+</div>
+
+<div class="val-method">
+  <div class="val-method-head">
+    <h4>Method 2 — Forward P/E Peer Comparison</h4>
+    <span>$100–125</span>
+  </div>
+  <p>FY2026E EPS ~$3.60 (based on $11.25B rev, ~39% net margin, 1.27B shares). At 35x Fwd P/E (fair for 25% growth compounder) = ~$126. At 40x = $144. At 25x (normalization risk) = $90. Current 39x Fwd P/E is rich relative to 10yr avg of 38x but arguably justified by AI acceleration.</p>
+  <div class="val-range"><span>Bear:</span><strong>$90</strong><span>| Base:</span><strong>$126</strong><span>| Bull:</span><strong>$160</strong></div>
+</div>
+
+<div class="val-method">
+  <div class="val-method-head">
+    <h4>Method 3 — EV/FCF Multiple Approach</h4>
+    <span>$110–130</span>
+  </div>
+  <p>TTM FCF = $5.28B. At 30x EV/FCF (reasonable for moated growth) = $158B EV + $12.35B cash = $170B equity = $135/share. At 25x = $132B + $12.35B = $116/share. Current EV/FCF of 32.7x is slightly above fair multiple for the quality level.</p>
+  <div class="val-range"><span>Bear:</span><strong>$95</strong><span>| Base:</span><strong>$126</strong><span>| Bull:</span><strong>$155</strong></div>
+</div>
+
+<div class="val-method">
+  <div class="val-method-head">
+    <h4>Method 4 — GF Value / Analyst Consensus</h4>
+    <span>$135–181</span>
+  </div>
+  <p>GuruFocus GF Value: $135.29 (Fairly Valued at current price). Analyst consensus target: $180.76 (+22.9% upside). Street consensus: "Strong Buy." Raymond James upgraded post Q1 2026 to Outperform, $164 PT, citing AI growth durability through 2027. Bull case requires sustained 25%+ growth and margin expansion.</p>
+  <div class="val-range"><span>Fair Value:</span><strong>$135</strong><span>| Street Target:</span><strong>$181</strong></div>
+</div>
+
+<div class="section-title">Margin of Safety Analysis</div>
+<div class="card-2col">
+  <div class="card">
+    <div class="section-title" style="font-size:11px">Base IV Summary</div>
+    <div class="data-row"><span class="key">Blended Base IV</span><span class="val copper">$120–135</span></div>
+    <div class="data-row"><span class="key">Current Price</span><span class="val">~$142</span></div>
+    <div class="data-row"><span class="key">Premium to Base IV</span><span class="val negative">~5–18% above fair value</span></div>
+    <div class="data-row"><span class="key">MoS Entry Zone (20%)</span><span class="val positive">$100–115</span></div>
+    <div class="data-row"><span class="key">MoS Entry Zone (15%)</span><span class="val accent">$110–115</span></div>
+    <div class="data-row"><span class="key">Stretch Entry (10%)</span><span class="val accent">$115–121</span></div>
+  </div>
+  <div class="card">
+    <div class="section-title" style="font-size:11px">Valuation Context</div>
+    <div class="data-row"><span class="key">52-Week Range</span><span class="val">$82 – $178</span></div>
+    <div class="data-row"><span class="key">52-Week Return</span><span class="val positive">+62.7%</span></div>
+    <div class="data-row"><span class="key">Historical Avg PE (10yr)</span><span class="val">38.2x</span></div>
+    <div class="data-row"><span class="key">Current TTM PE</span><span class="val negative">~48–50x (26% above avg)</span></div>
+    <div class="data-row"><span class="key">Net Cash / Share</span><span class="val positive">$9.81 (7% of stock price)</span></div>
+    <div class="data-row"><span class="key">Stock Split</span><span class="val accent">4:1 split Dec 4, 2024 (adjusted)</span></div>
+  </div>
+</div>
+
+<div class="section-title">Scenario Analysis</div>
+<table class="data-table">
+  <thead><tr><th>Scenario</th><th>2026E Rev</th><th>Net Margin</th><th>EPS</th><th>Multiple</th><th>Target Price</th></tr></thead>
+  <tbody>
+    <tr><td>Bear (slowdown)</td><td>$10.5B</td><td>36%</td><td>$3.15</td><td>30x</td><td style="color:var(--red)">$94</td></tr>
+    <tr class="highlight"><td>Base (on-guidance)</td><td>$11.25B</td><td>39%</td><td>$3.60</td><td>36x</td><td style="color:var(--accent2)">$130</td></tr>
+    <tr><td>Bull (beat + raise)</td><td>$12.5B</td><td>41%</td><td>$4.15</td><td>40x</td><td style="color:var(--green)">$166</td></tr>
+    <tr><td>Super Bull (AI acceleration)</td><td>$13.5B</td><td>42%</td><td>$4.60</td><td>45x</td><td style="color:var(--green)">$207</td></tr>
+  </tbody>
+</table>
+
+<div class="report-footer">
+  <span>ANET — Valuation Analysis</span>
+  <span>BQV Series v5.0 | May 2026</span>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ TAB 6: AI OVERLAY ============================================================ -->
+<div id="t6" class="panel">
+<div class="container">
+
+<div class="section-title">AI Overlay — 🟢 WIDENER | AI Score: 88/100</div>
+
+<div class="ai-overlay">
+  <div class="ai-badge">🟢</div>
+  <div class="ai-text">
+    <h4>CLASSIFICATION: WIDENER</h4>
+    <p>AI is not disrupting Arista — it is fundamentally expanding Arista's total addressable market and deepening the EOS moat. The shift to AI-scale networking (800GbE/1.6Tbps for GPU clusters) creates a new product cycle on top of the existing data-center switching business. AI is Arista's largest organic growth engine.</p>
+  </div>
+</div>
+
+<div class="section-title">AI TAM Expansion Thesis</div>
+<div class="flywheel-grid">
+  <div class="flywheel-item">
+    <h4>🚀 AI Centers — New Product Cycle</h4>
+    <p>400G → 800GbE → 1.6Tbps Ethernet switches purpose-built for GPU cluster interconnects (AI training). FY2025 AI Centers revenue: $1.5B (exceeded goal). FY2026 goal raised to $3.25B — doubling in one year.</p>
+  </div>
+  <div class="flywheel-item">
+    <h4>🌐 Ultra Ethernet Consortium</h4>
+    <p>Arista co-founding UEC with Broadcom, Intel, AMD, Cisco sets open Ethernet as the AI fabric standard. This directly competes with Nvidia InfiniBand, giving hyperscalers an open-standard, cost-efficient alternative. Meta and Microsoft standardizing on Arista.</p>
+  </div>
+  <div class="flywheel-item">
+    <h4>🤖 AVA — AI Inside the Product</h4>
+    <p>Arista Virtual Assist uses natural language to answer network operations queries, automate troubleshooting, and generate configuration. Powered by proprietary NetDL telemetry data — a moat-within-a-moat. Makes Arista stickier and accelerates enterprise adoption.</p>
+  </div>
+  <div class="flywheel-item">
+    <h4>📡 AI Etherlink Portfolio</h4>
+    <p>Etherlink switches with packet-spraying and dynamic load balancing keep GPUs from waiting for data. These features are Arista-proprietary (EOS-implemented) within open Ethernet standards — the best of both: openness + differentiation.</p>
+  </div>
+</div>
+
+<div class="section-title">AI Revenue Trajectory</div>
+<table class="data-table">
+  <thead><tr><th>Year</th><th>AI Centers Revenue</th><th>vs Total Revenue</th><th>Growth</th></tr></thead>
+  <tbody>
+    <tr><td>FY2024</td><td>~$700M (est.)</td><td>~10%</td><td>—</td></tr>
+    <tr class="highlight"><td>FY2025</td><td>$1.5B (exceeded goal)</td><td>~17%</td><td>+114%</td></tr>
+    <tr><td>FY2026E</td><td>$3.25B (raised goal)</td><td>~29%</td><td>+117%</td></div></tr>
+    <tr><td>FY2027E (est.)</td><td>$5–6B (est.)</td><td>~38–40%</td><td>+55-85%</td></tr>
+  </tbody>
+</table>
+
+<div class="section-title">AI Competitive Landscape</div>
+<div class="card-2col">
+  <div class="card">
+    <div class="section-title" style="font-size:11px">Arista vs Nvidia InfiniBand</div>
+    <div class="data-row"><span class="key">Nvidia NDR InfiniBand</span><span class="val negative">Proprietary, high performance for scale-up</span></div>
+    <div class="data-row"><span class="key">Arista Ethernet</span><span class="val positive">Open standard, lower cost, scale-out friendly</span></div>
+    <div class="data-row"><span class="key">Coexistence view</span><span class="val accent">Both will coexist — different workload profiles</span></div>
+    <div class="data-row"><span class="key">Hyperscaler trend</span><span class="val positive">Meta, Microsoft moving toward Ethernet-first</span></div>
+    <div class="data-row"><span class="key">Arista Etherlink advantage</span><span class="val positive">Packet spraying + load balancing = near-IB perf</span></div>
+  </div>
+  <div class="card">
+    <div class="section-title" style="font-size:11px">AI Score Breakdown</div>
+    <div class="data-row"><span class="key">TAM Expansion</span><span class="val positive">30/30 — AI doubles addressable market</span></div>
+    <div class="data-row"><span class="key">Product-AI Integration</span><span class="val positive">22/25 — AVA, NetDL, Etherlink portfolio</span></div>
+    <div class="data-row"><span class="key">AI Revenue Momentum</span><span class="val positive">20/20 — 2x AI rev goal in 1 year</span></div>
+    <div class="data-row"><span class="key">Competitive Moat vs AI Natives</span><span class="val accent">16/25 — Nvidia InfiniBand is a risk in some segments</span></div>
+    <div class="data-row"><span class="key">Total AI Score</span><span class="val copper">88/100</span></div>
+  </div>
+</div>
+
+<div class="section-title">AI Risk Factors</div>
+<div class="risk-grid">
+  <div class="risk-pill risk-med">InfiniBand Displaces Ethernet in Dense Scale-Up</div>
+  <div class="risk-pill risk-med">Custom ASIC Development by Hyperscalers</div>
+  <div class="risk-pill risk-low">Competitor AI NOS (unlikely — EOS moat)</div>
+  <div class="risk-pill risk-low">Silicon Photonics Disruption (long-term only)</div>
+</div>
+
+<div class="report-footer">
+  <span>ANET — AI Overlay Analysis</span>
+  <span>BQV Series v5.0 | May 2026</span>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ TAB 7: RISKS ============================================================ -->
+<div id="t7" class="panel">
+<div class="container">
+
+<div class="section-title">Risk Matrix</div>
+
+<div class="moat-item">
+  <h4>🔴 HIGH: Customer Concentration</h4>
+  <p>Microsoft and Meta together represent an estimated 35–40% of Arista's revenue. A slowdown in capex at either account — whether due to AI build-out pauses, geopolitical or regulatory pressure, or internal reprioritization — would materially impact Arista's near-term revenue. This is the single largest risk and cannot be diversified away easily in the 1–3 year horizon.</p>
+  <span class="risk-pill risk-high">HIGH RISK</span>
+</div>
+
+<div class="moat-item">
+  <h4>🔴 HIGH: Supply Chain Constraints</h4>
+  <p>Management explicitly flagged supply chain shortages on 800GbE components in Q1 2026, constraining shipments despite strong demand. Rising costs of memory and silicon fabrication also cited. This is compressing near-term gross margins (Q4 2025 GAAP GM dipped to 62.9%) and delaying revenue recognition. Could persist through H1 2026.</p>
+  <span class="risk-pill risk-high">HIGH RISK — NEAR TERM</span>
+</div>
+
+<div class="moat-item">
+  <h4>🟡 MEDIUM: Nvidia InfiniBand Scale-Up Competition</h4>
+  <p>For dense scale-up GPU clusters (e.g., 100K+ GPU training runs at a single site), Nvidia's InfiniBand NDR fabric can outperform Ethernet on latency-sensitive workloads. If the AI industry converges on scale-up topologies over scale-out, Arista's addressable share of AI cluster spend could be lower than current TAM models assume. Offset: Meta and Microsoft are explicitly choosing Ethernet-first architectures.</p>
+  <span class="risk-pill risk-med">MEDIUM RISK</span>
+</div>
+
+<div class="moat-item">
+  <h4>🟡 MEDIUM: Hyperscaler Custom ASICs / White-Box Networking</h4>
+  <p>Meta's Wedge and Microsoft's Azure networking teams have long experimented with white-box switching and custom ASICs. If hyperscalers decide to commoditize the Ethernet switch layer and build custom NOS (network operating systems), Arista could face pricing pressure on the hardware tier. Currently mitigated by EOS software value — but this is a structural watch item over a 5–7 year horizon.</p>
+  <span class="risk-pill risk-med">MEDIUM RISK — LONG TERM</span>
+</div>
+
+<div class="moat-item">
+  <h4>🟡 MEDIUM: Valuation / Multiple Compression</h4>
+  <p>At ~48–50x TTM P/E and ~39x Fwd P/E, Arista is priced for continued excellence. Any guidance miss, macro deterioration in hyperscaler capex, or interest rate increases would compress multiples materially. The stock fell 14% post-Q4 2025 earnings (Feb 2026) despite reporting $9B revenue because the 2026 guidance initially disappointed. Multiple compression from 39x to 30x Fwd P/E = ~23% price decline even with no earnings miss.</p>
+  <span class="risk-pill risk-med">MEDIUM RISK</span>
+</div>
+
+<div class="moat-item">
+  <h4>🟢 LOW: Cisco / Juniper Legacy Competition</h4>
+  <p>Cisco remains the dominant force in enterprise networking but has consistently lost market share in the hyperscale datacenter and AI networking segments. Juniper (post-HP Networking merger) is not a credible threat in high-speed AI fabric. Competition from these incumbents in Arista's core segments is low risk.</p>
+  <span class="risk-pill risk-low">LOW RISK</span>
+</div>
+
+<div class="moat-item">
+  <h4>🟢 LOW: Technology Obsolescence (EOS / Ethernet)</h4>
+  <p>Ethernet has been the dominant datacenter protocol for 40 years and is accelerating — not declining — as the AI fabric of choice for open-ecosystem customers. EOS is software-defined and upgradeable; new generations (800G, 1.6T) are EOS-compatible. Technology risk is low over the 3–5 year investment horizon.</p>
+  <span class="risk-pill risk-low">LOW RISK</span>
+</div>
+
+<div class="section-title">Risk Summary Scorecard</div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Customer Concentration Risk</span><span class="pval">High</span></div><div class="progress-bar"><div class="fill" style="width:80%;background:linear-gradient(90deg,var(--red),#ff8a65)"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Supply Chain / Margin Risk (Near Term)</span><span class="pval">High — Transient</span></div><div class="progress-bar"><div class="fill" style="width:72%;background:linear-gradient(90deg,var(--red),#ff8a65)"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Competitive Tech Risk (InfiniBand)</span><span class="pval">Medium</span></div><div class="progress-bar"><div class="fill copper" style="width:55%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Valuation / Multiple Compression</span><span class="pval">Medium</span></div><div class="progress-bar"><div class="fill copper" style="width:55%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Balance Sheet / Financial Risk</span><span class="pval">Negligible</span></div><div class="progress-bar"><div class="fill green" style="width:8%"></div></div></div>
+<div class="progress-wrap"><div class="progress-label"><span class="pkey">Management / Governance Risk</span><span class="pval">Low</span></div><div class="progress-bar"><div class="fill green" style="width:15%"></div></div></div>
+
+<div class="report-footer">
+  <span>ANET — Risk Analysis</span>
+  <span>BQV Series v5.0 | May 2026</span>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ TAB 8: CATALYSTS ============================================================ -->
+<div id="t8" class="panel">
+<div class="container">
+
+<div class="section-title">Upcoming Catalysts & Timeline</div>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <h4>Q2 2026 Earnings (August 2026)</h4>
+    <p>Guided revenue ~$2.8B vs consensus $2.78B. Non-GAAP op. margin ~47%. Key watch: AI Centers revenue run-rate vs $3.25B FY goal; supply chain progress on 800GbE component availability; gross margin recovery toward 64%+. A beat-and-raise cycle here would validate the 2026 bull case and likely re-rate the stock above $160.</p>
+  </div>
+  <div class="timeline-item">
+    <h4>800GbE Supply Chain Resolution (H2 2026)</h4>
+    <p>Management flagged 800GbE component shortages constraining shipments in Q1 2026. Resolution of supply constraints in H2 2026 would unlock deferred revenue, accelerate AI Centers shipments, and potentially drive gross margin expansion above 64.5% — a significant positive catalyst.</p>
+  </div>
+  <div class="timeline-item">
+    <h4>1.6Tbps Etherlink Commercial Ramp (2026–2027)</h4>
+    <p>Next-generation 1.6Tbps switches are in customer validation. Commercial ramp represents a new ASP cycle — higher average selling prices (potentially 2x per port vs 800GbE). This is the "next leg" of Arista's AI networking story and could expand AI Centers revenue significantly beyond 2026 goals.</p>
+  </div>
+  <div class="timeline-item">
+    <h4>Campus & Enterprise Expansion</h4>
+    <p>FY2025 campus goal of $800M exceeded. FY2026 goal: $1.25B. Enterprise now at 32% of revenue. This diversification away from hyperscaler concentration is a structural positive — enterprise customers are stickier, have longer sales cycles, and represent recurring service revenue opportunity. Any acceleration above goal would reduce customer concentration risk.</p>
+  </div>
+  <div class="timeline-item">
+    <h4>International Growth Acceleration</h4>
+    <p>Asia and Europe grew >40% in 2025. If international expansion maintains this trajectory, it further diversifies revenue from the Microsoft/Meta concentration. EMEA and APAC datacenters are building AI infrastructure on a 12–18 month lag vs North America — suggesting sustained international tailwind through 2027.</p>
+  </div>
+  <div class="timeline-item">
+    <h4>Ultra Ethernet Consortium Standard Adoption</h4>
+    <p>UEC standardization milestones in 2026 that establish Ethernet as the default AI fabric protocol would structurally expand Arista's TAM and accelerate displacement of InfiniBand in mixed workload clusters. Watch for hyperscaler public commitments to UEC architecture.</p>
+  </div>
+  <div class="timeline-item">
+    <h4>FY2027 Analyst Day / Long-Term Guidance</h4>
+    <p>If Arista provides a multi-year revenue target (e.g., $15B+ by 2028), it would establish a longer compounding runway visible to the market and could justify re-rating toward 45x+ Fwd P/E. Currently the market is pricing one forward year; a multi-year framework would change the valuation calculus.</p>
+  </div>
+</div>
+
+<div class="section-title">Negative Catalysts to Watch</div>
+<div class="risk-grid">
+  <div class="risk-pill risk-high">Microsoft or Meta Capex Pause Announcement</div>
+  <div class="risk-pill risk-high">Gross Margin Sustained Below 62% (supply shock)</div>
+  <div class="risk-pill risk-med">Nvidia InfiniBand Wins Major New AI Cluster Deal (vs Ethernet)</div>
+  <div class="risk-pill risk-med">FY2026 Revenue Guide Miss Below $11B</div>
+  <div class="risk-pill risk-med">US-China Trade War Escalation (component sourcing)</div>
+  <div class="risk-pill risk-low">Key Management Departure (Ullal, Duda, Bechtolsheim)</div>
+</div>
+
+<div class="report-footer">
+  <span>ANET — Catalyst Analysis</span>
+  <span>BQV Series v5.0 | May 2026</span>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ TAB 9: WATCH CONDITIONS ============================================================ -->
+<div id="t9" class="panel">
+<div class="container">
+
+<div class="section-title">BUY Upgrade Conditions (Current: WATCH ★★★★)</div>
+
+<div class="notice"><strong>Current Status:</strong> Arista is a world-class business trading at fair-to-slightly-rich valuation. The WATCH rating reflects price, not business quality. 0 of 5 conditions for BUY upgrade currently met.</div>
+
+<div class="condition-item">
+  <div class="condition-num">1</div>
+  <div class="condition-text">
+    <h4>Price Pullback to $100–115 Zone (MoS Entry)</h4>
+    <p>A 20–28% decline from current levels to the $100–115 range would create a 15–20% margin of safety to blended IV of $120–135. This level has historically occurred during macro drawdowns or guidance miss episodes. The Feb 2026 post-earnings selloff to ~$130 came close — a second leg down would be the ideal entry trigger. Target: Price ≤ $115.</p>
+  </div>
+</div>
+
+<div class="condition-item">
+  <div class="condition-num">2</div>
+  <div class="condition-text">
+    <h4>AI Centers Revenue Confirms $3B+ Run-Rate</h4>
+    <p>FY2026 AI Centers goal is $3.25B. If Q2 2026 earnings confirm AI Centers revenue on a run-rate above $3B (i.e., Q2 AI Centers > $750M), it validates that the business has structurally expanded its addressable market and the moat is widening as expected. This would justify BUY at prices up to $130 (without the full valuation entry).</p>
+  </div>
+</div>
+
+<div class="condition-item">
+  <div class="condition-num">3</div>
+  <div class="condition-text">
+    <h4>Gross Margin Recovery Above 64.5% (Non-GAAP)</h4>
+    <p>Supply chain pressures and 800GbE mix shift have weighed on gross margins (Q4 2025: 62.9% GAAP). Recovery toward and sustained above 64.5% non-GAAP would confirm that pricing power is intact and component cost pressures are transient. Two consecutive quarters above 64.5% non-GAAP = condition met.</p>
+  </div>
+</div>
+
+<div class="condition-item">
+  <div class="condition-num">4</div>
+  <div class="condition-text">
+    <h4>Customer Revenue Diversification Progress</h4>
+    <p>Microsoft + Meta concentration falling below 30% of total revenue (from estimated 35–40% today) would significantly de-risk the investment thesis. Watch for increasing Enterprise, Campus, and International share in quarterly disclosures. Enterprise + Campus exceeding 40% combined = condition met.</p>
+  </div>
+</div>
+
+<div class="condition-item">
+  <div class="condition-num">5</div>
+  <div class="condition-text">
+    <h4>FY2027 Revenue Guidance Above $13B at Analyst Day</h4>
+    <p>Long-term visibility beyond FY2026 would transform the valuation framework from a single-year P/E story to a multi-year compounder story. Guidance above $13B for FY2027 at a formal analyst day would imply continued 20%+ growth runway, potentially justifying BUY at $130–140 levels. Currently no analyst day is formally scheduled.</p>
+  </div>
+</div>
+
+<div class="section-title">Conditions Progress Tracker</div>
+<div class="card">
+  <div class="data-row"><span class="key">Condition 1: Price ≤ $115</span><span class="val negative">❌ Not met — current $142</span></div>
+  <div class="data-row"><span class="key">Condition 2: AI Centers $3B+ run-rate</span><span class="val accent">⏳ In progress — $1.5B FY2025, goal $3.25B FY2026</span></div>
+  <div class="data-row"><span class="key">Condition 3: GM Recovery >64.5% (Non-GAAP)</span><span class="val accent">⏳ Partially met — Q2 2025 was 65.6%, Q4 2025 dipped to 63.4%</span></div>
+  <div class="data-row"><span class="key">Condition 4: Customer Diversification</span><span class="val negative">❌ Not met — concentration still elevated</span></div>
+  <div class="data-row"><span class="key">Condition 5: FY2027 Guidance >$13B</span><span class="val negative">❌ Not met — no guidance beyond FY2026 issued</span></div>
+  <div class="data-row"><span class="key">Conditions Met</span><span class="val copper">0 / 5</span></div>
+</div>
+
+<div class="section-title">Action Framework</div>
+<div class="card">
+  <div class="data-row"><span class="key">Current Action</span><span class="val accent">WATCH — no new positions at $142</span></div>
+  <div class="data-row"><span class="key">Accumulate Zone</span><span class="val positive">$100–115 (ideal) | $115–125 (acceptable)</span></div>
+  <div class="data-row"><span class="key">Trim Zone</span><span class="val negative">$175–185+ (near analyst targets / 45x+ Fwd P/E)</span></div>
+  <div class="data-row"><span class="key">Existing Holders</span><span class="val positive">HOLD — do not sell quality at current levels; downside well-supported by FCF and net cash</span></div>
+  <div class="data-row"><span class="key">Position Sizing (on entry)</span><span class="val accent">3–5% portfolio weight on entry at $100–115; full position by $100</span></div>
+  <div class="data-row"><span class="key">Horizon</span><span class="val accent">5–7 years — this is a multi-year compounder, not a trade</span></div>
+</div>
+
+<div class="report-footer">
+  <span>ANET — Watch Conditions</span>
+  <span>BQV Series v5.0 | May 2026</span>
+</div>
+</div>
+</div>
+
+<!-- ============================================================ TAB 10: VERDICT ============================================================ -->
+<div id="t10" class="panel">
+<div class="container">
+
+<div class="hero" style="padding:36px">
+  <div class="ticker-badge">Final Verdict — BQV Series v5.0</div>
+  <h1 style="font-size:40px;margin-bottom:8px">Arista Networks</h1>
+  <h2 style="margin-bottom:24px">The Ethernet Spine of the AI Era</h2>
+  <div class="verdict-box" style="margin-bottom:24px">
+    <div class="verdict-label">WATCH ★★★★</div>
+    <div style="font-size:12px;color:var(--muted);max-width:380px;margin-left:12px">Elite business at fair-to-rich valuation. Target entry $100–115 on meaningful pullbacks.</div>
+  </div>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><label>Category</label><span>B</span></div>
+    <div class="hero-meta-item"><label>AI Overlay</label><span>🟢 WIDENER</span></div>
+    <div class="hero-meta-item"><label>AI Score</label><span>88/100</span></div>
+    <div class="hero-meta-item"><label>Phase</label><span>3 — Growth</span></div>
+    <div class="hero-meta-item"><label>Horizon</label><span>5–7 Years</span></div>
+    <div class="hero-meta-item"><label>Conditions Met</label><span>0 / 5</span></div>
+  </div>
+</div>
+
+<div class="score-grid">
+  <div class="score-card"><div class="grade">A</div><div class="label">Moat</div></div>
+  <div class="score-card"><div class="grade">A</div><div class="label">Financial Quality</div></div>
+  <div class="score-card"><div class="grade">A-</div><div class="label">Management</div></div>
+  <div class="score-card"><div class="grade" style="color:var(--copper2)">C+</div><div class="label">Valuation</div></div>
+</div>
+
+<div class="section-title">Investment Thesis Summary</div>
+<div class="thesis-block">
+  <p>Arista is the rare hardware company that is actually a software business — EOS is the network operating system that hyperscalers and AI titans cannot live without. With $9B in revenue growing 29%, 64% gross margins, $12.35B in net cash, zero debt, and 54% FCF margins, the financial profile is flawless. AI is widening — not threatening — the core moat, adding a $3B+ AI Centers revenue stream that barely existed two years ago. The only reasonable investor complaint is price: at ~$142 and ~39x forward earnings, the stock is fairly valued at best and slightly rich at worst. The ideal entry point is $100–115, which would represent genuine margin of safety to our blended intrinsic value of $120–135. For existing holders, this is a HOLD with high conviction. For new investors, patience is the strategy.</p>
+</div>
+
+<div class="section-title">Pillar Summary</div>
+<div class="summary-2">
+  <div>
+    <div class="moat-item">
+      <h4>✅ Why This Business Is Elite</h4>
+      <p>Single-image EOS across all hardware — irreplaceable switching costs. 64% gross margins on hardware revenue (almost impossible). $12.35B net cash with zero debt. 28.6% revenue growth in FY2025 on a $9B base. 54% FCF margin. AI widening the TAM faster than management expected.</p>
+    </div>
+    <div class="moat-item">
+      <h4>⚠️ The Key Risks</h4>
+      <p>Customer concentration (Microsoft + Meta ~35-40%) is the biggest structural risk. Supply chain on 800GbE components constraining near-term margins. InfiniBand remains competitive in dense scale-up GPU clusters. Valuation at 39x Fwd P/E leaves no room for execution stumbles.</p>
+    </div>
+  </div>
+  <div>
+    <div class="moat-item">
+      <h4>📊 Valuation Snapshot</h4>
+      <p>Base IV: $120–135. Current price: ~$142. Premium to IV: 5–18%. MoS Entry (20%): $100–115. The business deserves a premium multiple, but the current price already embeds optimistic assumptions. Patient accumulation at $100–115 provides genuine compounding upside with limited downside.</p>
+    </div>
+    <div class="moat-item">
+      <h4>🎯 The 5-Year Bull Case</h4>
+      <p>If ANET compounds revenue at 20%+ annually (FY2025 $9B → FY2030 ~$22B) with 40%+ net margins, EPS approaches $7–8. At 35x Fwd P/E, the stock reaches $245–280 from today's $142 — roughly 2x in 5 years. At entry price of $110, the return profile approaches 2.5–3x. This is the reward for patience.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">Final Scorecard</div>
+<table class="data-table">
+  <thead><tr><th>Dimension</th><th>Grade</th><th>Key Finding</th></tr></thead>
+  <tbody>
+    <tr><td>Moat Quality</td><td style="color:var(--accent)">A</td><td>EOS switching cost moat + AI data flywheel forming. Durable 10+ year moat.</td></tr>
+    <tr class="highlight"><td>Financial Quality</td><td style="color:var(--accent)">A</td><td>64% GM, 54% FCF margin, $12.35B net cash, zero debt. Near-perfect financials.</td></tr>
+    <tr><td>Management</td><td style="color:var(--accent)">A-</td><td>Ullal & founders deeply aligned ($5B+ skin in game). Minor deduction for concentration risk.</td></tr>
+    <tr><td>Valuation</td><td style="color:var(--copper2)">C+</td><td>Fair to slightly rich. 39x Fwd P/E vs $120–135 base IV. Entry zone: $100–115.</td></tr>
+    <tr class="highlight"><td>AI Overlay</td><td style="color:var(--green)">🟢 WIDENER</td><td>AI expands TAM massively. AI Centers: $1.5B → $3.25B goal. Moat widening.</td></tr>
+    <tr><td>Overall Verdict</td><td style="color:var(--yellow)">WATCH ★★★★</td><td>Elite business, fair price. Buy on meaningful pullbacks to $100–115.</td></tr>
+  </tbody>
+</table>
+
+<div class="section-title">Data Quality Labels</div>
+<div class="card">
+  <div class="data-row"><span class="key">Revenue, Margins, EPS</span><span class="val positive">✅ VERIFIED — SEC filings, official press releases</span></div>
+  <div class="data-row"><span class="key">FCF, Balance Sheet</span><span class="val positive">✅ VERIFIED — Q4 2025 and Q1 2026 earnings releases</span></div>
+  <div class="data-row"><span class="key">Stock Price, PE Ratios</span><span class="val positive">✅ VERIFIED — Multiple sources, May 2026</span></div>
+  <div class="data-row"><span class="key">AI Centers Revenue Breakdown</span><span class="val accent">⚡ ESTIMATED — Based on management commentary in earnings calls</span></div>
+  <div class="data-row"><span class="key">Intrinsic Value (DCF)</span><span class="val accent">⚡ ESTIMATED — BQV framework model, not audited</span></div>
+  <div class="data-row"><span class="key">Customer Revenue Concentration %</span><span class="val accent">⚡ ESTIMATED — Analyst estimates; Arista does not disclose per-customer %</span></div>
+</div>
+
+<div class="report-footer">
+  <span>ANET — Buffett Quality-Value Report v5.0 | NYSE: ANET</span>
+  <span>BQV Series © Dayanand Research | Analysis: May 19, 2026 | Not financial advice</span>
+</div>
+</div>
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>

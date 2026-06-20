@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFCONS Infrastructure — Buffett Quality-Value Series</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --slate:      #0f1520;
+  --slate2:     #1a2235;
+  --slate3:     #242f45;
+  --amber:      #d4621a;
+  --amber-lt:   #e8883f;
+  --amber-glow: #f5a55c;
+  --lime:       #f0ebe2;
+  --cream:      #faf8f3;
+  --steel:      #8fa3c0;
+  --steel-lt:   #bfcfe3;
+  --danger:     #dc2626;
+  --danger-lt:  #ef4444;
+  --danger-bg:  #2d0808;
+  --warn:       #ca8a04;
+  --warn-bg:    #2d2006;
+  --ok:         #16a34a;
+  --ok-bg:      #052012;
+  --neutral:    #64748b;
+  --verified:   #22c55e;
+  --estimated:  #f59e0b;
+  --unverified: #ef4444;
+  --shadow:     0 4px 24px rgba(0,0,0,.45);
+  --shadow-sm:  0 2px 10px rgba(0,0,0,.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--slate);color:var(--lime);font-family:'Lora',Georgia,serif;font-size:15px;line-height:1.7;min-height:100vh;}
+h1,h2,h3,h4,h5{font-family:'Oswald',sans-serif;letter-spacing:.03em;}
+code,pre,.mono{font-family:'IBM Plex Mono',monospace;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0a0f1a 0%,#0f1520 40%,#1a0c06 100%);padding:40px 32px 28px;position:relative;overflow:hidden;border-bottom:3px solid var(--danger);}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(212,98,26,.04) 40px,rgba(212,98,26,.04) 41px),repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(212,98,26,.04) 80px,rgba(212,98,26,.04) 81px);}
+.hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.company-block{flex:1;}
+.ticker-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.ticker-tag{font-family:'IBM Plex Mono';font-size:11px;background:rgba(212,98,26,.2);border:1px solid var(--amber);color:var(--amber-glow);padding:2px 8px;border-radius:2px;letter-spacing:.1em;}
+.company-name{font-family:'Oswald';font-size:clamp(28px,4vw,46px);font-weight:700;color:#fff;letter-spacing:.02em;line-height:1.1;text-transform:uppercase;}
+.company-sub{font-family:'Oswald';font-size:14px;color:var(--steel);letter-spacing:.08em;text-transform:uppercase;margin-top:4px;}
+.verdict-block{text-align:right;min-width:200px;}
+.verdict-badge{display:inline-flex;align-items:center;gap:8px;background:var(--danger-bg);border:2px solid var(--danger);color:var(--danger-lt);font-family:'Oswald';font-size:18px;font-weight:700;padding:10px 20px;letter-spacing:.08em;text-transform:uppercase;}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.badge{font-family:'IBM Plex Mono';font-size:10px;padding:4px 10px;border-radius:2px;letter-spacing:.08em;font-weight:500;}
+.badge-cat{background:var(--slate3);border:1px solid var(--steel);color:var(--steel-lt);}
+.badge-ai{background:rgba(100,116,139,.15);border:1px solid #64748b;color:#94a3b8;}
+.badge-danger{background:var(--danger-bg);border:1px solid var(--danger);color:var(--danger-lt);}
+.badge-warn{background:var(--warn-bg);border:1px solid var(--warn);color:#fbbf24;}
+.badge-ok{background:var(--ok-bg);border:1px solid var(--ok);color:#4ade80;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;}
+.pill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:6px 14px;border-radius:2px;}
+.pill-label{font-family:'IBM Plex Mono';font-size:9px;color:var(--steel);letter-spacing:.1em;text-transform:uppercase;display:block;}
+.pill-value{font-family:'Oswald';font-size:16px;font-weight:600;color:#fff;line-height:1.2;}
+.pill-value.red{color:var(--danger-lt);}
+.pill-value.amber{color:var(--amber-glow);}
+.hero-lede{margin-top:20px;font-style:italic;color:var(--steel-lt);font-size:14px;border-left:3px solid var(--danger);padding-left:14px;line-height:1.6;max-width:780px;}
+
+/* OVERRIDE BOX */
+.override-box{background:linear-gradient(90deg,var(--danger-bg),#1a0f0f);border:2px solid var(--danger);border-left:6px solid var(--danger);padding:16px 20px;margin:20px 0;display:flex;gap:16px;align-items:flex-start;}
+.override-icon{font-size:28px;line-height:1;flex-shrink:0;margin-top:2px;}
+.override-title{font-family:'Oswald';font-size:16px;font-weight:700;color:var(--danger-lt);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.override-text{font-size:13px;color:#fca5a5;line-height:1.6;}
+
+/* TAB BAR */
+#tab-bar{background:var(--slate2);border-bottom:1px solid var(--slate3);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.5);}
+.tab-nav{display:flex;overflow-x:auto;scrollbar-width:none;max-width:1100px;margin:0 auto;}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-btn{flex-shrink:0;font-family:'Oswald';font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--steel);background:none;border:none;border-bottom:3px solid transparent;padding:14px 16px;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.tab-btn:hover{color:var(--amber-lt);background:rgba(212,98,26,.06);}
+.tab-btn.active{color:var(--amber-glow);border-bottom-color:var(--amber);}
+
+/* CONTENT */
+.tab-content{display:none;max-width:1100px;margin:0 auto;padding:32px 20px 60px;}
+.tab-content.active{display:block;}
+
+/* SECTION */
+.section{margin-bottom:36px;}
+.section-title{font-family:'Oswald';font-size:18px;font-weight:600;color:var(--amber-lt);text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--slate3);padding-bottom:8px;margin-bottom:18px;}
+.section-title.red{color:var(--danger-lt);border-bottom-color:var(--danger-bg);}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+@media(max-width:680px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}.hero-top{flex-direction:column;}.verdict-block{text-align:left;}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr;}}
+
+/* CARDS */
+.card{background:var(--slate2);border:1px solid var(--slate3);padding:16px;}
+.card.danger{border-color:var(--danger);background:linear-gradient(135deg,var(--danger-bg),var(--slate2));}
+.card.warn{border-color:var(--warn);background:linear-gradient(135deg,var(--warn-bg),var(--slate2));}
+.card.ok{border-color:var(--ok);background:linear-gradient(135deg,var(--ok-bg),var(--slate2));}
+.card-label{font-family:'IBM Plex Mono';font-size:9px;color:var(--steel);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+.card-value{font-family:'Oswald';font-size:22px;font-weight:600;color:#fff;line-height:1.1;}
+.card-value.red{color:var(--danger-lt);}
+.card-value.amber{color:var(--amber-glow);}
+.card-value.ok{color:#4ade80;}
+.card-sub{font-size:11px;color:var(--steel);margin-top:4px;}
+
+/* METRIC ROW */
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-left:3px solid transparent;margin-bottom:4px;background:var(--slate2);}
+.metric-row.pass{border-left-color:var(--ok);}
+.metric-row.fail{border-left-color:var(--danger);background:rgba(220,38,38,.07);}
+.metric-row.marginal{border-left-color:var(--warn);}
+.metric-name{font-size:13px;color:var(--steel-lt);}
+.metric-val{font-family:'IBM Plex Mono';font-size:13px;color:#fff;}
+.status-badge{font-family:'IBM Plex Mono';font-size:9px;padding:2px 7px;border-radius:1px;font-weight:600;letter-spacing:.06em;}
+.status-pass{background:rgba(22,163,74,.25);color:#4ade80;}
+.status-fail{background:rgba(220,38,38,.25);color:#f87171;}
+.status-marginal{background:rgba(202,138,4,.25);color:#fbbf24;}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{font-family:'IBM Plex Mono';font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel);background:var(--slate3);padding:8px 12px;text-align:left;border-bottom:1px solid var(--slate3);}
+.data-table td{padding:8px 12px;border-bottom:1px solid var(--slate3);color:var(--lime);vertical-align:top;}
+.data-table tr:hover td{background:rgba(255,255,255,.03);}
+.data-table td.num{font-family:'IBM Plex Mono';text-align:right;}
+.data-table td.red{color:var(--danger-lt);}
+.data-table td.ok{color:#4ade80;}
+.data-table td.warn{color:#fbbf24;}
+
+/* CONFIDENCE LABELS */
+.v{background:rgba(34,197,94,.15);color:var(--verified);border:1px solid rgba(34,197,94,.3);font-family:'IBM Plex Mono';font-size:9px;padding:1px 5px;border-radius:1px;letter-spacing:.05em;}
+.e{background:rgba(245,158,11,.15);color:var(--estimated);border:1px solid rgba(245,158,11,.3);font-family:'IBM Plex Mono';font-size:9px;padding:1px 5px;border-radius:1px;letter-spacing:.05em;}
+.u{background:rgba(239,68,68,.15);color:var(--unverified);border:1px solid rgba(239,68,68,.3);font-family:'IBM Plex Mono';font-size:9px;padding:1px 5px;border-radius:1px;letter-spacing:.05em;}
+
+/* PILLAR GRADES */
+.pillar-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.pillar-card{background:var(--slate2);border:1px solid var(--slate3);padding:16px;}
+.pillar-name{font-family:'Oswald';font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel);margin-bottom:8px;}
+.pillar-grade{font-family:'Oswald';font-size:36px;font-weight:700;line-height:1;}
+.pillar-grade.grade-a{color:#4ade80;}
+.pillar-grade.grade-b{color:#86efac;}
+.pillar-grade.grade-c{color:#fbbf24;}
+.pillar-grade.grade-d{color:#f87171;}
+.pillar-grade.grade-f{color:var(--danger-lt);}
+.pillar-note{font-size:11px;color:var(--steel);margin-top:6px;line-height:1.5;}
+
+/* RED FLAG BOX */
+.redflag-box{background:var(--danger-bg);border:1px solid var(--danger);padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;}
+.redflag-num{font-family:'IBM Plex Mono';font-size:10px;color:var(--danger-lt);font-weight:700;min-width:20px;margin-top:2px;}
+.redflag-text{font-size:13px;color:#fca5a5;line-height:1.6;}
+.redflag-text strong{color:var(--danger-lt);}
+
+/* MACRO TABLE */
+.macro-row{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--slate2);border-left:3px solid var(--slate3);margin-bottom:3px;}
+.macro-label{font-size:13px;color:var(--steel-lt);}
+.macro-badge{font-family:'IBM Plex Mono';font-size:10px;padding:3px 8px;border-radius:2px;letter-spacing:.04em;}
+.macro-tailwind{background:rgba(22,163,74,.2);color:#4ade80;border:1px solid var(--ok);}
+.macro-neutral{background:rgba(100,116,139,.2);color:#94a3b8;border:1px solid #475569;}
+.macro-headwind{background:rgba(220,38,38,.2);color:#f87171;border:1px solid var(--danger);}
+
+/* SHAREHOLDING TREND */
+.holding-bar-wrap{margin-bottom:8px;}
+.holding-label{font-family:'IBM Plex Mono';font-size:10px;color:var(--steel);letter-spacing:.08em;display:flex;justify-content:space-between;margin-bottom:3px;}
+.holding-bar-bg{background:var(--slate3);height:12px;border-radius:1px;overflow:hidden;}
+.holding-bar{height:12px;transition:width .6s;}
+.bar-amber{background:var(--amber);}
+.bar-blue{background:#3b82f6;}
+.bar-green{background:#22c55e;}
+.bar-danger{background:var(--danger);}
+.bar-steel{background:var(--steel);}
+
+/* ORDER BOOK */
+.ob-seg{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ob-bar-bg{flex:1;background:var(--slate3);height:18px;border-radius:1px;overflow:hidden;}
+.ob-bar{height:18px;display:flex;align-items:center;padding-left:8px;font-family:'IBM Plex Mono';font-size:10px;color:#fff;font-weight:600;}
+.ob-pct{font-family:'IBM Plex Mono';font-size:11px;color:var(--steel-lt);min-width:50px;text-align:right;}
+.ob-label{font-size:12px;color:var(--lime);min-width:180px;}
+
+/* UPGRADE CONDITIONS */
+.upgrade-item{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--slate2);border-left:3px solid var(--danger);margin-bottom:6px;}
+.upgrade-n{font-family:'IBM Plex Mono';font-size:11px;background:var(--danger);color:#fff;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;}
+.upgrade-text{font-size:13px;color:var(--steel-lt);line-height:1.5;}
+.upgrade-text strong{color:#fff;}
+
+/* STARS */
+.stars{color:var(--amber-glow);font-size:18px;letter-spacing:2px;}
+
+/* QUOTE BOX */
+.quote-box{background:var(--slate2);border-left:4px solid var(--amber);padding:16px 20px;margin-top:16px;font-style:italic;color:var(--steel-lt);font-size:14px;line-height:1.7;}
+.quote-attr{font-style:normal;font-family:'IBM Plex Mono';font-size:10px;color:var(--steel);margin-top:8px;letter-spacing:.08em;}
+
+/* SERIES TABLE */
+.series-table-wrap{overflow-x:auto;}
+.series-table{width:100%;border-collapse:collapse;font-size:11px;}
+.series-table th{font-family:'IBM Plex Mono';font-size:8px;letter-spacing:.08em;text-transform:uppercase;background:var(--slate3);color:var(--steel);padding:6px 10px;text-align:left;}
+.series-table td{padding:6px 10px;border-bottom:1px solid var(--slate3);color:var(--lime);white-space:nowrap;}
+.series-table tr.current-row td{background:rgba(220,38,38,.12);border-left:2px solid var(--danger);}
+
+/* TECHNICAL */
+.ma-row{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:var(--slate2);margin-bottom:3px;}
+.ma-label{font-family:'IBM Plex Mono';font-size:11px;color:var(--steel);}
+.ma-val{font-family:'IBM Plex Mono';font-size:11px;color:#fff;}
+.ma-status{font-family:'IBM Plex Mono';font-size:9px;padding:2px 6px;border-radius:1px;}
+.ma-below{background:rgba(220,38,38,.25);color:#f87171;}
+.ma-above{background:rgba(22,163,74,.25);color:#4ade80;}
+
+/* FOOTER */
+footer{background:var(--slate2);border-top:1px solid var(--slate3);padding:24px 20px;text-align:center;font-size:11px;color:var(--steel);line-height:1.8;}
+footer strong{color:var(--steel-lt);}
+
+/* FLYWHEEL BOX */
+.flywheel-box{background:var(--slate2);border:2px dashed var(--slate3);padding:20px;text-align:center;}
+.flywheel-badge{font-family:'Oswald';font-size:20px;font-weight:700;letter-spacing:.06em;margin-bottom:8px;}
+.flywheel-badge.cosmetic{color:var(--steel);}
+
+/* SCORE GAUGE */
+.score-wrap{display:flex;align-items:center;gap:20px;padding:16px;}
+.score-circle{width:90px;height:90px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid var(--neutral);background:var(--slate3);flex-shrink:0;}
+.score-num{font-family:'Oswald';font-size:28px;font-weight:700;color:var(--steel);}
+.score-total{font-family:'IBM Plex Mono';font-size:10px;color:var(--steel);}
+
+/* PHASE BANNER */
+.phase-band{background:rgba(100,116,139,.12);border:1px solid var(--neutral);padding:12px 16px;display:flex;align-items:center;gap:14px;}
+.phase-num{font-family:'Oswald';font-size:32px;font-weight:700;color:var(--steel);}
+.phase-title{font-family:'Oswald';font-size:15px;color:var(--steel-lt);letter-spacing:.04em;}
+.phase-desc{font-size:12px;color:var(--steel);}
+
+/* VALUE CHAIN */
+.vc-diagram{display:flex;gap:4px;overflow-x:auto;padding:4px 0;}
+.vc-box{flex:1;min-width:90px;padding:12px 8px;text-align:center;background:var(--slate2);border:1px solid var(--slate3);font-size:11px;color:var(--steel);}
+.vc-box.current{background:rgba(100,116,139,.2);border-color:var(--steel);color:var(--lime);}
+.vc-label{font-family:'Oswald';font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.vc-arrow{color:var(--slate3);font-size:20px;display:flex;align-items:center;flex-shrink:0;}
+
+/* DCISION TABLE */
+.decision-row{display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--slate2);margin-bottom:3px;}
+.decision-step{font-family:'IBM Plex Mono';font-size:10px;color:var(--steel);min-width:60px;letter-spacing:.05em;}
+.decision-q{font-size:13px;color:var(--steel-lt);flex:1;}
+.decision-result{font-family:'IBM Plex Mono';font-size:11px;font-weight:600;min-width:60px;text-align:right;}
+.result-yes{color:#4ade80;}
+.result-no{color:var(--danger-lt);}
+.result-partial{color:#fbbf24;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="company-block">
+        <div class="ticker-row">
+          <span class="ticker-tag">NSE: AFCONS</span>
+          <span class="ticker-tag">BSE: 544280</span>
+          <span class="ticker-tag">CAT C</span>
+        </div>
+        <div class="company-name">AFCONS Infrastructure</div>
+        <div class="company-sub">Shapoorji Pallonji Group · EPC Engineering & Construction · India + International</div>
+        <div class="badge-row">
+          <span class="badge badge-cat">📐 CAT C — CAPITAL-INTENSIVE EPC</span>
+          <span class="badge badge-ai">⚪ AI NEUTRAL</span>
+          <span class="badge badge-danger">🚨 PLEDGE: 53.5%</span>
+          <span class="badge badge-warn">⚠️ FCF NEGATIVE</span>
+          <span class="badge badge-danger">🔴 EBIT COV: 1.45x</span>
+        </div>
+      </div>
+      <div class="verdict-block">
+        <div class="verdict-badge">⛔ AVOID</div>
+        <div style="margin-top:8px;font-family:'IBM Plex Mono';font-size:10px;color:var(--steel);letter-spacing:.08em;">FRAMEWORK OVERRIDE ACTIVE</div>
+      </div>
+    </div>
+
+    <div class="hero-pills">
+      <div class="pill"><span class="pill-label">CMP</span><span class="pill-value amber">₹307</span></div>
+      <div class="pill"><span class="pill-label">52W High</span><span class="pill-value">₹479</span></div>
+      <div class="pill"><span class="pill-label">52W Low</span><span class="pill-value">₹266</span></div>
+      <div class="pill"><span class="pill-label">Mkt Cap</span><span class="pill-value">₹11,291 Cr</span></div>
+      <div class="pill"><span class="pill-label">P/E</span><span class="pill-value amber">22.1x</span></div>
+      <div class="pill"><span class="pill-label">ROCE</span><span class="pill-value">19.6%</span></div>
+      <div class="pill"><span class="pill-label">FCF FY25</span><span class="pill-value red">−₹470 Cr</span></div>
+      <div class="pill"><span class="pill-label">Order Book</span><span class="pill-value">₹32,681 Cr</span></div>
+    </div>
+
+    <div class="override-box" style="margin-top:20px;">
+      <div class="override-icon">🚨</div>
+      <div>
+        <div class="override-title">FRAMEWORK OVERRIDE: UNCONDITIONAL AVOID</div>
+        <div class="override-text">
+          Promoter pledge = <strong>53.5% of promoter holding</strong> — exceeds the 40% unconditional AVOID threshold. Separately, SPCPL (Shapoorji Pallonji and Company Pvt Ltd), holding 15.41% of total AFCONS capital, has <strong>100% of its stake encumbered</strong> as of February 2026. This override applies regardless of business quality, order book, or valuation. Pledge reduction below 20% is the single minimum condition to reconsider any investment thesis.
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-lede">
+      AFCONS is India's premier marine and underground EPC contractor — technically excellent, internationally recognised, and backed by a 65-year track record. But the parent entity, Shapoorji Pallonji Group, is financially distressed and has used every AFCONS share it holds as collateral. The listed subsidiary is effectively a collateral vehicle for a leveraged parent. The stock trades at ₹307, down 36% in 6 months — but at any price, a company whose promoter's entire stake is pledged to multiple lenders is not a safe investment.
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro & Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intel</button>
+  </nav>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content active">
+  <div class="section">
+    <div class="section-title">Business Overview</div>
+    <p style="margin-bottom:16px;color:var(--steel-lt);">Afcons Infrastructure Limited, incorporated in 1959 and part of the <strong>Shapoorji Pallonji Group</strong> since 2000, is India's leading EPC contractor specialising in technically complex marine works, underground metro tunnels, bridges, highways, hydro projects, and oil & gas infrastructure. It listed on NSE/BSE in November 2024 at an IPO price of ₹463. <span class="v">VERIFIED</span></p>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-label">Market Position</div>
+        <div class="card-value" style="font-size:14px;margin-top:4px;">10th largest</div>
+        <div class="card-sub">International marine/port contractor globally</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Bridge Ranking</div>
+        <div class="card-value" style="font-size:14px;margin-top:4px;">12th largest</div>
+        <div class="card-sub">Bridges contractor globally</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Geographic Reach</div>
+        <div class="card-value" style="font-size:14px;margin-top:4px;">12 countries</div>
+        <div class="card-sub">65 active projects as of Jun 2024</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Business Segments (Order Book Composition)</div>
+    <div class="ob-seg"><div class="ob-label">Urban Infrastructure (Metro)</div><div class="ob-bar-bg"><div class="ob-bar" style="width:31.8%;background:#3b82f6;">31.8%</div></div><div class="ob-pct">₹10,388 Cr</div></div>
+    <div class="ob-seg"><div class="ob-label">Hydro & Underground</div><div class="ob-bar-bg"><div class="ob-bar" style="width:25%;background:#6366f1;">25.0%</div></div><div class="ob-pct">₹8,170 Cr</div></div>
+    <div class="ob-seg"><div class="ob-label">Bridges & Elevated Corridors</div><div class="ob-bar-bg"><div class="ob-bar" style="width:22.5%;background:#8b5cf6;">22.5%</div></div><div class="ob-pct">₹7,353 Cr</div></div>
+    <div class="ob-seg"><div class="ob-label">Marine & Industrial</div><div class="ob-bar-bg"><div class="ob-bar" style="width:13.2%;background:var(--amber);">13.2%</div></div><div class="ob-pct">₹4,314 Cr</div></div>
+    <div class="ob-seg"><div class="ob-label">Surface Transport</div><div class="ob-bar-bg"><div class="ob-bar" style="width:5.5%;background:var(--steel);">5.5%</div></div><div class="ob-pct">₹1,797 Cr</div></div>
+    <div class="ob-seg"><div class="ob-label">Oil & Gas</div><div class="ob-bar-bg"><div class="ob-bar" style="width:2%;background:#475569;">2.0%</div></div><div class="ob-pct">₹654 Cr</div></div>
+    <p style="font-size:11px;color:var(--steel);margin-top:8px;">Total Order Book: ₹32,681 Cr (Sep 2025) = 2.6x TTM revenue. <span class="v">VERIFIED</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title red">Why This Stock Is in the Series — And Why It's AVOID</div>
+    <p style="margin-bottom:16px;color:var(--steel-lt);">AFCONS is in this series as a <strong>warning study</strong> — a case where an operationally credible company becomes uninvestable due to parent-level financial distress manifesting as pledge risk. India's infrastructure capex super-cycle makes EPC contractors attractive thematically, but AFCONS represents the textbook case of how promoter leverage can trap minority investors.</p>
+    <div class="override-box">
+      <div class="override-icon">📋</div>
+      <div>
+        <div class="override-title">Framework Rule: Promoter Pledge &gt;40% = Unconditional AVOID</div>
+        <div class="override-text">The Buffett Quality-Value framework applies an unconditional AVOID verdict when promoter pledge exceeds 40% of their holding. AFCONS triggers this at 53.5%. This rule exists because: (1) pledged shares can be invoked and sold by lenders at any price during market stress, creating violent forced selling; (2) lender control creates misaligned incentives between promoter and minority shareholders; (3) any further deterioration in the parent's finances accelerates pledging. This rule was applied to VIKRAMSOLR (48.2% pledge) and E2E Networks (56% — flagged). AFCONS is a stronger franchise than either but the rule is non-negotiable.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <div class="section">
+    <div class="section-title">Layer 1 — Macro Anchor</div>
+    <div class="grid-3" style="margin-bottom:16px;">
+      <div class="card"><div class="card-label">India 10Y G-Sec</div><div class="card-value amber">~6.9%</div><div class="card-sub"><span class="v">VERIFIED</span> Apr 2026 — elevated on oil/geopolitics</div></div>
+      <div class="card"><div class="card-label">India Real GDP FY26</div><div class="card-value ok">7.3%</div><div class="card-sub"><span class="v">VERIFIED</span> RBI revised forecast; OECD 7.6%</div></div>
+      <div class="card"><div class="card-label">India CPI</div><div class="card-value ok">~2.5%</div><div class="card-sub"><span class="e">ESTIMATED</span> Benign; multi-year lows in H2 2025</div></div>
+    </div>
+    <div class="card" style="margin-bottom:4px;padding:10px 14px;">
+      <span style="font-family:'IBM Plex Mono';font-size:11px;color:var(--steel);">India Nominal GDP (Real + CPI):</span>
+      <span style="font-family:'Oswald';font-size:18px;font-weight:700;color:#fff;margin-left:12px;">~9.8%</span>
+      <span style="font-family:'IBM Plex Mono';font-size:10px;color:var(--steel);margin-left:8px;">= ABSOLUTE CEILING for terminal growth rate</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Macro Cycle Dashboard</div>
+    <div class="macro-row"><span class="macro-label">Government Capex Cycle — ₹11.1L Cr infra budget</span><span class="macro-badge macro-tailwind">STRONG TAILWIND</span></div>
+    <div class="macro-row"><span class="macro-label">Urban Infrastructure Demand — Metro, tunnel, bridge pipeline</span><span class="macro-badge macro-tailwind">TAILWIND</span></div>
+    <div class="macro-row"><span class="macro-label">Interest Rate Cycle — RBI at 5.25% (cut 125 bps); may pause</span><span class="macro-badge macro-neutral">NEUTRAL</span></div>
+    <div class="macro-row"><span class="macro-label">Input Cost Cycle — Steel, cement stable; oil geopolitical risk</span><span class="macro-badge macro-neutral">NEUTRAL</span></div>
+    <div class="macro-row"><span class="macro-label">Government Payment Delays — Working capital bleed</span><span class="macro-badge macro-headwind">HEADWIND</span></div>
+    <div class="macro-row"><span class="macro-label">SP Group Parent Stress — Collateral overhang on stock</span><span class="macro-badge macro-headwind">SEVERE HEADWIND</span></div>
+    <div class="macro-row"><span class="macro-label">AI Adoption Cycle — EPC sector low AI relevance</span><span class="macro-badge macro-neutral">NEUTRAL</span></div>
+    <p style="font-size:12px;color:var(--steel);margin-top:10px;padding:8px 14px;background:var(--slate2);">Macro Composite for AFCONS: <strong style="color:#fbbf24;">MIXED</strong> — sector tailwind (India capex) vs company-specific headwinds (pledge, FCF, parent stress). The macro thesis is correct but company execution and governance have broken the link to sector opportunity.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+    <table class="data-table">
+      <thead><tr><th>Scenario</th><th>India GDP</th><th>Infrastructure Sector</th><th>AI Impact</th><th>EPC Sector Growth</th></tr></thead>
+      <tbody>
+        <tr><td>Stress</td><td class="num">5.5%</td><td class="num">10–13%</td><td class="num">Neutral</td><td class="num">10–12%</td></tr>
+        <tr><td>Base</td><td class="num">6.8%</td><td class="num">15–19%</td><td class="num">Neutral</td><td class="num">15–17%</td></tr>
+        <tr><td>Acceleration</td><td class="num">8%+</td><td class="num">20–25%</td><td class="num">Neutral</td><td class="num">20–22%</td></tr>
+      </tbody>
+    </table>
+    <div class="override-box" style="margin-top:12px;">
+      <div class="override-icon">⚠️</div>
+      <div>
+        <div class="override-title">AFCONS vs Sector: Severe Underperformance</div>
+        <div class="override-text">AFCONS 5-yr revenue CAGR: <strong>4.78%</strong> vs sector median <strong>9.88%</strong>. Even in a 15-17% sector tailwind environment, AFCONS has grown at barely 5%. TTM revenue is declining (-3%). This is not a sector problem — it is a company-specific execution and working capital problem that is structural, not cyclical. <span class="v">VERIFIED</span> Screener.in</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Layer 3 — Company Alpha Assessment</div>
+    <table class="data-table">
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td>Market Share Gain</td><td><span class="status-badge status-marginal">LIMITED</span></td><td>Domestic order book stable but international contract termination (SAG, €113M at 93%)</td></tr>
+        <tr><td>Premiumisation</td><td><span class="status-badge status-fail">N/A</span></td><td>EPC — no premiumisation lever applicable</td></tr>
+        <tr><td>Geographic Expansion</td><td><span class="status-badge status-marginal">POTENTIAL</span></td><td>Uganda, Croatia, Africa, ME — but termination risk as demonstrated</td></tr>
+        <tr><td>Pricing Power</td><td><span class="status-badge status-fail">WEAK</span></td><td>EPC is price-competitive tendering; margins thin at 10-12% EBITDA</td></tr>
+        <tr><td>AI Alpha (6a+6b+6c)</td><td><span class="status-badge status-fail">NONE</span></td><td>No data flywheel, no AI market expansion, minimal cost AI</td></tr>
+        <tr><td>Order Book Conversion</td><td><span class="status-badge status-fail">DETERIORATING</span></td><td>Working capital days: 8 → 65; CFO/OP: 143% → 8%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Growth Rate Summary</div>
+    <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Acceleration</th></tr></thead>
+      <tbody>
+        <tr><td>India Nominal GDP</td><td>~10.5%</td><td>~10.0%</td><td>~11.5%</td></tr>
+        <tr><td>EPC Sector Growth</td><td>10–12%</td><td>15–17%</td><td>20–22%</td></tr>
+        <tr><td>Company Alpha</td><td>−5% (execution risk)</td><td>0% (flat)</td><td>+2%</td></tr>
+        <tr><td class="warn">AI Alpha (6a+6b+6c)</td><td class="warn">0%</td><td class="warn">0%</td><td class="warn">0%</td></tr>
+        <tr><td>Stage 1 Revenue CAGR</td><td class="red">3–5%</td><td>6–9%</td><td>12–15%</td></tr>
+        <tr><td>Stage 2 Revenue CAGR</td><td class="red">4–6%</td><td>8–10%</td><td>12–14%</td></tr>
+        <tr><td>Terminal Growth</td><td>4.5%</td><td>6.5%</td><td>7.0%</td></tr>
+        <tr><td>FCF Margin Direction</td><td class="red">Further compress</td><td>Stabilise</td><td>Modest recovery</td></tr>
+        <tr><td>Key Risk</td><td>Pledge invocation</td><td>WC normalisation</td><td>Competing EPC cos</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:11px;color:var(--steel);margin-top:8px;padding:8px 14px;background:var(--slate2);">Terminal growth must not exceed India nominal GDP (~9.8%). Used 4.5–7.0% in scenarios. <span class="v">VERIFIED</span> macro. Stage 1 based on current FCF trajectory — negative, so revenue proxy used. All FCF-based DCF scenarios yield negative or near-zero IV at current leverage. <span class="e">ESTIMATED</span></p>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <div class="section">
+    <div class="section-title">Revenue & Profit Track (5 Years)</div>
+    <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Year</th><th>Revenue (₹Cr)</th><th>EBITDA (₹Cr)</th><th>EBITDA%</th><th>Net Profit (₹Cr)</th><th>NPM%</th><th>FCF (₹Cr)</th><th>ROE%</th><th>ROCE%</th></tr></thead>
+      <tbody>
+        <tr><td>FY20</td><td class="num">9,934</td><td class="num">821</td><td class="num">8.3%</td><td class="num">248</td><td class="num">2.5%</td><td class="num ok">651</td><td class="num">—</td><td class="num">—</td></tr>
+        <tr><td>FY21</td><td class="num">9,376</td><td class="num">870</td><td class="num">9.3%</td><td class="num">170</td><td class="num">1.8%</td><td class="num ok">441</td><td class="num">—</td><td class="num">19%</td></tr>
+        <tr><td>FY22</td><td class="num">11,019</td><td class="num">943</td><td class="num">8.6%</td><td class="num">358</td><td class="num">3.2%</td><td class="num ok">259</td><td class="num">—</td><td class="num">20%</td></tr>
+        <tr><td>FY23</td><td class="num">12,637</td><td class="num">1,333</td><td class="num">10.6%</td><td class="num">411</td><td class="num">3.3%</td><td class="num warn">306</td><td class="num">—</td><td class="num">23%</td></tr>
+        <tr><td>FY24</td><td class="num">13,268</td><td class="num">1,377</td><td class="num">10.4%</td><td class="num">450</td><td class="num">3.4%</td><td class="num warn">25</td><td class="num">14%</td><td class="num">23%</td></tr>
+        <tr style="background:rgba(212,98,26,.08);"><td><strong>FY25</strong></td><td class="num"><strong>12,548</strong></td><td class="num"><strong>1,361</strong></td><td class="num warn"><strong>10.8%</strong></td><td class="num"><strong>487</strong></td><td class="num"><strong>3.9%</strong></td><td class="num red"><strong>−470</strong></td><td class="num red"><strong>11%</strong></td><td class="num warn"><strong>20%</strong></td></tr>
+        <tr><td>TTM</td><td class="num">12,558</td><td class="num">1,468</td><td class="num">11.7%</td><td class="num">450</td><td class="num">3.6%</td><td class="num red">—</td><td class="num red">11%</td><td class="num">19.6%</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:11px;color:var(--steel);margin-top:6px;">All data <span class="v">VERIFIED</span> Screener.in consolidated. 5-yr Revenue CAGR: 4.78% (vs sector 9.88%). FCF collapse from ₹651 Cr to −₹470 Cr is the critical inflection.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Q3 FY26 Recent Performance</div>
+    <div class="grid-4">
+      <div class="card danger"><div class="card-label">Revenue Q3 FY26</div><div class="card-value red">₹2,976 Cr</div><div class="card-sub">−9% YoY <span class="v">VERIFIED</span></div></div>
+      <div class="card danger"><div class="card-label">Net Profit Q3 FY26</div><div class="card-value red">₹97 Cr</div><div class="card-sub">−34.8% YoY</div></div>
+      <div class="card warn"><div class="card-label">EBITDA Margin Q3</div><div class="card-value amber">14%</div><div class="card-sub">Improved operationally</div></div>
+      <div class="card"><div class="card-label">Interest Q3 FY26</div><div class="card-value amber">₹167 Cr</div><div class="card-sub">Rising interest burden</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--steel-lt);margin-top:12px;padding:10px 14px;background:var(--slate2);">Note: Other income contributed ₹75.41% of PBT in Q2 FY26, indicating heavy reliance on non-operating income to sustain reported profits. <span class="v">VERIFIED</span> Q2 FY26 earnings analysis.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Financial Fortress Scorecard</div>
+    <div class="metric-row fail"><span class="metric-name">ROE ≥ 15% for 5 consecutive years</span><span class="metric-val">11–14% range</span><span class="status-badge status-fail">✗ FAIL</span></div>
+    <div class="metric-row marginal"><span class="metric-name">ROIC &gt; WACC (est. 13%)</span><span class="metric-val">ROCE 19-23% (proxy)</span><span class="status-badge status-marginal">~ MARGINAL</span></div>
+    <div class="metric-row fail"><span class="metric-name">Net Profit Margin ≥ 15%</span><span class="metric-val">3.6–3.9%</span><span class="status-badge status-fail">✗ FAIL</span></div>
+    <div class="metric-row fail"><span class="metric-name">FCF positive and growing</span><span class="metric-val">−₹470 Cr (FY25)</span><span class="status-badge status-fail">✗ FAIL</span></div>
+    <div class="metric-row fail"><span class="metric-name">FCF conversion ≥ 80% of net income</span><span class="metric-val">CFO/OP = 8%</span><span class="status-badge status-fail">✗ FAIL</span></div>
+    <div class="metric-row fail"><span class="metric-name">Revenue growth ≥ sector CAGR</span><span class="metric-val">4.78% vs 9.88%</span><span class="status-badge status-fail">✗ FAIL</span></div>
+    <div class="metric-row fail"><span class="metric-name">Interest Coverage (EBIT/Interest)</span><span class="metric-val">~1.45x</span><span class="status-badge status-fail">✗ FAIL</span></div>
+    <div class="metric-row marginal"><span class="metric-name">Capital-light model / ROIC trend</span><span class="metric-val">ROCE 19-23% (decent)</span><span class="status-badge status-marginal">~ MARGINAL</span></div>
+    <div class="metric-row marginal"><span class="metric-name">Net debt / equity position</span><span class="metric-val">Borrowings ₹3,565 Cr (Sep25)</span><span class="status-badge status-fail">✗ RISING</span></div>
+    <div class="metric-row pass"><span class="metric-name">Order Book Visibility</span><span class="metric-val">₹32,681 Cr = 2.6x revenue</span><span class="status-badge status-pass">✓ PASS</span></div>
+    <div class="metric-row pass"><span class="metric-name">Bid Pipeline</span><span class="metric-val">~₹3.8 trillion</span><span class="status-badge status-pass">✓ STRONG</span></div>
+    <div style="margin-top:12px;padding:12px 16px;background:linear-gradient(90deg,var(--danger-bg),var(--slate2));border-left:4px solid var(--danger);">
+      <strong style="font-family:'Oswald';color:var(--danger-lt);">Financial Quality Grade: C−</strong>
+      <p style="font-size:12px;color:#fca5a5;margin-top:4px;">5 of 11 scorecard tests = FAIL. FCF collapse is the defining story. A business with ₹12,558 Cr in revenue producing negative FCF is consuming more capital than it generates. Working capital days tripling (8 → 65) signals government clients are slow-paying and Afcons is financing them with its own balance sheet — while its parent Shapoorji Pallonji is itself cash-constrained.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">O'Glove Earnings Quality Deep-Dive</div>
+    <div class="metric-row fail">
+      <span class="metric-name">Test 1 — FCF Conversion (5-year): CFO/Operating Profit</span>
+      <span class="metric-val">143% → 112% → 77% → 99% → 70% → <strong class="red">8%</strong></span>
+      <span class="status-badge status-fail">✗ FAIL</span>
+    </div>
+    <div class="metric-row fail">
+      <span class="metric-name">Test 2 — DSO Trend (Debtor Days): Rising significantly</span>
+      <span class="metric-val">76d → 86d → 81d (unstable, elevated)</span>
+      <span class="status-badge status-fail">✗ FAIL</span>
+    </div>
+    <div class="metric-row fail">
+      <span class="metric-name">Test 3 — Working Capital Days: Surged</span>
+      <span class="metric-val">8d → 29d → 65d (revenue slowing)</span>
+      <span class="status-badge status-fail">✗ FAIL</span>
+    </div>
+    <div class="metric-row marginal">
+      <span class="metric-name">Test 4 — Accounting Policy: No stated changes; other income high</span>
+      <span class="metric-val">Other income = 75%+ of PBT in Q2</span>
+      <span class="status-badge status-marginal">~ WATCH</span>
+    </div>
+    <div class="metric-row marginal">
+      <span class="metric-name">Test 5 — EBITDA Margin: 8% → 11% (improvement trend)</span>
+      <span class="metric-val">8–12% range; Q3 FY26: 14%</span>
+      <span class="status-badge status-marginal">~ MARGINAL</span>
+    </div>
+    <div style="margin-top:12px;padding:12px 16px;background:var(--danger-bg);border:1px solid var(--danger);">
+      <strong style="font-family:'Oswald';color:var(--danger-lt);">Overall Earnings Quality: SUSPECT → MoS widened +5%</strong>
+      <p style="font-size:12px;color:#fca5a5;margin-top:4px;">FCF conversion collapse from 143% to 8% in 5 years is a critical red flag per O'Glove. Working capital explosion (8 → 65 days) and heavy reliance on other income (non-operating) suggest reported net profit overstates the company's cash-generating ability. <span class="v">VERIFIED</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <div class="section">
+    <div class="section-title">Economic Moat Assessment — Pillar 1 Grade: B−</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-label">Technical Specialisation Moat ★★★★</div>
+        <div style="font-size:13px;color:var(--steel-lt);margin-top:8px;">Marine construction, TBM tunnelling, undersea work — requires 65 years of accumulated know-how, 153 cranes, 16 TBMs, 11 marine barges, 21 piling rigs. Cannot be replicated in &lt;10 years. True technical moat but not exclusive — L&T, NCC, Nagarjuna compete.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Project Track Record Moat ★★★</div>
+        <div style="font-size:13px;color:var(--steel-lt);margin-top:8px;">Atal Tunnel, East-West Metro Kolkata, USBRL T49, Thane Creek undersea bullet train tunnel — global references that win contracts. But track record moat is weakened by the SAG Croatia termination (€113M at 93% completion). Execution risk is real.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Switching Cost Moat ★★</div>
+        <div style="font-size:13px;color:var(--steel-lt);margin-top:8px;">Government clients can change EPC contractors on each project — low switching cost moat. International repeat business exists but SAG termination proves fragility. No recurring revenue or long-term contract lock-in.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Scale & Equipment Moat ★★★</div>
+        <div style="font-size:13px;color:var(--steel-lt);margin-top:8px;">Equipment fleet (16 TBMs especially) creates capital-intensive barrier. Not easily replicable for a new entrant. But peers L&T Construction and NCC also have comparable fleet. Moat is narrow, not wide.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ROIC as Moat Proof (5-Year)</div>
+    <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Year</th><th>ROCE %</th><th>Assessment</th><th>vs WACC (~13%)</th></tr></thead>
+      <tbody>
+        <tr><td>FY21</td><td class="num">19%</td><td>Narrow moat (15-20%)</td><td class="num ok">+6%</td></tr>
+        <tr><td>FY22</td><td class="num">20%</td><td>Narrow moat</td><td class="num ok">+7%</td></tr>
+        <tr><td>FY23</td><td class="num">23%</td><td>Wide-narrow border (20-40%)</td><td class="num ok">+10%</td></tr>
+        <tr><td>FY24</td><td class="num">23%</td><td>Wide-narrow border</td><td class="num ok">+10%</td></tr>
+        <tr><td>FY25</td><td class="num">20%</td><td>Narrow moat (declining)</td><td class="num warn">+7%</td></tr>
+        <tr><td>TTM</td><td class="num">19.6%</td><td>Narrow moat</td><td class="num warn">+6.6%</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--steel);margin-top:8px;padding:8px 14px;background:var(--slate2);">ROCE of 19-23% suggests a narrow but real competitive advantage. However, ROCE includes "other income" (non-core cash flows). Adjusting for elevated other income (~₹469 Cr in FY25), core operating ROCE would be lower. <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">DATA FLYWHEEL TEST</div>
+    <div class="flywheel-box">
+      <div style="font-family:'IBM Plex Mono';font-size:10px;color:var(--steel);letter-spacing:.1em;margin-bottom:8px;">AI DATA FLYWHEEL ASSESSMENT</div>
+      <div class="flywheel-badge cosmetic">🤖 AI IS COSMETIC</div>
+      <p style="font-size:12px;color:var(--steel);margin-top:8px;">Q1: Proprietary training data? No — project data is confidential but not monetisable AI training data. Q2: Does AI improve with more users? No — EPC is project-based; no accumulating AI model. Q3: Does better AI attract more projects? No — contracts won on technical credentials + lowest cost bid. Flywheel score: 0/10.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Macro Moat Stress Test</div>
+    <div class="metric-row"><span class="metric-name">Technical Specialisation</span><span class="metric-val">HOLDS — skills don't erode in stress</span></div>
+    <div class="metric-row"><span class="metric-name">Project Track Record</span><span class="metric-val">WEAKENS — terminations damage reputation (SAG)</span></div>
+    <div class="metric-row"><span class="metric-name">Equipment Fleet</span><span class="metric-val">WEAKENS — capex-heavy; stress limits fleet upgrades</span></div>
+    <div class="metric-row fail"><span class="metric-name">Balance Sheet in Stress</span><span class="metric-val">SEVERE RISK — pledge invocation + FCF negative + borrowings rising</span><span class="status-badge status-fail">CRITICAL</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Peer Comparison</div>
+    <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Company</th><th>Revenue CAGR 5yr</th><th>EBITDA%</th><th>FCF</th><th>Pledge%</th><th>ROE</th></tr></thead>
+      <tbody>
+        <tr><td><strong>AFCONS</strong></td><td class="num red">4.78%</td><td class="num">10-11%</td><td class="num red">−₹470 Cr</td><td class="num red">53.5%</td><td class="num red">11%</td></tr>
+        <tr><td>L&T Construction</td><td class="num ok">~12%</td><td class="num">~10%</td><td class="num ok">Positive</td><td class="num ok">Nil</td><td class="num">~15%</td></tr>
+        <tr><td>NCC Ltd</td><td class="num warn">~8%</td><td class="num">~10%</td><td class="num warn">Marginal</td><td class="num ok">Low</td><td class="num">~12%</td></tr>
+        <tr><td>KNR Constructions</td><td class="num ok">~15%</td><td class="num">~15%</td><td class="num ok">Positive</td><td class="num ok">Nil</td><td class="num ok">18%</td></tr>
+        <tr><td>PNC Infratech</td><td class="num ok">~12%</td><td class="num">~13%</td><td class="num warn">Marginal</td><td class="num ok">Low</td><td class="num">~14%</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:11px;color:var(--steel);margin-top:8px;">AFCONS is weakest on every financial metric among peers. Its technical specialisation moat is real but not translating into financial quality. <span class="e">ESTIMATED</span></p>
+  </div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <div class="section">
+    <div class="section-title red">Shareholding Integrity — SEVERE FAILURES</div>
+    <div class="redflag-box">
+      <div class="redflag-num">RF1</div>
+      <div class="redflag-text"><strong>Promoter pledge: 53.5% of holding = UNCONDITIONAL AVOID trigger.</strong> Framework threshold is 40%. At 53.5%, every additional 1% fall in AFCONS stock price tightens the security cover ratio and increases lender invocation risk. With a stock already down 41% from 52-week high, the cover ratio is under significant pressure.</div>
+    </div>
+    <div class="redflag-box">
+      <div class="redflag-num">RF2</div>
+      <div class="redflag-text"><strong>SPCPL — 100% of its 15.41% stake in AFCONS fully encumbered</strong> as of February 2026. First charge: SBICAP (SBI consortium, Jun 2025). Second charge: Catalyst Trusteeship / JM Financial (Feb 2026). Double-pledging of the same shares is a sign of severe parent financial stress. <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="redflag-box">
+      <div class="redflag-num">RF3</div>
+      <div class="redflag-text"><strong>29 Shapoorji Pallonji Group entities seeking reclassification from promoter to public category</strong> (Feb 2026). This is a governance red flag — reducing the formal promoter base while the core pledging entities remain. Could signal an intent to reduce disclosure obligations. <span class="v">VERIFIED</span> BSE filing Feb 4, 2026.</div>
+    </div>
+    <div class="redflag-box">
+      <div class="redflag-num">RF4</div>
+      <div class="redflag-text"><strong>Related Party Transactions of ₹5,200 Cr proposed with Shapoorji Pallonji Mideast LLC</strong> (Abu Dhabi, Fahid Island Project). SPCPL holds the contract from Aldar; AFCONS is being positioned as the subcontractor with guarantee obligations. This is the parent using the listed subsidiary to execute its own order book. <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="redflag-box">
+      <div class="redflag-num">RF5</div>
+      <div class="redflag-text"><strong>Disclosure lapse:</strong> SPCPL's February 17 pledge disclosure was revised on March 10 after stock exchanges flagged omission of lender names. Regulatory non-compliance in disclosure is a governance concern, even if later corrected. <span class="v">VERIFIED</span></div>
+    </div>
+    <div class="redflag-box">
+      <div class="redflag-num">RF6</div>
+      <div class="redflag-text"><strong>€113M EPC contract (SAG, Croatia) terminated at 93.5% completion</strong> with bond invocation by client. Afcons disputed but the bond was invoked. International contract execution risk is now demonstrated, not theoretical. <span class="v">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Management Strengths (What's Working)</div>
+    <div class="metric-row pass"><span class="metric-name">Technical execution capability</span><span class="metric-val">65 years; Atal Tunnel, metro TBM projects completed</span></div>
+    <div class="metric-row pass"><span class="metric-name">New board inductions (Pallon Mistry, Firoz Mistry)</span><span class="metric-val">Fresh perspectives added</span></div>
+    <div class="metric-row pass"><span class="metric-name">EBITDA margin improving (Q3 FY26: 14%)</span><span class="metric-val">Operational efficiency focus visible</span></div>
+    <div class="metric-row pass"><span class="metric-name">Bid pipeline: ~₹3.8 trillion</span><span class="metric-val">Order ambition intact</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Capital Allocation Assessment</div>
+    <p style="color:var(--steel-lt);margin-bottom:16px;font-size:13px;">Management has failed to convert order book growth into FCF. Working capital has been allowed to expand from 8 days to 65 days — this is a fundamental capital allocation failure. Borrowings at the holding company (SP Group) level are creating distress that flows down to the listed entity through the pledge mechanism. The IPO proceeds (₹1,250 Cr) have been fully utilised, yet FCF remains negative. The company is operationally reinvesting but parent-level debt is the real capital allocation story.</p>
+    <table class="data-table">
+      <thead><tr><th>Parameter</th><th>Assessment</th><th>Rating</th></tr></thead>
+      <tbody>
+        <tr><td>Capex deployment</td><td>Fleet-heavy but appropriate for EPC scale</td><td><span class="status-badge status-marginal">MARGINAL</span></td></tr>
+        <tr><td>Working capital management</td><td>Critical failure — 8 → 65 WC days</td><td><span class="status-badge status-fail">✗ FAIL</span></td></tr>
+        <tr><td>Debt management</td><td>Borrowings rising ₹2,343 → ₹3,565 Cr in 6 months</td><td><span class="status-badge status-fail">✗ FAIL</span></td></tr>
+        <tr><td>Parent-subsidiary alignment</td><td>Parent using listed co as collateral and subcontractor</td><td><span class="status-badge status-fail">✗ FAIL</span></td></tr>
+        <tr><td>Dividend payout</td><td>₹2.50/share (0.9% yield) — nominal</td><td><span class="status-badge status-marginal">MARGINAL</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Management Grade: C+</div>
+    <p style="color:var(--steel-lt);font-size:13px;">Technically competent management executing complex projects globally. But governance failures — pledging, disclosure lapses, RPT complexity, and the 29-entity reclassification — bring the character assessment to C+. The real issue is not incompetence but rather a conflicted corporate structure where the listed entity is serving the parent's financial needs as much as its own minority shareholders.</p>
+  </div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <div class="section">
+    <div class="section-title red">Valuation Caveats — Why IV Estimates Are Unreliable Here</div>
+    <div class="override-box">
+      <div class="override-icon">⚠️</div>
+      <div>
+        <div class="override-title">Framework Valuation Note</div>
+        <div class="override-text">When earnings quality is SUSPECT and FCF is negative, the Buffett framework directs: "use CFO-only earnings + widen MoS 10% + lean toward PASS." For AFCONS, CFO in FY25 was −₹132 Cr (operating cash outflow). Any DCF using reported net profit of ₹487 Cr materially overstates intrinsic value. All methods below use operating cash flow as the base, not reported profits. AVOID verdict is governance-driven, not valuation-driven — but valuation corroborates the AVOID.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 1 — DCF (2-Stage, CFO-Adjusted)</div>
+    <p style="font-size:13px;color:var(--steel-lt);margin-bottom:12px;">Using normalised CFO of ~₹400 Cr (FY25 actual: −₹132 Cr; FY24: ₹707 Cr; 3-yr avg: ~₹395 Cr). WACC: 13% (Cat C India, leveraged, mid-cap). <span class="e">ESTIMATED</span></p>
+    <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Scenario</th><th>Stage 1 Growth</th><th>Terminal g</th><th>DCF IV/share</th><th>vs CMP ₹307</th></tr></thead>
+      <tbody>
+        <tr><td>Stress (CFO-based)</td><td class="num">3%</td><td class="num">4.5%</td><td class="num red">₹94</td><td class="num red">−69%</td></tr>
+        <tr><td>Base (CFO normalised)</td><td class="num">6%</td><td class="num">6.0%</td><td class="num warn">₹156</td><td class="num red">−49%</td></tr>
+        <tr><td>Acceleration</td><td class="num">12%</td><td class="num">7.0%</td><td class="num warn">₹248</td><td class="num red">−19%</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:11px;color:var(--steel);margin-top:8px;">Even in acceleration scenario, stock appears overvalued on CFO-based DCF. The reported P/E of 22x on reported profits is deceptive — cash generation does not support it. <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 2 — Owner Earnings Capitalisation</div>
+    <p style="font-size:13px;color:var(--steel-lt);margin-bottom:12px;">OE = Net Income + D&A − Maintenance CapEx ± WC. D&A FY25 = ₹491 Cr. Maintenance CapEx estimated at ₹400 Cr. WC adverse change FY25 = large negative. <span class="e">ESTIMATED</span></p>
+    <div class="grid-3">
+      <div class="card warn"><div class="card-label">Net Income FY25</div><div class="card-value">₹487 Cr</div></div>
+      <div class="card"><div class="card-label">+ D&A</div><div class="card-value">₹491 Cr</div></div>
+      <div class="card danger"><div class="card-label">− Maint. CapEx (est.)</div><div class="card-value red">−₹400 Cr</div></div>
+      <div class="card danger"><div class="card-label">− WC Deterioration</div><div class="card-value red">~−₹600 Cr</div></div>
+      <div class="card danger"><div class="card-label">Owner Earnings (est.)</div><div class="card-value red">~−₹22 Cr</div></div>
+      <div class="card danger"><div class="card-label">OE/Share</div><div class="card-value red">~₹0</div></div>
+    </div>
+    <p style="font-size:11px;color:var(--steel);margin-top:8px;">Owner earnings are approximately zero or negative after normalising for working capital expansion. This is a cash-destroying business in its current state. <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Method 3 — P/E Earnings Power (Reported)</div>
+    <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Metric</th><th>Value</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Current P/E</td><td class="num">22.1x</td><td>On reported EPS of ₹13.24</td></tr>
+        <tr><td>Peer sector P/E (L&T EPC, NCC)</td><td class="num">15–20x</td><td>Better quality peers trade lower</td></tr>
+        <tr><td>P/E at intrinsic value (base DCF)</td><td class="num">~12x</td><td>Implied by ₹156/share IV</td></tr>
+        <tr><td>EPS if FCF normalised</td><td class="num red">~₹0–5</td><td>Adjusted for WC drain and governance risk</td></tr>
+        <tr><td>EV/EBITDA (TTM)</td><td class="num">~10x</td><td>Reasonable for EPC at face value</td></tr>
+        <tr><td>P/B</td><td class="num">2.24x</td><td>Book value ₹147; premium unjustified</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5-Method Summary Table</div>
+    <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>AI Adjustment</th></tr></thead>
+      <tbody>
+        <tr><td>DCF (CFO-Adjusted)</td><td class="num red">₹94</td><td class="num">₹156</td><td class="num warn">₹248</td><td>0%</td></tr>
+        <tr><td>Owner Earnings</td><td class="num red">₹0</td><td class="num red">₹50</td><td class="num">₹120</td><td>0%</td></tr>
+        <tr><td>EPV (ROIC/WACC)</td><td class="num">₹130</td><td class="num">₹195</td><td class="num warn">₹270</td><td>0%</td></tr>
+        <tr><td>P/E Earnings Power</td><td class="num">₹110</td><td class="num">₹175</td><td class="num warn">₹250</td><td>0%</td></tr>
+        <tr><td>EV/EBITDA Peer</td><td class="num">₹120</td><td class="num">₹180</td><td class="num warn">₹260</td><td>0%</td></tr>
+        <tr style="background:rgba(212,98,26,.08);"><td><strong>Blended Base IV</strong></td><td class="num red"><strong>₹91</strong></td><td class="num warn"><strong>₹151</strong></td><td class="num warn"><strong>₹230</strong></td><td><strong>0%</strong></td></tr>
+        <tr><td>Pledge/Governance Discount (−20%)</td><td class="num red">₹73</td><td class="num red">₹121</td><td class="num">₹184</td><td>Framework mandatory</td></tr>
+        <tr><td><strong>CMP</strong></td><td class="num" colspan="3"><strong>₹307</strong> — 25–75% premium to governance-adjusted IV</td><td>OVERVALUED</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:11px;color:var(--steel);margin-top:8px;">Governance-adjusted intrinsic value: ₹73–184 range. CMP ₹307 is 25-75% above even the acceleration scenario after the governance discount. The stock is not cheap — the 41% decline from IPO merely brought it from extreme overvaluation to moderate overvaluation. <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Earnings Yield vs Bond Yield</div>
+    <div class="grid-3">
+      <div class="card"><div class="card-label">Earnings Yield (EPS/CMP)</div><div class="card-value">4.3%</div><div class="card-sub">₹13.24 EPS / ₹307</div></div>
+      <div class="card danger"><div class="card-label">FCF Yield (FCF/CMP)</div><div class="card-value red">NEGATIVE</div><div class="card-sub">−₹470 Cr FCF; no FCF yield</div></div>
+      <div class="card"><div class="card-label">India 10Y G-Sec</div><div class="card-value amber">6.9%</div><div class="card-sub">Risk-free rate <span class="v">VERIFIED</span></div></div>
+    </div>
+    <p style="font-size:12px;color:var(--steel-lt);margin-top:12px;padding:10px 14px;background:var(--slate2);">Earnings yield (4.3%) < risk-free rate (6.9%). This implies the stock offers negative equity risk premium on reported earnings. On FCF yield (negative), the stock has no investment justification from a yield perspective. <span class="e">ESTIMATED</span></p>
+  </div>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <div class="section">
+    <div class="section-title">Four-Pillar Grades</div>
+    <div class="pillar-grid">
+      <div class="pillar-card">
+        <div class="pillar-name">Pillar 1 — Economic Moat</div>
+        <div class="pillar-grade grade-b">B−</div>
+        <div class="pillar-note">Narrow technical moat (TBM, marine). Real but not wide. Deteriorating due to SAG termination and execution issues. No data flywheel. No AI moat. ROIC 19-20% (narrow range).</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-name">Pillar 2 — Financial Quality</div>
+        <div class="pillar-grade grade-d">C−</div>
+        <div class="pillar-note">FCF negative (−₹470 Cr). CFO/OP 8%. WC days 8→65. ROE 11% &lt; 15% threshold. 5 of 11 scorecard tests fail. Earnings quality: SUSPECT. Owner earnings ≈ zero.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-name">Pillar 3 — Management Integrity</div>
+        <div class="pillar-grade grade-d">C+</div>
+        <div class="pillar-note">Pledge 53.5% (FAIL). 100% SPCPL stake encumbered. 29 entities seeking reclassification. ₹5,200 Cr RPT. Disclosure lapse. SAG contract termination. Operationally competent but governance compromised.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-name">Pillar 4 — Valuation</div>
+        <div class="pillar-grade grade-d">D+</div>
+        <div class="pillar-note">EY 4.3% &lt; G-Sec 6.9%. FCF yield negative. Governance-adjusted IV: ₹73–184. CMP ₹307 = 25-75% premium to adjusted IV. Not cheap despite 41% fall from 52-week high.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">AI Intelligence Summary</div>
+    <div class="metric-row"><span class="metric-name">AI Overlay</span><span class="metric-val">⚪ NEUTRAL — AI is a project management tool, not a moat</span></div>
+    <div class="metric-row"><span class="metric-name">Data Flywheel</span><span class="metric-val">COSMETIC — 0/10</span></div>
+    <div class="metric-row"><span class="metric-name">AI Opportunity Score</span><span class="metric-val">18/100 — AI Neutral, standard fundamentals govern</span></div>
+    <div class="metric-row"><span class="metric-name">Portfolio Role</span><span class="metric-val">AI NEUTRAL — fundamentals alone govern (and they say AVOID)</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Final Verdict</div>
+    <div style="background:var(--danger-bg);border:2px solid var(--danger);padding:24px;text-align:center;margin-bottom:20px;">
+      <div style="font-family:'Oswald';font-size:48px;font-weight:700;color:var(--danger-lt);letter-spacing:.06em;line-height:1;">⛔ AVOID</div>
+      <div style="font-family:'IBM Plex Mono';font-size:11px;color:var(--danger);letter-spacing:.12em;margin-top:8px;">GOVERNANCE OVERRIDE · PROMOTER PLEDGE 53.5% · FCF NEGATIVE · EBIT COV 1.45x</div>
+    </div>
+    <p style="color:var(--steel-lt);font-size:14px;line-height:1.8;margin-bottom:16px;">AFCONS is a technically excellent company trapped inside a financially distressed ownership structure. The business is real — 65 years of complex EPC execution, a genuine ₹32,681 Cr order book, and globally recognised marine/tunnelling capability. But no amount of business quality can compensate for a parent that has pledged 100% of its listed subsidiary stake to multiple lenders while the subsidiary itself generates negative free cash flow.</p>
+    <p style="color:var(--steel-lt);font-size:14px;line-height:1.8;">The risk is not that AFCONS fails as a company. The risk is that Shapoorji Pallonji Group's financial distress triggers lender invocation of the pledged shares — creating forced selling at any price — while minority shareholders have no recourse. The 41% decline from the IPO price is the market pricing this risk in. It is not yet fully priced.</p>
+    <div class="quote-box">
+      "The first rule of investing is: don't lose money. The second rule is: don't forget rule one."
+      <div class="quote-attr">— WARREN BUFFETT · Applied here: pledge invocation = permanent capital loss risk</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title red">Conditions Required to Reconsider (Minimum 5 of 5)</div>
+    <div class="upgrade-item"><div class="upgrade-n">1</div><div class="upgrade-text"><strong>Promoter pledge falls below 20% of promoter holding</strong> — from 53.5% currently. This requires Shapoorji Pallonji Group to substantially deleverage at the parent level. Not expected in &lt;24 months.</div></div>
+    <div class="upgrade-item"><div class="upgrade-n">2</div><div class="upgrade-text"><strong>FCF turns positive for 2 consecutive quarters</strong> — working capital days must contract from 65 to &lt;30 days. Requires government payment cycles to normalise and AFCONS to tighten receivables management.</div></div>
+    <div class="upgrade-item"><div class="upgrade-n">3</div><div class="upgrade-text"><strong>Interest coverage (EBIT/Interest) exceeds 2.5x</strong> — from 1.45x currently. Requires either significant debt reduction OR EBIT growth of 70%+ at current interest rates.</div></div>
+    <div class="upgrade-item"><div class="upgrade-n">4</div><div class="upgrade-text"><strong>Related party transaction (₹5,200 Cr SP Mideast) scrutinised and approved by independent directors with minority shareholder protection clauses</strong> — current proposal lacks adequate minority safeguards.</div></div>
+    <div class="upgrade-item"><div class="upgrade-n">5</div><div class="upgrade-text"><strong>No further increase in pledge and no lender invocation events for 4 consecutive quarters</strong> — the pledge situation must stabilise before any reconsideration is possible.</div></div>
+    <p style="font-size:12px;color:var(--steel);margin-top:12px;padding:8px 14px;background:var(--slate2);">Even if all 5 conditions are met, the maximum verdict upgrade would be WATCH ★★ — not BUY. The governance discount is durable once established.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Buffett Quality-Value Series — Current Coverage</div>
+    <div class="series-table-wrap">
+      <table class="series-table">
+        <thead><tr><th>Ticker</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Entry</th></tr></thead>
+        <tbody>
+          <tr><td>AMAGI</td><td>NSE</td><td>F</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>A−</td><td>BUY ★★★★★</td><td>₹350</td></tr>
+          <tr><td>AMZN</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>A−</td><td>B+</td><td>A−</td><td>B+</td><td>WATCH ★★★★</td><td>~$199</td></tr>
+          <tr><td>BAJAJHFL</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH ★★★</td><td>₹65–75</td></tr>
+          <tr><td>BANDHANBNK</td><td>NSE</td><td>D</td><td>🟢</td><td>B−</td><td>C+</td><td>C+</td><td>B</td><td>WATCH ★★★</td><td>₹140–147</td></tr>
+          <tr><td>E2E</td><td>NSE</td><td>F</td><td>🌀</td><td>C+</td><td>C+</td><td>C</td><td>C</td><td>WATCH ★★</td><td>₹1,400–1,700</td></tr>
+          <tr><td>FRACTAL</td><td>NSE</td><td>C</td><td>🟢</td><td>B+</td><td>B</td><td>B+</td><td>B−</td><td>WATCH ★★★</td><td>₹722</td></tr>
+          <tr><td>GEMAROMA</td><td>NSE</td><td>B</td><td>⚪</td><td>B−</td><td>B</td><td>B+</td><td>A−</td><td>WATCH ★★★</td><td>₹130–165</td></tr>
+          <tr><td>GOOGL</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>B+</td><td>B</td><td>WATCH ★★★★</td><td>$224–$260</td></tr>
+          <tr><td>HOOD</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>B</td><td>A−</td><td>B+</td><td>B</td><td>WATCH ★★★★</td><td>$60–65</td></tr>
+          <tr><td>INDIGOPNTS</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH ★★★</td><td>₹544–600</td></tr>
+          <tr><td>IONQ</td><td>NASDAQ</td><td>F Ph1</td><td>⚪</td><td>B−</td><td>D+</td><td>B−</td><td>D</td><td>WATCH ★★</td><td>$15–17</td></tr>
+          <tr><td>ITC</td><td>NSE</td><td>C</td><td>⚪</td><td>A−</td><td>B+</td><td>B+</td><td>B+</td><td>WATCH ★★★</td><td>₹280</td></tr>
+          <tr><td>MELI</td><td>NASDAQ</td><td>B</td><td>🟢</td><td>A</td><td>A−</td><td>A</td><td>A</td><td>BUY ★★★★★</td><td>~$1,810</td></tr>
+          <tr><td>META</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A+</td><td>A−</td><td>B+</td><td>A−</td><td>BUY STARTER ★★★★½</td><td>~$542</td></tr>
+          <tr><td>MSFT</td><td>NASDAQ</td><td>C</td><td>🟢</td><td>A−</td><td>A−</td><td>A</td><td>B+</td><td>WATCH ★★★★</td><td>$340–365</td></tr>
+          <tr><td>NBIS</td><td>NASDAQ</td><td>F</td><td>🌀</td><td>A−</td><td>B+</td><td>A−</td><td>B</td><td>WATCH ★★★★</td><td>~$133</td></tr>
+          <tr><td>NETWEB</td><td>NSE</td><td>B</td><td>🟢</td><td>B+</td><td>B−</td><td>B</td><td>D+</td><td>WATCH ★★★</td><td>₹795</td></tr>
+          <tr><td>NVO</td><td>NYSE</td><td>C</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>A−</td><td>WATCH ★★★★</td><td>$44–49</td></tr>
+          <tr><td>PL</td><td>NYSE</td><td>F</td><td>🌀</td><td>A</td><td>B+</td><td>A−</td><td>B−</td><td>WATCH ★★★★</td><td>$27–31</td></tr>
+          <tr><td>RAJESHEXPO</td><td>NSE</td><td>E</td><td>⚪</td><td>F</td><td>F</td><td>D−</td><td>F</td><td>AVOID</td><td>N/A</td></tr>
+          <tr><td>SHADOWFAX</td><td>NSE</td><td>B</td><td>⚪</td><td>B−</td><td>C+</td><td>B−</td><td>B</td><td>WATCH ★★★</td><td>₹98–115</td></tr>
+          <tr><td>SURYODAY</td><td>NSE</td><td>D</td><td>⚪</td><td>B−</td><td>C+</td><td>B−</td><td>B</td><td>WATCH ★★★</td><td>₹95–115</td></tr>
+          <tr><td>TRAVELFOOD</td><td>NSE</td><td>C</td><td>⚪</td><td>B+</td><td>A−</td><td>B</td><td>B</td><td>WATCH ★★★</td><td>₹1,000–1,100</td></tr>
+          <tr><td>UNH</td><td>NYSE</td><td>C</td><td>⚪</td><td>A−</td><td>B−</td><td>B−</td><td>B+</td><td>WATCH ★★★★</td><td>$260–$310</td></tr>
+          <tr><td>VIKRAMSOLR</td><td>NSE</td><td>B</td><td>⚪</td><td>B−</td><td>C+</td><td>C</td><td>B</td><td>AVOID</td><td>N/A</td></tr>
+          <tr><td>WAAREEENER</td><td>NSE</td><td>B</td><td>⚪</td><td>B+</td><td>B+</td><td>B+</td><td>C+</td><td>WATCH ★★★★</td><td>₹2,600–2,800</td></tr>
+          <tr class="current-row"><td><strong>AFCONS</strong></td><td><strong>NSE</strong></td><td><strong>C</strong></td><td><strong>⚪</strong></td><td><strong>B−</strong></td><td><strong>C−</strong></td><td><strong>C+</strong></td><td><strong>D+</strong></td><td><strong>⛔ AVOID</strong></td><td><strong>N/A</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <div class="section">
+    <div class="section-title">Section A — Price Structure & Multi-Timeframe Trend</div>
+    <div class="grid-3">
+      <div class="card danger"><div class="card-label">Daily Trend</div><div class="card-value red">DOWNTREND</div><div class="card-sub">Lower highs, lower lows from Nov 2024 IPO</div></div>
+      <div class="card danger"><div class="card-label">Weekly Trend</div><div class="card-value red">DOWNTREND</div><div class="card-sub">−41% from 52-week high in sustained decline</div></div>
+      <div class="card danger"><div class="card-label">Since IPO</div><div class="card-value red">−34%</div><div class="card-sub">IPO price ₹463 → CMP ₹307 <span class="v">VERIFIED</span></div></div>
+    </div>
+    <div style="margin-top:16px;">
+      <div style="font-family:'Oswald';font-size:12px;color:var(--steel);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Price Ladder — Key Levels</div>
+      <div class="ma-row"><span class="ma-label">All-Time High (IPO listing day)</span><span class="ma-val">₹498–₹570 (various sources)</span><span class="ma-status ma-below">−38% TO −45%</span></div>
+      <div class="ma-row"><span class="ma-label">52-Week High</span><span class="ma-val">₹479</span><span class="ma-status ma-below">−36%</span></div>
+      <div class="ma-row"><span class="ma-label">CMP</span><span class="ma-val">₹307 <span class="v">VERIFIED</span> Screener Apr 9</span><span class="ma-status" style="background:rgba(212,98,26,.25);color:var(--amber-glow);">CURRENT</span></div>
+      <div class="ma-row"><span class="ma-label">52-Week Low</span><span class="ma-val">₹266</span><span class="ma-status" style="background:rgba(100,116,139,.25);color:#94a3b8;">−13% FROM CMP</span></div>
+      <div class="ma-row"><span class="ma-label">Governance-Adjusted IV (Base)</span><span class="ma-val">₹121</span><span class="ma-status ma-below">FAIR VALUE ESTIMATE</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Moving Average Dashboard</div>
+    <div class="ma-row"><span class="ma-label">20-EMA (Short)</span><span class="ma-val">~₹290–310 est.</span><span class="ma-status ma-below">NEAR / BELOW</span></div>
+    <div class="ma-row"><span class="ma-label">50-DMA (Medium)</span><span class="ma-val">~₹310–330 est.</span><span class="ma-status ma-below">BELOW</span></div>
+    <div class="ma-row"><span class="ma-label">100-DMA</span><span class="ma-val">~₹340–370 est.</span><span class="ma-status ma-below">BELOW</span></div>
+    <div class="ma-row"><span class="ma-label">200-DMA</span><span class="ma-val">~₹390–420 est.</span><span class="ma-status ma-below">WELL BELOW</span></div>
+    <div class="ma-row"><span class="ma-label">MA Cross Status</span><span class="ma-val">All MAs declining; Death Cross confirmed</span><span class="ma-status ma-below">BEARISH</span></div>
+    <p style="font-size:11px;color:var(--steel);margin-top:8px;padding:8px 14px;background:var(--slate2);">Moving averages estimated based on price action data. Stock trading below ALL major MAs — a comprehensive bear market signal. <span class="e">ESTIMATED</span> from price trajectory and available data.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — Volume Analysis</div>
+    <div class="metric-row fail"><span class="metric-name">Volume on Declines</span><span class="metric-val">High — 27x average on certain down days (Mar 12)</span></div>
+    <div class="metric-row"><span class="metric-name">Goldman Sachs Bulk Buy (Mar 5)</span><span class="metric-val">9.71L shares at ₹276.5 (same day Morgan Stanley sold same qty)</span></div>
+    <div class="metric-row fail"><span class="metric-name">OBV Assessment</span><span class="metric-val">Bearish — distribution pattern; no accumulation signal</span></div>
+    <div class="metric-row"><span class="metric-name">Number of Shareholders</span><span class="metric-val">282,920 → 245,226 (−8.7% in 4 quarters)</span></div>
+    <p style="font-size:12px;color:var(--steel-lt);margin-top:10px;padding:10px 14px;background:var(--slate2);">The Goldman Sachs buy / Morgan Stanley simultaneous sell suggests a block trade desk transfer, not fresh institutional conviction. FII holdings fell from 18% to 12.81% in the same period. <span class="v">VERIFIED</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — Momentum Indicators</div>
+    <div class="grid-3">
+      <div class="card danger"><div class="card-label">RSI (14-day) Estimated</div><div class="card-value red">~30–38</div><div class="card-sub">Near/at oversold; but oversold can stay oversold</div></div>
+      <div class="card danger"><div class="card-label">MACD</div><div class="card-value red">BEARISH</div><div class="card-sub">Signal line below zero; bearish histogram</div></div>
+      <div class="card danger"><div class="card-label">1-Year Return</div><div class="card-value red">−41%</div><div class="card-sub">Sustained underperformance vs Nifty</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--steel);margin-top:12px;padding:8px 14px;background:var(--slate2);">RSI approaching oversold does NOT generate a BUY signal in AVOID-rated stocks. The O'Glove principle applies: "oversold garbage stays garbage." Technical triggers are irrelevant when governance override is active. <span class="e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — Trade Structure</div>
+    <div class="override-box">
+      <div class="override-icon">⛔</div>
+      <div>
+        <div class="override-title">NO TRADE STRUCTURE AVAILABLE</div>
+        <div class="override-text">Framework rule: No trade structure is generated for AVOID-rated stocks. There is no entry price, no stop-loss, and no target. The only action is to not own the stock until minimum conditions in Tab 6 are met. Technical triggers (RSI &lt;40, 200-DMA touch) are INACTIVE for governance-AVOID stocks.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section G — Technical Composite Score</div>
+    <table class="data-table">
+      <thead><tr><th>Dimension</th><th>Score /5</th><th>Comment</th></tr></thead>
+      <tbody>
+        <tr><td>Price Trend (multi-timeframe)</td><td class="num red">1</td><td>Downtrend on all timeframes since IPO</td></tr>
+        <tr><td>MA Alignment</td><td class="num red">1</td><td>Below all MAs; Death Cross confirmed</td></tr>
+        <tr><td>Volume / OBV</td><td class="num red">1</td><td>Distribution phase; no accumulation</td></tr>
+        <tr><td>Momentum (RSI/MACD)</td><td class="num warn">2</td><td>Near oversold RSI but no reversal signal</td></tr>
+        <tr><td>Chart Pattern</td><td class="num red">1</td><td>No bullish pattern; channel breakdown</td></tr>
+        <tr><td>Risk:Reward</td><td class="num red">0</td><td>N/A — AVOID verdict; no valid trade setup</td></tr>
+        <tr><td><strong>Total</strong></td><td class="num red"><strong>6/30 (20%)</strong></td><td><strong>TECHNICALLY BEARISH</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <div class="section">
+    <div class="section-title">Section A — Promoter Holding Trend (5 Quarters)</div>
+    <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead><tr><th>Quarter</th><th>Promoters %</th><th>Change</th><th>Pledge of Promoter Holding</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Dec 2024</td><td class="num">50.17%</td><td class="num">—</td><td class="num red">53.5% (est.)</td><td><span class="status-badge status-fail">AVOID TRIGGER</span></td></tr>
+        <tr><td>Mar 2025</td><td class="num">50.17%</td><td class="num warn">0%</td><td class="num red">53.5%</td><td><span class="status-badge status-fail">NO CHANGE</span></td></tr>
+        <tr><td>Jun 2025</td><td class="num">50.17%</td><td class="num warn">0%</td><td class="num red">~53.5%</td><td><span class="status-badge status-fail">SPCPL PLEDGES MORE</span></td></tr>
+        <tr><td>Sep 2025</td><td class="num">50.17%</td><td class="num warn">0%</td><td class="num red">53.5%</td><td><span class="status-badge status-fail">NO REDUCTION</span></td></tr>
+        <tr><td>Dec 2025</td><td class="num">50.17%</td><td class="num warn">0%</td><td class="num red">53.5%</td><td><span class="status-badge status-fail">100% SPCPL ENCUMBERED</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="redflag-box" style="margin-top:12px;">
+      <div class="redflag-num">!</div>
+      <div class="redflag-text"><strong>Promoter holding is perfectly flat at 50.17% for 5 consecutive quarters.</strong> This is unusual — no promoter creep despite the massive stock decline (−41%). It signals the promoter CANNOT buy more stock (pledged stock constraints from lenders) AND is not willing to sell at current prices. The promoter is effectively immobilised. <span class="v">VERIFIED</span> Screener.in</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Institutional Holdings (5 Quarters)</div>
+    <table class="data-table">
+      <thead><tr><th>Quarter</th><th>FIIs %</th><th>Change</th><th>DIIs %</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>Dec 2024</td><td class="num">18.00%</td><td>—</td><td class="num">11.12%</td><td>—</td></tr>
+        <tr><td>Mar 2025</td><td class="num warn">18.21%</td><td class="num ok">+0.21%</td><td class="num">12.07%</td><td class="num ok">+0.95%</td></tr>
+        <tr><td>Jun 2025</td><td class="num red">15.80%</td><td class="num red">−2.41%</td><td class="num">14.53%</td><td class="num ok">+2.46%</td></tr>
+        <tr><td>Sep 2025</td><td class="num red">12.81%</td><td class="num red">−2.99%</td><td class="num ok">17.94%</td><td class="num ok">+3.41%</td></tr>
+        <tr><td>Dec 2025</td><td class="num red">12.81%</td><td class="num warn">0%</td><td class="num ok">19.60%</td><td class="num ok">+1.66%</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--steel-lt);margin-top:10px;padding:10px 14px;background:var(--slate2);">
+      FII exit: <strong style="color:var(--danger-lt);">−5.19% in 4 quarters</strong> = substantial institutional sell-down. FIIs are typically more governance-sensitive — their exit on the pledge news is a strong negative signal.<br>
+      DII increase: <strong style="color:#4ade80;">+8.48%</strong> — domestic mutual funds buying the dip (SIP-driven). This provides price support but DIIs are not governance arbitrageurs. Their buying does not address the pledge problem.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — Free Float & Market Structure</div>
+    <div class="grid-3">
+      <div class="card"><div class="card-label">Total Promoter Holding</div><div class="card-value">50.17%</div><div class="card-sub">Locked — cannot buy or meaningfully sell</div></div>
+      <div class="card danger"><div class="card-label">Pledged Shares (total cap)</div><div class="card-value red">~26.8%</div><div class="card-sub">53.5% × 50.17% = ~26.8% of total shares pledged <span class="e">ESTIMATED</span></div></div>
+      <div class="card"><div class="card-label">Free Float</div><div class="card-value">~49.83%</div><div class="card-sub">Institutional + public + non-pledged promoter</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--steel-lt);margin-top:12px;padding:10px 14px;background:var(--slate2);">Effective tradeable float: ~49.83% of market cap. But ~26.8% of total shares are pledged collateral held by lenders — these shares can be dumped at any price during a margin call. This creates a structural overhang that prevents sustained recovery.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — Full Composition Table (Dec 2025)</div>
+    <div class="holding-bar-wrap"><div class="holding-label"><span>Promoters</span><span>50.17%</span></div><div class="holding-bar-bg"><div class="holding-bar bar-amber" style="width:50.17%;"></div></div></div>
+    <div class="holding-bar-wrap"><div class="holding-label"><span>DIIs (incl. mutual funds)</span><span>19.60%</span></div><div class="holding-bar-bg"><div class="holding-bar bar-green" style="width:19.60%;"></div></div></div>
+    <div class="holding-bar-wrap"><div class="holding-label"><span>Public (retail)</span><span>17.40%</span></div><div class="holding-bar-bg"><div class="holding-bar bar-steel" style="width:17.40%;"></div></div></div>
+    <div class="holding-bar-wrap"><div class="holding-label"><span>FIIs (down from 18%)</span><span>12.81%</span></div><div class="holding-bar-bg"><div class="holding-bar bar-blue" style="width:12.81%;"></div></div></div>
+    <div class="holding-bar-wrap"><div class="holding-label"><span>Pledged overhang (~26.8% of total)</span><span>RISK</span></div><div class="holding-bar-bg"><div class="holding-bar bar-danger" style="width:26.8%;"></div></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section E — Scores</div>
+    <div class="grid-2">
+      <div class="card danger">
+        <div class="card-label">Ownership Momentum Score</div>
+        <div class="card-value red">23/100</div>
+        <div class="card-sub">FII exit (−5.19%), promoter immobilised, no insider buying, shareholder count declining. Only DII accumulation prevents lower score.</div>
+      </div>
+      <div class="card danger">
+        <div class="card-label">Shareholding Risk Score</div>
+        <div class="card-value red">88/100</div>
+        <div class="card-sub">EXTREME RISK. Pledge 53.5% + SPCPL 100% encumbered + forced sale overhang + FII exit + 29 entities reclassification pending. Highest risk score in series.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTEL -->
+<div id="tab9" class="tab-content">
+  <div class="section">
+    <div class="section-title">Section A — AI Classification Dashboard</div>
+    <div class="grid-4">
+      <div class="card"><div class="card-label">Category</div><div class="card-value" style="font-size:18px;">C</div><div class="card-sub">Capital-intensive EPC</div></div>
+      <div class="card"><div class="card-label">AI Overlay</div><div class="card-value" style="font-size:18px;">⚪</div><div class="card-sub">NEUTRAL — tool use only</div></div>
+      <div class="card"><div class="card-label">Data Flywheel</div><div class="card-value" style="font-size:18px;color:var(--steel);">0/10</div><div class="card-sub">COSMETIC</div></div>
+      <div class="card"><div class="card-label">Adoption Phase</div><div class="card-value" style="font-size:18px;color:var(--steel);">4</div><div class="card-sub">Mainstream tools in construction</div></div>
+    </div>
+    <div class="phase-band" style="margin-top:16px;">
+      <div class="phase-num">4</div>
+      <div>
+        <div class="phase-title">PHASE 4 — MAINSTREAM (Construction AI Tool Adoption)</div>
+        <div class="phase-desc">AI tools for project scheduling (Primavera AI), cost estimation, BIM (Building Information Modelling), and supply chain are now standard across tier-1 EPC firms globally. This is infrastructure-grade AI adoption — a cost tool, not a moat creator. AFCONS uses AI for project management but derives no data flywheel or switching cost advantage from it. <span class="e">ESTIMATED</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+    <div class="flywheel-box">
+      <div class="flywheel-badge cosmetic">🤖 AI IS COSMETIC — 0/10</div>
+      <table class="data-table" style="margin-top:16px;text-align:left;">
+        <thead><tr><th>Question</th><th>Answer</th><th>Score</th></tr></thead>
+        <tbody>
+          <tr><td>Q1: Does AFCONS have proprietary training data no competitor can access?</td><td>No — project specifications, engineering drawings are proprietary per contract but cannot be used to train a competitive AI model. Each project is unique.</td><td class="num red">0/3</td></tr>
+          <tr><td>Q2: Does AI improve measurably as AFCONS completes more projects?</td><td>No — engineering know-how accumulates in human capital (engineers), not in a retrainable AI model. The 16th TBM project doesn't make an AI smarter for the 17th.</td><td class="num red">0/4</td></tr>
+          <tr><td>Q3: Does better AI attract more contracts?</td><td>No — contracts are won on technical credentials, price bids, and relationship. "Better AI" is not a RFP criterion in EPC tendering.</td><td class="num red">0/3</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section C — AI Value Chain Position</div>
+    <div class="vc-diagram">
+      <div class="vc-box"><div class="vc-label">L1</div>Infrastructure<br><span style="font-size:9px;color:#475569;">Semiconductors/DC/Power</span></div>
+      <div class="vc-arrow">→</div>
+      <div class="vc-box"><div class="vc-label">L2</div>Foundation<br>Models<br><span style="font-size:9px;color:#475569;">OpenAI/Gemini</span></div>
+      <div class="vc-arrow">→</div>
+      <div class="vc-box"><div class="vc-label">L3</div>AI<br>Platforms<br><span style="font-size:9px;color:#475569;">Palantir/Snowflake</span></div>
+      <div class="vc-arrow">→</div>
+      <div class="vc-box"><div class="vc-label">L4</div>Vertical<br>Applications<br><span style="font-size:9px;color:#475569;">Industry AI</span></div>
+      <div class="vc-arrow">→</div>
+      <div class="vc-box current"><div class="vc-label">L5 ●</div>AI-Enabled<br>Incumbent<br><span style="font-size:9px;color:var(--steel);">AFCONS (tools only)</span></div>
+    </div>
+    <p style="font-size:12px;color:var(--steel);margin-top:12px;">AFCONS sits at Level 5 as an AI-enabled incumbent — using AI as a productivity tool. The investment horizon for Level 5 incumbents is 7-10 years, but only if the business fundamentals are compounding. AFCONS's fundamentals are NOT compounding (declining revenue, negative FCF). AI adds no strategic value to the investment case.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section D — India AI Opportunity Context</div>
+    <table class="data-table">
+      <thead><tr><th>India AI Advantage</th><th>Relevance to AFCONS</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td>Data at Scale (UPI/Aadhaar)</td><td>None — EPC is not a data business</td><td class="num red">None</td></tr>
+        <tr><td>Language Diversity / Vernacular AI</td><td>Could assist site-level communication with multilingual workforce</td><td class="num warn">Minimal</td></tr>
+        <tr><td>India Stack as Free Infrastructure</td><td>Payments (vendor, contractor) via UPI — efficiency gain only</td><td class="num warn">Minimal</td></tr>
+        <tr><td>AI Talent Cost Arbitrage</td><td>Engineering AI tools built cheaper in India — no strategic advantage</td><td class="num warn">Minimal</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Section F — AI Opportunity Verdict</div>
+    <div class="score-wrap">
+      <div class="score-circle">
+        <div class="score-num">18</div>
+        <div class="score-total">/100</div>
+      </div>
+      <div>
+        <div style="font-family:'Oswald';font-size:16px;color:var(--steel-lt);letter-spacing:.04em;">AI NEUTRAL — Standard Fundamentals Govern</div>
+        <p style="font-size:13px;color:var(--steel);margin-top:8px;">AI scoring: Flywheel 0/20 · Phase timing 6/20 (mainstream = late) · Value chain 8/20 (L5 = low risk) · India AI advantage 2/20 · AI threat resistance 2/20 = 18/100. AI adds nothing to the investment thesis. The AVOID verdict is driven entirely by governance, FCF, and leverage — not AI considerations.</p>
+        <div style="margin-top:10px;font-family:'IBM Plex Mono';font-size:10px;color:var(--steel);letter-spacing:.08em;">PORTFOLIO ROLE: DO NOT OWN — GOVERNANCE OVERRIDE ACTIVE</div>
+        <div style="font-family:'IBM Plex Mono';font-size:10px;color:var(--steel);margin-top:4px;letter-spacing:.08em;">INVESTMENT HORIZON: N/A — AVOID until conditions met</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>DISCLAIMER:</strong> This report is generated for educational and research purposes only within the Buffett Quality-Value Series framework. This is NOT investment advice. 
+  Past performance does not guarantee future results. All opinions are the analyst's own. Data sourced from publicly available company filings, NSE/BSE disclosures, Screener.in, and news sources.
+  Investors should consult a SEBI-registered investment adviser before making any investment decisions.
+  <br><br>
+  <strong>DATA LABELS:</strong> <span class="v">VERIFIED</span> = official filings / live search · <span class="e">ESTIMATED</span> = cross-referenced, high confidence · <span class="u">UNVERIFIED</span> = limited source<br>
+  <strong>DATA SOURCES:</strong> Screener.in (consolidated), BSE/NSE filings, tickertape.in, marketsmojo.com, tradingeconomics.com, Deloitte India Outlook, PIB India<br>
+  <strong>REPORT DATE:</strong> April 15, 2026 · <strong>CMP AT REPORT:</strong> ₹307 (Screener, Apr 9 close) · <strong>SERIES:</strong> Buffett Quality-Value v5.0
+  <br><br>
+  Fonts: Oswald · IBM Plex Mono · Lora — Google Fonts
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function (el) {
+    el.style.display = 'none';
+    el.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.classList.remove('active');
+  });
+  var target = document.getElementById(tabId);
+  if (target) {
+    target.style.display = 'block';
+    target.classList.add('active');
+  }
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

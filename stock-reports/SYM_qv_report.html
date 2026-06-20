@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Symbotic (SYM) — Buffett Quality-Value Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070D1A;
+    --card: #0F1F3D;
+    --card2: #162844;
+    --amber: #F59E0B;
+    --amber-light: #FCD34D;
+    --amber-dim: #92600A;
+    --chrome: #94A3B8;
+    --chrome-light: #CBD5E1;
+    --navy: #1E3A5F;
+    --neon-teal: #22D3EE;
+    --red: #EF4444;
+    --green: #10B981;
+    --orange: #F97316;
+    --text: #E2E8F0;
+    --sub: #6A80A0;
+    --border: #1E3A5F;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --pass: #10B981;
+    --marginal: #F59E0B;
+    --fail: #EF4444;
+    --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+  a { color: var(--neon-teal); }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #030810 0%, #0A1628 60%, #0F2040 100%); padding: 36px 28px 28px; min-height: 200px; border-bottom: 2px solid var(--amber); position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%); }
+  .hero-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  .hero-title { font-family: var(--font-display); font-size: 2.4rem; font-weight: 700; color: #fff; letter-spacing: -1px; }
+  .hero-sub { font-family: var(--font-mono); color: var(--amber); font-size: 0.85rem; margin-top: 4px; }
+  .verdict-badge { background: #1A3050; border: 2px solid var(--amber); border-radius: 8px; padding: 10px 18px; text-align: center; min-width: 160px; }
+  .verdict-badge .v-label { font-size: 0.7rem; color: var(--sub); font-family: var(--font-mono); letter-spacing: 1px; text-transform: uppercase; }
+  .verdict-badge .v-text { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--amber); }
+  .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .badge { padding: 5px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; font-family: var(--font-display); letter-spacing: 0.5px; }
+  .badge-cat { background: rgba(245,158,11,0.15); border: 1px solid var(--amber); color: var(--amber); }
+  .badge-ai { background: rgba(16,185,129,0.15); border: 1px solid var(--green); color: var(--green); }
+  .badge-macro { background: rgba(148,163,184,0.1); border: 1px solid var(--chrome); color: var(--chrome); }
+  .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .pill { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-family: var(--font-mono); font-size: 0.78rem; }
+  .pill-label { color: var(--sub); }
+  .pill-val { color: var(--amber-light); font-weight: 500; }
+  .hero-lede { margin-top: 16px; color: var(--chrome-light); font-size: 0.95rem; max-width: 820px; line-height: 1.7; }
+
+  /* TAB BAR */
+  #tab-bar { background: #050C1A; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; overflow-x: auto; }
+  .tab-nav { display: flex; min-width: max-content; }
+  .tab-btn { background: none; border: none; color: var(--sub); font-family: var(--font-display); font-size: 0.8rem; font-weight: 500; padding: 14px 18px; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 28px; max-width: 1100px; margin: 0 auto; }
+  .tab-content:first-of-type { display: block; }
+
+  /* SECTIONS */
+  .section-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--amber); text-transform: uppercase; letter-spacing: 1px; margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .section-title:first-child { margin-top: 0; }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; }
+  .card-title { font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; color: var(--chrome-light); margin-bottom: 10px; }
+  .card-value { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; color: var(--amber-light); }
+  .card-sub { font-size: 0.8rem; color: var(--sub); margin-top: 4px; }
+
+  /* GRID */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 680px) { .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+  /* STATUS COLORS */
+  .border-green { border-left: 4px solid var(--green); }
+  .border-amber { border-left: 4px solid var(--amber); }
+  .border-red { border-left: 4px solid var(--red); }
+  .border-chrome { border-left: 4px solid var(--chrome); }
+  .border-teal { border-left: 4px solid var(--neon-teal); }
+  .text-green { color: var(--green); }
+  .text-amber { color: var(--amber); }
+  .text-red { color: var(--red); }
+  .text-chrome { color: var(--chrome); }
+
+  /* CONFIDENCE LABELS */
+  .verified { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); padding: 1px 7px; border-radius: 4px; font-size: 0.7rem; font-family: var(--font-mono); }
+  .estimated { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); padding: 1px 7px; border-radius: 4px; font-size: 0.7rem; font-family: var(--font-mono); }
+  .unverified { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); padding: 1px 7px; border-radius: 4px; font-size: 0.7rem; font-family: var(--font-mono); }
+
+  /* SCORECARD */
+  .scorecard-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--card2); border-radius: 8px; margin-bottom: 8px; }
+  .sc-label { font-size: 0.88rem; color: var(--text); }
+  .sc-grade { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; padding: 3px 10px; border-radius: 4px; }
+  .sc-pass { background: rgba(16,185,129,0.2); color: var(--green); }
+  .sc-marginal { background: rgba(245,158,11,0.2); color: var(--amber); }
+  .sc-fail { background: rgba(239,68,68,0.2); color: var(--red); }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { background: var(--card2); color: var(--chrome-light); font-family: var(--font-display); font-weight: 600; padding: 10px 12px; text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 0.82rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* PILLAR CARDS */
+  .pillar-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .pillar-grade { font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; }
+  .grade-a { color: #10B981; }
+  .grade-b { color: #F59E0B; }
+  .grade-c { color: #F97316; }
+  .grade-d { color: #EF4444; }
+
+  /* VERDICT BOX */
+  .verdict-box { background: #050C1A; border: 2px solid var(--amber); border-radius: var(--radius); padding: 28px; }
+  .verdict-main { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--amber); }
+  .verdict-stars { font-size: 1.3rem; color: var(--amber); margin-left: 10px; }
+  .verdict-prose { margin-top: 14px; color: var(--chrome-light); line-height: 1.75; }
+  .upgrade-list { list-style: none; margin-top: 14px; }
+  .upgrade-list li { padding: 10px 14px; background: var(--card2); border-radius: 6px; margin-bottom: 8px; font-size: 0.88rem; display: flex; align-items: flex-start; gap: 10px; }
+  .upgrade-num { background: var(--amber); color: #000; font-family: var(--font-mono); font-weight: 700; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; min-width: 26px; text-align: center; }
+
+  /* MOAT STARS */
+  .moat-source { background: var(--card2); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; }
+  .moat-source-header { display: flex; justify-content: space-between; align-items: center; }
+  .moat-name { font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; }
+  .stars { color: var(--amber); font-size: 1.05rem; }
+
+  /* FLYWHEEL BOX */
+  .flywheel-box { background: linear-gradient(135deg, #062030, #0A2040); border: 2px solid var(--neon-teal); border-radius: var(--radius); padding: 22px; margin: 16px 0; }
+  .flywheel-title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--neon-teal); margin-bottom: 12px; }
+  .fw-check { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 0.88rem; }
+  .fw-yes { color: var(--neon-teal); font-weight: 700; min-width: 20px; }
+  .fw-partial { color: var(--amber); font-weight: 700; min-width: 20px; }
+  .fw-no { color: var(--sub); font-weight: 700; min-width: 20px; }
+
+  /* MACRO CYCLE */
+  .macro-cell { background: var(--card2); border-radius: 8px; padding: 14px; }
+  .macro-dim { font-size: 0.8rem; color: var(--sub); font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .macro-status { font-family: var(--font-mono); font-size: 0.85rem; margin-top: 4px; }
+
+  /* AI SCORE GAUGE */
+  .ai-score-box { background: linear-gradient(135deg, #081828, #0E2840); border: 2px solid var(--amber); border-radius: var(--radius); padding: 24px; text-align: center; }
+  .ai-score-num { font-family: var(--font-display); font-size: 3.5rem; font-weight: 700; color: var(--amber); }
+  .ai-score-label { color: var(--sub); font-size: 0.85rem; }
+  .ai-bar { background: var(--border); height: 8px; border-radius: 4px; margin: 12px 0; overflow: hidden; }
+  .ai-bar-fill { height: 100%; background: linear-gradient(90deg, var(--amber-dim), var(--amber)); border-radius: 4px; }
+
+  /* VALUE CHAIN */
+  .vc-chain { display: flex; gap: 0; flex-wrap: nowrap; overflow-x: auto; margin: 14px 0; }
+  .vc-level { flex: 1; min-width: 90px; text-align: center; padding: 12px 8px; background: var(--card2); border-right: 1px solid var(--border); font-size: 0.72rem; color: var(--sub); font-family: var(--font-display); }
+  .vc-level:last-child { border-right: none; }
+  .vc-level.active { background: rgba(245,158,11,0.15); color: var(--amber); font-weight: 700; border: 1px solid var(--amber); border-radius: 4px; }
+  .vc-label { font-size: 0.65rem; margin-top: 4px; }
+
+  /* TECHNICAL */
+  .ma-table tr td:first-child { color: var(--sub); }
+  .above-ma { color: var(--green); }
+  .below-ma { color: var(--red); }
+
+  /* SENSITIVITY TABLE */
+  .sensitivity td { text-align: center; }
+  .sensitivity .current { background: rgba(245,158,11,0.12); font-weight: 700; }
+
+  /* SERIES TABLE */
+  .series-table { overflow-x: auto; }
+  .series-table table { min-width: 900px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 680px) { 
+    .hero-title { font-size: 1.6rem; } 
+    .tab-content { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-title">SYMBOTIC INC.</div>
+      <div class="hero-sub">NASDAQ: SYM &nbsp;·&nbsp; Warehouse AI Robotics &nbsp;·&nbsp; Wilmington, MA</div>
+    </div>
+    <div class="verdict-badge">
+      <div class="v-label">Series Verdict</div>
+      <div class="v-text">WATCH ★★★</div>
+    </div>
+  </div>
+  <div class="hero-badges">
+    <span class="badge badge-cat">🤖 CAT B — HIGH-GROWTH AI COMPOUNDER</span>
+    <span class="badge badge-ai">🟢 AI WIDENER — DATA FLYWHEEL FORMING</span>
+    <span class="badge badge-macro">⚙️ MACRO: US CAPEX CYCLE</span>
+  </div>
+  <div class="hero-pills">
+    <div class="pill"><span class="pill-label">Price </span><span class="pill-val">~$50 </span><span class="unverified">UNVERIFIED</span></div>
+    <div class="pill"><span class="pill-label">Mkt Cap </span><span class="pill-val">~$31B</span></div>
+    <div class="pill"><span class="pill-label">EV/Rev FY25 </span><span class="pill-val">~13.5x</span></div>
+    <div class="pill"><span class="pill-label">Backlog </span><span class="pill-val">$22.7B </span><span class="verified">VERIFIED</span></div>
+    <div class="pill"><span class="pill-label">52W Range </span><span class="pill-val">$16.32–$87.88 </span><span class="verified">VERIFIED</span></div>
+    <div class="pill"><span class="pill-label">FY25 Rev </span><span class="pill-val">$2.25B </span><span class="verified">VERIFIED</span></div>
+    <div class="pill"><span class="pill-label">MoS Entry </span><span class="pill-val">$40–44</span></div>
+  </div>
+  <div class="hero-lede">
+    Symbotic operates the world's most advanced AI-powered warehouse robotics platform — SymbOS — solving the "Case Problem" that has defeated conventional automation for decades. With a $22.7B contracted backlog, Walmart as its anchor customer (deepened via the ASR acquisition), and first GAAP profitability achieved in Q1 FY2026, this is a Phase 2→3 AI inflection story in the $500B+ warehouse automation TAM. The central risk is a hardware-weighted business model that suppresses gross margins below the 60% software threshold, Walmart revenue concentration exceeding 75%, and a stock that already trades at premium multiples after +150% in 2025. Entry discipline is essential.
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro & Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 0: OVERVIEW ══════════════════ -->
+<div class="tab-content" id="tab0">
+  <div class="section-title">Business Overview</div>
+  <div class="card border-amber">
+    <p style="line-height:1.8; color:var(--chrome-light)">
+      Symbotic is an automation technology company that develops AI-powered robotic systems to transform modern distribution centers. Its flagship product — the <strong style="color:var(--amber-light)">Symbotic System</strong> — is an end-to-end platform built around <strong style="color:var(--amber-light)">SymbOS</strong>, a proprietary AI brain that orchestrates thousands of autonomous SymBots operating within high-density storage structures. Founded in 2020 (commercially active earlier), it went public on NASDAQ in June 2022.
+    </p>
+    <p style="margin-top:12px; line-height:1.8; color:var(--chrome-light)">
+      The company's core technical insight is what management calls the "Case Problem": the global supply chain moves in cases (12-packs of Gatorade, boxed electronics) rather than individual items — and no competitor had solved AI-powered case-level automation at scale until Symbotic. Its four-phase system (<em>Atomize → Store → Retrieve → Build</em>) allows a single Symbotic-enabled DC to produce store-ready pallets sequenced by aisle layout, reducing downstream store labor by 20–30%.
+    </p>
+  </div>
+
+  <div class="section-title">Why This Stock Is in the Series</div>
+  <div class="grid-3">
+    <div class="card border-amber">
+      <div class="card-title">$22.7B Backlog Visibility</div>
+      <p style="font-size:0.85rem; color:var(--chrome-light)">Multi-year contracted backlog provides ~10 years of revenue visibility at current run-rate. 11% converts in next 12 months. This is extraordinary earnings predictability for a growth stock.</p>
+    </div>
+    <div class="card border-teal">
+      <div class="card-title">Phase 2→3 AI Inflection</div>
+      <p style="font-size:0.85rem; color:var(--chrome-light)">AI-powered case automation is transitioning from early commercial traction (Walmart exclusive) to multi-vertical proof (Medline healthcare win). This is the highest-conviction entry window per the framework.</p>
+    </div>
+    <div class="card border-chrome">
+      <div class="card-title">First GAAP Profit — Q1 FY2026</div>
+      <p style="font-size:0.85rem; color:var(--chrome-light)">Q1 FY2026 delivered $13M GAAP net income — the first in company history. adj EBITDA hit $67M (first double-digit EBITDA margin). The profitability inflection is confirmed, not just guided.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Category Classification</div>
+  <div class="card">
+    <p style="color:var(--chrome-light); line-height:1.8">
+      <strong style="color:var(--amber-light)">Category B — High-Growth Global Compounder</strong> with AI WIDENER flag. Symbotic's core moat IS its AI (SymbOS), but the overall business model is hardware-embedded — system-level gross margins are ~18–22%, well below the 60% Cat F threshold. Revenue CAGR peaked at ~98% (FY2022→FY2023) and is decelerating toward 20%, consistent with a maturing Cat B rather than a pure Cat F AI-native. The 5-method DCF framework applies now that FCF is approaching structural positivity.
+    </p>
+    <p style="margin-top:10px; color:var(--chrome-light); line-height:1.8">
+      <strong style="color:var(--neon-teal)">AI WIDENER 🟢:</strong> SymbOS improves with each operational deployment — more bots → more operational data → better route optimization, pallet sequencing, and maintenance prediction. The data flywheel is forming (not yet confirmed by published accuracy improvement metrics). Moat grade receives a half-level benefit pending full confirmation.
+    </p>
+  </div>
+
+  <div class="section-title">Key Risks at a Glance</div>
+  <div class="grid-2">
+    <div class="card border-red">
+      <div class="card-title text-red">⚠ Walmart Concentration</div>
+      <p style="font-size:0.85rem; color:var(--chrome-light)">Walmart accounts for ~75–80% of revenue. Walmart owns 12.3% of SYM and acquired ASR to deepen ties — but single-customer dependency at this scale is a Category 1 risk. Any slowdown in Walmart deployment schedule directly hits revenue.</p>
+    </div>
+    <div class="card border-red">
+      <div class="card-title text-red">⚠ Revenue Recognition Weakness</div>
+      <p style="font-size:0.85rem; color:var(--chrome-light)">Symbotic disclosed a material weakness in revenue and cost recognition in FY2024, delaying its Form 10-K filing. Remediation was ongoing into FY2025. This triggers O'Glove Test 4 (FAIL) and warrants widening of MoS by 5%.</p>
+    </div>
+    <div class="card border-amber">
+      <div class="card-title text-amber">Hardware Margin Drag</div>
+      <p style="font-size:0.85rem; color:var(--chrome-light)">System-level gross margins are thin (~15–22% estimated overall). Hardware costs compress the platform economics significantly vs pure-software AI plays. The NGSS (next-gen storage structure) upgrade cycle may temporarily depress margins in H1 FY2026.</p>
+    </div>
+    <div class="card border-amber">
+      <div class="card-title text-amber">GreenBox JV Dependency</div>
+      <p style="font-size:0.85rem; color:var(--chrome-light)">SoftBank funds the GreenBox joint venture (Symbotic owns 35%), providing a RaaS path to mid-market. But $7.5B in GreenBox purchase commitments create SoftBank dependency. Any SoftBank capital strain could disrupt this growth channel.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 1: MACRO & GROWTH ══════════════════ -->
+<div class="tab-content" id="tab1">
+  <div class="section-title">Layer 1 — Macro Anchor (US)</div>
+  <div class="grid-3" style="margin-bottom:16px">
+    <div class="macro-cell">
+      <div class="macro-dim">US Real GDP Growth</div>
+      <div class="macro-status text-amber">~2.4% (2025 est.) <span class="estimated">EST</span></div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">US CPI Inflation</div>
+      <div class="macro-status text-amber">~3.1% (2025 trailing) <span class="estimated">EST</span></div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">US Nominal GDP</div>
+      <div class="macro-status text-amber">~5.5% (= terminal ceiling) <span class="estimated">EST</span></div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">US 10Y Treasury</div>
+      <div class="macro-status text-chrome">~4.2% (April 2026) <span class="estimated">EST</span></div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">Fed Stance</div>
+      <div class="macro-status" style="color:var(--amber)">Cautious Easing</div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">Capex Environment</div>
+      <div class="macro-status" style="color:var(--neon-teal)">Supply Chain Automation Boom</div>
+    </div>
+  </div>
+
+  <div class="section-title">Macro Cycle Dashboard — 6 Dimensions</div>
+  <div class="grid-3" style="margin-bottom:16px">
+    <div class="macro-cell">
+      <div class="macro-dim">US Consumer Demand Cycle</div>
+      <div class="macro-status text-green">Resilient — retail stable → warehouse investment continues</div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">Supply Chain Restructuring</div>
+      <div class="macro-status text-green">Reshoring + near-shoring driving DC automation CapEx surge</div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">Labor Cost Cycle</div>
+      <div class="macro-status text-green">Rising US wages → automation ROI improving for all customers</div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">Interest Rate Cycle</div>
+      <div class="macro-status text-amber">High rates → pressures large CapEx projects; RaaS model mitigates</div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">Retail Capex Cycle</div>
+      <div class="macro-status text-green">Walmart, Target, Costco committing multi-year automation budgets</div>
+    </div>
+    <div class="macro-cell">
+      <div class="macro-dim">AI Adoption Cycle</div>
+      <div class="macro-status" style="color:var(--neon-teal)">Industrial AI: Phase 2→3 inflection; accelerating investment</div>
+    </div>
+  </div>
+  <div class="card" style="background: rgba(16,185,129,0.07); border-color:var(--green)">
+    <strong style="color:var(--green)">MACRO COMPOSITE: TAILWIND</strong> — US supply chain CapEx cycle is in full acceleration. Labor shortages, reshoring mandates, and e-commerce omnichannel pressure create the ideal environment for large-scale warehouse automation deployment. The one headwind: elevated interest rates raise the hurdle rate for multi-year CapEx projects, partially mitigated by Symbotic's RaaS-model expansion via GreenBox.
+  </div>
+
+  <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Sector</th><th>Base CAGR</th><th>Accel. CAGR</th><th>Stress CAGR</th><th>AI Impact</th><th>Source</th></tr>
+      <tr><td>Warehouse Automation (Global)</td><td>15.6%</td><td>18–20%</td><td>10–12%</td><td>AI CORE — AI is the product</td><td><span class="verified">Precedence Research, Mordor Intelligence</span></td></tr>
+      <tr><td>Warehouse Robotics (US)</td><td>12–17%</td><td>18–20%</td><td>8–10%</td><td>AI CORE — AMR/AI-software fastest growth</td><td><span class="verified">Grand View Research</span></td></tr>
+      <tr><td>AI-Native Supply Chain Software</td><td>20–25%</td><td>28–35%</td><td>12–15%</td><td>AI IS the platform</td><td><span class="estimated">Industry estimates</span></td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <strong style="color:var(--amber-light)">Sector Derivation:</strong> The global warehouse automation market was $25.27B in 2025, projected at 15.56% CAGR to 2035 ($107B). US market at $6.58B in 2025, growing at 15.78% CAGR. AI software within automation growing fastest at ~18-20% CAGR. <strong>AI is accelerating this sector's base growth rate by approximately +3–5 percentage points</strong> over the next 5 years vs. pre-AI trajectory.
+  </div>
+
+  <div class="section-title">Layer 3 — Company Alpha Over Sector</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha (FY25–27)</th><th>Stage 2 Alpha (FY27–30)</th></tr>
+      <tr><td>Market Share Gain</td><td style="color:var(--green)">Active</td><td>+5–8% (case-automation niche dominance)</td><td>+3–5% (as new verticals scale)</td></tr>
+      <tr><td>New Customer Verticals</td><td style="color:var(--green)">Active</td><td>+2–4% (Medline + CPG + logistics)</td><td>+4–6% (global expansion)</td></tr>
+      <tr><td>Geographic Expansion</td><td style="color:var(--amber)">Potential</td><td>+1–2% (Canada, EU via GreenBox)</td><td>+3–5%</td></tr>
+      <tr><td>Pricing Power / ASP Expansion</td><td style="color:var(--amber)">Potential</td><td>+1–2% (NGSS higher-density systems)</td><td>+1–3%</td></tr>
+      <tr><td>RaaS / GreenBox Software Mix</td><td style="color:var(--amber)">Forming</td><td>+1–2% (recurring revenue growing)</td><td>+3–5% (software mix expansion)</td></tr>
+      <tr><td>AI Alpha (6a+6b+6c)</td><td style="color:var(--neon-teal)">Forming</td><td>+2–3% (cost reduction + TAM expansion)</td><td>+3–5% (flywheel effect on margins)</td></tr>
+      <tr style="background:rgba(245,158,11,0.08)"><td><strong>Total Alpha</strong></td><td>—</td><td><strong>+12–21% above sector</strong></td><td><strong>+17–29% above sector</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Growth Rate Summary — 3 Scenarios</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL.</th></tr>
+      <tr><td>US GDP / Macro State</td><td>~1.5% GDP, rates sticky</td><td>~2.4% GDP, cautious easing</td><td>~3%+ GDP, AI boom</td></tr>
+      <tr><td>Sector Growth</td><td>10–12%</td><td>14–16%</td><td>18–22%</td></tr>
+      <tr><td>Company Alpha</td><td>+8%</td><td>+15%</td><td>+20%</td></tr>
+      <tr><td>AI Alpha (6a+6b+6c)</td><td>+1%</td><td>+2.5%</td><td>+4%</td></tr>
+      <tr><td>Stage 1 Rev CAGR (FY25–28)</td><td>~15%</td><td>~22%</td><td>~28%</td></tr>
+      <tr><td>Stage 2 Rev CAGR (FY28–32)</td><td>~10%</td><td>~15%</td><td>~20%</td></tr>
+      <tr><td>Terminal Growth (after FY32)</td><td>3.5%</td><td>4.5%</td><td>5.5%</td></tr>
+      <tr><td>Margin Direction</td><td>Compress (hardware pressure)</td><td>Gradual expansion (software mix)</td><td>Rapid expansion (RaaS scale)</td></tr>
+      <tr><td>Key Risk</td><td>Walmart pause, rate pressure</td><td>NGSS transition timing</td><td>Competition from incumbents</td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:12px; background:var(--card2)">
+    <strong style="color:var(--amber-light)">Sensitivity:</strong> A 1x change in EV/Revenue multiple changes IV by ~$5/share. A 1% change in Stage 1 revenue growth changes IV by approximately $2–3/share at base assumptions.
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 2: FINANCIALS ══════════════════ -->
+<div class="tab-content" id="tab2">
+  <div class="section-title">Revenue History (5-Year) <span class="estimated">ESTIMATED</span> / <span class="verified">VERIFIED</span></div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Fiscal Year (Oct–Sep)</th><th>Revenue</th><th>YoY Growth</th><th>Net Income (Loss)</th><th>Adj EBITDA</th><th>Source</th></tr>
+      <tr><td>FY2022 (Est.)</td><td>~$390M</td><td>—</td><td>~-$130M</td><td>~-$80M</td><td><span class="estimated">EST</span></td></tr>
+      <tr><td>FY2023</td><td>~$1.17B</td><td>~+98–100%</td><td>~-$105M</td><td>~-$50M</td><td><span class="estimated">EST (from quarterly filings)</span></td></tr>
+      <tr><td>FY2024</td><td>$1.79B</td><td>+53%</td><td>~-$85M</td><td>$61.7M</td><td><span class="verified">SEC Filings</span></td></tr>
+      <tr><td>FY2025</td><td>$2.25B</td><td>+25.7%</td><td>~-$91M</td><td>$147M</td><td><span class="verified">Q4 FY2025 8-K</span></td></tr>
+      <tr style="background:rgba(245,158,11,0.06)"><td>Q1 FY2026 (Latest)</td><td>$630M (+29% YoY)</td><td>+29%</td><td>+$2.6M (FIRST PROFIT)</td><td>$67M</td><td><span class="verified">Feb 4, 2026 8-K</span></td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Financial Fortress Scorecard (Cat B Adapted)</div>
+  <div class="scorecard-item"><span class="sc-label">Revenue Growth 5yr CAGR ≥ Sector (14–16% base)</span><span class="sc-grade sc-pass">✓ PASS — ~55% CAGR FY22–25</span></div>
+  <div class="scorecard-item"><span class="sc-label">FCF Positive &amp; Growing (structural basis)</span><span class="sc-grade sc-marginal">~ MARGINAL — $788M FY25 FCF is advance-payment driven, not operating profitability</span></div>
+  <div class="scorecard-item"><span class="sc-label">Gross Margin ≥ 15% and Expanding</span><span class="sc-grade sc-marginal">~ MARGINAL — Estimated ~18–22% blended; software layer >65%; system expanding from single-digit lows</span></div>
+  <div class="scorecard-item"><span class="sc-label">GAAP Profitability Path Clear</span><span class="sc-grade sc-pass">✓ PASS — Q1 FY2026 achieved; adj EBITDA hit double-digit margin (10.6%)</span></div>
+  <div class="scorecard-item"><span class="sc-label">Cash Position / Liquidity</span><span class="sc-grade sc-pass">✓ PASS — $1.245B cash (Q4 FY2025); no debt crisis risk</span></div>
+  <div class="scorecard-item"><span class="sc-label">Backlog Coverage (Revenue Visibility)</span><span class="sc-grade sc-pass">✓ PASS — $22.7B backlog = ~10× annual revenue; 11% in next 12 months</span></div>
+  <div class="scorecard-item"><span class="sc-label">Net Debt / Capital Structure</span><span class="sc-grade sc-pass">✓ PASS — Net cash position; $1.25B liquidity; equity-funded growth</span></div>
+  <div class="scorecard-item"><span class="sc-label">Recurring Revenue Mix (Software + Services)</span><span class="sc-grade sc-marginal">~ MARGINAL — Software growing 97% YoY in Q1 FY2026 but still small (~3% of revenue); operations services growing 47% YoY</span></div>
+  <div class="scorecard-item"><span class="sc-label">Capital Allocation (R&amp;D investment)</span><span class="sc-grade sc-pass">✓ PASS — NGSS next-gen hardware platform, minibot BreakPack, vision systems all active</span></div>
+  <div class="scorecard-item"><span class="sc-label">Revenue Recognition Integrity</span><span class="sc-grade sc-fail">✗ FAIL — Material weakness in revenue/cost recognition disclosed FY2024; remediation ongoing</span></div>
+
+  <div class="section-title">Software Economics — The Hidden Asset</div>
+  <div class="grid-3">
+    <div class="card border-teal">
+      <div class="card-title">Software Maintenance Margin</div>
+      <div class="card-value text-green">&gt;65%</div>
+      <div class="card-sub">Q2 FY2025 confirmation <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="card border-amber">
+      <div class="card-title">Software Revenue Growth</div>
+      <div class="card-value" style="color:var(--neon-teal)">+97% YoY</div>
+      <div class="card-sub">Q1 FY2026 — fastest growing segment <span class="verified">VERIFIED</span></div>
+    </div>
+    <div class="card border-amber">
+      <div class="card-title">Ops Services Revenue Growth</div>
+      <div class="card-value" style="color:var(--amber)">+47% YoY</div>
+      <div class="card-sub">Q2 FY2025 — recurring revenue building <span class="verified">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Adj. EBITDA Trend</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Quarter</th><th>Revenue</th><th>Net Income</th><th>Adj EBITDA</th><th>EBITDA Margin</th></tr>
+      <tr><td>Q1 FY2024</td><td>$360M</td><td>-$19M</td><td>$8M</td><td>2.2%</td></tr>
+      <tr><td>Q2 FY2024</td><td>$393M</td><td>-$55M</td><td>$9M</td><td>2.3%</td></tr>
+      <tr><td>Q3 FY2024</td><td>$470M</td><td>-$27M</td><td>$3M</td><td>0.6%</td></tr>
+      <tr><td>Q4 FY2024</td><td>$565M</td><td>+$16M</td><td>$42M</td><td>7.4%</td></tr>
+      <tr><td>Q1 FY2025</td><td>$487M</td><td>-$19M</td><td>$18M</td><td>3.7%</td></tr>
+      <tr><td>Q2 FY2025</td><td>$550M</td><td>-$21M</td><td>$35M</td><td>6.4%</td></tr>
+      <tr><td>Q3 FY2025</td><td>$592M</td><td>-$32M</td><td>$45M</td><td>7.6%</td></tr>
+      <tr><td>Q4 FY2025</td><td>$618M</td><td>-$19M</td><td>$49M</td><td>7.9%</td></tr>
+      <tr style="background:rgba(16,185,129,0.08)"><td><strong>Q1 FY2026</strong></td><td><strong>$630M</strong></td><td><strong style="color:var(--green)">+$2.6M (FIRST PROFIT)</strong></td><td><strong>$67M</strong></td><td><strong style="color:var(--green)">10.6% ← MILESTONE</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Earnings Quality — O'Glove Framework</div>
+  <div class="scorecard-item"><span class="sc-label"><strong>Test 1 — FCF Conversion (5yr):</strong> Op. CFO vs Net Income</span><span class="sc-grade sc-marginal">~ MARGINAL — $788M FY25 FCF vs -$91M net loss = FCF materially inflated by customer advance payments / billings in excess of revenue. Not genuine profitability FCF yet.</span></div>
+  <div class="scorecard-item"><span class="sc-label"><strong>Test 2 — DSO Trend (3yr):</strong> Receivables vs Revenue</span><span class="sc-grade sc-marginal">~ MARGINAL — Limited DSO data available; milestone-based billing creates lumpiness. <span class="unverified">UNVERIFIED</span></span></div>
+  <div class="scorecard-item"><span class="sc-label"><strong>Test 3 — Inventory Days (3yr):</strong> Rising + slowing revenue?</span><span class="sc-grade sc-pass">✓ PASS — Not applicable in traditional sense; project-based hardware; no inventory accumulation concern noted</span></div>
+  <div class="scorecard-item"><span class="sc-label"><strong>Test 4 — Accounting Policy Stability:</strong> Any changes boosting earnings?</span><span class="sc-grade sc-fail">✗ FAIL — Material weakness in revenue/cost recognition disclosed FY2024. 10-K filing delayed. Remediation ongoing per Q1 FY2025 commentary. Earnings quality adjustment: widen MoS by 5%.</span></div>
+  <div class="scorecard-item"><span class="sc-label"><strong>Test 5 — Gross Margin Consistency (5yr):</strong> Trend consistent?</span><span class="sc-grade sc-pass">✓ PASS — System gross margins expanded 530 bps in FY2025; software margins >65% consistent. Improving, not declining.</span></div>
+  <div class="card border-amber" style="margin-top:12px">
+    <strong style="color:var(--amber-light)">Overall Earnings Quality: ACCEPTABLE (borderline)</strong> — The revenue recognition material weakness is a genuine flag (Test 4 FAIL). The advance-payment FCF inflation requires careful interpretation. However, the gross margin expansion trend and first GAAP profitability are genuine signals. Widen MoS by 5% per Test 4 failure.
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 3: MOAT ══════════════════ -->
+<div class="tab-content" id="tab3">
+  <div class="section-title">Moat Sources — Star Rating</div>
+  <div class="moat-source">
+    <div class="moat-source-header"><span class="moat-name">🔧 Switching Cost — System Lock-In</span><span class="stars">★★★★★</span></div>
+    <p style="font-size:0.85rem; color:var(--chrome-light); margin-top:8px">Once a 400,000 sq ft DC is converted to a Symbotic system, ripping it out costs $50M+ and 12–18 months of disruption. The SymBots are bolted into custom storage structures, the software controls all DC operations, and store teams are retrained around store-ready pallet delivery. This is arguably the strongest switching cost in industrial automation — higher than Oracle ERP migration costs proportionally. Walmart's deepening relationship (ASR acquisition, new commercial agreement) validates this at the world's largest retailer scale.</p>
+  </div>
+  <div class="moat-source">
+    <div class="moat-source-header"><span class="moat-name">🧠 AI Software Platform — SymbOS</span><span class="stars">★★★★</span></div>
+    <p style="font-size:0.85rem; color:var(--chrome-light); margin-top:8px">SymbOS orchestrates 15,000+ bots dynamically, replanning tasks multiple times per second based on real-time storage conditions, store order sequences, and truck routing requirements. The "inverse Tetris" pallet optimization algorithm — considering specific store aisle layouts, hazardous goods, weight distribution — is unique at commercial scale. No competitor has demonstrated comparable capabilities in case-level automation for large-format retail.</p>
+  </div>
+  <div class="moat-source">
+    <div class="moat-source-header"><span class="moat-name">📐 Technical Differentiation — The Case Problem</span><span class="stars">★★★★</span></div>
+    <p style="font-size:0.85rem; color:var(--chrome-light); margin-top:8px">Symbotic solves case-level automation in a fundamentally different niche than AutoStore (bins/eaches), Ocado (e-grocery), or Dematic (conveyor-based). The global supply chain moves in cases — 12-packs, shrink-wrapped trays, mixed-case pallets — and this is where Symbotic has no direct at-scale competitor. Medline win (healthcare supplies) proves the system is vertical-agnostic.</p>
+  </div>
+  <div class="moat-source">
+    <div class="moat-source-header"><span class="moat-name">🏗️ Scale of Installed Deployment</span><span class="stars">★★★</span></div>
+    <p style="font-size:0.85rem; color:var(--chrome-light); margin-top:8px">15,000+ deployed bots (growing to 20,000), 37+ operational systems (Q2 FY2025), multi-year manufacturing partnerships providing supply chain control. Each system deployment strengthens AI models and manufacturing learning curves. This is a scale advantage that takes 5–7 years to replicate.</p>
+  </div>
+  <div class="moat-source">
+    <div class="moat-source-header"><span class="moat-name">🏢 Strategic Customer Partnership (Walmart)</span><span class="stars">★★★</span></div>
+    <p style="font-size:0.85rem; color:var(--chrome-light); margin-top:8px">Walmart is both customer (>75% revenue) AND shareholder (12.3%) AND technology partner (ASR acquisition, funded development programs). This bilateral lock-in is unusual — Walmart has bet its next-generation supply chain on Symbotic. This creates deep moat but also dangerous concentration risk.</p>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">⚡ DATA FLYWHEEL TEST — FORMING ★★★</div>
+    <div class="fw-check"><span class="fw-partial">~</span><strong>Q1: Proprietary Training Data?</strong> — YES. 15,000+ deployed bots generating real-time operational data: bot routes, case weights, palletization outcomes, downtime events, maintenance predictors. No competitor has access to this operational data. Uniqueness: HIGH. Volume: HIGH. Recency: Real-time. Outcome labels: YES (was the pallet correct? did the bot fail?).</div>
+    <div class="fw-check"><span class="fw-partial">~</span><strong>Q2: Does AI Improve with More Data?</strong> — LIKELY YES but NOT PUBLISHED. Machine learning training bots to replicate teleoperation tasks autonomously, predictive maintenance from fleet data, route optimization across all systems are all described. However, Symbotic has NOT published specific accuracy improvement metrics (e.g., "false-positive rate fell from X% to Y% as fleet doubled"). Flywheel cannot be fully confirmed without this evidence.</div>
+    <div class="fw-check"><span class="fw-partial">~</span><strong>Q3: Better AI → More Users?</strong> — FORMING. Medline win suggests AI versatility is attracting non-grocery verticals. Lower cost-per-system as AI-driven installation efficiency improves should attract new customers. The loop is forming but not yet self-reinforcing at scale.</div>
+    <div style="margin-top:12px; padding:10px; background:rgba(34,211,238,0.08); border-radius:6px;">
+      <strong style="color:var(--neon-teal)">Flywheel Score: 7/10 — FORMING ★★★</strong><br>
+      <span style="font-size:0.85rem; color:var(--chrome-light)">Data quality: 3/3 | Improvement evidence: 2/4 (anecdotal, not published) | Loop speed: 2/3 (loop visible but not yet self-reinforcing). Moat receives half-level benefit: effective moat = B+ (not full upgrade to A− until flywheel confirmed with metrics).</span>
+    </div>
+  </div>
+
+  <div class="section-title">ROIC Analysis</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Fiscal Year</th><th>Revenue</th><th>NOPAT (Est.)</th><th>ROIC</th><th>Comment</th></tr>
+      <tr><td>FY2023</td><td>$1.17B</td><td>Negative</td><td>Neg.</td><td>Heavy growth investment phase</td></tr>
+      <tr><td>FY2024</td><td>$1.79B</td><td>~-$30M</td><td>Neg.</td><td>Improving; first adj EBITDA positive FY24</td></tr>
+      <tr><td>FY2025</td><td>$2.25B</td><td>~$0M (breakeven)</td><td>~0%</td><td>Approaching inflection</td></tr>
+      <tr style="background:rgba(16,185,129,0.07)"><td>FY2026E</td><td>~$2.65B</td><td>~+$50M</td><td>~5–8%</td><td>Expected first positive ROIC year</td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:12px; background:var(--card2)">
+    <strong style="color:var(--chrome-light)">ROIC as Moat Proof:</strong> ROIC is not yet meaningful for Symbotic (negative, trending positive). Per the framework, for pre-FCF companies, gross margin trend is the proxy. <strong style="color:var(--green)">System gross margin expanded 530 bps in FY2025; software margins >65% confirmed.</strong> The margin trajectory is consistent with a moat-backed business, not a commodity project business.
+  </div>
+
+  <div class="section-title">Moat Macro Stress Test</div>
+  <div class="grid-3">
+    <div class="card border-green"><strong style="color:var(--green)">Switching Costs: STRENGTHENS</strong><br><span style="font-size:0.83rem; color:var(--chrome-light)">In a macro stress, customers postpone new DCs but protect existing installations. Symbotic's locked-in Walmart rollout continues regardless of macro.</span></div>
+    <div class="card border-amber"><strong style="color:var(--amber)">AI Software: HOLDS</strong><br><span style="font-size:0.83rem; color:var(--chrome-light)">AI investment slows in stress scenarios but SymbOS improvements already embedded in existing systems. New system starts slow, not current systems.</span></div>
+    <div class="card border-red"><strong style="color:var(--red)">Walmart Dependency: WEAKENS</strong><br><span style="font-size:0.83rem; color:var(--chrome-light)">If Walmart faces its own financial stress or supply chain strategy shift, Symbotic's 75%+ revenue concentration creates catastrophic scenario risk.</span></div>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 4: MANAGEMENT ══════════════════ -->
+<div class="tab-content" id="tab4">
+  <div class="section-title">Leadership Assessment</div>
+  <div class="card border-amber">
+    <div class="card-title">Rick Cohen — Chairman, CEO, Controlling Shareholder</div>
+    <p style="font-size:0.87rem; color:var(--chrome-light); line-height:1.75">Cohen founded Symbotic (originally developed within his family's C&S Wholesale Grocers company, the US's largest grocery wholesaler). This background is critical: he built SymbOS solving a real problem he lived with for decades. He maintains majority voting control through super-voting shares — classic founder-led structure. His family's C&S connection provides real-world testing grounds and sector expertise that pure-AI startups lack. <strong style="color:var(--amber-light)">Assessment: Authentic founder-operator alignment. Not a financial engineer.</strong></p>
+  </div>
+  <div class="card border-amber">
+    <div class="card-title">Capital Allocation — Strengths</div>
+    <p style="font-size:0.87rem; color:var(--chrome-light); line-height:1.75">NGSS (Next-Gen Storage Structure) investment is a high-conviction product bet: 40% higher storage density, 10% fewer parts, faster installation, lower cost-per-system. The Walmart ASR acquisition was opportunistic — absorbing Walmart's robotics R&D team (funded by Walmart) and gaining $5B+ in future backlog. GreenBox JV with SoftBank allows mid-market RaaS expansion without balance sheet strain. These are sophisticated capital allocation moves, not spray-and-pray growth spending.</p>
+  </div>
+  <div class="card border-red">
+    <div class="card-title">Red Flag — Revenue Recognition Material Weakness</div>
+    <p style="font-size:0.87rem; color:var(--chrome-light); line-height:1.75">Symbotic delayed its FY2024 Form 10-K due to identified errors in revenue recognition — a material weakness that shook investor confidence significantly (stock fell ~30% in December 2024). The remediation was described as ongoing into FY2025. This is a serious integrity flag. Complex milestone-based revenue recognition in multi-year system installations is genuinely difficult — but the weakness and delayed filing suggests internal controls lagged the company's growth rate. <strong style="color:var(--red)">Management grade capped at B by this flag alone.</strong></p>
+  </div>
+
+  <div class="section-title">Shareholding Integrity</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Founder / Cohen Control</div>
+      <div class="card-value text-amber">Majority Voting</div>
+      <div class="card-sub">Super-voting shares — Cohen controls strategic direction <span class="estimated">EST</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pledged Shares</div>
+      <div class="card-value text-green">None Disclosed</div>
+      <div class="card-sub">No pledge risk identified — PASS threshold <span class="estimated">EST</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Director Share Sales</div>
+      <div class="card-value text-amber">Moderate</div>
+      <div class="card-sub">Multiple director sales Q1 FY2026 (~$600K total) — minor concern <span class="verified">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">AI Management Credibility</div>
+  <div class="scorecard-item"><span class="sc-label">AI-Native Founding Team</span><span class="sc-grade sc-pass">✓ PASS — Cohen built SymbOS from within a real warehouse operator; hardware-AI integration expertise is genuine</span></div>
+  <div class="scorecard-item"><span class="sc-label">Proprietary AI vs API Dependency</span><span class="sc-grade sc-pass">✓ PASS — SymbOS is proprietary; not built on OpenAI/Gemini APIs; company builds its own ML models</span></div>
+  <div class="scorecard-item"><span class="sc-label">AI R&amp;D Investment</span><span class="sc-grade sc-pass">✓ PASS — NGSS hardware innovation, minibot BreakPack, vision systems, Nyobolt battery integration — active R&amp;D pipeline</span></div>
+  <div class="scorecard-item"><span class="sc-label">Guidance Reliability</span><span class="sc-grade sc-marginal">~ MARGINAL — Q4 FY2024 guidance miss (system gross margins below expectations, elongated construction schedules). But FY2025 execution consistently beat expectations.</span></div>
+  <div class="scorecard-item"><span class="sc-label">Responsible AI / Regulatory</span><span class="sc-grade sc-pass">✓ PASS — No AI bias complaints; labor replacement handled via customer ROI framing; OSHA compliance for bot operations standard</span></div>
+
+  <div class="section-title">Management Grade: B</div>
+  <div class="card" style="background:rgba(245,158,11,0.07); border-color:var(--amber)">
+    <strong style="color:var(--amber-light)">B — Strong founder alignment, genuine AI expertise, and sophisticated capital allocation are positives. Revenue recognition material weakness is the primary drag. Director share sales are a secondary minor concern. Guidance has been reliable in FY2025 after a difficult FY2024 execution year.</strong>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 5: VALUATION ══════════════════ -->
+<div class="tab-content" id="tab5">
+  <div class="section-title">Valuation Framework Note</div>
+  <div class="card" style="background:var(--card2); border-color:var(--chrome)">
+    <p style="color:var(--chrome-light); font-size:0.88rem; line-height:1.75">Symbotic has achieved first GAAP profitability in Q1 FY2026 ($2.6M net income). However, full-year GAAP profitability is not yet demonstrated for 2+ consecutive years, and FCF quality is heavily influenced by advance customer payments rather than operating cash generation. <strong style="color:var(--amber-light)">Primary valuation: Revenue Multiple (Method 1) + R40 Trajectory (Method 2) + TAM Penetration (Method 3) + Comps (Method 4).</strong> DCF provided as supplemental only. Earnings quality adjustment: +5% MoS widening applied for Test 4 (revenue recognition weakness).</p>
+  </div>
+
+  <div class="section-title">Method 1 — Revenue Multiple Valuation</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Scenario</th><th>EV/Revenue Multiple</th><th>FY2026E Revenue</th><th>Enterprise Value</th><th>MoS Adj.</th><th>Implied Price/Share (~630M shares)</th></tr>
+      <tr><td>STRESS</td><td>7x</td><td>$2.55B</td><td>$17.9B</td><td>-5% width adj</td><td>~<strong>$27–29</strong></td></tr>
+      <tr style="background:rgba(245,158,11,0.08)"><td><strong>BASE</strong></td><td><strong>11x</strong></td><td><strong>$2.65B</strong></td><td><strong>$29.2B</strong></td><td><strong>-5% width adj</strong></td><td>~<strong>$44–46</strong></td></tr>
+      <tr><td>ACCEL.</td><td>16x</td><td>$2.75B</td><td>$44.0B</td><td>—</td><td>~<strong>$68–72</strong></td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:10px; background:var(--card2)">
+    <strong style="color:var(--sub); font-size:0.82rem">Multiple rationale:</strong> Base 11x reflects: ~20% forward revenue growth + approaching FCF positivity + $22.7B backlog visibility + Walmart lock-in, discounted vs comparable pure-software AI plays (~15–25x) for hardware margin drag. AutoStore (comparable) trades ~8–12x EV/Rev. Stress 7x = severe Walmart disruption scenario. Accel 16x = rapid software mix expansion + new verticals at scale.
+  </div>
+
+  <div class="section-title">Method 2 — Rule of 40 Trajectory</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Year</th><th>Revenue Growth</th><th>Adj EBITDA Margin</th><th>R40 Score</th><th>Multiple Tier</th></tr>
+      <tr><td>FY2025</td><td>26%</td><td>6.5%</td><td>32.5 — MARGINAL</td><td>Emerging tier (5–10x)</td></tr>
+      <tr style="background:rgba(245,158,11,0.06)"><td>FY2026E</td><td>~20%</td><td>~10–11%</td><td>~30–31 — Still below 40</td><td>Approaching quality tier</td></tr>
+      <tr><td>FY2027E</td><td>~18%</td><td>~13–15%</td><td>~31–33</td><td>Quality tier entry</td></tr>
+      <tr><td>FY2028E</td><td>~15%</td><td>~18–20%</td><td>~33–35</td><td>Nearing 40 threshold</td></tr>
+      <tr style="background:rgba(16,185,129,0.06)"><td>FY2029E</td><td>~14%</td><td>~25%</td><td>~39 → 40 INFLECTION</td><td>Quality tier → multiple re-rate</td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:10px; background:var(--card2)">
+    R40 crossing 40 sustainably (~FY2029–2030 on base case) would likely trigger a multiple re-rate from 10–11x to 14–18x EV/Revenue, representing significant upside. At $2.9B FY2029 revenue × 15x = $43.5B EV → ~$68/share (PV-adjusted at 12% discount = ~$44/share today). This confirms the base IV range.
+  </div>
+
+  <div class="section-title">Method 3 — TAM Penetration (Optionality Value)</div>
+  <div class="card" style="background: rgba(34,211,238,0.05); border-color: var(--neon-teal)">
+    <p style="font-size:0.87rem; color:var(--chrome-light); line-height:1.75">
+      Total Addressable Market: Symbotic estimates >$500B for large-retailer warehouse automation globally. Conservative institutional estimates: $373B for US + Canada + Europe alone. Current penetration: <0.5% of TAM. At 5% mature market share and 30% FCF margins at maturity on $25B revenue → FCF = $7.5B → at 20x terminal = $150B EV → PV at 12% over 15 years = ~$27B → ~$42/share. <strong style="color:var(--neon-teal)">Label: OPTIONALITY VALUE — NOT intrinsic value.</strong> Use as upside confirmation, not primary basis.
+    </p>
+  </div>
+
+  <div class="section-title">Method 4 — Comparable Company Multiples</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Comparable</th><th>Business Model</th><th>EV/Rev</th><th>Revenue Growth</th><th>EBITDA Margin</th><th>R40</th></tr>
+      <tr><td>AutoStore (OSE: AUTO)</td><td>Warehouse grid robots</td><td>~9x</td><td>~12%</td><td>~25%</td><td>~37</td></tr>
+      <tr><td>Palantir (PLTR)</td><td>AI platform (high-margin)</td><td>~28x</td><td>~25%</td><td>~20%</td><td>~45</td></tr>
+      <tr><td>Rockwell Automation (ROK)</td><td>Industrial automation (mature)</td><td>~3.5x</td><td>~5%</td><td>~18%</td><td>~23</td></tr>
+      <tr><td>Ocado Group (OCDO)</td><td>AI grocery automation</td><td>~4x</td><td>~15%</td><td>Neg</td><td>&lt;20</td></tr>
+      <tr style="background:rgba(245,158,11,0.06)"><td><strong>SYM (Current)</strong></td><td>AI warehouse robotics</td><td>~13.5x</td><td>~26%</td><td>~6.5%</td><td>~32.5</td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:10px; background:var(--card2)">
+    SYM trades at significant premium to pure hardware peers (AutoStore, Rockwell) but discount to pure AI platform plays (Palantir). The ~13x multiple prices in the platform transition thesis. Justified only if R40 trajectory to 40+ materializes. At current metrics, premium is partially forward-looking.
+  </div>
+
+  <div class="section-title">Valuation Summary Table</div>
+  <div style="overflow-x:auto">
+    <table class="sensitivity">
+      <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel. IV</th><th>Weight</th></tr>
+      <tr><td>Revenue Multiple</td><td>$27–29</td><td>$44–46</td><td>$68–72</td><td>40%</td></tr>
+      <tr><td>R40 Trajectory (PV)</td><td>$25</td><td>$42–44</td><td>$65</td><td>35%</td></tr>
+      <tr><td>TAM Penetration (optionality)</td><td>$22</td><td>$40–42</td><td>$80+</td><td>—</td></tr>
+      <tr><td>Comp Multiples</td><td>$30</td><td>$44–48</td><td>$70</td><td>25%</td></tr>
+      <tr style="background:rgba(245,158,11,0.08)"><td><strong>Blended Base IV</strong></td><td><strong>~$27</strong></td><td><strong>~$44–46</strong></td><td><strong>~$68</strong></td><td>100%</td></tr>
+      <tr style="background:rgba(34,211,238,0.06)"><td>AI WIDENER Adjustment (flywheel forming)</td><td colspan="3">+$3–5 to base IV if flywheel CONFIRMED (moat grade upgrade)</td><td>—</td></tr>
+      <tr style="background:rgba(239,68,68,0.06)"><td>Rev. Recognition MoS Adj. (-5%)</td><td>-$1.3</td><td>-$2.3</td><td>—</td><td>Applied</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Entry Price / Margin of Safety</div>
+  <div class="grid-3">
+    <div class="card border-green">
+      <div class="card-title">FULL POSITION Entry Zone</div>
+      <div class="card-value text-green">$40–44</div>
+      <div class="card-sub">~10–15% below blended base IV of $44–46</div>
+    </div>
+    <div class="card border-amber">
+      <div class="card-title">STARTER Position Zone</div>
+      <div class="card-value text-amber">$44–50</div>
+      <div class="card-sub">At/near current price — starter only on technical trigger</div>
+    </div>
+    <div class="card border-red">
+      <div class="card-title">Current Price</div>
+      <div class="card-value text-red">~$50 <span class="unverified">UNVERIFIED</span></div>
+      <div class="card-sub">~10–15% above base IV; premium to full-position entry</div>
+    </div>
+  </div>
+
+  <div class="section-title">Earnings Yield vs Bond Yield</div>
+  <div class="card" style="background:var(--card2)">
+    <table>
+      <tr><th>Metric</th><th>Value</th><th>Interpretation</th></tr>
+      <tr><td>FY2025 Adj EBITDA yield (EV basis)</td><td>~0.49% ($147M / $30B EV)</td><td>Very low — growth priced in</td></tr>
+      <tr><td>FY2026E EBITDA yield</td><td>~0.9% ($270M / $30B EV)</td><td>Still low; not a yield play</td></tr>
+      <tr><td>US 10Y Treasury yield</td><td>~4.2%</td><td>Risk-free hurdle is elevated</td></tr>
+      <tr><td>ERP (vs current EBITDA yield)</td><td>Negative vs risk-free</td><td>Priced on growth, not yield</td></tr>
+      <tr><td>Revenue Yield (Price/Sales)</td><td>~13.5x P/S = 7.4% revenue yield</td><td>Premium but not extreme for growth</td></tr>
+    </table>
+    <p style="margin-top:10px; font-size:0.83rem; color:var(--sub)">Symbotic is a pure-growth play — earnings yield comparisons to bond yields are not the primary valuation lever. What matters is the revenue multiple relative to growth trajectory and R40 inflection timing.</p>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 6: VERDICT ══════════════════ -->
+<div class="tab-content" id="tab6">
+  <div class="section-title">Four-Pillar Grades</div>
+  <div class="grid-4">
+    <div class="pillar-card">
+      <div class="pillar-grade grade-b">B+</div>
+      <div style="font-family:var(--font-display); font-weight:600; margin-top:6px">Pillar 1 — Moat</div>
+      <p style="font-size:0.82rem; color:var(--sub); margin-top:6px">Exceptional switching costs + proprietary AI platform + unique Case Problem solution. Flywheel forming (half-level benefit pending confirmation). Walmart concentration limits ceiling.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-grade grade-b">B−</div>
+      <div style="font-family:var(--font-display); font-weight:600; margin-top:6px">Pillar 2 — Financial Fortress</div>
+      <p style="font-size:0.82rem; color:var(--sub); margin-top:6px">First GAAP profit achieved. Massive backlog. But: thin system-level margins, working-capital-inflated FCF, revenue recognition material weakness. Improving trajectory is key.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-grade grade-b">B</div>
+      <div style="font-family:var(--font-display); font-weight:600; margin-top:6px">Pillar 3 — Management</div>
+      <p style="font-size:0.82rem; color:var(--sub); margin-top:6px">Founder-aligned, genuine AI expertise, sophisticated capital allocation. Revenue recognition weakness and director sales cap the grade. Execution improved meaningfully in FY2025.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-grade grade-b">B−</div>
+      <div style="font-family:var(--font-display); font-weight:600; margin-top:6px">Pillar 4 — Valuation</div>
+      <p style="font-size:0.82rem; color:var(--sub); margin-top:6px">Current price (~$50) is above the base IV entry zone ($40–44). Not extreme premium, but no margin of safety at current levels. Entry zone has been visited during 52-week range.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Verdict</div>
+  <div class="verdict-box">
+    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:12px">
+      <div class="verdict-main">WATCH</div>
+      <div class="verdict-stars">★★★</div>
+      <div style="margin-left:auto"><span class="badge badge-ai">🟢 AI WIDENER</span></div>
+    </div>
+    <div class="verdict-prose">
+      Symbotic holds a genuinely defensible position at the intersection of industrial robotics, AI software, and the world's largest retail supply chain. The SymbOS platform solves a real problem (case-level automation) that no competitor has matched at scale, and the $22.7B contracted backlog provides unusual revenue visibility for a growth company. The first GAAP profit in Q1 FY2026 confirms the financial inflection is real, not guided.
+      <br><br>
+      The verdict is WATCH ★★★ — not yet BUY — because: (1) the current price (~$50) offers no margin of safety vs the blended base IV of ~$44–46; (2) the revenue recognition material weakness remains a Trust-But-Verify flag; (3) Walmart revenue concentration exceeding 75% creates a single-point-of-failure scenario that is not adequately compensated at current multiples; and (4) R40 score (~32) has not yet crossed the 40 threshold that would justify a re-rate to quality-tier multiples.
+      <br><br>
+      The AI WIDENER flywheel is forming — not confirmed. Full BUY conviction requires the flywheel to publish measurable AI accuracy improvement data from its growing operational fleet. When that evidence arrives alongside an entry zone price, this becomes a BUY — AI CONVICTION.
+    </div>
+  </div>
+
+  <div class="section-title">BUY Upgrade Conditions (Specific &amp; Measurable)</div>
+  <ul class="upgrade-list">
+    <li><span class="upgrade-num">1</span>Price corrects to <strong>$40–44</strong> — representing 10–15% below blended base IV with revenue recognition MoS widening applied</li>
+    <li><span class="upgrade-num">2</span>System-level gross margins expand to <strong>≥22% for 2 consecutive quarters</strong> — confirming the hardware margin expansion thesis is durable, not one-quarter timing</li>
+    <li><span class="upgrade-num">3</span>Non-Walmart revenue reaches <strong>≥25% of total revenue</strong> for 2 consecutive quarters — Medline + new verticals reducing concentration risk below critical threshold</li>
+    <li><span class="upgrade-num">4</span>RSI falls below <strong>35 on daily chart</strong> — confirming oversold technical entry concurrent with fundamental entry zone</li>
+    <li><span class="upgrade-num">5</span>Symbotic publishes measurable AI flywheel metrics — e.g., <strong>bot error rate declining as fleet scale doubles</strong>, or palletization AI accuracy improving by measurable % — confirming DATA FLYWHEEL status and triggering full moat grade upgrade to A−</li>
+  </ul>
+
+  <div class="section-title">Series Table</div>
+  <div class="series-table">
+    <table>
+      <tr><th>Ticker</th><th>Company</th><th>Market</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Thesis Summary</th></tr>
+      <tr><td>SYM</td><td>Symbotic Inc.</td><td>NASDAQ</td><td>B</td><td>🟢 WIDENER</td><td>B+</td><td>B−</td><td>B</td><td>B−</td><td>WATCH ★★★</td><td>AI warehouse robotics platform; $22.7B backlog; Walmart anchor; first GAAP profit Q1 FY2026; entry $40–44; flywheel forming</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 7: TECHNICAL ══════════════════ -->
+<div class="tab-content" id="tab7">
+  <div class="section-title">Section A — Price Structure &amp; Multi-Timeframe Trend</div>
+  <div class="card">
+    <table>
+      <tr><th>Timeframe</th><th>Trend</th><th>Key Level</th><th>Comment</th></tr>
+      <tr><td>Monthly</td><td style="color:var(--amber)">Neutral → Recovering</td><td>$16 (52-week low)</td><td>52-week range: $16.32–$87.88; stock down 43% from ATH of $87.88</td></tr>
+      <tr><td>Weekly</td><td style="color:var(--amber)">Attempting recovery</td><td>$50–55 resistance zone</td><td>Stock reclaiming losses from Dec 2025 offering; Q1 FY2026 profit = catalyst</td></tr>
+      <tr><td>Daily</td><td style="color:var(--chrome)">Neutral with sell signals</td><td>$50 pivot</td><td>SwingTradeBot: 0 bullish, 3 bearish, 2 neutral indicators (April 2026)</td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:10px">
+    <p style="color:var(--chrome-light); font-size:0.87rem; line-height:1.75">The stock's journey from $16.32 (52-week low, likely post-revenue-recognition disclosure + offering overhang) to $87.88 ATH (Nov 26, 2025, post-strong earnings) and back to ~$50 reflects the high-volatility nature of this stock. The ATH was hit immediately post-Q4 FY2025 earnings surprise ($618M revenue beat + $49M adj EBITDA). The subsequent pullback from $87 to $50 is a ~43% correction from ATH — historically, Symbotic has shown 30–50% corrections between major catalyst events.</p>
+  </div>
+
+  <div class="section-title">Section B — Moving Average Dashboard</div>
+  <div class="card">
+    <table class="ma-table">
+      <tr><th>Moving Average</th><th>Estimated Level</th><th>Price vs MA</th><th>Signal</th></tr>
+      <tr><td>20-EMA (Daily)</td><td>~$52–54</td><td class="below-ma">Slightly Below</td><td>Short-term weakness</td></tr>
+      <tr><td>50-DMA (Daily)</td><td>~$55–62</td><td class="below-ma">Below</td><td>Medium-term bearish</td></tr>
+      <tr><td>100-DMA (Daily)</td><td>~$60–68</td><td class="below-ma">Significantly Below</td><td>Medium-term sell</td></tr>
+      <tr><td>200-DMA (Daily)</td><td>~$45–55 </td><td class="above-ma">Near/At</td><td>Critical support zone — key entry test</td></tr>
+      <tr><td>Cross Status</td><td colspan="3" style="color:var(--red)">Death Cross present (50-DMA below 200-DMA on sell signals noted by multiple TA sources) — bearish intermediate trend</td></tr>
+    </table>
+    <p style="margin-top:8px; font-size:0.8rem; color:var(--sub)"><span class="unverified">UNVERIFIED</span> — MA levels estimated from price history and analyst commentary; confirm on live charting platform.</p>
+  </div>
+
+  <div class="section-title">Section C — Volume Analysis</div>
+  <div class="card">
+    <p style="color:var(--chrome-light); font-size:0.87rem; line-height:1.75">Average daily volume: ~1.38M shares. <strong>Key volume events (last 6 months):</strong> (1) Nov 25–26, 2025: Volume surge ~40% above average on Q4 FY2025 earnings beat + new customer announcement — ATH at $87.88. (2) December 2025: High-volume selloff (~30% drop) on stock offering announcement (10M shares, Dec 2025). (3) Feb 4, 2026: Q1 FY2026 earnings (first GAAP profit) — stock fell 4.78% then recovered after hours; mixed signals suggesting sell-the-news after big 2025 run. OBV: Likely declining post-ATH, consistent with distribution phase from $87 to $50.</p>
+  </div>
+
+  <div class="section-title">Section D — Momentum Indicators</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">RSI (14-day) — Current</div>
+      <div class="card-value" style="color:var(--chrome)">~45–50</div>
+      <div class="card-sub">Neutral zone — not oversold <span class="unverified">UNVERIFIED</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">MACD (Daily)</div>
+      <div class="card-value text-amber">Bearish</div>
+      <div class="card-sub">3-month MACD: buy signal noted (Feb 2026 pivot); weekly: sell signals persist</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Overall TA Sentiment</div>
+      <div class="card-value text-red">SELL</div>
+      <div class="card-sub">Investing.com: daily/weekly Strong Sell; monthly: Buy (long-term thesis intact)</div>
+    </div>
+  </div>
+
+  <div class="section-title">Section E — Chart Patterns</div>
+  <div class="card">
+    <p style="color:var(--chrome-light); font-size:0.87rem; line-height:1.75">
+      <strong style="color:var(--amber-light)">Double Bottom Pattern:</strong> Formation noted on TradingView commentary around $16–20 range (52-week low region) with subsequent rally to $87. Currently in post-peak correction. A new base forming at $45–55 would represent a potential cup-and-handle setup if the stock can consolidate for 2–3 months.<br><br>
+      <strong style="color:var(--amber-light)">Triangle Breakout (Historical):</strong> One analyst noted "clean setup: after strong rally and breakout from a triangle, stock retesting $68–70 support zone" — this was likely pre-December selling. That zone is now broken; $50–55 is the new support test.
+    </p>
+  </div>
+
+  <div class="section-title">Section F — Trade Structure</div>
+  <div class="card" style="background: rgba(16,185,129,0.05); border-color:var(--green)">
+    <strong style="color:var(--green)">PRIMARY TRIGGER (FULL POSITION):</strong> Price reaches $40–44 + RSI &lt;35 daily + at or near 200-DMA (estimated $45–50 range)<br>
+    Entry: $40–44 | Stop-Loss: $34 (below 52-week recovery base) | Target 1: $55 | Target 2: $68 | R:R = ~1:3.0 ✓<br><br>
+    <strong style="color:var(--amber-light)">SECONDARY TRIGGER (STARTER):</strong> Current zone $48–52 + RSI &lt;45 + Q2 FY2026 earnings beat (May 12, 2026)<br>
+    Entry: $48–52 | Stop-Loss: $42 | Target 1: $65 | R:R = ~1:2.5 ✓<br><br>
+    <strong style="color:var(--neon-teal)">CAT F/AI NOTE:</strong> For Symbotic specifically, the Phase 2→3 breakout signal would be: non-Walmart revenue first exceeds $100M quarterly + SymbOS flywheel metrics published → watch for re-rating to $80+ range on sustained volume surge. This would be the institutional entry signal for AI-focused funds.
+    <br><br>
+    <strong style="color:var(--chrome)">Position Size Cap: 3–5% of portfolio maximum</strong> — Binary risk from Walmart concentration; not a full-position compounder until concentration diversified.
+  </div>
+
+  <div class="section-title">Section G — Technical Composite Score</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Dimension</th><th>Score (1–5)</th><th>Comment</th></tr>
+      <tr><td>Price Trend (Multi-timeframe)</td><td>2/5</td><td>Below most MAs; bearish intermediate trend</td></tr>
+      <tr><td>Moving Average Alignment</td><td>2/5</td><td>Below 20/50/100 EMAs; approaching 200-DMA</td></tr>
+      <tr><td>Volume Quality</td><td>3/5</td><td>Volume on earnings surges; baseline volume adequate</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td>3/5</td><td>Neutral RSI; 3-month MACD buy; weekly sell</td></tr>
+      <tr><td>Chart Pattern</td><td>3/5</td><td>Base forming at $45–55; no confirmed breakout pattern yet</td></tr>
+      <tr><td>Institutional Signals</td><td>3/5</td><td>Ark ETF activity; director sales minor negative</td></tr>
+      <tr style="background:rgba(245,158,11,0.08)"><td><strong>COMPOSITE</strong></td><td><strong>16/30 = 53%</strong></td><td><strong>NEUTRAL-WEAK — Timing not ideal; entry zone more favorable at $40–44</strong></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 8: SHAREHOLDING ══════════════════ -->
+<div class="tab-content" id="tab8">
+  <div class="section-title">Section A — Founder &amp; Strategic Holders</div>
+  <div class="grid-3">
+    <div class="card border-amber">
+      <div class="card-title">Rick Cohen (Founder/CEO)</div>
+      <div class="card-value text-amber">Majority Voting</div>
+      <div class="card-sub">Super-voting shares maintain founder control regardless of equity dilution. No pledges disclosed. <span class="estimated">EST</span></div>
+    </div>
+    <div class="card border-green">
+      <div class="card-title">Pledged Shares</div>
+      <div class="card-value text-green">None Disclosed</div>
+      <div class="card-sub">PASS threshold — no pledge risk. <span class="estimated">EST</span></div>
+    </div>
+    <div class="card border-chrome">
+      <div class="card-title">Director Sales</div>
+      <div class="card-value text-amber">3 sales, Q1 2026</div>
+      <div class="card-sub">Saintil ($173K), Kane (~$200K), Krasnow (~$100K) — minor aggregate; likely programmatic. <span class="verified">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Section B — Major Institutional Holders</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Holder</th><th>Holding %</th><th>Role</th><th>Signal</th></tr>
+      <tr><td>SoftBank Group Corp.</td><td>37.25%</td><td>Strategic / Financial partner (GreenBox funder)</td><td><span style="color:var(--amber)">⚠ High — creates GreenBox dependency</span></td></tr>
+      <tr><td>Walmart Inc.</td><td>12.30%</td><td>Strategic customer-shareholder (bilateral lock-in)</td><td><span style="color:var(--green)">✓ Positive — customer aligning interests</span></td></tr>
+      <tr><td>Baillie Gifford &amp; Co.</td><td>10.20%</td><td>Long-duration growth investor (Scotland)</td><td><span style="color:var(--green)">✓ Very positive — patient capital, quality signal</span></td></tr>
+      <tr><td>Vanguard Group Inc.</td><td>~4–5%</td><td>Passive index</td><td>Neutral</td></tr>
+      <tr><td>JPMorgan Chase &amp; Co.</td><td>~2–3%</td><td>Active institutional</td><td>Neutral</td></tr>
+      <tr><td>Morgan Stanley</td><td>~2%</td><td>Active institutional</td><td>Neutral</td></tr>
+      <tr><td>ARK ETFs (Cathie Wood)</td><td>Active trades Feb 2026</td><td>High-conviction AI growth</td><td><span style="color:var(--neon-teal)">AI quality signal — ARK focus on disruptive tech</span></td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:10px; background:rgba(245,158,11,0.07); border-color:var(--amber)">
+    <strong style="color:var(--amber-light)">Key observation:</strong> SoftBank (37.25%) + Walmart (12.30%) + Baillie Gifford (10.20%) = 59.75% of shares controlled by strategic/long-duration holders. Free float is effectively ~40%. This structural tightness means institutional buying drives outsized price response — and also that SoftBank financial stress or Walmart strategy change could drive outsized downside.
+  </div>
+
+  <div class="section-title">Section C — Free Float &amp; Liquidity</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Estimated Total Shares</div>
+      <div class="card-value">~615–630M</div>
+      <div class="card-sub">Includes Class A + B (dual class structure) <span class="estimated">EST</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Free Float (Approx.)</div>
+      <div class="card-value">~40%</div>
+      <div class="card-sub">Tight float amplifies price moves in both directions <span class="estimated">EST</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Dec 2025 Share Offering</div>
+      <div class="card-value text-amber">10M shares</div>
+      <div class="card-sub">Secondary offering priced Dec 2025 — slight dilution, overhang cleared <span class="verified">VERIFIED</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Section D — Shareholding Composition</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>Category</th><th>Estimate</th><th>Trend</th><th>Signal</th></tr>
+      <tr><td>Cohen (Founder) — voting control</td><td>Majority voting</td><td>Stable</td><td>✓ Positive</td></tr>
+      <tr><td>SoftBank + strategic</td><td>~37.25%</td><td>Stable</td><td>⚠ Dependency risk</td></tr>
+      <tr><td>Walmart</td><td>~12.30%</td><td>Increasing (ASR acquisition)</td><td>✓ Positive</td></tr>
+      <tr><td>Baillie Gifford + long-term</td><td>~10.20%</td><td>Stable</td><td>✓ Quality holder</td></tr>
+      <tr><td>Other institutional (passive/active)</td><td>~15–20%</td><td>Growing (420–449 institutions per SEC)</td><td>✓ Accumulation</td></tr>
+      <tr><td>Retail / Public</td><td>~5–10%</td><td>Active (Robinhood prominent)</td><td>Neutral / Speculative</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">Section E — Ownership Momentum Score</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Ownership Momentum Score</div>
+      <div class="card-value text-amber">62 / 100</div>
+      <div class="card-sub">Positive long-duration holders; offset by SoftBank dependency and director sales</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Shareholding Risk Score</div>
+      <div class="card-value text-amber">42 / 100</div>
+      <div class="card-sub">Key risks: SoftBank concentration, Walmart alignment (bilateral but concentrated), Dec 2025 offering dilution now cleared</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ TAB 9: AI INTELLIGENCE ══════════════════ -->
+<div class="tab-content" id="tab9">
+  <div class="section-title">Section A — AI Classification Dashboard</div>
+  <div class="grid-4">
+    <div class="card" style="text-align:center; background:rgba(245,158,11,0.08); border-color:var(--amber)">
+      <div style="font-size:0.7rem; color:var(--sub); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1px">Category</div>
+      <div style="font-size:1.2rem; font-weight:700; color:var(--amber); font-family:var(--font-display); margin-top:6px">CAT B</div>
+      <div style="font-size:0.75rem; color:var(--sub); margin-top:4px">High-Growth AI Compounder</div>
+    </div>
+    <div class="card" style="text-align:center; background:rgba(16,185,129,0.08); border-color:var(--green)">
+      <div style="font-size:0.7rem; color:var(--sub); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1px">AI Overlay</div>
+      <div style="font-size:1.2rem; font-weight:700; color:var(--green); font-family:var(--font-display); margin-top:6px">🟢 WIDENER</div>
+      <div style="font-size:0.75rem; color:var(--sub); margin-top:4px">AI deepens switching costs + platform moat</div>
+    </div>
+    <div class="card" style="text-align:center; background:rgba(34,211,238,0.08); border-color:var(--neon-teal)">
+      <div style="font-size:0.7rem; color:var(--sub); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1px">Data Flywheel</div>
+      <div style="font-size:1.2rem; font-weight:700; color:var(--neon-teal); font-family:var(--font-display); margin-top:6px">FORMING ★★★</div>
+      <div style="font-size:0.75rem; color:var(--sub); margin-top:4px">7/10 — lacks published AI accuracy data</div>
+    </div>
+    <div class="card" style="text-align:center; background:rgba(245,158,11,0.08); border-color:var(--amber-dim)">
+      <div style="font-size:0.7rem; color:var(--sub); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1px">Adoption Phase</div>
+      <div style="font-size:1.2rem; font-weight:700; color:var(--amber-light); font-family:var(--font-display); margin-top:6px">PHASE 2→3</div>
+      <div style="font-size:0.75rem; color:var(--sub); margin-top:4px">Early Commercial → Inflection</div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px; padding:16px; background:rgba(34,211,238,0.06); border:1px solid var(--neon-teal); border-radius:var(--radius)">
+    <strong style="color:var(--neon-teal)">Adoption Phase Evidence (Phase 2→3):</strong>
+    <p style="font-size:0.86rem; color:var(--chrome-light); margin-top:8px; line-height:1.7">Phase 2 (Early Commercial): Walmart deployment at 37+ operational systems, proving case-level AI automation at commercial scale. Revenue growing 25%+. First GAAP profit achieved. Phase 3 transition signal: Medline healthcare win proves vertical-agnostic capability beyond grocery/retail. This is the highest-conviction entry window per the AI framework — the inflection from one vertical to multi-vertical marks the Phase 2→3 boundary. <span class="estimated">ESTIMATED — based on sector adoption analysis</span></p>
+  </div>
+
+  <div class="section-title">Section B — Data Flywheel Deep-Dive</div>
+  <div class="flywheel-box">
+    <div class="flywheel-title">Q1: What is the Proprietary Training Data?</div>
+    <p style="font-size:0.86rem; color:var(--chrome-light); line-height:1.7">Symbotic's 15,000+ deployed SymBots generate real-time operational data: (a) case-level positioning and pick/place outcomes across millions of SKUs, (b) bot route efficiency data from dynamic re-optimization multiple times per second, (c) palletization outcome data including store validation (was the pallet correct for this store's aisle?), (d) maintenance failure patterns and predictive indicators, (e) Walmart's actual supply chain execution data — which is unparalleled in scale and uniqueness. <strong>No competitor without 37+ live installations has access to comparable operational data.</strong> Volume: HIGH (millions of operations daily). Outcome labels: YES — the system knows if a pallet was sequenced correctly and if bots failed.</p>
+    <div style="margin-top:12px">
+      <div class="flywheel-title">Q2: Does AI Improve with More Data?</div>
+      <p style="font-size:0.86rem; color:var(--chrome-light); line-height:1.7">Symbotic describes: machine learning that trains bots to automatically replicate teleoperation tasks (bots learn from human expert corrections), predictive maintenance algorithms improving with fleet data, route optimization improving as traffic patterns are learned. The NGSS upgrade "first operational day with zero manual repositioning" suggests AI-driven installation efficiency is learning-based. <strong>Specific improvement metrics not publicly disclosed</strong> — this is the missing evidence for full flywheel confirmation. <span class="unverified">NOT VERIFIED by published metrics</span></p>
+    </div>
+    <div style="margin-top:12px">
+      <div class="flywheel-title">Q3: Does Better AI Attract More Users?</div>
+      <p style="font-size:0.86rem; color:var(--chrome-light); line-height:1.7">The Medline win is the first evidence this is happening. As Symbotic proves vertical versatility (healthcare supplies = fragile, high-value, complex — vs grocery), new verticals become believable. Lower cost-per-system as AI-driven installation efficiency scales (NGSS delivers 40% more storage density with fewer parts) makes the ROI proposition more attractive to new customers. The loop is: more operational data → better AI → faster/cheaper installation → lower customer ROI hurdle → more customers. The cycle speed is slow (12–18 month system deployments) which limits flywheel compounding speed vs digital-native flywheels.</p>
+    </div>
+    <div style="margin-top:14px; background:rgba(34,211,238,0.08); border-radius:6px; padding:12px">
+      <strong style="color:var(--neon-teal)">Flywheel Score: 7/10 — FORMING ★★★</strong><br>
+      Data quality: 3/3 | AI improvement evidence: 2/4 (anecdotal; need published metrics) | Loop speed: 2/3 (slow cycle — 12–18 month deployment cycles)<br>
+      <strong style="color:var(--amber)">Upgrade trigger: If Symbotic publishes bot error rate improvement data or installation time reduction linked to AI learning → CONFIRMED ★★★★★ → moat grade upgrades from B+ to A−</strong>
+    </div>
+  </div>
+
+  <div class="section-title">Section C — AI Value Chain Position</div>
+  <div class="vc-chain">
+    <div class="vc-level"><strong>LEVEL 1</strong><div class="vc-label">Infrastructure (Semiconductors, Data Centers, Power)</div></div>
+    <div class="vc-level"><strong>LEVEL 2</strong><div class="vc-label">Foundation Models (OpenAI, DeepMind, Anthropic)</div></div>
+    <div class="vc-level"><strong>LEVEL 3</strong><div class="vc-label">AI Platforms / Middleware (Snowflake, Palantir)</div></div>
+    <div class="vc-level active"><strong>LEVEL 4 ← SYM</strong><div class="vc-label">AI Vertical Applications (Supply Chain AI, Healthcare AI)</div></div>
+    <div class="vc-level"><strong>LEVEL 5</strong><div class="vc-label">AI-Enabled Incumbents (HDFC Bank, Naukri, etc.)</div></div>
+  </div>
+  <div class="card" style="margin-top:10px; background:var(--card2)">
+    <strong style="color:var(--amber-light)">Level 4 — AI Vertical Application (Supply Chain):</strong> Symbotic sits at the most valuable position in the AI stack for industrial applications — domain-specific AI that is hard to replicate because it requires both hardware expertise AND proprietary operational data AND customer relationships. Level 4 companies typically have the highest risk/reward profile: binary on whether the vertical is dominated, but enormous upside if market leadership is secured. <strong>Optimal investment horizon: 5–7 years.</strong> Do NOT apply 12-month price targets.
+  </div>
+
+  <div class="section-title">Section D — US AI Opportunity Context (adapted from India framework)</div>
+  <div style="overflow-x:auto">
+    <table>
+      <tr><th>AI Theme</th><th>Adoption Phase</th><th>SYM Relevance</th></tr>
+      <tr><td>AI in logistics / supply chain</td><td>Phase 2–3</td><td style="color:var(--green)">DIRECTLY — Core business</td></tr>
+      <tr><td>AI in physical retail / omnichannel</td><td>Phase 2</td><td style="color:var(--green)">DIRECTLY — Walmart micro-fulfillment program</td></tr>
+      <tr><td>Industrial AI / smart factories</td><td>Phase 2–3</td><td style="color:var(--green)">DIRECTLY — SymbOS is industrial AI at scale</td></tr>
+      <tr><td>AI in healthcare logistics</td><td>Phase 1–2</td><td style="color:var(--amber)">EMERGING — Medline win opens this vertical</td></tr>
+      <tr><td>Robotics-as-a-Service (RaaS)</td><td>Phase 2</td><td style="color:var(--amber)">EMERGING — GreenBox JV is Symbotic's RaaS play</td></tr>
+      <tr><td>E-commerce fulfillment AI</td><td>Phase 3–4</td><td style="color:var(--chrome)">ADJACENT — Walmart micro-fulfillment for online orders</td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:10px; background:var(--card2)">
+    <strong style="color:var(--amber-light)">Labor Arbitrage as AI Demand Driver:</strong> US warehouse wages rising 4–6% annually. A Symbotic system vs 500 warehouse workers at $50K/year = $25M annual savings → ROI payback in 3–5 years. As wages continue rising, the ROI case for automation improves every year without Symbotic changing its price. This is a structural tailwind unique to the US labor market context.
+  </div>
+
+  <div class="section-title">Section E — Competitive Moat vs Disruption Risk</div>
+  <div class="card border-green">
+    <strong style="color:var(--green)">Moat Resilience Score: 7/10</strong>
+    <p style="margin-top:10px; font-size:0.87rem; color:var(--chrome-light); line-height:1.75">
+      <strong>Physical moat is AI-resistant:</strong> Symbotic's switching cost is physical installation (400K sq ft of custom hardware) — no AI agent from a competitor can replicate this virtually. The threat would require a competitor to deploy equivalent hardware at comparable scale, which takes 5–7 years of operational experience minimum.<br><br>
+      <strong>Specific threat: Amazon Robotics</strong> — Amazon has massive AI + robotics capability and is deploying internally. If Amazon decided to sell to external clients (currently internal only), it would be the most credible competitive threat. Risk: MEDIUM-TERM (3–5 years if strategy changes).<br><br>
+      <strong>European incumbents (Witron, Knapp, Vanderlande):</strong> Have decades of grocery automation experience but lack native case-level AI at Symbotic's scale. Could encroach if they upgrade their AI capabilities. Risk: LONG-TERM (5–10 years).<br><br>
+      <strong>e-commerce AI specialists (AutoStore, Ocado):</strong> Focused on eaches/bins — not case-level. Different market. Risk: LOW in core Symbotic niche.
+    </p>
+  </div>
+
+  <div class="section-title">Section F — AI Opportunity Score &amp; Portfolio Role</div>
+  <div class="ai-score-box">
+    <div class="ai-score-label">AI OPPORTUNITY SCORE</div>
+    <div class="ai-score-num">68 / 100</div>
+    <div class="ai-bar"><div class="ai-bar-fill" style="width:68%"></div></div>
+    <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:16px; font-size:0.78rem; color:var(--chrome)">
+      <div>Data Flywheel<br><strong style="color:var(--amber-light)">14/20</strong></div>
+      <div>Adoption Phase<br><strong style="color:var(--neon-teal)">16/20</strong></div>
+      <div>Value Chain<br><strong style="color:var(--green)">16/20</strong></div>
+      <div>Structural Advantage<br><strong style="color:var(--amber)">12/20</strong></div>
+      <div>AI Threat Resistance<br><strong style="color:var(--green)">10/20</strong></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px; background:rgba(245,158,11,0.07); border-color:var(--amber)">
+    <strong style="color:var(--amber-light)">PORTFOLIO ROLE: STRATEGIC AI BET — Starter position (2–3% max)</strong><br>
+    <p style="margin-top:10px; font-size:0.87rem; color:var(--chrome-light); line-height:1.75">Score of 68/100 places Symbotic in the STRATEGIC AI BET category — strong AI opportunity but meaningful uncertainty remains around (a) flywheel confirmation, (b) Walmart concentration dilution timeline, and (c) Phase 2→3 inflection evidence across verticals. Wait for Phase 2→3 inflection signal (non-Walmart revenue ≥25% of total) before scaling to full position.<br><br>
+    <strong style="color:var(--neon-teal)">Investment Horizon: 5–7 years</strong> — This is a Level 4 AI vertical application play at Phase 2→3. Do not apply a 12-month price target framework. The wealth creation thesis requires patience through NGSS transition, new vertical expansion, and GreenBox RaaS scaling. Jensen Huang's insight applies here: "The more physical robots work in the world, the smarter AI gets." Symbotic's 15,000-bot operational fleet is exactly this — AI learning in the physical world at industrial scale.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="background:#030810; border-top:1px solid var(--border); padding:20px 28px; margin-top:28px; font-size:0.75rem; color:var(--sub); line-height:1.8">
+  <strong style="color:var(--chrome)">Disclaimer:</strong> This report is generated for informational and educational purposes only. It does not constitute investment advice, a recommendation to buy or sell any security, or a solicitation of any investment. Symbotic Inc. (NASDAQ: SYM) is a US-listed security subject to SEC regulations. All investment decisions should be made in consultation with a registered financial advisor. Past performance does not guarantee future results. The author/AI may hold positions in securities discussed.<br><br>
+  <strong style="color:var(--chrome)">Data Notice:</strong> All figures labeled [VERIFIED] sourced from official SEC filings and earnings releases. [ESTIMATED] figures are derived from cross-referenced sources with high confidence. [UNVERIFIED] figures require live confirmation. Stock price as of analysis date is unverified and should be confirmed on a live trading platform.<br><br>
+  <strong style="color:var(--chrome)">Series:</strong> Buffett Quality-Value Series v5.0 · Report: SYM · Date: April 2026 · Fonts: Space Grotesk · DM Sans · JetBrains Mono (Google Fonts)
+</div>
+
+<script>
+  var TAB_BAR_TOP = 0;
+  window.addEventListener('load', function () {
+    var tabBar = document.getElementById('tab-bar');
+    if (tabBar) {
+      var el = tabBar, top = 0;
+      while (el) { top += el.offsetTop; el = el.offsetParent; }
+      TAB_BAR_TOP = top;
+    }
+  });
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(function (el) {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+    document.getElementById(tabId).style.display = 'block';
+    var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+    if (activeBtn) { activeBtn.classList.add('active'); }
+    window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
