@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDSL — Buffett Quality-Value Series v5.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #0B2545;
+    --navy-deep: #081B33;
+    --gold: #C9962B;
+    --gold-light: #E0B65C;
+    --parchment: #F6F1E3;
+    --parchment-card: #FFFDF7;
+    --ink: #1B2430;
+    --muted: #6A80A0;
+    --green: #1F7A4D;
+    --green-bg: #E7F4EC;
+    --amber: #B07B12;
+    --amber-bg: #FBF1DD;
+    --red: #B23A33;
+    --red-bg: #FBEAE8;
+    --line: #E3D9BF;
+    --shadow: 0 2px 14px rgba(11,37,69,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--parchment); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; font-size:16px; font-weight:400; line-height:1.55;
+  }
+  h1,h2,h3,h4{font-family:'Inter',system-ui,sans-serif; font-weight:700; color:var(--navy); margin:0 0 10px 0;}
+  .mono, .data, td.num, .metric-val, .pill{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--navy);}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 20px;}
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, #123459 100%);
+    color:#F4EFE2; padding:26px 0 18px 0; max-height:240px;
+    border-bottom:4px solid var(--gold);
+  }
+  .hero-top{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;}
+  .hero-co{font-size:30px; font-weight:800; letter-spacing:-0.5px; color:#FBF7EC;}
+  .hero-ticker{font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--gold-light); margin-top:2px;}
+  .hero-lede{font-size:14.5px; color:#CBD6E6; max-width:640px; margin-top:8px; font-weight:400;}
+  .verdict-badge{
+    background:#1A2F22; border:2px solid #3E8A5C; color:#9FE0B8;
+    padding:10px 18px; border-radius:8px; text-align:center; font-weight:700;
+    font-family:'JetBrains Mono',monospace; min-width:170px;
+  }
+  .verdict-badge.pass{background:#3A2A12; border-color:var(--gold); color:var(--gold-light);}
+  .verdict-badge .vlabel{font-size:18px; letter-spacing:0.5px;}
+  .verdict-badge .vsub{font-size:11px; color:#D8C396; margin-top:4px; font-weight:500;}
+  .badge-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;}
+  .badge{
+    padding:6px 12px; border-radius:20px; font-size:12.5px; font-weight:600;
+    border:1px solid rgba(255,255,255,0.25); background:rgba(255,255,255,0.07); color:#EDE6D4;
+  }
+  .badge.cat{border-color:var(--gold); color:var(--gold-light); background:rgba(201,150,43,0.12);}
+  .badge.ai-neutral{border-color:#9AA7B8; color:#C9D2DE;}
+  .badge.macro{border-color:#6FB58A; color:#9FE0B8;}
+  .pill-row{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;}
+  .pill{font-size:10.5px; padding:3px 8px; border-radius:5px; font-weight:600;}
+  .pill.verified{background:#16321F; color:#7FD89E; border:1px solid #2E6B45;}
+  .pill.estimated{background:#3A2C0C; color:#E0B65C; border:1px solid #7A5A14;}
+  .pill.unverified{background:#3A1414; color:#E08A82; border:1px solid #7A2E2E;}
+
+  /* TAB BAR */
+  #tab-bar{
+    background:var(--navy-deep); position:sticky; top:0; z-index:50; overflow-x:auto;
+    border-bottom:3px solid var(--gold); box-shadow:0 2px 10px rgba(0,0,0,0.2);
+  }
+  .tab-row{display:flex; min-width:max-content;}
+  .tab-btn{
+    background:none; border:none; color:#AEBBCC; padding:13px 16px; font-size:13px;
+    font-family:'Inter',sans-serif; font-weight:600; cursor:pointer; white-space:nowrap;
+    border-bottom:3px solid transparent; transition:all 0.15s;
+  }
+  .tab-btn:hover{color:#F4EFE2; background:rgba(255,255,255,0.04);}
+  .tab-btn.active{color:var(--gold-light); border-bottom:3px solid var(--gold); background:rgba(201,150,43,0.08);}
+
+  .tab-content{display:none; padding:28px 0 50px 0;}
+  .section-title{font-size:22px; border-bottom:2px solid var(--line); padding-bottom:10px; margin-bottom:18px;}
+  .section-sub{font-size:15px; color:var(--muted); font-weight:500; margin:-12px 0 18px 0;}
+
+  .card{
+    background:var(--parchment-card); border:1px solid var(--line); border-radius:10px;
+    padding:18px 20px; box-shadow:var(--shadow); margin-bottom:18px;
+  }
+  .card-title{font-size:15px; font-weight:700; color:var(--navy); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.4px;}
+
+  .grid{display:grid; gap:14px;}
+  .grid-2{grid-template-columns:repeat(2,1fr);}
+  .grid-3{grid-template-columns:repeat(3,1fr);}
+  .grid-4{grid-template-columns:repeat(4,1fr);}
+  @media(max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr);} .grid-3{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:680px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .metric{
+    background:var(--parchment-card); border:1px solid var(--line); border-left:4px solid var(--navy);
+    border-radius:8px; padding:13px 15px;
+  }
+  .metric.good{border-left-color:var(--green);}
+  .metric.warn{border-left-color:var(--amber);}
+  .metric.bad{border-left-color:var(--red);}
+  .metric-label{font-size:11.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.3px;}
+  .metric-val{font-size:21px; font-weight:700; color:var(--navy); margin-top:4px;}
+  .metric-note{font-size:11.5px; color:var(--muted); margin-top:3px;}
+
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  th{background:var(--navy); color:#F4EFE2; padding:9px 10px; text-align:left; font-weight:600; font-size:12.5px;}
+  td{padding:8px 10px; border-bottom:1px solid var(--line);}
+  td.num{text-align:right; font-weight:500;}
+  tr:nth-child(even) td{background:rgba(201,150,43,0.04);}
+  .tbl-wrap{overflow-x:auto; border-radius:8px; border:1px solid var(--line);}
+
+  .status-pass{color:var(--green); font-weight:700;}
+  .status-marginal{color:var(--amber); font-weight:700;}
+  .status-fail{color:var(--red); font-weight:700;}
+
+  .scorecard-item{display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--line); font-size:13.5px;}
+  .scorecard-item:last-child{border-bottom:none;}
+  .check{font-weight:700; padding:2px 9px; border-radius:5px; font-size:12px; font-family:'JetBrains Mono',monospace;}
+  .check.pass{background:var(--green-bg); color:var(--green);}
+  .check.marginal{background:var(--amber-bg); color:var(--amber);}
+  .check.fail{background:var(--red-bg); color:var(--red);}
+
+  .stars{color:var(--gold); font-size:16px; letter-spacing:1px;}
+  .quote-box{
+    background:var(--navy-deep); color:#E8E0CB; padding:20px 24px; border-radius:10px;
+    border-left:5px solid var(--gold); font-style:italic; font-size:15px; margin:16px 0;
+  }
+  .quote-box cite{display:block; font-style:normal; font-size:12.5px; color:var(--gold-light); margin-top:10px; font-weight:600;}
+
+  .upgrade-cond{display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line);}
+  .upgrade-cond:last-child{border-bottom:none;}
+  .cond-num{
+    background:var(--gold); color:var(--navy-deep); font-weight:800; min-width:26px; height:26px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-family:'JetBrains Mono',monospace;
+  }
+  .footer{background:var(--navy-deep); color:#9AA7B8; padding:26px 0; font-size:12px; line-height:1.7; margin-top:30px;}
+  .footer .wrap{max-width:1180px;}
+  .footer b{color:#D8C396;}
+
+  .moat-card{border:1px solid var(--line); border-radius:8px; padding:14px 16px; background:var(--parchment-card);}
+  .moat-stars{color:var(--gold); font-size:15px;}
+  .flywheel-box{
+    background:linear-gradient(135deg, #1A2F46, #0B2545); color:#EDE6D4; border-radius:12px;
+    padding:22px 24px; border:2px solid var(--gold);
+  }
+  .flywheel-box .ftitle{font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--gold-light); font-weight:700;}
+  .flywheel-score{font-size:42px; font-weight:800; font-family:'JetBrains Mono',monospace; color:#F4EFE2;}
+
+  .gauge-bar{height:10px; background:var(--line); border-radius:6px; overflow:hidden; margin-top:6px;}
+  .gauge-fill{height:100%; border-radius:6px;}
+
+  .framework-note{
+    background:var(--amber-bg); border:1px solid #D9B45C; border-left:5px solid var(--amber);
+    border-radius:8px; padding:14px 18px; font-size:13.5px; margin-bottom:18px;
+  }
+  .framework-note b{color:#8A5C0C;}
+
+  ul.clean{margin:6px 0; padding-left:20px;}
+  ul.clean li{margin-bottom:6px;}
+
+  .ai-dash{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;}
+  .ai-dash .badge{font-size:13px; padding:8px 14px;}
+
+  @media(max-width:680px){
+    .hero-co{font-size:23px;} .hero{max-height:none;}
+    .grid-2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <div>
+        <div class="hero-co">Central Depository Services (India) Ltd</div>
+        <div class="hero-ticker">NSE: CDSL · BSE: 532323 · Capital Markets Infrastructure (MII) · Buffett Quality-Value Series v5.0</div>
+        <div class="hero-lede">Asia's first listed depository, running a SEBI-regulated duopoly in Indian securities dematerialisation — exceptional structural moat, but priced today at a level the owner-earnings framework cannot justify.</div>
+      </div>
+      <div class="verdict-badge pass">
+        <div class="vlabel">PASS</div>
+        <div class="vsub">Quality strong · Price extreme</div>
+      </div>
+    </div>
+    <div class="badge-row">
+      <span class="badge cat">CATEGORY C — Mature Quality Compounder (MII adaptation)</span>
+      <span class="badge ai-neutral">⚪ AI OVERLAY: NEUTRAL</span>
+      <span class="badge macro">MACRO: Tailwind (financialisation) / Headwind (fee regulation)</span>
+    </div>
+    <div class="pill-row">
+      <span class="pill verified">[VERIFIED] Live price · Q4 FY26 results · Screener.in</span>
+      <span class="pill estimated">[ESTIMATED] Owner earnings · maintenance capex split · sector CAGR</span>
+      <span class="pill unverified">[UNVERIFIED] FY26 working-capital-day anomaly</span>
+    </div>
+  </div>
+</div>
+
+<div id="tab-bar">
+  <div class="wrap">
+    <div class="tab-row">
+      <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+      <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro &amp; Growth</button>
+      <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+      <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+      <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+      <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+      <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+      <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+      <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+      <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ================= TAB 0 — OVERVIEW ================= -->
+<div class="tab-content" id="tab0" style="display:block;">
+  <div class="section-title">Overview</div>
+
+  <div class="framework-note">
+    <b>Framework adaptation flagged:</b> CDSL is a Market Infrastructure Institution (MII) — a SEBI-licensed depository, not a bank, NBFC, or FMCG name. The standard sector-CAGR table has no "Depositories" row, so Tab 1's growth derivation is built bespoke from demat-account penetration, assets-in-custody growth and transaction-linked fee revenue, cross-checked against the Private Banking/NBFC macro-sensitivity lens (regulated-fee, financialisation-driven franchise). EPV growth-premium is held at 1.0x (no AI-widener uplift applied) since the AI Overlay grades NEUTRAL, not WIDENER.
+  </div>
+
+  <div class="card">
+    <div class="card-title">Business Overview</div>
+    <p>Central Depository Services (India) Limited operates one of only two licensed securities depositories in India — a structural duopoly with CDSL holding roughly 73–76% share of retail demat accounts (NSDL is institutional/custody-value weighted). CDSL converts physical securities into electronic form and provides settlement, KYC (via subsidiary CVL), e-Voting, e-Locker and insurance/commodity repository services to over 18 crore cumulative demat accounts and 585+ depository participants. The business is regulator-priced (SEBI sets and caps most fee lines), debt-free, and has historically converted >100% of net income into operating cash flow.</p>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="metric good">
+      <div class="metric-label">Market Cap</div>
+      <div class="metric-val">₹28,639 Cr</div>
+      <div class="metric-note">Price ₹1,370.30 · 20.9 Cr shares</div>
+    </div>
+    <div class="metric warn">
+      <div class="metric-label">P/E (TTM)</div>
+      <div class="metric-val">62.8x</div>
+      <div class="metric-note">vs ~44x 5yr avg [ESTIMATED]</div>
+    </div>
+    <div class="metric good">
+      <div class="metric-label">ROCE (5yr avg)</div>
+      <div class="metric-val">36.8%</div>
+      <div class="metric-note">Latest yr 32.0%</div>
+    </div>
+    <div class="metric bad">
+      <div class="metric-label">Net Profit TTM Growth</div>
+      <div class="metric-val">-13.5%</div>
+      <div class="metric-note">FY26 ₹455 Cr vs FY25 ₹526 Cr</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Series Rationale — Why This Stock, Why Now</div>
+    <ul class="clean">
+      <li><b>Regulatory-moat duopoly:</b> only two entities in India hold an MII depository licence; switching costs for issuers, DPs and investors are structurally high, and CDSL's retail dominance (76% account share) is effectively un-contestable in the medium term.</li>
+      <li><b>A live margin-of-safety test case:</b> the stock has fallen ~32% from its Dec-2024 all-time high of ₹1,989.80 to a March-2026 low of ₹1,047, then rallied ~31% off that low to ₹1,370 — yet trailing P/E remains 62.8x against declining TTM earnings. This is the textbook Buffett tension between business quality and price discipline.</li>
+      <li><b>Regulatory fee-cut episode in real time:</b> SEBI cut CVL's KYC "fetch" charge 20% (₹35→₹28) effective 1-Apr-2026, an estimated 5–6% EBITDA hit — a clean, live illustration of the pricing-power ceiling that a regulated MII franchise operates under, regardless of moat strength.</li>
+      <li><b>AI angle is structural, not yet commercial:</b> CDSL sits on a uniquely large proprietary KYC/transaction dataset (18+ crore accounts) but has not yet converted this into a confirmed AI data flywheel — it is best understood today as a latent option, not a priced-in driver.</li>
+      <li><b>No framework-breaking adaptation needed</b> beyond the bespoke sector-growth derivation noted above; standard Category C mechanics (5-method valuation, O'Glove earnings-quality tests, Financial Fortress checklist) apply cleanly.</li>
+    </ul>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title">What Makes This Interesting</div>
+      <ul class="clean">
+        <li>Genuine two-player regulatory moat with near-zero debt and >100% cash conversion of net income across the cycle</li>
+        <li><10% of India's population currently holds a demat account (company's own claim) — long structural runway for account growth</li>
+        <li>Diversifying revenue base: insurance repository (Centrico) and commodity warehousing are early-stage but additive</li>
+        <li>March-31 folio count is an annual pricing-lock event — a heavy FY26 IPO season could boost FY27 billing irrespective of near-term volatility</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">What Makes This Challenging</div>
+      <ul class="clean">
+        <li>SEBI sets/caps the fee schedule — pricing power is structurally capped, and the regulator just cut fees, not raised them</li>
+        <li>Three of the last four quarters showed YoY profit declines; OPM compressed from 58% (FY25) to 51% (FY26), 44% in Q4 FY26 alone</li>
+        <li>Operating expenditure (tech/cybersecurity capex) is growing faster than revenue with no disclosed ceiling per management commentary</li>
+        <li>Revenue has a meaningful cyclical/transactional component (IPO activity, corporate actions, market turnover) layered on top of the recurring AMC base</li>
+        <li>NSDL's 2025/26 listing gives investors a direct, liquid peer comparison for the first time, increasing scrutiny on CDSL's premium multiple</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- END TAB 0 -->
+<!-- ================= TAB 1 — MACRO & GROWTH ================= -->
+<div class="tab-content" id="tab1">
+  <div class="section-title">Macro &amp; Growth</div>
+  <div class="section-sub">Growth assumptions are derived outside-in from macro anchors — not asserted. [VERIFIED] live macro pulls, 19–21 Jun 2026.</div>
+
+  <div class="card">
+    <div class="card-title">Macro Cycle Status Dashboard</div>
+    <div class="grid grid-3">
+      <div class="metric good"><div class="metric-label">10Y G-Sec Yield</div><div class="metric-val">6.85%</div><div class="metric-note">19-Jun-26 · 3-month low, FII inflows $2.2bn/10 sessions</div></div>
+      <div class="metric good"><div class="metric-label">RBI Repo Rate</div><div class="metric-val">5.25%</div><div class="metric-note">Neutral stance, cut 25bps late-2025</div></div>
+      <div class="metric good"><div class="metric-label">India Real GDP (FY26)</div><div class="metric-val">~7.6–7.7%</div><div class="metric-note">Fastest since FY22; fastest-growing G20 economy</div></div>
+      <div class="metric warn"><div class="metric-label">CPI Inflation</div><div class="metric-val">~0.7–2.1%</div><div class="metric-note">Abnormally low (Oct'25 print ~0.25%); RBI 4%±2% target used for terminal-g normalisation</div></div>
+      <div class="metric"><div class="metric-label">Nominal GDP Ceiling (normalised)</div><div class="metric-val">~10–11%</div><div class="metric-note">Real ~6.5–7.5% trend + CPI 4% target, not the transient low print</div></div>
+      <div class="metric good"><div class="metric-label">Nifty 50 P/E</div><div class="metric-val">20.8x</div><div class="metric-note">vs 10yr avg ~22.4–23.4x — fairly valued market</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Six-Dimension Macro Cycle Table</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Dimension</th><th>Status</th><th>Read-through for CDSL</th></tr>
+      <tr><td>Rural Income Cycle</td><td><span class="status-pass">Neutral/Tailwind</span></td><td>Indirect only — CDSL is capital-markets, not consumption-linked</td></tr>
+      <tr><td>Urban Consumption / Wealth</td><td><span class="status-pass">Tailwind</span></td><td>Rising urban wealth feeds equity/MF participation and new demat accounts</td></tr>
+      <tr><td>Input Cost Cycle</td><td><span class="status-marginal">Neutral</span></td><td>Largely irrelevant — CDSL's cost base is technology/people, not commodities</td></tr>
+      <tr><td>RBI Rate Cycle</td><td><span class="status-pass">Easing/Neutral</span></td><td>Lower bond yields + easier liquidity historically support equity participation &amp; turnover</td></tr>
+      <tr><td>Government Capex Cycle</td><td><span class="status-pass">Tailwind</span></td><td>Front-loaded capex supports corporate earnings → IPO pipeline → CDSL folio/account growth</td></tr>
+      <tr><td>AI Adoption Cycle</td><td><span class="status-marginal">Neutral, Phase 2</span></td><td>AI used for internal risk/KYC analytics; not yet a revenue lever — see Tab 9</td></tr>
+    </table></div>
+    <p style="margin-top:10px; font-size:13.5px;"><b>Macro Composite: TAILWIND</b> (broad financialisation of Indian household savings, benign rates, fastest-growing G20 economy) offset by a <b>company-specific regulatory headwind</b> (SEBI fee-cut cycle) that the macro composite does not capture. <b>AI Cycle Impact: NEUTRAL</b> — efficiency tool today, not yet a growth or disruption vector.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Layer 2 — Sector Growth Derivation (bespoke: no standard "Depositories" row)</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Driver</th><th>Stress</th><th>Base</th><th>Accel</th><th>AI Impact</th></tr>
+      <tr><td>Demat account growth (industry)</td><td>3–5%</td><td>10–14%</td><td>18–22%</td><td>NEUTRAL</td></tr>
+      <tr><td>Assets-in-custody / AUC growth</td><td>4–6%</td><td>12–16%</td><td>20–25%</td><td>NEUTRAL</td></tr>
+      <tr><td>Transaction &amp; IPO-linked fee income</td><td>-10–0%</td><td>8–15%</td><td>25–35%</td><td>NEUTRAL</td></tr>
+      <tr><td><b>Blended bespoke sector CAGR</b></td><td><b>5–8%</b></td><td><b>12–15%</b></td><td><b>18–22%</b></td><td><b>NEUTRAL</b></td></tr>
+    </table></div>
+    <p style="margin-top:10px; font-size:13px; color:var(--muted);">[ESTIMATED] Cross-checked against third-party "Capital Markets industry India" consensus forecast of ~16–17% revenue CAGR (Simply Wall St) and CDSL's own analyst-consensus revenue CAGR of ~11–12% for the next 3 years — company-specific estimate trails the broader industry forecast given the live fee-cut and cost-growth headwinds.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Layer 3 — Company Alpha Over Sector</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+      <tr><td>Market share gain (retail demat)</td><td>Exhausted</td><td>+0–1%</td><td>+0%</td></tr>
+      <tr><td>Premiumisation</td><td>N/A (fee-regulated model)</td><td>0%</td><td>0%</td></tr>
+      <tr><td>Category/product expansion (Centrico insurance repo, commodity repo, e-Locker)</td><td>Active</td><td>+1–2%</td><td>+2–4%</td></tr>
+      <tr><td>Geographic expansion</td><td>N/A (India-licensed MII)</td><td>0%</td><td>0%</td></tr>
+      <tr><td>Pricing power above inflation</td><td><span class="status-fail">Negative currently</span> — SEBI cut, not raised, fees</td><td>-2–0%</td><td>0–1% (if pending hike approved)</td></tr>
+      <tr><td>AI alpha (6a+6b+6c)</td><td>Feature-stage</td><td>+0–1%</td><td>+1–2%</td></tr>
+      <tr><td><b>Total Alpha</b></td><td>—</td><td><b>-1 to +3%</b></td><td><b>+3 to +6%</b></td></tr>
+    </table></div>
+    <p style="margin-top:8px; font-size:13px; color:var(--muted);">Note: unlike most QV Series names, the pricing-power lever is currently a <b>drag</b>, not a tailwind — the regulator cut KYC fetch charges 20% in the same period this report is written. This is explicitly factored into the Base-case Stage-1 growth assumption below.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Growth Rate Summary Table (3 Scenarios)</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr>
+      <tr><td>Macro state</td><td>GDP ~5.5%, fee cuts persist</td><td>GDP ~6.8–7%, normalised cycle</td><td>GDP ~8%+, IPO supercycle</td></tr>
+      <tr><td>Sector growth</td><td>5–8%</td><td>12–15%</td><td>18–22%</td></tr>
+      <tr><td>Company alpha</td><td>-1%</td><td>+1%</td><td>+3%</td></tr>
+      <tr><td>Stage 1 Owner Earnings CAGR (Yr1–5)</td><td class="num">6%</td><td class="num">13%</td><td class="num">20%</td></tr>
+      <tr><td>Stage 2 CAGR (Yr6–10)</td><td class="num">5%</td><td class="num">10%</td><td class="num">14%</td></tr>
+      <tr><td>Terminal growth</td><td class="num">5%</td><td class="num">7%</td><td class="num">8%</td></tr>
+      <tr><td>Margin direction</td><td>Compress further (fee cuts + capex)</td><td>Stabilise post-FY27 fee resolution</td><td>Expand (operating leverage returns)</td></tr>
+      <tr><td>Key risk</td><td>Further SEBI fee caps; IPO drought</td><td>Cost growth keeps outpacing revenue</td><td>Fee hike approved + IPO boom + Centrico scales</td></tr>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Sensitivity Check</div>
+    <p>A 1% change in terminal growth rate changes Base-case DCF intrinsic value by approximately <b>0%</b> at the current terminal-P/E-anchored methodology (terminal value is capitalised via exit P/E, not a perpetuity formula, so it is largely insensitive to the terminal-g input in isolation).<br>
+    A 1% change in Stage 1 (Yr1–5) growth changes Base-case DCF intrinsic value by approximately <b>±4.2%</b> (₹604 → ₹630 on +1pp, ₹604 → ₹580 on −1pp).<br>
+    A 1% change in WACC changes Base-case DCF intrinsic value by approximately <b>∓7%</b> (₹604 → ₹562 on +1pp WACC, ₹604 → ₹651 on −1pp).</p>
+  </div>
+</div>
+<!-- END TAB 1 -->
+<!-- ================= TAB 2 — FINANCIALS ================= -->
+<div class="tab-content" id="tab2">
+  <div class="section-title">Financials</div>
+  <div class="section-sub">Category A/B/C/D track: ROE/ROIC, Financial Fortress scorecard, Owner Earnings, O'Glove earnings-quality tests.</div>
+
+  <div class="card">
+    <div class="card-title">5-Year Revenue, Profit &amp; Margin Trend (Consolidated, ₹ Cr)</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>FY</th><th class="num">Sales</th><th class="num">Op. Profit</th><th class="num">OPM%</th><th class="num">Net Profit</th><th class="num">EPS (₹)</th><th class="num">ROCE%</th></tr>
+      <tr><td>FY22</td><td class="num">551</td><td class="num">365</td><td class="num">66%</td><td class="num">312</td><td class="num">14.89</td><td class="num">40%</td></tr>
+      <tr><td>FY23</td><td class="num">555</td><td class="num">319</td><td class="num">57%</td><td class="num">276</td><td class="num">13.20</td><td class="num">30%</td></tr>
+      <tr><td>FY24</td><td class="num">812</td><td class="num">488</td><td class="num">60%</td><td class="num">420</td><td class="num">20.05</td><td class="num">40%</td></tr>
+      <tr><td>FY25</td><td class="num">1,082</td><td class="num">625</td><td class="num">58%</td><td class="num">526</td><td class="num">25.20</td><td class="num">42%</td></tr>
+      <tr><td><b>FY26</b></td><td class="num"><b>1,145</b></td><td class="num"><b>582</b></td><td class="num"><b>51%</b></td><td class="num"><b>455</b></td><td class="num"><b>21.82</b></td><td class="num"><b>32%</b></td></tr>
+    </table></div>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px;">5yr Sales CAGR 27% · 5yr Profit CAGR 18% · TTM Sales growth +6% · <span style="color:var(--red); font-weight:600;">TTM Profit growth -13%</span> [VERIFIED — Screener.in consolidated]</p>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title">Quarterly Trend FY26 — The Margin Compression Story</div>
+      <div class="tbl-wrap"><table>
+        <tr><th>Qtr</th><th class="num">Sales</th><th class="num">OPM%</th><th class="num">Net Profit</th><th class="num">YoY</th></tr>
+        <tr><td>Q4 FY25</td><td class="num">224</td><td class="num">49%</td><td class="num">100</td><td class="num">—</td></tr>
+        <tr><td>Q1 FY26</td><td class="num">259</td><td class="num">50%</td><td class="num">102</td><td class="num status-fail">-23.7%</td></tr>
+        <tr><td>Q2 FY26</td><td class="num">319</td><td class="num">55%</td><td class="num">140</td><td class="num">—</td></tr>
+        <tr><td>Q3 FY26</td><td class="num">304</td><td class="num">52%</td><td class="num">133</td><td class="num">—</td></tr>
+        <tr><td>Q4 FY26</td><td class="num">263</td><td class="num status-fail">44%</td><td class="num">80</td><td class="num status-fail">-20.0%</td></tr>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Return Ratios (5yr / 10yr)</div>
+      <div class="grid grid-2">
+        <div class="metric good"><div class="metric-label">ROE 5yr Avg</div><div class="metric-val">29%</div></div>
+        <div class="metric good"><div class="metric-label">ROE 10yr Avg</div><div class="metric-val">26%</div></div>
+        <div class="metric warn"><div class="metric-label">ROE Latest</div><div class="metric-val">24.5%</div></div>
+        <div class="metric good"><div class="metric-label">ROCE 5yr Avg</div><div class="metric-val">36.8%</div></div>
+      </div>
+      <p style="font-size:13px; margin-top:10px;">ROCE trend: 40% → 30% → 40% → 42% → <span style="color:var(--amber); font-weight:600;">32%</span>. Sits in the "wide moat" 20–40% band on a 5yr-average basis, but the FY26 dip is real and regulator-driven, not cyclical noise alone.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Owner Earnings (FY26 base year)</div>
+    <div class="grid grid-4">
+      <div class="metric"><div class="metric-label">Net Income</div><div class="metric-val">₹455 Cr</div></div>
+      <div class="metric"><div class="metric-label">+ D&amp;A</div><div class="metric-val">₹66 Cr</div></div>
+      <div class="metric warn"><div class="metric-label">− Maintenance Capex [EST]</div><div class="metric-val">₹55 Cr</div><div class="metric-note">45% of ~₹122Cr gross capex; rest classed growth/tech capex</div></div>
+      <div class="metric good"><div class="metric-label">= Owner Earnings</div><div class="metric-val">₹466 Cr</div><div class="metric-note">₹22.30/share</div></div>
+    </div>
+    <p style="font-size:13px; color:var(--muted); margin-top:10px;">Owner Earnings (₹466 Cr) sits modestly above reported Net Income (₹455 Cr) — passes the "Owner Earnings ≥ Net Income" Financial Fortress test. The maintenance/growth capex split is [ESTIMATED]: management has explicitly flagged an undisclosed-ceiling technology/cybersecurity capex programme ("build the road before the cars arrive"), which this report conservatively treats as 55% growth capex.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Financial Fortress Scorecard</div>
+    <div class="scorecard-item"><span>ROE ≥15% for 5 consecutive years</span><span class="check pass">PASS</span></div>
+    <div class="scorecard-item"><span>ROIC &gt; WACC for 5 consecutive years</span><span class="check pass">PASS</span></div>
+    <div class="scorecard-item"><span>Net cash preferred (debt-free)</span><span class="check pass">PASS</span></div>
+    <div class="scorecard-item"><span>Net profit margin ≥15%</span><span class="check pass">PASS (37–48% range)</span></div>
+    <div class="scorecard-item"><span>FCF positive + growing, conversion ≥80% of NI</span><span class="check marginal">MARGINAL — conversion 102%, but FY26 FCF (₹346Cr) &lt; FY25 (₹387Cr)</span></div>
+    <div class="scorecard-item"><span>Owner earnings ≥ net income</span><span class="check pass">PASS</span></div>
+    <div class="scorecard-item"><span>Pricing power proven (raised prices without volume loss)</span><span class="check fail">FAIL — SEBI cut KYC fetch fee 20%, eff. 1-Apr-26; hike request pending, no timeline</span></div>
+    <div class="scorecard-item"><span>Revenue CAGR ≥ macro-derived sector CAGR</span><span class="check fail">FAIL — TTM +6% vs Base-case sector 12–15%</span></div>
+    <div class="scorecard-item"><span>Predictable/recurring revenue</span><span class="check marginal">MARGINAL — AMC/folio base recurring; IPO/transaction component cyclical</span></div>
+    <div class="scorecard-item"><span>Capital-light model (high ROIC, low reinvestment)</span><span class="check marginal">MARGINAL — historically yes, but capex/revenue ratio rising</span></div>
+    <div class="scorecard-item"><span>Dividend payout &lt;80% of owner earnings</span><span class="check pass">PASS — 58% FY26</span></div>
+    <p style="margin-top:14px; font-size:14px;"><b>Overall Financial Fortress grade: B / B+</b> — balance sheet and cash-conversion fundamentals remain excellent; current-period operating metrics (pricing power, revenue growth, margin) show genuine, regulator-driven strain.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Earnings Quality — O'Glove Framework</div>
+    <div class="grid grid-2">
+      <div class="moat-card"><b>Test 1 — FCF Conversion (5yr)</b><br><span class="check pass">PASS</span> — CFO/NI ranged 90–110%, FY26 102.6%, consistently ≥80%</div>
+      <div class="moat-card"><b>Test 2 — DSO Trend (3yr)</b><br><span class="check pass">PASS</span> — Debtor days 30→18→21, not rising &gt;10% YoY</div>
+      <div class="moat-card"><b>Test 3 — Inventory Days (3yr)</b><br><span class="check pass">N/A</span> — service business, no inventory</div>
+      <div class="moat-card"><b>Test 4 — Accounting Policy Stability</b><br><span class="check pass">PASS [ESTIMATED]</span> — no earnings-boosting policy changes flagged in available filings/news</div>
+      <div class="moat-card"><b>Test 5 — Gross/Op Margin Consistency (5yr)</b><br><span class="check marginal">MARGINAL</span> — OPM compressed 66%→51% over 5yrs; structurally explained (regulatory fee cuts + capex), not manipulation, but real</div>
+      <div class="moat-card" style="background:var(--amber-bg); border-color:#D9B45C;"><b>Flag — Working Capital Days</b><br><span class="check marginal">UNVERIFIED</span> — jumped from -57 days (FY25) to 200 days (FY26) per Screener; cause not disclosed in available sources, monitor next filing</div>
+    </div>
+    <p style="margin-top:14px; font-size:15px;"><b>Overall Earnings Quality Grade: <span style="color:var(--green);">ACCEPTABLE</span></b> — cash conversion and receivables discipline are clean; margin compression is real but explicable and disclosed. Not SUSPECT (no manipulation signature), so no automatic MoS-widening trigger from this test alone — though the working-capital anomaly above warrants a quarter-over-quarter watch.</p>
+  </div>
+</div>
+<!-- END TAB 2 -->
+<!-- ================= TAB 3 — MOAT ================= -->
+<div class="tab-content" id="tab3">
+  <div class="section-title">Economic Moat</div>
+
+  <div class="grid grid-2">
+    <div class="moat-card">
+      <div class="moat-stars">★★★★★</div>
+      <b>Regulatory licence (MII duopoly)</b>
+      <p style="font-size:13.5px; margin-top:6px;">Only two entities — CDSL and NSDL — hold a SEBI depository licence. No new entrant has been licensed since 1999/2000. This is the single strongest source of moat: it is not earned share, it is a closed regulatory gate.</p>
+    </div>
+    <div class="moat-card">
+      <div class="moat-stars">★★★★☆</div>
+      <b>Switching costs / network effects</b>
+      <p style="font-size:13.5px; margin-top:6px;">585+ depository participants, brokers and issuers are integrated into CDSL's systems; re-platforming an account base of 18+ crore investors to a rival depository is operationally and contractually prohibitive.</p>
+    </div>
+    <div class="moat-card">
+      <div class="moat-stars">★★★★☆</div>
+      <b>Efficient scale</b>
+      <p style="font-size:13.5px; margin-top:6px;">High fixed-cost, near-zero marginal-cost infrastructure (data centres, compliance systems) historically supported 55–66% operating margins — though FY26 shows this scale benefit is currently being offset by a step-up in tech/compliance spend.</p>
+    </div>
+    <div class="moat-card">
+      <div class="moat-stars">★★☆☆☆</div>
+      <b>Pricing power (the weak link)</b>
+      <p style="font-size:13.5px; margin-top:6px;">SEBI sets and caps almost the entire fee schedule. The regulator just cut KYC fetch charges 20% — this is a moat that protects market share completely but does not protect margin. Rate this distinctly lower than the other four sources.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ROIC as Moat Proof — 5-Year Trend</div>
+    <div class="gauge-bar"><div class="gauge-fill" style="width:73%; background:linear-gradient(90deg,#1F7A4D,#3E8A5C);"></div></div>
+    <p style="font-size:13.5px; margin-top:8px;">ROCE: 40% (FY22) → 30% (FY23) → 40% (FY24) → 42% (FY25) → <b>32% (FY26)</b>. 5yr average 36.8% sits in the "wide moat" 20–40% band — exceptional (&gt;40%) in three of five years, but not consistently so. The FY26 dip traces directly to the KYC fee cut and rising opex, not to competitive share loss.</p>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="ftitle">Data Flywheel Verdict</div>
+    <div style="display:flex; align-items:center; gap:24px; margin-top:10px; flex-wrap:wrap;">
+      <div>
+        <div class="flywheel-score">FEATURE</div>
+        <div style="font-size:13px; color:#C9D2DE;">1 of 3 criteria confirmed · Score ~3.5/10</div>
+      </div>
+      <div style="flex:1; min-width:240px;">
+        <table style="font-size:13px; color:#E8E0CB;">
+          <tr><td style="padding:4px 8px 4px 0;">✓ Proprietary data competitors can't replicate</td><td><b style="color:#9FE0B8;">TRUE</b></td></tr>
+          <tr><td style="padding:4px 8px 4px 0;">~ More data measurably improves AI accuracy</td><td><b style="color:#E0B65C;">PARTIAL / UNVERIFIED</b></td></tr>
+          <tr><td style="padding:4px 8px 4px 0;">✗ Better AI attracts more users (self-reinforcing loop)</td><td><b style="color:#E08A82;">NOT EVIDENCED</b></td></tr>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:13px; color:#C9D2DE; margin-top:12px;">CDSL's 18+ crore-account KYC and transaction dataset is genuinely exclusive (criterion 1, true by regulatory construction). It is used internally for fraud/AML risk analytics (criterion 2, plausible but not publicly quantified). But account growth is driven by IPO cycles and broker tie-ups, not by any AI-powered feature pulling in users (criterion 3, false). Per framework rules, all three must be true for CONFIRMED; with one true and one unproven, this scores FEATURE — a real but currently uncompounding data asset. No moat-grade upgrade applied.</p>
+  </div>
+
+  <div class="card" style="margin-top:18px;">
+    <div class="card-title">Macro Stress Test — Does the Moat Hold?</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Moat source</th><th>In a stress scenario</th><th>Justification</th></tr>
+      <tr><td>MII licence / duopoly</td><td><span class="status-pass">STRENGTHENS</span></td><td>Regulatory gates don't loosen in a downturn; if anything, compliance barriers rise</td></tr>
+      <tr><td>Switching costs / scale</td><td><span class="status-pass">HOLDS</span></td><td>Integration costs for DPs/issuers are fixed regardless of market cycle</td></tr>
+      <tr><td>Pricing power</td><td><span class="status-fail">WEAKENS</span></td><td>A weak market raises political/regulatory pressure to cut investor-facing fees further</td></tr>
+      <tr><td>Revenue durability</td><td><span class="status-marginal">WEAKENS (cyclically)</span></td><td>Transaction/IPO-linked fee income falls directly with market turnover and primary-issuance activity</td></tr>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Moat Threats</div>
+    <ul class="clean">
+      <li><b>Regulatory fee compression</b> is the dominant, live threat — not competition. SEBI can and does cut depository/KRA charges in the name of investor cost reduction.</li>
+      <li><b>NSDL's 2025/26 listing</b> creates a visible, liquid comparator for the first time, which could pressure CDSL's relative valuation premium even without any change to the underlying duopoly economics.</li>
+      <li><b>Cost discipline</b> — the open-ended technology/cybersecurity capex programme is a genuine governance watch-item; if margins don't recover once the build-out plateaus, the "efficient scale" moat source erodes.</li>
+    </ul>
+  </div>
+</div>
+<!-- END TAB 3 -->
+<!-- ================= TAB 4 — MANAGEMENT ================= -->
+<div class="tab-content" id="tab4">
+  <div class="section-title">Management Integrity</div>
+
+  <div class="grid grid-4">
+    <div class="metric good"><div class="metric-label">Promoter Pledge</div><div class="metric-val">0%</div><div class="metric-note">PASS — no pledge risk</div></div>
+    <div class="metric"><div class="metric-label">Promoter Holding</div><div class="metric-val">15.00%</div><div class="metric-note">BSE Ltd — institutional promoter</div></div>
+    <div class="metric warn"><div class="metric-label">Promoter Trend (3yr)</div><div class="metric-val">-5.0 pp</div><div class="metric-note">SEBI Minimum Public Shareholding norm — mandated, not discretionary</div></div>
+    <div class="metric good"><div class="metric-label">Dividend Payout</div><div class="metric-val">58%</div><div class="metric-note">Within &lt;80% of owner earnings guardrail</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Strengths</div>
+    <ul class="clean">
+      <li>Institutional promoter (BSE Ltd) rather than an individual/family promoter — materially lowers related-party and pledge risk relative to typical Indian small/midcap names</li>
+      <li>Zero pledge, near-zero debt, consistent dividend payer with a disciplined payout ratio (50–61% range over the past decade)</li>
+      <li>Transparent SEBI/MII governance regime — depositories operate under some of the heaviest disclosure and audit requirements in Indian capital markets</li>
+      <li>Counter-cyclical reinvestment: management is funding the technology/cybersecurity build-out through the current earnings air-pocket rather than cutting capex to protect near-term EPS — defensible long-term capital allocation, even if poorly communicated</li>
+      <li>Diversification moves (Centrico insurance repository, commodity warehousing) show willingness to build adjacent revenue lines rather than relying solely on the regulator-capped core fee schedule</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Concerns</div>
+    <ul class="clean">
+      <li><b>Capex communication discipline:</b> analysts have explicitly pushed back on the multi-year technology/cybersecurity spend programme having "no end date in sight and no cost ceiling disclosed" — a governance and guidance-quality gap, not a fraud flag</li>
+      <li><b>CVL (KRA subsidiary) drag:</b> revenue fell from ₹189 Cr to ₹132 Cr over 9M FY26 while expenses rose ₹83→₹90 Cr — management has not yet articulated a clear plan to right-size this subsidiary's cost base</li>
+      <li><b>Promoter dilution schedule</b> (BSE Ltd reducing stake to meet MPS norms) is a known, regulation-driven overhang on the float, not insider concern — but it does mean promoter buying is structurally unlikely as a positive signal in this name</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Capital Allocation</div>
+    <p>FY26 dividend of ₹12.75/share (58% payout) was maintained despite the profit decline, signalling confidence in the underlying franchise even through the earnings air-pocket. The bulk of incremental capital is being redirected into technology infrastructure and the early-stage Centrico/commodity-repository businesses rather than buybacks — a reasonable allocation stance for a company building toward the next decade of scale, though shareholders are reasonably asking for more visibility on when the capex-to-revenue ratio normalises.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Red-Flag Screen</div>
+    <div class="scorecard-item"><span>Fraud / regulatory action against the company</span><span class="check pass">NONE FOUND</span></div>
+    <div class="scorecard-item"><span>IT raids / tax disputes (material)</span><span class="check pass">NONE FOUND in available sources</span></div>
+    <div class="scorecard-item"><span>Related-party transactions (material, undisclosed)</span><span class="check pass">NONE FLAGGED</span></div>
+    <div class="scorecard-item"><span>Promoter pledge &gt;40% (automatic AVOID trigger)</span><span class="check pass">0% — trigger not applicable</span></div>
+  </div>
+
+  <p style="font-size:14px; font-weight:600; color:var(--navy);">Overall Management Integrity grade: B+ — institutionally clean, regulator-disciplined, but capex-guidance transparency is the area to watch.</p>
+</div>
+<!-- END TAB 4 -->
+<!-- ================= TAB 5 — VALUATION ================= -->
+<div class="tab-content" id="tab5">
+  <div class="section-title">Valuation &amp; Margin of Safety</div>
+  <div class="section-sub">Category C parameters: WACC 12–14% · Terminal P/E 18–22x · MoS entry ×0.70 of Base IV</div>
+
+  <div class="framework-note">
+    <b>Methodology note:</b> all five methods anchor off FY26 Owner Earnings of ₹466 Cr (₹22.30/share) or FY26 Net Income of ₹455 Cr — both reflect the regulator-driven margin compression already in the base, i.e. this is a conservative, not a peak-cycle, starting point. AI premium row is not applied (AI Overlay = NEUTRAL, not WIDENER).
+  </div>
+
+  <div class="card">
+    <div class="card-title">Method 1 — DCF (2-Stage)</div>
+    <div class="grid grid-3">
+      <div class="metric"><div class="metric-label">Stress</div><div class="metric-val">₹305</div><div class="metric-note">WACC 14% · Stage1 g 6% · Term P/E 15x</div></div>
+      <div class="metric good"><div class="metric-label">Base</div><div class="metric-val">₹604</div><div class="metric-note">WACC 13% · Stage1 g 13% · Term P/E 20x</div></div>
+      <div class="metric"><div class="metric-label">Accel</div><div class="metric-val">₹1,130</div><div class="metric-note">WACC 12% · Stage1 g 20% · Term P/E 24x</div></div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:12px;"><table>
+      <tr><th>Sensitivity (Base case)</th><th class="num">WACC 12%</th><th class="num">WACC 13%</th><th class="num">WACC 14%</th></tr>
+      <tr><td>IV / share</td><td class="num">₹651</td><td class="num">₹604</td><td class="num">₹562</td></tr>
+      <tr><td>Stage1 g 12% / 13% / 14%</td><td class="num">₹580</td><td class="num">₹604</td><td class="num">₹630</td></tr>
+    </table></div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title">Method 2 — Owner Earnings Capitalisation</div>
+      <p style="font-size:13px; color:var(--muted);">Value = OE / (Required Return − g)</p>
+      <div class="grid grid-3">
+        <div class="metric"><div class="metric-label">Stress</div><div class="metric-val">₹248</div></div>
+        <div class="metric good"><div class="metric-label">Base</div><div class="metric-val">₹446</div></div>
+        <div class="metric"><div class="metric-label">Accel</div><div class="metric-val">₹1,115</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Method 3 — ROIC / EPV</div>
+      <p style="font-size:13px; color:var(--muted);">EPV = NOPAT / WACC (growth premium 1.0x — no AI uplift, not a WIDENER)</p>
+      <div class="grid grid-3">
+        <div class="metric"><div class="metric-label">Stress</div><div class="metric-val">₹156</div></div>
+        <div class="metric good"><div class="metric-label">Base</div><div class="metric-val">₹167</div></div>
+        <div class="metric"><div class="metric-label">Accel</div><div class="metric-val">₹181</div></div>
+      </div>
+      <p style="font-size:12.5px; color:var(--muted); margin-top:8px;">EPV is deliberately the conservative floor — it values today's earnings power assuming zero future growth. Economic profit = (ROIC 32% − WACC 13%) × Invested Capital ≈ positive ₹90 Cr, confirming the moat still earns above its cost of capital.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Method 4 — P/E Earnings Power</div>
+    <div class="grid grid-3">
+      <div class="metric"><div class="metric-label">Stress (22x FY27E)</div><div class="metric-val">₹583</div></div>
+      <div class="metric good"><div class="metric-label">Base (30x FY27E)</div><div class="metric-val">₹795</div></div>
+      <div class="metric"><div class="metric-label">Accel (38x FY27E)</div><div class="metric-val">₹1,007</div></div>
+    </div>
+    <p style="font-size:13px; margin-top:10px;">FY27E consensus EPS ≈ ₹26.5. Current TTM P/E 62.8x; current Fwd P/E (FY27E) 51.7x. Applied Base multiple of 30x is a PEG-disciplined figure (FY27E growth ~12% × PEG 2.5x quality premium) — already meaningfully <i>below</i> the stock's own ~44x [ESTIMATED] 5-year average multiple, reflecting that the historical multiple was set in a faster-growth, pre-fee-cut regime.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Method 5 — Earnings Yield vs Bond Yield</div>
+    <div class="grid grid-3">
+      <div class="metric bad"><div class="metric-label">Earnings Yield (TTM)</div><div class="metric-val">1.59%</div></div>
+      <div class="metric"><div class="metric-label">10Y G-Sec Yield</div><div class="metric-val">6.85%</div></div>
+      <div class="metric bad"><div class="metric-label">Implied ERP</div><div class="metric-val">-5.26 pp</div><div class="metric-note">Negative — earnings yield sits below the risk-free rate</div></div>
+    </div>
+    <p style="font-size:13px; margin-top:8px;">FCF yield 1.21%, dividend yield 0.93%. A negative equity risk premium versus government bonds is a classic caution signal in this framework — the market is pricing CDSL purely on growth/multiple-expansion expectations, not on its current cash-generating power relative to the risk-free alternative.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">5-Method Summary Table</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Method</th><th class="num">Stress IV</th><th class="num">Base IV</th><th class="num">Accel IV</th><th>AI adjustment</th></tr>
+      <tr><td>DCF</td><td class="num">₹305</td><td class="num">₹604</td><td class="num">₹1,130</td><td>None (NEUTRAL overlay)</td></tr>
+      <tr><td>Owner Earnings Cap</td><td class="num">₹248</td><td class="num">₹446</td><td class="num">₹1,115</td><td>None</td></tr>
+      <tr><td>ROIC/EPV</td><td class="num">₹156</td><td class="num">₹167</td><td class="num">₹181</td><td>None — growth premium held at 1.0x</td></tr>
+      <tr><td>P/E Earnings Power</td><td class="num">₹583</td><td class="num">₹795</td><td class="num">₹1,007</td><td>None</td></tr>
+      <tr style="background:rgba(201,150,43,0.12);"><td><b>Blended (avg of 4)</b></td><td class="num"><b>₹323</b></td><td class="num"><b>₹503</b></td><td class="num"><b>₹858</b></td><td>—</td></tr>
+    </table></div>
+    <div class="grid grid-3" style="margin-top:14px;">
+      <div class="metric bad"><div class="metric-label">Current Price</div><div class="metric-val">₹1,370</div></div>
+      <div class="metric bad"><div class="metric-label">Premium to Blended Base IV</div><div class="metric-val">+172%</div></div>
+      <div class="metric bad"><div class="metric-label">Premium to Blended ACCEL IV</div><div class="metric-val">+60%</div><div class="metric-note">Even the best-case scenario doesn't justify CMP</div></div>
+    </div>
+    <p style="font-size:13.5px; margin-top:12px;"><b>MoS Entry Zone:</b> ₹352–₹403 (0.70–0.80× Blended Base IV, per Category C "others" multiplier). This is a genuinely wide gap from CMP — see Tab 6 for why the more probable re-rating path is earnings catching up to price rather than a 70%+ price correction.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Relative Valuation Gauge (own 5yr history)</div>
+    <div class="gauge-bar"><div class="gauge-fill" style="width:90%; background:linear-gradient(90deg,#B07B12,#B23A33);"></div></div>
+    <p style="font-size:13.5px; margin-top:8px;">🔴 Current P/E 62.8x sits ~+43% above an [ESTIMATED] 5-year average P/E of ~44x — squarely in the "20%+ premium to own history" red zone. No AI-WIDENER justification applies here (Overlay is NEUTRAL), so no structural re-rating case offsets this signal.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Yield-on-Cost Table (entry at CMP ₹1,370.30, 10% assumed dividend CAGR)</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Year</th><th class="num">Est. Dividend/Share</th><th class="num">Yield on Cost</th></tr>
+      <tr><td>Year 1</td><td class="num">₹14.03</td><td class="num">1.02%</td></tr>
+      <tr><td>Year 3</td><td class="num">₹16.97</td><td class="num">1.24%</td></tr>
+      <tr><td>Year 5</td><td class="num">₹20.53</td><td class="num">1.50%</td></tr>
+      <tr><td>Year 7</td><td class="num">₹24.85</td><td class="num">1.81%</td></tr>
+      <tr><td>Year 10</td><td class="num">₹33.07</td><td class="num">2.41%</td></tr>
+    </table></div>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px;">Even a decade out, yield-on-cost at today's entry price stays below the current 10Y G-Sec yield of 6.85% — this is a capital-appreciation thesis, not an income thesis, and the appreciation case requires the earnings-growth story (not just the moat story) to actually play out.</p>
+  </div>
+</div>
+<!-- END TAB 5 -->
+<!-- ================= TAB 6 — VERDICT ================= -->
+<div class="tab-content" id="tab6">
+  <div class="section-title">Verdict</div>
+
+  <div class="grid grid-4">
+    <div class="card" style="text-align:center;">
+      <div class="card-title">Economic Moat</div>
+      <div style="font-size:34px; font-weight:800; color:var(--navy);">A-</div>
+      <div style="font-size:12.5px; color:var(--muted);">Regulatory duopoly, weak pricing power</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="card-title">Financial Fortress</div>
+      <div style="font-size:34px; font-weight:800; color:var(--navy);">B+</div>
+      <div style="font-size:12.5px; color:var(--muted);">Pristine balance sheet, strained current metrics</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="card-title">Management Integrity</div>
+      <div style="font-size:34px; font-weight:800; color:var(--navy);">B+</div>
+      <div style="font-size:12.5px; color:var(--muted);">Institutionally clean, capex guidance gap</div>
+    </div>
+    <div class="card" style="text-align:center; border:2px solid var(--red);">
+      <div class="card-title">Valuation &amp; MoS</div>
+      <div style="font-size:34px; font-weight:800; color:var(--red);">D+</div>
+      <div style="font-size:12.5px; color:var(--muted);">+172% to Blended Base IV</div>
+    </div>
+  </div>
+
+  <div class="badge-row" style="margin:18px 0;">
+    <span class="badge cat" style="background:rgba(201,150,43,0.12); color:#8A5C0C; border-color:var(--gold);">CATEGORY C — Mature Quality Compounder (MII adaptation)</span>
+    <span class="badge ai-neutral" style="background:#EDEFF2; color:#5A6678; border-color:#AEB8C4;">⚪ AI OVERLAY: NEUTRAL</span>
+  </div>
+
+  <div class="quote-box">
+    "Price is what you pay. Value is what you get." CDSL is, by the moat and balance-sheet pillars, exactly the kind of structurally protected, capital-light franchise this series exists to find. But the fourth pillar overrides the first three: at 62.8x trailing earnings against a Blended Base intrinsic value of ₹503 and a best-case Accel value of ₹858, the market is paying for a return of the 2021–2024 hyper-growth regime that the company's own regulator is actively constraining. Wonderful business. Not at this price.
+    <cite>— Series verdict, in the spirit of Buffett's price/value discipline</cite>
+  </div>
+
+  <div class="card" style="border:2px solid var(--gold); background:#FBF7EC;">
+    <div class="card-title" style="color:#8A5C0C;">VERDICT: PASS</div>
+    <p style="font-size:14.5px;">Structural quality is genuine (regulatory duopoly, debt-free, &gt;100% cash conversion of earnings) — this is not a "wrong framework" or red-flag situation. But price is extreme against every owner-earnings-anchored method in this report, and even the Accel/best-case blended value (₹858) sits ~60% below CMP (₹1,370). Per framework rules, "price extreme" alone is sufficient for PASS regardless of pillar quality elsewhere. <b>Not AVOID</b> — no fraud, no pledge risk, no imminent existential threat; this is a "great business, no margin of safety" case, the cleanest kind of PASS this series can issue.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Upgrade Conditions (5 — specific &amp; measurable)</div>
+    <div class="upgrade-cond"><div class="cond-num">1</div><div>Trailing P/E corrects to ≤40x — via price decline toward ~₹875, <i>or</i> via EPS recovery to ~₹34/share, whichever arrives first, bringing the multiple within one standard deviation of the stock's own 5-year average.</div></div>
+    <div class="upgrade-cond"><div class="cond-num">2</div><div>RSI(14) falls below 40 on the daily chart — last seen near the March-2026 capitulation low of ₹1,047 — signalling a genuine technical reset rather than the current bounce.</div></div>
+    <div class="upgrade-cond"><div class="cond-num">3</div><div>Price closes below the 200-DMA (currently ≈₹1,351) for 10+ consecutive sessions, confirming trend reversal rather than the current reclaim attempt off the 50-DMA.</div></div>
+    <div class="upgrade-cond"><div class="cond-num">4</div><div>SEBI's pending fee-hike request is approved and consolidated OPM recovers above 58% for 2 consecutive quarters — direct, dated evidence the regulatory headwind has reversed rather than deepened.</div></div>
+    <div class="upgrade-cond"><div class="cond-num">5</div><div>Consolidated YoY revenue growth recovers above 15% for 2 consecutive quarters (vs the current +6% TTM), confirming demat-account and transaction-volume momentum has resumed post the FY26 normalisation.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Series Tracker</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Ticker</th><th>Category</th><th>AI</th><th>Moat</th><th>Fortress</th><th>Mgmt</th><th>Val</th><th>Verdict</th></tr>
+      <tr style="background:rgba(201,150,43,0.1);"><td><b>CDSL</b></td><td>C</td><td>⚪</td><td>A-</td><td>B+</td><td>B+</td><td>D+</td><td><b>PASS</b></td></tr>
+    </table></div>
+    <p style="font-size:12.5px; color:var(--muted); margin-top:8px;">Single-entry tracker for this report; consolidated cross-report tracker maintained in Day's Notion/Google Sheet system.</p>
+  </div>
+</div>
+<!-- END TAB 6 -->
+<!-- ================= TAB 7 — TECHNICAL ================= -->
+<div class="tab-content" id="tab7">
+  <div class="section-title">Technical Analysis</div>
+  <div class="section-sub">Price data: NSE close 19-Jun-2026 (markets closed Sat/Sun). [ESTIMATED] tags where indicators have drifted since last-quoted reading.</div>
+
+  <div class="card">
+    <div class="card-title">(A) Price Structure &amp; Price Ladder</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Level</th><th class="num">Price</th><th>Note</th></tr>
+      <tr><td>All-Time High</td><td class="num">₹1,989.80</td><td>17-Dec-2024 [VERIFIED]</td></tr>
+      <tr><td>52-Week High</td><td class="num">₹1,814.00</td><td>Resistance zone</td></tr>
+      <tr><td>Current Price</td><td class="num"><b>₹1,370.30</b></td><td>19-Jun-2026 close</td></tr>
+      <tr><td>200-DMA</td><td class="num">₹1,351.01</td><td>Recently reclaimed — near-term support</td></tr>
+      <tr><td>50-DMA</td><td class="num">₹1,253.94</td><td>Deeper support</td></tr>
+      <tr><td>52-Week Low</td><td class="num">₹1,116.30</td><td>Major support</td></tr>
+      <tr><td>March-2026 Swing Low</td><td class="num">₹1,047</td><td>Capitulation low / cycle bottom</td></tr>
+    </table></div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title">(B) Moving Average Dashboard</div>
+      <div class="scorecard-item"><span>Price vs 50-DMA (₹1,253.94)</span><span class="check pass">ABOVE (+9.3%)</span></div>
+      <div class="scorecard-item"><span>Price vs 200-DMA (₹1,351.01)</span><span class="check pass">ABOVE (+1.4%) — recently reclaimed</span></div>
+      <div class="scorecard-item"><span>50-DMA vs 200-DMA</span><span class="check marginal">Death-Cross config persists (50 still below 200)</span></div>
+      <div class="scorecard-item"><span>200-Week MA</span><span class="check marginal">[UNVERIFIED] — not available from current sources</span></div>
+      <p style="font-size:13px; color:var(--muted); margin-top:6px;">Price reclaiming both DMAs after the March-2026 capitulation is constructive, but the 50/200-DMA cross itself has not yet flipped bullish — this is an early-stage recovery attempt, not a confirmed Golden Cross.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">(D) RSI / MACD</div>
+      <div class="scorecard-item"><span>RSI(14), 12-Jun-2026 reading</span><span class="check marginal">50.9 (neutral)</span></div>
+      <div class="scorecard-item"><span>RSI(14), current [ESTIMATED]</span><span class="check marginal">~64–68 — stock rallied ~11% since that reading</span></div>
+      <div class="scorecard-item"><span>MACD, 12-Jun-2026</span><span class="check fail">-9.96 (bearish, but narrowing)</span></div>
+      <div class="scorecard-item"><span>Williams %R / CCI (12-Jun)</span><span>-47.97 / 38.69 — improving from oversold</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">(C) Volume / OBV</div>
+    <p style="font-size:13.5px;">Same-day volume ~4.4 lakh shares (16-Jun-2026), in line with weekly/monthly averages — no unusual volume spike confirming institutional accumulation at current levels. The bounce off the March low has occurred on what appears to be average, not exceptional, volume; this argues against treating the current rally as a high-conviction reversal signal.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">(E) Chart Patterns</div>
+    <p style="font-size:13.5px;">Multiple independent technical commentators describe the structure as a multi-month "falling wedge / descending trendline breakout attempt" off the March-2026 low, with ₹1,400 flagged as the immediate pivot and ₹1,500 as the next breakout trigger toward ₹1,650–₹1,800 in a bull scenario. This is presented as observed chart commentary [UNVERIFIED pattern-completion], not a recommendation.</p>
+  </div>
+
+  <div class="card" style="border:2px solid var(--red);">
+    <div class="card-title" style="color:var(--red);">(F) Trade Structure — No New Entry Recommended</div>
+    <p style="font-size:14px;">Given the Tab 6 PASS verdict, this report does not provide an Entry/SL/Target structure for new positions. The current technical posture (price reclaiming both DMAs off a capitulation low) is a constructive <i>recovery bounce</i> within a name the owner-earnings framework still flags as ~172% above Blended Base intrinsic value. Technical strength alone does not override a valuation extreme of this magnitude — see Tab 6, Upgrade Condition 2 and 3, for the specific technical levels that would need to combine with fundamental confirmation before a structured entry becomes appropriate.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">(G) Technical Composite Score</div>
+    <div class="gauge-bar"><div class="gauge-fill" style="width:58%; background:linear-gradient(90deg,#B07B12,#1F7A4D);"></div></div>
+    <p style="font-size:13.5px; margin-top:8px;"><b>17.5 / 30 (58%)</b> — Price structure +4, MA dashboard +3, Volume +2, RSI/MACD +3, Patterns +3, Trade readiness +2.5. Moderately constructive short-term technical posture, set against a structurally extreme valuation per Tab 5/6.</p>
+  </div>
+</div>
+<!-- END TAB 7 -->
+<!-- ================= TAB 8 — SHAREHOLDING ================= -->
+<div class="tab-content" id="tab8">
+  <div class="section-title">Shareholding</div>
+
+  <div class="card">
+    <div class="card-title">(A) Promoter Trend (BSE Ltd) &amp; Pledge</div>
+    <div class="grid grid-4">
+      <div class="metric"><div class="metric-label">Current Promoter %</div><div class="metric-val">15.00%</div></div>
+      <div class="metric good"><div class="metric-label">Pledged</div><div class="metric-val">0%</div></div>
+      <div class="metric warn"><div class="metric-label">3-Year Trend</div><div class="metric-val">-5.0 pp</div></div>
+      <div class="metric"><div class="metric-label">Trend Driver</div><div class="metric-val" style="font-size:13px;">SEBI MPS norms</div></div>
+    </div>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px;">Promoter is BSE Ltd (the exchange itself), an institutional promoter required by SEBI's Minimum Public Shareholding framework for MIIs to dilute over time — this is a regulatory compliance schedule, not a discretionary insider-selling signal, and should not be read as a negative per the standard "promoter decreasing → investigate" rule.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">(B) FII + DII Composition</div>
+    <div class="tbl-wrap"><table>
+      <tr><th>Category</th><th class="num">% Holding</th></tr>
+      <tr><td>Promoter (BSE Ltd)</td><td class="num">15.00%</td></tr>
+      <tr><td>FII</td><td class="num">11.36%</td></tr>
+      <tr><td>DII</td><td class="num">14.41%</td></tr>
+      <tr><td>— of which Mutual Funds</td><td class="num">6.63%</td></tr>
+      <tr><td>Public / Retail</td><td class="num">59.21%</td></tr>
+    </table></div>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px;">[VERIFIED — Mar-2026 filing, cross-referenced across Dhan/Bajaj Finserv/Kotak Neo]. FII ownership (11.4%) leaves meaningful headroom versus typical sectoral caps for non-bank financial-services names — not a binding constraint here.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">(C) Free Float, Index Standing &amp; Liquidity</div>
+    <div class="grid grid-3">
+      <div class="metric"><div class="metric-label">Free Float</div><div class="metric-val">~85%</div><div class="metric-note">100% − promoter 15%</div></div>
+      <div class="metric"><div class="metric-label">Index Membership</div><div class="metric-val" style="font-size:14px;">Nifty 500, Nifty Smallcap 100, Nifty High Beta 50, Nifty MidSmallcap 400</div></div>
+      <div class="metric"><div class="metric-label">Beta</div><div class="metric-val">1.79</div><div class="metric-note">High-beta classification confirmed by index inclusion</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">(E) Ownership Momentum &amp; Risk Scores</div>
+    <div class="grid grid-2">
+      <div>
+        <div class="metric-label">Ownership Momentum Score</div>
+        <div class="gauge-bar"><div class="gauge-fill" style="width:42%; background:var(--amber);"></div></div>
+        <div style="font-size:13px; margin-top:4px;">42/100 — institutional ownership (FII+DII ~26%) is stable but not visibly accumulating; no recent disclosed block-deal accumulation found</div>
+      </div>
+      <div>
+        <div class="metric-label">Shareholding Risk Score</div>
+        <div class="gauge-bar"><div class="gauge-fill" style="width:22%; background:var(--green);"></div></div>
+        <div style="font-size:13px; margin-top:4px;">22/100 (low risk) — zero pledge, institutional promoter, well-diversified public float</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END TAB 8 -->
+<!-- ================= TAB 9 — AI INTELLIGENCE ================= -->
+<div class="tab-content" id="tab9">
+  <div class="section-title">AI Intelligence</div>
+  <div class="section-sub">AI Overlay: NEUTRAL → per framework depth rule, Section A (dashboard) shown in full + brief Section F. Sections B/C/D/E not expanded (reserved for WIDENER/Cat F/THREAT names).</div>
+
+  <div class="card">
+    <div class="card-title">(A) AI Classification Dashboard</div>
+    <div class="ai-dash">
+      <span class="badge cat" style="background:rgba(201,150,43,0.12); color:#8A5C0C; border-color:var(--gold);">Category C</span>
+      <span class="badge" style="background:#EDEFF2; color:#5A6678; border-color:#AEB8C4;">⚪ AI Overlay: NEUTRAL</span>
+      <span class="badge" style="background:#EDEFF2; color:#5A6678; border-color:#AEB8C4;">Flywheel: FEATURE (1/3)</span>
+      <span class="badge" style="background:#EDEFF2; color:#5A6678; border-color:#AEB8C4;">Adoption Phase: 2 of 4</span>
+    </div>
+    <p style="font-size:13.5px; margin-top:6px;">CDSL deploys AI/ML for internal risk analytics, fraud/AML detection within CVL's KYC workflows, and operational automation (per the CDSL–KPMG "Reimagine" thought-leadership partnership and its Creation–Control–Culture data framework, released as the third edition of this initiative in the report period). This is genuine, real-world AI adoption — but it is an efficiency tool layered onto a regulated franchise, not a new revenue line or a customer-facing product. <b>Evidence cited is industry/company commentary, not earnings-call-disclosed quantified metrics — labelled [ESTIMATED].</b></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">(C) AI Value Chain Position (brief)</div>
+    <p style="font-size:13.5px;">CDSL sits at <b>Level 5 — AI-Enabled Incumbent</b>: an established regulated business applying AI to existing workflows (KYC matching, risk scoring, settlement-anomaly detection) rather than building or selling AI infrastructure, models, or platforms. This is the lowest-risk, lowest-optionality position on the value chain — appropriate investment horizon for any AI-driven re-rating thesis here would be 7–10 years, and frankly the AI angle is not the reason to own or avoid this stock; the valuation and regulatory-fee dynamics in Tabs 5–6 are.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">(F) AI Opportunity Score</div>
+    <div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap;">
+      <div>
+        <div class="flywheel-score" style="color:var(--navy); font-size:48px;">56<span style="font-size:20px; color:var(--muted);">/100</span></div>
+        <div style="font-size:13px; color:var(--muted); font-weight:600;">Portfolio Role: MONITOR</div>
+      </div>
+      <div style="flex:1; min-width:260px;">
+        <table style="font-size:13px;">
+          <tr><td>Data Flywheel /20</td><td class="num">6</td></tr>
+          <tr><td>Adoption Phase timing /20</td><td class="num">10</td></tr>
+          <tr><td>Value chain position /20</td><td class="num">8</td></tr>
+          <tr><td>India structural advantage /20</td><td class="num">14</td></tr>
+          <tr><td>AI threat resistance /20</td><td class="num">18</td></tr>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:13px; color:var(--muted); margin-top:10px;">High threat-resistance score (18/20) reflects that no AI-native startup can replicate a regulatory MII licence — the moat is legally, not technologically, defended, which cuts both ways: it protects CDSL from AI disruption but also means AI is unlikely to be a meaningful upside catalyst near-term. The proprietary 18-crore-account KYC/transaction dataset (India Stack-adjacent, vernacular-reach relevant) is a genuine latent structural advantage that remains uncommercialised — worth monitoring for a future flywheel-confirmation event, but not investable today on that basis alone.</p>
+  </div>
+</div>
+<!-- END TAB 9 -->
+
+<div class="footer">
+  <div class="wrap">
+    <p><b>Disclaimer:</b> This report is generated for research and educational purposes under the Buffett Quality-Value Series v5.0 framework and does not constitute investment advice. Data is sourced from public filings (NSE, BSE, SEBI, CDSL investor relations, Screener.in, StockAnalysis.com and other cited sources) and labelled [VERIFIED]/[ESTIMATED]/[UNVERIFIED] per the series' data-confidence protocol. Price-sensitive metrics (P/E, technical levels, RSI) require live re-verification before any action; intrinsic-value calculations are price-independent and remain valid until the next fundamental update. Past performance does not guarantee future results. Registered investors should consult a SEBI-registered investment adviser before making investment decisions. Neither the author nor this framework holds any position in CDSL at time of publication.</p>
+    <p style="margin-top:10px;"><b>Fonts:</b> Inter (headings/body), JetBrains Mono (data) — per Design Standard v2.0. <b>Series:</b> Buffett Quality-Value Series v5.0 · Report generated 21-Jun-2026.</p>
+  </div>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+
+</div>
+</body>
+</html>
