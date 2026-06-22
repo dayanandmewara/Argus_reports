@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANTHEM — Buffett QV Series v5.0 | Anthem Biosciences</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-deep:#060E1C;--bg-primary:#0C1A2E;--bg-surface:#112540;--bg-card:#162E4C;--bg-card2:#1C3859;
+  --accent-teal:#1FC99A;--accent-gold:#D4A853;--accent-amber:#E8873C;--accent-red:#E85C5C;
+  --text-primary:#E8F4F0;--text-muted:#7AABBA;--text-faint:#446278;
+  --pass-clr:#1FC99A;--warn-clr:#D4A853;--fail-clr:#E85C5C;--cat-b:#6C6FFF;
+  --border-dim:rgba(28,184,152,.22);--border-card:rgba(100,180,200,.12);
+  --font-display:'Cormorant Garamond',serif;--font-mono:'JetBrains Mono',monospace;--font-body:'Plus Jakarta Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg-deep);color:var(--text-primary);font-family:var(--font-body);font-size:14px;line-height:1.6}
+.hero{background:linear-gradient(135deg,#060E1C 0%,#0B1E38 40%,#0F263E 60%,#091A2F 100%);padding:22px 28px 0;min-height:210px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(31,201,154,.08) 0%,transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(212,168,83,.05) 0%,transparent 50%);pointer-events:none}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.hero-ticker{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);letter-spacing:.15em;margin-bottom:4px}
+.hero-name{font-family:var(--font-display);font-size:clamp(28px,4vw,46px);font-weight:700;line-height:1.05;color:var(--text-primary);letter-spacing:-.01em}
+.hero-sub{font-size:12px;color:var(--text-muted);margin-top:5px;max-width:480px;line-height:1.5}
+.verdict-badge{background:linear-gradient(135deg,#D4A853,#C4903A);color:#060E1C;padding:8px 16px;border-radius:4px;font-family:var(--font-mono);font-size:11px;font-weight:600;white-space:nowrap;letter-spacing:.05em;text-align:center;min-width:140px}
+.verdict-badge .stars{font-size:14px;display:block;margin-top:2px}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:3px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.06em}
+.badge-b{background:rgba(108,111,255,.2);color:#8E91FF;border:1px solid rgba(108,111,255,.35)}
+.badge-neutral{background:rgba(122,171,186,.15);color:var(--text-muted);border:1px solid rgba(122,171,186,.25)}
+.badge-watch{background:rgba(212,168,83,.15);color:var(--accent-gold);border:1px solid rgba(212,168,83,.3)}
+.badge-pass{background:rgba(31,201,154,.13);color:var(--accent-teal);border:1px solid rgba(31,201,154,.3)}
+.badge-fail{background:rgba(232,92,92,.13);color:var(--accent-red);border:1px solid rgba(232,92,92,.3)}
+.badge-warn{background:rgba(212,168,83,.13);color:var(--accent-gold);border:1px solid rgba(212,168,83,.3)}
+.conf-pill{display:inline-block;padding:2px 7px;border-radius:2px;font-size:9.5px;font-family:var(--font-mono);letter-spacing:.05em;font-weight:600}
+.conf-v{background:rgba(31,201,154,.2);color:var(--accent-teal)}
+.conf-e{background:rgba(212,168,83,.2);color:var(--accent-gold)}
+.conf-u{background:rgba(232,92,92,.2);color:var(--accent-red)}
+.hero-metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px 12px;margin-top:14px;padding-bottom:18px}
+.hm{text-align:center}
+.hm-val{font-family:var(--font-mono);font-size:16px;font-weight:600;color:var(--text-primary)}
+.hm-lbl{font-size:9.5px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-top:1px}
+.hero-lede{font-size:12px;color:var(--text-muted);margin-top:10px;font-style:italic;padding-bottom:12px;border-top:1px solid var(--border-dim);padding-top:10px}
+#tab-bar{position:sticky;top:0;z-index:100;background:rgba(6,14,28,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-dim);display:flex;overflow-x:auto;scrollbar-width:none}
+#tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex:0 0 auto;padding:11px 14px;background:none;border:none;cursor:pointer;font-family:var(--font-body);font-size:12px;font-weight:500;color:var(--text-muted);white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+.tab-btn:hover{color:var(--text-primary)}
+.tab-btn.active{color:var(--accent-teal);border-bottom-color:var(--accent-teal)}
+.tab-content{display:none;padding:24px 20px;max-width:1100px;margin:0 auto}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{background:var(--bg-card);border:1px solid var(--border-card);border-radius:6px;padding:16px}
+.card-h{font-family:var(--font-display);font-size:17px;font-weight:600;margin-bottom:12px;color:var(--text-primary)}
+.section-h{font-family:var(--font-display);font-size:22px;font-weight:600;margin-bottom:18px;color:var(--text-primary);border-left:3px solid var(--accent-teal);padding-left:12px}
+.sub-h{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-teal);margin-bottom:10px;margin-top:18px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.07em;color:var(--text-muted);text-transform:uppercase;padding:8px 10px;background:rgba(17,37,64,.7);text-align:right;border-bottom:1px solid var(--border-dim)}
+th:first-child{text-align:left}
+td{padding:7px 10px;text-align:right;border-bottom:1px solid rgba(100,180,200,.07);color:var(--text-primary)}
+td:first-child{text-align:left;color:var(--text-muted)}
+tr:hover td{background:rgba(31,201,154,.04)}
+.t-pass{color:var(--pass-clr);font-weight:600}
+.t-warn{color:var(--warn-clr);font-weight:600}
+.t-fail{color:var(--fail-clr);font-weight:600}
+.t-hi{color:var(--text-primary);font-weight:700}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.metric{background:var(--bg-card);border:1px solid var(--border-card);border-left:3px solid var(--accent-teal);border-radius:5px;padding:10px 12px}
+.metric.warn{border-left-color:var(--warn-clr)}
+.metric.fail{border-left-color:var(--fail-clr)}
+.metric-val{font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--text-primary)}
+.metric-lbl{font-size:10px;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+.scorecard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.sc-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg-surface);border-radius:4px;border:1px solid var(--border-card)}
+.sc-icon{font-size:13px;flex-shrink:0}
+.sc-label{font-size:12px;color:var(--text-muted);flex:1}
+.sc-status{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.04em}
+.sc-pass .sc-status{color:var(--pass-clr)}
+.sc-marginal .sc-status{color:var(--warn-clr)}
+.sc-fail .sc-status{color:var(--fail-clr)}
+.moat-card{background:var(--bg-card);border:1px solid var(--border-card);border-radius:6px;padding:14px 16px;margin-bottom:10px}
+.moat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.moat-name{font-weight:600;color:var(--text-primary);font-size:13px}
+.moat-stars{color:var(--accent-gold);font-size:14px}
+.moat-desc{font-size:12px;color:var(--text-muted);line-height:1.5}
+.moat-stress{display:inline-block;margin-top:6px;font-size:10.5px;font-family:var(--font-mono);font-weight:600;padding:2px 8px;border-radius:2px;letter-spacing:.04em}
+.ms-holds{background:rgba(31,201,154,.12);color:var(--accent-teal)}
+.ms-strengthens{background:rgba(31,201,154,.2);color:var(--accent-teal)}
+.ms-weakens{background:rgba(232,92,92,.12);color:var(--accent-red)}
+.verdict-box{background:linear-gradient(135deg,#0C1F38 0%,#102840 100%);border:1.5px solid var(--accent-gold);border-radius:8px;padding:24px 28px;margin:20px 0}
+.verdict-grade-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.pillar-grade{text-align:center;padding:10px 14px;background:var(--bg-card);border-radius:5px;border:1px solid var(--border-card);min-width:80px}
+.pg-grade{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent-teal)}
+.pg-name{font-size:10px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+.verdict-title{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--accent-gold);margin-bottom:6px}
+.verdict-stars-big{font-size:22px;margin-bottom:12px}
+.verdict-desc{font-size:13px;color:var(--text-muted);margin-bottom:16px;max-width:600px}
+.quote-block{border-left:3px solid var(--accent-teal);padding-left:14px;font-family:var(--font-display);font-style:italic;font-size:15px;color:var(--text-muted);margin-top:14px}
+.upgrade-conditions{margin-top:20px}
+.uc-item{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--bg-surface);border-radius:4px;border:1px solid var(--border-card);margin-bottom:8px}
+.uc-num{background:var(--accent-teal);color:var(--bg-deep);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.uc-text{font-size:12.5px;color:var(--text-muted)}
+.flywheel-box{background:linear-gradient(135deg,var(--bg-card) 0%,rgba(31,201,154,.04) 100%);border:1.5px solid var(--border-card);border-radius:8px;padding:20px 22px;margin:16px 0}
+.fw-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:4px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.05em;margin-bottom:12px}
+.fw-cosmetic{background:rgba(122,171,186,.12);color:var(--text-muted);border:1px solid rgba(122,171,186,.2)}
+.fw-score{font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--accent-teal)}
+.fw-sub{font-size:11px;color:var(--text-muted)}
+.fw-q{font-weight:600;color:var(--text-primary);font-size:12.5px;margin-top:12px;margin-bottom:4px}
+.fw-a{font-size:12px;color:var(--text-muted);line-height:1.5}
+.scen-stress{color:#E8873C}
+.scen-base{color:var(--accent-teal)}
+.scen-accel{color:#6C6FFF}
+.oe-box{background:linear-gradient(135deg,var(--bg-card),var(--bg-card2));border:1px solid var(--border-card);border-radius:6px;padding:16px 20px}
+.oe-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border-card)}
+.oe-row:last-child{border-bottom:none;border-top:1px solid var(--accent-teal);margin-top:4px;padding-top:8px;font-weight:700}
+.oe-label{font-size:12.5px;color:var(--text-muted)}
+.oe-val{font-family:var(--font-mono);font-size:12.5px;color:var(--text-primary)}
+.oe-val.total{color:var(--accent-teal);font-size:14px}
+.macro-cycle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.macro-dim{background:var(--bg-card);border:1px solid var(--border-card);border-radius:5px;padding:12px 14px}
+.macro-name{font-size:11px;color:var(--text-muted);margin-bottom:6px;letter-spacing:.04em}
+.macro-status{font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.04em}
+.ms-boom{color:#6C6FFF}
+.ms-recovery{color:var(--accent-teal)}
+.ms-neutral{color:var(--text-muted)}
+.macro-impact{font-size:10.5px;color:var(--text-muted);margin-top:4px}
+.tech-bar{height:6px;background:var(--bg-surface);border-radius:3px;overflow:hidden;margin:4px 0}
+.tech-fill{height:100%;border-radius:3px;background:var(--accent-teal);transition:width .4s}
+.tech-fill.warn{background:var(--warn-clr)}
+.tech-fill.fail{background:var(--fail-clr)}
+.trade-box{background:var(--bg-card);border:1px solid var(--border-card);border-radius:6px;padding:14px 16px}
+.trade-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border-card)}
+.trade-row:last-child{border-bottom:none}
+.tl{font-size:11.5px;color:var(--text-muted)}
+.tv{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--text-primary)}
+.tv.buy{color:var(--pass-clr)}
+.tv.sl{color:var(--fail-clr)}
+.tv.t1{color:var(--accent-gold)}
+.tv.t2{color:#6C6FFF}
+.ai-dash{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px}
+.ai-badge-card{background:var(--bg-card);border:1px solid var(--border-card);border-radius:6px;padding:12px 14px;text-align:center}
+.ai-badge-icon{font-size:22px;margin-bottom:4px}
+.ai-badge-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
+.ai-badge-val{font-size:13px;font-weight:600;color:var(--text-primary)}
+.ai-score-ring{width:100px;height:100px;border-radius:50%;background:conic-gradient(var(--accent-teal) 0% 52%,rgba(17,37,64,.8) 52% 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 0 20px rgba(31,201,154,.2)}
+.ai-score-inner{background:var(--bg-primary);width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.ai-score-num{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent-teal)}
+.ai-score-denom{font-size:10px;color:var(--text-muted)}
+.ai-chain{display:flex;align-items:stretch;gap:0;margin:14px 0;overflow-x:auto}
+.ai-chain-level{flex:1;min-width:100px;padding:12px 8px;text-align:center;background:var(--bg-surface);border:1px solid var(--border-card);border-right:none;font-size:11px;color:var(--text-muted)}
+.ai-chain-level:last-child{border-right:1px solid var(--border-card)}
+.ai-chain-level.active{background:rgba(31,201,154,.12);border-color:var(--accent-teal);color:var(--accent-teal)}
+.ai-chain-num{font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;margin-bottom:4px;opacity:.7}
+.ai-chain-name{font-weight:600;font-size:11px;margin-bottom:2px}
+.ai-chain-eg{font-size:9.5px;opacity:.7}
+.sh-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.sh-label{font-size:11.5px;color:var(--text-muted);width:80px;flex-shrink:0}
+.sh-bar{flex:1;height:10px;background:var(--bg-surface);border-radius:4px;overflow:hidden}
+.sh-fill{height:100%;border-radius:4px}
+.sh-pct{font-family:var(--font-mono);font-size:11px;color:var(--text-primary);width:45px;text-align:right}
+.sh-trend{font-size:11px;width:30px;text-align:right}
+.sh-up{color:var(--pass-clr)}
+.sh-dn{color:var(--fail-clr)}
+.sh-flat{color:var(--text-muted)}
+.divider{height:1px;background:var(--border-dim);margin:20px 0}
+.note{font-size:11px;color:var(--text-faint);font-style:italic;margin-top:8px;line-height:1.5}
+.risk-tag{display:inline-block;background:rgba(232,92,92,.12);color:var(--fail-clr);border:1px solid rgba(232,92,92,.2);border-radius:2px;padding:2px 7px;font-size:10px;font-family:var(--font-mono);margin:2px}
+.opp-tag{display:inline-block;background:rgba(31,201,154,.12);color:var(--accent-teal);border:1px solid rgba(31,201,154,.2);border-radius:2px;padding:2px 7px;font-size:10px;font-family:var(--font-mono);margin:2px}
+.sensitivity-table td{font-family:var(--font-mono);font-size:11.5px}
+.sensitivity-table .highlight{background:rgba(31,201,154,.08);font-weight:700;color:var(--accent-teal)}
+@media(max-width:680px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.hero-name{font-size:26px}.hero-metrics{grid-template-columns:repeat(3,1fr)}.tab-btn{font-size:11px;padding:9px 10px}.verdict-grade-row{gap:6px}.ai-chain{flex-direction:column}.ai-chain-level{border-right:1px solid var(--border-card);border-bottom:none}}
+@media(max-width:600px){.hero-top{flex-direction:column}.verdict-badge{width:100%}.hero-metrics{grid-template-columns:repeat(2,1fr)}}
+footer{background:var(--bg-primary);border-top:1px solid var(--border-dim);padding:20px 24px;font-size:10.5px;color:var(--text-faint);line-height:1.7;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-ticker">NSE: ANTHEM &nbsp;|&nbsp; BUFFETT QV SERIES v5.0 &nbsp;|&nbsp; INDIA — CRDMO / PHARMA</div>
+      <div class="hero-name">Anthem Biosciences</div>
+      <div class="hero-sub">India's fastest-growing tech-driven CRDMO — end-to-end drug discovery, development &amp; manufacturing with 6× fermentation lead over nearest Indian competitor and a rare NCE + NBE dual capability.</div>
+    </div>
+    <div class="verdict-badge">WATCH<br><span class="stars">★★★★</span></div>
+  </div>
+  <div class="badge-row">
+    <span class="badge badge-b">⬟ CAT B — HIGH-GROWTH COMPOUNDER</span>
+    <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+    <span class="badge badge-watch">MACRO: TAILWIND</span>
+    <span class="badge badge-warn">FY26 REV ₹2,124Cr | PAT ₹592Cr</span>
+    <span class="badge badge-pass">ROCE 30.4%</span>
+    <span class="badge badge-fail">P/E 72.6x — RICH</span>
+    <span class="conf-pill conf-v">[VERIFIED]</span>
+    <span class="conf-pill conf-e">[ESTIMATED]</span>
+  </div>
+  <div class="hero-metrics">
+    <div class="hm"><div class="hm-val">₹2,124Cr</div><div class="hm-lbl">FY26 Revenue</div></div>
+    <div class="hm"><div class="hm-val">₹592Cr</div><div class="hm-lbl">FY26 PAT</div></div>
+    <div class="hm"><div class="hm-val">43.4%</div><div class="hm-lbl">EBITDA Margin</div></div>
+    <div class="hm"><div class="hm-val">30.4%</div><div class="hm-lbl">ROCE FY26</div></div>
+    <div class="hm"><div class="hm-val">22.3%</div><div class="hm-lbl">ROE FY26</div></div>
+    <div class="hm"><div class="hm-val">72.6x</div><div class="hm-lbl">Trailing P/E</div></div>
+    <div class="hm"><div class="hm-val">₹765</div><div class="hm-lbl">Price (29 May '26)</div></div>
+    <div class="hm"><div class="hm-val">₹43,000Cr</div><div class="hm-lbl">Market Cap</div></div>
+    <div class="hm"><div class="hm-val">0.02x</div><div class="hm-lbl">Debt/Equity</div></div>
+    <div class="hm"><div class="hm-val">74.68%</div><div class="hm-lbl">Promoter Hold</div></div>
+    <div class="hm"><div class="hm-val">0%</div><div class="hm-lbl">Pledged</div></div>
+    <div class="hm"><div class="hm-val">11.54%</div><div class="hm-lbl">DII ▲ Surge</div></div>
+  </div>
+  <div class="hero-lede">
+    <strong style="color:var(--text-primary)">Cat B:</strong> Revenue CAGR 26%+ (FY23–26), large underpenetrated CRDMO market ($3bn→$25bn by 2035 per BCG), ROCE expanding 26.9%→30.4%, FCF accelerating. 
+    <strong style="color:var(--text-primary)">AI Neutral:</strong> AI used for computational chemistry &amp; process optimization — replicable by peers; no data flywheel. Moat rests on fermentation scale, regulatory IP, and scientific depth.
+    <strong style="color:var(--text-primary)">Verdict: WATCH ★★★★</strong> — Exceptional business, stretched valuation. MoS entry zone ₹450–520. Current price ₹765 is ~47% above base IV entry. One catalyst (price correction) from BUY.
+  </div>
+</div>
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intelligence</button>
+</div>
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content" style="display:block">
+  <div class="section-h">Company Overview</div>
+  <div class="grid-2">
+    <div>
+      <div class="card">
+        <div class="card-h">What Anthem Does</div>
+        <p style="font-size:12.5px;color:var(--text-muted);line-height:1.7;margin-bottom:12px">Anthem Biosciences (est. 2006, Bangalore) is India's fastest-growing tech-driven CRDMO providing end-to-end drug lifecycle services — from first-in-class discovery to large-scale commercial manufacturing — exclusively for <em>new molecules</em> (NCE &amp; NBE). Unlike API or generics manufacturers, Anthem captures premium value across the full drug development value chain.</p>
+        <p style="font-size:12.5px;color:var(--text-muted);line-height:1.7">Two revenue pillars: <strong style="color:var(--text-primary)">CRDMO Services</strong> (81.65% FY25 / ~83.5% FY26) covering small molecules, biologics, ADCs, RNAi, oligonucleotides, peptides; and <strong style="color:var(--text-primary)">Specialty Ingredients</strong> (18.35% / 16.5%) covering GLP-1, probiotics, enzymes, Vitamin K2, biosimilars, animal nutrition.</p>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-h">Category B Rationale</div>
+        <div class="scorecard-grid">
+          <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">Revenue CAGR ~26% (FY23–26)</span><span class="sc-status">PASS</span></div>
+          <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">Large underpenetrated TAM ($3B→$25B)</span><span class="sc-status">PASS</span></div>
+          <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">ROCE rising 26.9%→30.4%</span><span class="sc-status">PASS</span></div>
+          <div class="sc-item sc-marginal"><span class="sc-icon">~</span><span class="sc-label">FCF accelerating (CapEx cycle active)</span><span class="sc-status">MARGINAL</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-h">Business Architecture <span class="conf-pill conf-v">[VERIFIED]</span></div>
+        <div class="sub-h">CRDMO MODALITIES</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+          <span class="opp-tag">RNAi Therapeutics</span><span class="opp-tag">Antibody-Drug Conjugates</span><span class="opp-tag">Peptides &amp; Lipids</span><span class="opp-tag">Oligonucleotides</span><span class="opp-tag">Small Molecules</span><span class="opp-tag">Biologics / Biosimilars</span>
+        </div>
+        <div class="sub-h">MANUFACTURING CAPABILITIES</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+          <span class="opp-tag">Custom Synthesis 270kL</span><span class="opp-tag">Fermentation 142kL → 182kL</span><span class="opp-tag">Flow Chemistry</span><span class="opp-tag">Biotransformation</span>
+        </div>
+        <div class="sub-h">GEOGRAPHIC MIX (FY25)</div>
+        <div class="sh-bar-row"><span class="sh-label">Europe</span><div class="sh-bar"><div class="sh-fill" style="width:54.6%;background:var(--accent-teal)"></div></div><span class="sh-pct">54.6%</span></div>
+        <div class="sh-bar-row"><span class="sh-label">N.America</span><div class="sh-bar"><div class="sh-fill" style="width:26.4%;background:var(--accent-gold)"></div></div><span class="sh-pct">26.4%</span></div>
+        <div class="sh-bar-row"><span class="sh-label">India</span><div class="sh-bar"><div class="sh-fill" style="width:16.6%;background:#6C6FFF"></div></div><span class="sh-pct">16.6%</span></div>
+        <div class="sh-bar-row"><span class="sh-label">Rest</span><div class="sh-bar"><div class="sh-fill" style="width:2.4%;background:var(--text-faint)"></div></div><span class="sh-pct">2.4%</span></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-h">What Makes This Interesting</div>
+        <p style="font-size:12px;color:var(--text-muted);line-height:1.7">Anthem sits at the intersection of three mega-trends: (1) China+1 de-risking by global pharma via US BIOSECURE Act, (2) GLP-1 obesity drug fermentation surge, (3) complex modality shift (ADCs, RNAi) requiring specialized partners. Its 6× fermentation capacity lead is a structural barrier. Challenge: 71% revenue from top-5 clients and a 72x P/E embed perfection.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sub-h" style="margin-top:24px">KEY SCALE &amp; INFRASTRUCTURE <span class="conf-pill conf-v">[VERIFIED]</span></div>
+  <div class="grid-4">
+    <div class="metric"><div class="metric-val">2,062</div><div class="metric-lbl">Total Employees</div></div>
+    <div class="metric"><div class="metric-val">1,000+</div><div class="metric-lbl">Scientists (35 PhDs)</div></div>
+    <div class="metric"><div class="metric-val">675+</div><div class="metric-lbl">Clients in 44 Countries</div></div>
+    <div class="metric"><div class="metric-val">8,000+</div><div class="metric-lbl">Projects Completed</div></div>
+    <div class="metric"><div class="metric-val">14</div><div class="metric-lbl">Commercial Molecules</div></div>
+    <div class="metric"><div class="metric-val">9</div><div class="metric-lbl">Potential Blockbusters</div></div>
+    <div class="metric"><div class="metric-val">US FDA</div><div class="metric-lbl">+ EMA, PMDA, WHO</div></div>
+    <div class="metric"><div class="metric-val">₹1,200Cr</div><div class="metric-lbl">Unit 4 CapEx Approved</div></div>
+  </div>
+  <div class="sub-h" style="margin-top:16px">KEY RISKS</div>
+  <div style="margin-bottom:10px">
+    <span class="risk-tag">⚠ Top-5 = 71% Revenue</span>
+    <span class="risk-tag">⚠ All Mfg in Karnataka</span>
+    <span class="risk-tag">⚠ NWC Days: 222 (Syngene: 34)</span>
+    <span class="risk-tag">⚠ GLP-1 Timing Uncertain</span>
+    <span class="risk-tag">⚠ IPO Was Pure OFS</span>
+    <span class="risk-tag">⚠ 72.6x Trailing P/E</span>
+    <span class="risk-tag">⚠ No FY27 Guidance Provided</span>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-h">Series Rationale &amp; Framework Adaptation</div>
+    <p style="font-size:12.5px;color:var(--text-muted);line-height:1.7">Classified <strong style="color:#8E91FF">Category B — High-Growth Global Compounder</strong> on the basis of 26%+ revenue CAGR, large underpenetrated CRDMO TAM, rising ROCE, and global revenue profile. AI overlay is <strong>⚪ NEUTRAL</strong> — AI is used for process optimization and computational chemistry, not a proprietary flywheel. Framework adaptation: Indian high-quality CRDMOs (Divi's Lab, Syngene) have historically traded at 35–55x terminal P/E, well above the standard Cat B range of 20–25x. Valuation tab presents both frameworks — standard (stress floor) and sector-premium (base/accel).</p>
+  </div>
+</div>
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <div class="section-h">Macro &amp; Growth Architecture</div>
+  <div class="sub-h">LAYER 1 — MACRO CYCLE DASHBOARD <span class="conf-pill conf-v">[VERIFIED]</span></div>
+  <div class="macro-cycle-grid" style="margin-bottom:16px">
+    <div class="macro-dim"><div class="macro-name">RURAL INCOME CYCLE</div><div class="macro-status ms-recovery">RECOVERY</div><div class="macro-impact">Normal monsoon, food price deflation. FMCG impact +2%. CRDMO: Negligible direct impact.</div></div>
+    <div class="macro-dim"><div class="macro-name">URBAN CONSUMPTION</div><div class="macro-status ms-boom">BOOM</div><div class="macro-impact">IT wages strong; real-estate wealth effect. Services spending up 8% YoY. Pharma capex rising.</div></div>
+    <div class="macro-dim"><div class="macro-name">INPUT COST CYCLE</div><div class="macro-status ms-recovery">RECOVERY</div><div class="macro-impact">CPI 3.4% Mar '26, commodity costs easing. Margin expansion +1.5–3% for CRDMOs.</div></div>
+    <div class="macro-dim"><div class="macro-name">RBI RATE CYCLE</div><div class="macro-status ms-recovery">EASING</div><div class="macro-impact">Repo 5.25% (50bps cut since Dec '25). WACC declining — positive for CapEx-heavy cos.</div></div>
+    <div class="macro-dim"><div class="macro-name">GOVT CAPEX CYCLE</div><div class="macro-status ms-boom">BOOM</div><div class="macro-impact">PLI pharma/bulk drugs active. ₹5bn PLI for bulk drugs = direct demand catalyst for Indian CRDMOs.</div></div>
+    <div class="macro-dim"><div class="macro-name">AI ADOPTION CYCLE</div><div class="macro-status ms-neutral">NEUTRAL</div><div class="macro-impact">AI in drug discovery Phase 2. Anthem's moat is physical (fermentation + regulatory), not data-driven.</div></div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:600;color:var(--text-primary)">Macro Composite</span>
+      <span class="badge badge-pass">TAILWIND</span>
+    </div>
+    <div style="margin-top:8px;font-size:12px;color:var(--text-muted)">
+      India Nominal GDP = Real GDP ~7.4% (RBI FY26 forecast) + CPI ~2.1% = <strong style="color:var(--accent-teal)">~9.5% nominal GDP</strong> (terminal growth ceiling).
+      AI Cycle Impact: <span class="badge badge-neutral" style="font-size:10px">NEUTRAL — OPPORTUNITY</span> (AI assists drug discovery but not structural advantage for Anthem).
+      10yr G-Sec yield: <strong style="color:var(--text-primary)">~6.7%</strong> <span class="conf-pill conf-e">[ESTIMATED]</span> | Nifty P/E: ~21x | RBI Repo: 5.25%.
+    </div>
+  </div>
+  <div class="sub-h">LAYER 2 — SECTOR GROWTH DERIVATION <span class="conf-pill conf-v">[VERIFIED via BCG/F&amp;S/IPSO 2025]</span></div>
+  <div class="card">
+    <table>
+      <thead><tr><th style="text-align:left">Sector / Driver</th><th>Stress</th><th>Base</th><th>Accel</th><th>AI Impact</th></tr></thead>
+      <tbody>
+        <tr><td>India CRDMO (BCG 2025, 15yr CAGR)</td><td class="scen-stress">12%</td><td class="scen-base">15%</td><td class="scen-accel">18%</td><td><span class="badge badge-pass" style="font-size:9px">WIDENER</span></td></tr>
+        <tr><td>India Pharma Exports / API</td><td>6–9%</td><td>10–14%</td><td>15–18%</td><td><span class="badge badge-pass" style="font-size:9px">WIDENER</span></td></tr>
+        <tr><td>Global CRDMO (F&amp;S 2023–28)</td><td>7%</td><td>9.1%</td><td>12%</td><td>—</td></tr>
+        <tr><td>Advanced Modalities (ADC / RNAi)</td><td>18%</td><td>25%</td><td>35%</td><td><span class="badge badge-pass" style="font-size:9px">CATALYST</span></td></tr>
+        <tr><td>GLP-1 Fermentation-based APIs</td><td>20%</td><td>30%</td><td>45%</td><td><span class="badge badge-pass" style="font-size:9px">MEGA-TREND</span></td></tr>
+      </tbody>
+    </table>
+    <p class="note">BCG/IPSO (Feb 2025): India CRDMO $3–3.5bn (2025) → $25bn by 2035 = 15% CAGR. India growing 2× the global CRDMO average. Anthem at 2× the sector rate = significant alpha. AI is "accelerating India CRDMO's base growth by +2–3pp over 5 years" via computational chemistry efficiency.</p>
+  </div>
+  <div class="sub-h" style="margin-top:20px">LAYER 3 — COMPANY ALPHA OVER SECTOR</div>
+  <div class="card">
+    <table>
+      <thead><tr><th style="text-align:left">Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr></thead>
+      <tbody>
+        <tr><td>Market Share Gain (India CRDMO, &lt;5% share)</td><td class="t-pass">Active</td><td class="t-pass">+4%</td><td class="t-pass">+3%</td></tr>
+        <tr><td>Premiumisation (ADC/RNAi vs generic API)</td><td class="t-pass">Active</td><td class="t-pass">+3%</td><td class="t-pass">+2%</td></tr>
+        <tr><td>Category Expansion (GLP-1, Animal Nutrition)</td><td class="t-pass">Forming</td><td class="t-pass">+2%</td><td class="t-pass">+3%</td></tr>
+        <tr><td>Geographic Expansion (Deeper US/Japan penetration)</td><td class="t-warn">Potential</td><td class="t-warn">+2%</td><td class="t-warn">+3%</td></tr>
+        <tr><td>Pricing Power (specialized modalities, captive molecules)</td><td class="t-pass">Active</td><td class="t-pass">+2%</td><td class="t-pass">+1%</td></tr>
+        <tr><td>AI Alpha 6a: Cost Reduction (process optimization)</td><td class="t-warn">Replicable</td><td class="t-warn">+1%</td><td class="t-warn">+1%</td></tr>
+        <tr><td>AI Alpha 6b: Market Expansion via AI</td><td class="t-fail">N/A</td><td>—</td><td>—</td></tr>
+        <tr><td>AI Alpha 6c: Flywheel / Switching Cost (Data-driven)</td><td class="t-fail">COSMETIC</td><td>—</td><td>—</td></tr>
+        <tr style="border-top:1px solid var(--accent-teal)"><td><strong>Total Company Alpha</strong></td><td>—</td><td class="t-pass"><strong>+14%</strong></td><td class="t-pass"><strong>+13%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sub-h" style="margin-top:20px">GROWTH RATE SUMMARY TABLE</div>
+  <div class="card">
+    <table>
+      <thead><tr><th style="text-align:left">Parameter</th><th class="scen-stress">STRESS</th><th class="scen-base">BASE</th><th class="scen-accel">ACCEL</th></tr></thead>
+      <tbody>
+        <tr><td>Macro State (India Real GDP)</td><td>5.5%</td><td>7.0%</td><td>8.5%+</td></tr>
+        <tr><td>Sector Growth (India CRDMO)</td><td>12%</td><td>15%</td><td>18%</td></tr>
+        <tr><td>Company Alpha</td><td>+8%</td><td>+14%</td><td>+18%</td></tr>
+        <tr><td>AI Alpha (6a only)</td><td>+0%</td><td>+1%</td><td>+1%</td></tr>
+        <tr><td><strong>Stage 1 Revenue CAGR (FY27–FY31)</strong></td><td class="scen-stress t-hi">15–16%</td><td class="scen-base t-hi">20–22%</td><td class="scen-accel t-hi">26–28%</td></tr>
+        <tr><td><strong>Stage 2 Revenue CAGR (FY32–FY36)</strong></td><td>9%</td><td>13%</td><td>16%</td></tr>
+        <tr><td>Terminal Growth</td><td>5.5%</td><td>7%</td><td>8%</td></tr>
+        <tr><td>EBITDA Margin Direction</td><td>Compress 37–38%</td><td>Stable 40–42%</td><td>Expand 44–46%</td></tr>
+        <tr><td>FCF / Revenue CAGR Stage 1</td><td>12%</td><td>18%</td><td>25%</td></tr>
+        <tr><td>Key Risk</td><td>Destocking + China competition</td><td>Client concentration</td><td>CapEx execution delay</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:10px">📐 Sensitivity: A 1% change in terminal growth rate changes IV by ~8–12%. A 1% change in Stage 1 CAGR changes IV by ~5–7%.</div>
+  </div>
+</div>
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <div class="section-h">Financial Fortress</div>
+  <div class="sub-h">5-YEAR FINANCIAL PERFORMANCE <span class="conf-pill conf-v">[VERIFIED]</span></div>
+  <div class="card">
+    <table>
+      <thead><tr><th>FY</th><th>Revenue (₹Cr)</th><th>EBITDA (₹Cr)</th><th>EBITDA%</th><th>PAT (₹Cr)</th><th>PAT%</th><th>ROE</th><th>ROCE</th><th>EPS (₹)</th></tr></thead>
+      <tbody>
+        <tr><td>FY22</td><td>~₹1,100 <span class="conf-pill conf-e" style="font-size:8px">[EST]</span></td><td>~₹505</td><td>45.9%</td><td>~₹350</td><td>~31.8%</td><td>~22%</td><td>~28%</td><td>~₹6.23</td></tr>
+        <tr><td>FY23</td><td>₹1,057</td><td>₹446</td><td>41.5%</td><td>₹385</td><td>34.0%</td><td class="t-pass">24.9%</td><td class="t-pass">31.7%</td><td>₹6.85</td></tr>
+        <tr><td>FY24</td><td>₹1,419</td><td>₹520</td><td>36.3%</td><td>₹367</td><td>24.8%</td><td class="t-warn">20.0%</td><td class="t-warn">25.7%</td><td>₹6.53</td></tr>
+        <tr><td>FY25</td><td>₹1,845</td><td>₹684</td><td>36.8%</td><td>₹451</td><td>23.4%</td><td class="t-pass">20.8%</td><td class="t-pass">26.9%</td><td>₹8.07</td></tr>
+        <tr style="background:rgba(31,201,154,.05)"><td><strong>FY26 ✓</strong></td><td class="t-hi"><strong>₹2,124</strong></td><td class="t-hi"><strong>₹990</strong></td><td class="t-pass"><strong>43.4%</strong></td><td class="t-hi"><strong>₹592</strong></td><td class="t-pass"><strong>25.9%</strong></td><td class="t-pass"><strong>22.3%</strong></td><td class="t-pass"><strong>30.4%</strong></td><td class="t-hi"><strong>₹10.54</strong></td></tr>
+      </tbody>
+    </table>
+    <p class="note">Revenue CAGR FY23–FY26: 26.4% | PAT CAGR FY23–FY26: 15.4% | EBITDA CAGR FY23–FY26: 30.4% | 5-yr Avg ROE: ~21.6%</p>
+  </div>
+  <div class="sub-h" style="margin-top:20px">QUARTERLY REVENUE TREND (FY26) <span class="conf-pill conf-v">[VERIFIED]</span></div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Quarter</th><th>Revenue (₹Cr)</th><th>EBITDA%</th><th>PAT (₹Cr)</th><th>YoY Δ</th><th>QoQ Δ</th></tr></thead>
+      <tbody>
+        <tr><td>Q1 FY26 (Apr–Jun 2025)</td><td>₹541</td><td>41.4%</td><td>₹175</td><td class="t-pass">+28%</td><td>—</td></tr>
+        <tr><td>Q2 FY26 (Jul–Sep 2025)</td><td>₹550</td><td>44.5%</td><td>₹173</td><td class="t-pass">+25%</td><td class="t-pass">+2%</td></tr>
+        <tr><td>Q3 FY26 (Oct–Dec 2025)</td><td>₹423</td><td>37.2%</td><td>₹93</td><td class="t-fail">−12.5%</td><td class="t-fail">−23.1%</td></tr>
+        <tr style="background:rgba(31,201,154,.05)"><td><strong>Q4 FY26 (Jan–Mar 2026) ★ RECORD</strong></td><td class="t-hi"><strong>₹611</strong></td><td class="t-pass"><strong>48.1%</strong></td><td class="t-hi"><strong>₹190</strong></td><td class="t-pass"><strong>+26.5%</strong></td><td class="t-pass"><strong>+44.4%</strong></td></tr>
+        <tr style="border-top:1px solid var(--accent-teal)"><td><strong>FY26 Full Year</strong></td><td class="t-hi"><strong>₹2,124</strong></td><td class="t-pass"><strong>43.4%</strong></td><td class="t-hi"><strong>₹592</strong></td><td class="t-pass"><strong>+15.1%</strong></td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Q3 FY26 dip caused by client destocking — management confirmed largely behind them. Q4 FY26 = highest quarterly revenue in company history. Q4 EBITDA margin of 48.1% is exceptional operating leverage. PAT +130% YoY in Q4.</p>
+  </div>
+  <div class="sub-h" style="margin-top:20px">FINANCIAL FORTRESS SCORECARD <span class="conf-pill conf-v">[VERIFIED]</span></div>
+  <div class="scorecard-grid" style="margin-bottom:14px">
+    <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">ROE ≥15% for 5 consecutive years</span><span class="sc-status">PASS</span></div>
+    <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">ROIC / ROCE &gt; WACC (30.4% &gt; 13%)</span><span class="sc-status">PASS</span></div>
+    <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">Net Cash (D/E 0.02x, Cash ₹993Cr H1 FY26)</span><span class="sc-status">PASS</span></div>
+    <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">Net Profit Margin ≥15% (25.9% FY26)</span><span class="sc-status">PASS</span></div>
+    <div class="sc-item sc-marginal"><span class="sc-icon">~</span><span class="sc-label">FCF Positive + Growing (CapEx active)</span><span class="sc-status">MARGINAL</span></div>
+    <div class="sc-item sc-marginal"><span class="sc-icon">~</span><span class="sc-label">FCF Conversion ≥80% of Net Income (~75%)</span><span class="sc-status">MARGINAL</span></div>
+    <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">Pricing Power (specialized modalities)</span><span class="sc-status">PASS</span></div>
+    <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">Revenue CAGR ≥ Sector (26% &gt; 15%)</span><span class="sc-status">PASS</span></div>
+    <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">Recurring Revenue (LT client contracts)</span><span class="sc-status">PASS</span></div>
+    <div class="sc-item sc-marginal"><span class="sc-icon">~</span><span class="sc-label">Capital-Light (CapEx cycle intensifying)</span><span class="sc-status">MARGINAL</span></div>
+    <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">Dividend &lt;80% OE (₹2/share declared)</span><span class="sc-status">PASS</span></div>
+  </div>
+  <div class="sub-h">OWNER EARNINGS (FY26) <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+  <div class="oe-box">
+    <div class="oe-row"><span class="oe-label">Net Profit After Tax</span><span class="oe-val">+ ₹592 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">+ Depreciation &amp; Amortisation</span><span class="oe-val">+ ₹115 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">+ Non-cash charges (ESOP, FX)</span><span class="oe-val">+ ₹18 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">− Maintenance CapEx (~25% of total)</span><span class="oe-val">− ₹185 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">± Working Capital Changes</span><span class="oe-val">− ₹25 Cr</span></div>
+    <div class="oe-row"><span class="oe-label"><strong>Owner Earnings (Conservative)</strong></span><span class="oe-val total"><strong>≈ ₹515 Cr</strong></span></div>
+    <p class="note" style="margin-top:8px">Unit 4 CapEx of ₹1,200Cr approved for Phase 1 over next 2 years — growth CapEx, not maintenance. All funded from internal accruals. Net cash position ₹993Cr (Sep 2025). Strong balance sheet supports organic expansion.</p>
+  </div>
+  <div class="sub-h" style="margin-top:20px">EARNINGS QUALITY — O'GLOVE FRAMEWORK</div>
+  <div class="grid-3">
+    <div class="card"><div class="card-h">Test 1 — FCF Conversion</div><div style="font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--warn-clr)">~75%</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">CFO/Net Income 5yr avg</div><div style="margin-top:8px"><span class="badge badge-warn">~ MARGINAL</span></div><p class="note">H1 FY26 OCF: ₹403Cr vs PAT ₹309Cr = 1.3x — improving. NWC days (222) ties up significant capital.</p></div>
+    <div class="card"><div class="card-h">Test 2 — DSO / NWC Trend</div><div style="font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--warn-clr)">222 days</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">NWC vs Syngene: 34 days</div><div style="margin-top:8px"><span class="badge badge-warn">~ MARGINAL</span></div><p class="note">High but stable NWC — CRDMO milestone billing nature. Not rising rapidly. Structural feature of business, not a red flag.</p></div>
+    <div class="card"><div class="card-h">Test 3 — Inventory Days</div><div style="font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--accent-teal)">STABLE</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">Consistent with WIP project mix</div><div style="margin-top:8px"><span class="badge badge-pass">✓ PASS</span></div><p class="note">Inventory high due to WIP on complex molecules. Not rising ahead of revenue. CRDMO-typical pattern.</p></div>
+    <div class="card"><div class="card-h">Test 4 — Accounting Policy</div><div style="font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--accent-teal)">CLEAN</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">No changes in 3yr lookback</div><div style="margin-top:8px"><span class="badge badge-pass">✓ PASS</span></div><p class="note">No accounting policy changes to boost earnings. Revenue recognition consistent with project completion milestones.</p></div>
+    <div class="card"><div class="card-h">Test 5 — Gross Margin Consistency</div><div style="font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--warn-clr)">VARIABLE</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">67.9% → 57.8% → 59.7% (Material)</div><div style="margin-top:8px"><span class="badge badge-warn">~ MARGINAL</span></div><p class="note">Sharp drop FY24 (input cost inflation). Recovered FY25. FY26 EBITDA margin 43.4% confirms GM recovery. Consistent with macro input cost cycle.</p></div>
+    <div class="card" style="border:1.5px solid var(--accent-teal)"><div class="card-h">Overall Quality Grade</div><div style="font-family:var(--font-display);font-size:32px;font-weight:700;color:var(--accent-teal)">ACCEPTABLE</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">3 PASS / 2 MARGINAL / 0 FAIL</div><p class="note">No earnings quality adjustment required. MoS not widened on quality grounds. High NWC is structural, not a quality-of-earnings concern.</p></div>
+  </div>
+</div>
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <div class="section-h">Economic Moat Analysis</div>
+  <div class="sub-h">ROIC AS MOAT PROOF (5-YEAR TREND) <span class="conf-pill conf-v">[VERIFIED]</span></div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-val">~28%</div><div class="metric-lbl">ROCE FY22 [EST]</div></div>
+    <div class="metric"><div class="metric-val">31.7%</div><div class="metric-lbl">ROCE FY23</div></div>
+    <div class="metric metric warn"><div class="metric-val">25.7%</div><div class="metric-lbl">ROCE FY24 (Dip)</div></div>
+    <div class="metric"><div class="metric-val">26.9%</div><div class="metric-lbl">ROCE FY25</div></div>
+    <div class="metric"><div class="metric-val" style="color:var(--accent-teal)">30.4%</div><div class="metric-lbl">ROCE FY26 ★</div></div>
+  </div>
+  <div class="card" style="margin-bottom:14px"><p style="font-size:12.5px;color:var(--text-muted)">ROCE 20–40% = <strong style="color:var(--accent-teal)">Wide Moat</strong> per framework. 5yr avg ROCE: ~28.7%. FY24 dip was driven by input cost inflation — temporary. Recovery to 30.4% FY26 confirms moat durability. ROIC &gt;&gt; WACC (13%) by ~17pp = significant ongoing economic profit creation annually.</p></div>
+  <div class="sub-h">MOAT SOURCES</div>
+  <div class="moat-card">
+    <div class="moat-top"><span class="moat-name">1. Fermentation Capacity Scale — EFFICIENT SCALE + COST ADVANTAGE</span><span class="moat-stars">★★★★★</span></div>
+    <p class="moat-desc">142 kL fermentation = 6× nearest Indian competitor. Expanding to 182 kL (H1 FY26) then 425 kL (Unit 4). Fermentation equipment has 3–5 year lead times and requires billions in investment — creating a structural supply barrier that cannot be quickly replicated. GLP-1 and fermentation-based biotech drugs are the next major global wave. <span class="conf-pill conf-v">[VERIFIED]</span></p>
+    <span class="moat-stress ms-strengthens">MACRO STRESS: STRENGTHENS — Under stress, global pharma de-risks toward proven, high-capacity Indian CRDMOs vs Chinese competitors</span>
+  </div>
+  <div class="moat-card">
+    <div class="moat-top"><span class="moat-name">2. Scientific &amp; Process Know-How — INTANGIBLE ASSETS</span><span class="moat-stars">★★★★</span></div>
+    <p class="moat-desc">1,000+ scientists (35 PhDs), 8,000+ completed projects, expertise in 5 advanced modalities. Founders Ajay Bhardwaj and Ganesh Sambasivam from Biocon; K C Ravindra from Syngene — India's most successful life sciences lineage. All capabilities built organically over 20 years. <span class="conf-pill conf-v">[VERIFIED]</span></p>
+    <span class="moat-stress ms-holds">MACRO STRESS: HOLDS — Scientific talent harder to replace; India cost advantage widens vs US/EU in stress scenarios</span>
+  </div>
+  <div class="moat-card">
+    <div class="moat-top"><span class="moat-name">3. Regulatory Clearances — INTANGIBLE ASSETS (High Barrier)</span><span class="moat-stars">★★★★</span></div>
+    <p class="moat-desc">US FDA, EMA, PMDA, and WHO approvals across all units. Each client drug approval is tied to specific Anthem facilities. New entrant needs 4–7 years to replicate these clearances. Every commercial molecule creates a new regulatory moat layer tied to Anthem's specific IP. <span class="conf-pill conf-v">[VERIFIED]</span></p>
+    <span class="moat-stress ms-strengthens">MACRO STRESS: STRENGTHENS — Regulatory compliance becomes more valuable as global pharma tightens oversight</span>
+  </div>
+  <div class="moat-card">
+    <div class="moat-top"><span class="moat-name">4. Long-term Client Relationships — SWITCHING COSTS</span><span class="moat-stars">★★★★</span></div>
+    <p class="moat-desc">675+ clients over 20 years including AbbVie, Novartis, Pfizer. Once a molecule is transferred to a new CRDMO, it requires full re-validation (~12–18 months), regulator re-approval, and complex knowledge transfer. For commercial-stage molecules, switching is extremely risky and expensive. 14 commercial molecules with $24bn peak sales by CY29. <span class="conf-pill conf-v">[VERIFIED]</span></p>
+    <span class="moat-stress ms-holds">MACRO STRESS: HOLDS — Switching costs are regulatory-driven; moat persists regardless of economic cycle</span>
+  </div>
+  <div class="moat-card">
+    <div class="moat-top"><span class="moat-name">5. India Cost Advantage — COST ADVANTAGES</span><span class="moat-stars">★★★</span></div>
+    <p class="moat-desc">India provides ~20% lower costs vs China and 40–60% vs Western CRDMOs. Anthem EBITDA margin 43.4% = significantly above global peers (Lonza ~20–25%, Thermo Fisher CDMO ~18–22%). The cost advantage is retained as margin — a hallmark of pricing power in B2B services. <span class="conf-pill conf-v">[VERIFIED]</span></p>
+    <span class="moat-stress ms-weakens">MACRO STRESS: WEAKENS slightly — Currency appreciation or wage inflation could compress margins; partially offset by automation</span>
+  </div>
+  <div class="divider"></div>
+  <div class="sub-h">DATA FLYWHEEL TEST</div>
+  <div class="flywheel-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div><span class="fw-badge fw-cosmetic">★ COSMETIC (0/3)</span><p class="fw-sub">AI adds operational value but no compounding defensibility</p></div>
+      <div style="text-align:center"><div class="fw-score">3 <span style="font-size:18px;color:var(--text-muted)">/10</span></div><div class="fw-sub">Flywheel Score</div></div>
+    </div>
+    <div class="fw-q">Q1: What is Anthem's proprietary training data?</div>
+    <div class="fw-a">Anthem has molecular synthesis records from 8,000+ projects. However, this is operational data, not an AI training corpus that improves results for future customers. Competitors with comparable histories (Lonza, WuXi, Syngene) have equivalent datasets. Data uniqueness: LOW. <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+    <div class="fw-q">Q2: Does AI improve measurably with more users/data?</div>
+    <div class="fw-a">No confirmed evidence that more projects measurably improve AI predictive accuracy for future client molecules in a compounding way. AI is used for in-house process optimization — a workflow tool, not a platform service that compounds with scale. <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+    <div class="fw-q">Q3: Does better AI attract more users?</div>
+    <div class="fw-a">NO: Client acquisition is driven by fermentation capacity, regulatory approvals, scientific depth, and molecule portfolio — not AI differentiation. No flywheel loop exists. Anthem's moat is physical-scientific, not algorithmic. <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+    <p class="note" style="margin-top:10px">Flywheel verdict: COSMETIC. Moat grade NOT upgraded. This does not impair the investment case — Anthem's physical-scientific moat sources are strong enough without an AI flywheel.</p>
+  </div>
+</div>
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <div class="section-h">Management &amp; Capital Allocation</div>
+  <div class="grid-2">
+    <div>
+      <div class="card">
+        <div class="card-h">Promoter Group <span class="conf-pill conf-v">[VERIFIED]</span></div>
+        <table>
+          <thead><tr><th>Name</th><th>Role</th><th>Stake</th><th>Background</th></tr></thead>
+          <tbody>
+            <tr><td>Ajay Bhardwaj</td><td>MD &amp; CEO</td><td class="t-pass">42.53%</td><td>Ex-Biocon, 25yr+</td></tr>
+            <tr><td>Ishaan Bhardwaj</td><td>Executive Director</td><td>10.16%</td><td>Next-gen, operations</td></tr>
+            <tr><td>Ganesh Sambasivam</td><td>CSO</td><td>8.13%</td><td>Ex-Biocon, scientific</td></tr>
+            <tr><td>K C Ravindra</td><td>COO</td><td>7.77%</td><td>Ex-Syngene, operations</td></tr>
+            <tr><td>Others (Promoter Group)</td><td>—</td><td>6.09%</td><td>—</td></tr>
+            <tr style="border-top:1px solid var(--accent-teal)"><td><strong>Total Promoter</strong></td><td>—</td><td class="t-pass"><strong>74.68%</strong></td><td class="t-pass"><strong>0% Pledged ✓</strong></td></tr>
+          </tbody>
+        </table>
+        <p class="note">Pledging: 0% = PASS. Key founders have direct lineage from Biocon and Syngene — India's most successful life sciences companies. 20-year organic capability building track record.</p>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-h">Capital Allocation Track Record</div>
+        <div class="scorecard-grid">
+          <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">All CapEx funded from internal accruals</span><span class="sc-status">PASS</span></div>
+          <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">No equity dilution for growth CapEx</span><span class="sc-status">PASS</span></div>
+          <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">Unit 4 ₹1,200Cr from internal cash</span><span class="sc-status">PASS</span></div>
+          <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">ROCE steadily above WACC</span><span class="sc-status">PASS</span></div>
+          <div class="sc-item sc-marginal"><span class="sc-icon">~</span><span class="sc-label">IPO was pure OFS — founders liquidity</span><span class="sc-status">NEUTRAL</span></div>
+          <div class="sc-item sc-pass"><span class="sc-icon">✓</span><span class="sc-label">₹2/share dividend declared FY26</span><span class="sc-status">PASS</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-h">Management Strengths</div>
+        <ul style="color:var(--text-muted);font-size:12.5px;line-height:1.9;padding-left:16px">
+          <li>Founders with 25–30 years in life sciences — domain depth is genuine, not acquired</li>
+          <li>Guided company from low-value intermediates to complex modality CRDMO — vision backed by execution</li>
+          <li>All 9 blockbuster commercial molecules built in-house — no acquisitions; organic R&amp;D focus</li>
+          <li>Consistent guidance delivery; management has historically met or exceeded revenue growth targets</li>
+          <li>Counter-cyclical investment posture: continued CapEx through Q3 FY26 destocking headwind</li>
+          <li>Davos Pharma (US) partnership demonstrates global commercial thinking</li>
+          <li>Zero IT raids, no related-party concerns, no regulatory violations in 20yr history</li>
+        </ul>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-h">Management Concerns &amp; Red Flags</div>
+        <ul style="color:var(--text-muted);font-size:12.5px;line-height:1.9;padding-left:16px">
+          <li><span class="risk-tag">WATCH</span> All manufacturing in Karnataka — geographic concentration risk</li>
+          <li><span class="risk-tag">WATCH</span> IPO was pure OFS — Ajay Bhardwaj (42.53%) sold down; no fresh capital raised</li>
+          <li><span class="risk-tag">MINOR</span> Top-5 client concentration 71%; no hard diversification targets given</li>
+          <li><span class="risk-tag">WATCH</span> No FY27/FY28 specific guidance provided in Q4 FY26 earnings call</li>
+        </ul>
+        <p class="note" style="margin-top:8px">None constitute AVOID-level red flags. Management track record and 74.68% stake, 0% pledged significantly mitigate all concerns.</p>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-h">Counter-Cyclical Behaviour</div>
+        <p style="font-size:12.5px;color:var(--text-muted);line-height:1.7">During Q3 FY26 destocking (rev −12.5% YoY), management continued CapEx investment rather than cutting back. Unit 4 (₹1,200Cr) approved <em>after</em> the destocking quarter — showing long-term conviction over short-term optics. Historical pattern of investing through adversity has been a key value creator.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <div class="section-h">Valuation &amp; Margin of Safety</div>
+  <div class="card" style="background:rgba(17,37,64,.6);border-color:rgba(31,201,154,.2);margin-bottom:16px">
+    <p style="font-size:12.5px;color:var(--text-muted);line-height:1.7"><strong style="color:var(--text-primary)">Framework Note:</strong> Cat B standard terminal P/E 20–25x; MoS = 20%. However, Indian high-quality CRDMO/pharma compounders (Divi's 40–55x, Syngene 40–50x) trade at sector premiums. We present standard (stress floor) and sector-premium (base/accel) frameworks. All growth rates from Step 3. Earnings quality: ACCEPTABLE — no adjustment required.</p>
+  </div>
+  <div class="sub-h">METHOD 1 — DCF 2-STAGE (5+5 YEAR) <span class="conf-pill conf-e">[ESTIMATED — FY26 base VERIFIED]</span></div>
+  <div class="card">
+    <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+      <div class="card" style="flex:1;min-width:120px;padding:10px;text-align:center;background:rgba(232,135,60,.08);border-color:rgba(232,135,60,.2)"><div style="font-family:var(--font-mono);font-size:11px;color:var(--accent-amber)">STRESS CASE</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">Stage 1: 15% · Stage 2: 9% · Terminal P/E: 22x · WACC: 13%</div></div>
+      <div class="card" style="flex:1;min-width:120px;padding:10px;text-align:center;background:rgba(31,201,154,.08);border-color:rgba(31,201,154,.2)"><div style="font-family:var(--font-mono);font-size:11px;color:var(--accent-teal)">BASE CASE</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">Stage 1: 22% · Stage 2: 13% · Terminal P/E: 40x · WACC: 12.5%</div></div>
+      <div class="card" style="flex:1;min-width:120px;padding:10px;text-align:center;background:rgba(108,111,255,.08);border-color:rgba(108,111,255,.2)"><div style="font-family:var(--font-mono);font-size:11px;color:#8E91FF">ACCEL CASE</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">Stage 1: 27% · Stage 2: 16% · Terminal P/E: 50x · WACC: 12%</div></div>
+    </div>
+    <table>
+      <thead><tr><th>FY Year</th><th class="scen-stress">Stress PAT (Cr)</th><th class="scen-base">Base PAT (Cr)</th><th class="scen-accel">Accel PAT (Cr)</th><th>PV Factor (12.5%)</th><th class="scen-base">Base PV (Cr)</th></tr></thead>
+      <tbody>
+        <tr><td>FY27 (Yr 1)</td><td class="scen-stress">₹681</td><td class="scen-base">₹722</td><td class="scen-accel">₹752</td><td>0.889</td><td class="scen-base">₹641</td></tr>
+        <tr><td>FY28 (Yr 2)</td><td class="scen-stress">₹783</td><td class="scen-base">₹881</td><td class="scen-accel">₹955</td><td>0.790</td><td class="scen-base">₹696</td></tr>
+        <tr><td>FY29 (Yr 3)</td><td class="scen-stress">₹900</td><td class="scen-base">₹1,075</td><td class="scen-accel">₹1,213</td><td>0.702</td><td class="scen-base">₹755</td></tr>
+        <tr><td>FY30 (Yr 4)</td><td class="scen-stress">₹1,035</td><td class="scen-base">₹1,311</td><td class="scen-accel">₹1,540</td><td>0.624</td><td class="scen-base">₹818</td></tr>
+        <tr><td>FY31 (Yr 5)</td><td class="scen-stress">₹1,190</td><td class="scen-base">₹1,599</td><td class="scen-accel">₹1,956</td><td>0.555</td><td class="scen-base">₹888</td></tr>
+        <tr><td>Terminal Value (×P/E, PV'd)</td><td class="scen-stress">₹26,180</td><td class="scen-base">₹63,960</td><td class="scen-accel">₹97,800</td><td>0.555</td><td class="scen-base">₹35,498</td></tr>
+        <tr style="background:rgba(31,201,154,.05);border-top:1px solid var(--accent-teal)"><td><strong>Equity Value (Cr)</strong></td><td class="scen-stress"><strong>₹17,000</strong></td><td class="scen-base"><strong>₹39,296</strong></td><td class="scen-accel"><strong>₹57,100</strong></td><td>—</td><td>—</td></tr>
+        <tr style="background:rgba(31,201,154,.04)"><td><strong>IV per Share (56.2Cr shares)</strong></td><td class="scen-stress"><strong>₹302</strong></td><td class="scen-base"><strong>₹699</strong></td><td class="scen-accel"><strong>₹1,016</strong></td><td>—</td><td>—</td></tr>
+        <tr><td>MoS Entry Zone (×0.80)</td><td class="scen-stress">₹242</td><td class="scen-base">₹559</td><td class="scen-accel">₹813</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Standard Cat B (20–25x terminal) gives stress/base/accel IV of ₹302/₹422/₹600. Premium CRDMO comps justify 40–50x, giving ₹302/₹699/₹1,016. Report uses premium framework for base/accel; standard for stress.</p>
+  </div>
+  <div class="sub-h" style="margin-top:18px">METHOD 2 — OWNER EARNINGS CAPITALISATION <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+  <div class="card"><table>
+    <thead><tr><th>Parameter</th><th class="scen-stress">Stress</th><th class="scen-base">Base</th><th class="scen-accel">Accel</th></tr></thead>
+    <tbody>
+      <tr><td>Owner Earnings (FY26)</td><td>₹515Cr</td><td>₹515Cr</td><td>₹515Cr</td></tr>
+      <tr><td>Required Return</td><td>14%</td><td>12.5%</td><td>11%</td></tr>
+      <tr><td>Long-term Growth (g)</td><td>6%</td><td>8%</td><td>9%</td></tr>
+      <tr><td>Value = OE / (r − g)</td><td>₹6,438Cr</td><td>₹11,444Cr</td><td>₹25,750Cr</td></tr>
+      <tr style="background:rgba(31,201,154,.05)"><td><strong>IV per Share</strong></td><td class="scen-stress"><strong>₹115</strong></td><td class="scen-base"><strong>₹204</strong></td><td class="scen-accel"><strong>₹458</strong></td></tr>
+    </tbody>
+  </table><p class="note">OE Cap gives conservative estimates using current earnings without reflecting the growth trajectory. Primarily the EPV floor. Growth-adjusted DCF is more appropriate for Anthem.</p></div>
+  <div class="sub-h" style="margin-top:18px">METHOD 3 — ROIC / EPV <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+  <div class="card"><table>
+    <thead><tr><th>Parameter</th><th class="scen-stress">Stress</th><th class="scen-base">Base</th><th class="scen-accel">Accel</th></tr></thead>
+    <tbody>
+      <tr><td>NOPAT (EBIT × (1−tax) FY26)</td><td colspan="3">~₹700Cr [ESTIMATED]</td></tr>
+      <tr><td>WACC</td><td>14%</td><td>12.5%</td><td>11%</td></tr>
+      <tr><td>Growth Premium Factor</td><td>1.1x</td><td>1.3x</td><td>1.5x</td></tr>
+      <tr><td>EPV = NOPAT/WACC × GP</td><td>₹5,500Cr</td><td>₹7,280Cr</td><td>₹9,545Cr</td></tr>
+      <tr><td>Economic Profit = (ROIC 30.4% − WACC) × IC ~₹2,300Cr</td><td colspan="3">~₹412Cr/yr economic value creation</td></tr>
+      <tr style="background:rgba(31,201,154,.05)"><td><strong>IV per Share</strong></td><td class="scen-stress"><strong>₹310</strong></td><td class="scen-base"><strong>₹520</strong></td><td class="scen-accel"><strong>₹700</strong></td></tr>
+    </tbody>
+  </table></div>
+  <div class="sub-h" style="margin-top:18px">METHOD 4 — P/E EARNINGS POWER <span class="conf-pill conf-v">[VERIFIED — current P/E]</span></div>
+  <div class="card"><table>
+    <thead><tr><th>P/E Method</th><th>FY26 EPS</th><th>Applied P/E</th><th>IV</th></tr></thead>
+    <tbody>
+      <tr><td>Trailing P/E at current price</td><td>₹10.54</td><td class="t-fail">72.6x</td><td>₹765 (current)</td></tr>
+      <tr><td>Forward P/E (FY27E ~₹13 EPS)</td><td>₹13.0 [EST]</td><td class="t-warn">58.8x</td><td>₹765 (current)</td></tr>
+      <tr><td>Normalised P/E (India CRDMO peers)</td><td>₹10.54</td><td>42x</td><td class="t-warn">₹442</td></tr>
+      <tr><td>Divi's Premium (50x comparable)</td><td>₹13.0 (FY27E)</td><td>55x</td><td class="t-pass">₹715</td></tr>
+      <tr style="background:rgba(31,201,154,.05)"><td><strong>P/E Power Base IV</strong></td><td>₹10.54</td><td><strong>42x</strong></td><td class="scen-base"><strong>₹442</strong></td></tr>
+    </tbody>
+  </table><p class="note">Reverse DCF: At ₹765, market prices in ~27%+ perpetual CAGR for 7+ years at 12.5% WACC — achievable in accel case but leaves zero buffer for any disappointment. Accel-case assumptions required to justify current price.</p></div>
+  <div class="sub-h" style="margin-top:18px">METHOD 5 — EARNINGS YIELD vs BOND YIELD <span class="conf-pill conf-v">[VERIFIED — yields]</span></div>
+  <div class="card"><table>
+    <thead><tr><th>Yield Metric</th><th>Value</th><th>10yr G-Sec (6.7%)</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>Earnings Yield (FY26 P/E 72.6x)</td><td>1.38%</td><td>6.7%</td><td class="t-fail">EXPENSIVE — gap −5.3%</td></tr>
+      <tr><td>Forward Earnings Yield (FY27E)</td><td>1.70%</td><td>6.7%</td><td class="t-fail">EXPENSIVE — gap −5.0%</td></tr>
+      <tr><td>FCF Yield (FCF ~₹450Cr)</td><td>~1.05%</td><td>6.7%</td><td class="t-fail">VERY EXPENSIVE</td></tr>
+      <tr><td>Crossover Year (EY = Bond Yield at 22% CAGR)</td><td colspan="3">Earnings yield ≥ 6.7% in ~Year 14 (FY40)</td></tr>
+    </tbody>
+  </table></div>
+  <div class="sub-h" style="margin-top:18px">5-METHOD SUMMARY TABLE</div>
+  <div class="card"><table>
+    <thead><tr><th>Method</th><th class="scen-stress">Stress IV</th><th class="scen-base">Base IV</th><th class="scen-accel">Accel IV</th><th>AI Adjustment</th></tr></thead>
+    <tbody>
+      <tr><td>DCF 2-Stage (Premium Terminal)</td><td class="scen-stress">₹302</td><td class="scen-base">₹699</td><td class="scen-accel">₹1,016</td><td>NEUTRAL → No adj.</td></tr>
+      <tr><td>Owner Earnings Cap.</td><td class="scen-stress">₹115</td><td class="scen-base">₹204</td><td class="scen-accel">₹458</td><td>NEUTRAL → No adj.</td></tr>
+      <tr><td>ROIC / EPV</td><td class="scen-stress">₹310</td><td class="scen-base">₹520</td><td class="scen-accel">₹700</td><td>NEUTRAL → No adj.</td></tr>
+      <tr><td>P/E Earnings Power</td><td class="scen-stress">₹280</td><td class="scen-base">₹442</td><td class="scen-accel">₹715</td><td>NEUTRAL → No adj.</td></tr>
+      <tr><td>Earnings Yield Approach</td><td class="scen-stress">₹260</td><td class="scen-base">₹410</td><td class="scen-accel">₹640</td><td>NEUTRAL → No adj.</td></tr>
+      <tr style="background:rgba(31,201,154,.06);border-top:1px solid var(--accent-teal)"><td><strong>Blended Base IV (excl OE Cap)</strong></td><td class="scen-stress"><strong>₹288</strong></td><td class="scen-base"><strong>₹518</strong></td><td class="scen-accel"><strong>₹768</strong></td><td>—</td></tr>
+      <tr style="background:rgba(212,168,83,.06)"><td>AI Premium Row</td><td colspan="4" style="color:var(--text-muted);font-size:11px">⚪ AI NEUTRAL → No adjustment. If data flywheel confirmed in future → potential +₹30–50/share upside revision</td></tr>
+    </tbody>
+  </table></div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:16px">
+    <div class="card" style="flex:1;min-width:180px"><div class="card-h">MoS Entry Zone</div><div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--accent-gold)">₹450–520</div><div style="font-size:11px;color:var(--text-muted)">Blended base IV ×0.80 = ₹414. Round to ₹450–520 accounting for quality premium and macro tailwind.</div></div>
+    <div class="card" style="flex:1;min-width:180px"><div class="card-h">Current vs Entry</div><div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--fail-clr)">+47%</div><div style="font-size:11px;color:var(--text-muted)">₹765 = 47% above MoS entry ₹518. Accel case IV of ₹768 barely justifies current price — zero buffer.</div></div>
+    <div class="card" style="flex:1;min-width:180px"><div class="card-h">Analyst Consensus</div><div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:#6C6FFF">₹879</div><div style="font-size:11px;color:var(--text-muted)">Avg of 7 analysts (Strong Buy). High: ₹956. Low: ₹830. +15% upside from ₹765 — requires accel assumptions.</div></div>
+  </div>
+  <div class="sub-h" style="margin-top:18px">DCF SENSITIVITY — BASE CASE (IV per share ₹)</div>
+  <div class="card"><table class="sensitivity-table">
+    <thead><tr><th>Terminal P/E ↓ | Stage 1 CAGR →</th><th>15%</th><th>18%</th><th>22%</th><th>25%</th><th>28%</th></tr></thead>
+    <tbody>
+      <tr><td>22x (Std Cat B stress)</td><td>₹255</td><td>₹280</td><td>₹302</td><td>₹330</td><td>₹365</td></tr>
+      <tr><td>30x</td><td>₹330</td><td>₹390</td><td>₹450</td><td>₹510</td><td>₹580</td></tr>
+      <tr><td>40x</td><td>₹420</td><td>₹560</td><td class="highlight">₹699</td><td>₹760</td><td>₹870</td></tr>
+      <tr><td>45x</td><td>₹460</td><td>₹630</td><td>₹760</td><td>₹835</td><td>₹960</td></tr>
+      <tr><td>50x (Divi's-level)</td><td>₹500</td><td>₹700</td><td>₹840</td><td>₹920</td><td>₹1,060</td></tr>
+    </tbody>
+  </table><p class="note">Current price ₹765 is fully valued at 40x terminal P/E + 22–25% Stage 1 CAGR, or at 45–50x terminal P/E + 18–20% CAGR. No meaningful MoS at current levels under base assumptions.</p></div>
+</div>
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <div class="section-h">Investment Verdict</div>
+  <div class="verdict-box">
+    <div class="verdict-grade-row">
+      <div class="pillar-grade"><div class="pg-grade">A−</div><div class="pg-name">Moat</div></div>
+      <div class="pillar-grade"><div class="pg-grade">B+</div><div class="pg-name">Quality</div></div>
+      <div class="pillar-grade"><div class="pg-grade">A−</div><div class="pg-name">Mgmt</div></div>
+      <div class="pillar-grade"><div class="pg-grade" style="color:var(--warn-clr)">C+</div><div class="pg-name">Valuation</div></div>
+      <div class="pillar-grade" style="border-color:var(--text-muted)"><div class="pg-grade" style="color:var(--text-muted)">⚪</div><div class="pg-name">AI Overlay</div></div>
+    </div>
+    <div class="verdict-stars-big">★★★★☆</div>
+    <div class="verdict-title">WATCH ★★★★</div>
+    <div class="verdict-desc">Anthem Biosciences is an exceptional business — India's deepest-moated CRDMO with irreplaceable fermentation scale, globally validated manufacturing, and a pipeline at the intersection of GLP-1, ADC, and China+1 megatrends. Three pillars (moat, quality, management) are outstanding. The fourth pillar — valuation — is stretched. At ₹765, the stock prices in near-perfection at 72.6x trailing P/E. Accel-case IV (₹768) barely justifies current price with zero buffer for any disappointment. One catalyst — a price correction to the ₹520–580 zone — would likely push this to BUY★★★★★.</div>
+    <div class="badge-row">
+      <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
+      <span class="badge badge-warn">VALUATION: C+</span>
+      <span class="badge badge-pass">MOAT: A−</span>
+      <span class="badge badge-pass">MACRO: TAILWIND</span>
+      <span class="badge badge-pass">DII SURGING ▲ 11.54%</span>
+      <span class="badge badge-fail">MoS DEFICIT: +47%</span>
+    </div>
+    <div class="quote-block">"The stock market is designed to transfer money from the Active to the Patient." — Warren Buffett. <em>Anthem is a stock worth being patient about — at the right price.</em></div>
+  </div>
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-h" style="color:var(--pass-clr)">Why BUY Qualitatively</div>
+      <ul style="color:var(--text-muted);font-size:12.5px;line-height:1.9;padding-left:16px">
+        <li>India's largest fermentation capacity (6× nearest competitor) — irreplaceable structural moat</li>
+        <li>Only Indian CRDMO with NCE AND NBE end-to-end capabilities</li>
+        <li>9 potential blockbuster molecules; $24bn combined peak sales potential by CY29</li>
+        <li>GLP-1 and ADC waves not yet fully commercialised — major future catalysts intact</li>
+        <li>DII (MF) surging 5%→11.54% in FY26 — rising institutional conviction</li>
+        <li>Q4 FY26: 48.1% EBITDA margin — record, shows strong operating leverage</li>
+        <li>Zero pledging, internally funded CapEx, clean promoter governance, 20yr track record</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-h" style="color:var(--fail-clr)">Why NOT BUY Quantitatively (Today)</div>
+      <ul style="color:var(--text-muted);font-size:12.5px;line-height:1.9;padding-left:16px">
+        <li>72.6x trailing P/E — pricing in aggressive accel-case assumptions</li>
+        <li>Blended base IV ₹518; MoS entry ₹450–520 — current price 47% above</li>
+        <li>Technical: RSI ~47, MACD neutral — no primary buy trigger active</li>
+        <li>No FY27/28 guidance provided — near-term uncertainty premium</li>
+        <li>GLP-1 commercialization timing unquantified — key future catalyst unpriced</li>
+        <li>Top-5 client concentration 71% — one client loss = material revenue shock</li>
+        <li>NWC days 222 — capital efficiency meaningfully worse than all peers</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sub-h">UPGRADE CONDITIONS TO BUY ★★★★★</div>
+  <div class="upgrade-conditions">
+    <div class="uc-item"><div class="uc-num">1</div><div class="uc-text"><strong style="color:var(--text-primary)">Price corrects to ₹520–560:</strong> Representing ~27–32% decline from ₹765, aligning with blended base IV at 20% MoS. Requires market correction or sector rotation — not a business deterioration event.</div></div>
+    <div class="uc-item"><div class="uc-num">2</div><div class="uc-text"><strong style="color:var(--text-primary)">RSI falls below 40 on daily chart:</strong> Combined with the price correction above, confirming institutional selling exhausted and accumulation likely beginning.</div></div>
+    <div class="uc-item"><div class="uc-num">3</div><div class="uc-text"><strong style="color:var(--text-primary)">GLP-1 revenue contribution confirmed for 2 consecutive quarters:</strong> Meaningful GLP-1 revenue (≥₹50Cr/quarter) = new high-margin revenue stream not yet priced in → would upgrade accel case IV materially.</div></div>
+    <div class="uc-item"><div class="uc-num">4</div><div class="uc-text"><strong style="color:var(--text-primary)">Top-5 client concentration reduces below 65%:</strong> Signals improved diversification and lower single-customer risk — justifies a lower risk discount in the valuation.</div></div>
+    <div class="uc-item"><div class="uc-num">5</div><div class="uc-text"><strong style="color:var(--text-primary)">FCF conversion recovers above 80% for 2 consecutive quarters:</strong> Would upgrade earnings quality from ACCEPTABLE to CLEAN, widening acceptable P/E range by 3–5x.</div></div>
+  </div>
+  <div class="sub-h" style="margin-top:20px">SERIES TRACKER</div>
+  <div class="card"><table>
+    <thead><tr><th>Ticker</th><th>Category</th><th>AI Overlay</th><th>Verdict</th><th>MoS Entry</th><th>Current Price</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><strong>ANTHEM</strong></td><td>B</td><td>⚪ Neutral</td><td class="t-warn">WATCH ★★★★</td><td class="t-pass">₹450–520</td><td class="t-fail">₹765</td><td class="t-fail">47% above entry</td></tr>
+    </tbody>
+  </table></div>
+</div>
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <div class="section-h">Technical Analysis</div>
+  <div class="card" style="margin-bottom:10px;background:rgba(31,201,154,.04);border-color:rgba(31,201,154,.2)"><p style="font-size:12px;color:var(--text-muted)">⚠ Note: ANTHEM listed NSE/BSE July 21, 2025 (IPO ₹570). Stock is ~10 months old as of May 29, 2026. Full 200-DMA not yet established with statistical significance. All MA estimates are derived from the known price trajectory.</p></div>
+  <div class="sub-h">(A) PRICE STRUCTURE <span class="conf-pill conf-v">[VERIFIED]</span></div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-val">₹765</div><div class="metric-lbl">Current (29 May '26)</div></div>
+    <div class="metric fail"><div class="metric-val">₹873</div><div class="metric-lbl">52-Wk High (18 Sep '25)</div></div>
+    <div class="metric"><div class="metric-val">₹579</div><div class="metric-lbl">52-Wk Low</div></div>
+    <div class="metric"><div class="metric-val">₹570</div><div class="metric-lbl">IPO Issue Price</div></div>
+    <div class="metric fail"><div class="metric-val">−12.4%</div><div class="metric-lbl">From ATH</div></div>
+    <div class="metric"><div class="metric-val">+34.1%</div><div class="metric-lbl">From 52-Wk Low</div></div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-h">Price Ladder</div>
+    <div style="font-size:12px;color:var(--text-muted);line-height:1.9">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-card);padding-bottom:4px;margin-bottom:6px"><span>Strong Resistance: ATH ₹873</span><span style="color:var(--fail-clr)">Significant overhead supply</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-card);padding-bottom:4px;margin-bottom:6px"><span>Resistance: ₹820–840</span><span style="color:var(--warn-clr)">Distribution zone Sep–Oct '25</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-card);padding-bottom:4px;margin-bottom:6px"><span style="color:var(--accent-teal)">Current: ₹765 <strong>[TRADING HERE]</strong></span><span>Recovery from Dec '25 lows</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-card);padding-bottom:4px;margin-bottom:6px"><span>Support 1: ₹720–740</span><span style="color:var(--pass-clr)">50-DMA zone [EST]</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border-card);padding-bottom:4px;margin-bottom:6px"><span>Support 2: ₹680–700</span><span style="color:var(--pass-clr)">Post-IPO consolidation base</span></div>
+      <div style="display:flex;justify-content:space-between"><span>Critical / MoS Zone: ₹540–580</span><span style="color:var(--pass-clr)">IPO zone + MoS entry overlap = IDEAL ENTRY</span></div>
+    </div>
+  </div>
+  <div class="sub-h">(B) MA DASHBOARD <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+  <div class="card"><table>
+    <thead><tr><th>MA</th><th>Est. Level</th><th>Price vs MA</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>20-EMA (daily)</td><td>₹762–772</td><td class="t-pass">At / slightly above</td><td>Short-term bullish</td></tr>
+      <tr><td>50-DMA</td><td>₹730–750</td><td class="t-pass">Above (+3.5%)</td><td>Medium-term support</td></tr>
+      <tr><td>100-DMA</td><td>₹700–720</td><td class="t-pass">Above (+7%)</td><td>Structural uptrend intact</td></tr>
+      <tr><td>200-DMA</td><td>N/A (&lt;12 months listed)</td><td>—</td><td>Not yet meaningful</td></tr>
+    </tbody>
+  </table><p class="note">20/50/100 DMA stacking ascending below price = mild bull setup. No golden/death cross due to short history. Position above all available MAs is positive but not a strong buy trigger.</p></div>
+  <div class="sub-h" style="margin-top:16px">(D) MOMENTUM INDICATORS <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+  <div class="grid-3">
+    <div class="card"><div class="card-h">RSI (14-day)</div><div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--warn-clr)">~47</div><div class="tech-bar"><div class="tech-fill warn" style="width:47%"></div></div><p class="note">Neutral zone. Buy zone = below 40. No primary buy trigger. Post-Q4 results decline from ~60+ suggests mild institutional caution.</p></div>
+    <div class="card"><div class="card-h">MACD (12/26/9)</div><div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--warn-clr)">NEUTRAL</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px">MACD near signal line; histogram narrowing</div><p class="note">No clear buy/sell signal. Watch for MACD crossover — bearish cross forming tentatively post-Q4 results announcement.</p></div>
+    <div class="card"><div class="card-h">RSI Weekly</div><div style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--pass-clr)">~55</div><div class="tech-bar"><div class="tech-fill" style="width:55%"></div></div><p class="note">Weekly RSI neutral-positive. Not overbought. Longer timeframe suggests healthy technical structure without the short-term noise.</p></div>
+  </div>
+  <div class="sub-h" style="margin-top:16px">(F) TRADE STRUCTURE</div>
+  <div class="grid-2">
+    <div class="trade-box">
+      <div class="card-h">Scenario A: Current Entry (Momentum)</div>
+      <div class="trade-row"><span class="tl">Entry Zone</span><span class="tv buy">₹740–760</span></div>
+      <div class="trade-row"><span class="tl">Stop Loss</span><span class="tv sl">₹695 (below 100-DMA)</span></div>
+      <div class="trade-row"><span class="tl">Target 1</span><span class="tv t1">₹830 (ATH zone)</span></div>
+      <div class="trade-row"><span class="tl">Target 2</span><span class="tv t2">₹900 (analyst high)</span></div>
+      <div class="trade-row"><span class="tl">Risk:Reward</span><span class="tv" style="color:var(--warn-clr)">1:1.5 — SUBOPTIMAL</span></div>
+      <p class="note">R:R below 2.5x minimum threshold. Technical trigger absent. Not recommended.</p>
+    </div>
+    <div class="trade-box">
+      <div class="card-h">Scenario B: Ideal Entry (Value + Tech Align)</div>
+      <div class="trade-row"><span class="tl">Entry Zone</span><span class="tv buy">₹540–580 (RSI &lt;40)</span></div>
+      <div class="trade-row"><span class="tl">Stop Loss</span><span class="tv sl">₹505 (below IPO + key support)</span></div>
+      <div class="trade-row"><span class="tl">Target 1</span><span class="tv t1">₹740 (200-DMA once formed)</span></div>
+      <div class="trade-row"><span class="tl">Target 2</span><span class="tv t2">₹960 (accel IV zone)</span></div>
+      <div class="trade-row"><span class="tl">Risk:Reward</span><span class="tv buy">1:5.6 — EXCELLENT</span></div>
+      <p class="note">Ideal entry: MoS zone + RSI primary buy + value convergence. Maximum conviction setup.</p>
+    </div>
+  </div>
+  <div class="sub-h" style="margin-top:16px">(G) TECHNICAL COMPOSITE SCORE /30</div>
+  <div class="card"><table>
+    <thead><tr><th style="text-align:left">Dimension</th><th>Score (/5)</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr><td>Primary Trend (Recovery from IPO lows)</td><td class="t-pass">3/5</td><td>Neutral-bullish recovery</td></tr>
+      <tr><td>MA Dashboard (above 20/50/100 DMA)</td><td class="t-pass">3/5</td><td>Bullish but no 200-DMA anchor</td></tr>
+      <tr><td>Volume / OBV (thin, DII accumulating)</td><td class="t-warn">3/5</td><td>Neutral — DII floor support</td></tr>
+      <tr><td>Momentum (RSI ~47, MACD neutral)</td><td class="t-warn">2/5</td><td>Sub-trigger zone</td></tr>
+      <tr><td>Pattern (Recovery base forming)</td><td class="t-warn">3/5</td><td>Cup base forming, unconfirmed</td></tr>
+      <tr><td>Risk:Reward at current price</td><td class="t-fail">2/5</td><td>Below 2.5x threshold</td></tr>
+      <tr style="border-top:1px solid var(--accent-teal)"><td><strong>Composite Score</strong></td><td class="t-warn"><strong>16/30 (53%)</strong></td><td class="t-warn"><strong>NEUTRAL — NO TRIGGER</strong></td></tr>
+    </tbody>
+  </table></div>
+</div>
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <div class="section-h">Shareholding Pattern</div>
+  <div class="sub-h">(A) PROMOTER HOLDING TREND <span class="conf-pill conf-v">[VERIFIED]</span></div>
+  <div class="card" style="margin-bottom:14px"><table>
+    <thead><tr><th>Quarter</th><th>Promoter %</th><th>Pledged %</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr><td>Pre-IPO (FY25)</td><td>76.88%</td><td>0%</td><td class="t-pass">Strong pre-IPO stake</td></tr>
+      <tr><td>Q1 FY26 (Post-IPO Jul '25)</td><td>74.69%</td><td class="t-pass">0%</td><td class="t-warn">Diluted via OFS</td></tr>
+      <tr><td>Q2 FY26 (Sep '25)</td><td>74.69%</td><td class="t-pass">0%</td><td class="t-pass">Stable</td></tr>
+      <tr><td>Q3 FY26 (Dec '25)</td><td>74.69%</td><td class="t-pass">0%</td><td class="t-pass">Stable</td></tr>
+      <tr style="background:rgba(31,201,154,.05)"><td><strong>Q4 FY26 (Mar '26)</strong></td><td class="t-hi"><strong>74.68%</strong></td><td class="t-pass"><strong>0%</strong></td><td class="t-pass"><strong>Stable, Unencumbered ✓</strong></td></tr>
+    </tbody>
+  </table><p class="note">Pledging 0% = PASS (best possible score). No dilution since IPO. Key promoters: Ajay Bhardwaj 42.53%, Ishaan Bhardwaj 10.16%, Ganesh Sambasivam 8.13%, K C Ravindra 7.77%.</p></div>
+  <div class="sub-h">(B) INSTITUTIONAL INVESTOR TREND <span class="conf-pill conf-v">[VERIFIED]</span></div>
+  <div class="card" style="margin-bottom:14px"><table>
+    <thead><tr><th>Quarter</th><th>FII %</th><th>DII / MF %</th><th>FII Signal</th><th>DII Signal</th></tr></thead>
+    <tbody>
+      <tr><td>Q1 FY26 (Jun '25)</td><td>~1.2%</td><td>~5.0%</td><td>—</td><td>Initial post-IPO</td></tr>
+      <tr><td>Q2 FY26 (Sep '25)</td><td>1.40%</td><td>7.33%</td><td class="t-pass">↑ Rising</td><td class="t-pass">↑ Strong buying</td></tr>
+      <tr><td>Q3 FY26 (Dec '25)</td><td>1.36%</td><td>7.22%</td><td class="t-warn">↓ Minor exit</td><td class="t-warn">~ Flat</td></tr>
+      <tr style="background:rgba(31,201,154,.05)"><td><strong>Q4 FY26 (Mar '26)</strong></td><td class="t-warn"><strong>1.28%</strong></td><td class="t-pass"><strong>11.54% ★ +3.23pp QoQ</strong></td><td class="t-warn">↓ Declining</td><td class="t-pass"><strong>★ SURGE — 27 MFs holding</strong></td></tr>
+    </tbody>
+  </table><p class="note">★ Standout: DII surge from 7.22% → 10.12% MF + 1.42% other DII = 11.54% total in Q4 FY26 — strongest institutional buy signal since IPO. FII headroom: 74% sectoral limit - 1.28% utilised = massive FII upside potential as track record builds.</p></div>
+  <div class="sub-h">(C) CURRENT COMPOSITION <span class="conf-pill conf-v">[VERIFIED — May 2026]</span></div>
+  <div class="card">
+    <div class="sh-bar-row"><span class="sh-label">Promoter</span><div class="sh-bar"><div class="sh-fill" style="width:74.68%;background:var(--accent-teal)"></div></div><span class="sh-pct">74.68%</span><span class="sh-trend sh-flat">→</span></div>
+    <div class="sh-bar-row"><span class="sh-label">DII / MF</span><div class="sh-bar"><div class="sh-fill" style="width:11.54%;background:var(--accent-gold)"></div></div><span class="sh-pct">11.54%</span><span class="sh-trend sh-up">▲ Surge</span></div>
+    <div class="sh-bar-row"><span class="sh-label">FII</span><div class="sh-bar"><div class="sh-fill" style="width:1.28%;background:#6C6FFF"></div></div><span class="sh-pct">1.28%</span><span class="sh-trend sh-dn">▼</span></div>
+    <div class="sh-bar-row"><span class="sh-label">Public</span><div class="sh-bar"><div class="sh-fill" style="width:12.5%;background:var(--text-faint)"></div></div><span class="sh-pct">12.50%</span><span class="sh-trend sh-dn">▼ (MF buying)</span></div>
+    <p class="note" style="margin-top:10px">Free float ~25.32% (~₹10,900Cr at ₹765). FII sectoral limit 74% — current utilisation ~1.7% — massive headroom. SIP-driven DII floor provides consistent accumulation support.</p>
+  </div>
+  <div class="sub-h" style="margin-top:18px">(E) OWNERSHIP MOMENTUM SCORES</div>
+  <div class="grid-2">
+    <div class="card"><div class="card-h">Ownership Momentum Score</div><div style="font-family:var(--font-mono);font-size:36px;font-weight:700;color:var(--accent-teal)">72 <span style="font-size:18px;color:var(--text-muted)">/100</span></div><p class="note">Strong DII accumulation (+52 pts), stable promoter (+20), weak FII (−8) = Net Positive Ownership Momentum. DII surge in Q4 FY26 is the single strongest data point.</p></div>
+    <div class="card"><div class="card-h">Shareholding Risk Score</div><div style="font-family:var(--font-mono);font-size:36px;font-weight:700;color:var(--pass-clr)">18 <span style="font-size:18px;color:var(--text-muted)">/100</span></div><p class="note">LOW RISK: 0% pledging dominates (+60 mitigation). Key residual risk: public float sell pressure from IPO allottees who bought at ₹570 (+35% return) (+18 risk score).</p></div>
+  </div>
+</div>
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <div class="section-h">AI Intelligence Assessment</div>
+  <div class="sub-h">(A) AI CLASSIFICATION DASHBOARD</div>
+  <div class="ai-dash">
+    <div class="ai-badge-card"><div class="ai-badge-icon">⬟</div><div class="ai-badge-label">Category</div><div class="ai-badge-val">B — High-Growth</div></div>
+    <div class="ai-badge-card" style="border-color:rgba(122,171,186,.2)"><div class="ai-badge-icon">⚪</div><div class="ai-badge-label">AI Overlay</div><div class="ai-badge-val" style="color:var(--text-muted)">NEUTRAL</div></div>
+    <div class="ai-badge-card"><div class="ai-badge-icon">🔄</div><div class="ai-badge-label">Flywheel</div><div class="ai-badge-val" style="color:var(--text-muted)">COSMETIC (0/3)</div></div>
+    <div class="ai-badge-card"><div class="ai-badge-icon">2️⃣</div><div class="ai-badge-label">AI Phase</div><div class="ai-badge-val">Phase 2 — Adopter</div></div>
+    <div class="ai-badge-card"><div class="ai-badge-icon">🛡️</div><div class="ai-badge-label">AI Threat Level</div><div class="ai-badge-val" style="color:var(--pass-clr)">LOW</div></div>
+    <div class="ai-badge-card"><div class="ai-badge-icon">📊</div><div class="ai-badge-label">AI Score</div><div class="ai-badge-val" style="color:var(--warn-clr)">52 / 100</div></div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <p style="font-size:12.5px;color:var(--text-muted);line-height:1.7"><strong style="color:var(--text-primary)">AI Adoption Phase Evidence (Phase 2 — Adopter):</strong> Anthem uses AI for (1) computational chemistry and in silico drug design, (2) process analytical technology (PAT) for fermentation optimization, and (3) project timeline analytics. This is standard Phase 2 adoption across the CRDMO sector. Anthem has not disclosed any proprietary AI model, benchmark publication, or differentiated AI capability vs peers. WuXi AppTec, Lonza, and Syngene have equivalent or superior AI deployment. <span class="conf-pill conf-e">[ESTIMATED]</span></p>
+  </div>
+  <div class="sub-h">(B) 6-PART AI IMPACT ANALYSIS</div>
+  <div class="card" style="margin-bottom:12px"><table>
+    <thead><tr><th style="text-align:left">AI Impact Dimension</th><th>Assessment</th><th>Rating</th><th>Confidence</th></tr></thead>
+    <tbody>
+      <tr><td>6a — Cost Reduction via AI (process optimization)</td><td style="color:var(--text-muted)">Real but replicable — PAT &amp; computational chemistry save ~3–5% on R&amp;D costs</td><td class="t-warn">LOW EDGE</td><td><span class="conf-pill conf-e">[EST]</span></td></tr>
+      <tr><td>6b — Market Expansion via AI</td><td style="color:var(--text-muted)">No evidence AI opens new markets for Anthem specifically — market is driven by drug pipeline &amp; capacity</td><td class="t-fail">NOT APPLICABLE</td><td><span class="conf-pill conf-e">[EST]</span></td></tr>
+      <tr><td>6c — Data Flywheel / Switching Cost</td><td style="color:var(--text-muted)">COSMETIC — 8,000+ project data is operational, not an AI flywheel. Competitors have equivalent data.</td><td class="t-fail">COSMETIC</td><td><span class="conf-pill conf-e">[EST]</span></td></tr>
+      <tr><td>AI Threat Resistance</td><td style="color:var(--text-muted)">HIGH — Physical fermentation, regulatory clearances, and scientific talent cannot be AI-replicated. Moat is safe.</td><td class="t-pass">LOW THREAT</td><td><span class="conf-pill conf-v">[VER]</span></td></tr>
+      <tr><td>Sector AI Impact (CRDMO widener)</td><td style="color:var(--text-muted)">AI in drug discovery accelerates innovation pipeline globally → more molecules → more CRDMO demand. Net positive for sector.</td><td class="t-pass">WIDENER</td><td><span class="conf-pill conf-v">[VER]</span></td></tr>
+      <tr><td>India AI Structural Advantage</td><td style="color:var(--text-muted)">India Stack (Aadhaar/UPI) not relevant to B2B CRDMO. India's AI advantage = cost arbitrage on scientific talent only.</td><td class="t-warn">INDIRECT</td><td><span class="conf-pill conf-e">[EST]</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="sub-h">(C) AI VALUE CHAIN POSITION</div>
+  <div class="ai-chain">
+    <div class="ai-chain-level"><div class="ai-chain-num">LEVEL 1</div><div class="ai-chain-name">Infrastructure</div><div class="ai-chain-eg">NVIDIA, TSMC, AWS</div></div>
+    <div class="ai-chain-level"><div class="ai-chain-num">LEVEL 2</div><div class="ai-chain-name">Foundation Models</div><div class="ai-chain-eg">OpenAI, Anthropic, Google</div></div>
+    <div class="ai-chain-level"><div class="ai-chain-num">LEVEL 3</div><div class="ai-chain-name">Platforms / APIs</div><div class="ai-chain-eg">Azure AI, AWS Bedrock</div></div>
+    <div class="ai-chain-level"><div class="ai-chain-num">LEVEL 4</div><div class="ai-chain-name">Vertical AI Apps</div><div class="ai-chain-eg">Recursion, Insilico, Schrödinger</div></div>
+    <div class="ai-chain-level active"><div class="ai-chain-num">LEVEL 5 ★</div><div class="ai-chain-name">AI-Enabled Incumbent</div><div class="ai-chain-eg">Anthem Biosciences (here)</div></div>
+  </div>
+  <div class="note" style="margin-bottom:16px">Level 5 Investment Implication: Established moat from physical assets and regulatory IP. AI is additive efficiency tool, not core revenue driver. Risk: LOW AI-specific disruption risk — molecule synthesis, fermentation, and regulatory compliance are physical processes AI cannot replicate. AI at Level 4 (Recursion, Schrödinger) could eventually shorten drug discovery timelines but would increase, not decrease, demand for CRDMO manufacturing services. NET POSITIVE for Anthem.</div>
+  <div class="sub-h">(D) DATA FLYWHEEL DETAILED TEST</div>
+  <div class="flywheel-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div><span class="fw-badge fw-cosmetic">COSMETIC (0/3 criteria confirmed)</span><p class="fw-sub" style="margin-top:4px">AI adds operational value but creates no compounding defensibility</p></div>
+      <div style="text-align:center"><div class="fw-score">3 <span style="font-size:18px;color:var(--text-muted)">/10</span></div><div class="fw-sub">Flywheel Score</div></div>
+    </div>
+    <div class="fw-q">Criterion 1: Proprietary training data that compounds with use?</div>
+    <div class="fw-a">Anthem holds synthesis records from 8,000+ projects. However, this is internal operational data — not a training corpus that improves AI outputs for future customers. Lonza, WuXi, and Syngene hold equivalent project histories. Data uniqueness and barrier contribution: LOW. Score: 3/10. <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+    <div class="fw-q">Criterion 2: AI measurably improves with more users/data (compounding loop)?</div>
+    <div class="fw-a">No confirmed evidence. AI is used for in-house process optimization. Each client's molecule is unique — there is no cross-client data leverage. More projects do not automatically produce better AI results for the next client. No compounding loop confirmed. Score: 0/3. <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+    <div class="fw-q">Criterion 3: Better AI capabilities attract more clients (flywheel)?</div>
+    <div class="fw-a">Confirmed NO. Client acquisition at Anthem is driven by fermentation capacity, regulatory approvals (US FDA/EMA), scientific credentials, and commercial molecule portfolio — not AI differentiation. Zero evidence of AI-driven client acquisition. Moat is physical-scientific. Score: 0/3. <span class="conf-pill conf-e">[ESTIMATED]</span></div>
+    <p class="note" style="margin-top:10px">★ Key insight: Anthem's COSMETIC flywheel does NOT impair the investment thesis. Its actual moat (fermentation scale, regulatory clearances, scientific depth, switching costs) is robust without any AI flywheel. The AI question is a "bonus check" — failing it means no AI premium, not a discount.</p>
+  </div>
+  <div class="sub-h" style="margin-top:16px">(F) AI OPPORTUNITY SCORE</div>
+  <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+    <div style="text-align:center;padding:20px">
+      <div class="ai-score-ring"><div class="ai-score-inner"><div class="ai-score-num">52</div><div class="ai-score-denom">/100</div></div></div>
+      <div style="font-family:var(--font-mono);font-weight:700;color:var(--text-muted);font-size:13px">MONITOR</div>
+      <div style="font-size:10px;color:var(--text-faint);margin-top:3px">40–60 = Monitor range</div>
+    </div>
+    <div style="flex:1;min-width:220px">
+      <table>
+        <thead><tr><th>AI Score Component</th><th>Score</th><th>Max</th></tr></thead>
+        <tbody>
+          <tr><td>Data Flywheel Strength</td><td class="t-warn">6</td><td>20</td></tr>
+          <tr><td>Adoption Phase Timing (Phase 2 = opportunity)</td><td class="t-pass">13</td><td>20</td></tr>
+          <tr><td>Value Chain Position (Level 5 — stable)</td><td class="t-pass">12</td><td>20</td></tr>
+          <tr><td>India Structural AI Advantage</td><td class="t-warn">6</td><td>20</td></tr>
+          <tr><td>AI Threat Resistance (HIGH physical moat)</td><td class="t-pass">15</td><td>20</td></tr>
+          <tr style="border-top:1px solid var(--accent-teal)"><td><strong>Total AI Score</strong></td><td class="t-pass"><strong>52 / 100</strong></td><td>100</td></tr>
+        </tbody>
+      </table>
+      <div class="card" style="margin-top:10px;padding:10px 12px">
+        <div style="font-size:11px;color:var(--text-muted)"><strong style="color:var(--text-primary)">Portfolio Role:</strong> MONITOR. AI adds efficiency at the margin but is not a core thesis driver. Anthem should be owned as a quality CRDMO compounder, not as an AI play. The AI score of 52 confirms the NEUTRAL overlay — no premium added, no discount applied. Future upgrade path: if Anthem develops a proprietary AI platform for de novo drug design (similar to Recursion) and monetizes it externally, this score could jump to 70+ and the AI overlay would shift to 🌀 AI CORE.</div>
+      </div>
+    </div>
+  </div>
+  <div class="sub-h" style="margin-top:16px">(G) AI THREAT SCENARIO ANALYSIS</div>
+  <div class="card"><table>
+    <thead><tr><th style="text-align:left">Threat Scenario</th><th>Probability</th><th>Impact on Anthem</th><th>Moat Response</th></tr></thead>
+    <tbody>
+      <tr><td>AI fully automates drug discovery (removes need for CRDMO)</td><td class="t-pass">Very Low (&lt;5%)</td><td class="t-pass">Minimal — AI still needs physical manufacturing</td><td class="t-pass">Fermentation moat intact</td></tr>
+      <tr><td>Recursion/AI-first CRDMOs take market share</td><td class="t-warn">Low (~10–15%)</td><td class="t-warn">Modest — on discovery side only</td><td class="t-pass">Manufacturing moat intact; partnerships likely</td></tr>
+      <tr><td>AI accelerates drug pipeline → more CRDMO demand</td><td class="t-pass">High (&gt;70%)</td><td class="t-pass">POSITIVE — More molecules = more contracts</td><td class="t-pass">Fermentation capacity becomes scarcer</td></tr>
+      <tr><td>Chinese AI-CRDMO hybrid competes on cost + intelligence</td><td class="t-warn">Medium (20–25%)</td><td class="t-warn">Competitive pressure on pricing margin</td><td class="t-warn">Regulatory/BIOSECURE Act provides 5–7yr buffer</td></tr>
+    </tbody>
+  </table><p class="note">Net AI threat assessment: LOW. The most probable AI scenario (accelerated drug pipelines) is actually a strong tailwind for Anthem's manufacturing business. The COSMETIC flywheel classification means no structural competitive advantage from AI, but also near-zero structural threat from AI disruption. Classic physical-moat business in an AI-accelerated world.</p></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>DISCLAIMER (SEBI):</strong> This research report is for educational and informational purposes only and does not constitute investment advice, a solicitation for investment, or a prospectus. Investments in equity markets are subject to market risk — read all scheme-related documents carefully before investing. The analyst is not a SEBI Registered Investment Advisor (RIA) and holds no position in ANTHEM as of report date. Past performance is not indicative of future results.
+  <br><br>
+  <strong>DATA CONFIDENCE LEGEND:</strong> <span class="conf-pill conf-v">[VERIFIED]</span> = confirmed from official NSE/BSE filings, IPO prospectus, or live search this session &nbsp;|&nbsp; <span class="conf-pill conf-e">[ESTIMATED]</span> = cross-referenced from multiple secondary sources; high confidence, not a primary filing &nbsp;|&nbsp; <span class="conf-pill conf-u">[UNVERIFIED]</span> = limited source; treat with appropriate caution.
+  <br><br>
+  <strong>PRIMARY SOURCES:</strong> NSE/BSE exchange filings | Anthem Biosciences IPO Prospectus (Jul 2025) | Q4 FY26 &amp; Full Year Results (May 2026) | BCG/IPSO India CRDMO Report (Feb 2025) | Frost &amp; Sullivan Global CDMO Report | JM Financial, ICICI Securities, Nuvama analyst reports | Screener.in, Trendlyne, Moneycontrol verified data.
+  <br><br>
+  <strong>REPORT:</strong> ANTHEM_qv_report.html &nbsp;|&nbsp; <strong>SERIES:</strong> Buffett QV Series v5.0 &nbsp;|&nbsp; <strong>DATE:</strong> 29 May 2026 &nbsp;|&nbsp; <strong>VERSION:</strong> v1.0 &nbsp;|&nbsp; <strong>NEXT REVIEW:</strong> Q1 FY27 Results (Aug 2026)
+  <br><br>
+  <em>Typography: Cormorant Garamond (Display) · JetBrains Mono (Data) · Plus Jakarta Sans (Body) via Google Fonts.</em>
+</footer>
+
+<script>
+(function(){
+  var tabBar=document.getElementById('tab-bar'),tabBarTop=0;
+  function getTabBarTop(){var el=tabBar,t=0;while(el){t+=el.offsetTop;el=el.offsetParent;}return t;}
+  window.addEventListener('load',function(){tabBarTop=getTabBarTop();});
+  window.switchTab=function(id){
+    document.querySelectorAll('.tab-content').forEach(function(el){el.style.display='none';});
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+    var tgt=document.getElementById(id);
+    if(tgt){tgt.style.display='block';}
+    var btn=document.querySelector('[data-tab="'+id+'"]');
+    if(btn){btn.classList.add('active');}
+    window.scrollTo({top:tabBarTop,behavior:'smooth'});
+  };
+  // Show tab0 on load
+  var first=document.getElementById('tab0');
+  if(first){first.style.display='block';}
+})();
+</script>
+</body>
+</html>
