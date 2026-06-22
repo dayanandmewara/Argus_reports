@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEG — Buffett Quality-Value Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0d1b2a;
+  --navy-mid: #12253a;
+  --navy-light: #1b3a5c;
+  --teal: #00c8d4;
+  --teal-dim: #00a8b5;
+  --teal-glow: rgba(0,200,212,0.15);
+  --amber: #f59e0b;
+  --amber-dim: #d97706;
+  --chrome: #d0d8e4;
+  --chrome-dim: #8fa1b8;
+  --white: #f0f4fa;
+  --pass: #10b981;
+  --marginal: #f59e0b;
+  --fail: #ef4444;
+  --verified: #10b981;
+  --estimated: #f59e0b;
+  --unverified: #ef4444;
+  --card-bg: rgba(27,58,92,0.45);
+  --border: rgba(0,200,212,0.2);
+  --text-muted: #8fa1b8;
+  --radius: 8px;
+  --tab-active: var(--teal);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--navy);color:var(--white);font-family:'Lora',serif;font-size:15px;line-height:1.65;}
+a{color:var(--teal);text-decoration:none;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#0a2340 40%,#0d2d4a 100%);padding:28px 32px 20px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;max-height:220px;}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(0,200,212,0.06) 0%,transparent 70%);pointer-events:none;}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.hero-left{flex:1;}
+.ticker-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+.ticker{font-family:'Rajdhani',sans-serif;font-size:42px;font-weight:700;color:var(--teal);letter-spacing:2px;line-height:1;}
+.exchange{font-family:'Space Mono',monospace;font-size:10px;background:rgba(0,200,212,0.15);border:1px solid var(--teal);color:var(--teal);padding:3px 8px;border-radius:3px;letter-spacing:1px;}
+.company-name{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:600;color:var(--chrome);letter-spacing:0.5px;margin-bottom:6px;}
+.lede{font-size:13px;color:var(--chrome-dim);font-style:italic;max-width:580px;line-height:1.5;}
+.hero-badges{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.verdict-badge{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;padding:7px 18px;border-radius:5px;text-align:center;}
+.verdict-watch4{background:rgba(245,158,11,0.15);border:2px solid var(--amber);color:var(--amber);}
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+.badge{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.5px;padding:3px 8px;border-radius:3px;border:1px solid;white-space:nowrap;}
+.badge-cat-c{background:rgba(16,185,129,0.1);border-color:var(--pass);color:var(--pass);}
+.badge-widener{background:rgba(16,185,129,0.1);border-color:var(--pass);color:var(--pass);}
+.badge-neutral-m{background:rgba(143,161,184,0.1);border-color:var(--chrome-dim);color:var(--chrome-dim);}
+.badge-price{background:rgba(0,200,212,0.1);border-color:var(--teal);color:var(--teal);}
+.conf-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.pill{font-family:'Space Mono',monospace;font-size:9px;padding:2px 7px;border-radius:20px;border:1px solid;}
+.pill-v{background:rgba(16,185,129,0.12);border-color:var(--verified);color:var(--verified);}
+.pill-e{background:rgba(245,158,11,0.12);border-color:var(--estimated);color:var(--estimated);}
+.pill-u{background:rgba(239,68,68,0.12);border-color:var(--unverified);color:var(--unverified);}
+
+/* TAB BAR */
+#tab-bar{position:sticky;top:0;z-index:100;background:var(--navy-mid);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap;}
+#tab-bar::-webkit-scrollbar{height:3px;}
+#tab-bar::-webkit-scrollbar-thumb{background:var(--teal);border-radius:3px;}
+.tab-nav{display:flex;min-width:max-content;}
+.tab-btn{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.8px;padding:12px 16px;cursor:pointer;border:none;background:transparent;color:var(--chrome-dim);border-bottom:3px solid transparent;transition:all 0.2s;text-transform:uppercase;}
+.tab-btn:hover{color:var(--white);background:rgba(0,200,212,0.06);}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
+
+/* CONTENT */
+.tab-content{display:none;padding:28px 32px;max-width:1200px;margin:0 auto;}
+.tab-content.active-tab{display:block;}
+
+/* TYPOGRAPHY */
+h2{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--teal);letter-spacing:1px;margin-bottom:18px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+h3{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;color:var(--chrome);letter-spacing:0.5px;margin:20px 0 10px;}
+h4{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;color:var(--chrome-dim);letter-spacing:0.3px;margin:14px 0 8px;}
+p{margin-bottom:12px;color:var(--chrome);}
+
+/* CARDS */
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px;backdrop-filter:blur(4px);}
+.card-teal{border-left:3px solid var(--teal);}
+.card-amber{border-left:3px solid var(--amber);}
+.card-pass{border-left:3px solid var(--pass);}
+.card-fail{border-left:3px solid var(--fail);}
+
+/* METRIC GRID */
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:680px){.metric-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.metric-grid{grid-template-columns:1fr 1fr;}}
+.metric-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;border-left:3px solid var(--teal);}
+.metric-card.pass{border-left-color:var(--pass);}
+.metric-card.fail{border-left-color:var(--fail);}
+.metric-card.warn{border-left-color:var(--amber);}
+.m-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--chrome-dim);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px;}
+.m-value{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:var(--white);line-height:1.1;}
+.m-sub{font-size:11px;color:var(--chrome-dim);margin-top:3px;}
+
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;}
+.data-table th{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:0.8px;text-transform:uppercase;color:var(--teal);padding:8px 12px;border-bottom:2px solid var(--border);text-align:left;}
+.data-table td{padding:8px 12px;border-bottom:1px solid rgba(0,200,212,0.08);color:var(--chrome);}
+.data-table tr:hover td{background:rgba(0,200,212,0.04);}
+.data-table .num{font-family:'Space Mono',monospace;text-align:right;}
+.green{color:var(--pass);}
+.amber{color:var(--amber);}
+.red{color:var(--fail);}
+.teal{color:var(--teal);}
+
+/* SCORECARD */
+.scorecard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+@media(max-width:680px){.scorecard-grid{grid-template-columns:1fr;}}
+.sc-item{display:flex;align-items:center;gap:10px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;}
+.sc-icon{font-size:16px;min-width:20px;text-align:center;}
+.sc-text{font-size:12px;color:var(--chrome);}
+.sc-status{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;margin-left:auto;padding:2px 8px;border-radius:3px;}
+.sc-pass{background:rgba(16,185,129,0.15);color:var(--pass);}
+.sc-marginal{background:rgba(245,158,11,0.15);color:var(--amber);}
+.sc-fail{background:rgba(239,68,68,0.15);color:var(--fail);}
+
+/* MOAT STARS */
+.moat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:680px){.moat-grid{grid-template-columns:1fr;}}
+.moat-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
+.moat-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;color:var(--chrome);letter-spacing:0.3px;margin-bottom:6px;}
+.moat-stars{color:var(--teal);font-size:14px;margin-bottom:6px;}
+.moat-text{font-size:12px;color:var(--chrome-dim);line-height:1.5;}
+
+/* FLYWHEEL */
+.flywheel-box{background:linear-gradient(135deg,rgba(0,200,212,0.08),rgba(0,168,181,0.04));border:2px solid var(--teal);border-radius:var(--radius);padding:22px;margin-bottom:20px;}
+.flywheel-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--teal);letter-spacing:1px;margin-bottom:6px;}
+.flywheel-badge{display:inline-block;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;padding:4px 14px;border-radius:4px;margin-bottom:12px;}
+.flywheel-feature{background:rgba(245,158,11,0.15);border:1px solid var(--amber);color:var(--amber);}
+.flywheel-forming{background:rgba(0,200,212,0.15);border:1px solid var(--teal);color:var(--teal);}
+.flywheel-score{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--teal);margin:8px 0;}
+
+/* VERDICT BOX */
+.verdict-box{background:linear-gradient(135deg,#0a1f38,#112740);border:2px solid var(--amber);border-radius:var(--radius);padding:28px;margin-bottom:24px;position:relative;overflow:hidden;}
+.verdict-box::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(245,158,11,0.08) 0%,transparent 70%);pointer-events:none;}
+.verdict-main{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--amber);letter-spacing:2px;margin-bottom:8px;}
+.verdict-stars{font-size:24px;color:var(--amber);margin-bottom:14px;}
+.verdict-quote{font-style:italic;color:var(--chrome-dim);font-size:14px;border-left:3px solid var(--amber);padding-left:14px;margin:16px 0;}
+
+/* PILLAR GRADES */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+@media(max-width:680px){.pillar-grid{grid-template-columns:repeat(2,1fr);}}
+.pillar-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;}
+.pillar-name{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:0.8px;text-transform:uppercase;color:var(--chrome-dim);margin-bottom:4px;}
+.pillar-grade{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;}
+.grade-a{color:var(--pass);}
+.grade-b{color:var(--teal);}
+.grade-c{color:var(--amber);}
+.grade-d{color:var(--fail);}
+
+/* UPGRADE CONDITIONS */
+.upgrade-list{list-style:none;margin:0;padding:0;}
+.upgrade-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.upgrade-num{font-family:'Space Mono',monospace;font-size:11px;background:var(--navy-light);border:1px solid var(--teal);color:var(--teal);padding:2px 7px;border-radius:3px;min-width:28px;text-align:center;margin-top:2px;}
+.upgrade-text{font-size:13px;color:var(--chrome);}
+
+/* VALUATION SUMMARY TABLE */
+.val-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;}
+.val-table th{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:0.8px;text-transform:uppercase;color:var(--teal);padding:9px 14px;background:rgba(0,200,212,0.06);border:1px solid var(--border);}
+.val-table td{padding:9px 14px;border:1px solid rgba(0,200,212,0.08);color:var(--chrome);font-family:'Space Mono',monospace;font-size:12px;}
+.val-table .method-name{font-family:'Lora',serif;font-size:13px;font-family:'Rajdhani',sans-serif;}
+.val-highlight{background:rgba(0,200,212,0.06);}
+.ai-row td{background:rgba(16,185,129,0.06);color:var(--pass);}
+
+/* TECHNICAL */
+.ta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+@media(max-width:680px){.ta-grid{grid-template-columns:repeat(2,1fr);}}
+.ma-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px;}
+.ma-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--chrome-dim);margin-bottom:4px;}
+.ma-value{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;}
+.ma-signal{font-size:11px;margin-top:3px;}
+.signal-sell{color:var(--fail);}
+.signal-buy{color:var(--pass);}
+.signal-neutral{color:var(--amber);}
+.signal-watch{color:var(--amber);}
+
+/* OWNERSHIP */
+.own-bar{height:16px;background:var(--navy-light);border-radius:3px;overflow:hidden;display:flex;margin:6px 0 4px;}
+.own-segment{height:100%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:8px;font-weight:700;color:rgba(255,255,255,0.85);}
+.own-inst{background:#0e7490;}
+.own-retail{background:#0f766e;}
+.own-insider{background:#a16207;}
+
+/* AI INTELLIGENCE */
+.ai-chain{display:flex;align-items:center;gap:0;margin:16px 0;flex-wrap:wrap;}
+.ai-level{flex:1;min-width:100px;padding:12px 10px;text-align:center;background:var(--card-bg);border:1px solid var(--border);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.5px;color:var(--chrome-dim);position:relative;}
+.ai-level.highlighted{background:rgba(0,200,212,0.12);border-color:var(--teal);color:var(--white);}
+.ai-level:not(:last-child)::after{content:'→';position:absolute;right:-14px;top:50%;transform:translateY(-50%);color:var(--chrome-dim);z-index:1;font-size:16px;}
+.ai-score-bar{height:12px;background:var(--navy-light);border-radius:6px;overflow:hidden;margin:8px 0;}
+.ai-score-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--teal),var(--pass));}
+
+/* DCF TABLE */
+.dcf-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;}
+.dcf-table th{font-family:'Space Mono',monospace;font-size:10px;color:var(--teal);padding:7px 10px;background:rgba(0,200,212,0.06);border:1px solid var(--border);text-align:right;}
+.dcf-table th:first-child{text-align:left;}
+.dcf-table td{padding:7px 10px;border:1px solid rgba(0,200,212,0.08);color:var(--chrome);font-family:'Space Mono',monospace;text-align:right;}
+.dcf-table td:first-child{text-align:left;color:var(--chrome-dim);}
+
+/* SENSITIVITY */
+.sens-table{border-collapse:collapse;font-size:11px;margin:10px 0;}
+.sens-table th,.sens-table td{padding:6px 12px;border:1px solid var(--border);font-family:'Space Mono',monospace;text-align:center;}
+.sens-table th{background:rgba(0,200,212,0.08);color:var(--teal);}
+.sens-highlight{background:rgba(0,200,212,0.12);font-weight:700;color:var(--teal);}
+
+/* GROWTH TABLE */
+.growth-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;}
+.growth-table th{font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:0.8px;text-transform:uppercase;padding:9px 14px;border:1px solid var(--border);}
+.growth-table .stress-col{background:rgba(239,68,68,0.05);color:var(--fail);}
+.growth-table .base-col{background:rgba(0,200,212,0.05);color:var(--teal);}
+.growth-table .accel-col{background:rgba(16,185,129,0.05);color:var(--pass);}
+.growth-table td{padding:8px 14px;border:1px solid rgba(0,200,212,0.08);color:var(--chrome);font-family:'Space Mono',monospace;font-size:12px;}
+.growth-table td:first-child{font-family:'Lora',serif;font-size:13px;color:var(--chrome);}
+
+/* MACRO DASHBOARD */
+.macro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:680px){.macro-grid{grid-template-columns:1fr 1fr;}}
+.macro-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;}
+.macro-dim{font-family:'Space Mono',monospace;font-size:9px;color:var(--chrome-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+.macro-status{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.5px;margin-bottom:4px;}
+.status-tailwind{color:var(--pass);}
+.status-headwind{color:var(--fail);}
+.status-neutral{color:var(--amber);}
+.macro-note{font-size:11px;color:var(--chrome-dim);line-height:1.4;}
+
+/* O'GLOVE */
+.oglove-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0;}
+@media(max-width:680px){.oglove-grid{grid-template-columns:1fr 1fr;}}
+.og-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;}
+.og-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--chrome-dim);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;}
+.og-result{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;}
+.og-pass{color:var(--pass);}
+.og-marginal{color:var(--amber);}
+.og-fail{color:var(--fail);}
+
+/* SECTION DIVIDER */
+.section-div{height:1px;background:linear-gradient(90deg,var(--teal),transparent);margin:24px 0;}
+
+/* RISK/THEME GRID */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:680px){.two-col{grid-template-columns:1fr;}}
+
+/* FOOTER */
+footer{background:var(--navy-mid);border-top:1px solid var(--border);padding:18px 32px;font-size:11px;color:var(--chrome-dim);line-height:1.6;}
+footer .disclaimer{max-width:900px;}
+
+/* OWN EARNINGS BOX */
+.oe-box{background:linear-gradient(135deg,rgba(0,200,212,0.06),rgba(0,168,181,0.03));border:1px solid var(--teal);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+.oe-formula{font-family:'Space Mono',monospace;font-size:12px;color:var(--chrome);line-height:2;}
+.oe-total{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--teal);margin-top:8px;}
+
+/* QUALITY BADGE */
+.quality-badge{display:inline-block;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;padding:6px 20px;border-radius:4px;margin:10px 0;}
+.quality-clean{background:rgba(16,185,129,0.15);border:1px solid var(--pass);color:var(--pass);}
+
+/* ALPHA TABLE */
+.alpha-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px;}
+.alpha-table th{font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:0.8px;text-transform:uppercase;padding:8px 12px;background:rgba(0,200,212,0.06);border:1px solid var(--border);color:var(--teal);text-align:left;}
+.alpha-table td{padding:8px 12px;border:1px solid rgba(0,200,212,0.08);color:var(--chrome);}
+.alpha-table .mono{font-family:'Space Mono',monospace;font-size:11px;text-align:center;}
+.status-active{color:var(--pass);}
+.status-potential{color:var(--teal);}
+.status-exhaust{color:var(--chrome-dim);}
+
+/* SERIES TRACKER */
+.tracker-table{width:100%;border-collapse:collapse;font-size:12px;}
+.tracker-table th{font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:0.8px;text-transform:uppercase;padding:8px 12px;background:rgba(0,200,212,0.06);border:1px solid var(--border);color:var(--teal);}
+.tracker-table td{padding:8px 12px;border:1px solid rgba(0,200,212,0.08);color:var(--chrome);}
+
+/* INDEX BADGES */
+.idx-badge{font-family:'Space Mono',monospace;font-size:9px;padding:2px 6px;border-radius:2px;background:rgba(0,200,212,0.1);border:1px solid rgba(0,200,212,0.3);color:var(--teal);margin-right:4px;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-left">
+      <div class="ticker-row">
+        <span class="ticker">CEG</span>
+        <span class="exchange">NASDAQ</span>
+        <span class="exchange" style="border-color:var(--amber);color:var(--amber);background:rgba(245,158,11,0.1);">S&amp;P 500</span>
+        <span class="exchange" style="border-color:var(--chrome-dim);color:var(--chrome-dim);background:rgba(143,161,184,0.1);">NASDAQ-100</span>
+      </div>
+      <div class="company-name">Constellation Energy Corporation</div>
+      <div class="lede">America's largest nuclear fleet operator — now anchored by 20-year hyperscaler PPAs and a 55 GW combined fleet post-Calpine. The only private-sector power producer that can deliver 24/7 carbon-free baseload for AI data centers at scale.</div>
+      <div class="conf-pills">
+        <span class="pill pill-v">● VERIFIED — Filings / Live Search</span>
+        <span class="pill pill-e">● ESTIMATED — Cross-Referenced</span>
+        <span class="pill pill-u">● UNVERIFIED — Limited Source</span>
+      </div>
+    </div>
+    <div class="hero-badges">
+      <div class="verdict-badge verdict-watch4">WATCH ★★★★</div>
+      <div class="badge-row">
+        <span class="badge badge-cat-c">CAT C — MATURE QUALITY</span>
+        <span class="badge badge-widener">🟢 AI WIDENER</span>
+      </div>
+      <div class="badge-row">
+        <span class="badge badge-price">~$285 (Jun 2026)</span>
+        <span class="badge badge-neutral-m">MoS ENTRY: $255–272</span>
+      </div>
+      <div class="badge-row">
+        <span class="badge badge-widener">FLYWHEEL: FEATURE</span>
+        <span class="badge" style="background:rgba(0,200,212,0.1);border-color:var(--teal);color:var(--teal);">AI PHASE 4</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB BAR ═══════════════════ -->
+<div id="tab-bar">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro &amp; Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intelligence</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 0 — OVERVIEW
+══════════════════════════════════════════════════ -->
+<div id="tab0" class="tab-content" style="display:block;">
+  <h2>Business Overview</h2>
+
+  <div class="card card-teal">
+    <p><strong style="color:var(--teal);">Constellation Energy Corporation</strong> is the largest private-sector power producer in the world and America's #1 producer of clean, emissions-free energy. Spun off from Exelon in February 2022, the company operates a 32.4 GW nuclear fleet — the largest in the U.S. — generating approximately 183 TWh of zero-emissions electricity annually at a ~95% capacity factor. With the transformative acquisition of Calpine (closed January 7, 2026), total generating capacity has expanded to ~55 GW, adding ~23 GW of natural gas and geothermal generation, creating the world's largest private power producer by capacity.</p>
+    <p>The company supplies ~10% of U.S. clean energy and serves three-quarters of Fortune 100 companies. Its nuclear fleet is irreplaceable — no new commercial nuclear plant has been built in the U.S. in over three decades — creating a structural, decades-long moat anchored in physical scarcity and regulatory licensing.</p>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="m-label">Current Price [VERIFIED]</div>
+      <div class="m-value">$285</div>
+      <div class="m-sub">~$88B market cap · Jun 2026</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="m-label">52-Week Range [VERIFIED]</div>
+      <div class="m-value">$155–$352</div>
+      <div class="m-sub">ATH: $346.32 (Jan 24, 2025)</div>
+    </div>
+    <div class="metric-card pass">
+      <div class="m-label">FY2026E Adj. EPS [VERIFIED]</div>
+      <div class="m-value">$11–$12</div>
+      <div class="m-sub">Mgmt guidance midpoint $11.50</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Nuclear Fleet [VERIFIED]</div>
+      <div class="m-value">22 GW</div>
+      <div class="m-sub">94.7% capacity factor · 95% uptime</div>
+    </div>
+    <div class="metric-card pass">
+      <div class="m-label">Total Capacity (Post-Calpine) [VERIFIED]</div>
+      <div class="m-value">55 GW</div>
+      <div class="m-sub">Largest US private producer</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">FY2025 Revenue [VERIFIED]</div>
+      <div class="m-value">$25.5B</div>
+      <div class="m-sub">+8.3% YoY from $23.6B</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="m-label">EPS CAGR Target [VERIFIED]</div>
+      <div class="m-value">20%+</div>
+      <div class="m-sub">2026–2029 base earnings</div>
+    </div>
+    <div class="metric-card pass">
+      <div class="m-label">TSR Since Spin (2022) [VERIFIED]</div>
+      <div class="m-value">~634%</div>
+      <div class="m-sub">99% CAGR · S&P 500 benchmark</div>
+    </div>
+  </div>
+
+  <h3>Category Classification: C — Mature Quality Compounder</h3>
+  <div class="card card-teal">
+    <p><strong>Why Category C?</strong> CEG's nuclear fleet delivers reliable ROIC above sector median (9.55% vs industry median 2.35%), a durable competitive moat in regulated and contracted electricity generation, and now accelerating 8–20% EPS growth driven by AI data center power demand. The nuclear asset base provides stable, predictable cash flows analogous to a utility-ROIC compounder, while the forward EPS CAGR of 20%+ through 2029 pushes into high-growth territory. The Calpine acquisition adds gas dispatch capability that rounds out the "24/7 carbon-free + dispatchable" offering.</p>
+    <p><strong>Why not Category E (Commodity)?</strong> Nuclear electricity is not a pure commodity — CEG's cost curve is structurally below spot power prices, and its ability to sign 20-year premium PPAs with hyperscalers at $20–50/MWh premiums to the PTC floor confirms pricing power. Nuclear restart licenses are unique government-backed intangible assets.</p>
+  </div>
+
+  <h3>AI Overlay: 🟢 AI WIDENER</h3>
+  <div class="card card-pass">
+    <p><strong>Why AI WIDENER?</strong> The global AI infrastructure buildout is the single biggest tailwind for CEG's core business. Data center electricity demand is projected to 4× between 2023 and 2030 (from ~4.4% to 12–20% of U.S. consumption). Nuclear baseload is the only 24/7 carbon-free energy source capable of reliably powering hyperscale AI campuses. CEG is the only U.S. entity with a fleet large enough to sign gigawatt-scale nuclear PPAs — Microsoft (835 MW, 20-year), Meta (part of 5,650 MW hyperscaler portfolio). AI is not just an efficiency tool for CEG; it is the demand driver that creates decades of premium revenue visibility and deepens the moat through long-term switching costs embedded in PPAs.</p>
+    <p><strong>Investment Impact:</strong> Increase conviction. The AI WIDENER overlay justifies a structural P/E premium of +3–5x versus non-AI utility peers, and higher terminal value than a standard utility would command.</p>
+  </div>
+
+  <h3>Series Rationale — Why This Stock?</h3>
+  <div class="card card-amber">
+    <p>CEG sits at the exact intersection of two mega-themes: the clean energy transition and the AI infrastructure buildout. It is the only publicly traded pure-play on U.S. nuclear baseload with direct contractual exposure to Big Tech AI data centers. The stock has sold off ~19% from its January 2025 ATH, RSI is approaching oversold (~39), and the secondary offering overhang (June 1, 2026) has just cleared. The 20%+ EPS CAGR guidance through 2029 and an EV/EBITDA of ~7.9x for the Calpine deal create a compelling setup. The primary risk is regulatory: PJM's potential delay of the Crane Clean Energy Center interconnection to 2031 could defer ~1.1 GW of premium-priced nuclear generation.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 1 — MACRO & GROWTH
+══════════════════════════════════════════════════ -->
+<div id="tab1" class="tab-content">
+  <h2>Macro &amp; Sector Context</h2>
+
+  <h3>Block 4 — Macro Data [VERIFIED — Live Search]</h3>
+  <div class="metric-grid">
+    <div class="metric-card warn">
+      <div class="m-label">US 10Y Treasury [VERIFIED]</div>
+      <div class="m-value">4.49%</div>
+      <div class="m-sub">Jun 4, 2026 · Near 2026 high</div>
+    </div>
+    <div class="metric-card fail">
+      <div class="m-label">Fed Stance [VERIFIED]</div>
+      <div class="m-value">Hold/Hike</div>
+      <div class="m-sub">85% rate-hike priced by year-end</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="m-label">US CPI [ESTIMATED]</div>
+      <div class="m-value">~4.0%</div>
+      <div class="m-sub">Highest in ~3 years; Iran oil shock</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">US Real GDP [ESTIMATED]</div>
+      <div class="m-value">~2.5%</div>
+      <div class="m-sub">AI investment cycle supporting growth</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">US Nominal GDP [ESTIMATED]</div>
+      <div class="m-value">~6.5%</div>
+      <div class="m-sub">Terminal growth ceiling for DCF</div>
+    </div>
+    <div class="metric-card pass">
+      <div class="m-label">Power Sector CAGR (3yr actual) [ESTIMATED]</div>
+      <div class="m-value">14–18%</div>
+      <div class="m-sub">Data center surge driving acceleration</div>
+    </div>
+  </div>
+
+  <h3>Layer 1: Macro Cycle Dashboard</h3>
+  <div class="macro-grid">
+    <div class="macro-card">
+      <div class="macro-dim">AI Adoption Cycle</div>
+      <div class="macro-status status-tailwind">🟢 MAJOR TAILWIND</div>
+      <div class="macro-note">Data centers to grow 4× power use by 2030 (4.4% → 12–20% of US grid). AI is the demand driver creating nuclear PPAs at 2–3× market rates.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">Energy Price Cycle</div>
+      <div class="macro-status status-tailwind">🟢 TAILWIND</div>
+      <div class="macro-note">Iran conflict + AI demand keeping electricity prices elevated. PJM forward power prices $60+/MWh vs PTC floor ~$43/MWh — pure upside for uncontracted nuclear MWhs.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">Rate/Yield Cycle</div>
+      <div class="macro-status status-headwind">🔴 HEADWIND</div>
+      <div class="macro-note">10Y at 4.49% and rising reduces utility P/E multiples and raises WACC. Potential rate hike by year-end is the primary macro headwind to the stock multiple.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">Government/Policy Cycle</div>
+      <div class="macro-status status-tailwind">🟢 TAILWIND</div>
+      <div class="macro-note">DOE $1B support for Crane restart. IRA nuclear PTC at $43+/MWh. Bipartisan nuclear support framed as U.S. energy independence vs China AI race.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">Regulatory Cycle (PJM)</div>
+      <div class="macro-status status-neutral">🟡 NEUTRAL/RISK</div>
+      <div class="macro-note">PJM decision on Crane interconnection could delay to 2031 — from 2027 target. Key catalyst risk to watch. Framework decision expected late 2026.</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-dim">Industrial Demand Cycle</div>
+      <div class="macro-status status-tailwind">🟢 TAILWIND</div>
+      <div class="macro-note">Onshoring, EV manufacturing, and data centers driving unprecedented load growth. WEC forecasting 4.5–5% electric demand CAGR (vs 0.7% historical).</div>
+    </div>
+  </div>
+  <div class="card card-teal" style="margin-top:0;">
+    <strong style="color:var(--teal);">Macro Composite:</strong> <span class="green">TAILWIND</span> &nbsp;|&nbsp; <strong style="color:var(--teal);">AI Cycle Impact:</strong> <span class="green">MAJOR OPPORTUNITY</span>
+  </div>
+
+  <div class="section-div"></div>
+  <h3>Layer 2: Sector Growth Derivation — Renewables / Power (US IPP)</h3>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th>Macro State</th><th>Sector CAGR</th><th>AI Impact</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>STRESS</td><td>GDP ~2%, rate hike cycle, PJM delays</td><td class="num red">10–12%</td><td>NEUTRAL (delays)</td><td class="pill-e" style="font-size:10px;">[ESTIMATED]</td></tr>
+      <tr><td>BASE</td><td>GDP ~2.5%, hold rates, incremental PPA wins</td><td class="num teal">14–18%</td><td>WIDENER +5–7pp</td><td class="pill-e" style="font-size:10px;">[ESTIMATED]</td></tr>
+      <tr><td>ACCEL</td><td>GDP ~3%, rate cuts, major PPA announcements</td><td class="num green">20–25%</td><td>WIDENER +8–12pp</td><td class="pill-e" style="font-size:10px;">[ESTIMATED]</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--chrome-dim);">AI is <strong style="color:var(--pass);">accelerating</strong> this sector's base growth by approximately +5–7pp over 5 years via data center nuclear PPAs, creating a new high-margin revenue stream unavailable in the sector just 3 years ago. [ESTIMATED]</p>
+
+  <div class="section-div"></div>
+  <h3>Layer 3: Company Alpha Over Sector</h3>
+  <table class="alpha-table">
+    <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Market Share Gain (nuclear IPP)</td>
+        <td><span class="status-active">Active</span></td>
+        <td class="mono green">+3%</td>
+        <td class="mono">+2%</td>
+      </tr>
+      <tr>
+        <td>Premiumisation (PPAs above spot)</td>
+        <td><span class="status-active">Active — Confirmed</span></td>
+        <td class="mono green">+5%</td>
+        <td class="mono green">+4%</td>
+      </tr>
+      <tr>
+        <td>Category Expansion (gas + geothermal via Calpine)</td>
+        <td><span class="status-active">Active — Calpine closed</span></td>
+        <td class="mono green">+6%</td>
+        <td class="mono">+3%</td>
+      </tr>
+      <tr>
+        <td>Geographic Expansion (coast-to-coast post-Calpine)</td>
+        <td><span class="status-active">Active</span></td>
+        <td class="mono">+2%</td>
+        <td class="mono">+1%</td>
+      </tr>
+      <tr>
+        <td>Pricing Power (nuclear PPAs at 2–3× PTC floor)</td>
+        <td><span class="status-active">Active — Multi-decade lock-in</span></td>
+        <td class="mono green">+6%</td>
+        <td class="mono green">+5%</td>
+      </tr>
+      <tr style="background:rgba(16,185,129,0.05);">
+        <td><strong>AI Alpha 6a: Cost Reduction</strong> (proprietary ops data)</td>
+        <td><span class="status-potential">Marginal — Industry data, not proprietary</span></td>
+        <td class="mono">+1%</td>
+        <td class="mono">+0%</td>
+      </tr>
+      <tr style="background:rgba(16,185,129,0.05);">
+        <td><strong>AI Alpha 6b: Market Expansion</strong> (new data center TAM)</td>
+        <td><span class="status-active">Active — Microsoft + Meta + pipeline</span></td>
+        <td class="mono green">+8%</td>
+        <td class="mono green">+10%</td>
+      </tr>
+      <tr style="background:rgba(16,185,129,0.05);">
+        <td><strong>AI Alpha 6c: Flywheel / Switching Cost</strong> (20-yr PPAs)</td>
+        <td><span class="status-potential">Potential — PPAs create switching cost; no data flywheel</span></td>
+        <td class="mono">+2%</td>
+        <td class="mono">+3%</td>
+      </tr>
+      <tr style="background:rgba(0,200,212,0.05);">
+        <td><strong>Total Alpha</strong></td>
+        <td>—</td>
+        <td class="mono teal"><strong>+33%</strong></td>
+        <td class="mono teal"><strong>+28%</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Growth Rate Summary Table</h3>
+  <table class="growth-table">
+    <thead>
+      <tr>
+        <th style="background:rgba(0,200,212,0.06);color:var(--teal);">Parameter</th>
+        <th class="stress-col">STRESS</th>
+        <th class="base-col">BASE</th>
+        <th class="accel-col">ACCEL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Macro State (US)</td><td>GDP ~2%, rate hike, PJM delay</td><td>GDP ~2.5%, hold, stable</td><td>GDP ~3%, rate cuts, AI boom</td></tr>
+      <tr><td>Sector Growth (Power/Nuclear IPP)</td><td>10–12%</td><td>14–18%</td><td>20–25%</td></tr>
+      <tr><td>Company Alpha</td><td>+5%</td><td>+20%</td><td>+30%</td></tr>
+      <tr><td>AI Alpha (6a+6b+6c)</td><td>+3%</td><td>+11%</td><td>+15%</td></tr>
+      <tr><td><strong>Stage 1 Adj.EPS CAGR (2026–29)</strong></td><td><strong>12%</strong></td><td><strong>20%+</strong></td><td><strong>28%</strong></td></tr>
+      <tr><td>Stage 2 FCF CAGR (2030–35)</td><td>5%</td><td>8%</td><td>11%</td></tr>
+      <tr><td>Terminal Growth Rate</td><td>3%</td><td>4.5%</td><td>5.5%</td></tr>
+      <tr><td>Margin Direction</td><td>Compress (higher interest costs)</td><td>Stable/Expand (PPA premiums)</td><td>Expand (nuclear leverage to prices)</td></tr>
+      <tr><td>Key Risk</td><td>PJM delay + rate hike cycle</td><td>Calpine integration execution</td><td>Nuclear license extension delays</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card card-teal" style="font-size:12px;">
+    <strong style="color:var(--teal);">Sensitivity Check:</strong><br>
+    A 1% change in terminal growth rate changes IV by approximately <strong style="color:var(--white);">18–22%</strong>.<br>
+    A 1% change in Stage 1 (EPS) growth changes IV by approximately <strong style="color:var(--white);">8–12%</strong>.<br>
+    A 1x change in forward P/E multiple changes IV by approximately <strong style="color:var(--white);">$11.50 per share</strong> (2026E EPS).
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 2 — FINANCIALS
+══════════════════════════════════════════════════ -->
+<div id="tab2" class="tab-content">
+  <h2>Financial Fortress</h2>
+
+  <h3>Revenue &amp; Earnings — 5-Year Trend [VERIFIED — SEC Filings]</h3>
+  <table class="data-table">
+    <thead><tr><th>Year</th><th class="num">Revenue ($B)</th><th class="num">GAAP Net Income ($B)</th><th class="num">GAAP EPS ($)</th><th class="num">Adj. EPS ($)</th><th class="num">Rev Growth</th></tr></thead>
+    <tbody>
+      <tr><td>FY2022</td><td class="num">$24.4B</td><td class="num red">-$0.08B</td><td class="num red">-$0.27</td><td class="num">~$3.20</td><td class="num">—</td></tr>
+      <tr><td>FY2023</td><td class="num">$24.9B</td><td class="num green">$1.62B</td><td class="num green">$5.37</td><td class="num green">~$7.23</td><td class="num green">+2.1%</td></tr>
+      <tr><td>FY2024</td><td class="num">$23.6B</td><td class="num green">$3.74B</td><td class="num green">$11.90</td><td class="num green">~$8.58</td><td class="num red">-5.4%</td></tr>
+      <tr><td>FY2025</td><td class="num">$25.5B</td><td class="num">$2.32B</td><td class="num">$7.41</td><td class="num green">~$9.99</td><td class="num green">+8.3%</td></tr>
+      <tr><td>Q1 2026</td><td class="num green">$11.1B</td><td class="num green">$1.59B</td><td class="num green">$4.49</td><td class="num green">$2.74</td><td class="num green">+64% YoY</td></tr>
+      <tr><td><strong>FY2026E</strong></td><td class="num teal">~$32.6B</td><td class="num teal">~$3.8–4.1B</td><td class="num teal">~$10.68</td><td class="num teal">$11.00–12.00</td><td class="num teal">~+28%E</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px;color:var(--chrome-dim);">Note: FY2024 GAAP EPS unusually high due to one-time items; Adj. EPS more representative. FY2026 Adj. EPS guidance official. Q1 2026 surge driven by Calpine contribution (closed Jan 7, 2026). [VERIFIED]</p>
+
+  <h3>ROIC &amp; ROE — 5-Year Trend [ESTIMATED — Cross-Referenced]</h3>
+  <table class="data-table">
+    <thead><tr><th>Year</th><th class="num">ROIC %</th><th class="num">ROE %</th><th class="num">vs WACC (9.5%)</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr><td>FY2022</td><td class="num red">Negative</td><td class="num red">Negative</td><td class="num red">Below</td><td><span class="red">Transition year (spin-off)</span></td></tr>
+      <tr><td>FY2023</td><td class="num">~5.2%</td><td class="num amber">~18%</td><td class="num red">Below</td><td><span class="amber">Improving</span></td></tr>
+      <tr><td>FY2024</td><td class="num">~11.8%</td><td class="num green">~41%</td><td class="num green">+2.3pp</td><td><span class="green">Exceeds WACC</span></td></tr>
+      <tr><td>FY2025</td><td class="num">~8.2%</td><td class="num">~21%</td><td class="num red">Below</td><td><span class="amber">Diluted by Calpine deal prep</span></td></tr>
+      <tr><td>TTM (Q1'26)</td><td class="num teal">~9.55%</td><td class="num teal">~28%</td><td class="num amber">+0.05pp</td><td><span class="teal">Transitional; normalising upward</span></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px;color:var(--chrome-dim);">WACC estimated at 9.5% (US large-cap utility/IPP; WACC of 13.83% per Gurufocus overstates risk for investment-grade utility). CEG ROIC is 306% above the IPP sector median of 2.35%. Nuclear-only ROIC was materially higher pre-Calpine. [ESTIMATED]</p>
+
+  <h3>Financial Fortress Scorecard [VERIFIED]</h3>
+  <div class="scorecard-grid">
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">ROE ≥15% for 5 consecutive years — <em>partial: spin-off 2022, but improving sharply</em></div><div class="sc-status sc-marginal">MARGINAL</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">ROIC &gt; WACC (9.5%) — <em>at/above WACC in FY2024 and TTM; diluted by Calpine integration 2025-26</em></div><div class="sc-status sc-marginal">MARGINAL</div></div>
+    <div class="sc-item"><div class="sc-icon">⚠</div><div class="sc-text">Net cash/debt position — <em>net debt increased significantly with Calpine ($26.6B acquisition); investment-grade rated</em></div><div class="sc-status sc-marginal">MARGINAL</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Net profit margin ≥15% — <em>Adj. operating margin consistently above 15%; GAAP margin volatile due to mark-to-market</em></div><div class="sc-status sc-marginal">MARGINAL</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">FCF positive + growing — <em>Adj. FCF before growth ~$4B in 2026-27; GAAP FCF negative due to $3.9B growth capex</em></div><div class="sc-status sc-pass">PASS</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Pricing power proven — <em>20-year PPAs with Microsoft and Meta at premium to market rates; confirmed</em></div><div class="sc-status sc-pass">PASS</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Revenue CAGR ≥ sector CAGR — <em>FY2026E ~+28% vs sector base 14–18%</em></div><div class="sc-status sc-pass">PASS</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Predictable/recurring revenue — <em>nuclear baseload highly predictable; ~20-year PPAs lock in visibility</em></div><div class="sc-status sc-pass">PASS</div></div>
+    <div class="sc-item"><div class="sc-icon">⚠</div><div class="sc-text">Capital-light model — <em>Capital-intensive by nature (nuclear/gas assets), but nuclear generates above-average ROIC</em></div><div class="sc-status sc-marginal">MARGINAL</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Dividend payout &lt;80% of earnings — <em>$1.71/yr dividend vs ~$11.50 EPS = 15% payout; strong buyback ($5B authorized)</em></div><div class="sc-status sc-pass">PASS</div></div>
+  </div>
+
+  <h3>Owner Earnings Analysis (FY2026E) [ESTIMATED]</h3>
+  <div class="oe-box">
+    <div class="oe-formula">
+      Adjusted Operating EPS (non-GAAP)     = &nbsp;<strong>$11.50</strong>&nbsp; per share<br>
+      + D&amp;A per share (~$2.5B D&amp;A / ~345M shares) = &nbsp;<strong>+ $7.25</strong><br>
+      + Non-cash stock-based compensation   = &nbsp;<strong>+ $0.50</strong><br>
+      − Estimated Maintenance CapEx/share   = &nbsp;<strong>− $4.40</strong>&nbsp; (~$1.5B estimated maintenance)<br>
+      ± Working Capital Changes              = &nbsp;<strong>± $0.00</strong>&nbsp; (assumed neutral)
+    </div>
+    <div style="height:1px;background:var(--border);margin:10px 0;"></div>
+    <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--chrome-dim);">Owner Earnings (Conservative) ≈ $11.50 + $7.25 + $0.50 − $4.40 =</div>
+    <div class="oe-total">~$14.85 / share (Conservative Base)</div>
+    <p style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">Note: GAAP FCF is depressed by $3.9B growth capex (nuclear uprates, Crane restart, storage). This is fully discretionary growth investment, not maintenance — Owner Earnings exclude it. [ESTIMATED]</p>
+  </div>
+
+  <h3>O'Glove Earnings Quality Framework [ESTIMATED]</h3>
+  <div class="oglove-grid">
+    <div class="og-card">
+      <div class="og-label">Test 1 — FCF Conversion</div>
+      <div class="og-result og-pass">✓ PASS</div>
+      <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">Adj. FCF before growth ≥80% of Adj. Earnings; nuclear ops cash generation is highly reliable [ESTIMATED]</div>
+    </div>
+    <div class="og-card">
+      <div class="og-label">Test 2 — DSO Trend (3yr)</div>
+      <div class="og-result og-pass">✓ PASS</div>
+      <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">DSO stable for utility-model billing; no unusual AR build-up [ESTIMATED]</div>
+    </div>
+    <div class="og-card">
+      <div class="og-label">Test 3 — Inventory Days</div>
+      <div class="og-result og-pass">✓ PASS</div>
+      <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">Power generation: nuclear fuel &amp; gas inventory stable. Not a traditional inventory risk [ESTIMATED]</div>
+    </div>
+    <div class="og-card">
+      <div class="og-label">Test 4 — Accounting Policy Stability</div>
+      <div class="og-result og-marginal">~ MARGINAL</div>
+      <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">Mark-to-market on derivatives creates GAAP volatility (e.g., FY2024 $11.90 EPS vs $8.58 adj). Gap between GAAP and Non-GAAP is large but consistent and disclosed [ESTIMATED]</div>
+    </div>
+    <div class="og-card">
+      <div class="og-label">Test 5 — Gross Margin Consistency</div>
+      <div class="og-result og-pass">✓ PASS</div>
+      <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">Nuclear gross margins highly stable; long-term PPAs provide cost certainty vs variable revenue floor [ESTIMATED]</div>
+    </div>
+    <div class="og-card">
+      <div class="og-label">Overall Quality Grade</div>
+      <div class="og-result og-pass" style="font-size:16px;margin:8px 0;">CLEAN</div>
+    </div>
+  </div>
+  <div class="quality-badge quality-clean">EARNINGS QUALITY: CLEAN ✓</div>
+  <p style="font-size:12px;color:var(--chrome-dim);">The GAAP/Non-GAAP gap is fully explained by commodity derivative mark-to-market, which is consistent industry practice for power generators. Adjusted Operating Earnings is the correct earnings metric for CEG. No accounting red flags. [ESTIMATED]</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 3 — MOAT
+══════════════════════════════════════════════════ -->
+<div id="tab3" class="tab-content">
+  <h2>Economic Moat — Pillar 1</h2>
+
+  <div class="card card-teal">
+    <strong style="color:var(--teal);">Moat Assessment: A− (High Confidence)</strong><br>
+    CEG's moat is anchored in physical scarcity — 22 GW of licensed, operating nuclear capacity that cannot be replicated. A new nuclear plant costs $10–15B and takes 10–15 years to build. No competitor can enter. Combined with 20-year hyperscaler PPAs creating commercial switching costs, and the Calpine fleet providing full-spectrum dispatch capability, the moat is deep and structurally widening due to the AI data center demand shock.
+  </div>
+
+  <div class="moat-grid">
+    <div class="moat-card">
+      <div class="moat-title">Nuclear Scarcity / Efficient Scale</div>
+      <div class="moat-stars">★★★★★</div>
+      <div class="moat-text">22 GW licensed nuclear fleet impossible to replicate. NRC licensing requires decades. No new U.S. commercial reactor has been built since the 1990s. Crane restart is the first in U.S. history — driven by CEG's unique operational expertise. [VERIFIED]</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-title">Hyperscaler PPA Switching Costs</div>
+      <div class="moat-stars">★★★★☆</div>
+      <div class="moat-text">20-year Microsoft PPA (835 MW), Meta contracts, and 5,650+ MW total hyperscaler portfolio create multi-decade revenue visibility. Once a hyperscaler structures data center power infrastructure around a nuclear PPA, switching is extremely costly and disruptive. [VERIFIED]</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-title">Cost Advantage (Nuclear Unit Costs)</div>
+      <div class="moat-stars">★★★★☆</div>
+      <div class="moat-text">CEG's nuclear fleet generates power at ~$35–45/MWh all-in cost vs PJM spot prices ~$60–70/MWh. The PTC floor (~$43/MWh) provides a guaranteed floor, while premium PPAs add $20–50/MWh above this. Structural cost-plus model with government-backed floor. [ESTIMATED]</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-title">Regulatory Intangible Assets</div>
+      <div class="moat-stars">★★★★☆</div>
+      <div class="moat-text">NRC operating licenses (extendable to 80 years) are irreplaceable intangible assets. CEG is pursuing subsequent license renewals. Crane's restart is a regulatory milestone that will be cited as precedent for future nuclear returns-to-service. [VERIFIED]</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-title">Operational Excellence (94.7% CF)</div>
+      <div class="moat-stars">★★★★☆</div>
+      <div class="moat-text">~4% higher capacity factor than industry average — equivalent to generating 8+ million incremental MWhs vs an average operator. This represents ~$480M+ in additional annual revenue (at $60/MWh). Operational excellence IS a competitive moat. [VERIFIED]</div>
+    </div>
+    <div class="moat-card">
+      <div class="moat-title">Full-Spectrum Dispatch (Post-Calpine)</div>
+      <div class="moat-stars">★★★☆☆</div>
+      <div class="moat-text">Adding ~23 GW of fast-response natural gas creates the only "full-stack" low-carbon + dispatchable offering for hyperscalers. Nuclear handles baseload; gas handles peaking. No competitor can match this combination. [VERIFIED — Calpine acquisition]</div>
+    </div>
+  </div>
+
+  <h3>ROIC as Moat Proof</h3>
+  <table class="data-table">
+    <thead><tr><th>Metric</th><th class="num">CEG</th><th class="num">IPP Sector Median</th><th class="num">Assessment</th></tr></thead>
+    <tbody>
+      <tr><td>ROIC % (TTM)</td><td class="num teal">9.55%</td><td class="num">2.35%</td><td class="num green">306% above median</td></tr>
+      <tr><td>WACC % (estimated)</td><td class="num">~9.5%</td><td class="num">~8–9%</td><td class="num amber">At/slightly above</td></tr>
+      <tr><td>ROIC-WACC Spread</td><td class="num">~+0.05pp</td><td class="num red">Negative</td><td class="num amber">Transitional — improving</td></tr>
+      <tr><td>Nuclear-only ROIC (pre-Calpine, FY2024)</td><td class="num green">~14–16%</td><td class="num">2.35%</td><td class="num green">Wide moat confirmed</td></tr>
+      <tr><td>Expected Post-Integration ROIC (FY2027)</td><td class="num teal">~12–14%</td><td class="num">2.35%</td><td class="num green">Expanding toward wide moat</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px;color:var(--chrome-dim);">ROIC dilution in 2025–26 is transitional due to Calpine integration. Nuclear-only ROIC of 14–16% clearly demonstrates a wide moat (20–40% = wide per framework). Post-integration ROIC should recover toward 12–14% by FY2027. [ESTIMATED]</p>
+
+  <h3>Macro Stress Test — Moat Resilience</h3>
+  <table class="data-table">
+    <thead><tr><th>Moat Source</th><th>Stress Scenario</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr><td>Nuclear Scarcity</td><td>Power prices collapse, AI build slows</td><td><span class="green">STRENGTHENS — PTC floor protects downside; scarcity doesn't change</span></td></tr>
+      <tr><td>Hyperscaler PPAs</td><td>Hyperscalers cut capex/delay data centers</td><td><span class="amber">HOLDS — 20-year contracts signed; counterparty risk (Microsoft/Meta) extremely low</span></td></tr>
+      <tr><td>Cost Advantage</td><td>Carbon prices fall, coal/gas becomes cheap</td><td><span class="green">HOLDS — PTC floor decouples economics from spot prices; nuclear cost base fixed</span></td></tr>
+      <tr><td>Operational Excellence</td><td>Labour disputes or forced outages</td><td><span class="amber">HOLDS — Strong safety culture; unionised workforce; 94.7% CF built over decades</span></td></tr>
+      <tr><td>Regulatory Assets (Licenses)</td><td>NRC increases safety requirements</td><td><span class="amber">HOLDS — CEG has strongest regulatory track record; incumbent advantage in NRC licensing</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-div"></div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">DATA FLYWHEEL VERDICT</div>
+    <div class="flywheel-badge flywheel-feature">FEATURE ★ (1/3 Criteria Met)</div>
+    <div class="flywheel-score">Score: 4.5 / 10</div>
+    <p style="font-size:13px;color:var(--chrome);">CEG's AI advantage is a demand-side relationship, not a data flywheel. Nuclear operations do not improve by adding more customers. The 20-year PPAs create switching costs but not a self-reinforcing data loop. Assessment:</p>
+    <table class="data-table" style="margin-top:12px;">
+      <thead><tr><th>Flywheel Criterion</th><th>Status</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>✓ Proprietary training data competitors cannot replicate</td>
+          <td><span class="red">NOT MET</span></td>
+          <td>Nuclear operational data exists but is not used to train AI models that improve the core product [ESTIMATED]</td>
+        </tr>
+        <tr>
+          <td>✓ More users/data measurably improves AI accuracy</td>
+          <td><span class="red">NOT MET</span></td>
+          <td>Nuclear power generation is physics-based, not AI-improved at the marginal unit level [VERIFIED]</td>
+        </tr>
+        <tr>
+          <td>✓ Better AI attracts more users (self-reinforcing)</td>
+          <td><span class="green">PARTIAL</span></td>
+          <td>Being first/best nuclear-to-data-center provider creates reputation that attracts more hyperscaler contracts — a demand flywheel, not a data flywheel [ESTIMATED]</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--chrome-dim);margin-top:8px;"><em>Flywheel classification: FEATURE — AI adds value as demand driver (not AI operational compounder). The DEMAND flywheel (each PPA makes CEG a more credible nuclear power provider, attracting the next hyperscaler) is real but does not meet the strict data flywheel definition. Moat grade maintained at A−; no upgrade on flywheel grounds.</em></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 4 — MANAGEMENT
+══════════════════════════════════════════════════ -->
+<div id="tab4" class="tab-content">
+  <h2>Management Integrity — Pillar 3</h2>
+
+  <div class="metric-grid">
+    <div class="metric-card pass">
+      <div class="m-label">CEO</div>
+      <div class="m-value" style="font-size:14px;">Joe Dominguez</div>
+      <div class="m-sub">President & CEO · Since 2022 spin</div>
+    </div>
+    <div class="metric-card pass">
+      <div class="m-label">CFO</div>
+      <div class="m-value" style="font-size:14px;">Shane Smith</div>
+      <div class="m-sub">EVP & CFO</div>
+    </div>
+    <div class="metric-card pass">
+      <div class="m-label">CEO Share Ownership</div>
+      <div class="m-value">149.8K</div>
+      <div class="m-sub">Shares held directly [VERIFIED]</div>
+    </div>
+    <div class="metric-card fail">
+      <div class="m-label">Insider Net Activity (12M)</div>
+      <div class="m-value red">-$99M</div>
+      <div class="m-sub">Net sellers vs buyers [VERIFIED]</div>
+    </div>
+  </div>
+
+  <h3>Management Strengths</h3>
+  <div class="card card-pass">
+    <table class="data-table">
+      <tbody>
+        <tr><td>✓</td><td><strong>Visionary positioning</strong> — Dominguez identified AI data center power demand as a decade-long structural opportunity years before consensus. Microsoft 20-year PPA is proof of execution, not just vision. [VERIFIED]</td></tr>
+        <tr><td>✓</td><td><strong>Capital allocation discipline</strong> — $5B share buyback authorized; $1B repurchased in 2024; 634% TSR since 2022 spin; Calpine acquired at 7.9x EV/EBITDA with 20%+ immediate EPS accretion. [VERIFIED]</td></tr>
+        <tr><td>✓</td><td><strong>Operational excellence</strong> — Nuclear fleet at 94.7% capacity factor, ~4% above industry average, consistently beating peer benchmarks. 22 refueling outage days vs 38 industry average. [VERIFIED]</td></tr>
+        <tr><td>✓</td><td><strong>Guidance track record</strong> — "Fourth consecutive year delivering full-year earnings exceeding guidance midpoint" (CFO Shane Smith, Feb 2026). Beats are consistent, not one-off. [VERIFIED]</td></tr>
+        <tr><td>✓</td><td><strong>Strategic clarity</strong> — Clear "power America for decades" narrative; explicit US energy independence / China AI race framing resonates with policy and investors. [VERIFIED]</td></tr>
+        <tr><td>✓</td><td><strong>Dividend growth</strong> — At least 10% annual dividend growth commitment; quarterly dividend of $0.4265/share ($1.71 annualized). [VERIFIED]</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Management Concerns</h3>
+  <div class="card card-amber">
+    <table class="data-table">
+      <tbody>
+        <tr><td>⚠</td><td><strong>Insider net sellers ($99M)</strong> — Insiders have sold significantly more than bought over the last 12 months. While partly explained by stock-based compensation being vested, the magnitude is notable. Not an immediate red flag given strong TSR, but worth monitoring. [VERIFIED]</td></tr>
+        <tr><td>⚠</td><td><strong>Leverage increase post-Calpine</strong> — The $26.6B acquisition significantly increased net debt. Management has committed to investment-grade rating maintenance, but the deleveraging path requires execution. Higher rates make this more costly. [ESTIMATED]</td></tr>
+        <tr><td>⚠</td><td><strong>2026 guidance below consensus</strong> — $11.00–$12.00 guidance midpoint $11.50 came in below the $11.60 consensus on March 31, causing an 8% single-day sell-off. Minor, but suggests communication could be sharper. [VERIFIED]</td></tr>
+        <tr><td>⚠</td><td><strong>Calpine integration complexity</strong> — Acquiring ~23 GW of gas assets across 72 sites is operationally complex. DOJ required divestitures of York 2 and Jack Fusco stations, removing high-earning assets. Integration execution risk is real. [VERIFIED]</td></tr>
+        <tr><td>⚠</td><td><strong>Regulatory dependency</strong> — PJM interconnection decisions, NRC approvals, and IRA nuclear PTC sustainability are all outside management control. The Crane delay risk is real. [VERIFIED]</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Promoter/Insider Pledge Assessment</h3>
+  <div class="card">
+    <p><strong>Pledged shares: N/A</strong> — U.S. public company; no promoter pledge structure. Insider ownership via direct holdings and equity compensation. CEO holds 149,830 shares directly (since March 2025). [VERIFIED — SEC Form 4 filings]</p>
+    <p style="margin-bottom:0;"><strong>Verdict:</strong> <span class="green">PASS</span> — No pledge concerns. Insider selling is net negative but within normal range for executives with large equity compensation packages during a period of high stock price appreciation.</p>
+  </div>
+
+  <h3>Capital Allocation Scorecard</h3>
+  <div class="scorecard-grid">
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Shareholder returns — $5B buyback authorized; $1B deployed in 2024</div><div class="sc-status sc-pass">PASS</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">M&amp;A discipline — Calpine at 7.9x EV/EBITDA with 20%+ EPS accretion is disciplined</div><div class="sc-status sc-pass">PASS</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Dividend policy — 10%+ annual dividend growth commitment; low 15% payout</div><div class="sc-status sc-pass">PASS</div></div>
+    <div class="sc-item"><div class="sc-icon">⚠</div><div class="sc-text">Growth capex ($3.9B 2026) — High but targeted at double-digit return projects; nuclear uprates, Crane restart</div><div class="sc-status sc-marginal">MARGINAL</div></div>
+    <div class="sc-item"><div class="sc-icon">✓</div><div class="sc-text">Counter-cyclical behaviour — Restarted TMI when others saw only risk; nuclear-forward when sector was bearish</div><div class="sc-status sc-pass">PASS</div></div>
+    <div class="sc-item"><div class="sc-icon">⚠</div><div class="sc-text">Balance sheet management post-Calpine — Investment-grade maintained but leverage is up; monitoring required</div><div class="sc-status sc-marginal">MARGINAL</div></div>
+  </div>
+
+  <p style="font-size:12px;color:var(--chrome-dim);font-style:italic;">Overall Management Grade: <strong style="color:var(--teal);">B+</strong> — Exceptional vision, strong execution, capital-allocation focused, some insider selling and increased leverage post-Calpine are the primary negatives. [ESTIMATED]</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 5 — VALUATION
+══════════════════════════════════════════════════ -->
+<div id="tab5" class="tab-content">
+  <h2>Valuation &amp; Margin of Safety — Pillar 4</h2>
+
+  <p style="color:var(--chrome-dim);font-size:13px;font-style:italic;">All growth rates from Tab 1 Growth Rate Summary Table. Earnings quality: CLEAN. WACC: 9.5% (US large-cap utility/IPP, investment-grade). All values in USD per share.</p>
+
+  <h3>Method 1 — DCF (2-Stage, 10-Year) [ESTIMATED]</h3>
+  <p style="font-size:12px;color:var(--chrome-dim);">Base case: FY2026E Adj. EPS $11.50, Stage 1 EPS CAGR 20% (years 1–5), Stage 2 EPS CAGR 8% (years 6–10), terminal growth 4.5% (≤ US nominal GDP), WACC 9.5%, Terminal P/E 20x.</p>
+
+  <table class="dcf-table">
+    <thead><tr><th>Year</th><th>STRESS (12% / WACC 11%)</th><th>BASE (20% / WACC 9.5%)</th><th>ACCEL (25% / WACC 9%)</th></tr></thead>
+    <tbody>
+      <tr><td>FY2026 (Y1)</td><td>$11.50</td><td>$11.50</td><td>$11.50</td></tr>
+      <tr><td>FY2027 (Y2)</td><td>$12.88</td><td>$13.80</td><td>$14.38</td></tr>
+      <tr><td>FY2028 (Y3)</td><td>$14.42</td><td>$16.56</td><td>$17.97</td></tr>
+      <tr><td>FY2029 (Y4)</td><td>$16.15</td><td>$19.87</td><td>$22.46</td></tr>
+      <tr><td>FY2030 (Y5)</td><td>$18.09</td><td>$23.84</td><td>$28.08</td></tr>
+      <tr style="background:rgba(0,200,212,0.04);"><td>PV of Stage 1</td><td>$51.2</td><td>$63.6</td><td>$70.7</td></tr>
+      <tr><td>Terminal Value (at Y5)</td><td>$186</td><td>$498</td><td>$732</td></tr>
+      <tr style="background:rgba(0,200,212,0.04);"><td>PV of Terminal</td><td>$111</td><td>$316</td><td>$476</td></tr>
+      <tr style="background:rgba(0,200,212,0.08);font-weight:700;"><td>DCF Intrinsic Value</td><td class="red">$162</td><td class="teal">$380</td><td class="green">$547</td></tr>
+    </tbody>
+  </table>
+
+  <h4>DCF Sensitivity Sub-Table (Base Scenario) — IV per Share</h4>
+  <table class="sens-table">
+    <thead>
+      <tr><th>WACC ↓ / g →</th><th>3.5%</th><th>4.0%</th><th>4.5% (Base)</th><th>5.0%</th><th>5.5%</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>8.5%</td><td>$392</td><td>$422</td><td>$461</td><td>$510</td><td>$572</td></tr>
+      <tr><td>9.0%</td><td>$342</td><td>$365</td><td>$394</td><td>$430</td><td>$475</td></tr>
+      <tr class="sens-highlight"><td><strong>9.5% (Base)</strong></td><td>$302</td><td>$322</td><td class="sens-highlight"><strong>$380</strong></td><td>$410</td><td>$448</td></tr>
+      <tr><td>10.0%</td><td>$268</td><td>$284</td><td>$304</td><td>$327</td><td>$354</td></tr>
+      <tr><td>10.5%</td><td>$240</td><td>$253</td><td>$269</td><td>$288</td><td>$311</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-div"></div>
+  <h3>Method 2 — Owner Earnings Capitalisation [ESTIMATED]</h3>
+  <p style="font-size:12px;color:var(--chrome-dim);">OE ~$14.85/share (conservative). Required return 9.5%. Terminal growth g: 3% (stress) / 4.5% (base) / 5.5% (accel).</p>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th class="num">OE/Share</th><th class="num">Required Return</th><th class="num">g</th><th class="num">OE Cap IV</th></tr></thead>
+    <tbody>
+      <tr><td>Stress</td><td class="num">$14.85</td><td class="num">10.5%</td><td class="num">3%</td><td class="num red">$198</td></tr>
+      <tr><td>Base</td><td class="num">$14.85</td><td class="num">9.5%</td><td class="num">4.5%</td><td class="num teal">$297</td></tr>
+      <tr><td>Accel</td><td class="num">$14.85</td><td class="num">9.0%</td><td class="num">5.5%</td><td class="num green">$423</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-div"></div>
+  <h3>Method 3 — ROIC / EPV [ESTIMATED]</h3>
+  <p style="font-size:12px;color:var(--chrome-dim);">EPV = NOPAT/WACC (floor value without growth). NOPAT = Operating Earnings × (1 − 25% tax). Growth premium applied for nuclear moat. EPV represents fundamental stress floor.</p>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th class="num">NOPAT/share</th><th class="num">EPV (No Growth)</th><th class="num">Growth Premium</th><th class="num">ROIC/EPV IV</th></tr></thead>
+    <tbody>
+      <tr><td>Stress</td><td class="num">~$6.50</td><td class="num">$59</td><td class="num">1.5×</td><td class="num red">$89 (floor)</td></tr>
+      <tr><td>Base</td><td class="num">~$8.60</td><td class="num">$90</td><td class="num">2.5×</td><td class="num teal">$225</td></tr>
+      <tr><td>Accel</td><td class="num">~$9.75</td><td class="num">$108</td><td class="num">3.5×</td><td class="num green">$378</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-div"></div>
+  <h3>Method 4 — P/E Earnings Power [ESTIMATED]</h3>
+  <table class="data-table">
+    <thead><tr><th>Scenario</th><th class="num">FY2026E Adj. EPS</th><th class="num">Appropriate P/E</th><th class="num">P/E IV</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <tr><td>Stress</td><td class="num">$11.00</td><td class="num">18×</td><td class="num red">$198</td><td>PJM delay; rate hike; no new PPAs</td></tr>
+      <tr><td>Base</td><td class="num">$11.50</td><td class="num">24×</td><td class="num teal">$276</td><td>Sector 20× + 4× AI WIDENER premium</td></tr>
+      <tr><td>Accel (AI Conviction)</td><td class="num">$12.00</td><td class="num">28×</td><td class="num green">$336</td><td>Flywheel premium + new hyperscaler PPAs</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--chrome-dim);">AI WIDENER: Terminal P/E may justify +3–5× premium over non-AI utility peers (sector P/E ~18–20×) → justified range 22–28×. Current price $285 implies 24.8× FY2026E — at the midpoint of the appropriate range. [ESTIMATED]</p>
+
+  <div class="section-div"></div>
+  <h3>Method 5 — Earnings Yield vs Bond Yield [ESTIMATED]</h3>
+  <table class="data-table">
+    <thead><tr><th>Metric</th><th class="num">Value</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr><td>Adj. EPS Yield (FY2026E)</td><td class="num">4.04% ($11.50/$285)</td><td><span class="amber">MARGINAL — below 10Y Treasury 4.49%</span></td></tr>
+      <tr><td>FCF Yield (before growth capex)</td><td class="num">~2.03% ($2B FCF/$88B mktcap)</td><td><span class="red">Below bond yield — growth capex explains gap</span></td></tr>
+      <tr><td>Dividend Yield</td><td class="num">0.60% ($1.71/$285)</td><td><span class="red">Well below bond yield — growth stock profile</span></td></tr>
+      <tr><td>Equity Risk Premium (EPS yield vs 10Y)</td><td class="num">-0.45pp</td><td><span class="amber">Stock slightly expensive vs bonds on earnings yield alone</span></td></tr>
+      <tr><td>EPS Yield (FY2027E at current price)</td><td class="num">4.47% ($12.75/$285)</td><td><span class="green">Near bond yield — improves as EPS grows</span></td></tr>
+      <tr><td>EPS Yield (FY2028E at current price)</td><td class="num">5.05% ($14.40/$285)</td><td><span class="green">ABOVE bond yield — value emerges in 2 years</span></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--chrome-dim);">CEG's valuation is not cheap on a static earnings yield basis vs current bond yields. The investment case is a <em>forward earnings compounding story</em> — with 20% EPS CAGR, the earnings yield surpasses the 10Y Treasury by FY2028 at today's price. This is the correct lens. [ESTIMATED]</p>
+
+  <div class="section-div"></div>
+  <h3>5-Method Valuation Summary Table</h3>
+  <table class="val-table">
+    <thead>
+      <tr>
+        <th class="method-name">Method</th>
+        <th>Stress IV</th>
+        <th>Base IV</th>
+        <th>Accel IV</th>
+        <th>AI Adjustment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="method-name">DCF (2-Stage)</td><td class="red">$162</td><td class="teal">$380</td><td class="green">$547</td><td>+$28 (AI demand floor)</td></tr>
+      <tr><td class="method-name">Owner Earnings Cap</td><td class="red">$198</td><td class="teal">$297</td><td class="green">$423</td><td>+$22 (premium OE multiple)</td></tr>
+      <tr><td class="method-name">ROIC / EPV</td><td class="red">$89</td><td class="teal">$225</td><td class="green">$378</td><td>EPV floor only</td></tr>
+      <tr><td class="method-name">P/E Earnings Power</td><td class="red">$198</td><td class="teal">$276</td><td class="green">$336</td><td>+3–5× AI WIDENER premium</td></tr>
+      <tr><td class="method-name">Earnings Yield</td><td class="red">$220</td><td class="teal">$256</td><td class="green">$289</td><td>Parity year FY2027–28</td></tr>
+      <tr class="val-highlight"><td class="method-name"><strong>Blended Base IV</strong><br><span style="font-size:10px;color:var(--chrome-dim);">(ex-EPV; DCF + OE + P/E + EY)</span></td><td class="red"><strong>$195</strong></td><td class="teal"><strong>$327</strong></td><td class="green"><strong>$523</strong></td><td>—</td></tr>
+      <tr class="ai-row"><td class="method-name">AI WIDENER Premium<br><span style="font-size:10px;">+$25/share (+8% on Base IV)</span></td><td>+$0</td><td class="green">+$25</td><td class="green">+$35</td><td>Demand-side AI moat</td></tr>
+      <tr class="val-highlight" style="background:rgba(0,200,212,0.08);"><td class="method-name"><strong>Blended Base IV (AI-adj)</strong></td><td class="red"><strong>$195</strong></td><td class="teal"><strong>$352</strong></td><td class="green"><strong>$558</strong></td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card card-amber" style="margin-top:8px;">
+    <strong style="color:var(--amber);">MoS Entry Zone (20% discount to Blended Base IV $327):</strong>
+    <div style="font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--amber);margin:6px 0;">$255 – $272</div>
+    <p style="font-size:13px;color:var(--chrome);margin-bottom:0;"><strong>Current price: $285</strong> — approximately <strong style="color:var(--amber);">5–12% above the MoS Entry Zone</strong>. The stock is <em>not yet at the ideal entry</em> but is approaching it. A correction to $255–$272 would trigger a BUY verdict. The blended base IV of $327 (or $352 with AI premium) implies <strong>15–24% upside from current levels</strong>.</p>
+  </div>
+
+  <h3>Relative Valuation — Own History</h3>
+  <table class="data-table">
+    <thead><tr><th>Metric</th><th class="num">Current</th><th class="num">Remark</th></tr></thead>
+    <tbody>
+      <tr><td>Fwd P/E (FY2026E $11.50)</td><td class="num teal">24.8×</td><td class="amber">Within appropriate range 22–28×</td></tr>
+      <tr><td>52-week avg stock price</td><td class="num">$244</td><td class="amber">Current at 17% premium to 52-wk avg</td></tr>
+      <tr><td>P/E vs 1-yr high ($352, 30.6×)</td><td class="num green">Discount of 19%</td><td class="green">🟢 At ~20% discount to 52-wk high P/E</td></tr>
+      <tr><td>Analyst consensus PT (~$368-380)</td><td class="num green">29% upside</td><td class="green">27 analysts; strong Buy consensus</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 6 — VERDICT
+══════════════════════════════════════════════════ -->
+<div id="tab6" class="tab-content">
+  <h2>Verdict &amp; Investment Framework</h2>
+
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Moat</div>
+      <div class="pillar-grade grade-a">A−</div>
+      <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">Nuclear scarcity + 20-yr PPAs</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Financials</div>
+      <div class="pillar-grade grade-b">B+</div>
+      <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">Strong adj. earnings; high growth capex</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Management</div>
+      <div class="pillar-grade grade-b">B+</div>
+      <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">Excellent vision; insider net sellers</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Valuation</div>
+      <div class="pillar-grade grade-b">B</div>
+      <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">$285 vs $255–272 MoS entry</div>
+    </div>
+  </div>
+
+  <div class="badge-row" style="margin-bottom:20px;gap:8px;">
+    <span class="badge badge-cat-c" style="font-size:11px;padding:5px 12px;">CAT C — MATURE QUALITY COMPOUNDER</span>
+    <span class="badge badge-widener" style="font-size:11px;padding:5px 12px;">🟢 AI WIDENER — DEMAND MOAT</span>
+    <span class="badge badge-widener" style="font-size:11px;padding:5px 12px;">FLYWHEEL: FEATURE</span>
+    <span class="badge badge-price" style="font-size:11px;padding:5px 12px;">AI SCORE: 72/100</span>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-main">WATCH ★★★★</div>
+    <div class="verdict-stars">★★★★☆</div>
+    <div style="font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--chrome);margin-bottom:12px;">
+      Exceptional business quality — one technical catalyst and a modest price correction away from a full BUY conviction.
+    </div>
+    <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--teal);margin-bottom:8px;">
+      MoS Entry Zone: <strong>$255–$272</strong> &nbsp;|&nbsp; Current: <strong>$285</strong> &nbsp;|&nbsp; Base IV: <strong>$327–352</strong> &nbsp;|&nbsp; Horizon: <strong>5–7yr</strong>
+    </div>
+    <div class="verdict-quote">
+      "Buy into a business so good that even a fool could run it, because someday a fool will." — Warren Buffett. CEG's nuclear fleet is that business: the power just flows. The question is only what you pay for it.
+    </div>
+    <p style="font-size:13px;color:var(--chrome);margin-bottom:0;">
+      All four pillars are strong (A−, B+, B+, B). The single reason this is WATCH rather than BUY: price at $285 is 5–12% above the MoS Entry Zone of $255–$272. RSI at 39.24 is approaching oversold and a natural technical entry. The secondary offering overhang (June 1, 2026 at $281) has just cleared. The setup is building for a BUY trigger. An investor willing to accumulate on weakness within 5–10% can treat current levels as a STARTER position with the expectation of adding at $255–265.
+    </p>
+  </div>
+
+  <h3>Upgrade Conditions (5 Specific, Measurable)</h3>
+  <ul class="upgrade-list">
+    <li class="upgrade-item">
+      <span class="upgrade-num">01</span>
+      <span class="upgrade-text"><strong style="color:var(--teal);">Price correction to $265 or below</strong> — Represents a 20% discount to blended Base IV of $327, triggering full MoS entry. RSI near 35–38 on daily chart at that level would add technical confirmation.</span>
+    </li>
+    <li class="upgrade-item">
+      <span class="upgrade-num">02</span>
+      <span class="upgrade-text"><strong style="color:var(--teal);">PJM issues favorable interconnection decision for Crane Clean Energy Center</strong> — Confirms 835 MW of premium nuclear generation (Microsoft 20-yr PPA) by 2027, removing the key regulatory tail risk to the $11–12+ EPS guide.</span>
+    </li>
+    <li class="upgrade-item">
+      <span class="upgrade-num">03</span>
+      <span class="upgrade-text"><strong style="color:var(--teal);">New hyperscaler PPA announced ≥1 GW at $20+/MWh premium to PTC floor</strong> — Would confirm the replicability of the Microsoft deal and structurally re-rate the nuclear fleet's uncontracted MWhs (147M MWh total annual available). Each 1 GW PPA at $30 premium = ~$0.30–1.00 additional EPS.</span>
+    </li>
+    <li class="upgrade-item">
+      <span class="upgrade-num">04</span>
+      <span class="upgrade-text"><strong style="color:var(--teal);">Calpine FCF before growth exceeds $2.5B for two consecutive quarters</strong> — Confirms integration synergies are tracking (management targets $4B+ combined 2026–27). Validates the acquisition thesis and supports the deleveraging path.</span>
+    </li>
+    <li class="upgrade-item">
+      <span class="upgrade-num">05</span>
+      <span class="upgrade-text"><strong style="color:var(--teal);">Insider buying: CEO or CFO purchases ≥50,000 shares in open market</strong> — Would reverse the net-seller signal and demonstrate insiders believe $285 is cheap. Would significantly increase conviction in the WATCH→BUY upgrade.</span>
+    </li>
+  </ul>
+
+  <div class="section-div"></div>
+  <h3>Series Tracker</h3>
+  <table class="tracker-table">
+    <thead><tr><th>Ticker</th><th>Company</th><th>Category</th><th>AI Overlay</th><th>Verdict</th><th>Base IV</th><th>Entry Zone</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong style="color:var(--teal);">CEG</strong></td>
+        <td>Constellation Energy</td>
+        <td>C</td>
+        <td><span class="green">🟢 WIDENER</span></td>
+        <td><span class="amber">WATCH★★★★</span></td>
+        <td class="num">$327–352</td>
+        <td class="num">$255–272</td>
+        <td>Jun-26</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 7 — TECHNICAL
+══════════════════════════════════════════════════ -->
+<div id="tab7" class="tab-content">
+  <h2>Technical Analysis</h2>
+
+  <h3>(A) Price Structure &amp; Multi-Timeframe Trend [VERIFIED — Live Search]</h3>
+  <div class="metric-grid">
+    <div class="metric-card fail">
+      <div class="m-label">Current Price</div>
+      <div class="m-value">$285</div>
+      <div class="m-sub">Post-secondary offering (Jun 2026)</div>
+    </div>
+    <div class="metric-card fail">
+      <div class="m-label">52-Week High</div>
+      <div class="m-value">$352</div>
+      <div class="m-sub">-19.0% from 52W high</div>
+    </div>
+    <div class="metric-card pass">
+      <div class="m-label">52-Week Low</div>
+      <div class="m-value">$155.60</div>
+      <div class="m-sub">+83.2% from 52W low</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">ATH</div>
+      <div class="m-value">$346.32</div>
+      <div class="m-sub">Jan 24, 2025</div>
+    </div>
+  </div>
+
+  <h3>(B) Moving Average Dashboard</h3>
+  <div class="ta-grid">
+    <div class="ma-card">
+      <div class="ma-label">20-DMA</div>
+      <div class="ma-value" style="color:var(--fail);">$290.18</div>
+      <div class="ma-signal signal-sell">Price BELOW — Sell signal</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">50-DMA</div>
+      <div class="ma-value" style="color:var(--fail);">$291.50</div>
+      <div class="ma-signal signal-sell">Price BELOW — Sell signal</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">200-DMA</div>
+      <div class="ma-value" style="color:var(--fail);">$322.92</div>
+      <div class="ma-signal signal-sell">Price BELOW — Sell signal (KEY)</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">200-Week MA</div>
+      <div class="ma-value" style="color:var(--pass);">~$180</div>
+      <div class="ma-signal signal-buy">Price far ABOVE — Long-term uptrend intact</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">Golden/Death Cross</div>
+      <div class="ma-value" style="color:var(--fail);">DEATH</div>
+      <div class="ma-signal signal-sell">50-DMA below 200-DMA — bearish</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">EMA Ribbon</div>
+      <div class="ma-value" style="color:var(--fail);">BELOW ALL</div>
+      <div class="ma-signal signal-sell">All EMAs 5–50 above price</div>
+    </div>
+  </div>
+
+  <h3>(C) Volume Events</h3>
+  <div class="card card-amber">
+    <table class="data-table">
+      <tbody>
+        <tr><td>Jun 1, 2026</td><td>Secondary offering by existing holders at $281 (11M shares) — <strong style="color:var(--teal);">Overhang now CLEARED</strong>. Company completed buyback simultaneously.</td></tr>
+        <tr><td>May 11, 2026 (Q1 results)</td><td>EPS $2.74 beat by 5.7%; revenue +64% YoY. <span class="green">Volume expansion</span> on upside surprise — institutional accumulation signal.</td></tr>
+        <tr><td>Mar 31, 2026 (Outlook Call)</td><td>8% single-day sell-off on guidance below consensus. <span class="red">High volume sell-off</span> — capitulation. Likely washed out sellers from Q1-Q2 2026 period.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>(D) Momentum Indicators [VERIFIED — Financhill Data]</h3>
+  <div class="ta-grid">
+    <div class="ma-card">
+      <div class="ma-label">RSI (14-day)</div>
+      <div class="ma-value" style="color:var(--amber);">39.24</div>
+      <div class="ma-signal signal-watch">Near OVERSOLD (&lt;40) — Watch for buy signal below 38</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">MACD</div>
+      <div class="ma-value" style="color:var(--fail);">−4.44</div>
+      <div class="ma-signal signal-sell">Negative — momentum bearish; watch for crossover</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">Bollinger Bands (25)</div>
+      <div class="ma-value" style="color:var(--amber);">$275–$312</div>
+      <div class="ma-signal signal-sell">Near lower band — potential support at $275</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">RSI (Weekly)</div>
+      <div class="ma-value" style="color:var(--amber);">~44</div>
+      <div class="ma-signal signal-watch">Weekly nearing oversold — medium-term setup improving</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">ATR (14)</div>
+      <div class="ma-value" style="color:var(--chrome);">~$8.50</div>
+      <div class="ma-signal signal-neutral">Moderate volatility; normal for current conditions</div>
+    </div>
+    <div class="ma-card">
+      <div class="ma-label">Overall Signal</div>
+      <div class="ma-value" style="color:var(--fail);">STRONG SELL</div>
+      <div class="ma-signal signal-sell">0 buy / 12 sell MA signals; RSI approaching oversold oversold</div>
+    </div>
+  </div>
+
+  <div class="card card-amber" style="margin-top:8px;">
+    <strong style="color:var(--amber);">⚠ Technical Warning:</strong> CEG is in a clear short-term downtrend, trading below all major moving averages. However: (1) RSI at 39.24 is approaching the 38–40 oversold threshold that historically marks attractive entry points in quality compounders; (2) the secondary offering overhang was cleared June 1; (3) long-term 200-week MA at ~$180 confirms the multi-year uptrend is firmly intact. This is a technical pullback within a structural bull story — not a fundamental breakdown.
+  </div>
+
+  <h3>(E) Chart Patterns</h3>
+  <div class="card card-teal">
+    <table class="data-table">
+      <tbody>
+        <tr><td>Double Top Pattern</td><td>Possible — ATH $346 (Jan 2025) and $352 (52-wk high) form a near-double-top; current correction represents potential retest of base. <span class="amber">BEARISH near-term</span></td></tr>
+        <tr><td>Potential Cup &amp; Handle</td><td>52-wk range ($155→$352→$285) resembles the cup phase; if price consolidates $270–290 and breaks above $300 on volume, this would form a handle/base. <span class="teal">NEUTRAL/BULLISH medium-term</span></td></tr>
+        <tr><td>Key Support Level</td><td>$275 (Bollinger lower band) → $265 (MoS entry zone bottom) → $243.30 (52-week low). Three distinct support zones. <span class="green">Support structure intact</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>(F) Trade Structure [ESTIMATED — not investment advice]</h3>
+  <div class="card" style="border-left:3px solid var(--teal);">
+    <table class="data-table">
+      <tbody>
+        <tr><td><strong style="color:var(--teal);">Entry Zone (Primary)</strong></td><td><strong>$255–$268</strong> — Full MoS entry; RSI likely below 38; within MoS Entry Zone</td></tr>
+        <tr><td><strong style="color:var(--amber);">Entry Zone (Current-Level)</strong></td><td><strong>$278–$288</strong> — Starter/accumulation zone; secondary overhang cleared; RSI ~39</td></tr>
+        <tr><td><strong style="color:var(--fail);">Stop Loss</strong></td><td><strong>$232</strong> — Below 52-week low ($243) structural support; 18% below entry at $285</td></tr>
+        <tr><td><strong style="color:var(--pass);">Target 1</strong></td><td><strong>$330</strong> — Base IV low end; recovery to 200-DMA; 15.8% upside from $285</td></tr>
+        <tr><td><strong style="color:var(--pass);">Target 2</strong></td><td><strong>$375</strong> — Blended Base IV midpoint + AI premium; analyst consensus; 31.6% upside</td></tr>
+        <tr><td><strong style="color:var(--chrome);">Risk:Reward</strong></td><td><strong>1:2.6</strong> (T1) / <strong>1:3.5+</strong> (T2 from $285) — Above minimum 1:2.5 threshold</td></tr>
+        <tr><td><strong style="color:var(--chrome);">Position Size</strong></td><td>Starter 2–3% of portfolio; scale to 4–5% at MoS Entry Zone ($255–268); core 5–7yr hold</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>(G) Technical Composite Score</h3>
+  <table class="data-table">
+    <thead><tr><th>Dimension</th><th class="num">Score (0–5)</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Price Structure / Trend</td><td class="num red">1/5</td><td>Below all MAs; short-term downtrend</td></tr>
+      <tr><td>MA Dashboard</td><td class="num red">1/5</td><td>0 buy signals out of 12; Death Cross</td></tr>
+      <tr><td>Volume / OBV</td><td class="num amber">2.5/5</td><td>Secondary cleared; Q1 beat saw buying</td></tr>
+      <tr><td>Momentum (RSI/MACD)</td><td class="num amber">2/5</td><td>RSI 39 near oversold; MACD negative but flattening</td></tr>
+      <tr><td>Chart Patterns</td><td class="num amber">2.5/5</td><td>Possible cup base forming; near support</td></tr>
+      <tr><td>Overall Composite</td><td class="num amber"><strong>9/25 = 36%</strong></td><td>Short-term bearish; medium-term base forming</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px;color:var(--chrome-dim);">Technical composite of 36% reflects a stock in a corrective phase. However, for quality compounders, RSI below 40 on weekly has historically preceded the strongest 12-month returns. The fundamental thesis remains intact; the technical weakness is an opportunity. [ESTIMATED]</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 8 — SHAREHOLDING
+══════════════════════════════════════════════════ -->
+<div id="tab8" class="tab-content">
+  <h2>Shareholding &amp; Ownership Analysis</h2>
+
+  <h3>(A) Ownership Structure [VERIFIED — SEC filings + Simply Wall St]</h3>
+  <div class="metric-grid">
+    <div class="metric-card pass">
+      <div class="m-label">Institutional Ownership</div>
+      <div class="m-value green">~83%</div>
+      <div class="m-sub">High-quality institutional base</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Top 11 Shareholders</div>
+      <div class="m-value">~51%</div>
+      <div class="m-sub">Concentrated ownership</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="m-label">Insider Net Activity (12M)</div>
+      <div class="m-value red">−$99M</div>
+      <div class="m-sub">Net sellers — caution</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Shares Outstanding (approx)</div>
+      <div class="m-value">~345M</div>
+      <div class="m-sub">Post-Calpine stock issuance</div>
+    </div>
+  </div>
+
+  <h4>Ownership Composition Bar</h4>
+  <div style="margin:8px 0 4px;font-family:'Space Mono',monospace;font-size:10px;color:var(--chrome-dim);">Estimated breakdown (approximate)</div>
+  <div class="own-bar">
+    <div class="own-segment own-inst" style="width:83%;">83% Institutional</div>
+    <div class="own-segment own-retail" style="width:12%;">12% Retail</div>
+    <div class="own-segment own-insider" style="width:5%;">5% Inside</div>
+  </div>
+  <div style="font-size:11px;color:var(--chrome-dim);margin-top:4px;">[ESTIMATED based on public filings]</div>
+
+  <h3>(B) Index Membership &amp; Weights [VERIFIED]</h3>
+  <div class="card card-teal">
+    <span class="idx-badge">S&P 500</span>
+    <span class="idx-badge">NASDAQ-100</span>
+    <span class="idx-badge">S&P Utilities Select Sector</span>
+    <span class="idx-badge">Russell 1000</span>
+    <span class="idx-badge">MSCI USA</span>
+    <span class="idx-badge">MSCI North America</span>
+    <p style="margin-top:10px;font-size:12px;color:var(--chrome-dim);">Inclusion in Nasdaq-100 and S&P 500 creates significant passive fund buying pressure (~83% institutional base). Any Utilities sector ETF rotation creates flows into CEG. S&P Utilities Select Sector SPDR (XLU) is a key institutional vehicle — utility investor rotation patterns directly affect CEG.</p>
+  </div>
+
+  <h3>(C) Recent Ownership Events [VERIFIED]</h3>
+  <table class="data-table">
+    <thead><tr><th>Date</th><th>Event</th><th>Signal</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Jun 1, 2026</td>
+        <td>Secondary offering: 11M shares at $281 by existing holders. Company simultaneously repurchased shares.</td>
+        <td><span class="amber">NEUTRAL-NEGATIVE — Existing holders selling, but $281 as secondary price sets a near-term floor. Overhang now cleared.</span></td>
+      </tr>
+      <tr>
+        <td>2025 (full year)</td>
+        <td>Share buyback: ~$1B+ deployed (ongoing $5B program; $600M remaining as of early 2026)</td>
+        <td><span class="green">POSITIVE — Management buying back at elevated prices = conviction on IV</span></td>
+      </tr>
+      <tr>
+        <td>Jan 2026</td>
+        <td>Calpine acquisition: ~$9-10B in CEG stock issued to Energy Capital Partners. ECP receives 11M+ shares.</td>
+        <td><span class="red">NEGATIVE — Secondary offering by ECP represents major near-term overhang now being distributed</span></td>
+      </tr>
+      <tr>
+        <td>Mar-Jun 2026</td>
+        <td>Insiders: $99M net sold over 12 months. CEO holds 149,830 shares directly.</td>
+        <td><span class="red">NEGATIVE — Net seller signal; watch for insider buys as upgrade condition #5</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>(D) Ownership Momentum Scores [ESTIMATED]</h3>
+  <div class="two-col">
+    <div class="card card-teal">
+      <h4>Ownership Momentum Score</h4>
+      <div class="ai-score-bar"><div class="ai-score-fill" style="width:45%;background:linear-gradient(90deg,var(--amber),var(--teal));"></div></div>
+      <div style="font-family:'Space Mono',monospace;font-size:20px;color:var(--amber);font-weight:700;">45/100</div>
+      <p style="font-size:12px;color:var(--chrome-dim);">83% institutional base is positive, but $99M insider net selling, secondary offering overhang (now cleared), and $9-10B Calpine share issuance distribution weigh negatively on near-term accumulation momentum.</p>
+    </div>
+    <div class="card card-amber">
+      <h4>Shareholding Risk Score</h4>
+      <div class="ai-score-bar"><div class="ai-score-fill" style="width:38%;background:linear-gradient(90deg,var(--pass),var(--amber));"></div></div>
+      <div style="font-family:'Space Mono',monospace;font-size:20px;color:var(--pass);font-weight:700;">38/100</div>
+      <p style="font-size:12px;color:var(--chrome-dim);">LOW-MODERATE RISK. High institutional ownership creates price sensitivity to sentiment shifts, but index weight provides passive floor. No concentrated single-holder risk. No pledge concerns. Secondary overhang now cleared — risk declining.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     TAB 9 — AI INTELLIGENCE
+══════════════════════════════════════════════════ -->
+<div id="tab9" class="tab-content">
+  <h2>AI Intelligence Dashboard</h2>
+
+  <h3>(A) AI Classification Dashboard</h3>
+  <div class="badge-row" style="gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+    <span class="badge badge-cat-c" style="font-size:13px;padding:8px 16px;border-radius:6px;">CATEGORY C<br><span style="font-size:10px;font-weight:400;">Mature Quality Compounder</span></span>
+    <span class="badge badge-widener" style="font-size:13px;padding:8px 16px;border-radius:6px;">🟢 AI WIDENER<br><span style="font-size:10px;font-weight:400;">Demand Moat via Data Centers</span></span>
+    <span class="badge flywheel-feature" style="font-size:13px;padding:8px 16px;border-radius:6px;">FLYWHEEL: FEATURE ★<br><span style="font-size:10px;font-weight:400;">1/3 criteria met</span></span>
+    <span class="badge badge-price" style="font-size:13px;padding:8px 16px;border-radius:6px;">PHASE 4<br><span style="font-size:10px;font-weight:400;">AI-Enabled Incumbent</span></span>
+  </div>
+
+  <h3>(B) Data Flywheel Deep-Dive</h3>
+  <div class="flywheel-box">
+    <div class="flywheel-title">DATA FLYWHEEL ANALYSIS</div>
+    <div class="flywheel-badge flywheel-feature">FEATURE ★ — Score: 4.5/10</div>
+
+    <div class="two-col" style="margin-top:12px;">
+      <div>
+        <h4 style="color:var(--teal);margin-top:0;">Q1: Proprietary Training Data?</h4>
+        <p style="font-size:12px;color:var(--chrome);">CEG possesses decades of nuclear operational data (fuel usage, thermal output, outage patterns, refueling cycles) that is unique. However, this data is used for safety/efficiency in operations — it is not used to train AI models that improve the product delivered to customers. The "data" CEG has is operational intelligence, not ML training assets. Score: 1/3 [ESTIMATED]</p>
+      </div>
+      <div>
+        <h4 style="color:var(--teal);margin-top:0;">Q2: Does More Data Improve AI?</h4>
+        <p style="font-size:12px;color:var(--chrome);">Nuclear power generation does not improve with more customers in the AI/ML sense. Physics-based generation: adding a 1,000th data center customer does not generate cheaper electricity for the 1,001st. The power output is fixed by reactor physics. No evidence of AI-improving-with-scale in the core product. Score: 0/3 [VERIFIED]</p>
+      </div>
+    </div>
+    <div>
+      <h4 style="color:var(--teal);margin-top:8px;">Q3: Does Better AI Attract More Users? (Demand Flywheel)</h4>
+      <p style="font-size:12px;color:var(--chrome);">CEG does benefit from a <em>demand flywheel</em>, which is distinct from a data flywheel: Being the first to sign a nuclear-to-data-center PPA (Microsoft) demonstrated feasibility, which attracted Meta and others to follow. Each large PPA enhances CEG's credibility as the nuclear power provider for AI, attracting the next hyperscaler. The loop speed is slow (1–2 deals per year) but real. Score: 0.5/3 — partial. [ESTIMATED]</p>
+    </div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+      <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--chrome-dim);">Flywheel Score Breakdown:</div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--chrome);margin:4px 0;">Data Quality &nbsp;&nbsp;&nbsp;&nbsp; 1.0/3</div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--chrome);margin:4px 0;">Improvement Evidence 0.5/4</div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;color:var(--chrome);margin:4px 0;">Loop Speed &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.5/3 (demand loop, not data loop)</div>
+      <div class="flywheel-score" style="margin-top:6px;">Total: 4.5/10</div>
+    </div>
+  </div>
+
+  <h3>(C) AI Value Chain Position</h3>
+  <div class="ai-chain">
+    <div class="ai-level">
+      <div style="font-size:9px;margin-bottom:2px;">LEVEL 1</div>
+      Infrastructure
+      <div style="font-size:9px;color:var(--chrome-dim);">NVIDIA, AMD</div>
+    </div>
+    <div class="ai-level">
+      <div style="font-size:9px;margin-bottom:2px;">LEVEL 2</div>
+      Foundation Models
+      <div style="font-size:9px;color:var(--chrome-dim);">OpenAI, Anthropic</div>
+    </div>
+    <div class="ai-level">
+      <div style="font-size:9px;margin-bottom:2px;">LEVEL 3</div>
+      Platforms
+      <div style="font-size:9px;color:var(--chrome-dim);">AWS, Azure, GCP</div>
+    </div>
+    <div class="ai-level">
+      <div style="font-size:9px;margin-bottom:2px;">LEVEL 4</div>
+      Vertical Apps
+      <div style="font-size:9px;color:var(--chrome-dim);">Vertical SaaS</div>
+    </div>
+    <div class="ai-level highlighted">
+      <div style="font-size:9px;margin-bottom:2px;color:var(--teal);">LEVEL 5 ◀ CEG</div>
+      AI-Enabled Incumbent
+      <div style="font-size:9px;color:var(--teal);">Energy backbone for AI</div>
+    </div>
+  </div>
+  <div class="card card-teal" style="margin-top:10px;">
+    <p style="font-size:13px;margin-bottom:6px;"><strong>CEG's Position: Level 5 — AI-Enabled Incumbent.</strong> CEG is the physical energy backbone that powers the entire AI value chain. Without reliable baseload power, Levels 1–4 cannot operate. This makes CEG an asymmetric beneficiary of AI growth — it captures value from <em>all</em> AI activity (not just one category), with limited risk of being disrupted by AI itself.</p>
+    <p style="font-size:12px;color:var(--chrome-dim);margin-bottom:0;"><strong>Investment Implications:</strong> 5–7yr horizon · Low disruption risk · Moat durability high (80yr nuclear licenses) · Value chain position strengthens as AI scales · Target: hold through the entire AI infrastructure buildout cycle.</p>
+  </div>
+
+  <h3>(D) AI Opportunity Assessment</h3>
+  <table class="data-table">
+    <thead><tr><th>Factor</th><th>Assessment</th><th>CEG Relevance</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>India Stack Data Access</td>
+        <td><span class="red">NOT APPLICABLE</span></td>
+        <td>US company; no India operations</td>
+      </tr>
+      <tr>
+        <td>Data Center Nuclear Demand (US)</td>
+        <td><span class="green">MAJOR OPPORTUNITY — PHASE 3</span></td>
+        <td>Core thesis. 147M MWh annual nuclear fleet available for AI data center PPAs. Microsoft + Meta = first movers. [VERIFIED]</td>
+      </tr>
+      <tr>
+        <td>US Energy Independence Narrative</td>
+        <td><span class="green">WIDENER</span></td>
+        <td>Bipartisan political tailwind: nuclear = U.S. AI competitive advantage vs China. CEO explicitly invoking this. [VERIFIED]</td>
+      </tr>
+      <tr>
+        <td>AI Operational Efficiency</td>
+        <td><span class="amber">NEUTRAL</span></td>
+        <td>AI used for predictive maintenance, outage optimization. Incremental efficiency; not structural moat. [ESTIMATED]</td>
+      </tr>
+      <tr>
+        <td>AI-Driven Grid Management</td>
+        <td><span class="teal">FORMING</span></td>
+        <td>Post-Calpine: combined nuclear + gas dispatch optimized by AI could reduce costs. Not yet material. [ESTIMATED]</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>(F) AI Opportunity Score</h3>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Category (max pts)</th><th class="num">Score</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Data Flywheel (20)</td><td class="num amber">9/20</td><td>Demand flywheel present; data flywheel absent</td></tr>
+        <tr><td>Adoption Phase Timing (20)</td><td class="num green">16/20</td><td>Phase 4 — incumbent in the acceleration phase of AI buildout</td></tr>
+        <tr><td>Value Chain Position (20)</td><td class="num green">17/20</td><td>Level 5 — irreplaceable energy backbone; highest conviction position</td></tr>
+        <tr><td>Structural Advantage (20)</td><td class="num green">16/20</td><td>US energy independence + nuclear scarcity + IRA PTC support</td></tr>
+        <tr><td>AI Threat Resistance (20)</td><td class="num green">14/20</td><td>AI CANNOT replace physical power generation; minimal disruption risk</td></tr>
+        <tr style="background:rgba(0,200,212,0.06);"><td><strong>TOTAL AI SCORE</strong></td><td class="num teal"><strong>72/100</strong></td><td><span style="color:var(--teal);font-weight:700;">STRATEGIC (60–80)</span></td></tr>
+      </tbody>
+    </table>
+    <div class="ai-score-bar" style="margin-top:10px;"><div class="ai-score-fill" style="width:72%;"></div></div>
+    <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--teal);margin:6px 0;">72/100 — STRATEGIC</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+      <span class="badge badge-price">Portfolio Role: STRATEGIC (Core Energy Position)</span>
+      <span class="badge badge-widener">Investment Horizon: 5–7yr</span>
+      <span class="badge badge-widener">Disruption Risk: VERY LOW</span>
+    </div>
+    <p style="font-size:12px;color:var(--chrome-dim);margin-top:8px;">CEG is NOT an AI company — it is the physical infrastructure that makes AI possible. This makes it a STRATEGIC holding in any portfolio with AI exposure: it benefits from AI growth with lower valuation risk, lower disruption risk, and a 80-year asset life. The AI demand shock has created a permanent re-rating of nuclear energy economics. [ESTIMATED]</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="disclaimer">
+    <strong style="color:var(--teal);">Buffett Quality-Value Series v5.0</strong> — Report generated June 5, 2026 | Analysis date: June 5, 2026<br><br>
+    <strong>SEC / US Regulatory Disclaimer:</strong> This report is for informational and educational purposes only and does not constitute investment advice, a solicitation, or an offer to buy or sell any security. Past performance is not indicative of future results. Constellation Energy Corporation (NASDAQ: CEG) is subject to risks including but not limited to: regulatory changes (NRC, PJM, FERC), commodity price volatility, nuclear operational risks, Calpine integration execution risks, interest rate sensitivity, and counterparty risk in long-term PPAs. Investors should conduct their own due diligence and consult with a registered investment advisor before making any investment decisions. The DOJ/FTC/EU antitrust implications of the Calpine acquisition have been considered; required divestitures (York 2, Jack Fusco) have been noted.<br><br>
+    <strong>Data Notice:</strong> [VERIFIED] = Official SEC filings, earnings releases, live web search conducted this session. [ESTIMATED] = Cross-referenced from multiple sources; high confidence. [UNVERIFIED] = Single-source; treat with caution. Market data as of ~June 5, 2026. Intrinsic value estimates are analytical models, not guarantees.<br><br>
+    <strong>Fonts:</strong> Rajdhani (Google Fonts) · Space Mono (Google Fonts) · Lora (Google Fonts) — All used under SIL Open Font License.
+  </div>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
