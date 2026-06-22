@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRVL · Marvell Technology — Buffett Quality-Value Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-void:#060910;
+  --bg-deep:#0A0F1C;
+  --bg-panel:#101729;
+  --bg-panel-2:#141D33;
+  --bg-panel-3:#0D1424;
+  --border-soft:#223150;
+  --border-soft2:#1A2440;
+  --cyan:#22D3EE;
+  --cyan-dim:#0E7490;
+  --copper:#FB923C;
+  --copper-dim:#9A5824;
+  --emerald:#34D399;
+  --emerald-dim:#0F5132;
+  --red:#F87171;
+  --red-dim:#5C1A1A;
+  --amber:#FBBF24;
+  --amber-dim:#5C4011;
+  --text-bright:#F4F8FC;
+  --text-body:#C9D6E8;
+  --text-muted:#8CA3C7;
+  --mono:'JetBrains Mono',monospace;
+  --display:'Inter',sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:var(--display);
+  background:var(--bg-void);
+  color:var(--text-body);
+  font-size:16px;
+  line-height:1.55;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--display);color:var(--text-bright);margin:0 0 8px 0;font-weight:700;}
+p{margin:0 0 12px 0;}
+.mono{font-family:var(--mono);}
+a{color:var(--cyan);text-decoration:none;}
+
+/* ===== HERO ===== */
+.hero{
+  background:linear-gradient(135deg,#070B14 0%,#0B1426 55%,#0A1B22 100%);
+  border-bottom:1px solid var(--border-soft);
+  padding:26px 5vw 20px 5vw;
+  max-height:220px;
+  overflow:hidden;
+  position:relative;
+}
+.hero::before{
+  content:"";
+  position:absolute;top:-60px;right:-60px;width:340px;height:340px;
+  background:radial-gradient(circle,rgba(34,211,238,0.16),transparent 70%);
+  pointer-events:none;
+}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;}
+.hero-id .ticker-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+.hero-id .ticker-row .name{font-size:30px;font-weight:800;letter-spacing:-0.5px;color:var(--text-bright);}
+.hero-id .ticker-row .sym{font-family:var(--mono);font-size:15px;color:var(--cyan);font-weight:600;}
+.hero-id .lede{margin-top:6px;font-size:14.5px;color:var(--text-body);max-width:640px;}
+.verdict-badge{
+  text-align:right;
+  flex-shrink:0;
+}
+.verdict-pill{
+  display:inline-block;
+  padding:9px 18px;
+  border-radius:8px;
+  font-family:var(--mono);
+  font-weight:700;
+  font-size:15px;
+  background:linear-gradient(135deg,var(--amber-dim),#3a2e08);
+  border:1px solid var(--amber);
+  color:var(--amber);
+  letter-spacing:0.5px;
+}
+.verdict-sub{font-size:11.5px;color:var(--text-muted);margin-top:6px;}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.badge{
+  font-size:12px;font-weight:600;padding:5px 11px;border-radius:6px;
+  border:1px solid var(--border-soft);background:var(--bg-panel);color:var(--text-body);
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+}
+.badge.cat{border-color:var(--cyan-dim);color:var(--cyan);background:rgba(34,211,238,0.08);}
+.badge.ai-widener{border-color:#1f8a5c;color:var(--emerald);background:rgba(52,211,153,0.08);}
+.badge.macro{border-color:var(--copper-dim);color:var(--copper);background:rgba(251,146,60,0.08);}
+.pill{font-family:var(--mono);font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:20px;letter-spacing:0.3px;}
+.pill.verified{background:rgba(52,211,153,0.15);color:var(--emerald);border:1px solid #1f8a5c;}
+.pill.estimated{background:rgba(251,191,36,0.15);color:var(--amber);border:1px solid #8a6a14;}
+.pill.unverified{background:rgba(248,113,113,0.15);color:var(--red);border:1px solid #8a2f2f;}
+
+/* ===== TAB BAR ===== */
+#tab-bar{
+  position:sticky;top:0;z-index:50;
+  display:flex;overflow-x:auto;
+  background:var(--bg-deep);
+  border-bottom:1px solid var(--border-soft);
+  scrollbar-width:thin;
+}
+#tab-bar::-webkit-scrollbar{height:4px;}
+#tab-bar::-webkit-scrollbar-thumb{background:var(--border-soft);}
+.tab-btn{
+  font-family:var(--mono);
+  background:transparent;border:none;
+  color:var(--text-muted);
+  padding:14px 16px 12px 16px;
+  font-size:12.5px;font-weight:600;
+  cursor:pointer;white-space:nowrap;
+  border-bottom:3px solid transparent;
+  transition:color .15s, border-color .15s;
+  letter-spacing:0.2px;
+}
+.tab-btn:hover{color:var(--text-bright);}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+
+/* ===== CONTENT ===== */
+.tab-content{display:none;padding:30px 5vw 60px 5vw;max-width:1280px;margin:0 auto;}
+.section-eyebrow{font-family:var(--mono);font-size:11.5px;color:var(--copper);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+.section-title{font-size:23px;margin-bottom:16px;}
+.panel{background:var(--bg-panel);border:1px solid var(--border-soft);border-radius:10px;padding:20px 22px;margin-bottom:20px;}
+.panel-tight{padding:16px 18px;}
+
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.metric-card{
+  background:var(--bg-panel-3);border:1px solid var(--border-soft2);
+  border-left:3px solid var(--cyan);border-radius:8px;padding:14px 16px;
+}
+.metric-card.status-good{border-left-color:var(--emerald);}
+.metric-card.status-warn{border-left-color:var(--amber);}
+.metric-card.status-bad{border-left-color:var(--red);}
+.metric-card .label{font-size:11.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.metric-card .value{font-family:var(--mono);font-size:21px;font-weight:700;color:var(--text-bright);}
+.metric-card .note{font-size:11.5px;color:var(--text-muted);margin-top:4px;}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+th{text-align:left;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);padding:8px 10px;border-bottom:1px solid var(--border-soft);}
+td{padding:9px 10px;border-bottom:1px solid var(--border-soft2);color:var(--text-body);}
+tr:last-child td{border-bottom:none;}
+td.num,th.num{font-family:var(--mono);text-align:right;}
+.tbl-wrap{overflow-x:auto;margin-bottom:18px;}
+
+.grade-chip{display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:13px;min-width:34px;padding:4px 8px;border-radius:6px;}
+.grade-A{background:rgba(52,211,153,0.18);color:var(--emerald);}
+.grade-B{background:rgba(34,211,238,0.18);color:var(--cyan);}
+.grade-C{background:rgba(251,191,36,0.18);color:var(--amber);}
+.grade-D{background:rgba(251,146,60,0.18);color:var(--copper);}
+.grade-F{background:rgba(248,113,113,0.18);color:var(--red);}
+
+.status-pass{color:var(--emerald);font-weight:700;}
+.status-marginal{color:var(--amber);font-weight:700;}
+.status-fail{color:var(--red);font-weight:700;}
+
+.stars{color:var(--amber);font-size:16px;letter-spacing:1px;}
+.flywheel-box{border:1px solid var(--cyan-dim);background:linear-gradient(135deg,rgba(34,211,238,0.07),rgba(20,29,51,0.4));border-radius:10px;padding:20px;margin-bottom:20px;}
+.flywheel-score{font-family:var(--mono);font-size:34px;font-weight:800;color:var(--cyan);}
+.callout{border-radius:10px;padding:16px 18px;margin-bottom:18px;border:1px solid;}
+.callout.info{border-color:var(--cyan-dim);background:rgba(34,211,238,0.06);}
+.callout.warn{border-color:var(--amber-dim);background:rgba(251,191,36,0.06);}
+.callout.risk{border-color:var(--red-dim);background:rgba(248,113,113,0.06);}
+.callout-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:6px;display:block;}
+.callout.info .callout-label{color:var(--cyan);}
+.callout.warn .callout-label{color:var(--amber);}
+.callout.risk .callout-label{color:var(--red);}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+.verdict-box{
+  background:linear-gradient(135deg,#0c1018,#171008);
+  border:2px solid var(--amber);
+  border-radius:14px;
+  padding:28px 30px;
+  margin-bottom:24px;
+  text-align:center;
+}
+.verdict-box .vtitle{font-family:var(--mono);font-size:30px;font-weight:800;color:var(--amber);letter-spacing:1px;}
+.verdict-box .vquote{font-style:italic;color:var(--text-body);margin-top:14px;font-size:14.5px;max-width:760px;margin-left:auto;margin-right:auto;}
+
+.cond-badge{display:flex;gap:12px;align-items:flex-start;background:var(--bg-panel-3);border:1px solid var(--border-soft2);border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+.cond-num{font-family:var(--mono);font-weight:800;color:var(--bg-void);background:var(--cyan);min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+
+.gauge-wrap{display:flex;align-items:center;gap:18px;}
+.scorebar{flex:1;height:10px;background:var(--bg-panel-3);border-radius:6px;overflow:hidden;border:1px solid var(--border-soft2);}
+.scorebar-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--emerald));}
+
+footer.report-footer{padding:28px 5vw 40px 5vw;border-top:1px solid var(--border-soft);font-size:11.5px;color:var(--text-muted);max-width:1280px;margin:0 auto;}
+footer.report-footer p{margin-bottom:8px;}
+
+@media (max-width:680px){
+  .metric-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col,.three-col{grid-template-columns:1fr;}
+  .hero-id .ticker-row .name{font-size:23px;}
+  .verdict-box .vtitle{font-size:22px;}
+}
+@media (max-width:600px){
+  .metric-grid{grid-template-columns:1fr 1fr;}
+  .tab-content{padding:22px 4vw 50px 4vw;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-id">
+      <div class="ticker-row">
+        <span class="name">Marvell Technology</span>
+        <span class="sym">MRVL · NASDAQ</span>
+      </div>
+      <div class="lede">The AI infrastructure picks-and-shovels chipmaker turning hyperscaler custom-silicon design wins into explosive growth — priced, today, for nearly everything to go right.</div>
+      <div class="badge-row">
+        <span class="badge cat">CATEGORY B — High-Growth Global Compounder</span>
+        <span class="badge ai-widener">🟢 AI WIDENER</span>
+        <span class="badge macro">MACRO: Rates Headwind / AI Sector Tailwind</span>
+        <span class="pill verified">VERIFIED</span>
+        <span class="pill estimated">ESTIMATED</span>
+        <span class="pill unverified">UNVERIFIED</span>
+      </div>
+    </div>
+    <div class="verdict-badge">
+      <span class="verdict-pill">WATCH ★★</span>
+      <div class="verdict-sub">Quality real · Price extreme<br>Wait for correction</div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro & Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+</div>
+<div class="tab-content" id="tab0" style="display:block;">
+  <div class="section-eyebrow">Tab 0 — Overview</div>
+  <h2 class="section-title">Why Marvell is in the Series</h2>
+
+  <div class="callout info">
+    <span class="callout-label">Series Rationale</span>
+    Marvell sits at the structural center of the single biggest re-architecture in modern computing: hyperscalers replacing general-purpose GPUs with custom-designed AI silicon. <span class="mono">[VERIFIED]</span> The company posted $8.195B in fiscal 2026 revenue, up 42% year-over-year, "driven by robust AI demand," and management explicitly guided that "year-over-year revenue growth to accelerate each quarter in fiscal 2027." That combination of a real, multi-hyperscaler customer base and a structurally expanding addressable market is exactly the setup the Buffett Quality-Value Series exists to stress-test — separating a genuinely strengthening business from a genuinely extreme price.
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card status-good">
+      <div class="label">FY2026 Revenue</div>
+      <div class="value">$8.20B</div>
+      <div class="note">+42.1% YoY · record</div>
+    </div>
+    <div class="metric-card status-good">
+      <div class="label">TTM Revenue Growth</div>
+      <div class="value">+34.1%</div>
+      <div class="note">Q1 FY27: $2.42B, +28% YoY</div>
+    </div>
+    <div class="metric-card status-bad">
+      <div class="label">Current Price</div>
+      <div class="value">$308.88</div>
+      <div class="note">Jun 15 close · [VERIFIED, verify live]</div>
+    </div>
+    <div class="metric-card status-warn">
+      <div class="label">1-Yr Return</div>
+      <div class="value">+300%+</div>
+      <div class="note">52-wk range $61.44–$324.20</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Business Overview</h3>
+    <p><span class="mono">[VERIFIED]</span> Marvell Technology is a fabless semiconductor company supplying "data infrastructure semiconductor solutions, spanning the data center core to network edge." Its portfolio spans custom application-specific integrated circuits (ASICs/XPUs) for AI accelerators, optical and copper interconnects (DSP, PAM, coherent optics), Ethernet switches/controllers/PHYs, data processing units (DPUs), and storage controllers (SSD/HDD/fibre channel). Marvell was founded in 1995 and is led by Chairman & CEO Matt Murphy, who in fiscal 2026 oversaw a deliberate portfolio rotation: divesting the Automotive Ethernet business to Infineon for $2.5B in cash (completed August 2025, generating a $1.8B pre-tax gain) to sharpen focus on AI and data-center infrastructure.</p>
+    <p>The growth engine today is custom silicon: Marvell has <span class="mono">[ESTIMATED]</span> 18 active custom-silicon programs — 12 for Amazon, Google, Microsoft and Meta, and 6 for emerging AI customers — with design-IP inside Amazon's Trainium accelerators, Microsoft's Maia chips, and a newly-won slice of Google's TPU program that ends Broadcom's prior exclusivity there. In April 2026, Nvidia itself took a roughly $2 billion strategic equity stake in Marvell alongside an NVLink Fusion partnership, effectively wiring Marvell's custom XPUs into Nvidia's own ecosystem rather than treating it as a pure threat.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="panel panel-tight">
+      <h3>What makes this interesting</h3>
+      <p style="margin-bottom:0;">A genuine multi-hyperscaler design-win franchise, in the fastest-growing sub-segment of the fastest-growing part of semiconductors (custom ASICs are expected to grow from ~25% to ~50% of AI chip capacity by 2030), backed by Nvidia's own strategic capital. This is not a story stock — the revenue and the design wins are real and verifiable in SEC filings.</p>
+    </div>
+    <div class="panel panel-tight">
+      <h3>What makes this challenging</h3>
+      <p style="margin-bottom:0;">The stock is up over 300% in a year, just joined the S&P 500 (forcing passive buying), trades at roughly 97x trailing GAAP earnings and ~85x EV/EBITDA, has a beta of 2.28, and has moved more than 10% in single sessions repeatedly in the last month. GAAP net income collapsed to just $34.5M in Q1 FY27 despite 28% revenue growth — heavy stock-based comp and acquisition amortization make reported earnings nearly unusable without adjustment. ROIC (6.7–9.65%) currently sits below any reasonable WACC estimate.</p>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-label">AI Overlay + Reasoning</span>
+    🟢 <strong>WIDENER.</strong> AI is structurally expanding Marvell's addressable market (custom XPU + optical interconnect TAM), and multi-year, multi-generation chip design programs create real switching costs once a hyperscaler standardizes on Marvell's IP. However, run the strict three-part Data Flywheel Test (proprietary data competitors can't replicate · more users improve the AI · better AI attracts more users) and Marvell scores 0-of-3 — it sells silicon and design IP, not a data-network-effect product. The AI Overlay badge is earned through TAM expansion and switching-cost lock-in, not a data flywheel; the Flywheel field below is graded honestly as <strong>FEATURE</strong>, not Confirmed, so as not to overstate the moat mechanism.
+  </div>
+
+  <div class="callout risk">
+    <span class="callout-label">Framework Adaptation Needed</span>
+    Three adaptations from the standard template, flagged upfront: (1) This is a US/NASDAQ stock — promoter-pledge and India-Stack criteria are replaced with insider Form-4 activity and a US-adapted macro dashboard. (2) Tab 9 Section E ("Disruption Risk") is written for AI THREAT stocks; since Marvell is a WIDENER, it is relabeled "Competitive & Concentration Risk" to address the real analogous risk — design losses, customer in-housing, and hyperscaler concentration — rather than force-fitting a disruption-timeline framework that doesn't apply. (3) GAAP earnings this year are distorted by a one-time $1.8B divestiture gain; Owner Earnings and O'Glove Test 1 are explicitly normalized for this in Tab 2 rather than taken at face value.
+  </div>
+
+  <div class="panel panel-tight" style="border-color:var(--cyan-dim);">
+    <h3 style="color:var(--cyan);">Today's Catalyst</h3>
+    <p style="margin-bottom:0;">Marvell is hosting a custom AI silicon investor event on <strong>June 17, 2026 — today</strong>. Given the stock's recent pattern of double-digit single-session swings around news flow, this is a live, immediate-term volatility event Day should be aware of when reading any price level in this report.</p>
+  </div>
+</div>
+<div class="tab-content" id="tab1">
+  <div class="section-eyebrow">Tab 1 — Macro & Growth</div>
+  <h2 class="section-title">Macro Cycle Dashboard <span style="font-size:13px;color:var(--text-muted);font-weight:400;">(US-adapted — see Tab 0 note)</span></h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Dimension</th><th>Status</th><th>Read</th></tr>
+      <tr><td>Labor / Consumer Cycle</td><td><span class="grade-chip grade-C">NEUTRAL</span></td><td>"Low-hire, low-fire" equilibrium; hiring pace slowing as firms adapt to higher financing costs <span class="mono">[VERIFIED]</span></td></tr>
+      <tr><td>Corporate / Hyperscaler Capex Cycle</td><td><span class="grade-chip grade-A">BOOM</span></td><td>IDC: data-center semiconductor revenue $477.1B (2026E) → $843.2B (2030E); "AI is no longer a demand catalyst — it is the demand foundation" <span class="mono">[VERIFIED]</span></td></tr>
+      <tr><td>Input Cost Cycle</td><td><span class="grade-chip grade-D">HEADWIND</span></td><td>HBM memory and advanced-node wafer costs elevated; tariff overhang on China semiconductor trade adds uncertainty <span class="mono">[ESTIMATED]</span></td></tr>
+      <tr><td>Fed Rate Cycle</td><td><span class="grade-chip grade-D">TIGHTENING-BIAS</span></td><td>Fed funds held at 3.50–3.75%; 10-yr Treasury ~4.44–4.48%, near multi-month highs; new Fed Chair Warsh faces a divided FOMC; markets price hike risk, not cuts <span class="mono">[VERIFIED]</span></td></tr>
+      <tr><td>Policy / Trade Cycle</td><td><span class="grade-chip grade-C">MIXED</span></td><td>US delayed new tariffs on Chinese semiconductors (near-term relief), but export-control risk on AI silicon to China remains a standing overhang <span class="mono">[VERIFIED]</span></td></tr>
+      <tr><td>AI Adoption Cycle</td><td><span class="grade-chip grade-A">BOOM / OPPORTUNITY</span></td><td>Custom ASIC share of AI chip capacity: ~25% today → ~50% by 2030; Nvidia's own data-center AI share projected to fall from 86% (2024) to ~75% (2026E) as custom silicon scales <span class="mono">[VERIFIED]</span></td></tr>
+    </table>
+  </div>
+
+  <div class="two-col">
+    <div class="panel panel-tight">
+      <div class="label" style="font-family:var(--mono);font-size:11.5px;color:var(--text-muted);text-transform:uppercase;">Macro Composite</div>
+      <div style="font-size:19px;font-weight:700;color:var(--copper);margin-top:4px;">HEADWIND (rates/inflation)</div>
+      <p style="margin-top:8px;margin-bottom:0;font-size:13.5px;">CPI re-accelerated to 3.8% YoY in April 2026 (core 2.8%), pushing the 10-yr Treasury back near multi-month highs. Higher discount rates compress exactly the kind of long-duration, multi-year-growth valuation that MRVL depends on.</p>
+    </div>
+    <div class="panel panel-tight">
+      <div class="label" style="font-family:var(--mono);font-size:11.5px;color:var(--text-muted);text-transform:uppercase;">AI Cycle Impact</div>
+      <div style="font-size:19px;font-weight:700;color:var(--emerald);margin-top:4px;">OPPORTUNITY (sector-specific)</div>
+      <p style="margin-top:8px;margin-bottom:0;font-size:13.5px;">The AI infrastructure buildout is, for now, overriding the macro rate headwind for sector-specific revenue growth — but it does not override the headwind for the multiple investors should be willing to pay for that growth.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:8px;">Sector Growth Derivation</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Sector</th><th class="num">Stress</th><th class="num">Base</th><th class="num">Accel</th><th>AI Impact</th></tr>
+      <tr><td>AI Data-Center Semis / Custom Silicon</td><td class="num mono">12–15%</td><td class="num mono">18–22%</td><td class="num mono">25–30%</td><td><span class="grade-chip grade-A">CORE</span></td></tr>
+    </table>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);">Derived from IDC's $477.1B→$843.2B (2026→2030) data-center semiconductor forecast (~15% CAGR) and AI-chip-specific market estimates ranging 18.7%–29.8% CAGR depending on scope <span class="mono">[VERIFIED/ESTIMATED blend]</span>. "AI is accelerating this sector's growth materially above general semiconductors" — the custom-ASIC sub-segment specifically (Marvell's niche) is growing faster than the broader data-center-semi headline number because it is taking share *within* that pool from merchant GPUs.</p>
+
+  <h3>Company Alpha Over Sector</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Source</th><th>Status</th><th class="num">Stage 1 Alpha</th><th class="num">Stage 2 Alpha</th></tr>
+      <tr><td>Market share gain (custom ASIC, multi-sourcing away from Broadcom)</td><td>Active</td><td class="num mono">+9%</td><td class="num mono">+5%</td></tr>
+      <tr><td>Premiumisation lever</td><td>N/A — B2B component business</td><td class="num mono">+0%</td><td class="num mono">+0%</td></tr>
+      <tr><td>Category/product expansion (CXL memory pooling via XConn, optical)</td><td>Active</td><td class="num mono">+6%</td><td class="num mono">+3%</td></tr>
+      <tr><td>Geographic expansion</td><td>Potential</td><td class="num mono">+1%</td><td class="num mono">+1%</td></tr>
+      <tr><td>Pricing power above inflation</td><td>Potential — gross margin gap to AVGO (59% vs 77.5%) suggests price competition</td><td class="num mono">+0.5%</td><td class="num mono">+1%</td></tr>
+      <tr><td>AI alpha (6a Cost +0% / 6b Mkt-Expansion +10% / 6c Flywheel +0%)</td><td>Mixed — see below</td><td class="num mono">+10%</td><td class="num mono">+5%</td></tr>
+      <tr style="font-weight:700;"><td>Total Alpha</td><td>—</td><td class="num mono" style="color:var(--cyan);">+26.5%</td><td class="num mono" style="color:var(--cyan);">+15%</td></tr>
+    </table>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);">AI alpha breakdown: 6a (Cost Reduction) is graded 0% — AI-assisted chip design/EDA tools are increasingly industry-standard, replicable by all competitors, not Marvell-proprietary. 6b (Market Expansion) is graded a meaningful +10% — AI is genuinely expanding Marvell's serviceable market via the custom-silicon TAM shift. 6c (Flywheel/Switching Cost): the strict 3-question data-flywheel test fails (0/3) — see Tab 3 — so no moat-grade upgrade is applied here, even though design-win lock-in is real.</p>
+
+  <h3>Growth Rate Summary Table</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Accel</th></tr>
+      <tr><td>Macro state</td><td>GDP ~1.0–1.5%, rates spike further</td><td>GDP ~2.0% (current)</td><td>GDP ~2.5–3%, rate cuts resume</td></tr>
+      <tr><td>Sector growth</td><td class="mono">12–15%</td><td class="mono">18–22%</td><td class="mono">25–30%</td></tr>
+      <tr><td>Company alpha</td><td class="mono">+10%</td><td class="mono">+18%</td><td class="mono">+25%</td></tr>
+      <tr><td>AI alpha (of which)</td><td class="mono">+5%</td><td class="mono">+10%</td><td class="mono">+15%</td></tr>
+      <tr><td>Stage 1 Revenue CAGR (5yr)</td><td class="mono" style="color:var(--red);">18%</td><td class="mono" style="color:var(--cyan);">28%</td><td class="mono" style="color:var(--emerald);">38%</td></tr>
+      <tr><td>Stage 2 FCF CAGR (yrs 6–10)</td><td class="mono">6%</td><td class="mono">12%</td><td class="mono">18%</td></tr>
+      <tr><td>Terminal growth</td><td class="mono">3.0%</td><td class="mono">4.5%</td><td class="mono">4.5% (capped at US nominal GDP)</td></tr>
+      <tr><td>Margin direction</td><td>Compress (price competition on custom silicon)</td><td>Stable/Expand (mix shift to AI)</td><td>Expand (toward AVGO-like 70%+ GM)</td></tr>
+      <tr><td>Key risk</td><td>Hyperscaler capex pause + design losses (Alchip precedent)</td><td>Execution on 18 active programs; GM gap to AVGO persists</td><td>Custom-ASIC TCO advantage pulls share faster than expected</td></tr>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-label">Mandatory Sensitivity Check</span>
+    A 1% change in terminal growth rate changes blended intrinsic value by approximately 9–11% (terminal value dominates this DCF given the long growth runway). A 1% change in Stage 1 (5-yr) revenue growth changes IV by approximately 4–6%. Both are materially sensitive — this valuation is a long-duration growth bet, not a stable-cash-flow bet, and small assumption changes move the answer a lot. See Tab 5 for the full build.
+  </div>
+</div>
+<div class="tab-content" id="tab2">
+  <div class="section-eyebrow">Tab 2 — Financials</div>
+  <h2 class="section-title">Revenue, Returns & Earnings Quality</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Fiscal Year (Feb–Jan)</th><th class="num">Revenue</th><th class="num">YoY</th><th class="num">GAAP Net Income</th><th class="num">Non-GAAP NI</th></tr>
+      <tr><td>FY2022</td><td class="num mono">$4,462M</td><td class="num mono">—</td><td class="num mono">—</td><td class="num mono">—</td></tr>
+      <tr><td>FY2023</td><td class="num mono">$5,920M</td><td class="num mono" style="color:var(--emerald);">+32.7%</td><td class="num mono">—</td><td class="num mono">—</td></tr>
+      <tr><td>FY2024</td><td class="num mono">$5,508M</td><td class="num mono" style="color:var(--red);">-7.0%</td><td class="num mono">—</td><td class="num mono">—</td></tr>
+      <tr><td>FY2025</td><td class="num mono">$5,767M</td><td class="num mono" style="color:var(--amber);">+4.7%</td><td class="num mono">—</td><td class="num mono">—</td></tr>
+      <tr style="background:rgba(34,211,238,0.05);"><td>FY2026</td><td class="num mono">$8,195M</td><td class="num mono" style="color:var(--emerald);">+42.1%</td><td class="num mono">$2,670M*</td><td class="num mono">$2,466M</td></tr>
+      <tr><td>Q1 FY2027 (latest qtr)</td><td class="num mono">$2,418M</td><td class="num mono" style="color:var(--emerald);">+28.0%</td><td class="num mono">$34.5M</td><td class="num mono">$718.0M</td></tr>
+      <tr style="font-weight:700;"><td>TTM (thru Q1 FY27)</td><td class="num mono">$8,720M</td><td class="num mono" style="color:var(--emerald);">+34.1%</td><td class="num mono">$2,530M*</td><td class="num mono">~$2,650M</td></tr>
+    </table>
+  </div>
+  <p style="font-size:12.5px;color:var(--text-muted);">*FY2026 and TTM GAAP net income include a one-time, non-recurring $1.8B pre-tax gain from the Q3 FY2026 sale of the Automotive Ethernet business to Infineon. Normalized (ex-gain) GAAP net income for the period is closer to <strong>$730M</strong> — a critical distinction for every ratio below. <span class="mono">[VERIFIED]</span> Revenue/EPS figures sourced directly from Marvell 8-K SEC filings; FY2022–25 from historical filings.</p>
+
+  <div class="metric-grid">
+    <div class="metric-card status-bad">
+      <div class="label">ROIC (TTM)</div>
+      <div class="value">6.7–9.7%</div>
+      <div class="note">Below WACC est. (~13.5%) <span class="mono">[VERIFIED]</span></div>
+    </div>
+    <div class="metric-card status-warn">
+      <div class="label">ROE (TTM)</div>
+      <div class="value">16.0%</div>
+      <div class="note">Inflated by one-time gain</div>
+    </div>
+    <div class="metric-card status-good">
+      <div class="label">Gross Margin</div>
+      <div class="value">51.5–59.0%</div>
+      <div class="note">GAAP / Non-GAAP, trending up w/ AI mix</div>
+    </div>
+    <div class="metric-card status-good">
+      <div class="label">FCF (TTM)</div>
+      <div class="value">$1.67B</div>
+      <div class="note">19.1% FCF margin <span class="mono">[VERIFIED]</span></div>
+    </div>
+  </div>
+
+  <div class="callout risk">
+    <span class="callout-label">ROIC Reality Check</span>
+    By the framework's own ROIC ladder (&gt;40% exceptional / 20–40% wide / 15–20% narrow / 10–15% weak / &lt;10% or declining = no moat proof), Marvell's current 6.7–9.65% ROIC technically lands in the "no moat proof" band. This is real and should not be waved away — but it is heavily distorted by a large base of acquisition-related intangibles (Inphi, Innovium and other deals) generating non-cash amortization, plus heavy stock-based compensation, both of which suppress GAAP invested-capital returns without reflecting weak underlying unit economics. Treat ROIC here as a genuine yellow flag on capital-allocation efficiency to date, not as proof the AI silicon business itself earns poor returns once it scales past the integration phase.
+  </div>
+
+  <h3>Financial Fortress Scorecard</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Check</th><th>Status</th><th>Evidence</th></tr>
+      <tr><td>ROE ≥15% for 5 consecutive years</td><td><span class="status-marginal">MARGINAL</span></td><td>16.0% TTM, but single-year and gain-inflated; multi-year consistency unverified</td></tr>
+      <tr><td>ROIC &gt; WACC for 5 consecutive years</td><td><span class="status-fail">FAIL</span></td><td>6.7–9.65% TTM vs ~13.5% WACC estimate</td></tr>
+      <tr><td>Net cash preferred</td><td><span class="status-marginal">MARGINAL</span></td><td>$3.84B cash vs $5.28B debt → net debt of $1.43B, not net cash</td></tr>
+      <tr><td>Net profit margin ≥15%</td><td><span class="status-pass">PASS</span></td><td>29.0% TTM (gain-inflated — normalized closer to 8–9%, still positive)</td></tr>
+      <tr><td>FCF positive + growing; FCF conversion ≥80% of NI</td><td><span class="status-pass">PASS*</span></td><td>CFO $2.06B / NI $2.53B = 81.4% — see O'Glove Test 1 caveat below</td></tr>
+      <tr><td>Pricing power proven</td><td><span class="status-marginal">MARGINAL</span></td><td>Non-GAAP GM (59%) trails category leader Broadcom (77.5%) by ~18.5pp</td></tr>
+      <tr><td>Revenue CAGR ≥ macro-derived sector CAGR</td><td><span class="status-pass">PASS</span></td><td>34–42% actual vs 18–22% Base sector CAGR</td></tr>
+      <tr><td>Predictable/recurring revenue</td><td><span class="status-marginal">MARGINAL</span></td><td>Multi-year design programs are sticky once won, but project-based, not subscription-recurring</td></tr>
+      <tr><td>Capital-light model</td><td><span class="status-pass">PASS</span></td><td>Fabless model; CapEx only $391M TTM vs $8.72B revenue (4.5%)</td></tr>
+      <tr><td>Dividend payout &lt;80% of owner earnings</td><td><span class="status-pass">PASS</span></td><td>$0.24/share annual dividend is immaterial (~0.08% yield) against any earnings measure</td></tr>
+    </table>
+  </div>
+
+  <div class="flywheel-box" style="border-color:var(--copper-dim);background:linear-gradient(135deg,rgba(251,146,60,0.07),rgba(20,29,51,0.4));">
+    <h3 style="margin-bottom:10px;">Owner Earnings (Normalized)</h3>
+    <p style="font-size:13.5px;">Owner Earnings = Net Income + D&A + Non-cash items + SBC − Maintenance CapEx ± WC Changes. Starting from <strong>normalized</strong> (ex-divestiture-gain) GAAP net income of ~$730M TTM, and adding back Marvell's substantial non-cash D&A and stock-based compensation load (typical for a serial-acquirer fabless semi, conservatively estimated in the $1.3–1.6B range combined) less modest maintenance capex (Marvell's capital-light fabless model keeps total CapEx at just $391M, nearly all of it effectively "maintenance" given no fabs to build):</p>
+    <div style="display:flex;gap:30px;flex-wrap:wrap;align-items:baseline;margin-top:10px;">
+      <div><span class="mono" style="font-size:12px;color:var(--text-muted);">CONSERVATIVE ESTIMATE</span><br><span class="mono" style="font-size:26px;font-weight:800;color:var(--copper);">~$1.8B</span></div>
+      <div><span class="mono" style="font-size:12px;color:var(--text-muted);">BASE ESTIMATE</span><br><span class="mono" style="font-size:26px;font-weight:800;color:var(--cyan);">~$2.1B</span></div>
+    </div>
+    <p style="margin-top:10px;margin-bottom:0;font-size:12.5px;color:var(--text-muted);">[ESTIMATED] — precise SBC and intangible-amortization line items were not independently broken out in this session's data pull; Day should pull the exact figures from the FY2026 10-K cash flow statement at next refresh to tighten this range.</p>
+  </div>
+
+  <h3>Earnings Quality — O'Glove Framework</h3>
+  <div class="three-col">
+    <div class="panel panel-tight">
+      <div class="mono" style="font-size:11px;color:var(--text-muted);">TEST 1 · FCF CONVERSION</div>
+      <div class="status-pass" style="font-size:18px;margin:6px 0;">PASS (with caveat)</div>
+      <p style="font-size:12.5px;margin-bottom:0;">CFO/NI = 81.4% on headline numbers. But NI includes the $1.8B one-time gain (which doesn't flow through CFO) — normalized, CFO of $2.06B run far ahead of normalized NI (~$730M), implying very heavy non-cash add-backs rather than a clean quality signal either way.</p>
+    </div>
+    <div class="panel panel-tight">
+      <div class="mono" style="font-size:11px;color:var(--text-muted);">TEST 2 · DSO TREND (3YR)</div>
+      <div class="status-marginal" style="font-size:18px;margin:6px 0;">UNVERIFIED</div>
+      <p style="font-size:12.5px;margin-bottom:0;">Data gap this session. <span class="mono">[UNVERIFIED]</span> — pull AR/(Rev/365) trend from the last three 10-Ks at next refresh.</p>
+    </div>
+    <div class="panel panel-tight">
+      <div class="mono" style="font-size:11px;color:var(--text-muted);">TEST 3 · INVENTORY DAYS</div>
+      <div class="status-marginal" style="font-size:18px;margin:6px 0;">UNVERIFIED</div>
+      <p style="font-size:12.5px;margin-bottom:0;">Data gap this session. <span class="mono">[UNVERIFIED]</span> — semiconductor sector broadly cycled through an inventory correction in FY2024 (revenue fell 7% that year); Marvell-specific days figure not independently confirmed.</p>
+    </div>
+    <div class="panel panel-tight">
+      <div class="mono" style="font-size:11px;color:var(--text-muted);">TEST 4 · ACCOUNTING POLICY STABILITY</div>
+      <div class="status-pass" style="font-size:18px;margin:6px 0;">PASS</div>
+      <p style="font-size:12.5px;margin-bottom:0;">No evidence of policy changes designed to flatter earnings. The large one-time item (divestiture gain) is cleanly disclosed in the 8-K, with management explicitly calling it out — a transparency positive, not a red flag.</p>
+    </div>
+    <div class="panel panel-tight">
+      <div class="mono" style="font-size:11px;color:var(--text-muted);">TEST 5 · GROSS MARGIN CONSISTENCY</div>
+      <div class="status-pass" style="font-size:18px;margin:6px 0;">PASS, improving</div>
+      <p style="font-size:12.5px;margin-bottom:0;">Non-GAAP GM has held a stable 58.9–59.0% band across the last three reported quarters, with management commentary attributing further mix-driven improvement to the rising share of custom silicon/optical revenue.</p>
+    </div>
+    <div class="panel panel-tight" style="border-color:var(--cyan-dim);">
+      <div class="mono" style="font-size:11px;color:var(--text-muted);">OVERALL O'GLOVE GRADE</div>
+      <div style="font-size:20px;font-weight:800;color:var(--cyan);margin:6px 0;">ACCEPTABLE</div>
+      <p style="font-size:12.5px;margin-bottom:0;">Not CLEAN (two genuine data gaps; one large one-time item requiring real normalization work) but not SUSPECT (no evidence of aggressive or misleading accounting — the one unusual item found was transparently disclosed).</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-label">Balance Sheet Snapshot</span>
+    Cash $3.84B · Debt $5.28B · Net debt $1.43B · Current ratio 3.28x · Debt/Equity 0.29x · Altman Z-Score 5.8 (very safe zone) · Piotroski F-Score 6/9. <span class="mono">[ESTIMATED, S&P Global Market Intelligence via aggregator, as of ~Jun 7 2026]</span> — bankruptcy/distress risk is a non-issue here; this is a balance-sheet-healthy company with a GAAP-earnings-quality and valuation problem, not a solvency problem.
+  </div>
+</div>
+<div class="tab-content" id="tab3">
+  <div class="section-eyebrow">Tab 3 — Economic Moat</div>
+  <h2 class="section-title">Moat Sources & Durability <span class="grade-chip grade-B" style="margin-left:10px;">B-</span></h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Moat Source</th><th>Strength</th><th>Evidence</th></tr>
+      <tr><td>Switching costs (design-win lock-in)</td><td class="stars">★★★★☆</td><td>Multi-year, multi-generation chip programs (Trainium 3/4, Maia 300, Google TPU) — once a hyperscaler co-designs silicon with Marvell's IP blocks, re-architecting with a rival vendor mid-program is costly and slow <span class="mono">[VERIFIED]</span></td></tr>
+      <tr><td>Intangible assets / process IP</td><td class="stars">★★★☆☆</td><td>Deep SerDes, optical DSP/PAM, and advanced-packaging IP built over a decade-plus and reinforced via M&A (Inphi, Innovium, XConn) <span class="mono">[VERIFIED]</span></td></tr>
+      <tr><td>Brand / ecosystem validation</td><td class="stars">★★★☆☆</td><td>Nvidia's ~$2B equity stake + NVLink Fusion partnership functions as a third-party stamp of technical credibility <span class="mono">[VERIFIED]</span></td></tr>
+      <tr><td>Scale economies</td><td class="stars">★★★☆☆</td><td>R&D amortized across a fast-growing revenue base; still smaller scale than category leader Broadcom</td></tr>
+      <tr><td>Cost advantage</td><td class="stars">★★☆☆☆</td><td>Non-GAAP gross margin of 59% trails Broadcom's 77.5% by ~18.5pp — evidence Marvell is, in places, competing on price rather than commanding a clear cost edge <span class="mono">[VERIFIED]</span></td></tr>
+      <tr><td>Network effects</td><td class="stars">★☆☆☆☆</td><td>Not applicable to a silicon-design business model — no user-driven network effect exists here</td></tr>
+    </table>
+  </div>
+
+  <div class="callout risk">
+    <span class="callout-label">ROIC Trend / Moat Stress Test</span>
+    Buffett's own preferred moat proof — sustained ROIC above WACC — currently fails here: 6.7–9.65% ROIC against a ~13.5% WACC estimate (justified by Marvell's elevated beta of 2.28 and overall risk profile). Stress-tested against a Base-case macro scenario (rates stay elevated, hyperscaler capex growth moderates to the "Base" 18–22% sector CAGR), Marvell's moat survives in the sense that design-win switching costs don't disappear — but the *economic* moat (returns meaningfully above the cost of capital) has not yet been proven, and won't be until margin expansion from the AI mix shift flows through GAAP returns over several more quarters.
+  </div>
+
+  <div class="flywheel-box">
+    <h3 style="margin-bottom:4px;">Data Flywheel Verdict</h3>
+    <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin:10px 0;">
+      <span class="flywheel-score">1/3</span>
+      <span class="badge" style="border-color:var(--copper-dim);color:var(--copper);background:rgba(251,146,60,0.1);font-size:13px;">FEATURE</span>
+    </div>
+    <table style="margin-top:6px;">
+      <tr><td style="width:55%;">1. Does Marvell hold proprietary data competitors cannot replicate?</td><td><strong style="color:var(--red);">NO</strong> — it sells silicon and design IP, not a data-driven product</td></tr>
+      <tr><td>2. Does more usage/data measurably improve an AI model?</td><td><strong style="color:var(--red);">NO</strong> — not applicable to the business model</td></tr>
+      <tr><td>3. Does a better AI product attract more users, compounding the lead?</td><td><strong style="color:var(--amber);">PARTIAL</strong> — design wins do compound generation-to-generation (Trainium 2 incumbency helped win Trainium 3 work), but via engineering know-how and switching costs, not a data network effect</td></tr>
+    </table>
+    <p style="margin-top:12px;margin-bottom:0;font-size:13px;">Graded honestly at 1-of-3 rather than force-fit to CONFIRMED. This does <strong>not</strong> mean Marvell's AI exposure lacks real value — the custom-silicon franchise is the company's primary growth engine — only that the specific data-flywheel compounding mechanism this test checks for is absent. The durable part of Marvell's AI-era moat is switching-cost lock-in (graded above), not a self-reinforcing data advantage.</p>
+  </div>
+
+  <h3>Moat Threats</h3>
+  <div class="two-col">
+    <div class="panel panel-tight">
+      <h3 style="font-size:15px;color:var(--red);">Real, evidenced threats</h3>
+      <p style="margin-bottom:0;font-size:13.5px;">Marvell lost the Trainium3 chiplet design to rival Alchip after Amazon preferred a monolithic-die approach — concrete proof design wins are not guaranteed and can be lost mid-cycle. Customer concentration is real: the bulk of custom-silicon revenue runs through four hyperscalers (Amazon, Google, Microsoft, Meta), any one of which could shift work in-house or to a rival over a multi-year horizon.</p>
+    </div>
+    <div class="panel panel-tight">
+      <h3 style="font-size:15px;color:var(--emerald);">Mitigants</h3>
+      <p style="margin-bottom:0;font-size:13.5px;">The Google TPU win specifically shows Marvell gaining a *new* hyperscaler relationship by breaking Broadcom's exclusivity — multi-sourcing is cutting both ways. Nvidia's strategic equity stake reduces, rather than raises, the risk that Nvidia's own ecosystem moves to disintermediate Marvell's interconnect and custom-silicon role.</p>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="tab4">
+  <div class="section-eyebrow">Tab 4 — Management Integrity</div>
+  <h2 class="section-title">Capital Allocation & Insider Behaviour <span class="grade-chip grade-B" style="margin-left:10px;">B</span></h2>
+
+  <div class="two-col">
+    <div class="panel panel-tight">
+      <h3 style="color:var(--emerald);">Strengths</h3>
+      <p style="font-size:13.5px;">Matt Murphy has served as Chairman & CEO since 2016 (~9.9 years), giving genuine multi-cycle credibility rather than a tenure that only spans the current AI boom. <span class="mono">[VERIFIED]</span> The decision to divest the Automotive Ethernet business to Infineon for $2.5B cash in August 2025 was a clean, well-timed portfolio rotation — exiting a slower-growth, lower-strategic-priority segment at a full price right as the AI/data-center opportunity was inflecting, and using a clearly disclosed one-time gain rather than burying it.</p>
+      <p style="margin-bottom:0;font-size:13.5px;">The $540M XConn acquisition (Jan 2026) for CXL memory-pooling technology and the Nvidia strategic-investment/partnership negotiation both suggest a management team actively shaping Marvell's position in the next phase of AI infrastructure rather than passively riding the current cycle.</p>
+    </div>
+    <div class="panel panel-tight">
+      <h3 style="color:var(--amber);">Concerns</h3>
+      <p style="font-size:13.5px;">CFO Willem Meintjes retired effective June 15, 2026, succeeded by Dan Durn — a leadership transition in the CFO seat during the most scrutinized, highest-multiple period in company history is a genuine watch item; Day should review Durn's track record at next refresh. <span class="mono">[VERIFIED transition; background UNVERIFIED]</span></p>
+      <p style="margin-bottom:0;font-size:13.5px;">Insider selling has been persistent through 2026: CEO Murphy sold 318,944 shares (~$42.9M) on April 15; COO/President Koopmans sold or exercised-and-sold shares on three separate occasions between April and June. Net insider selling totals roughly $137M over the trailing twelve months. <span class="mono">[VERIFIED, Form 4 filings]</span></p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-label">10b5-1 Context — Reading the Selling Correctly</span>
+    All of the insider sales identified were executed under pre-arranged Rule 10b5-1 trading plans, adopted January 5, 2026 — before the most extreme leg of the stock's run. This materially softens the read: scheduled, pre-committed selling into strength is a normal liquidity/diversification pattern for concentrated equity-comp holders, not an opportunistic signal timed to non-public information. It is still worth tracking whether new 10b5-1 plans get adopted at even more aggressive cadences as the stock extends further, which would be a more genuine yellow flag.
+  </div>
+
+  <div class="three-col">
+    <div class="panel panel-tight">
+      <h3 style="font-size:14px;">Capital Allocation</h3>
+      <p style="margin-bottom:0;font-size:13px;">Disciplined: divestiture proceeds and cash flow directed at AI-relevant M&A (XConn) rather than chasing unrelated diversification. Dividend ($0.24/sh) is token-sized and clearly not the capital-return priority — buybacks/M&A are.</p>
+    </div>
+    <div class="panel panel-tight">
+      <h3 style="font-size:14px;">Counter-Cyclical Behaviour</h3>
+      <p style="margin-bottom:0;font-size:13px;">No clear evidence either way this session of buybacks accelerating into the FY2024 downturn (revenue -7%) — would require a dedicated buyback-history pull at next refresh. <span class="mono">[UNVERIFIED]</span></p>
+    </div>
+    <div class="panel panel-tight">
+      <h3 style="font-size:14px;">AI Team Quality</h3>
+      <p style="margin-bottom:0;font-size:13px;">Engineering credibility is validated externally and concretely: Nvidia's own decision to take an equity stake and integrate via NVLink Fusion is a strong third-party signal on technical execution quality, not just management's own claims.</p>
+    </div>
+  </div>
+</div>
+<div class="tab-content" id="tab5">
+  <div class="section-eyebrow">Tab 5 — Valuation</div>
+  <h2 class="section-title">Five-Method Intrinsic Value <span class="grade-chip grade-D" style="margin-left:10px;">D+</span></h2>
+
+  <div class="callout risk">
+    <span class="callout-label">Headline Finding</span>
+    Every price-independent valuation method run below lands well under the current $308.88 price — including the Accel (optimistic) scenario. This is the central, somewhat contrarian finding of this report: the business is real and improving, but the price already capitalizes a decade of near-flawless execution plus continued multiple expansion.
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Method</th><th class="num">Stress</th><th class="num">Base</th><th class="num">Accel</th><th>Key Assumption</th></tr>
+      <tr><td>1. DCF (2-stage FCF, WACC 13.5%/13.0% accel)</td><td class="num mono">$35</td><td class="num mono" style="color:var(--cyan);">$59</td><td class="num mono">$88</td><td>Terminal g capped at 4.5% (US nominal GDP)</td></tr>
+      <tr><td>2. Owner Earnings Capitalization</td><td class="num mono">$38</td><td class="num mono" style="color:var(--cyan);">$51</td><td class="num mono">$68</td><td>Sustainable long-run g=9%, required return 13.5%</td></tr>
+      <tr><td>3. ROIC / EPV (no-growth floor)</td><td class="num mono">$12</td><td class="num mono">$17</td><td class="num mono">$24</td><td>Normalized after-tax operating earnings ÷ WACC, zero growth credit</td></tr>
+      <tr><td>4. P/E Earnings Power</td><td class="num mono">$55</td><td class="num mono" style="color:var(--cyan);">$90</td><td class="num mono">$130</td><td>FY27E non-GAAP EPS ~$4.14 × 20–25x Cat-B terminal P/E (+AI premium in Accel)</td></tr>
+      <tr><td>5. Earnings Yield vs Bond Yield (reference, not averaged)</td><td class="num mono">$54</td><td class="num mono">$91</td><td class="num mono">$143</td><td>Implied price if equity earnings yield converges toward 10-yr Treasury (4.47%) with a growth discount</td></tr>
+    </table>
+  </div>
+
+  <div class="panel" style="border-color:var(--cyan-dim);">
+    <h3>Blended Intrinsic Value (Methods 1, 2 & 4 — growth-inclusive)</h3>
+    <div style="display:flex;gap:34px;flex-wrap:wrap;align-items:baseline;margin:10px 0;">
+      <div><span class="mono" style="font-size:12px;color:var(--text-muted);">STRESS</span><br><span class="mono" style="font-size:28px;font-weight:800;color:var(--red);">$43</span></div>
+      <div><span class="mono" style="font-size:12px;color:var(--text-muted);">BASE</span><br><span class="mono" style="font-size:32px;font-weight:800;color:var(--cyan);">$67</span></div>
+      <div><span class="mono" style="font-size:12px;color:var(--text-muted);">ACCEL</span><br><span class="mono" style="font-size:28px;font-weight:800;color:var(--emerald);">$95</span></div>
+      <div><span class="mono" style="font-size:12px;color:var(--text-muted);">CURRENT PRICE</span><br><span class="mono" style="font-size:28px;font-weight:800;color:var(--text-bright);">$308.88</span></div>
+    </div>
+    <p style="margin-bottom:0;font-size:13px;">EPV ($12–24) is shown as a deliberately conservative no-growth floor, not averaged into the headline blend. The Earnings-Yield check ($54–143) is a separate reference depending on how much growth premium one is willing to grant over bond yields — its Base case ($91) converges reasonably well with the $67 blend above, which is a useful cross-check. <strong>At the Base case, MRVL trades at roughly 4.6x its blended intrinsic value.</strong></p>
+  </div>
+
+  <div class="two-col">
+    <div class="panel panel-tight">
+      <h3>Earnings Yield vs Bond Yield</h3>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+        <span style="font-size:13.5px;">MRVL forward earnings yield</span>
+        <span class="mono" style="font-size:20px;font-weight:700;color:var(--red);">1.04%</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <span style="font-size:13.5px;">10-yr US Treasury yield</span>
+        <span class="mono" style="font-size:20px;font-weight:700;color:var(--text-bright);">4.47%</span>
+      </div>
+      <p style="margin-top:10px;margin-bottom:0;font-size:12.5px;color:var(--text-muted);">A 343bp negative gap — investors are accepting a far lower current yield on MRVL equity than risk-free bonds offer today, a position only rational if growth/margin expansion more than compensates over many years.</p>
+    </div>
+    <div class="panel panel-tight">
+      <h3>DCF Sensitivity</h3>
+      <div class="tbl-wrap" style="margin-bottom:0;">
+        <table>
+          <tr><th></th><th class="num">g=3.5%</th><th class="num">g=4.5%</th><th class="num">g=5.5%</th></tr>
+          <tr><td class="mono">WACC 12.5%</td><td class="num mono">$64</td><td class="num mono">$71</td><td class="num mono">$81</td></tr>
+          <tr><td class="mono">WACC 13.5%</td><td class="num mono">$53</td><td class="num mono">$59</td><td class="num mono">$67</td></tr>
+          <tr><td class="mono">WACC 14.5%</td><td class="num mono">$45</td><td class="num mono">$50</td><td class="num mono">$56</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-label">AI Premium / Discount</span>
+    The framework allows AI WIDENER businesses a terminal-multiple premium of roughly +3 to +5x P/E over non-AI peers to reflect genuine TAM expansion and switching costs — already embedded in the Accel-case P/E Earnings Power figure above ($130, using a premium 25–30x multiple rather than a generic 20x). Even granting that full premium, the gap to the current price remains enormous; closing it requires either a far more aggressive growth/margin path than modeled here, or accepting a real-options/venture-style valuation framework (effectively underwriting the "next trillion-dollar company" thesis some sell-side commentary has floated) rather than a margin-of-safety DCF.
+  </div>
+
+  <div class="gauge-wrap" style="margin-top:6px;">
+    <span class="mono" style="font-size:12px;color:var(--text-muted);width:120px;">Relative Value</span>
+    <div class="scorebar"><div class="scorebar-fill" style="width:8%;background:linear-gradient(90deg,var(--red),var(--copper));"></div></div>
+    <span class="mono" style="font-size:12px;color:var(--red);">Extreme premium to IV</span>
+  </div>
+</div>
+<div class="tab-content" id="tab6">
+  <div class="section-eyebrow">Tab 6 — Verdict</div>
+  <h2 class="section-title">Final Verdict</h2>
+
+  <div class="metric-grid" style="grid-template-columns:repeat(4,1fr);">
+    <div class="metric-card status-warn">
+      <div class="label">Moat</div>
+      <div class="value"><span class="grade-chip grade-B">B-</span></div>
+      <div class="note">Switching costs real; sub-WACC ROIC unproven</div>
+    </div>
+    <div class="metric-card status-warn">
+      <div class="label">Financial Fortress</div>
+      <div class="value"><span class="grade-chip grade-C">C+</span></div>
+      <div class="note">Strong balance sheet; GAAP earnings noisy</div>
+    </div>
+    <div class="metric-card status-good">
+      <div class="label">Management</div>
+      <div class="value"><span class="grade-chip grade-B">B</span></div>
+      <div class="note">Good capital allocation; CFO transition watch</div>
+    </div>
+    <div class="metric-card status-bad">
+      <div class="label">Valuation</div>
+      <div class="value"><span class="grade-chip grade-D">D+</span></div>
+      <div class="note">~4.6x blended Base IV</div>
+    </div>
+  </div>
+
+  <div class="badge-row" style="margin-bottom:18px;">
+    <span class="badge cat">CATEGORY B — High-Growth Global Compounder</span>
+    <span class="badge ai-widener">🟢 AI WIDENER</span>
+    <span class="badge" style="border-color:var(--copper-dim);color:var(--copper);">FLYWHEEL: FEATURE (1/3)</span>
+  </div>
+
+  <div class="verdict-box">
+    <div class="vtitle">WATCH ★★</div>
+    <div style="margin-top:6px;color:var(--text-muted);font-family:var(--mono);font-size:13px;">Decent-to-good quality with real concerns; wait for correction</div>
+    <div class="vquote">"It's far better to buy a wonderful business at a fair price than a fair business at a wonderful price." Marvell's business is closer to wonderful than fair — but today's price is the opposite of fair. The discipline here is patience, not pessimism.</div>
+  </div>
+
+  <h3>Upgrade Conditions</h3>
+  <div class="cond-badge">
+    <div class="cond-num">1</div>
+    <div><strong>Price corrects into the $90–110 zone</strong> — the Tier 1 starter-entry band, roughly 1.3–1.6x the $67 Base-case blended intrinsic value, requiring a ~64–71% pullback from the June 15 close of $308.88.</div>
+  </div>
+  <div class="cond-badge">
+    <div class="cond-num">2</div>
+    <div><strong>RSI(14) falls below 50</strong> on the daily chart, signalling the current parabolic momentum phase has genuinely cooled rather than just paused.</div>
+  </div>
+  <div class="cond-badge">
+    <div class="cond-num">3</div>
+    <div><strong>Price closes back below its 50-day moving average</strong>, confirming a real trend correction rather than a shallow dip-buy opportunity.</div>
+  </div>
+  <div class="cond-badge">
+    <div class="cond-num">4</div>
+    <div><strong>GAAP gross margin expands above 53–54%</strong> for two consecutive quarters, evidencing the custom-silicon mix shift is translating into durable margin gains rather than margin-diluting price competition.</div>
+  </div>
+  <div class="cond-badge">
+    <div class="cond-num">5</div>
+    <div><strong>Insider selling decelerates or reverses</strong>, or the CFO transition (Dan Durn) completes smoothly with clear guidance continuity through at least two quarterly reports.</div>
+  </div>
+
+  <h3 style="margin-top:24px;">Tier Entry Structure</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Tier</th><th>Trigger</th><th class="num">Position Size</th></tr>
+      <tr><td>Tier 1</td><td>Quality floor met + price in $90–110 zone</td><td class="num mono">40–50%</td></tr>
+      <tr><td>Tier 2</td><td>1–2 upgrade conditions met, price in $70–90 zone</td><td class="num mono">+25–30%</td></tr>
+      <tr><td>Tier 3</td><td>3+ upgrade conditions met, price ≤$70 (at/below Base IV)</td><td class="num mono">remainder to full size</td></tr>
+    </table>
+  </div>
+  <p style="font-size:12.5px;color:var(--text-muted);">O'Glove earnings-quality grade is ACCEPTABLE, not SUSPECT — so earnings quality is not, by itself, a hard entry blocker here. Price is the sole reason this is WATCH rather than BUY.</p>
+
+  <h3>Series Tracker</h3>
+  <div class="tbl-wrap">
+    <table id="series-tracker-table">
+      <tr><th>Ticker</th><th>Category</th><th>AI Overlay</th><th>Verdict</th><th>Date</th></tr>
+      <tr><td>MRVL</td><td>B</td><td>🟢 WIDENER</td><td>WATCH ★★</td><td>2026-06-17</td></tr>
+    </table>
+  </div>
+</div>
+<div class="tab-content" id="tab7">
+  <div class="section-eyebrow">Tab 7 — Technical Picture</div>
+  <h2 class="section-title">Price Structure & Trade Mechanics</h2>
+
+  <div class="callout warn">
+    <span class="callout-label">Data Confidence Note</span>
+    MRVL has moved more than 10% in single sessions repeatedly over the past month (S&P 500 inclusion, Nvidia stake news, swinging retail sentiment) and cached technical snapshots conflicted by as much as $40–60 across sources pulled this session. Exact RSI, MACD and moving-average values below are marked <span class="mono">[ESTIMATED]</span> ranges, not precise live reads — Day should verify against a live chart before acting on any specific level. <strong>A custom AI silicon investor event is scheduled for today, June 17, 2026</strong>, which is itself a live volatility risk on top of everything below.
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card status-bad">
+      <div class="label">Current Price</div>
+      <div class="value">$308.88</div>
+      <div class="note">Jun 15 close <span class="mono">[VERIFIED]</span></div>
+    </div>
+    <div class="metric-card status-warn">
+      <div class="label">52-Week Range</div>
+      <div class="value">$61–$324</div>
+      <div class="note">Price near 52-wk high</div>
+    </div>
+    <div class="metric-card status-bad">
+      <div class="label">Beta</div>
+      <div class="value">2.28</div>
+      <div class="note">Very high realized volatility</div>
+    </div>
+    <div class="metric-card status-warn">
+      <div class="label">Short Interest</div>
+      <div class="value">3.69%</div>
+      <div class="note">32.25M shares · moderate, not extreme</div>
+    </div>
+  </div>
+
+  <h3>Multi-Timeframe Trend</h3>
+  <p>The 12-month trend is an unambiguous, powerful uptrend — the stock has roughly quintupled from its 52-week low of $61.44 to the current $308.88, with the steepest leg coming in the last 6–8 weeks around two catalysts: S&P 500 index inclusion (~June 8–9, 2026, forcing passive fund buying) and Nvidia's ~$2B strategic equity stake announcement. Within that uptrend, the medium-term picture has been extremely choppy: a sharp pullback with retail sentiment cratering from euphoric to despondent around June 5–8, followed by a renewed surge into mid-June. This is a stock in active, violent price discovery, not a smooth compounder chart.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Moving Average</th><th class="num">Estimated Level</th><th>Read</th></tr>
+      <tr><td>20-DMA</td><td class="num mono">~$270–290 <span class="mono" style="font-size:10px;color:var(--amber);">[EST]</span></td><td>Price likely modestly above — short-term trend intact</td></tr>
+      <tr><td>50-DMA</td><td class="num mono">~$200–230 <span class="mono" style="font-size:10px;color:var(--amber);">[EST]</span></td><td>Price well above — strong intermediate uptrend, also = extended</td></tr>
+      <tr><td>100-DMA</td><td class="num mono">~$150–170 <span class="mono" style="font-size:10px;color:var(--amber);">[EST]</span></td><td>Price roughly 2x this level — parabolic by any standard read</td></tr>
+      <tr><td>200-DMA</td><td class="num mono">~$130–150 <span class="mono" style="font-size:10px;color:var(--amber);">[EST]</span></td><td>Golden-cross structure confirmed; also signals extension risk</td></tr>
+    </table>
+  </div>
+
+  <div class="two-col">
+    <div class="panel panel-tight">
+      <h3>Momentum Oscillators <span class="mono" style="font-size:10px;color:var(--amber);">[ESTIMATED]</span></h3>
+      <p style="font-size:13.5px;">RSI(14) daily: likely &gt;70 (overbought zone), given the unbroken string of new highs and a +10.4% single session on June 15. Weekly RSI likely in the high-60s to low-70s. MACD: bullish, histogram likely still expanding given the recent breakout above the prior consolidation. Stochastic: likely pinned near the overbought ceiling.</p>
+    </div>
+    <div class="panel panel-tight">
+      <h3>Volume / OBV</h3>
+      <p style="font-size:13.5px;">Volume context (qualitative, from market commentary): the recent multi-week advance has shown a bull-flag-style consolidation pattern on decreasing volume after a sharp prior run, which technicians typically read as continuation-friendly — though this needs to be read alongside the extreme volatility and conflicting cached price data found this session.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Trade Structure (if/when entry conditions are met)</h3>
+    <div class="tbl-wrap" style="margin-bottom:0;">
+      <table>
+        <tr><th>Level</th><th class="num">Price</th><th>Logic</th></tr>
+        <tr><td>Tier 1 Entry</td><td class="num mono">$90–110</td><td>Quality floor + ~1.3–1.6x Base IV</td></tr>
+        <tr><td>Stop-Loss (thesis invalidation)</td><td class="num mono">&lt;$60</td><td>Below 52-week low — would imply a moat/thesis breakdown, not just a price pullback</td></tr>
+        <tr><td>Target 1 (Base IV)</td><td class="num mono">$67</td><td>Already below a $90–110 entry — T1 is really "don't overpay further," not a sell target at entry</td></tr>
+        <tr><td>Target 2 (Accel IV, multi-year)</td><td class="num mono">$95+</td><td>Reassess at each annual re-scoring as fundamentals compound</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="gauge-wrap">
+    <span class="mono" style="font-size:12px;color:var(--text-muted);width:160px;">Technical Composite (22/30)</span>
+    <div class="scorebar"><div class="scorebar-fill" style="width:73%;"></div></div>
+    <span class="mono" style="font-size:12px;color:var(--cyan);">73% — Strong trend, extended/overbought</span>
+  </div>
+</div>
+<div class="tab-content" id="tab8">
+  <div class="section-eyebrow">Tab 8 — Shareholding Pattern</div>
+  <h2 class="section-title">Ownership Structure <span style="font-size:13px;color:var(--text-muted);font-weight:400;">(US-adapted: insider Form-4 trend replaces promoter-pledge metrics)</span></h2>
+
+  <div class="metric-grid">
+    <div class="metric-card status-good">
+      <div class="label">Institutional Ownership</div>
+      <div class="value">~79%</div>
+      <div class="note"><span class="mono">[ESTIMATED]</span> — high conviction base</div>
+    </div>
+    <div class="metric-card status-good">
+      <div class="label">Free Float</div>
+      <div class="value">~99%+</div>
+      <div class="note">No controlling promoter block — widely held</div>
+    </div>
+    <div class="metric-card status-warn">
+      <div class="label">Insider Net Activity (TTM)</div>
+      <div class="value">-$137M</div>
+      <div class="note">Net selling, mostly 10b5-1 scheduled</div>
+    </div>
+    <div class="metric-card status-good">
+      <div class="label">S&P 500 Status</div>
+      <div class="value">Added</div>
+      <div class="note">Effective ~Jun 8–9, 2026</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-label">S&P 500 Inclusion — Passive Flow Impact</span>
+    Marvell's addition to the S&P 500 around June 8–9, 2026 forced a wave of mechanical buying from every index-tracking fund benchmarked to the index — a real, one-time demand shock layered on top of the AI-driven fundamental story. This is a double-edged fact for a value-discipline framework: it's genuinely supportive of near-term liquidity and share-price support (index funds are permanent holders, not traders), but it is also a price-insensitive flow that has nothing to do with valuation — meaning part of the recent run reflects mechanical buying rather than a reassessment of fair value. Day should not read the post-inclusion price strength as new fundamental information.
+  </div>
+
+  <div class="two-col">
+    <div class="panel panel-tight">
+      <h3>Ownership Momentum</h3>
+      <p style="margin-bottom:0;font-size:13.5px;">Institutional ownership (~79%) sits at a level consistent with a well-covered, broadly-held large-cap rather than a name with room for a fresh institutional-discovery re-rating. The S&P 500 inclusion was the last major mechanical ownership catalyst available; from here, ownership changes should track fundamentals and active-manager conviction rather than passive-flow events.</p>
+    </div>
+    <div class="panel panel-tight">
+      <h3>Shareholding Risk</h3>
+      <p style="margin-bottom:0;font-size:13.5px;">Low structural risk: no concentrated promoter/founder block exists to create overhang or governance risk, and short interest (3.69% of float) is moderate, not a squeeze setup or a heavy bearish-conviction signal either way. The main ownership-side watch item is whether insider 10b5-1 selling cadences accelerate further as the stock extends, which would be worth re-checking at next refresh.</p>
+    </div>
+  </div>
+
+  <div class="gauge-wrap">
+    <span class="mono" style="font-size:12px;color:var(--text-muted);width:160px;">Shareholding Risk Score</span>
+    <div class="scorebar"><div class="scorebar-fill" style="width:78%;background:linear-gradient(90deg,var(--emerald),var(--cyan));"></div></div>
+    <span class="mono" style="font-size:12px;color:var(--emerald);">Low risk — broadly held, no pledge/concentration overhang</span>
+  </div>
+</div>
+<div class="tab-content" id="tab9">
+  <div class="section-eyebrow">Tab 9 — AI Strategic Intelligence</div>
+  <h2 class="section-title">Section A · AI Classification Dashboard</h2>
+
+  <div class="metric-grid">
+    <div class="metric-card status-good">
+      <div class="label">AI Overlay</div>
+      <div class="value" style="font-size:16px;">🟢 WIDENER</div>
+      <div class="note">TAM expansion + switching costs</div>
+    </div>
+    <div class="metric-card status-warn">
+      <div class="label">Flywheel</div>
+      <div class="value" style="font-size:16px;">FEATURE</div>
+      <div class="note">1/3 on strict data-flywheel test</div>
+    </div>
+    <div class="metric-card status-good">
+      <div class="label">Value Chain Level</div>
+      <div class="value" style="font-size:16px;">Level 1</div>
+      <div class="note">Infrastructure / custom silicon</div>
+    </div>
+    <div class="metric-card status-warn">
+      <div class="label">AI Opportunity Score</div>
+      <div class="value">58/100</div>
+      <div class="note">MONITOR tier, bordering STRATEGIC</div>
+    </div>
+  </div>
+
+  <h3>Section B · Data Flywheel Deep-Dive</h3>
+  <div class="panel panel-tight">
+    <p style="font-size:13.5px;">Restating the test from Tab 3 with fuller context: Marvell's moat does not run through a self-reinforcing data loop — there is no sense in which more customers using Marvell silicon makes Marvell's underlying AI/design product smarter for the next customer, the way more users improve a recommendation algorithm or a foundation model. What compounds instead is <em>engineering know-how and switching costs</em>: each design-win generation (Trainium 2 → Trainium 3 → Trainium 4) deepens Marvell's process-specific expertise with that customer's architecture and raises the switching cost of leaving. That is a real and valuable form of compounding advantage — but it is fundamentally a relationship/IP moat, not a data moat, and the two should not be conflated when assessing durability. A relationship moat can be lost in a single design cycle (as the Trainium3-chiplet-to-Alchip loss shows); a true data flywheel typically cannot.</p>
+  </div>
+
+  <h3>Section C · AI Value Chain Position</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Level</th><th>Description</th><th>Horizon</th></tr>
+      <tr style="background:rgba(34,211,238,0.08);"><td><strong>Level 1 — Infrastructure</strong></td><td><strong>← Marvell sits here:</strong> custom silicon, optical/copper interconnect, the physical layer underneath every model and application above it</td><td><strong>3–5yr</strong></td></tr>
+      <tr><td>Level 2 — Foundation Models</td><td>Frontier model labs (not applicable to Marvell)</td><td>—</td></tr>
+      <tr><td>Level 3 — AI Platforms / Tooling</td><td>Orchestration, fine-tuning, MLOps layers</td><td>—</td></tr>
+      <tr><td>Level 4 — Vertical Applications</td><td>Industry-specific AI products built atop the stack</td><td>—</td></tr>
+      <tr><td>Level 5 — AI-Enabled Incumbents</td><td>Traditional businesses deploying AI to defend share</td><td>—</td></tr>
+    </table>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);">Level 1 plays typically offer the longest secular runway in an AI buildout but are also first and hardest hit if hyperscaler capex ever digests or pauses — there is no recurring-software buffer between Marvell and a customer's capital-budget decision.</p>
+
+  <h3>Section D · India AI Opportunity</h3>
+  <div class="callout info">
+    <span class="callout-label">Not Applicable — US-Listed Business</span>
+    This sub-criterion is calibrated for companies serving the Indian market via India Stack rails (UPI, Aadhaar, ONDC) and is largely inapplicable to a US-headquartered, globally-customered semiconductor company. Worth noting only as color: Marvell maintains a substantial engineering presence in India (design centers contributing to its global R&D base), but this is a talent/cost-arbitrage factor, not a structural India-market-access advantage in the sense this framework section is built to capture.
+  </div>
+
+  <h3>Section E · Competitive & Concentration Risk <span style="font-size:12px;color:var(--text-muted);font-weight:400;">(relabeled from "Disruption Risk" — see Tab 0 adaptation note)</span></h3>
+  <div class="two-col">
+    <div class="panel panel-tight">
+      <h3 style="font-size:14px;color:var(--red);">Concentration</h3>
+      <p style="margin-bottom:0;font-size:13.5px;">The overwhelming majority of custom-silicon revenue flows through four hyperscalers. Any one of Amazon, Google, Microsoft or Meta deciding to bring a program fully in-house, or to consolidate spend with a single vendor, would have an outsized impact given how few customers anchor this segment.</p>
+    </div>
+    <div class="panel panel-tight">
+      <h3 style="font-size:14px;color:var(--red);">Competitive Loss Precedent</h3>
+      <p style="margin-bottom:0;font-size:13.5px;">The Trainium3 chiplet design loss to Alchip is a real, dated example — design wins in this business are won and lost project-by-project, not locked in permanently. Broadcom remains the larger, higher-margin category leader against which Marvell is still proving out share gains.</p>
+    </div>
+  </div>
+  <div class="callout warn">
+    <span class="callout-label">Nvidia Dependency</span>
+    The Nvidia equity stake and NVLink Fusion partnership is a genuine validation and a genuine dependency at once: it deepens Marvell's position inside Nvidia's ecosystem, but it also means a meaningful slice of Marvell's strategic narrative is now tied to Nvidia's continued willingness to integrate rather than compete directly in every layer Marvell touches.
+  </div>
+
+  <h3>Section F · AI Opportunity Score</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Component</th><th class="num">Score</th><th>Rationale</th></tr>
+      <tr><td>Data Flywheel</td><td class="num mono">7/20</td><td>Real value-add, no data network effect (1/3 test)</td></tr>
+      <tr><td>Adoption Phase Timing</td><td class="num mono">17/20</td><td>Early-mid innings of a multi-year custom-ASIC share shift</td></tr>
+      <tr><td>Value Chain Position</td><td class="num mono">16/20</td><td>Level 1, multi-sourced across 4+ hyperscalers (not single-customer)</td></tr>
+      <tr><td>India Structural Advantage</td><td class="num mono">3/20</td><td>N/A-adjusted — US-market business, minor India talent-base note only</td></tr>
+      <tr><td>AI Threat Resistance</td><td class="num mono">15/20</td><td>Not itself disrupted by AI; real but contained competitive/concentration risk</td></tr>
+      <tr style="font-weight:700;"><td>Total</td><td class="num mono" style="color:var(--cyan);">58/100</td><td>MONITOR tier (40–60), bordering STRATEGIC</td></tr>
+    </table>
+  </div>
+  <div class="gauge-wrap">
+    <span class="mono" style="font-size:12px;color:var(--text-muted);width:140px;">Portfolio Role</span>
+    <div class="scorebar"><div class="scorebar-fill" style="width:58%;"></div></div>
+    <span class="mono" style="font-size:12px;color:var(--cyan);">MONITOR — track closely, not yet a core AI holding by this framework's price discipline</span>
+  </div>
+</div>
+<footer class="report-footer">
+  <p><strong>Disclaimer:</strong> This report is independent research prepared for informational purposes only and does not constitute investment advice, a recommendation, or a solicitation to buy or sell any security. It has not been filed with or reviewed by the SEC. Nothing here accounts for any individual's financial situation, objectives, or risk tolerance. Marvell Technology operates in a highly volatile, rapidly-evolving sector; all forward-looking statements, scenario assumptions, and intrinsic-value estimates are inherently uncertain and may prove materially wrong. Past performance is not indicative of future results. Conduct independent due diligence or consult a licensed financial advisor before making any investment decision.</p>
+  <p><strong>Data Notice:</strong> Figures marked <span class="mono">[VERIFIED]</span> were sourced directly from SEC filings, company press releases, or primary financial data providers during this research session. Figures marked <span class="mono">[ESTIMATED]</span> are derived or approximated where primary data was unavailable or conflicting. Figures marked <span class="mono">[UNVERIFIED]</span> reflect genuine data gaps and require confirmation before being relied upon. Given MRVL's exceptional realized volatility (beta 2.28) during this research window, all price-sensitive metrics (current price, P/E, EV multiples, RSI, moving averages) should be re-verified against a live data source before any action is taken. Report generated June 17, 2026.</p>
+  <p>Typography: Inter (headings/body), JetBrains Mono (data) — Buffett Quality-Value Series v5.0 Design Standard.</p>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function() {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) { TAB_BAR_TOP = tabBar.offsetTop; }
+});
+function switchTab(tabId) {
+  var contents = document.querySelectorAll('.tab-content');
+  for (var i = 0; i < contents.length; i++) {
+    contents[i].style.display = 'none';
+  }
+  var target = document.getElementById(tabId);
+  if (target) { target.style.display = 'block'; }
+  var btns = document.querySelectorAll('.tab-btn');
+  for (var j = 0; j < btns.length; j++) {
+    btns[j].classList.remove('active');
+    if (btns[j].getAttribute('data-tab') === tabId) {
+      btns[j].classList.add('active');
+    }
+  }
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>
