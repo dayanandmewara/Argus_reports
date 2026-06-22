@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanghvi Movers — BQV Series v5.0 | Argus Reports</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c-orange:#FF6B35;--c-midnight:#0D1B2A;--c-chrome:#C0C5CE;
+  --c-amber:#D4A843;--c-deep:#060F18;--c-card:#111C28;
+  --c-border:#1E3048;--c-text:#E8EDF2;--c-muted:#8899AA;
+  --c-green:#3DD68C;--c-red:#F05252;--c-yellow:#FBB040;
+  --c-pass:#16A34A;--c-marginal:#D97706;--c-fail:#DC2626;
+  --font-display:'Playfair Display',serif;
+  --font-body:'DM Serif Text',serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-ui:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--c-midnight);color:var(--c-text);font-family:var(--font-body);font-size:15px;line-height:1.65}
+a{color:var(--c-orange);text-decoration:none}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--c-deep) 0%,#112033 60%,#0D2540 100%);
+  padding:32px 24px 24px;border-bottom:1px solid var(--c-border);position:relative;overflow:hidden;max-height:220px}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(255,107,53,.12) 0%,transparent 70%);pointer-events:none}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px}
+.hero-ticker{font-family:var(--font-mono);font-size:12px;color:var(--c-orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.hero-name{font-family:var(--font-display);font-size:28px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:6px}
+.hero-lede{font-family:var(--font-ui);font-size:13px;color:var(--c-chrome);max-width:560px;line-height:1.4}
+.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.verdict-badge{background:var(--c-amber);color:var(--c-midnight);font-family:var(--font-mono);font-size:11px;font-weight:700;padding:6px 14px;border-radius:4px;letter-spacing:1px}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.badge{padding:3px 10px;border-radius:3px;font-family:var(--font-ui);font-size:11px;font-weight:600;letter-spacing:.5px}
+.badge-cat{background:rgba(255,107,53,.2);border:1px solid var(--c-orange);color:var(--c-orange)}
+.badge-ai{background:rgba(192,197,206,.15);border:1px solid var(--c-chrome);color:var(--c-chrome)}
+.badge-macro{background:rgba(61,214,140,.15);border:1px solid var(--c-green);color:var(--c-green)}
+.conf-pills{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.pill{padding:2px 8px;border-radius:20px;font-family:var(--font-mono);font-size:10px;font-weight:600}
+.pill-v{background:rgba(61,214,140,.2);color:var(--c-green)}
+.pill-e{background:rgba(251,176,64,.2);color:var(--c-yellow)}
+.pill-u{background:rgba(240,82,82,.2);color:var(--c-red)}
+
+/* TABS */
+#tab-bar{background:var(--c-deep);border-bottom:1px solid var(--c-border);position:sticky;top:0;z-index:100;overflow-x:auto;white-space:nowrap}
+.tabs-inner{display:flex;min-width:max-content;padding:0 12px}
+.tab-btn{background:none;border:none;color:var(--c-muted);font-family:var(--font-ui);font-size:12px;font-weight:600;padding:12px 14px;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:.3px}
+.tab-btn:hover{color:var(--c-text)}
+.tab-btn.active{color:var(--c-orange);border-bottom-color:var(--c-orange)}
+
+/* CONTENT */
+.tab-content{display:none;padding:24px;max-width:1100px;margin:0 auto}
+.tab-content.active{display:block}
+h2{font-family:var(--font-display);font-size:22px;color:#fff;margin:0 0 16px;font-weight:700}
+h3{font-family:var(--font-display);font-size:17px;color:var(--c-orange);margin:20px 0 10px;font-weight:700}
+h4{font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--c-chrome);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.8px}
+p{margin:0 0 10px;color:var(--c-chrome)}
+
+/* GRID */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:16px 0}
+.metric-card{background:var(--c-card);border:1px solid var(--c-border);border-left:4px solid var(--c-orange);border-radius:6px;padding:14px}
+.metric-card.green{border-left-color:var(--c-green)}
+.metric-card.red{border-left-color:var(--c-red)}
+.metric-card.amber{border-left-color:var(--c-amber)}
+.metric-card.grey{border-left-color:var(--c-muted)}
+.metric-label{font-family:var(--font-mono);font-size:10px;color:var(--c-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.metric-value{font-family:var(--font-display);font-size:22px;font-weight:700;color:#fff;line-height:1}
+.metric-sub{font-family:var(--font-ui);font-size:11px;color:var(--c-muted);margin-top:4px}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;margin:12px 0;font-family:var(--font-ui);font-size:13px}
+.data-table th{background:var(--c-card);color:var(--c-chrome);font-weight:600;padding:10px 12px;text-align:left;border-bottom:1px solid var(--c-border);font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+.data-table td{padding:9px 12px;border-bottom:1px solid rgba(30,48,72,.5);color:var(--c-text)}
+.data-table tr:hover td{background:rgba(255,107,53,.04)}
+.data-table .num{text-align:right;font-family:var(--font-mono);font-size:12px}
+.data-table .good{color:var(--c-green)}
+.data-table .bad{color:var(--c-red)}
+.data-table .warn{color:var(--c-yellow)}
+
+/* SCORECARD */
+.scorecard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:12px 0}
+.score-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:6px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.score-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.score-icon.pass{background:rgba(22,163,74,.2);color:var(--c-pass)}
+.score-icon.marginal{background:rgba(217,119,6,.2);color:var(--c-marginal)}
+.score-icon.fail{background:rgba(220,38,38,.2);color:var(--c-fail)}
+.score-text{font-family:var(--font-ui);font-size:12px;color:var(--c-text)}
+.score-sub{font-size:11px;color:var(--c-muted)}
+
+/* MOAT STARS */
+.moat-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:16px;margin:8px 0}
+.moat-name{font-family:var(--font-ui);font-size:13px;font-weight:600;color:var(--c-text);margin-bottom:4px}
+.moat-stars{color:var(--c-amber);font-size:16px;margin-bottom:6px}
+.moat-desc{font-family:var(--font-ui);font-size:12px;color:var(--c-muted);line-height:1.5}
+
+/* FLYWHEEL BOX */
+.flywheel-box{background:linear-gradient(135deg,#0A1420 0%,#111C2B 100%);border:2px solid;border-radius:10px;padding:20px;margin:16px 0}
+.flywheel-box.cosmetic{border-color:var(--c-muted)}
+.flywheel-box.forming{border-color:var(--c-yellow)}
+.flywheel-box.confirmed{border-color:var(--c-green)}
+.flywheel-title{font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.flywheel-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-family:var(--font-mono);font-size:12px;font-weight:700;margin-bottom:10px}
+.fw-cosmetic{background:rgba(136,153,170,.2);color:var(--c-muted)}
+.fw-forming{background:rgba(251,176,64,.2);color:var(--c-yellow)}
+.fw-confirmed{background:rgba(61,214,140,.2);color:var(--c-green)}
+.flywheel-score{font-family:var(--font-display);font-size:36px;font-weight:900;color:var(--c-chrome)}
+
+/* VERDICT */
+.verdict-box{background:linear-gradient(135deg,#060E1B 0%,#0D1B2A 100%);border:3px solid var(--c-amber);border-radius:12px;padding:24px;margin:16px 0}
+.verdict-title{font-family:var(--font-display);font-size:28px;font-weight:900;color:var(--c-amber);margin-bottom:8px}
+.verdict-quote{font-family:var(--font-body);font-style:italic;font-size:14px;color:var(--c-chrome);border-left:3px solid var(--c-amber);padding-left:14px;margin:12px 0}
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.pillar-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:16px;text-align:center}
+.pillar-grade{font-family:var(--font-display);font-size:32px;font-weight:900;margin-bottom:4px}
+.pillar-name{font-family:var(--font-mono);font-size:10px;color:var(--c-muted);letter-spacing:1px;text-transform:uppercase}
+.grade-a{color:var(--c-green)}
+.grade-b{color:var(--c-amber)}
+.grade-c{color:var(--c-yellow)}
+.grade-d{color:var(--c-red)}
+
+/* UPGRADE CONDITIONS */
+.upgrade-list{list-style:none;margin:12px 0}
+.upgrade-list li{display:flex;align-items:flex-start;gap:10px;margin:8px 0;font-family:var(--font-ui);font-size:13px;color:var(--c-chrome);line-height:1.5}
+.upg-num{background:var(--c-orange);color:var(--c-midnight);font-family:var(--font-mono);font-size:11px;font-weight:700;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* DCF TABLE */
+.dcf-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:12px;margin:12px 0}
+.dcf-table th{background:#0A1420;color:var(--c-chrome);padding:8px 10px;border:1px solid var(--c-border);text-align:right;font-size:10px;letter-spacing:.5px}
+.dcf-table td{padding:7px 10px;border:1px solid rgba(30,48,72,.5);text-align:right;color:var(--c-text)}
+.dcf-table td:first-child{text-align:left;color:var(--c-chrome)}
+.dcf-table .highlight{background:rgba(255,107,53,.08);color:var(--c-orange);font-weight:600}
+.dcf-table .total-row{background:rgba(212,168,67,.08);color:var(--c-amber);font-weight:700}
+
+/* SUMMARY TABLE */
+.iv-summary{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin:16px 0}
+.iv-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;border-bottom:1px solid var(--c-border);align-items:center}
+.iv-row:last-child{border-bottom:none}
+.iv-cell{padding:10px 14px;font-family:var(--font-ui);font-size:13px}
+.iv-row.header{background:#0A1420}
+.iv-row.header .iv-cell{font-family:var(--font-mono);font-size:10px;color:var(--c-muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.iv-row.blended{background:rgba(212,168,67,.08)}
+.iv-row.blended .iv-cell{color:var(--c-amber);font-weight:700}
+.iv-num{font-family:var(--font-mono);font-size:13px}
+
+/* OE BOX */
+.oe-box{background:linear-gradient(135deg,#0A1E35 0%,#0D2540 100%);border:1px solid var(--c-orange);border-radius:8px;padding:18px;margin:12px 0}
+.oe-title{font-family:var(--font-mono);font-size:11px;color:var(--c-orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.oe-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,107,53,.15);font-family:var(--font-ui);font-size:13px}
+.oe-row:last-child{border-bottom:none;padding-top:10px;margin-top:6px}
+.oe-row.total{color:var(--c-orange);font-weight:700;font-size:15px}
+.oe-num{font-family:var(--font-mono);color:var(--c-text)}
+
+/* MACRO DASHBOARD */
+.macro-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:12px 0}
+.macro-item{background:var(--c-card);border:1px solid var(--c-border);border-radius:6px;padding:12px}
+.macro-dim{font-family:var(--font-mono);font-size:10px;color:var(--c-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.macro-status{font-family:var(--font-ui);font-size:13px;font-weight:700}
+.tail{color:var(--c-green)}.neut{color:var(--c-yellow)}.head{color:var(--c-red)}.boom{color:var(--c-orange)}.recov{color:var(--c-amber)}
+
+/* SHAREHOLDING */
+.sh-table{width:100%;border-collapse:collapse;margin:12px 0;font-family:var(--font-ui);font-size:13px}
+.sh-table th{background:var(--c-card);color:var(--c-muted);padding:9px 12px;text-align:right;border-bottom:1px solid var(--c-border);font-size:11px;letter-spacing:.4px}
+.sh-table th:first-child{text-align:left}
+.sh-table td{padding:8px 12px;border-bottom:1px solid rgba(30,48,72,.4);text-align:right;font-family:var(--font-mono);font-size:12px}
+.sh-table td:first-child{text-align:left;color:var(--c-chrome);font-family:var(--font-ui)}
+.arr-up{color:var(--c-green)}
+.arr-dn{color:var(--c-red)}
+.arr-flat{color:var(--c-muted)}
+
+/* TECHNICAL */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:12px 0}
+.tech-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:6px;padding:12px;text-align:center}
+.tech-val{font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:3px}
+.tech-label{font-family:var(--font-mono);font-size:10px;color:var(--c-muted);letter-spacing:1px}
+.signal-buy{color:var(--c-green)}.signal-sell{color:var(--c-red)}.signal-neutral{color:var(--c-yellow)}
+
+/* TRADE STRUCTURE */
+.trade-box{background:var(--c-card);border:1px solid var(--c-orange);border-radius:8px;padding:18px;margin:12px 0}
+.trade-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.trade-cell{text-align:center}
+.trade-cell-label{font-family:var(--font-mono);font-size:10px;color:var(--c-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.trade-cell-val{font-family:var(--font-display);font-size:18px;font-weight:700}
+
+/* AI TAB */
+.ai-badges{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.ai-badge{padding:6px 16px;border-radius:6px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.5px}
+.ai-badge.neutral-ai{background:rgba(192,197,206,.15);border:1px solid var(--c-chrome);color:var(--c-chrome)}
+.ai-badge.cat-c{background:rgba(255,107,53,.15);border:1px solid var(--c-orange);color:var(--c-orange)}
+.ai-badge.cosmetic{background:rgba(136,153,170,.15);border:1px solid var(--c-muted);color:var(--c-muted)}
+.ai-badge.phase{background:rgba(212,168,67,.15);border:1px solid var(--c-amber);color:var(--c-amber)}
+
+.value-chain{display:flex;gap:6px;margin:16px 0;overflow-x:auto;padding-bottom:8px}
+.vc-level{background:var(--c-card);border:1px solid var(--c-border);border-radius:6px;padding:12px;min-width:140px;text-align:center;flex-shrink:0}
+.vc-level.active{background:rgba(255,107,53,.1);border-color:var(--c-orange)}
+.vc-num{font-family:var(--font-mono);font-size:10px;color:var(--c-muted);margin-bottom:4px}
+.vc-name{font-family:var(--font-ui);font-size:12px;font-weight:600;color:var(--c-text)}
+.vc-sub{font-size:11px;color:var(--c-muted);margin-top:4px}
+.vc-active-label{font-family:var(--font-mono);font-size:9px;color:var(--c-orange);margin-top:6px;letter-spacing:.5px}
+
+/* AI SCORE */
+.ai-score-bar{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:16px;margin:12px 0}
+.score-dim{margin:10px 0}
+.score-dim-label{display:flex;justify-content:space-between;font-family:var(--font-ui);font-size:12px;margin-bottom:5px}
+.score-bar-track{background:rgba(30,48,72,.8);border-radius:3px;height:6px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:3px;background:var(--c-orange);transition:width .5s}
+.total-ai-score{font-family:var(--font-display);font-size:48px;font-weight:900;color:var(--c-orange);text-align:center;margin:12px 0 6px}
+.ai-role-badge{background:rgba(255,107,53,.15);border:1px solid var(--c-orange);color:var(--c-orange);font-family:var(--font-mono);font-size:13px;font-weight:700;padding:6px 20px;border-radius:20px;display:inline-block;margin:0 auto}
+
+/* SERIES TRACKER */
+.tracker-table{width:100%;border-collapse:collapse;margin:16px 0;font-family:var(--font-ui);font-size:12px}
+.tracker-table th{background:#0A1420;color:var(--c-muted);padding:8px 10px;text-align:left;border-bottom:1px solid var(--c-border);font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+.tracker-table td{padding:7px 10px;border-bottom:1px solid rgba(30,48,72,.4);color:var(--c-chrome)}
+
+/* RESPONSIVE */
+@media(max-width:680px){
+  .hero{max-height:none;padding:20px 16px}
+  .hero-name{font-size:22px}
+  .metric-grid{grid-template-columns:repeat(2,1fr)}
+  .pillar-grid{grid-template-columns:repeat(2,1fr)}
+  .trade-row{grid-template-columns:repeat(2,1fr)}
+  .iv-row{grid-template-columns:2fr 1fr 1fr}
+  .iv-row .iv-cell:nth-child(4),.iv-row .iv-cell:nth-child(5){display:none}
+}
+@media(max-width:600px){
+  .tab-btn{padding:10px 10px;font-size:11px}
+  .tab-content{padding:16px}
+}
+
+/* MISC */
+.divider{height:1px;background:var(--c-border);margin:20px 0}
+.info-box{background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.3);border-radius:6px;padding:14px;margin:12px 0;font-family:var(--font-ui);font-size:13px;color:var(--c-chrome)}
+.warn-box{background:rgba(240,82,82,.08);border:1px solid rgba(240,82,82,.3);border-radius:6px;padding:14px;margin:12px 0;font-family:var(--font-ui);font-size:13px;color:var(--c-chrome)}
+.section{margin:24px 0 16px;padding-bottom:4px;border-bottom:1px solid rgba(255,107,53,.2)}
+.footnote{font-family:var(--font-mono);font-size:11px;color:var(--c-muted);margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-ticker">NSE: SANGHVIMOV | BSE: 530073 | BQV Series v5.0</div>
+      <div class="hero-name">Sanghvi Movers Limited</div>
+      <div class="hero-lede">India's largest crane rental company and Asia's #1, 5th globally — riding the infrastructure capex supercycle while transitioning to a diversified lifting & renewables services platform under "Elevate 2030".</div>
+      <div class="badge-row">
+        <span class="badge badge-cat">CAT C — MATURE COMPOUNDER</span>
+        <span class="badge badge-ai">⚪ AI NEUTRAL</span>
+        <span class="badge badge-macro">🟢 MACRO TAILWIND</span>
+      </div>
+      <div class="conf-pills">
+        <span class="pill pill-v">[VERIFIED] Screener/BSE</span>
+        <span class="pill pill-e">[ESTIMATED] Sector CAGR</span>
+        <span class="pill pill-e">[ESTIMATED] DCF/OE</span>
+        <span class="pill pill-u">[UNVERIFIED] FY24 data</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="verdict-badge">WATCH ★★★★</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--c-muted);text-align:right">₹415 · Jun 22 2026</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--c-chrome);text-align:right">Mkt Cap: ₹3,590 Cr</div>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--c-muted);text-align:right">Base IV: ₹490 | Entry: ₹370–390</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro &amp; Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intelligence</button>
+  </div>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content active">
+  <h2>Business Overview</h2>
+  <div class="metric-grid">
+    <div class="metric-card green"><div class="metric-label">Revenue FY26</div><div class="metric-value">₹1,070 Cr</div><div class="metric-sub">+36.9% YoY | 3yr CAGR 33%</div></div>
+    <div class="metric-card"><div class="metric-label">PAT FY26</div><div class="metric-value">₹184 Cr</div><div class="metric-sub">+17.7% YoY | 5yr CAGR 60%</div></div>
+    <div class="metric-card"><div class="metric-label">Current Price</div><div class="metric-value">₹415</div><div class="metric-sub">P/E 19.5x | P/B 2.75x</div></div>
+    <div class="metric-card amber"><div class="metric-label">Market Cap</div><div class="metric-value">₹3,590 Cr</div><div class="metric-sub">Free Float ~53% | Small-Mid cap</div></div>
+    <div class="metric-card grey"><div class="metric-label">Order Book</div><div class="metric-value">₹1,053 Cr</div><div class="metric-sub">Strong forward visibility</div></div>
+    <div class="metric-card"><div class="metric-label">EV / EBITDA</div><div class="metric-value">10.5x</div><div class="metric-sub">EV ₹4,202 Cr | EBITDA ₹400 Cr</div></div>
+    <div class="metric-card"><div class="metric-label">ROCE / ROE</div><div class="metric-value">16.7%</div><div class="metric-sub">ROE 15.5% | ROIC ~15–17%</div></div>
+    <div class="metric-card red"><div class="metric-label">Net Debt</div><div class="metric-value">₹612 Cr</div><div class="metric-sub">D/E 0.41x | Increasing</div></div>
+  </div>
+
+  <h3>What Sanghvi Movers Does</h3>
+  <p>Established in 1989, Sanghvi Movers Limited (SML) is India's and Asia's largest crane rental company, ranked 5th globally by International Cranes. The company provides hydraulic truck-mounted telescopic and lattice boom cranes, and crawler cranes (20T–1,600T) to power, wind, infrastructure, refinery, steel, cement, and construction sectors across India and internationally (Vietnam, KSA, Botswana). SML operates from 17 strategically placed depots across India, giving it unmatched geographic reach for large-lift projects.</p>
+
+  <h3>Three Business Segments</h3>
+  <div class="scorecard-grid">
+    <div class="score-item"><div class="score-icon pass">🏗</div><div><div class="score-text">Crane Hiring & Ancillary Services</div><div class="score-sub">Core segment. India +35% in FY26. Fleet 370+ cranes. EBITDA margins 50–60% (standalone crane business).</div></div></div>
+    <div class="score-item"><div class="score-icon marginal">💨</div><div><div class="score-text">Wind EPC (Sangreen Future Renewables)</div><div class="score-sub">Asset-light. Logistics, intercarting, installation of wind turbines. High revenue, 10–12% EBITDA margins. Margin dilutive but recurring.</div></div></div>
+    <div class="score-item"><div class="score-icon marginal">🌍</div><div><div class="score-text">International Expansion (SMME - KSA)</div><div class="score-sub">Saudi Arabia subsidiary. High utilization. Vision 2030 TAM $800M–1B p.a. Pre-revenue ramp-up. Botswana operations commenced.</div></div></div>
+  </div>
+
+  <h3>Why This Stock Is Interesting</h3>
+  <p>SML sits at the intersection of three secular India tailwinds: the ₹111 lakh crore National Infrastructure Pipeline (NIP), India's 500 GW renewable energy ambition by 2030, and the industrial capex supercycle (steel, refinery, cement). As the dominant player with a replacement cost advantage (₹5,000+ Cr to replicate its fleet + depot network), SML captures outsized share of each upcycle. The Elevate 2030 strategy diversifies revenue away from pure cyclical crane rental into higher-frequency Wind EPC and international expansion — reducing earnings volatility at the cost of near-term margin compression.</p>
+
+  <div class="info-box">
+    <strong>Framework Adaptation:</strong> Sanghvi Movers is an asset-heavy industrial rental business. Maintenance CapEx split is critical — cranes depreciate at ~8–12% p.a. meaning D&A closely approximates maintenance CapEx. Owner Earnings ≈ Net Income + D&A − Full Replacement Allocation. FCF currently negative due to aggressive growth investment — this is intentional, not concerning, IF utilization and yields recover. Category C WACC 12–13%. Terminal P/E 18–22x.
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <h2>Macro &amp; Sector Context</h2>
+
+  <h3>India Macro Anchors [VERIFIED]</h3>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">10-yr G-Sec Yield</div><div class="metric-value">6.80%</div><div class="metric-sub">Near 3-month low; FII buying ₹+$2.2B in 10 sessions</div></div>
+    <div class="metric-card amber"><div class="metric-label">India Real GDP FY27</div><div class="metric-value">6.6%</div><div class="metric-sub">RBI Jun-26 revised down from 6.9%; Goldman 5.9%</div></div>
+    <div class="metric-card"><div class="metric-label">India CPI (May 26)</div><div class="metric-value">3.9%</div><div class="metric-sub">Rising (food inflation 4.8%), below 4% target</div></div>
+    <div class="metric-card green"><div class="metric-label">Nominal GDP FY27</div><div class="metric-value">~10.5%</div><div class="metric-sub">6.6% real + 3.9% CPI = terminal growth ceiling</div></div>
+    <div class="metric-card"><div class="metric-label">Nifty 50 P/E</div><div class="metric-value">20.7x</div><div class="metric-sub">Fairly valued; 14.6% below 10-yr avg of 23.4x</div></div>
+    <div class="metric-card"><div class="metric-label">RBI Repo Rate</div><div class="metric-value">5.25%</div><div class="metric-sub">Held Jun-26; easing cycle underway</div></div>
+  </div>
+
+  <h3>Macro Cycle Dashboard</h3>
+  <div class="macro-grid">
+    <div class="macro-item"><div class="macro-dim">Rural Income Cycle</div><div class="macro-status neut">NEUTRAL</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">MSP hikes + normal monsoon expected. Moderate positive for construction labour availability. SML impact: <strong style="color:var(--c-yellow)">±0%</strong></div></div>
+    <div class="macro-item"><div class="macro-dim">Urban Consumption</div><div class="macro-status boom">BOOM</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">Industrial, data centre, and premium real estate capex accelerating. Drives crane demand in urban centres. SML impact: <strong style="color:var(--c-green)">+3–5%</strong></div></div>
+    <div class="macro-item"><div class="macro-dim">Input Cost Cycle</div><div class="macro-status head">HEADWIND</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">Middle East conflict lifting diesel/energy prices. Concall: company in discussions to pass diesel surcharge. SML impact: <strong style="color:var(--c-red)">−2–3% margin</strong></div></div>
+    <div class="macro-item"><div class="macro-dim">RBI Rate Cycle</div><div class="macro-status tail">EASING</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">Repo at 5.25%, neutral stance. Lower borrowing costs = positive for SML's fleet financing. SML impact: <strong style="color:var(--c-green)">+1–2% on interest cost</strong></div></div>
+    <div class="macro-item"><div class="macro-dim">Govt Capex Cycle</div><div class="macro-status tail">TAILWIND</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">NIP ₹111 lakh Cr; wind energy 500GW target; highways, ports, nuclear power. SML's primary demand driver. SML impact: <strong style="color:var(--c-green)">+5–8%</strong></div></div>
+    <div class="macro-item"><div class="macro-dim">AI Adoption Cycle</div><div class="macro-status neut">NEUTRAL</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">AI improving fleet scheduling, predictive maintenance; not structural for crane rental. SML impact: <strong style="color:var(--c-yellow)">Efficiency only</strong></div></div>
+  </div>
+
+  <p class="footnote">→ Macro Composite: <strong style="color:var(--c-green)">TAILWIND</strong> (infrastructure-specific) | AI Cycle Impact: <strong style="color:var(--c-yellow)">NEUTRAL</strong></p>
+
+  <div class="divider"></div>
+
+  <h3>Sector Growth Derivation [ESTIMATED]</h3>
+  <table class="data-table">
+    <thead><tr><th>Sector</th><th>Stress CAGR</th><th>Base CAGR</th><th>Accel CAGR</th><th>AI Impact</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>Capital Goods (Broad)</td><td class="num">8–12%</td><td class="num">15–19%</td><td class="num">20–25%</td><td>WIDENER</td><td>Master table</td></tr>
+      <tr><td>India Crane Rental Mkt</td><td class="num">4–7%</td><td class="num">7–13%</td><td class="num">13–20%</td><td>NEUTRAL</td><td>Mordor/MYCRANE [ESTIMATED]</td></tr>
+      <tr><td><strong>SML Applicable Blended</strong></td><td class="num good">10–12%</td><td class="num good">15–20%</td><td class="num good">22–28%</td><td>NEUTRAL</td><td>Blended (Crane+Wind EPC)</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">Note: India crane rental rental-specific CAGR per MYCRANE is 13.23% through 2030. SML's revenue mix (Crane rental + Wind EPC) gives a blended sector growth rate of 15–20% base. Macro cycle adjustment +2pp for infra tailwind.</p>
+
+  <div class="divider"></div>
+
+  <h3>Company Alpha Over Sector</h3>
+  <table class="data-table">
+    <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Comment</th></tr></thead>
+    <tbody>
+      <tr><td>Market Share Gain</td><td>Active</td><td class="num good">+2–3%</td><td class="num good">+1–2%</td><td>Dominant at 40%+ share of organised rental; consolidating fragmented market</td></tr>
+      <tr><td>Premiumisation</td><td>Active</td><td class="num good">+1–2%</td><td class="num good">+1%</td><td>Shifting to 400T–1,600T heavy crawlers; higher yield per tonne-lift</td></tr>
+      <tr><td>Category Expansion</td><td>Active</td><td class="num good">+2–3%</td><td class="num good">+1–2%</td><td>Wind EPC (Sangreen), Project EPC, logistics via Sangreen Logistics</td></tr>
+      <tr><td>Geographic Expansion</td><td>Active</td><td class="num good">+2–3%</td><td class="num good">+3–5%</td><td>KSA ($800M–1B TAM), Botswana, Vietnam; 1st mover in Middle East lifting</td></tr>
+      <tr><td>Pricing Power</td><td>Potential</td><td class="num warn">+1%</td><td class="num warn">+1–2%</td><td>Monthly yield recovering; diesel surcharge discussions; limited but improving</td></tr>
+      <tr><td>AI-Driven Alpha (6a+6b+6c)</td><td>Feature</td><td class="num">0%</td><td class="num">0–1%</td><td>Fleet scheduling/predictive maint. only; no flywheel, no expansion capability</td></tr>
+      <tr><td><strong>Total Alpha</strong></td><td>—</td><td class="num good"><strong>+8–12%</strong></td><td class="num good"><strong>+7–12%</strong></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+
+  <h3>Growth Rate Summary (3 Scenarios)</h3>
+  <table class="data-table">
+    <thead><tr><th>Parameter</th><th class="num">STRESS</th><th class="num">BASE</th><th class="num">ACCEL</th></tr></thead>
+    <tbody>
+      <tr><td>Macro State</td><td class="num">GDP ~5.5%</td><td class="num">GDP ~6.6%</td><td class="num">GDP ~8%+</td></tr>
+      <tr><td>Sector Growth (Blended)</td><td class="num">10–12%</td><td class="num">15–18%</td><td class="num">22–25%</td></tr>
+      <tr><td>Company Alpha</td><td class="num">+4%</td><td class="num">+8%</td><td class="num">+12%</td></tr>
+      <tr><td>AI Alpha</td><td class="num">0%</td><td class="num">0%</td><td class="num">+1%</td></tr>
+      <tr><td><strong>Stage 1 Revenue CAGR (5yr)</strong></td><td class="num bad"><strong>10–14%</strong></td><td class="num good"><strong>18–22%</strong></td><td class="num good"><strong>28–32%</strong></td></tr>
+      <tr><td>Stage 2 FCF CAGR</td><td class="num">6–8%</td><td class="num">12–15%</td><td class="num">18–22%</td></tr>
+      <tr><td>Terminal Growth</td><td class="num">5.0%</td><td class="num">6.5%</td><td class="num">7.5%</td></tr>
+      <tr><td>Margin Direction</td><td class="num bad">Compress (Wind EPC heavy)</td><td class="num warn">Stable/Slight recovery</td><td class="num good">Expand (scale + mix)</td></tr>
+      <tr><td>Key Risk</td><td class="num">Utilization <70%; Wind EPC order drought; KSA conflict escalation</td><td class="num">Debt servicing; working capital normalization</td><td class="num">Fleet overexpansion; execution risk</td></tr>
+    </tbody>
+  </table>
+  <div class="footnote">Sensitivity: A 1% change in terminal growth changes IV by approx ₹55–70/share. A 1% change in Stage 1 growth changes IV by approx ₹25–35/share.</div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <h2>Financial Fortress</h2>
+
+  <h3>5-Year P&amp;L Trend [VERIFIED – BSE/Screener]</h3>
+  <table class="data-table">
+    <thead><tr><th>₹ Crore</th><th class="num">FY22</th><th class="num">FY23</th><th class="num">FY24 [EST]</th><th class="num">FY25</th><th class="num">FY26</th></tr></thead>
+    <tbody>
+      <tr><td>Revenue</td><td class="num">335</td><td class="num">456</td><td class="num">619</td><td class="num">782</td><td class="num good">1,070</td></tr>
+      <tr><td>EBITDA</td><td class="num">138</td><td class="num">257</td><td class="num">350</td><td class="num">330</td><td class="num good">400</td></tr>
+      <tr><td>EBITDA Margin %</td><td class="num">41%</td><td class="num good">56%</td><td class="num warn">57%</td><td class="num warn">42%</td><td class="num warn">37%</td></tr>
+      <tr><td>D&amp;A</td><td class="num">118</td><td class="num">121</td><td class="num">125</td><td class="num">129</td><td class="num">132</td></tr>
+      <tr><td>Interest</td><td class="num">17</td><td class="num">17</td><td class="num">20</td><td class="num">26</td><td class="num bad">37</td></tr>
+      <tr><td>PAT</td><td class="num">29</td><td class="num">112</td><td class="num">143</td><td class="num">157</td><td class="num good">184</td></tr>
+      <tr><td>EPS (₹)</td><td class="num">3.39</td><td class="num">12.94</td><td class="num">16.60</td><td class="num">18.08</td><td class="num good">21.29</td></tr>
+    </tbody>
+  </table>
+
+  <h3>ROE &amp; ROIC Trend (5-Year)</h3>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">FY22 ROIC / ROE</div><div class="metric-value warn">~8%</div><div class="metric-sub">Recovery from COVID lows; low utilization ~56%</div></div>
+    <div class="metric-card"><div class="metric-label">FY23 ROIC / ROE</div><div class="metric-value" style="color:var(--c-amber)">~15%</div><div class="metric-sub">Utilization 76%; yield improvement</div></div>
+    <div class="metric-card green"><div class="metric-label">FY24 ROIC / ROE</div><div class="metric-value">~21%</div><div class="metric-sub">Peak cycle: utilization 84%, yield 2.2%. ROCE peak.</div></div>
+    <div class="metric-card amber"><div class="metric-label">FY25 ROIC / ROE</div><div class="metric-value warn">~14%</div><div class="metric-sub">Utilization dipped to 73%; Wind EPC mix diluted</div></div>
+    <div class="metric-card"><div class="metric-label">FY26 ROIC / ROE</div><div class="metric-value">16.7%</div><div class="metric-sub">Recovery; ROIC > WACC 12–13% (MARGINAL PASS)</div></div>
+    <div class="metric-card grey"><div class="metric-label">5yr Avg ROIC</div><div class="metric-value">~15%</div><div class="metric-sub">Narrow moat range. Not consistently >20%.</div></div>
+  </div>
+
+  <div class="warn-box"><strong>⚠ Key Concern:</strong> Screener flags the company may be capitalising interest costs. This artificially reduces reported interest expense and improves EBITDA. The actual effective interest cost could be higher. Treat earnings quality as SUSPECT and apply 5% additional MoS widening.</div>
+
+  <div class="divider"></div>
+  <h3>Financial Fortress Scorecard</h3>
+  <div class="scorecard-grid">
+    <div class="score-item"><div class="score-icon marginal">~</div><div><div class="score-text">ROE ≥ 15% for 5 consecutive years</div><div class="score-sub">MARGINAL — only last 2yrs above 15%; FY21-22 negative/low. Recovering trajectory.</div></div></div>
+    <div class="score-item"><div class="score-icon marginal">~</div><div><div class="score-text">ROIC > WACC for 5 consecutive years</div><div class="score-sub">MARGINAL — FY22 ROIC ~8% < WACC 12%. FY24 peak 21%. Current 16.7% above WACC.</div></div></div>
+    <div class="score-item"><div class="score-icon fail">✗</div><div><div class="score-text">Net Cash Preferred</div><div class="score-sub">FAIL — Net Debt ₹612 Cr, D/E 0.41x. Debt growing rapidly with capex cycle. Interest coverage 9x (adequate but declining).</div></div></div>
+    <div class="score-item"><div class="score-icon marginal">~</div><div><div class="score-text">Net Profit Margin ≥ 15%</div><div class="score-sub">MARGINAL — PAT margin 17.2% in FY26 but compressed from 24.6% in FY23. Wind EPC mix impact structural.</div></div></div>
+    <div class="score-item"><div class="score-icon fail">✗</div><div><div class="score-text">FCF Positive + Growing</div><div class="score-sub">FAIL — FCF −₹98 Cr (FY26), −₹75 Cr (FY25). Intentional: aggressive growth CapEx ₹418 Cr in FY26. FCF expected positive FY28 as capex normalises.</div></div></div>
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">CFO/Operating Profit ≥ 80%</div><div class="score-sub">PASS — CFO ₹278 Cr vs EBITDA ₹400 Cr = 69.5%. But CFO/PAT = 278/184 = 151% → PASS on earnings conversion.</div></div></div>
+    <div class="score-item"><div class="score-icon marginal">~</div><div><div class="score-text">Pricing Power Proven</div><div class="score-sub">MARGINAL — Monthly rental yield recovering post-FY25 dip (1.7%→2.2%→fell→recovering). Diesel surcharge pass-through in discussion per Q4FY26 concall.</div></div></div>
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Revenue CAGR ≥ Macro-Derived Sector CAGR</div><div class="score-sub">PASS — Revenue 3yr CAGR 33% vs sector CAGR 13–15%. Significant alpha.</div></div></div>
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Predictable / Recurring Revenue</div><div class="score-sub">PASS — Long-term contracts (3–5 years) with L&T, NTPC, Adani, RIL. Order book ₹1,053 Cr provides solid visibility.</div></div></div>
+    <div class="score-item"><div class="score-icon fail">✗</div><div><div class="score-text">Capital-Light Model (ROIC, Low Reinvestment)</div><div class="score-sub">FAIL — Asset-HEAVY. CapEx/Revenue = 39% in FY26. However, reinvestment is generating returns above WACC.</div></div></div>
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Dividend Payout < 80% of Owner Earnings</div><div class="score-sub">PASS — Dividend ₹2/share (~₹17 Cr) vs OE ₹184–250 Cr. Payout ~7–9%. Appropriate given growth phase.</div></div></div>
+  </div>
+
+  <div class="divider"></div>
+  <h3>Owner Earnings [ESTIMATED]</h3>
+  <div class="oe-box">
+    <div class="oe-title">Owner Earnings Box — FY26</div>
+    <div class="oe-row"><span>Net Income (Reported)</span><span class="oe-num">+ ₹184 Cr</span></div>
+    <div class="oe-row"><span>Depreciation & Amortisation</span><span class="oe-num">+ ₹132 Cr</span></div>
+    <div class="oe-row"><span>Non-cash FX / SBC adjustments</span><span class="oe-num">+ ₹0 Cr (est.)</span></div>
+    <div class="oe-row"><span style="color:var(--c-muted)">Less: Maintenance CapEx (Conservative = D&A)</span><span class="oe-num" style="color:var(--c-red)">− ₹132 Cr</span></div>
+    <div class="oe-row"><span style="color:var(--c-muted)">Less: Maintenance CapEx (Base = 50% of D&A)</span><span class="oe-num" style="color:var(--c-yellow)">− ₹66 Cr</span></div>
+    <div class="oe-row"><span>Working Capital Change (adverse)</span><span class="oe-num" style="color:var(--c-red)">− ₹20 Cr</span></div>
+    <div class="oe-row total"><span><strong>Owner Earnings — Conservative</strong></span><span class="oe-num"><strong>₹164 Cr</strong></span></div>
+    <div class="oe-row total" style="border-top:1px solid var(--c-orange);margin-top:4px"><span><strong>Owner Earnings — Base</strong></span><span class="oe-num"><strong>₹230 Cr</strong></span></div>
+    <div class="footnote" style="margin-top:8px">Note: Growth CapEx in FY26 ≈ ₹286 Cr (Total investing ₹418 Cr − maintenance ₹132 Cr). This is excluded from OE as it funds future earnings growth. OE/PAT ratio base = 125% — reasonable for an asset-heavy company in expansion.</div>
+  </div>
+
+  <div class="divider"></div>
+  <h3>O'Glove Earnings Quality Framework</h3>
+  <div class="scorecard-grid">
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Test 1 — FCF Conversion</div><div class="score-sub">CFO/PAT = 151%. Well above 80% threshold. Operating cash generation strong. PASS.</div></div></div>
+    <div class="score-item"><div class="score-icon fail">✗</div><div><div class="score-text">Test 2 — DSO Trend</div><div class="score-sub">Debtor days: FY23 79d → FY25 110d → FY26 92d. Rose >10% YoY (FY25) before partially recovering. FAIL — working capital stretched.</div></div></div>
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Test 3 — Inventory Days</div><div class="score-sub">N/A — pure service/rental company. No inventory. PASS by default.</div></div></div>
+    <div class="score-item"><div class="score-icon fail">✗</div><div><div class="score-text">Test 4 — Accounting Policy</div><div class="score-sub">⚠ Screener flags possible interest capitalisation. If true, this inflates EBITDA and understates finance costs. FAIL — warrants scrutiny.</div></div></div>
+    <div class="score-item"><div class="score-icon marginal">~</div><div><div class="score-text">Test 5 — Gross Margin Consistency</div><div class="score-sub">OPM 56%→42%→37% due to structural Wind EPC mix shift, not manipulation. Standalone crane OPM remains ~50%+. MARGINAL.</div></div></div>
+  </div>
+  <div class="info-box" style="margin-top:12px"><strong>Overall Earnings Quality: ACCEPTABLE</strong> (with caution on interest capitalisation flag). Apply 5% additional MoS widening. Effective MoS = 25% from blended base IV.</div>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <h2>Economic Moat Analysis</h2>
+
+  <div class="moat-card">
+    <div class="moat-name">1. Efficient Scale — Fleet Replacement Cost Barrier</div>
+    <div class="moat-stars">★★★★</div>
+    <div class="moat-desc">To replicate SML's fleet of 370+ cranes (20T–1,600T), depot network, and operator pool would require ₹5,000+ Cr in capital investment and 5–7 years of ecosystem building. Heavy-lift crawlers (800T+) cost ₹15–30 Cr each and have 6–18 month delivery timelines. This is NOT a winner-takes-all moat (competitors like Crown Lifters are buying heavy cranes), but scale advantages are real. <em>Stress test: HOLDS in downturns as competitors cannot easily add capacity.</em></div>
+  </div>
+  <div class="moat-card">
+    <div class="moat-name">2. Geographic Depot Network — Mobilization Advantage</div>
+    <div class="moat-stars">★★★</div>
+    <div class="moat-desc">17 strategically placed depots across India minimise mobilization and demobilization costs. For large infrastructure projects, crane availability speed matters as much as price. SML's network gives it a bid advantage of 5–10% on total project cost. <em>Stress test: HOLDS — depot infrastructure is long-term, sticky.</em></div>
+  </div>
+  <div class="moat-card">
+    <div class="moat-name">3. Operator Expertise & Safety Track Record</div>
+    <div class="moat-stars">★★★</div>
+    <div class="moat-desc">India has severe shortage of certified crane operators. SML's 35+ year history means it has the deepest operator and rigger pool in India. Customers (L&T, NTPC, RIL, Adani) prefer SML for complex lifts precisely because of this track record. A failed lift (₹50 Cr+ equipment damage) is a risk companies avoid by choosing established operators. <em>Stress test: STRENGTHENS — operators become more scarce, not less, in a growth cycle.</em></div>
+  </div>
+  <div class="moat-card">
+    <div class="moat-name">4. Customer Relationships & Long-term Contracts</div>
+    <div class="moat-stars">★★★</div>
+    <div class="moat-desc">Multi-year agreements with India's largest infrastructure companies (L&T Hydrocarbon, NTPC, Adani, RIL Jamnagar, Deepak Fertilisers). Contract switching costs include: requalification process, mobilization costs, operator familiarity with plant. <em>Stress test: HOLDS — contracts are typically 3–5 years; provides earnings floor in downturns.</em></div>
+  </div>
+  <div class="moat-card">
+    <div class="moat-name">5. Global Positioning (5th Largest Globally)</div>
+    <div class="moat-stars">★★</div>
+    <div class="moat-desc">International ranking opens doors to multinational project developers (especially in KSA, Africa) who require global-standard operators. SMME (Saudi Arabia) leveraging Vision 2030 pipeline. <em>Stress test: WEAKENS in conflict/geopolitical scenarios — KSA Strait of Hormuz risk is real.</em></div>
+  </div>
+
+  <div class="flywheel-box cosmetic">
+    <div class="flywheel-title">Data Flywheel Assessment</div>
+    <span class="flywheel-badge fw-cosmetic">COSMETIC ★</span>
+    <div class="flywheel-score">2 / 10</div>
+    <p>Q1: Does SML have proprietary training data competitors can't replicate? <strong style="color:var(--c-muted)">NO</strong> — Fleet utilization data, maintenance logs exist but are not uniquely AI-trainable compared to competitors.</p>
+    <p style="margin-top:8px">Q2: Does more usage measurably improve AI? <strong style="color:var(--c-muted)">NO</strong> — Scheduling optimization is linear; no learning curve from more cranes deployed.</p>
+    <p style="margin-top:8px">Q3: Does better AI attract more customers? <strong style="color:var(--c-muted)">NO</strong> — Customers choose SML for fleet, track record, pricing. AI scheduling is not a customer-facing differentiator.</p>
+    <p style="margin-top:10px;font-family:var(--font-mono);font-size:11px;color:var(--c-muted)">All 3 conditions UNCONFIRMED. AI adds operational efficiency only — classified COSMETIC. Moat grade unaffected.</p>
+  </div>
+
+  <div class="divider"></div>
+  <h3>Moat Grade Summary</h3>
+  <table class="data-table">
+    <thead><tr><th>Moat Source</th><th>Strength</th><th>Stress Scenario</th><th>Category Contribution</th></tr></thead>
+    <tbody>
+      <tr><td>Fleet replacement cost</td><td class="num">★★★★</td><td class="num good">HOLDS</td><td>Primary moat — scale barrier</td></tr>
+      <tr><td>Depot network</td><td class="num">★★★</td><td class="num good">HOLDS</td><td>Geographic reach advantage</td></tr>
+      <tr><td>Operator expertise</td><td class="num">★★★</td><td class="num good">STRENGTHENS</td><td>Certifications are scarce</td></tr>
+      <tr><td>Customer contracts</td><td class="num">★★★</td><td class="num good">HOLDS</td><td>Revenue floor</td></tr>
+      <tr><td>Global ranking</td><td class="num">★★</td><td class="num warn">WEAKENS (geo-risk)</td><td>Brand opens international doors</td></tr>
+      <tr><td>AI / Data flywheel</td><td class="num">★</td><td class="num">COSMETIC</td><td>No structural AI moat</td></tr>
+    </tbody>
+  </table>
+  <div class="info-box"><strong>Overall Moat Grade: B−</strong> | Narrow moat. ROIC 15–17% modestly above WACC 12–13%. Not a wide-moat business, but the barriers are real and defensible. The moat is physical (capital), operational (expertise), and relational (contracts) — all durable over 3–5 year horizons. PRIMARY MOAT THREAT: Well-capitalised new entrants (Crown Lifters) buying heavy cranes as returns improve. Monitoring required.</div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <h2>Management Integrity &amp; Capital Allocation</h2>
+
+  <h3>Leadership Team</h3>
+  <div class="scorecard-grid">
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Rishi C. Sanghvi — Managing Director</div><div class="score-sub">Son of founder. Deep industry experience. Visionary behind "Elevate 2030" strategy and international expansion. Aligned incentive (family owns 47.25%).</div></div></div>
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Gaurang Desai — CEO (New)</div><div class="score-sub">Experienced operator brought to professionalise the C-suite. Executes on scalability and business unit structure. Strong concall articulation.</div></div></div>
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Pradeep Mehta — CFO (New)</div><div class="score-sub">30+ years experience. Balance sheet discipline needed as debt increases. Key monitor for interest capitalisation flag.</div></div></div>
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Dr. Mohammed Almanaseer — MD, SMME</div><div class="score-sub">Dedicated Managing Director for Saudi Arabia subsidiary. Strong local credibility. Aggressive KSA ramp despite Middle East conflict.</div></div></div>
+  </div>
+
+  <h3>Promoter Pledging</h3>
+  <div class="scorecard-grid">
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Pledged Shares: 0% (PASS)</div><div class="score-sub">No pledging reported across all recent quarters. Promoter holding stable at 47.25% for 3+ years. Strong signal of confidence.</div></div></div>
+    <div class="score-item"><div class="score-icon marginal">~</div><div><div class="score-text">Promoter Holding — Stable (No change)</div><div class="score-sub">47.25% for 8+ consecutive quarters. Neither buying nor selling. Neutral signal (insider buying would be more positive).</div></div></div>
+  </div>
+
+  <h3>Capital Allocation Assessment</h3>
+  <p>SML's capital allocation philosophy has shifted from a conservative "utilization-first" model to an aggressive reinvestment mode under Elevate 2030. CapEx of ₹629 Cr in FY26 (India + KSA) is 59% of total revenue — a very high reinvestment rate. Management's thesis: India's infrastructure supercycle window is 5–8 years, and fleet availability is the binding constraint on revenue growth. This makes sense IF utilization and yields recover. The risk is over-ordering cranes in a cyclical business.</p>
+
+  <table class="data-table">
+    <thead><tr><th>Capital Allocation Test</th><th>Assessment</th><th>Grade</th></tr></thead>
+    <tbody>
+      <tr><td>Return on Incremental Capital (FY23–26)</td><td>ROIC rose from 15%→21%→14%→17% as capital was deployed. Incremental returns above WACC in aggregate.</td><td class="good">B+</td></tr>
+      <tr><td>Debt Discipline</td><td>D/E at 0.41x — manageable but rising. Net Debt ₹612 Cr. Interest coverage 9x. KSA pre-revenue capex adds risk.</td><td class="warn">B−</td></tr>
+      <tr><td>Working Capital Management</td><td>Debtor days rose from 79 to 110 days (FY25) before recovering to 92 days (FY26). Working capital days jumped from 16 to 81. This is a red flag.</td><td class="bad">C</td></tr>
+      <tr><td>Dividend Policy</td><td>₹2/share (~₹17 Cr). Appropriate low payout in growth phase. Not a concern.</td><td class="good">A−</td></tr>
+      <tr><td>Guidance Reliability</td><td>Revenue guidance broadly met (37% growth vs. sector). Q3FY26 PAT miss due to margin pressure — flagged as temporary mix issue.</td><td class="warn">B</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Red Flags</h3>
+  <div class="warn-box">
+    <strong>Flag 1:</strong> Screener flags possible interest cost capitalisation. If confirmed, this overstates EBITDA and understates effective interest expense. CFO Pradeep Mehta should address this on next concall.<br><br>
+    <strong>Flag 2:</strong> Working capital days surged from 16 days (FY23) to 81 days (FY26). This is partly project-related (Wind EPC payment terms) but warrants monitoring. Trend must normalise in FY27.<br><br>
+    <strong>Flag 3:</strong> FII/DII institutional exodus — both declining (FII 2.95%→1.48%, DII 3.25%→1.30%) despite strong fundamentals. Possible due to FCF concerns or small-cap re-rating.
+  </div>
+
+  <h3>Management Grade: B</h3>
+  <p>Professional upgrade of the C-suite is positive. No pledging, no IT raids, no related-party red flags. The Elevate 2030 strategy is bold but coherent. Key watch items: working capital normalisation, interest capitalisation clarification, and KSA execution in the context of Middle East geopolitics.</p>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <h2>Valuation &amp; Margin of Safety</h2>
+  <p style="color:var(--c-muted);font-size:13px">Earnings quality: ACCEPTABLE (with caution). Effective MoS applied: 25%. All growth rates from Step 3 Growth Rate Table. Shares outstanding: 8.64 Cr.</p>
+
+  <h3>Method 1 — DCF (2-Stage) [ESTIMATED]</h3>
+  <p style="color:var(--c-muted);font-size:12px">WACC 13% (Cat C) | Stage 1: 5 years base growth | Terminal using P/E exit | Owner Earnings base = ₹220 Cr</p>
+  <table class="dcf-table">
+    <thead><tr><th>Year</th><th>BASE OE Growth</th><th>BASE OE (₹Cr)</th><th>PV Factor (13%)</th><th>PV (₹Cr)</th><th>STRESS OE</th><th>ACCEL OE</th></tr></thead>
+    <tbody>
+      <tr><td>FY26 Base</td><td>—</td><td>220</td><td>—</td><td>—</td><td>170</td><td>260</td></tr>
+      <tr><td>FY27E</td><td>+18%</td><td>260</td><td>0.885</td><td>230</td><td>187</td><td>325</td></tr>
+      <tr><td>FY28E</td><td>+18%</td><td>307</td><td>0.783</td><td>240</td><td>206</td><td>406</td></tr>
+      <tr><td>FY29E</td><td>+18%</td><td>362</td><td>0.693</td><td>251</td><td>226</td><td>508</td></tr>
+      <tr><td>FY30E</td><td>+15%</td><td>416</td><td>0.613</td><td>255</td><td>249</td><td>584</td></tr>
+      <tr class="highlight"><td>FY31E</td><td>+15%</td><td>479</td><td>0.543</td><td>260</td><td>274</td><td>730</td></tr>
+      <tr><td colspan="4"><strong>Stage 1 PV Sum</strong></td><td class="highlight">1,236</td><td>765</td><td>1,672</td></tr>
+      <tr><td colspan="2">Terminal OE (Base g=6.5%)</td><td>510</td><td>—</td><td>—</td><td>288</td><td>779</td></tr>
+      <tr><td colspan="2">Terminal Value (P/E 20x)</td><td>10,200</td><td>—</td><td>—</td><td>3,199</td><td>16,380</td></tr>
+      <tr><td colspan="2">PV of Terminal</td><td>—</td><td>0.543</td><td>5,539</td><td>1,737</td><td>8,894</td></tr>
+      <tr class="total-row"><td colspan="4"><strong>Total Firm IV</strong></td><td>6,775</td><td>2,502</td><td>10,566</td></tr>
+      <tr class="total-row"><td colspan="4"><strong>IV Per Share</strong></td><td>₹784</td><td>₹290</td><td>₹1,223</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+  <h3>Method 2 — Owner Earnings Capitalisation [ESTIMATED]</h3>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">OE (Conservative)</div><div class="metric-value">₹164 Cr</div><div class="metric-sub">Value = 164/(13%−6.5%) = ₹2,523 Cr → ₹292/share</div></div>
+    <div class="metric-card green"><div class="metric-label">OE (Base)</div><div class="metric-value">₹230 Cr</div><div class="metric-sub">Value = 230/(13%−6.5%) = ₹3,538 Cr → ₹409/share</div></div>
+  </div>
+
+  <h3>Method 3 — ROIC/EPV [ESTIMATED]</h3>
+  <div class="metric-grid">
+    <div class="metric-card grey"><div class="metric-label">EPV (No Growth)</div><div class="metric-value">₹196 Cr</div><div class="metric-sub">NOPAT = EBIT₂₆×(1−27%) = 268×0.73 = 196 Cr<br>EPV = 196/13% = ₹1,508 Cr → ₹175/share (floor)</div></div>
+    <div class="metric-card amber"><div class="metric-label">With Growth Premium</div><div class="metric-value">₹2,600 Cr</div><div class="metric-sub">EP = (ROIC−WACC)×IC = (16.7%−13%)×1,923 = ₹71 Cr p.a.<br>PV = 71/6.5% = ₹1,092 Cr. Total IV = 2,600 Cr → ₹301/share</div></div>
+  </div>
+
+  <h3>Method 4 — P/E Earnings Power [ESTIMATED]</h3>
+  <table class="data-table">
+    <thead><tr><th>P/E Basis</th><th class="num">Multiple</th><th class="num">EPS</th><th class="num">Value/Share</th></tr></thead>
+    <tbody>
+      <tr><td>FY26 Reported (19.5x current)</td><td class="num">19.5x</td><td class="num">₹21.29</td><td class="num">₹415 (current price)</td></tr>
+      <tr><td>18x FY26 (Cat C mid-range)</td><td class="num">18x</td><td class="num">₹21.29</td><td class="num">₹383</td></tr>
+      <tr><td>20x FY27E (20% growth)</td><td class="num">20x</td><td class="num">₹25.55</td><td class="num good">₹511</td></tr>
+      <tr><td>PEG Ratio (at 18x / 20% growth)</td><td class="num">0.90x</td><td class="num">—</td><td class="num good">Attractive &lt;1.0</td></tr>
+      <tr><td>Normalised P/E (3yr avg ~17x)</td><td class="num">17x</td><td class="num">₹21.29</td><td class="num">₹362</td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">Reverse DCF: Current price ₹415 implies ~12% revenue CAGR for 5 years at 13% WACC — conservative. Market is not pricing in SML's growth pipeline.</p>
+
+  <h3>Method 5 — Earnings Yield vs Bond Yield [VERIFIED + ESTIMATED]</h3>
+  <div class="metric-grid">
+    <div class="metric-card red"><div class="metric-label">Earnings Yield (FY26)</div><div class="metric-value">5.13%</div><div class="metric-sub">EPS ₹21.29 / Price ₹415. Below G-Sec 6.8% → negative ERP. Priced for growth.</div></div>
+    <div class="metric-card grey"><div class="metric-label">G-Sec Risk-Free Rate</div><div class="metric-value">6.80%</div><div class="metric-sub">India 10-yr as of Jun-19 2026</div></div>
+    <div class="metric-card grey"><div class="metric-label">Dividend Yield</div><div class="metric-value">0.48%</div><div class="metric-sub">₹2/share. Very low — growth-focused capital allocation.</div></div>
+    <div class="metric-card"><div class="metric-label">FCF Yield</div><div class="metric-value">N/A</div><div class="metric-sub">FCF negative. Cannot use as IV anchor.</div></div>
+  </div>
+  <p style="font-family:var(--font-ui);font-size:13px;color:var(--c-muted)">Interpretation: EY below risk-free rate confirms market is pricing in future earnings growth, not just current earnings. For a company growing revenue at 20-37% CAGR, this is rational. The signal is NEUTRAL — not cheap on yield, but growth justifies premium.</p>
+
+  <div class="divider"></div>
+  <h3>5-Method Summary Table</h3>
+  <div class="iv-summary">
+    <div class="iv-row header"><div class="iv-cell">Method</div><div class="iv-cell">Stress IV</div><div class="iv-cell">Base IV</div><div class="iv-cell">Accel IV</div><div class="iv-cell">AI Adj.</div></div>
+    <div class="iv-row"><div class="iv-cell">DCF (2-Stage)</div><div class="iv-cell iv-num bad">₹290</div><div class="iv-cell iv-num good">₹784</div><div class="iv-cell iv-num good">₹1,223</div><div class="iv-cell iv-num">None</div></div>
+    <div class="iv-row"><div class="iv-cell">Owner Earnings Cap</div><div class="iv-cell iv-num bad">₹292</div><div class="iv-cell iv-num warn">₹409</div><div class="iv-cell iv-num good">₹620</div><div class="iv-cell iv-num">None</div></div>
+    <div class="iv-row"><div class="iv-cell">ROIC / EPV</div><div class="iv-cell iv-num bad">₹175</div><div class="iv-cell iv-num warn">₹301</div><div class="iv-cell iv-num warn">₹420</div><div class="iv-cell iv-num">None</div></div>
+    <div class="iv-row"><div class="iv-cell">P/E Earnings Power</div><div class="iv-cell iv-num bad">₹362</div><div class="iv-cell iv-num warn">₹426</div><div class="iv-cell iv-num good">₹511</div><div class="iv-cell iv-num">None</div></div>
+    <div class="iv-row"><div class="iv-cell">Earnings Yield</div><div class="iv-cell iv-num" colspan="3">Below G-Sec — priced for growth. No intrinsic floor from yield.</div><div class="iv-cell iv-num">N/A</div></div>
+    <div class="iv-row blended"><div class="iv-cell"><strong>Blended Base IV (avg of 4)</strong></div><div class="iv-cell iv-num">₹279</div><div class="iv-cell iv-num">₹480</div><div class="iv-cell iv-num">₹694</div><div class="iv-cell iv-num">⚪ Neutral</div></div>
+  </div>
+  <div class="info-box">
+    <strong>Base IV: ₹480 | MoS 25% Entry Zone: ₹360–₹384</strong><br>
+    Current price ₹415 is 13.5% above the MoS entry zone lower bound of ₹365 and 8.2% below base IV of ₹480.<br>
+    Interpretation: Stock is trading in the "fair-to-moderate" zone — not yet deep value, not overpriced. A correction to ₹360–₹380 would represent a clear MoS-backed BUY signal.
+  </div>
+
+  <h3>Relative Valuation (Own History)</h3>
+  <div class="metric-grid">
+    <div class="metric-card amber"><div class="metric-label">Current P/E</div><div class="metric-value">19.5x</div><div class="metric-sub">vs. 3-yr normalized avg ~16–18x → modest premium</div></div>
+    <div class="metric-card amber"><div class="metric-label">EV/EBITDA</div><div class="metric-value">10.5x</div><div class="metric-sub">vs. peak 15.9x (Mar-24) → compressed, good value historically</div></div>
+    <div class="metric-card green"><div class="metric-label">Mkt Cap / Sales</div><div class="metric-value">3.4x</div><div class="metric-sub">vs. 5.5x median per research → attractive on this metric</div></div>
+    <div class="metric-card amber"><div class="metric-label">P/B Ratio</div><div class="metric-value">2.75x</div><div class="metric-sub">vs. peak ~6.5x → normalized significantly</div></div>
+  </div>
+  <p style="font-family:var(--font-ui);font-size:13px;color:var(--c-muted)">Relative valuation: 🟡 <strong>10–20% discount to historical peak multiples</strong> — fairly attractive historically, but the peak was in a higher-quality earnings environment (higher ROIC, no Wind EPC dilution).</p>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <h2>Four-Pillar Grades &amp; Verdict</h2>
+
+  <div class="pillar-grid">
+    <div class="pillar-card"><div class="pillar-grade grade-b">B−</div><div class="pillar-name">Moat</div><div style="font-size:11px;color:var(--c-muted);margin-top:6px">Narrow. Scale + operator expertise. ROIC 15–17%. No AI flywheel. Physical moat durable.</div></div>
+    <div class="pillar-card"><div class="pillar-grade grade-b">B−</div><div class="pillar-name">Quality</div><div style="font-size:11px;color:var(--c-muted);margin-top:6px">Earnings quality ACCEPTABLE. FCF negative (growth phase). Working capital concern. CFO solid.</div></div>
+    <div class="pillar-card"><div class="pillar-grade grade-b">B</div><div class="pillar-name">Valuation</div><div style="font-size:11px;color:var(--c-muted);margin-top:6px">Price above MoS entry zone by ~8–14%. EV/EBITDA attractive at 10.5x. Fair, not deep value.</div></div>
+    <div class="pillar-card"><div class="pillar-grade grade-b">B</div><div class="pillar-name">Management</div><div style="font-size:11px;color:var(--c-muted);margin-top:6px">New professional C-suite. No pledging. Bold strategy. Working capital & interest cap flags.</div></div>
+  </div>
+
+  <div class="verdict-box">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--c-muted);letter-spacing:1px;margin-bottom:4px">BQV SERIES v5.0 — VERDICT</div>
+        <div class="verdict-title">WATCH ★★★★</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge badge-cat">CAT C — MATURE COMPOUNDER</span>
+          <span class="badge badge-ai">⚪ AI NEUTRAL</span>
+        </div>
+      </div>
+      <div style="background:rgba(212,168,67,.1);border:1px solid var(--c-amber);border-radius:8px;padding:12px;min-width:200px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--c-muted);letter-spacing:1px">PRICE vs. IV</div>
+        <div style="font-family:var(--font-display);font-size:20px;color:var(--c-amber);font-weight:700">₹415 vs ₹480</div>
+        <div style="font-family:var(--font-ui);font-size:11px;color:var(--c-muted)">13.5% below Base IV</div>
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--c-muted);margin-top:4px">MoS Entry: ₹360–384</div>
+      </div>
+    </div>
+    <div class="verdict-quote">"Price is what you pay. Value is what you get. Here, you get India's most critical lifting infrastructure — but pay a price that requires patience for a better entry point." — Buffett framework adaptation</div>
+    <p style="font-family:var(--font-ui);font-size:13px;color:var(--c-chrome);line-height:1.6">Sanghvi Movers is a high-quality infrastructure rental business in a genuine secular tailwind. The crane market benefits from ₹111 lakh crore NIP, 500 GW renewable ambition, and industrial capex acceleration. SML is Asia's #1 with an unmatched fleet, network, and operator ecosystem. However, the current price of ₹415 is modestly above our MoS entry zone (₹360–384), institutional selling is persistent, technical momentum is mixed, and near-term FCF remains negative as aggressive capex continues. The quality is strong, but patience earns better risk-reward. <strong>WATCH at ₹415; upgrade to BUY on correction to ₹360–384.</strong></p>
+  </div>
+
+  <div class="divider"></div>
+  <h3>Upgrade Conditions to BUY ★★★★★</h3>
+  <ul class="upgrade-list">
+    <li><span class="upg-num">1</span>Price corrects to ₹360–384 (25% MoS from Base IV of ₹480). This represents a 7–13% decline from current price — possible in a broader market correction.</li>
+    <li><span class="upg-num">2</span>RSI falls below 40 on the daily chart, signalling oversold conditions at a strong support level.</li>
+    <li><span class="upg-num">3</span>Management clarifies interest capitalisation policy on FY27 Q1 concall — confirming accounting is standard and not masking true interest burden.</li>
+    <li><span class="upg-num">4</span>Working capital days normalise below 60 days for 2 consecutive quarters, confirming debtor recovery.</li>
+    <li><span class="upg-num">5</span>FII + DII combined holding stabilises or increases above 3.5% total for 2 consecutive quarters — institutional re-entry signal.</li>
+  </ul>
+
+  <div class="divider"></div>
+  <h3>Series Tracker</h3>
+  <table class="tracker-table">
+    <thead><tr><th>Ticker</th><th>Company</th><th>Category</th><th>Verdict</th><th>Stars</th><th>Base IV</th><th>Entry Zone</th><th>AI Overlay</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr><td style="color:var(--c-orange);font-family:var(--font-mono)">SANGHVIMOV</td><td>Sanghvi Movers</td><td>C</td><td>WATCH</td><td>★★★★</td><td>₹480</td><td>₹360–384</td><td>⚪ NEUTRAL</td><td>2026-06-22</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <h2>Technical Analysis</h2>
+
+  <h3>A. Price Structure [VERIFIED – Live Data]</h3>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Current Price</div><div class="metric-value">₹415</div><div class="metric-sub">Jun 22, 2026 intraday (₹406–422 range)</div></div>
+    <div class="metric-card green"><div class="metric-label">52-Week High</div><div class="metric-value">₹430</div><div class="metric-sub">Stock near 52-week high — uptrend intact</div></div>
+    <div class="metric-card amber"><div class="metric-label">52-Week Low</div><div class="metric-value">₹223.8</div><div class="metric-sub">85.4% rally from low — extended</div></div>
+    <div class="metric-card"><div class="metric-label">1-Year Return</div><div class="metric-value">+47.8%</div><div class="metric-sub">vs. Nifty 50 approx. flat. Significant outperformance.</div></div>
+    <div class="metric-card"><div class="metric-label">6-Month Return</div><div class="metric-value">+26%</div><div class="metric-sub">Strong momentum in H2 of the period</div></div>
+    <div class="metric-card red"><div class="metric-label">2-Year Return</div><div class="metric-value">−47%</div><div class="metric-sub">Context: stock peaked ~₹785 in 2024; bottomed ₹223.8</div></div>
+  </div>
+
+  <h3>B. Moving Average Dashboard</h3>
+  <div class="tech-grid">
+    <div class="tech-card"><div class="tech-val signal-buy">ABOVE</div><div class="tech-label">vs. 200-DMA (~₹315)</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">+31.7% above 200-DMA. Strong long-term trend reclaimed.</div></div>
+    <div class="tech-card"><div class="tech-val signal-buy">ABOVE</div><div class="tech-label">vs. 50-DMA (~₹370)</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">+12.2% above 50-DMA. Medium-term momentum intact.</div></div>
+    <div class="tech-card"><div class="tech-val signal-buy">ABOVE</div><div class="tech-label">vs. 20-EMA (~₹395)</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">+5.1% above 20-EMA. Short-term trend holding.</div></div>
+    <div class="tech-card"><div class="tech-val signal-buy">GOLDEN</div><div class="tech-label">50-DMA vs 200-DMA</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">50-DMA above 200-DMA. Golden cross intact. Bullish medium-term.</div></div>
+  </div>
+
+  <h3>C. Volume & OBV</h3>
+  <p>Volume uptick during the rally from ₹223.8 → ₹430 confirms institutional buying or retail accumulation. Recent sessions show moderated volume as stock consolidates near 52-week high. No distribution signals visible from public data. Trading volume: 3.35 lakh shares/day (Jun 19, 2026).</p>
+
+  <h3>D. Oscillators</h3>
+  <div class="tech-grid">
+    <div class="tech-card"><div class="tech-val signal-neutral" style="font-size:22px">~40</div><div class="tech-label">RSI(14) Daily</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">Near neutral-to-slightly-oversold. Not extreme in either direction. Watch for RSI divergence (negative divergence flagged by Investtech vs. price).</div></div>
+    <div class="tech-card"><div class="tech-val signal-buy">+1.98</div><div class="tech-label">MACD</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">MACD positive → Buy signal. Momentum positive but needs confirmation.</div></div>
+    <div class="tech-card"><div class="tech-val signal-sell">SELL</div><div class="tech-label">MA Composite (11 MAs)</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">11 MAs on sell vs 1 buy in weekly TradingView view. Caution on weekly timeframe.</div></div>
+    <div class="tech-card"><div class="tech-val signal-neutral">NEUTRAL</div><div class="tech-label">Oscillators (daily)</div><div style="font-size:11px;color:var(--c-muted);margin-top:4px">4 buy vs 3 sell on oscillators. Mixed — consolidation phase.</div></div>
+  </div>
+
+  <h3>E. Chart Patterns</h3>
+  <div class="scorecard-grid">
+    <div class="score-item"><div class="score-icon pass">✓</div><div><div class="score-text">Inverse Head & Shoulders (Confirmed)</div><div class="score-sub">Break above ₹340 neckline confirmed per Investtech. Pattern target: ₹499. Medium-term bullish signal.</div></div></div>
+    <div class="score-item"><div class="score-icon marginal">~</div><div><div class="score-text">Horizontal Channel (Medium-Long Term)</div><div class="moat-desc">Testing channel ceiling near ₹430. Resistance zone at 52-week high. Breakout above ₹430 → targets ₹499+.</div></div></div>
+    <div class="score-item"><div class="score-icon marginal">~</div><div><div class="score-text">RSI Negative Divergence Warning</div><div class="score-sub">Price making higher highs but RSI showing negative divergence — early warning of potential consolidation/pullback to ₹350 support.</div></div></div>
+  </div>
+
+  <h3>F. Trade Structure</h3>
+  <div class="trade-box">
+    <div style="font-family:var(--font-mono);font-size:11px;color:var(--c-orange);letter-spacing:1px;margin-bottom:12px">TACTICAL TRADE STRUCTURE (for investors with existing positions OR on breakout)</div>
+    <div class="trade-row">
+      <div class="trade-cell"><div class="trade-cell-label">Ideal Entry</div><div class="trade-cell-val" style="color:var(--c-green)">₹360–380</div><div style="font-size:10px;color:var(--c-muted);margin-top:4px">MoS zone + RSI dip</div></div>
+      <div class="trade-cell"><div class="trade-cell-label">Stop Loss</div><div class="trade-cell-val" style="color:var(--c-red)">₹330</div><div style="font-size:10px;color:var(--c-muted);margin-top:4px">Below 50-DMA support</div></div>
+      <div class="trade-cell"><div class="trade-cell-label">Target 1</div><div class="trade-cell-val" style="color:var(--c-amber)">₹499</div><div style="font-size:10px;color:var(--c-muted);margin-top:4px">Inv. H&S pattern target</div></div>
+      <div class="trade-cell"><div class="trade-cell-label">Target 2</div><div class="trade-cell-val" style="color:var(--c-amber)">₹560–600</div><div style="font-size:10px;color:var(--c-muted);margin-top:4px">Fundamental MoS zone</div></div>
+    </div>
+    <div style="font-family:var(--font-ui);font-size:12px;color:var(--c-muted)">
+      R:R (at ₹370 entry, SL ₹330, T1 ₹499): Risk ₹40 → Reward ₹129 = <strong style="color:var(--c-green)">1:3.2</strong> ✓<br>
+      Position Size: 3–5% of portfolio for primary position. Infrastructure allocation.
+    </div>
+  </div>
+
+  <h3>G. Technical Composite Score</h3>
+  <table class="data-table">
+    <thead><tr><th>Dimension</th><th class="num">Score /5</th><th>Comments</th></tr></thead>
+    <tbody>
+      <tr><td>Trend (Multi-timeframe)</td><td class="num good">4/5</td><td>Long-term uptrend reclaimed; weekly cautious; daily neutral</td></tr>
+      <tr><td>Moving Average Alignment</td><td class="num warn">3/5</td><td>Above 20/50/200-DMA (bullish) but 11 MAs showing weekly sell signal</td></tr>
+      <tr><td>Volume / OBV</td><td class="num warn">3/5</td><td>Volume confirmation on rally; recent moderation at resistance</td></tr>
+      <tr><td>Oscillators (RSI/MACD)</td><td class="num warn">3/5</td><td>RSI neutral ~40, MACD buy, negative RSI divergence warning</td></tr>
+      <tr><td>Chart Patterns</td><td class="num good">4/5</td><td>Inv. H&S confirmed; target ₹499; at channel ceiling</td></tr>
+      <tr><td>Price Level vs Support</td><td class="num warn">3/5</td><td>Testing 52-week high resistance; ₹350 is key support floor</td></tr>
+      <tr><td><strong>Composite Score</strong></td><td class="num good"><strong>20/30 = 67%</strong></td><td><strong>MODERATELY BULLISH — Medium-term positive; wait for entry point</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <h2>Shareholding Pattern Analysis</h2>
+
+  <h3>A. Promoter Trend (12 Quarters) [VERIFIED – BSE]</h3>
+  <table class="sh-table">
+    <thead><tr><th>Quarter</th><th>Promoter %</th><th>Pledged %</th><th>FII %</th><th>DII %</th><th>Public %</th></tr></thead>
+    <tbody>
+      <tr><td>Jun-23</td><td>47.25%</td><td>0%</td><td>1.64%</td><td>1.73%</td><td>49.39%</td></tr>
+      <tr><td>Sep-23</td><td>47.25%</td><td>0%</td><td>1.99%</td><td>1.77%</td><td>49.00%</td></tr>
+      <tr><td>Dec-23</td><td>47.25%</td><td>0%</td><td>2.12%</td><td>1.62%</td><td>49.01%</td></tr>
+      <tr><td>Mar-24</td><td>47.25%</td><td>0%</td><td>2.49%</td><td>2.59%</td><td>47.67%</td></tr>
+      <tr><td>Jun-24</td><td>47.25%</td><td>0%</td><td>2.41%</td><td>3.34%</td><td>47.01%</td></tr>
+      <tr><td>Sep-24</td><td>47.25%</td><td>0%</td><td>2.95%</td><td>3.65%</td><td>46.16%</td></tr>
+      <tr><td>Dec-24</td><td>47.25%</td><td>0%</td><td>2.94%</td><td>3.89%</td><td>45.91%</td></tr>
+      <tr><td>Mar-25</td><td>47.25%</td><td>0%</td><td>2.11%</td><td>3.25%</td><td>47.38%</td></tr>
+      <tr><td>Jun-25</td><td>47.25%</td><td>0%</td><td>1.40%</td><td>1.61%</td><td>49.74%</td></tr>
+      <tr><td>Sep-25</td><td>47.25%</td><td>0%</td><td>1.71%</td><td>1.39%</td><td>49.64%</td></tr>
+      <tr><td>Dec-25</td><td>47.25%</td><td>0%</td><td>1.46%</td><td>1.40%</td><td>49.89%</td></tr>
+      <tr><td>Mar-26</td><td class="arr-flat">47.25% →</td><td>0% ✓</td><td class="arr-dn bad">1.48% ↓</td><td class="arr-dn bad">1.30% ↓</td><td class="arr-up warn">49.97% ↑</td></tr>
+    </tbody>
+  </table>
+  <div class="footnote">→ Key observation: Promoter rock-solid at 47.25% since Jun-23. Zero pledging (strong positive). FII peaked at 2.95% (Sep-24) and has halved to 1.48% by Mar-26. DII peaked at 3.89% (Dec-24) and fallen to 1.30%. Retail/public absorbing the institutional selling.</div>
+
+  <h3>B. Shareholding Trend Analysis</h3>
+  <div class="warn-box">
+    <strong>Institutional Exodus Alert:</strong> Combined FII + DII holding has fallen from a peak of 6.84% (Dec-24) to just 2.78% (Mar-26). This is a 59% decline in institutional ownership over 6 quarters. This persistent institutional selling is the primary technical overhang on the stock and explains why the stock has underperformed despite strong fundamentals. Retail holding (public) has absorbed from 45.9% → 50.0%.
+  </div>
+
+  <h3>C. Free Float &amp; Market Data</h3>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Shares Outstanding</div><div class="metric-value">8.64 Cr</div><div class="metric-sub">FV ₹1; small share count</div></div>
+    <div class="metric-card"><div class="metric-label">Free Float</div><div class="metric-value">~52.75%</div><div class="metric-sub">₹1,893 Cr free-float market cap</div></div>
+    <div class="metric-card grey"><div class="metric-label">Nifty 50 Weight</div><div class="metric-value">None</div><div class="metric-sub">BSE SmallCap / BSE 1000 member</div></div>
+    <div class="metric-card grey"><div class="metric-label">Retail Shareholders</div><div class="metric-value">60,472</div><div class="metric-sub">Declining from 68k peak; stock re-rating</div></div>
+  </div>
+
+  <h3>D. Ownership Momentum Score</h3>
+  <div class="metric-grid">
+    <div class="metric-card amber"><div class="metric-label">Ownership Momentum Score</div><div class="metric-value">38/100</div><div class="metric-sub">FII declining, DII declining, retail absorbing. Weak institutional accumulation signal.</div></div>
+    <div class="metric-card red"><div class="metric-label">Shareholding Risk Score</div><div class="metric-value">62/100</div><div class="metric-sub">Elevated risk: institutional exit + promoter not buying. Retail-heavy ownership = higher volatility.</div></div>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <h2>AI Intelligence Dashboard</h2>
+
+  <h3>A. AI Classification</h3>
+  <div class="ai-badges">
+    <span class="ai-badge cat-c">CAT C — MATURE COMPOUNDER</span>
+    <span class="ai-badge neutral-ai">⚪ AI NEUTRAL</span>
+    <span class="ai-badge cosmetic">FLYWHEEL: COSMETIC ★</span>
+    <span class="ai-badge phase">PHASE 1 — EFFICIENCY TOOLS</span>
+  </div>
+  <p style="font-family:var(--font-ui);font-size:13px;color:var(--c-muted);margin-top:8px">Sanghvi Movers is a physical industrial services business. AI is being deployed for operational efficiency (fleet scheduling, predictive maintenance, route optimisation) but does not create structural competitive advantages. The crane rental market winner is determined by fleet availability, operator expertise, and geographic proximity — none of which AI fundamentally changes. AI overlay: NEUTRAL — no impact on base thesis or valuation.</p>
+
+  <div class="divider"></div>
+  <h3>B. Data Flywheel Deep-Dive</h3>
+  <div class="flywheel-box cosmetic">
+    <div class="flywheel-title">Data Flywheel Assessment — Full Deep Dive</div>
+    <span class="flywheel-badge fw-cosmetic">COSMETIC — 0 of 3 Conditions Confirmed</span>
+    <div class="flywheel-score">2 / 10</div>
+    <p><strong>Q1: Proprietary Training Data?</strong> SML has crane utilization logs, operator performance data, and maintenance records across 370+ cranes and 130+ job sites. Volume: Moderate. Uniqueness: LOW — competitors Crown Lifters, TIL, Action CE have similar data types. Outcome labels: Basic (breakdowns, downtime). NOT sufficient for AI moat. <em>Data quality score: 1/3</em></p>
+    <p style="margin-top:8px"><strong>Q2: Does AI improve with more users/data?</strong> Fleet scheduling AI improves route optimization as more data is fed. However, this is a standard logistics optimization problem — not unique to SML. Once the model is trained on base data, marginal improvement from additional cranes is low. <em>Improvement evidence score: 0/4</em></p>
+    <p style="margin-top:8px"><strong>Q3: Does better AI attract more customers?</strong> Customers choose SML for crane capacity and operator safety track record, not for AI scheduling capabilities. A competitor with better AI but fewer cranes/operators would lose the bid. <em>Loop speed: 1/3</em></p>
+    <p style="margin-top:10px;font-family:var(--font-mono);font-size:11px;color:var(--c-muted)">Flywheel Score: Data quality 1/3 + Improvement evidence 0/4 + Loop speed 1/3 = 2/10. COSMETIC classification confirmed.</p>
+  </div>
+
+  <div class="divider"></div>
+  <h3>C. AI Value Chain Position</h3>
+  <div class="value-chain">
+    <div class="vc-level"><div class="vc-num">Level 1</div><div class="vc-name">Infrastructure</div><div class="vc-sub">Chips, compute, cloud</div></div>
+    <div class="vc-level"><div class="vc-num">Level 2</div><div class="vc-name">Foundation Models</div><div class="vc-sub">LLMs, vision models</div></div>
+    <div class="vc-level"><div class="vc-num">Level 3</div><div class="vc-name">Platforms</div><div class="vc-sub">AI platforms, APIs</div></div>
+    <div class="vc-level"><div class="vc-num">Level 4</div><div class="vc-name">Vertical Apps</div><div class="vc-sub">Industry-specific AI</div></div>
+    <div class="vc-level active"><div class="vc-num">Level 5</div><div class="vc-name">AI-Enabled Incumbent</div><div class="vc-sub">Existing business, AI tools added</div><div class="vc-active-label">▲ SML IS HERE</div></div>
+  </div>
+  <p style="font-family:var(--font-ui);font-size:13px;color:var(--c-muted)"><strong>Investment Implication:</strong> Level 5 incumbents using AI for efficiency are defensive applications. They reduce cost and improve utilization but don't create new markets or competitive moats. For SML, AI is a tool that maintains (not creates) competitiveness. Horizon: 3–5 years. Risk: Low from AI. Moat durability: Unchanged from pre-AI analysis.</p>
+
+  <div class="divider"></div>
+  <h3>D. India AI Structural Advantage Assessment</h3>
+  <table class="data-table">
+    <thead><tr><th>Structural Advantage</th><th>Relevant to SML?</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>India Stack Data Access (UPI/Aadhaar)</td><td class="num warn">MINIMAL</td><td>Not applicable. Crane rental is not a financial or identity-driven business.</td></tr>
+      <tr><td>Vernacular AI Benefit</td><td class="num warn">PARTIAL</td><td>Operator training, safety protocols in regional languages could improve operator performance. Low strategic impact.</td></tr>
+      <tr><td>India Stack Infra Leverage</td><td class="num warn">PARTIAL</td><td>ONDC/logistics platforms could improve crane booking marketplace (MYCRANE parallel). SML not currently leveraging.</td></tr>
+      <tr><td>AI Talent Cost Arbitrage</td><td class="num pass">YES</td><td>Fleet optimization software can be built cheaply in India. SML's "SAMAGRA" digitalisation project benefits from cost advantage.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+  <h3>F. AI Opportunity Score</h3>
+  <div class="ai-score-bar">
+    <div class="score-dim"><div class="score-dim-label"><span>Data Flywheel</span><span>2/20</span></div><div class="score-bar-track"><div class="score-bar-fill" style="width:10%"></div></div></div>
+    <div class="score-dim"><div class="score-dim-label"><span>Adoption Phase Timing</span><span>8/20</span></div><div class="score-bar-track"><div class="score-bar-fill" style="width:40%"></div></div></div>
+    <div class="score-dim"><div class="score-dim-label"><span>Value Chain Position (Level 5)</span><span>10/20</span></div><div class="score-bar-track"><div class="score-bar-fill" style="width:50%"></div></div></div>
+    <div class="score-dim"><div class="score-dim-label"><span>India Structural Advantage</span><span>6/20</span></div><div class="score-bar-track"><div class="score-bar-fill" style="width:30%"></div></div></div>
+    <div class="score-dim"><div class="score-dim-label"><span>AI Threat Resistance</span><span>12/20</span></div><div class="score-bar-track"><div class="score-bar-fill" style="width:60%"></div></div></div>
+    <div style="text-align:center;margin-top:16px">
+      <div class="total-ai-score">38/100</div>
+      <div class="ai-role-badge">MONITOR — Physical business, AI is an efficiency tool only</div>
+    </div>
+  </div>
+  <p style="font-family:var(--font-ui);font-size:13px;color:var(--c-muted);text-align:center;margin-top:8px">Investment Horizon: 3–5 years | Portfolio Role: MONITOR | AI does not materially change the investment thesis.</p>
+  <p style="font-family:var(--font-ui);font-size:13px;color:var(--c-muted);margin-top:8px"><strong>High AI Threat Resistance (12/20):</strong> Crane rental is inherently physical. A 400-tonne crawler crane cannot be replaced by software. AI doesn't disrupt the fundamental need for heavy-lift equipment. This gives SML defensive characteristics in the AI disruption landscape — it's a "physical reality anchor" business that AI cannot commoditise.</p>
+</div>
+
+<!-- FOOTER -->
+<div style="background:var(--c-deep);border-top:1px solid var(--c-border);padding:20px 24px;margin-top:20px">
+  <p style="font-family:var(--font-mono);font-size:10px;color:var(--c-muted);line-height:1.7">
+    <strong style="color:var(--c-chrome)">SEBI Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute investment advice, a recommendation, or a solicitation to buy or sell securities. Sanghvi Movers Limited (SANGHVIMOV) is a publicly listed company on NSE and BSE. All data herein is sourced from public filings, BSE disclosures, and third-party financial databases. Investors should conduct their own due diligence and consult a SEBI-registered investment adviser before making investment decisions.<br>
+    <strong style="color:var(--c-chrome)">Data Notice:</strong> Financial data primarily from Screener.in, BSE disclosures, and management concalls as of June 22, 2026. FY24 data is estimated. Valuations are model-based estimates, not guarantees of future performance. Sector growth forecasts sourced from Mordor Intelligence, MYCRANE, and IMARC (marked [ESTIMATED]).<br>
+    <strong style="color:var(--c-chrome)">Fonts:</strong> Playfair Display, DM Serif Text, JetBrains Mono, Inter via Google Fonts (SIL Open Font License).<br>
+    <strong style="color:var(--c-chrome)">BQV Series v5.0</strong> | Argus Reports | Dayanand Mewara | Generated: June 22, 2026
+  </p>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
