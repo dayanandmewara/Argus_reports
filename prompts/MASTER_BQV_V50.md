@@ -495,3 +495,37 @@ Open with a 5–6 sentence note: category + why · AI Overlay + reasoning · mac
   
 Then IMMEDIATELY run all 5 data block web searches before any analysis.  
 Do NOT ask clarifying questions. Do NOT build the report until all data blocks complete.
+
+══════════════════════════════════════════════════════════
+JSON OUTPUT RECORD — WRITE TO GITHUB AFTER EVERY REPORT
+══════════════════════════════════════════════════════════
+
+After present_files, push data/stocks/[TICKER].json with exactly
+these 22 fields. Title Case keys. ALL VALUES AS STRINGS.
+
+{
+  "Ticker":             "[EXCHANGE TICKER, uppercase]",
+  "Company":            "[Full company name]",
+  "Market":             "[NSE | NASDAQ | NYSE]",
+  "Price at Analysis":  "[numeric only, no ₹/$ — snapshot at time of report]",
+  "Category":           "[A | B | C | D | E | F]",
+  "Verdict":            "[BUY★★★★★ | BUY STARTER★★★★½ | WATCH★★★★ | WATCH★★★ | WATCH★★ | PASS | AVOID]",
+  "Stars":              "[0–5, use 4.5 for BUY STARTER]",
+  "Moat":               "[A+ | A | A- | B+ | B | B- | C+ | C | C- | D+ | D | D- | F]",
+  "Quality":            "[same grade scale as Moat]",
+  "Val":                "[same grade scale as Moat]",
+  "Mgmt":               "[same grade scale as Moat]",
+  "AI Overlay":         "[🟢 WIDENER | ⚪ NEUTRAL | 🔴 THREAT | 🌀 AI CORE]",
+  "AI Score":           "[0–100]",
+  "Phase":              "[0 | 1 | 2 | 3 | 4]",
+  "Flywheel":           "[CONFIRMED | FORMING | FEATURE | COSMETIC]",
+  "Conditions Met":     "[0–5]",
+  "Horizon":            "[3-5yr | 5-7yr | 7-10yr | N/A]",
+  "Base IV":            "[e.g. ₹1,371 or $240 or N/A — keep currency symbol]",
+  "MoS Entry Zone":     "[e.g. ₹1,050–₹1,200 or $44–49 — keep currency symbol]",
+  "Thesis":             "[one-line thesis from report]",
+  "Report File":        "[TICKER]_qv_report.html",
+  "Last Analysis Date": "[YYYY-MM-DD]"
+}
+
+NOTE: tracker.csv auto-rebuilds from JSON via GitHub Action. Never edit it directly.
