@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VRT – Buffett Quality-Value Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --midnight:#0A1628;--night:#0F1F38;--orange:#FF5F1F;--orange-lt:#FF8C5C;
+  --cyan:#00C4E0;--cyan-lt:#7ADFF0;--chrome:#9DAAB8;--chrome-lt:#C8D3DE;
+  --text:#E8EBF0;--bg:#F2F4F8;--card:#FFFFFF;--muted:#6A80A0;
+  --green:#16A34A;--green-bg:#DCFCE7;--red:#DC2626;--red-bg:#FEE2E2;
+  --amber:#D97706;--amber-bg:#FEF3C7;--blue:#1D4ED8;--blue-bg:#DBEAFE;
+  --pass:#16A34A;--marginal:#D97706;--fail:#DC2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#1e293b;font-size:16px;line-height:1.6}
+.mono{font-family:'JetBrains Mono',monospace}
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--midnight) 0%,var(--night) 60%,#13244A 100%);
+  color:var(--text);padding:32px 24px 20px;min-height:180px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-80px;top:-60px;width:320px;height:320px;
+  border-radius:50%;background:radial-gradient(circle,rgba(255,95,31,.18),transparent 70%)}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px}
+.hero-ticker{font-size:13px;font-weight:600;color:var(--chrome);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.hero-name{font-size:28px;font-weight:900;letter-spacing:-.02em;margin-bottom:6px;line-height:1.1}
+.hero-lede{font-size:14px;color:var(--chrome-lt);max-width:620px;line-height:1.55}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;
+  font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.badge-cat{background:rgba(255,95,31,.22);color:#FFB08A;border:1px solid rgba(255,95,31,.4)}
+.badge-ai{background:rgba(0,196,224,.18);color:#7ADFF0;border:1px solid rgba(0,196,224,.4)}
+.badge-verdict{background:rgba(22,163,74,.2);color:#86EFAC;border:1px solid rgba(22,163,74,.4)}
+.badge-phase{background:rgba(29,78,216,.2);color:#93C5FD;border:1px solid rgba(29,78,216,.4)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.hero-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:20px;background:rgba(255,255,255,.08);border-radius:10px;overflow:hidden}
+.hero-metric{background:rgba(255,255,255,.05);padding:12px 14px}
+.hero-metric .label{font-size:11px;color:var(--chrome);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.hero-metric .val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;color:var(--text)}
+.hero-metric .sub{font-size:11px;color:var(--chrome);margin-top:2px}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.pill-v{background:var(--green-bg);color:var(--green)}
+.pill-e{background:var(--amber-bg);color:var(--amber)}
+.pill-u{background:var(--red-bg);color:var(--red)}
+/* TABS */
+#tab-bar{position:sticky;top:0;z-index:100;background:var(--midnight);
+  display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid rgba(255,255,255,.08)}
+#tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:14px 18px;font-size:12px;font-weight:600;color:var(--chrome);
+  cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;
+  transition:all .2s;text-transform:uppercase;letter-spacing:.06em;margin-bottom:-2px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--orange);border-bottom-color:var(--orange)}
+/* TAB CONTENT */
+.tab-content{display:none;padding:28px 24px;max-width:1100px;margin:0 auto}
+/* CARDS */
+.section-title{font-size:20px;font-weight:800;color:var(--midnight);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px}
+.section-title::before{content:'';display:block;width:4px;height:22px;background:var(--orange);border-radius:2px}
+.card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:16px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.card-orange::before{background:var(--orange)}
+.card-cyan::before{background:var(--cyan)}
+.card-green::before{background:var(--green)}
+.card-red::before{background:var(--red)}
+.card-chrome::before{background:var(--chrome)}
+.card-title{font-size:14px;font-weight:700;color:var(--midnight);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em}
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+/* METRIC BOX */
+.metric-box{background:var(--bg);border-radius:8px;padding:14px;border-left:3px solid var(--orange)}
+.metric-box.pass{border-left-color:var(--green)}
+.metric-box.fail{border-left-color:var(--red)}
+.metric-box.marg{border-left-color:var(--amber)}
+.metric-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.metric-val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--midnight)}
+.metric-sub{font-size:11px;color:var(--muted);margin-top:2px}
+/* SCORECARD */
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;
+  border-radius:6px;margin-bottom:6px;font-size:14px}
+.score-row:nth-child(odd){background:var(--bg)}
+.score-pass{color:var(--green);font-weight:700;font-family:'JetBrains Mono',monospace}
+.score-marg{color:var(--amber);font-weight:700;font-family:'JetBrains Mono',monospace}
+.score-fail{color:var(--red);font-weight:700;font-family:'JetBrains Mono',monospace}
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{background:var(--midnight);color:var(--chrome-lt);padding:10px 12px;
+  text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.data-table td{padding:9px 12px;border-bottom:1px solid #E9EDF2;font-family:'JetBrains Mono',monospace;font-size:13px}
+.data-table tr:hover td{background:#F8F9FC}
+.data-table .row-label{font-family:'Inter',sans-serif;font-weight:500;color:var(--midnight)}
+/* PILLAR GRADE */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pillar-card{background:var(--card);border-radius:12px;padding:20px;text-align:center;
+  box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.pillar-grade{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;margin:8px 0}
+.pillar-name{font-size:12px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:.06em}
+.grade-a{color:#16A34A}.grade-b{color:#2563EB}.grade-c{color:#D97706}.grade-d{color:#DC2626}
+/* VERDICT BOX */
+.verdict-box{background:var(--midnight);border-radius:14px;padding:28px;color:var(--text);
+  border:2px solid rgba(255,95,31,.5);margin-bottom:20px}
+.verdict-label{font-size:13px;color:var(--chrome);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.verdict-main{font-size:32px;font-weight:900;color:var(--orange);letter-spacing:-.02em;margin-bottom:8px}
+.verdict-desc{font-size:15px;color:var(--chrome-lt);line-height:1.6}
+.verdict-quote{font-style:italic;color:var(--chrome);font-size:14px;margin-top:16px;
+  border-left:3px solid var(--orange);padding-left:14px;line-height:1.6}
+/* MOAT STARS */
+.moat-card{background:var(--card);border-radius:10px;padding:16px;margin-bottom:10px;
+  display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.moat-stars{color:var(--orange);font-size:16px;letter-spacing:2px}
+/* CONDITIONS */
+.cond-row{background:var(--card);border-radius:8px;padding:14px 16px;margin-bottom:8px;
+  display:flex;align-items:flex-start;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.cond-num{background:var(--orange);color:#fff;border-radius:50%;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+/* TECH ROW */
+.tech-row{display:flex;justify-content:space-between;padding:8px 12px;border-radius:6px;font-size:13px}
+.tech-row:nth-child(odd){background:var(--bg)}
+/* FLYWHEEL BOX */
+.flywheel-box{background:linear-gradient(135deg,#0A1628,#0F2A4A);border-radius:14px;
+  padding:24px;color:var(--text);border:1.5px solid rgba(0,196,224,.35)}
+.flywheel-badge{display:inline-block;padding:5px 14px;border-radius:20px;font-size:12px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.fw-forming{background:rgba(245,158,11,.2);color:#FCD34D;border:1px solid rgba(245,158,11,.4)}
+.fw-confirmed{background:rgba(22,163,74,.2);color:#86EFAC;border:1px solid rgba(22,163,74,.4)}
+/* AI SCORE GAUGE */
+.ai-score-bar{height:10px;background:#E9EDF2;border-radius:5px;overflow:hidden;margin-top:6px}
+.ai-score-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--orange));border-radius:5px;transition:width .8s}
+/* RESPONSIVE */
+@media(max-width:680px){
+  .grid-2,.grid-3,.grid-4,.pillar-grid,.hero-metrics{grid-template-columns:1fr}
+  .hero-name{font-size:22px}
+  .tab-btn{padding:12px 12px;font-size:11px}
+}
+@media(max-width:600px){
+  .tab-btn{padding:10px 10px;font-size:10px}
+}
+.oi-tag{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;display:inline-block;margin-left:4px}
+.tag-v{background:var(--green-bg);color:var(--green)}
+.tag-e{background:var(--amber-bg);color:var(--amber)}
+.tag-u{background:var(--red-bg);color:var(--red)}
+.roic-year{background:var(--card);border-radius:8px;padding:14px;text-align:center;border-left:3px solid var(--orange)}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-ticker">NYSE: VRT &nbsp;|&nbsp; Critical Digital Infrastructure &nbsp;|&nbsp; Buffett QV Series v5.0</div>
+      <div class="hero-name">Vertiv Holdings Co</div>
+      <div class="hero-lede">Mission-critical power and thermal management for AI data centers — the physical backbone of the global AI buildout. As GPU rack densities surpass 120 kW, Vertiv's liquid-cooling and power infrastructure is no longer optional: it is the essential prerequisite for hyperscale AI compute.</div>
+      <div class="badges">
+        <span class="badge badge-cat">Cat B &nbsp;·&nbsp; High-Growth Global Compounder</span>
+        <span class="badge badge-ai">🟢 AI WIDENER &nbsp;·&nbsp; Level 5 Incumbent</span>
+        <span class="badge badge-verdict">WATCH ★★★ &nbsp;·&nbsp; Extreme Premium</span>
+        <span class="badge badge-phase">AI Phase 3 &nbsp;·&nbsp; Infrastructure Acceleration</span>
+      </div>
+    </div>
+    <div style="text-align:right;min-width:140px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#FFB08A">$325</div>
+      <div style="font-size:11px;color:var(--chrome)">Price at Analysis <span class="oi-tag tag-e">ESTIMATED</span></div>
+      <div style="margin-top:8px;font-size:12px;color:var(--chrome)">Market Cap</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--text)">~$126B</div>
+    </div>
+  </div>
+  <div class="hero-metrics">
+    <div class="hero-metric">
+      <div class="label">FY2025 Revenue</div>
+      <div class="val">$10.23B <span class="oi-tag tag-v">V</span></div>
+      <div class="sub">+27.7% YoY</div>
+    </div>
+    <div class="hero-metric">
+      <div class="label">Adj EPS 2026E</div>
+      <div class="val">$6.35 <span class="oi-tag tag-v">V</span></div>
+      <div class="sub">+51% vs FY2025 guided mid</div>
+    </div>
+    <div class="hero-metric">
+      <div class="label">Backlog (Q1'26)</div>
+      <div class="val">$15B+ <span class="oi-tag tag-v">V</span></div>
+      <div class="sub">12-18 mo revenue cover</div>
+    </div>
+    <div class="hero-metric">
+      <div class="label">ROIC (TTM)</div>
+      <div class="val">~20.5% <span class="oi-tag tag-v">V</span></div>
+      <div class="sub">Expanding rapidly YoY</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro & Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Ownership</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intelligence</button>
+</div>
+
+<!-- ═══ TAB 0: OVERVIEW ═══ -->
+<div id="tab0" class="tab-content" style="display:block">
+  <div class="section-title">Overview &amp; Series Rationale</div>
+
+  <div class="grid-2">
+    <div class="card card-orange">
+      <div class="card-title">What Vertiv Does</div>
+      <p style="font-size:14px;line-height:1.7;color:#374151">Vertiv designs, manufactures, and services <strong>power management, cooling, and IT infrastructure</strong> for data centers, communications networks, and industrial environments across 130+ countries. Core products: UPS systems, switchgear, busway, thermal management (air and liquid cooling), racks, and lifecycle services. As AI drives rack power densities from 10 kW (traditional) to 120–150 kW (AI GPU), Vertiv's liquid-cooling portfolio has shifted from optional upgrade to non-negotiable infrastructure. The company is not an AI software play — it is the <em>physical plumbing and power rails</em> without which AI chips cannot operate.</p>
+      <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px">
+        <span class="badge badge-cat">Cat B: High-Growth Compounder</span>
+        <span class="badge badge-ai">🟢 AI WIDENER</span>
+      </div>
+    </div>
+    <div class="card card-cyan">
+      <div class="card-title">Why This Stock — Series Rationale</div>
+      <p style="font-size:14px;line-height:1.7;color:#374151">Vertiv is the <strong>only pure-play at scale</strong> (per Bernstein initiation at $416 PT) for AI data center power and cooling. With a $15B+ backlog, a ~1.4× book-to-bill, and FY2026 revenue guidance of $13.5–$14.0B (+34% YoY), Vertiv's growth is among the fastest in the global industrial universe. The AI WIDENER thesis is structural: liquid cooling is becoming the default design choice for all new AI data centers, and Vertiv has co-development agreements with NVIDIA aligned to the Rubin Ultra platform. The challenge: the stock's extreme premium (51× forward adj P/E) demands perfection. This report determines the precise entry zone for patient investors.</p>
+      <div style="margin-top:14px">
+        <span style="font-size:13px;font-weight:600;color:var(--muted)">Framework adaptation note:</span>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px">US stock → $, SEC disclaimer, WACC 10–12% (Cat B US), terminal g ≤ US nominal GDP (~5.8%). No promoter structure. Institutional ownership analysis replaces shareholding pattern. AI WIDENER flag meaningfully elevates terminal P/E assumption by +3–5× vs non-AI industrial peers.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-orange">
+    <div class="card-title">Business Segments &amp; Revenue Mix <span class="oi-tag tag-e">ESTIMATED</span></div>
+    <div class="grid-3">
+      <div class="metric-box">
+        <div class="metric-label">Americas</div>
+        <div class="metric-val" style="font-size:22px">~55%</div>
+        <div class="metric-sub">Q1'26: +44% organic — AI hyperscaler core</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Asia Pacific</div>
+        <div class="metric-val" style="font-size:22px">~25%</div>
+        <div class="metric-sub">Q3'25: +20% — sovereign AI buildout</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">EMEA</div>
+        <div class="metric-val" style="font-size:22px">~20%</div>
+        <div class="metric-sub">H1'26 soft; H2'26 recovery expected</div>
+      </div>
+    </div>
+    <div style="margin-top:14px" class="grid-3">
+      <div class="metric-box">
+        <div class="metric-label">Products (est.)</div>
+        <div class="metric-val" style="font-size:22px">~75%</div>
+        <div class="metric-sub">Power, cooling, racks, software infra</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Services (est.)</div>
+        <div class="metric-val" style="font-size:22px">~25%</div>
+        <div class="metric-sub">Lifecycle mgmt, monitoring, fluid mgmt</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Key Customers</div>
+        <div class="metric-val" style="font-size:15px">Hyperscalers</div>
+        <div class="metric-sub">AWS, Azure, Google, Meta + colos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-chrome">
+    <div class="card-title">Key Recent Catalysts</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;font-size:13px">
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">🔌 NVIDIA Partnership (2025)</div>
+        Co-developing 800V DC power architecture aligned to NVIDIA Rubin Ultra. Digital twin of Vertiv SmartRun integrated into NVIDIA Omniverse DSX Blueprint.
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">💧 PurgeRite Acquisition (~$1B, Dec 2025)</div>
+        Fluid management services for liquid cooling — scales Vertiv's ability to service hyperscale CDU (coolant distribution unit) installations.
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">📈 Q1'26 Beat &amp; Raise (Apr 2026)</div>
+        Revenue +30%, adj OP +64%, adj margin 20.8% (+430bps). FY2026 guidance raised to $13.5–14.0B revenue, $6.30–$6.40 adj EPS. Backlog $15B+.
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">🏦 Investment Grade (Feb 2026)</div>
+        Inaugural ratings: Moody's Baa3 / S&amp;P BBB-. $2.1B senior unsecured notes issued, $2.5B new revolving credit facility; term loan retired.
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">📦 Orders Surge (Q4 2025)</div>
+        Q4 organic orders +252% YoY and +117% sequentially — unprecedented acceleration signalling hyperscaler pre-commitment for 2026–2028 builds.
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">🏭 S&amp;P 500 Inclusion</div>
+        Added to S&amp;P 500 — index-mandated institutional buying provides structural demand floor. Analyst consensus: 27 Strong Buy, avg PT $378.
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-orange" style="background:var(--midnight);color:var(--text)">
+    <div class="card-title" style="color:var(--chrome-lt)">Macro Positioning Summary</div>
+    <div class="grid-4">
+      <div style="text-align:center;padding:12px">
+        <div style="font-size:28px;font-weight:900;color:var(--orange)">84%</div>
+        <div style="font-size:11px;color:var(--chrome)">YTD 2026 return</div>
+      </div>
+      <div style="text-align:center;padding:12px">
+        <div style="font-size:28px;font-weight:900;color:var(--cyan)">1.4×</div>
+        <div style="font-size:11px;color:var(--chrome)">Book-to-bill Q1'26</div>
+      </div>
+      <div style="text-align:center;padding:12px">
+        <div style="font-size:28px;font-weight:900;color:#86EFAC">$15B+</div>
+        <div style="font-size:11px;color:var(--chrome)">Order backlog</div>
+      </div>
+      <div style="text-align:center;padding:12px">
+        <div style="font-size:28px;font-weight:900;color:#FFB08A">51×</div>
+        <div style="font-size:11px;color:var(--chrome)">Fwd adj P/E (2026)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 1: MACRO & GROWTH ═══ -->
+<div id="tab1" class="tab-content">
+  <div class="section-title">Macro &amp; Sector Growth Framework</div>
+
+  <!-- MACRO CYCLE DASHBOARD -->
+  <div class="card card-orange">
+    <div class="card-title">US Macro Cycle Dashboard (6 Dimensions) <span class="oi-tag tag-v">VERIFIED</span></div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">US Nominal GDP ≈ Real GDP 2.2% + PCE Inflation 3.6% (June 2026 Fed SEP) = <strong style="color:var(--midnight)">~5.8%</strong> — Terminal growth ceiling for VRT.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div style="background:var(--amber-bg);border-radius:8px;padding:14px;border-left:4px solid var(--amber)">
+        <div style="font-weight:700;font-size:13px;color:var(--amber)">⚠ FED CYCLE — Hawkish Hold</div>
+        <div style="font-size:12px;margin-top:4px;color:#374151">Fed funds rate: 3.50–3.75% (held Jun 2026). New Chair Kevin Warsh. Dot plot median: year-end 2026 at 3.75–4.00%. Sticky PCE (3.6%). Rate hike risk. 10-yr Treasury: <strong>4.37%</strong>. WACC headwind for capital-intensive infrastructure projects but VRT backlog already priced &amp; committed.</div>
+        <div style="margin-top:6px"><span class="badge" style="background:rgba(217,119,6,.15);color:#B45309;border:1px solid rgba(217,119,6,.3);font-size:10px">NEUTRAL-STRESS → slight capex delay risk</span></div>
+      </div>
+      <div style="background:var(--green-bg);border-radius:8px;padding:14px;border-left:4px solid var(--green)">
+        <div style="font-weight:700;font-size:13px;color:var(--green)">✅ AI CAPEX CYCLE — BOOM</div>
+        <div style="font-size:12px;margin-top:4px;color:#374151">Hyperscaler capex (AWS+Azure+Google+Meta) running at $250–300B annualized in 2026. AI GPU racks (Blackwell, Rubin) mandate liquid cooling — Vertiv's sweet spot. Data center starts booming globally. Sovereign AI driving non-US demand.</div>
+        <div style="margin-top:6px"><span class="badge" style="background:rgba(22,163,74,.15);color:#15803D;border:1px solid rgba(22,163,74,.3);font-size:10px">BOOM — structural multi-year driver</span></div>
+      </div>
+      <div style="background:var(--blue-bg);border-radius:8px;padding:14px;border-left:4px solid var(--blue)">
+        <div style="font-weight:700;font-size:13px;color:var(--blue)">📊 US GDP — Moderate</div>
+        <div style="font-size:12px;margin-top:4px;color:#374151">Real GDP 2026 forecast: 2.2% (June Fed SEP, down 0.2pp). Tariff headwinds from US-Iran geopolitical conflict. PCE inflation sticky at 3.6%. VRT mitigating tariff costs via price increases and supply chain restructuring (de-risking China manufacturing).</div>
+        <div style="margin-top:6px"><span class="badge" style="background:rgba(29,78,216,.12);color:#1E40AF;border:1px solid rgba(29,78,216,.3);font-size:10px">NEUTRAL → real demand from AI offsets macro soft-patch</span></div>
+      </div>
+      <div style="background:var(--green-bg);border-radius:8px;padding:14px;border-left:4px solid var(--green)">
+        <div style="font-weight:700;font-size:13px;color:var(--green)">✅ ELECTRICITY DEMAND — BOOM</div>
+        <div style="font-size:12px;margin-top:4px;color:#374151">AI data centers on track to be world's 4th-largest electricity consumer (behind US, China, India) by 2028 per BloombergNEF. Grid constraints drive behind-the-meter solutions — VRT's EnergyCore BESS is positioned here. Power density: 120–150 kW/rack (vs 10 kW traditional) = 10–15× opportunity per rack.</div>
+        <div style="margin-top:6px"><span class="badge" style="background:rgba(22,163,74,.15);color:#15803D;border:1px solid rgba(22,163,74,.3);font-size:10px">BOOM — direct VRT revenue driver</span></div>
+      </div>
+      <div style="background:var(--amber-bg);border-radius:8px;padding:14px;border-left:4px solid var(--amber)">
+        <div style="font-weight:700;font-size:13px;color:var(--amber)">⚠ TARIFF CYCLE — Headwind</div>
+        <div style="font-size:12px;margin-top:4px;color:#374151">Section 122/232 tariffs plus US-Iran conflict driving material + energy price volatility. Copper and steel costs elevated. VRT actively mitigating via price increases (positive price-cost in Q1'26) and manufacturing footprint shift away from China. Net impact: manageable, margin guided to expand.</div>
+        <div style="margin-top:6px"><span class="badge" style="background:rgba(217,119,6,.15);color:#B45309;border:1px solid rgba(217,119,6,.3);font-size:10px">STRESS → manageable, offset by pricing power</span></div>
+      </div>
+      <div style="background:var(--green-bg);border-radius:8px;padding:14px;border-left:4px solid var(--green)">
+        <div style="font-weight:700;font-size:13px;color:var(--green)">✅ AI ADOPTION — PHASE 3</div>
+        <div style="font-size:12px;margin-top:4px;color:#374151">Global AI adoption in Phase 3 (Mass Infrastructure Deployment). Liquid cooling has crossed from optional to default in new AI data center designs. NVIDIA Blackwell H2'26 ramp will accelerate VRT orders as customers pre-commit infrastructure. AI cycle is Vertiv's most powerful structural tailwind.</div>
+        <div style="margin-top:6px"><span class="badge" style="background:rgba(22,163,74,.15);color:#15803D;border:1px solid rgba(22,163,74,.3);font-size:10px">BOOM — Vertiv is the AI infrastructure critical path</span></div>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:var(--midnight);border-radius:8px;padding:14px;color:var(--text)">
+      <strong>Macro Composite: TAILWIND</strong> &nbsp;|&nbsp; AI Cycle Impact: <strong style="color:var(--cyan)">OPPORTUNITY (accelerating)</strong>
+      <br><span style="font-size:12px;color:var(--chrome)">AI is accelerating the AI data center infrastructure sector's base growth by +8–12 pp over 5 years. The macro headwinds (tariffs, rate hawkishness) are real but dwarfed by the secular AI buildout wave. Every new AI chip generation (Blackwell → Rubin → next) requires more power and cooling per GPU — embedded in Vertiv's product roadmap.</span>
+    </div>
+  </div>
+
+  <!-- SECTOR GROWTH -->
+  <div class="card card-cyan">
+    <div class="card-title">Sector Growth Derivation — AI Data Center Infrastructure (US)</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px"><em>No exact row match in standard table → cross-validated from multiple sources. AI is ACCELERATING base growth +10–15pp.</em></p>
+    <table class="data-table">
+      <thead><tr><th>Scenario</th><th>Macro GDP</th><th>Sector Base</th><th>AI Acceleration</th><th>VRT Alpha</th><th>Stage 1 FCF CAGR</th><th>Terminal g</th></tr></thead>
+      <tbody>
+        <tr><td class="row-label">STRESS</td><td>1.5–2.0%</td><td>12–15%</td><td>+5–8%</td><td>+3–5%</td><td>10–14%</td><td>3.5%</td></tr>
+        <tr><td class="row-label">BASE</td><td>2.2–3.0%</td><td>18–22%</td><td>+8–12%</td><td>+5–8%</td><td>18–22%</td><td>4.5%</td></tr>
+        <tr><td class="row-label">ACCEL</td><td>3.0%+</td><td>25–30%</td><td>+12–18%</td><td>+8–12%</td><td>26–30%</td><td>5.5% (cap: 5.8%)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px"><strong>Sensitivity checks:</strong> A 1% change in terminal growth rate changes IV by approximately 12–15%. A 1% change in Stage 1 FCF CAGR changes IV by approximately 6–9%.</p>
+  </div>
+
+  <!-- COMPANY ALPHA TABLE -->
+  <div class="card card-orange">
+    <div class="card-title">Company Alpha Over Sector — 6 Sources</div>
+    <table class="data-table">
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="row-label">Market share gain</td><td><span class="badge" style="background:var(--green-bg);color:var(--green);border:none;font-size:10px">ACTIVE</span></td><td>+4–6%</td><td>+2–3%</td><td>Only pure-play at scale; Schneider/Eaton unable to match capacity + system integration</td></tr>
+        <tr><td class="row-label">Product premiumisation</td><td><span class="badge" style="background:var(--green-bg);color:var(--green);border:none;font-size:10px">ACTIVE</span></td><td>+3–5%</td><td>+2–4%</td><td>Shift from air cooling → liquid cooling (360AI suite) = 3–5× higher ASP per rack</td></tr>
+        <tr><td class="row-label">Service mix expansion</td><td><span class="badge" style="background:var(--green-bg);color:var(--green);border:none;font-size:10px">ACTIVE</span></td><td>+2–3%</td><td>+2–3%</td><td">PurgeRite + recurring fluid management = growing lifecycle services recurring revenue</td></tr>
+        <tr><td class="row-label">Geographic expansion</td><td><span class="badge" style="background:var(--amber-bg);color:var(--amber);border:none;font-size:10px">POTENTIAL</span></td><td>+1–2%</td><td>+3–5%</td><td>Sovereign AI (India, Middle East, EU) opens new geographies; EMEA recovery H2'26</td></tr>
+        <tr><td class="row-label">Pricing power</td><td><span class="badge" style="background:var(--green-bg);color:var(--green);border:none;font-size:10px">ACTIVE</span></td><td>+2–3%</td><td>+1–2%</td><td>18-month lead times give pricing power; positive price-cost sustained Q1'26</td></tr>
+        <tr><td class="row-label" style="font-weight:700;color:var(--cyan)">AI Alpha (6a+6b+6c)</td><td><span class="badge" style="background:var(--blue-bg);color:var(--blue);border:none;font-size:10px">ACTIVE (WIDENER)</span></td><td>+5–8%</td><td>+4–7%</td><td>6a: Proprietary install-base data improves Next Predict AI (+2%). 6b: AI-specific product design (360AI/CoolChip) expands TAM per rack (+3–5%). 6c: FORMING flywheel via operational data network</td></tr>
+        <tr style="font-weight:700;background:rgba(255,95,31,.06)"><td class="row-label" style="font-weight:800">TOTAL ALPHA</td><td>—</td><td><strong>+17–27%</strong></td><td><strong>+14–24%</strong></td><td>Combined vs baseline sector growth</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- GROWTH RATE SUMMARY TABLE -->
+  <div class="card card-chrome">
+    <div class="card-title">Growth Rate Summary — 3-Scenario Grid</div>
+    <table class="data-table">
+      <thead><tr><th>Parameter</th><th style="background:#1a1a2e;color:#e0e0e0">STRESS</th><th style="background:#0F2A4A;color:#e0e0e0">BASE</th><th style="background:#1a3a1a;color:#e0e0e0">ACCEL</th></tr></thead>
+      <tbody>
+        <tr><td class="row-label">Macro state</td><td>US GDP 1.5%, PCE 4%</td><td>US GDP 2.2%, PCE 3.6%</td><td>US GDP 3%+, AI boom</td></tr>
+        <tr><td class="row-label">Sector growth</td><td>12–15%</td><td>18–22%</td><td>25–30%</td></tr>
+        <tr><td class="row-label">Company alpha</td><td>+5–8%</td><td>+8–12%</td><td>+12–18%</td></tr>
+        <tr><td class="row-label" style="color:var(--cyan)">AI alpha (6a+6b+6c)</td><td>+3–5%</td><td>+5–8%</td><td>+8–12%</td></tr>
+        <tr><td class="row-label"><strong>Stage 1 Revenue CAGR</strong></td><td><strong>10%</strong></td><td><strong>20%</strong></td><td><strong>28%</strong></td></tr>
+        <tr><td class="row-label">Stage 1 FCF CAGR</td><td>10%</td><td>20%</td><td>28%</td></tr>
+        <tr><td class="row-label">Stage 2 FCF CAGR</td><td>4%</td><td>5%</td><td>5.5%</td></tr>
+        <tr><td class="row-label">Terminal growth</td><td>3.5%</td><td>4.5%</td><td>5.5% (ceiling: 5.8%)</td></tr>
+        <tr><td class="row-label">Margin direction</td><td>Compress (tariffs)</td><td>Stable/Expand (+100–150bps/yr)</td><td>Expand (+200–300bps/yr)</td></tr>
+        <tr><td class="row-label">WACC used</td><td>11.5%</td><td>10.5%</td><td>9.5%</td></tr>
+        <tr><td class="row-label">Key risk</td><td>Hyperscaler capex pause</td><td>Tariff/supply chain friction</td><td>Customer insourcing</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ TAB 2: FINANCIALS ═══ -->
+<div id="tab2" class="tab-content">
+  <div class="section-title">Financial Fortress — Quality Analysis</div>
+
+  <!-- REVENUE + NET INCOME TREND -->
+  <div class="card card-orange">
+    <div class="card-title">Revenue &amp; Net Income Trend <span class="oi-tag tag-v">VERIFIED</span></div>
+    <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr><th>Metric</th><th>FY2022</th><th>FY2023</th><th>FY2024</th><th>FY2025A</th><th>FY2026E</th></tr></thead>
+      <tbody>
+        <tr><td class="row-label">Revenue</td><td>~$5.3B <span class="oi-tag tag-e">E</span></td><td>$6.86B</td><td>$8.01B</td><td>$10.23B</td><td>$13.75B (mid)</td></tr>
+        <tr><td class="row-label">YoY Growth</td><td>—</td><td>~+29%</td><td>+16.7%</td><td>+27.7%</td><td>~+34%E</td></tr>
+        <tr><td class="row-label">Gross Margin</td><td>~28% <span class="oi-tag tag-e">E</span></td><td>~31% <span class="oi-tag tag-e">E</span></td><td>~34% <span class="oi-tag tag-e">E</span></td><td>36.3%</td><td>~38–40%E</td></tr>
+        <tr><td class="row-label">Adj Op Margin</td><td>~10% <span class="oi-tag tag-e">E</span></td><td>~14% <span class="oi-tag tag-e">E</span></td><td>~17%</td><td>~19–20%</td><td>~23.3%E</td></tr>
+        <tr><td class="row-label">GAAP Net Income</td><td>NM <span class="oi-tag tag-e">E</span></td><td>~$0.22B <span class="oi-tag tag-e">E</span></td><td>~$0.50B</td><td>$1.33B</td><td>~$2.05B E</td></tr>
+        <tr><td class="row-label">GAAP EPS</td><td>NM</td><td>—</td><td>$1.32</td><td>$3.49</td><td>$5.32 mid (guided)</td></tr>
+        <tr><td class="row-label">Adj EPS</td><td>—</td><td>—</td><td>~$2.84 <span class="oi-tag tag-e">E</span></td><td>~$4.20 <span class="oi-tag tag-e">E</span></td><td>$6.35 mid (guided, raised)</td></tr>
+        <tr><td class="row-label">Adj Op Profit</td><td>—</td><td>—</td><td>~$1.30B</td><td>~$1.94B</td><td>~$3.20B E</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">Note: FY2026E based on management guidance midpoint ($13.75B revenue, $6.35 adj EPS) raised after Q1'26 results. Q1'26 actual: revenue $2.65B (+30%), adj EPS $1.17 (+83%). Q2'26 EPS consensus: $1.42.</p>
+  </div>
+
+  <!-- ROIC TREND CARDS -->
+  <div class="card card-cyan">
+    <div class="card-title">ROIC 5-Year Trend — Moat Proof <span class="oi-tag tag-v">VERIFIED (recent)</span></div>
+    <div class="grid-4">
+      <div class="roic-year">
+        <div class="metric-label">FY2022</div>
+        <div class="metric-val" style="color:var(--amber)">~8% <span class="oi-tag tag-e">E</span></div>
+        <div class="metric-sub">Below WACC · rebuilding</div>
+      </div>
+      <div class="roic-year">
+        <div class="metric-label">FY2023</div>
+        <div class="metric-val" style="color:var(--amber)">~12% <span class="oi-tag tag-e">E</span></div>
+        <div class="metric-sub">Approaching WACC</div>
+      </div>
+      <div class="roic-year" style="border-left-color:var(--green)">
+        <div class="metric-label">FY2024</div>
+        <div class="metric-val" style="color:var(--green)">~17% <span class="oi-tag tag-e">E</span></div>
+        <div class="metric-sub">Exceeding WACC</div>
+      </div>
+      <div class="roic-year" style="border-left-color:var(--cyan)">
+        <div class="metric-label">FY2025 / TTM</div>
+        <div class="metric-val" style="color:var(--cyan)">~20.5% <span class="oi-tag tag-v">V</span></div>
+        <div class="metric-sub">Clear wide-moat territory</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:12px">ROIC trend: WEAK → BELOW WACC → CROSSING WACC → WIDE MOAT. This inflection, coinciding with AI data center buildout acceleration, is the core investment thesis. ROE (TTM): ~45% [VERIFIED via stockanalysis].</p>
+  </div>
+
+  <!-- FCF SCORECARD -->
+  <div class="card card-orange">
+    <div class="card-title">FCF &amp; Balance Sheet Quality</div>
+    <div class="grid-2">
+      <div>
+        <div class="score-row"><span>Operating Cash Flow (TTM)</span><span class="mono score-pass">$2.58B ✓</span></div>
+        <div class="score-row"><span>Free Cash Flow (TTM)</span><span class="mono score-pass">$2.28B ✓</span></div>
+        <div class="score-row"><span>Maintenance CapEx (est.)</span><span class="mono" style="color:var(--midnight)">~$250M</span></div>
+        <div class="score-row"><span>Total CapEx (TTM)</span><span class="mono" style="color:var(--midnight)">$296M</span></div>
+        <div class="score-row"><span>FCF / GAAP Net Income</span><span class="mono score-pass">~146% ✓</span></div>
+        <div class="score-row"><span>FCF Yield (mkt cap $126B)</span><span class="mono score-marg">1.81% ~</span></div>
+        <div class="score-row"><span>Revenue CAGR (3yr)</span><span class="mono score-pass">~27% ✓</span></div>
+      </div>
+      <div>
+        <div class="score-row"><span>Cash &amp; Equivalents</span><span class="mono score-pass">$2.50B ✓</span></div>
+        <div class="score-row"><span>Total Debt</span><span class="mono" style="color:var(--amber)">$3.26B</span></div>
+        <div class="score-row"><span>Net Debt</span><span class="mono score-marg">$0.76B ~</span></div>
+        <div class="score-row"><span>Net Leverage (adj EBITDA)</span><span class="mono score-pass">~0.3× ✓</span></div>
+        <div class="score-row"><span>Credit Rating</span><span class="mono score-pass">Baa3/BBB- ✓</span></div>
+        <div class="score-row"><span>D/E Ratio</span><span class="mono score-pass">0.73× ✓</span></div>
+        <div class="score-row"><span>Current Ratio</span><span class="mono score-pass">1.49–1.55× ✓</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINANCIAL FORTRESS SCORECARD -->
+  <div class="card card-chrome">
+    <div class="card-title">Financial Fortress Scorecard (Cat B)</div>
+    <div class="score-row"><span>ROE ≥15% for 5 consecutive years</span><span class="score-marg">~ MARGINAL</span></div>
+    <p style="font-size:12px;color:var(--muted);padding:0 12px;margin-bottom:6px">ROE was below 15% in 2022–2023 (post-SPAC restructuring). Now ~45% TTM. First 5 consecutive years of ≥15% ROE will be confirmed ~2027.</p>
+    <div class="score-row"><span>ROIC &gt; WACC for 5 consecutive years</span><span class="score-marg">~ MARGINAL</span></div>
+    <p style="font-size:12px;color:var(--muted);padding:0 12px;margin-bottom:6px">ROIC crossed WACC (~10%) around FY2023–2024. Only 2–3 years confirmed above WACC; 5-year streak will be ~2028.</p>
+    <div class="score-row"><span>Net cash preferred (net debt penalised)</span><span class="score-marg">~ MARGINAL</span></div>
+    <p style="font-size:12px;color:var(--muted);padding:0 12px;margin-bottom:6px">Net debt $0.76B but at only 0.3× EBITDA. Inaugural investment-grade rating signals balance sheet health.</p>
+    <div class="score-row"><span>Net profit margin ≥15%</span><span class="score-marg">~ MARGINAL</span></div>
+    <p style="font-size:12px;color:var(--muted);padding:0 12px;margin-bottom:6px">GAAP net margin FY2025: 13%. Adj margin ~18%. GAAP margin expanding rapidly (6.2% in 2024 → 13% in 2025 → est. 15% in FY2026E). On threshold and improving.</p>
+    <div class="score-row"><span>FCF positive + growing; FCF conversion ≥80%</span><span class="score-pass">✓ PASS</span></div>
+    <div class="score-row"><span>Owner Earnings ≥ Net Income</span><span class="score-pass">✓ PASS</span></div>
+    <div class="score-row"><span>Pricing power proven (raised prices, volumes held)</span><span class="score-pass">✓ PASS</span></div>
+    <p style="font-size:12px;color:var(--muted);padding:0 12px;margin-bottom:6px">Positive price-cost confirmed in Q1'26 despite tariff headwinds. 18-month lead times enable pricing discipline.</p>
+    <div class="score-row"><span>Revenue CAGR ≥ macro-derived sector CAGR</span><span class="score-pass">✓ PASS</span></div>
+    <p style="font-size:12px;color:var(--muted);padding:0 12px;margin-bottom:6px">VRT growing 27–30% vs sector 18–22% base — significant alpha sustained.</p>
+    <div class="score-row"><span>Predictable/recurring revenue</span><span class="score-pass">✓ PASS</span></div>
+    <p style="font-size:12px;color:var(--muted);padding:0 12px;margin-bottom:6px">$15B+ backlog covers 12–18 months. Service contracts ~25% of revenue are recurring. Book-to-bill 1.4× adds forward visibility.</p>
+    <div class="score-row"><span>Capital-light model (high ROIC, low reinvestment)</span><span class="score-marg">~ MARGINAL</span></div>
+    <p style="font-size:12px;color:var(--muted);padding:0 12px;margin-bottom:6px">Industrial hardware manufacturer: capex ~2.9% of revenue (low for category), but growth CapEx is rising as Vertiv expands manufacturing capacity. Not capital-light but efficient capital deployment.</p>
+    <div style="margin-top:12px;background:var(--blue-bg);border-radius:8px;padding:12px;font-weight:700;color:var(--blue)">
+      Financial Fortress Grade: <strong>B+</strong> — Strong FCF, expanding ROIC, investment-grade balance sheet, pricing power confirmed. MARGINAL flags on legacy ROE history and GAAP margins still building through threshold.
+    </div>
+  </div>
+
+  <!-- OWNER EARNINGS BOX -->
+  <div class="card card-orange" style="background:linear-gradient(135deg,#0A1628,#1a2a40);color:var(--text)">
+    <div class="card-title" style="color:var(--orange)">⚡ Owner Earnings — Buffett Method</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:13px;color:var(--chrome);margin-bottom:4px">FY2025 Conservative Estimate</div>
+        <div class="score-row" style="color:var(--text)"><span>GAAP Net Income</span><span class="mono">$1,330M</span></div>
+        <div class="score-row" style="color:var(--text)"><span>+ D&amp;A (estimated)</span><span class="mono">+$580M</span></div>
+        <div class="score-row" style="color:var(--text)"><span>+ SBC (est.)</span><span class="mono">+$80M</span></div>
+        <div class="score-row" style="color:var(--text)"><span>− Maintenance CapEx (est. 75% of total)</span><span class="mono">−$220M</span></div>
+        <div class="score-row" style="color:var(--text);font-weight:700;background:rgba(255,95,31,.15)"><span>Owner Earnings (FY2025E)</span><span class="mono" style="color:var(--orange)">~$1,770M</span></div>
+        <div style="font-size:12px;color:var(--chrome);margin-top:6px">Per share (385M): <strong class="mono">~$4.60</strong> | vs GAAP EPS $3.49 | OE premium: +32%</div>
+      </div>
+      <div>
+        <div style="font-size:13px;color:var(--chrome);margin-bottom:4px">FY2026E (Guided)</div>
+        <div class="score-row" style="color:var(--text)"><span>GAAP Net Income</span><span class="mono">$2,050M</span></div>
+        <div class="score-row" style="color:var(--text)"><span>+ D&amp;A</span><span class="mono">+$700M</span></div>
+        <div class="score-row" style="color:var(--text)"><span>+ SBC</span><span class="mono">+$100M</span></div>
+        <div class="score-row" style="color:var(--text)"><span>− Maintenance CapEx</span><span class="mono">−$280M</span></div>
+        <div class="score-row" style="color:var(--text);font-weight:700;background:rgba(255,95,31,.15)"><span>Owner Earnings (FY2026E)</span><span class="mono" style="color:var(--orange)">~$2,570M</span></div>
+        <div style="font-size:12px;color:var(--chrome);margin-top:6px">Per share: <strong class="mono">~$6.67</strong> | +45% YoY growth in OE</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--chrome)"><span class="oi-tag tag-e">ESTIMATED</span> D&amp;A and CapEx split based on SEC filing trends and management guidance. FCF conversion of 146% (TTM CFO/GAAP NI) supports OE premium over GAAP earnings.</div>
+  </div>
+
+  <!-- O'GLOVE EARNINGS QUALITY -->
+  <div class="card card-cyan">
+    <div class="card-title">O'Glove Earnings Quality Framework — 5 Tests</div>
+    <div class="grid-2">
+      <div>
+        <div style="background:var(--green-bg);border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-weight:700;color:var(--green);margin-bottom:4px">✓ TEST 1 — FCF Conversion (5yr) PASS</div>
+          <div style="font-size:13px">CFO / GAAP Net Income: ~146% (TTM, CFO $2.58B / NI $1.56B). Consistently ≥100% — cash earnings exceed reported earnings, indicating high-quality revenue.</div>
+        </div>
+        <div style="background:var(--green-bg);border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-weight:700;color:var(--green);margin-bottom:4px">✓ TEST 2 — DSO Trend (3yr) PASS <span class="oi-tag tag-e">E</span></div>
+          <div style="font-size:13px">DSO estimated stable to declining with backlog-driven revenue visibility. No AR-stuffing signals in SEC filings. Hyperscaler customers are high-quality counterparts.</div>
+        </div>
+        <div style="background:var(--amber-bg);border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-weight:700;color:var(--amber);margin-bottom:4px">~ TEST 3 — Inventory Days (3yr) MARGINAL <span class="oi-tag tag-e">E</span></div>
+          <div style="font-size:13px">Inventory build expected as Vertiv pre-buys components to manage supply chain (lead times 18–36 months). Rising inventory with rising revenue — acceptable in the context of supply chain strategy. Not a red flag.</div>
+        </div>
+      </div>
+      <div>
+        <div style="background:var(--green-bg);border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-weight:700;color:var(--green);margin-bottom:4px">✓ TEST 4 — Accounting Policy Stability PASS</div>
+          <div style="font-size:13px">No major accounting policy changes flagged in 3-year filings. The "adjusted" metric protocol is consistent and well-disclosed in SEC filings. Primary adjustments: intangible D&amp;A from acquisitions (clearly disclosed).</div>
+        </div>
+        <div style="background:var(--green-bg);border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-weight:700;color:var(--green);margin-bottom:4px">✓ TEST 5 — Gross Margin Consistency (5yr) PASS</div>
+          <div style="font-size:13px">Gross margin expanding: ~28% (FY2022E) → 31% → 34% → 36.3% (FY2025). Expanding despite input cost pressures (tariffs, copper/steel). AI product mix (higher-ASP liquid cooling) is structurally driving margin expansion.</div>
+        </div>
+        <div style="background:var(--green-bg);border-radius:8px;padding:14px;text-align:center">
+          <div style="font-size:20px;font-weight:800;color:var(--green)">OVERALL: CLEAN</div>
+          <div style="font-size:13px;color:#374151;margin-top:4px">All critical tests pass. No earnings quality adjustments needed. No additional MoS widening required on quality grounds.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 3: MOAT ═══ -->
+<div id="tab3" class="tab-content">
+  <div class="section-title">Economic Moat Analysis</div>
+
+  <div class="grid-2">
+    <div>
+      <div class="moat-card card-orange" style="border-left:4px solid var(--orange)">
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--midnight)">Customer Lock-In / Switching Costs</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">18–24 month lead times; full data center redesign to switch vendors; certified integrations with GPU OEMs</div>
+        </div>
+        <div class="moat-stars">★★★★</div>
+      </div>
+      <div class="moat-card">
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--midnight)">Mission-Critical Brand / Reliability</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">Data center downtime = hyperscaler SLA breach; Vertiv has decades of uptime track record at global scale</div>
+        </div>
+        <div class="moat-stars">★★★★</div>
+      </div>
+      <div class="moat-card">
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--midnight)">NVIDIA Co-Development Moat</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">800V DC power architecture co-developed for NVIDIA Rubin Ultra; digital twin integrated in NVIDIA Omniverse; first-mover on next-gen rack specs</div>
+        </div>
+        <div class="moat-stars">★★★★</div>
+      </div>
+      <div class="moat-card">
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--midnight)">Manufacturing Scale &amp; Global Presence</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">130+ countries, multiple manufacturing hubs; competitors cannot match capacity + system-level integration at this scale</div>
+        </div>
+        <div class="moat-stars">★★★</div>
+      </div>
+      <div class="moat-card">
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--midnight)">Backlog as Structural Moat</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">$15B+ backlog covers 12–18 months; hyperscalers pre-commit to Vertiv — effectively locking out competitors for current build cycles</div>
+        </div>
+        <div class="moat-stars">★★★★</div>
+      </div>
+      <div class="moat-card">
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--midnight)">Proprietary IP &amp; Product Portfolio</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">CoolTera CDU patents (2023 acq.), 360AI integrated solution, CoolPhase Flex hybrid systems, EnergyCore BESS, PurgeRite fluid mgmt IP</div>
+        </div>
+        <div class="moat-stars">★★★</div>
+      </div>
+    </div>
+    <div>
+      <!-- FLYWHEEL BOX -->
+      <div class="flywheel-box">
+        <span class="flywheel-badge fw-forming">⬡ DATA FLYWHEEL: FORMING ★★★ (2/3)</span>
+        <div style="font-size:13px;color:var(--text);line-height:1.65;margin-bottom:14px">
+          <strong style="color:var(--cyan)">Q1 — Proprietary Training Data?</strong><br>
+          Vertiv's installed base across 130+ countries generates operational telemetry — thermal profiles, power draw curves, failure patterns — that competitors without equivalent install scale cannot replicate at the same fidelity. PurgeRite adds fluid chemistry data from liquid cooling loops. <span class="oi-tag tag-e">ESTIMATED — partially confirmed via Next Predict launch</span><br><br>
+          <strong style="color:var(--cyan)">Q2 — Does AI Improve with More Users?</strong><br>
+          Next Predict (AI-powered predictive maintenance) explicitly improves failure prediction accuracy with more installation data. More Vertiv installs → better AI models → better maintenance recommendations. This loop is forming. <span class="oi-tag tag-e">FORMING — not yet benchmarked publicly</span><br><br>
+          <strong style="color:var(--cyan)">Q3 — Does Better AI Attract More Users?</strong><br>
+          Modest at this stage. Hardware purchasing is driven primarily by product specs and pricing, not AI analytics quality. Next Predict adds stickiness to service renewals but is not yet the primary purchase driver. <span class="oi-tag tag-u">WEAK — flywheel loop slow at hardware layer</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,196,224,.1);border-radius:8px;padding:12px">
+          <div>
+            <div style="font-size:12px;color:var(--chrome)">Flywheel Score</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--cyan)">6.5 / 10</div>
+          </div>
+          <div style="text-align:right;font-size:12px;color:var(--chrome-lt)">
+            Data quality: <strong>2/3</strong><br>
+            Improvement evidence: <strong>2.5/4</strong><br>
+            Loop speed: <strong>2/3</strong>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--chrome)">
+          Moat grade upgrade: FORMING (not CONFIRMED) → no automatic one-level upgrade. Monitor quarterly for Next Predict data disclosures. If CONFIRMED, moat moves from B+ → A−.
+        </div>
+      </div>
+
+      <!-- ROIC MOAT PROOF -->
+      <div class="card card-orange" style="margin-top:16px">
+        <div class="card-title">ROIC as Moat Proof</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+          <div style="background:var(--amber-bg);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:11px;color:var(--amber);font-weight:700">FY2022</div>
+            <div class="mono" style="font-size:18px;font-weight:700;color:var(--amber)">~8%</div>
+            <div style="font-size:10px;color:var(--muted)">Weak moat</div>
+          </div>
+          <div style="background:var(--amber-bg);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:11px;color:var(--amber);font-weight:700">FY2023</div>
+            <div class="mono" style="font-size:18px;font-weight:700;color:var(--amber)">~12%</div>
+            <div style="font-size:10px;color:var(--muted)">Narrow moat</div>
+          </div>
+          <div style="background:var(--green-bg);border-radius:6px;padding:10px;text-align:center">
+            <div style="font-size:11px;color:var(--green);font-weight:700">FY2024</div>
+            <div class="mono" style="font-size:18px;font-weight:700;color:var(--green)">~17%</div>
+            <div style="font-size:10px;color:var(--muted)">Narrow-wide</div>
+          </div>
+          <div style="background:#DCFCE7;border-radius:6px;padding:10px;text-align:center;border:2px solid var(--green)">
+            <div style="font-size:11px;color:var(--green);font-weight:700">TTM 2026</div>
+            <div class="mono" style="font-size:18px;font-weight:700;color:var(--green)">~20.5%</div>
+            <div style="font-size:10px;color:var(--muted)">Wide moat ✓</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted)">ROIC 20–40% = Wide moat confirmed. Trajectory strongly upward — 2026E ROIC likely 24–28% with margin expansion.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MACRO STRESS TEST -->
+  <div class="card card-chrome">
+    <div class="card-title">Moat Stress Test — Downturn Scenario</div>
+    <table class="data-table">
+      <thead><tr><th>Moat Source</th><th>In Stress (hyperscaler pause)</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="row-label">Switching costs / lead times</td>
+          <td>Orders slow but existing backlog continues converting. 18-mo backlog insulates near-term revenue even if new orders pause for 2–3 quarters.</td>
+          <td><span class="badge" style="background:var(--green-bg);color:var(--green);border:none;font-size:10px">HOLDS</span></td>
+        </tr>
+        <tr>
+          <td class="row-label">NVIDIA co-development</td>
+          <td>Partnership deepens regardless of macro; new chip specs still require Vertiv-compatible cooling/power. Roadmap commitment is multi-year.</td>
+          <td><span class="badge" style="background:var(--green-bg);color:var(--green);border:none;font-size:10px">STRENGTHENS</span></td>
+        </tr>
+        <tr>
+          <td class="row-label">Brand / reliability moat</td>
+          <td>Mission-critical infrastructure — even in capex freeze, existing DCs still need maintenance, servicing, and upgrades. Services revenue (~25%) is resilient.</td>
+          <td><span class="badge" style="background:var(--green-bg);color:var(--green);border:none;font-size:10px">HOLDS</span></td>
+        </tr>
+        <tr>
+          <td class="row-label">Manufacturing scale</td>
+          <td>Fixed cost absorption weakens in downturn; margins compress. However, Vertiv's scale vs. smaller competitors still an advantage when orders resume.</td>
+          <td><span class="badge" style="background:var(--amber-bg);color:var(--amber);border:none;font-size:10px">WEAKENS TEMPORARILY</span></td>
+        </tr>
+        <tr>
+          <td class="row-label">Backlog moat</td>
+          <td>If hyperscalers cancel orders (historically rare in infrastructure), backlog shrinks rapidly. This is the primary risk scenario. Book-to-bill dropping below 1.0 is the key warning signal.</td>
+          <td><span class="badge" style="background:var(--red-bg);color:var(--red);border:none;font-size:10px">MOST VULNERABLE</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;background:rgba(255,95,31,.08);border-radius:8px;padding:12px;font-size:13px">
+      <strong>Overall Moat Grade: B+</strong> (trending toward A− if flywheel confirms). The primary moat risk is not competitive — it is hyperscaler capex discretion. If AI buildout slows or major hyperscalers insource (as Amazon/Meta have explored for some components), Vertiv's pricing power and backlog depth would be tested. Current evidence strongly favors continued outsourcing at hyperscale.
+    </div>
+  </div>
+
+  <!-- COMPETITIVE THREATS -->
+  <div class="card card-red">
+    <div class="card-title">Moat Threats &amp; Competitor Assessment</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;font-size:13px">
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">Schneider Electric (SE) — Biggest Rival</div>
+        Schneider competes across UPS and cooling. Capable but lacks Vertiv's liquid cooling IP depth and NVIDIA-aligned roadmap. Cannot match Vertiv's near-term capacity commitments. <span style="color:var(--green);font-weight:600">Vertiv advantages: speed, depth, NVIDIA lock-in.</span>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">Eaton Corporation (ETN) — Power Focus</div>
+        Eaton is strong in power management but has minimal liquid cooling portfolio. Competes on UPS/switchgear but not on thermal management at rack level. Different buyer segment (facilities vs. IT).
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">Microsoft Microfluidics — Emerging Tech Risk</div>
+        Microsoft announced proprietary microfluidics cooling technology. If hyperscalers develop in-house cooling tech (particularly for their own chip designs), this could reduce Vertiv TAM for specific GPU configurations. <span style="color:var(--red);font-weight:600">Medium-term monitoring required.</span>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:4px">CoolIT Systems / Asetek — CDU Specialists</div>
+        Smaller CDU specialists. Competition at component level but not at system-integration level. Vertiv can partner (as they have with CoolIT) or acquire to maintain technology leadership.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 4: MANAGEMENT ═══ -->
+<div id="tab4" class="tab-content">
+  <div class="section-title">Management Integrity &amp; Capital Allocation</div>
+
+  <div class="grid-2">
+    <div class="card card-green">
+      <div class="card-title">Leadership Team</div>
+      <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
+        <div style="background:var(--bg);border-radius:8px;padding:12px">
+          <div style="font-weight:700;font-size:14px;color:var(--midnight)">Giordano Albertazzi — CEO</div>
+          <div style="color:var(--muted);margin-top:3px">Named CEO in 2023. Former President of Vertiv Americas. Deep domain expertise in critical infrastructure. Consistent execution: every quarter since assuming CEO role has produced beats and guidance raises. Has driven the AI data center positioning as a core strategic priority.</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:12px">
+          <div style="font-weight:700;font-size:14px;color:var(--midnight)">Dave Cote — Executive Chairman</div>
+          <div style="color:var(--muted);margin-top:3px">Former Honeywell CEO; transformed Honeywell into a top-tier industrial compounder over 16 years. Personally invested in Vertiv's thesis since PE era. Brings operational excellence discipline (Honeywell Operating System) to Vertiv. His quote on 2024 results: "The results are the realization of Vertiv's potential I've been excited about for many years."</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:12px">
+          <div style="font-weight:700;font-size:14px;color:var(--midnight)">Scott Armul — Chief Product &amp; Technology Officer</div>
+          <div style="color:var(--muted);margin-top:3px">Leads AI-aligned product roadmap. Quote on Strategic Thermal Labs acquisition: "As AI and high-performance computing push power densities to unprecedented levels, understanding and solving heat challenges at the chip level becomes critical." Drives NVIDIA co-development and 800V DC roadmap.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card card-chrome">
+      <div class="card-title">Capital Allocation — Assessment</div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+        <div style="background:var(--green-bg);border-radius:8px;padding:11px">
+          <div style="font-weight:700;color:var(--green)">✓ Strategic M&amp;A — Disciplined</div>
+          PurgeRite ($1B, Dec 2025), Strategic Thermal Labs, ThermoKey (2025–2026) — all accretive to liquid cooling moat. M&A pipeline of $750M–$1B focused on AI infrastructure. No empire-building; each acquisition plugs a specific gap.
+        </div>
+        <div style="background:var(--green-bg);border-radius:8px;padding:11px">
+          <div style="font-weight:700;color:var(--green)">✓ Balance Sheet Discipline</div>
+          Net leverage reduced from >4× (2021) to 0.3× EBITDA (2026). Inaugural investment-grade rating (Baa3/BBB-) obtained Feb 2026 — demonstrates commitment to financial discipline.
+        </div>
+        <div style="background:var(--green-bg);border-radius:8px;padding:11px">
+          <div style="font-weight:700;color:var(--green)">✓ Capacity Investment</div>
+          Accelerating CapEx in manufacturing (Pelzer facility), engineering labs, customer test capabilities — aligned with demand growth. Growth CapEx is earnings-accretive given pricing power.
+        </div>
+        <div style="background:var(--green-bg);border-radius:8px;padding:11px">
+          <div style="font-weight:700;color:var(--green)">✓ Dividend Policy — Token Only</div>
+          Quarterly dividend $0.0625/share ($0.25/yr), yield ~0.077%. Payout ratio ~3% of GAAP NI. Correctly prioritising reinvestment and debt repayment over dividends at this growth stage.
+        </div>
+        <div style="background:var(--amber-bg);border-radius:8px;padding:11px">
+          <div style="font-weight:700;color:var(--amber)">~ Counter-cyclical behaviour: N/A</div>
+          Vertiv has not yet experienced a full AI cycle downturn under current management. The test will be whether they maintain discipline on M&amp;A and CapEx during a hyperscaler capex pause.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTEGRITY SCORECARD -->
+  <div class="card card-orange">
+    <div class="card-title">Management Integrity Scorecard</div>
+    <div class="score-row"><span>Promoter pledge / insider conflict</span><span class="score-pass">✓ N/A (US) — No promoter structure; insiders hold via RSU/stock awards</span></div>
+    <div class="score-row"><span>Insider transactions (last 12 months)</span><span class="score-pass">✓ CLEAN — 13 transactions: 3 tax-related disposals + 10 stock awards; no anomalies</span></div>
+    <div class="score-row"><span>Guidance reliability (last 8 quarters)</span><span class="score-pass">✓ STRONG — Consistent beat-and-raise in every quarter since Albertazzi became CEO</span></div>
+    <div class="score-row"><span>Related party transactions</span><span class="score-pass">✓ No red flags in SEC filings</span></div>
+    <div class="score-row"><span>SPAC heritage (2020 listing via GS Acquisition)</span><span class="score-marg">~ WATCH — SPAC-era legacy leverage now fully resolved; initial governance concerns resolved</span></div>
+    <div class="score-row"><span>SEC / DOJ / regulatory red flags</span><span class="score-pass">✓ None identified</span></div>
+    <div class="score-row"><span>Tariff transparency</span><span class="score-pass">✓ EXCELLENT — Section 122/232 impacts and mitigations explicitly disclosed in every earnings call and filing</span></div>
+    <div class="score-row"><span>AI team quality (for WIDENER assessment)</span><span class="score-pass">✓ Strong — NVIDIA co-development, digital twin (NVIDIA Omniverse DSX), Next Predict AI; Scott Armul credible AI roadmap owner</span></div>
+    <div style="margin-top:14px;background:var(--green-bg);border-radius:8px;padding:14px;font-weight:700;color:var(--green);text-align:center;font-size:16px">
+      Management Grade: A− &nbsp;|&nbsp; Exceptional execution track record with no integrity red flags. Primary risk is inexperience managing a downturn.
+    </div>
+  </div>
+
+  <!-- RESPONSIBLE AI -->
+  <div class="card card-cyan">
+    <div class="card-title">Responsible AI &amp; Regulatory Considerations</div>
+    <div style="font-size:13px;color:#374151;line-height:1.7">
+      <strong>Data privacy (GDPR/CCPA):</strong> Vertiv's AI products (Next Predict) collect operational telemetry from physical infrastructure — not personal data. GDPR compliance straightforward; no personal data classification risk.<br><br>
+      <strong>Antitrust / DOJ/FTC risk:</strong> Vertiv has ~35% market share in data center critical infrastructure (power + cooling combined). Growing dominance in liquid cooling will attract regulatory scrutiny as market concentration increases. Currently below threshold for active antitrust proceedings but worth monitoring as market share grows post-2026.<br><br>
+      <strong>Export controls:</strong> AI infrastructure is increasingly sensitive. US export controls on advanced computing infrastructure could impact Vertiv's international sales (particularly APAC/China segment). Management has acknowledged this risk and is restructuring manufacturing footprint accordingly.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 5: VALUATION ═══ -->
+<div id="tab5" class="tab-content">
+  <div class="section-title">Valuation &amp; Margin of Safety</div>
+  <div style="background:var(--amber-bg);border-radius:10px;padding:14px;margin-bottom:16px;border-left:4px solid var(--amber)">
+    <strong style="color:var(--amber)">⚠ Valuation Note:</strong> <span style="font-size:13px;color:#374151">Price at analysis ~$325 is <span class="oi-tag tag-e">ESTIMATED</span> (Jun 25–26, 2026 sources). Price-sensitive metrics flagged <span class="oi-tag tag-e">ESTIMATED</span> or <span class="oi-tag tag-u">UNVERIFIED</span>. Price-independent metrics (FCF, ROIC, Owner Earnings) are robust. WACC 10.5% used for base case (Cat B US growth). All growth rates derived from Step 3 Growth Rate Summary.</span>
+  </div>
+
+  <!-- DCF -->
+  <div class="card card-orange">
+    <div class="card-title">Method 1 — DCF (2-Stage) <span class="oi-tag tag-e">ESTIMATED</span></div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Base: Stage 1 FCF CAGR 20% × 5yr → Stage 2 terminal at 4.5% g. WACC 10.5%. Shares: ~385M. Net debt: $0.76B.</p>
+    <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr><th>Year</th><th>STRESS FCF (10%)</th><th>BASE FCF (20%)</th><th>ACCEL FCF (28%)</th><th>PV Factor (10.5%)</th><th>PV BASE</th></tr></thead>
+      <tbody>
+        <tr><td class="row-label">FY2026E (Yr 1)</td><td>$2.50B</td><td>$2.90B</td><td>$3.20B</td><td>0.905</td><td>$2.62B</td></tr>
+        <tr><td class="row-label">FY2027E (Yr 2)</td><td>$2.75B</td><td>$3.48B</td><td>$4.10B</td><td>0.819</td><td>$2.85B</td></tr>
+        <tr><td class="row-label">FY2028E (Yr 3)</td><td>$3.03B</td><td>$4.18B</td><td>$5.25B</td><td>0.741</td><td>$3.10B</td></tr>
+        <tr><td class="row-label">FY2029E (Yr 4)</td><td>$3.33B</td><td>$5.01B</td><td>$6.72B</td><td>0.671</td><td>$3.36B</td></tr>
+        <tr><td class="row-label">FY2030E (Yr 5)</td><td>$3.66B</td><td>$6.01B</td><td>$8.60B</td><td>0.607</td><td>$3.65B</td></tr>
+        <tr style="font-weight:700"><td class="row-label">Sum PV Stage 1</td><td>$11.2B</td><td>$15.6B</td><td>$19.9B</td><td>—</td><td>$15.6B</td></tr>
+        <tr><td class="row-label">Terminal FCF (Yr 6)</td><td>$3.80B</td><td>$6.28B</td><td>$8.99B</td><td>—</td><td>—</td></tr>
+        <tr><td class="row-label">Terminal Value (TV)</td><td>$54.3B</td><td>$104.7B</td><td>$149.8B</td><td>—</td><td>—</td></tr>
+        <tr><td class="row-label">PV of TV</td><td>$32.9B</td><td>$63.5B</td><td>$90.9B</td><td>0.607</td><td>$63.5B</td></tr>
+        <tr style="font-weight:700;background:rgba(255,95,31,.08)"><td class="row-label">Total EV</td><td>$44.1B</td><td>$79.1B</td><td>$110.8B</td><td>—</td><td>—</td></tr>
+        <tr style="font-weight:700;background:rgba(255,95,31,.12)"><td class="row-label">Equity IV/share</td><td style="color:var(--red)">~$113</td><td style="color:var(--amber)">~$204</td><td style="color:var(--green)">~$286</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:12px;background:var(--bg);border-radius:8px;padding:12px;font-size:12px">
+      <strong>DCF Sensitivity (Base: $204):</strong> +1% terminal g → IV +$25 (+12%). −1% terminal g → IV −$22 (−11%). +1% WACC → IV −$28 (−14%). −1% WACC → IV +$34 (+17%). A 1% Stage 1 CAGR change → IV ±$8–10 (±4–5%).
+    </div>
+  </div>
+
+  <!-- OWNER EARNINGS CAP -->
+  <div class="card card-cyan">
+    <div class="card-title">Method 2 — Owner Earnings Capitalisation <span class="oi-tag tag-e">ESTIMATED</span></div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Value = OE per share / (Required Return − g). Using FY2026E OE as base (forward-looking). g = macro-derived sustainable growth rate.</p>
+    <div class="grid-3">
+      <div class="metric-box fail">
+        <div class="metric-label">STRESS (g = 4.0%)</div>
+        <div class="metric-val" style="color:var(--red)">$100/share</div>
+        <div class="metric-sub">OE $6.67 / (11.5%−4.0%) = $88.9 + AI adj = ~$100</div>
+      </div>
+      <div class="metric-box marg">
+        <div class="metric-label">BASE (g = 4.5%)</div>
+        <div class="metric-val" style="color:var(--amber)">$148/share</div>
+        <div class="metric-sub">OE $6.67 / (10.5%−6.0%) = $148 → base</div>
+      </div>
+      <div class="metric-box pass">
+        <div class="metric-label">ACCEL (g = 5.5%)</div>
+        <div class="metric-val" style="color:var(--green)">$222/share</div>
+        <div class="metric-sub">OE $6.67 / (9.5%−6.5%) = $222 → accel</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROIC/EPV -->
+  <div class="card card-chrome">
+    <div class="card-title">Method 3 — ROIC / EPV <span class="oi-tag tag-e">ESTIMATED</span></div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">EPV = NOPAT/WACC (no-growth floor). Economic profit value = (ROIC−WACC) × IC × moat duration PV. IC derived from NOPAT/ROIC.</p>
+    <div class="grid-2">
+      <div>
+        <div class="score-row"><span>NOPAT (FY2025 adj, after tax 21%)</span><span class="mono">~$1.53B</span></div>
+        <div class="score-row"><span>ROIC</span><span class="mono score-pass">~20.5%</span></div>
+        <div class="score-row"><span>Invested Capital (NOPAT/ROIC)</span><span class="mono">~$7.5B</span></div>
+        <div class="score-row"><span>WACC</span><span class="mono">10.5%</span></div>
+        <div class="score-row"><span>EPV (no-growth)</span><span class="mono">$14.6B → ~$37/sh</span></div>
+      </div>
+      <div>
+        <div class="score-row"><span>Economic Profit spread (ROIC−WACC)</span><span class="mono score-pass">+10%</span></div>
+        <div class="score-row"><span>Economic Profit (absolute)</span><span class="mono">~$750M/yr</span></div>
+        <div class="score-row"><span>PV (15yr moat duration at 10.5%)</span><span class="mono">+$5.1B</span></div>
+        <div class="score-row"><span>EPV with moat</span><span class="mono">$19.7B → ~$50/sh</span></div>
+        <div style="background:var(--bg);border-radius:6px;padding:10px;margin-top:6px;font-size:12px;color:var(--muted)">EPV is the <em>no-reinvestment floor</em>. Growth value (DCF premium) = $204 − $50 = $154/sh. Market is paying heavily for growth.</div>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-top:10px">
+      <div class="metric-box fail"><div class="metric-label">STRESS EPV</div><div class="metric-val" style="color:var(--red)">~$80/share</div><div class="metric-sub">10yr moat, ROIC compress</div></div>
+      <div class="metric-box marg"><div class="metric-label">BASE EPV</div><div class="metric-val" style="color:var(--amber)">~$120/share</div><div class="metric-sub">15yr moat, ROIC maintains</div></div>
+      <div class="metric-box pass"><div class="metric-label">ACCEL EPV</div><div class="metric-val" style="color:var(--green)">~$165/share</div><div class="metric-sub">20yr moat, ROIC expands</div></div>
+    </div>
+  </div>
+
+  <!-- P/E EARNINGS POWER -->
+  <div class="card card-orange">
+    <div class="card-title">Method 4 — P/E Earnings Power &amp; Reverse DCF <span class="oi-tag tag-e">ESTIMATED</span></div>
+    <div class="grid-2">
+      <div>
+        <table class="data-table">
+          <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td class="row-label">Trailing P/E (TTM EPS $4.07)</td><td class="mono">~80× <span class="oi-tag tag-u">U</span></td></tr>
+            <tr><td class="row-label">Forward P/E (FY2026E adj $6.35)</td><td class="mono">~51× <span class="oi-tag tag-e">E</span></td></tr>
+            <tr><td class="row-label">5-yr avg P/E (VRT history)</td><td class="mono">~56.8× <span class="oi-tag tag-v">V</span></td></tr>
+            <tr><td class="row-label">Current vs 5-yr avg P/E</td><td class="mono" style="color:var(--amber)">+41% premium</td></tr>
+            <tr><td class="row-label">PEG (fwd P/E 51 / EPS growth 51%)</td><td class="mono score-pass">1.0× (fair)</td></tr>
+            <tr><td class="row-label">FY2027E EPS (consensus ~25% growth)</td><td class="mono">~$7.90–8.40E</td></tr>
+            <tr><td class="row-label">FY2027 at 25× terminal P/E</td><td class="mono" style="color:var(--amber)">~$200–210</td></tr>
+            <tr><td class="row-label">FY2027 at 30× terminal P/E</td><td class="mono" style="color:var(--amber)">~$240–250</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div style="background:var(--bg);border-radius:8px;padding:14px;font-size:13px">
+          <div style="font-weight:700;color:var(--midnight);margin-bottom:8px">📊 Reverse DCF — What Market Prices In</div>
+          At $325 / share (EV ~$126B), to justify via 10-yr FCF at 10.5% WACC:<br><br>
+          → <strong>Implied FCF CAGR required: ~28–32% for 10 years</strong> — then terminal at 4.5% g<br>
+          → This requires 2026E FCF of ~$2.9B growing at 30% through FY2035 (~$35B FCF by 2035)<br>
+          → FY2035 FCF of $35B would be extraordinary — roughly 2.5× VRT's entire current market cap<br><br>
+          <span style="color:var(--amber)"><strong>Conclusion:</strong> Market is pricing in either (a) sustained 28–30% FCF CAGR for a decade — extremely demanding — or (b) significant multiple expansion on 2028–2030 normalized EPS (35–40× terminal), or (c) TAM expansion beyond current projections (sovereign AI, edge data centers).</span>
+        </div>
+        <div class="grid-3" style="margin-top:10px">
+          <div class="metric-box fail"><div class="metric-label">P/E Power STRESS</div><div class="metric-val" style="color:var(--red)">~$130</div><div class="metric-sub">2027E × 18× terminal</div></div>
+          <div class="metric-box marg"><div class="metric-label">P/E Power BASE</div><div class="metric-val" style="color:var(--amber)">~$175</div><div class="metric-sub">2027E × 22× terminal</div></div>
+          <div class="metric-box pass"><div class="metric-label">P/E Power ACCEL</div><div class="metric-val" style="color:var(--green)">~$240</div><div class="metric-sub">2028E × 25× terminal</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- METHOD 5 EARNINGS YIELD -->
+  <div class="card card-chrome">
+    <div class="card-title">Method 5 — Earnings Yield vs Bond Yield (ERP) <span class="oi-tag tag-v">VERIFIED (rates)</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="score-row"><span>10-yr US Treasury (Jun 26, 2026)</span><span class="mono score-fail">4.37%</span></div>
+        <div class="score-row"><span>TTM GAAP Earnings Yield ($4.07/$325)</span><span class="mono" style="color:var(--red)">1.25%</span></div>
+        <div class="score-row"><span>Fwd Adj Earnings Yield ($6.35/$325)</span><span class="mono" style="color:var(--amber)">1.95%</span></div>
+        <div class="score-row"><span>FCF Yield ($2.28B/$126B mkt cap)</span><span class="mono" style="color:var(--red)">1.81%</span></div>
+        <div class="score-row"><span>Dividend Yield ($0.25/$325)</span><span class="mono" style="color:var(--red)">0.08%</span></div>
+        <div class="score-row"><span>Equity Risk Premium (fwd EY − rf)</span><span class="mono score-fail">−2.42% (NEGATIVE)</span></div>
+        <div style="margin-top:10px;background:var(--red-bg);border-radius:6px;padding:10px;font-size:12px;color:var(--red);font-weight:600">
+          Negative ERP = extreme growth premium. At current price, bonds pay 2.4% more than VRT's forward earnings yield. Historically, positive ERP of 3–5% signals fair value. ERP would reach historical fair value at approximately $75–90/share on 2026E adj earnings (pure earnings yield basis).
+        </div>
+      </div>
+      <div>
+        <div style="background:var(--bg);border-radius:8px;padding:14px;font-size:13px">
+          <div style="font-weight:700;color:var(--midnight);margin-bottom:8px">What would make ERP neutral?</div>
+          For VRT fwd earnings yield to match 10-yr Treasury (4.37%):<br>
+          <strong>→ Price: ~$145/share</strong> ($6.35 adj EPS / 4.37% = $145)<br><br>
+          For 2% ERP above 10-yr (6.37% required yield):<br>
+          <strong>→ Price: ~$100/share</strong><br><br>
+          <span style="color:var(--muted)">These are purely yield-based floors, not intrinsic value estimates. The growth premium is legitimate — but the magnitude at $325 demands extraordinary sustained execution.</span>
+        </div>
+        <div style="margin-top:10px;background:var(--amber-bg);border-radius:8px;padding:12px;font-size:12px;color:var(--amber)">
+          <strong>Earnings Yield signal:</strong> 🔴 VERY EXPENSIVE vs risk-free rate. Even on forward basis, stock offers negative ERP. Only justified if FCF growth sustains 25%+ for 7+ years.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5-METHOD SUMMARY TABLE -->
+  <div class="card card-orange" style="background:var(--midnight);color:var(--text)">
+    <div class="card-title" style="color:var(--orange)">5-Method Summary — Valuation Mosaic</div>
+    <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr>
+        <th style="color:var(--chrome-lt)">Method</th>
+        <th style="color:#FCA5A5">Stress IV</th>
+        <th style="color:#FCD34D">Base IV</th>
+        <th style="color:#86EFAC">Accel IV</th>
+        <th style="color:var(--cyan-lt)">AI WIDENER Adj</th>
+      </tr></thead>
+      <tbody style="color:var(--text)">
+        <tr>
+          <td class="row-label" style="color:var(--chrome-lt)">DCF 2-Stage</td>
+          <td class="mono" style="color:#FCA5A5">$113</td>
+          <td class="mono" style="color:#FCD34D">$204</td>
+          <td class="mono" style="color:#86EFAC">$286</td>
+          <td style="font-size:12px;color:var(--cyan)">+$18–30 (higher FCF from AI product mix)</td>
+        </tr>
+        <tr>
+          <td class="row-label" style="color:var(--chrome-lt)">Owner Earnings Cap</td>
+          <td class="mono" style="color:#FCA5A5">$100</td>
+          <td class="mono" style="color:#FCD34D">$148</td>
+          <td class="mono" style="color:#86EFAC">$222</td>
+          <td style="font-size:12px;color:var(--cyan)">+$12–20 (higher OE from premium liquid cooling)</td>
+        </tr>
+        <tr>
+          <td class="row-label" style="color:var(--chrome-lt)">ROIC/EPV</td>
+          <td class="mono" style="color:#FCA5A5">$80</td>
+          <td class="mono" style="color:#FCD34D">$120</td>
+          <td class="mono" style="color:#86EFAC">$165</td>
+          <td style="font-size:12px;color:var(--cyan)">+$10–15 (ROIC expansion from AI mix)</td>
+        </tr>
+        <tr>
+          <td class="row-label" style="color:var(--chrome-lt)">P/E Earnings Power</td>
+          <td class="mono" style="color:#FCA5A5">$130</td>
+          <td class="mono" style="color:#FCD34D">$175</td>
+          <td class="mono" style="color:#86EFAC">$240</td>
+          <td style="font-size:12px;color:var(--cyan)">+3–5× terminal P/E premium vs non-AI industrial peers</td>
+        </tr>
+        <tr>
+          <td class="row-label" style="color:var(--chrome-lt)">Earnings Yield (ref)</td>
+          <td class="mono" style="color:#FCA5A5">—</td>
+          <td class="mono" style="color:#FCD34D">~$145</td>
+          <td class="mono" style="color:#86EFAC">—</td>
+          <td style="font-size:12px;color:var(--chrome)">ERP comparison (reference only)</td>
+        </tr>
+        <tr style="border-top:2px solid rgba(255,95,31,.4)">
+          <td class="row-label" style="color:var(--orange);font-weight:800">Blended Base IV (4 methods)</td>
+          <td class="mono" style="color:#FCA5A5;font-weight:700">~$106</td>
+          <td class="mono" style="color:#FCD34D;font-weight:700">~$162</td>
+          <td class="mono" style="color:#86EFAC;font-weight:700">~$228</td>
+          <td></td>
+        </tr>
+        <tr style="background:rgba(0,196,224,.1)">
+          <td class="row-label" style="color:var(--cyan);font-weight:700">AI WIDENER Premium (+10%)</td>
+          <td class="mono" style="color:#FCA5A5">~$117</td>
+          <td class="mono" style="color:var(--cyan);font-weight:700;font-size:18px">~$178</td>
+          <td class="mono" style="color:#86EFAC">~$251</td>
+          <td style="font-size:12px;color:var(--cyan)">AI WIDENER adds ~$16 to blended Base IV (+10%). Liquid cooling moat deepening is real and durable.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center">
+      <div style="background:rgba(220,38,38,.15);border-radius:8px;padding:14px">
+        <div style="font-size:11px;color:var(--chrome)">AI-Adj Base IV</div>
+        <div class="mono" style="font-size:28px;font-weight:800;color:var(--orange)">~$178</div>
+        <div style="font-size:11px;color:var(--chrome)">vs current ~$325</div>
+      </div>
+      <div style="background:rgba(255,95,31,.15);border-radius:8px;padding:14px">
+        <div style="font-size:11px;color:var(--chrome)">MoS Entry Zone (20% below Base)</div>
+        <div class="mono" style="font-size:28px;font-weight:800;color:#FCD34D">$140–$155</div>
+        <div style="font-size:11px;color:var(--chrome)">Primary entry zone</div>
+      </div>
+      <div style="background:rgba(22,163,74,.15);border-radius:8px;padding:14px">
+        <div style="font-size:11px;color:var(--chrome)">Accel IV (AI premium)</div>
+        <div class="mono" style="font-size:28px;font-weight:800;color:#86EFAC">~$251</div>
+        <div style="font-size:11px;color:var(--chrome)">If 28% FCF CAGR sustained</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--chrome);text-align:center">
+      Current price $325 represents an <strong style="color:var(--orange)">83% premium to Base IV ($178)</strong> and a <strong style="color:var(--orange)">30% premium even to Accel IV ($251)</strong>. The stock appears to be pricing beyond the Accel scenario — a market expressing extraordinary long-term confidence, not yet supported by intrinsic value at reasonable discount rates.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 6: VERDICT ═══ -->
+<div id="tab6" class="tab-content">
+  <div class="section-title">Investment Verdict</div>
+
+  <!-- PILLAR GRADES -->
+  <div class="pillar-grid" style="margin-bottom:20px">
+    <div class="pillar-card" style="border-top:4px solid var(--cyan)">
+      <div class="pillar-name">Pillar 1 — Moat</div>
+      <div class="pillar-grade grade-b">B+</div>
+      <div style="font-size:12px;color:var(--muted)">Wide moat (ROIC 20.5%). Switching costs + NVIDIA lock-in + reliability brand. Flywheel FORMING — upgrade to A− if confirmed.</div>
+    </div>
+    <div class="pillar-card" style="border-top:4px solid var(--orange)">
+      <div class="pillar-name">Pillar 2 — Fortress</div>
+      <div class="pillar-grade grade-b">B+</div>
+      <div style="font-size:12px;color:var(--muted)">FCF $2.28B TTM, conversion 146%, net leverage 0.3×, invest. grade. O'Glove: CLEAN. Margin trajectory excellent.</div>
+    </div>
+    <div class="pillar-card" style="border-top:4px solid var(--green)">
+      <div class="pillar-name">Pillar 3 — Management</div>
+      <div class="pillar-grade grade-a">A−</div>
+      <div style="font-size:12px;color:var(--muted)">8 consecutive beat-and-raise quarters. No integrity flags. Dave Cote pedigree. NVIDIA co-dev relationship. Disciplined M&amp;A.</div>
+    </div>
+    <div class="pillar-card" style="border-top:4px solid var(--red)">
+      <div class="pillar-name">Pillar 4 — Valuation</div>
+      <div class="pillar-grade grade-d">D+</div>
+      <div style="font-size:12px;color:var(--muted)">83% above Base IV. Negative ERP. Pricing in beyond-Accel scenario. Outstanding business; dangerous entry price.</div>
+    </div>
+  </div>
+
+  <!-- VERDICT BOX -->
+  <div class="verdict-box">
+    <div class="verdict-label">Buffett QV Series v5.0 — June 28, 2026</div>
+    <div class="verdict-main">WATCH ★★★</div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+      <span class="badge badge-ai">🟢 AI WIDENER</span>
+      <span class="badge badge-cat">Cat B · High-Growth Compounder</span>
+      <span class="badge badge-phase">Flywheel: FORMING</span>
+    </div>
+    <div class="verdict-desc">
+      Vertiv is one of the world's highest-quality industrial companies — the indispensable physical infrastructure layer of the global AI buildout. B+ across Moat and Fortress pillars, A− management, CLEAN earnings quality, and a $15B+ backlog providing exceptional near-term revenue visibility. The AI WIDENER thesis is legitimate and durable: liquid cooling has crossed from optional to mandatory for AI GPU racks, and Vertiv's co-development partnership with NVIDIA creates first-mover advantages for each new chip generation.<br><br>
+      <strong>The verdict is WATCH, not BUY, for one reason: price.</strong> At ~$325, VRT trades at 83% above our AI-adjusted Base IV of ~$178, at a negative equity risk premium vs 10-yr Treasuries, and beyond even the Accel DCF scenario. The market is effectively pricing in 28–32% FCF CAGR sustained for a decade — extraordinary even for an AI infrastructure monopoly. Patient investors should build a precise watch list and prepare to act when the MoS entry zone is reached.
+    </div>
+    <div class="verdict-quote">
+      "Price is what you pay. Value is what you get." — Warren Buffett<br>
+      <em>Vertiv's value is exceptional. Its current price demands near-perfection for a decade. Great businesses, bought at great prices, compound wealth. Great businesses, bought at excessive prices, compound regret.</em>
+    </div>
+  </div>
+
+  <!-- UPGRADE CONDITIONS -->
+  <div class="card card-orange">
+    <div class="card-title">Upgrade Conditions — 5 Specific Catalysts to BUY</div>
+    <div class="cond-row">
+      <div class="cond-num">1</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;color:var(--midnight)">Price corrects to $175 or below (MoS entry zone)</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:3px">Base IV ~$178; entry at 20% MoS requires ~$140–155. A correction to $175 provides marginal MoS but warrants a STARTER position (Tier 1, 40% of allocation). A correction to $145 triggers full BUY.</div>
+      </div>
+    </div>
+    <div class="cond-row">
+      <div class="cond-num">2</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;color:var(--midnight)">Book-to-bill remains ≥1.2× for 2 consecutive quarters during any correction</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:3px">A price correction accompanied by sustained ≥1.2× B2B confirms that any selloff is multiple-driven (good for buyers), not thesis-driven. If B2B drops below 1.0× during a correction, that is a thesis breach — do not buy.</div>
+      </div>
+    </div>
+    <div class="cond-row">
+      <div class="cond-num">3</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;color:var(--midnight)">RSI(14) corrects below 35 on the weekly chart</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:3px">Weekly RSI below 35 on a stock with a B+ moat and clear AI structural tailwind represents oversold capitulation — historically the highest-probability buy zone for quality compounders. Daily RSI below 30 = maximum urgency zone.</div>
+      </div>
+    </div>
+    <div class="cond-row">
+      <div class="cond-num">4</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;color:var(--midnight)">Data flywheel upgrades to CONFIRMED (Next Predict adoption data published)</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:3px">If management publishes concrete Next Predict adoption metrics showing measurable AI improvement with data scale, the flywheel upgrades from FORMING to CONFIRMED. This would (a) upgrade Moat from B+ to A− and (b) add ~$25–35 to Base IV — narrowing the gap to current price and potentially triggering a BUY even at $200–220.</div>
+      </div>
+    </div>
+    <div class="cond-row">
+      <div class="cond-num">5</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;color:var(--midnight)">Adj operating margin guidance crosses 25% sustained (vs 23.3% current FY2026E)</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:3px">A sustained path to 25%+ adj operating margin would materially re-rate Base IV higher (FCF would approach $4B+ by FY2027E), potentially compressing the gap between current price and intrinsic value. Margin targets for 2029 of 25% (per management) need to be confirmed in guidance cadence.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE-TIER ENTRY STRUCTURE -->
+  <div class="card card-cyan">
+    <div class="card-title">Three-Tier Entry Structure (when conditions are met)</div>
+    <div class="grid-3">
+      <div style="background:var(--midnight);border-radius:10px;padding:16px;color:var(--text)">
+        <div style="color:var(--orange);font-weight:700;margin-bottom:6px">TIER 1 — 40–50% of allocation</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--orange)">$140–$155</div>
+        <div style="font-size:12px;color:var(--chrome);margin-top:6px">Full MoS entry. No conditions required beyond quality floor (B+ moat, no red flags). Condition 1 met.</div>
+      </div>
+      <div style="background:var(--night);border-radius:10px;padding:16px;color:var(--text)">
+        <div style="color:var(--cyan);font-weight:700;margin-bottom:6px">TIER 2 — 30–35% of allocation</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--cyan)">$155–$185</div>
+        <div style="font-size:12px;color:var(--chrome);margin-top:6px">Requires 1–2 upgrade conditions met (e.g. RSI &lt;35 weekly + B2B ≥1.2× confirmed).</div>
+      </div>
+      <div style="background:#0d1f0d;border-radius:10px;padding:16px;color:var(--text)">
+        <div style="color:#86EFAC;font-weight:700;margin-bottom:6px">TIER 3 — 15–25% of allocation</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#86EFAC">$185–$210</div>
+        <div style="font-size:12px;color:var(--chrome);margin-top:6px">3+ conditions met. Flywheel confirmed OR margin guidance upgrade OR next chip cycle confirms demand surge.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;background:var(--red-bg);border-radius:8px;padding:12px;font-size:13px;color:var(--red)">
+      <strong>Hard blocker — do NOT enter under any conditions if:</strong> O'Glove degrades to SUSPECT/UNRELIABLE, OR book-to-bill falls below 0.9× for 2 consecutive quarters (thesis break), OR hyperscaler CapEx guidance is materially cut (e.g. combined AWS+Azure+Google CapEx guidance down &gt;20%).
+    </div>
+  </div>
+
+  <!-- SERIES TRACKER -->
+  <div class="card card-chrome">
+    <div class="card-title">BQV Series Tracker — This Report</div>
+    <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr><th>Ticker</th><th>Company</th><th>Verdict</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>AI</th><th>Phase</th><th>Base IV</th><th>Entry Zone</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="mono" style="font-weight:700">VRT</td>
+          <td>Vertiv Holdings</td>
+          <td><span style="color:var(--amber);font-weight:700">WATCH★★★</span></td>
+          <td class="mono" style="color:var(--green)">B+</td>
+          <td class="mono" style="color:var(--green)">B+</td>
+          <td class="mono" style="color:var(--green)">A−</td>
+          <td class="mono" style="color:var(--red)">D+</td>
+          <td>🟢</td>
+          <td class="mono">3</td>
+          <td class="mono">$178</td>
+          <td class="mono">$140–$155</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 7: TECHNICAL ═══ -->
+<div id="tab7" class="tab-content">
+  <div class="section-title">Technical Analysis</div>
+  <div style="background:var(--amber-bg);border-radius:8px;padding:10px;margin-bottom:14px;font-size:12px;color:var(--amber);font-weight:600">
+    ⚠ All technical levels are <span class="oi-tag tag-e">ESTIMATED</span> based on multi-source data (TipRanks, heygotrade, altindex, investing.com). Exact figures may vary by platform. Verify before trading.
+  </div>
+
+  <!-- PRICE STRUCTURE -->
+  <div class="grid-2">
+    <div class="card card-orange">
+      <div class="card-title">A — Price Structure &amp; Multi-Timeframe Trend</div>
+      <div class="tech-row"><span style="font-weight:600">Current Price (est.)</span><span class="mono">~$325</span></div>
+      <div class="tech-row"><span style="font-weight:600">52-Week High</span><span class="mono">~$340 <span class="oi-tag tag-e">E</span></span></div>
+      <div class="tech-row"><span style="font-weight:600">52-Week Low</span><span class="mono">~$88 (Mar 2025)</span></div>
+      <div class="tech-row"><span style="font-weight:600">YTD Performance (2026)</span><span class="mono" style="color:var(--green)">+84–102%</span></div>
+      <div class="tech-row"><span style="font-weight:600">1-Year Performance</span><span class="mono" style="color:var(--green)">+150% (to Q1'26)</span></div>
+      <div class="tech-row"><span style="font-weight:600">Daily Trend</span><span class="mono" style="color:var(--green)">Strong Bull (above all MAs)</span></div>
+      <div class="tech-row"><span style="font-weight:600">Weekly Trend</span><span class="mono" style="color:var(--green)">Strong Bull (inverted head-and-shoulder pattern possibly completed)</span></div>
+      <div style="margin-top:12px;background:var(--bg);border-radius:8px;padding:10px;font-size:12px">
+        <strong>Price ladder:</strong> Strong support ~$280–295 (50-DMA zone). Secondary support ~$230 (200-DMA). Critical support $200 (psychological + prior breakout). Resistance: $340 (52-wk high). Beyond $340, prior SPAC highs would require price discovery.
+      </div>
+    </div>
+    <div class="card card-cyan">
+      <div class="card-title">B — Moving Average Dashboard</div>
+      <div class="tech-row"><span>20-EMA</span><span class="mono" style="color:var(--amber)">~$328 <span class="oi-tag tag-e">E</span></span></div>
+      <div class="tech-row"><span>50-DMA</span><span class="mono" style="color:var(--green)">~$280–295 <span class="oi-tag tag-e">E</span></span></div>
+      <div class="tech-row"><span>100-DMA</span><span class="mono" style="color:var(--green)">~$265 <span class="oi-tag tag-e">E</span></span></div>
+      <div class="tech-row"><span>200-DMA</span><span class="mono" style="color:var(--green)">~$213–230 <span class="oi-tag tag-e">E</span></span></div>
+      <div class="tech-row"><span>Price vs 20-EMA</span><span class="mono" style="color:var(--amber)">~BELOW (-1%) — slight pullback</span></div>
+      <div class="tech-row"><span>Price vs 50-DMA</span><span class="mono" style="color:var(--green)">+12% ABOVE — bullish</span></div>
+      <div class="tech-row"><span>Price vs 200-DMA</span><span class="mono" style="color:var(--green)">+52–53% ABOVE — extended</span></div>
+      <div class="tech-row"><span>Golden Cross Status</span><span class="mono" style="color:var(--green)">ACTIVE ✓ (50 above 200)</span></div>
+      <div class="tech-row"><span>MA Signal (aggregate)</span><span class="mono" style="color:var(--green)">8 Buy / 4 Sell (investing.com)</span></div>
+    </div>
+  </div>
+
+  <!-- OSCILLATORS + PATTERNS -->
+  <div class="grid-2">
+    <div class="card card-chrome">
+      <div class="card-title">C+D — Volume &amp; Oscillators</div>
+      <div class="tech-row"><span>RSI (14) Daily</span><span class="mono" style="color:var(--amber)">~52–54 (NEUTRAL) <span class="oi-tag tag-e">E</span></span></div>
+      <div class="tech-row"><span>RSI interpretation</span><span class="mono">Neither OB nor OS — consolidating</span></div>
+      <div class="tech-row"><span>MACD</span><span class="mono" style="color:var(--amber)">Signal mixed — slight bearish divergence from peak <span class="oi-tag tag-e">E</span></span></div>
+      <div class="tech-row"><span>Stochastic</span><span class="mono" style="color:var(--amber)">NEUTRAL zone <span class="oi-tag tag-e">E</span></span></div>
+      <div class="tech-row"><span>ADX (Trend Strength)</span><span class="mono" style="color:var(--green)">~16 (Buy signal per TipRanks)</span></div>
+      <div class="tech-row"><span>Volume trend (3-month)</span><span class="mono" style="color:var(--green)">Strong volume on breakouts; light volume on pullbacks — bullish distribution</span></div>
+      <div class="tech-row"><span>OBV trend</span><span class="mono" style="color:var(--green)">Rising — institutional accumulation confirmed</span></div>
+      <div class="tech-row"><span>Bollinger Bands</span><span class="mono" style="color:var(--amber)">Stock near upper-middle band — consolidation phase</span></div>
+    </div>
+    <div class="card card-orange">
+      <div class="card-title">E+F — Chart Patterns &amp; Trade Structure</div>
+      <div style="font-size:13px;color:#374151;line-height:1.7;margin-bottom:10px">
+        <strong>Pattern:</strong> Potential Ascending Channel from Q1'26 bottom (~$250 level) with breakout above $300 on Q1 earnings. Now consolidating in $300–340 range — potential Bull Flag formation if VRT holds above $295 (50-DMA) for 2+ weeks.<br><br>
+        <strong>Key level to watch:</strong> If VRT breaks below 50-DMA ($280–295), next support at 100-DMA ($265) and then $230 (200-DMA). A break below $230 would be a major trend break — potential value entry signal.
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px;font-size:13px">
+        <div style="font-weight:700;color:var(--midnight);margin-bottom:6px">Hypothetical Trade Setup (for existing holders)</div>
+        <div class="tech-row"><span>Entry (existing holder add)</span><span class="mono">$290–300 (50-DMA zone)</span></div>
+        <div class="tech-row"><span>Stop-Loss</span><span class="mono">$255 (below 100-DMA)</span></div>
+        <div class="tech-row"><span>Target 1</span><span class="mono">$340 (52-wk high)</span></div>
+        <div class="tech-row"><span>Target 2</span><span class="mono">$380 (analyst avg PT)</span></div>
+        <div class="tech-row"><span>R:R Ratio</span><span class="mono" style="color:var(--green)">~1.4:1 (T1) / 2.2:1 (T2)</span></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">Note: For new BQV investors, no entry at current levels — wait for MoS zone ($140–155).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECHNICAL COMPOSITE SCORE -->
+  <div class="card card-orange">
+    <div class="card-title">G — Technical Composite Score</div>
+    <table class="data-table">
+      <thead><tr><th>Dimension</th><th>Score /5</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td class="row-label">Trend alignment (multi-timeframe)</td><td class="mono score-pass">5/5</td><td>Daily/weekly/monthly all bullish; price above all key MAs</td></tr>
+        <tr><td class="row-label">Momentum (RSI, MACD)</td><td class="mono score-marg">3/5</td><td>RSI neutral (52); MACD mixed — momentum cooling from peak</td></tr>
+        <tr><td class="row-label">Volume confirmation</td><td class="mono score-pass">4/5</td><td>OBV rising; institutional accumulation visible on breakouts</td></tr>
+        <tr><td class="row-label">Support/Resistance structure</td><td class="mono score-pass">4/5</td><td>Clear multi-level support; $295 (50-DMA) strong first support</td></tr>
+        <tr><td class="row-label">Pattern quality</td><td class="mono score-marg">3/5</td><td>Potential bull flag; needs confirmation with volume on breakout above $340</td></tr>
+        <tr><td class="row-label">Vs MA positioning</td><td class="mono score-pass">5/5</td><td>Golden cross active; price above all MAs; all MA signals Buy</td></tr>
+        <tr style="font-weight:700;background:rgba(255,95,31,.08)"><td class="row-label">TOTAL</td><td class="mono" style="color:var(--green)">24/30 (80%)</td><td>Technically STRONG — stock in an uptrend with healthy consolidation. Not overbought.</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;background:var(--blue-bg);border-radius:8px;padding:10px;font-size:12px;color:var(--blue)">
+      Technical verdict: Bullish structure intact. RSI neutral (not overbought) after massive run — healthy consolidation. For long-term BQV investors, technicals would confirm an entry around 50-DMA test ($280–295) with RSI correcting toward 40.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 8: SHAREHOLDING / OWNERSHIP ═══ -->
+<div id="tab8" class="tab-content">
+  <div class="section-title">Ownership Structure &amp; Institutional Analysis</div>
+  <div style="background:var(--blue-bg);border-radius:8px;padding:10px;margin-bottom:14px;font-size:12px;color:var(--blue)">
+    US stock: No promoter structure. Ownership analysis covers institutional holders, index inclusion, insider activity. Data <span class="oi-tag tag-v">VERIFIED</span> from SEC 13F/13G filings and FINTEL.
+  </div>
+
+  <div class="grid-2">
+    <div class="card card-cyan">
+      <div class="card-title">A — Major Institutional Holders <span class="oi-tag tag-v">VERIFIED (Mar 2026)</span></div>
+      <table class="data-table">
+        <thead><tr><th>Holder</th><th>Filing</th><th>Ownership %</th></tr></thead>
+        <tbody>
+          <tr><td class="row-label">Vanguard Group</td><td>13G (04/30/2026)</td><td class="mono" style="font-weight:700">7.48% (28.64M sh)</td></tr>
+          <tr><td class="row-label">BlackRock, Inc.</td><td>13G/A (2026)</td><td class="mono">&gt;5% (various ent.)</td></tr>
+          <tr><td class="row-label">State Street Corp</td><td>13F</td><td class="mono">~4–5% est.</td></tr>
+          <tr><td class="row-label">Fidelity (FMR LLC)</td><td>13G</td><td class="mono">Major holder</td></tr>
+          <tr><td class="row-label">T. Rowe Price</td><td>13F</td><td class="mono">Major holder</td></tr>
+          <tr><td class="row-label">Geode Capital Mgmt</td><td>13F</td><td class="mono">Index-passive</td></tr>
+          <tr><td class="row-label">Morgan Stanley</td><td>13F</td><td class="mono">Major holder</td></tr>
+          <tr><td class="row-label">Jane Street Group</td><td>13F</td><td class="mono">Liquidity provider</td></tr>
+          <tr><td class="row-label">Invesco Ltd</td><td>13F</td><td class="mono">Major holder</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;background:var(--green-bg);border-radius:6px;padding:8px;font-size:12px;color:var(--green)">
+        <strong>Total institutional ownership: ~94.42%</strong> (Jul 2025 data). Effectively float-dominant institutional holding — minimal retail float.
+      </div>
+    </div>
+    <div class="card card-orange">
+      <div class="card-title">B — Index Inclusion &amp; Passive Flow</div>
+      <div class="tech-row"><span>S&amp;P 500</span><span class="mono score-pass">✓ INCLUDED</span></div>
+      <div class="tech-row"><span>S&amp;P 500 weight (est.)</span><span class="mono">~0.25% <span class="oi-tag tag-e">E</span></span></div>
+      <div class="tech-row"><span>Market Cap vs S&amp;P 500</span><span class="mono">~$126B → mid-large cap</span></div>
+      <div class="tech-row"><span>ETF exposure (est.)</span><span class="mono">SPY, IVV, VOO, XLI (Industrials ETF)</span></div>
+      <div class="tech-row"><span>ETF demand signal</span><span class="mono score-pass">POSITIVE — S&amp;P 500 incl. = mandatory buys from passives</span></div>
+      <div style="margin-top:12px;background:var(--bg);border-radius:8px;padding:12px;font-size:13px">
+        <strong>Index inclusion significance:</strong> VRT's addition to S&amp;P 500 created a structural demand floor — all passive S&amp;P 500 index funds must hold VRT proportional to its market cap weight. This anchors the stock against speculative selloffs. ~$100–120B of passive S&amp;P 500 AUM will auto-accumulate on any market-cap-driven rebalancing upward.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card card-chrome">
+      <div class="card-title">C — Insider Activity <span class="oi-tag tag-v">VERIFIED (SEC filings)</span></div>
+      <div class="tech-row"><span>Insider transactions (12 mo)</span><span class="mono">13 total transactions</span></div>
+      <div class="tech-row"><span>Tax-related disposals</span><span class="mono" style="color:var(--amber)">3 (total $460,048)</span></div>
+      <div class="tech-row"><span>Stock awards (zero cost)</span><span class="mono" style="color:var(--green)">10 grants</span></div>
+      <div class="tech-row"><span>Open-market purchases</span><span class="mono" style="color:var(--muted)">0 (no open-market buys)</span></div>
+      <div class="tech-row"><span>Anomalies flagged</span><span class="mono score-pass">NONE ✓</span></div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">
+        Insider disposals are tax-related (withholding on RSU vesting) — standard practice, not a bearish signal. No open-market purchases is neutral at these premium price levels. Overall insider picture is clean.
+      </div>
+    </div>
+    <div class="card card-green">
+      <div class="card-title">D — Ownership Momentum &amp; Risk Scores</div>
+      <div class="grid-2" style="margin-bottom:12px">
+        <div style="text-align:center;background:var(--bg);border-radius:8px;padding:14px">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Ownership Momentum</div>
+          <div class="mono" style="font-size:28px;font-weight:700;color:var(--green)">72/100</div>
+          <div style="font-size:11px;color:var(--muted)">High institutional conviction. S&amp;P 500 inclusion adds structural demand.</div>
+        </div>
+        <div style="text-align:center;background:var(--bg);border-radius:8px;padding:14px">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Shareholding Risk</div>
+          <div class="mono" style="font-size:28px;font-weight:700;color:var(--amber)">48/100</div>
+          <div style="font-size:11px;color:var(--muted)">94% institutional = synchronized selling risk if sentiment turns. Concentration risk.</div>
+        </div>
+      </div>
+      <div style="background:var(--amber-bg);border-radius:8px;padding:10px;font-size:12px;color:var(--amber)">
+        <strong>Ownership risk note:</strong> 94% institutional ownership means a sentiment shift (e.g., hyperscaler CapEx cut guidance) could trigger synchronized institutional selling — amplifying price moves to the downside. The upside of this structure is that institutional accumulation confirms quality; the risk is forced selling by index funds during rebalancing.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAB 9: AI INTELLIGENCE ═══ -->
+<div id="tab9" class="tab-content">
+  <div class="section-title">AI Intelligence — Full Analysis</div>
+
+  <!-- 9A: AI CLASSIFICATION DASHBOARD -->
+  <div class="card card-cyan" style="background:linear-gradient(135deg,#0A1628,#0F2A4A);color:var(--text)">
+    <div class="card-title" style="color:var(--cyan)">A — AI Classification Dashboard</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+      <div style="background:rgba(255,95,31,.15);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(255,95,31,.3)">
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:4px">CATEGORY</div>
+        <div style="font-size:20px;font-weight:800;color:var(--orange)">CAT B</div>
+        <div style="font-size:11px;color:var(--chrome-lt)">High-Growth Global Compounder</div>
+      </div>
+      <div style="background:rgba(0,196,224,.15);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(0,196,224,.35)">
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:4px">AI OVERLAY</div>
+        <div style="font-size:20px;font-weight:800;color:var(--cyan)">🟢 WIDENER</div>
+        <div style="font-size:11px;color:var(--chrome-lt)">AI deepens moat structurally</div>
+      </div>
+      <div style="background:rgba(245,158,11,.15);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,158,11,.35)">
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:4px">FLYWHEEL</div>
+        <div style="font-size:20px;font-weight:800;color:#FCD34D">FORMING ★★★</div>
+        <div style="font-size:11px;color:var(--chrome-lt)">2/3 conditions confirmed</div>
+      </div>
+      <div style="background:rgba(29,78,216,.15);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(29,78,216,.35)">
+        <div style="font-size:11px;color:var(--chrome);margin-bottom:4px">AI PHASE</div>
+        <div style="font-size:20px;font-weight:800;color:#93C5FD">PHASE 3</div>
+        <div style="font-size:11px;color:var(--chrome-lt)">Mass Infrastructure Deployment</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;background:rgba(0,196,224,.08);border-radius:8px;padding:14px;font-size:13px;color:var(--chrome-lt);line-height:1.6">
+      <strong style="color:var(--cyan)">Phase 3 Evidence:</strong> GPU rack power densities have crossed 120–150 kW — traditional air cooling is physically impossible at this density. Liquid cooling has become the <em>default</em> design choice for all new hyperscale AI data centers (H2 2026 Blackwell GPU ramp expected to accelerate). Orders growing 60% YoY in Q3 2025 and 252% YoY in Q4 2025 demonstrate demand explosion characteristic of Phase 3 adoption. Vertiv's 360AI suite, 800V DC architecture, and CoolPhase Flex are all directly aligned with Phase 3 requirements. <span class="oi-tag tag-e">ESTIMATED (Phase assessment)</span>
+    </div>
+  </div>
+
+  <!-- 9B: DATA FLYWHEEL DEEP DIVE -->
+  <div class="card card-orange">
+    <div class="card-title">B — Data Flywheel Deep-Dive</div>
+    <div class="grid-2">
+      <div>
+        <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:10px;font-size:13px">
+          <div style="font-weight:700;color:var(--cyan);margin-bottom:6px">Q1 — What is Vertiv's Proprietary Training Data?</div>
+          <strong>Volume:</strong> Thousands of data centers across 130+ countries, monitoring millions of power and cooling units continuously.<br>
+          <strong>Uniqueness:</strong> Real-world thermal profiles, power draw curves, failure event sequences, maintenance histories — competitors (Schneider, Eaton) have similar but smaller datasets. PurgeRite acquisition (Dec 2025) adds proprietary fluid chemistry degradation data from coolant loops — this is genuinely harder to replicate.<br>
+          <strong>Recency:</strong> Real-time telemetry via connected monitoring systems.<br>
+          <strong>Outcome labels:</strong> Failure events with precise timestamp and cause — valuable for predictive models. <span class="oi-tag tag-e">ESTIMATED — extrapolated from Next Predict product disclosures</span>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:10px;font-size:13px">
+          <div style="font-weight:700;color:var(--cyan);margin-bottom:6px">Q2 — How Does AI Improve with More Users?</div>
+          Next Predict (launched Jan 2025) uses operational telemetry to predict equipment failures and optimize maintenance scheduling. More installations = more failure event data = better anomaly detection models. Vertiv explicitly states this product "monitors the condition of equipment, machinery and cooling systems, detecting potential faults." The improvement mechanism is clear, but <strong>no public metric has yet confirmed the improvement rate</strong>. <span class="oi-tag tag-e">ESTIMATED</span>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:14px;font-size:13px">
+          <div style="font-weight:700;color:var(--cyan);margin-bottom:6px">Q3 — Does Better AI Attract More Users?</div>
+          This is the weakest link in Vertiv's flywheel. Data center managers purchase hardware primarily on specifications, lead times, and pricing — not on analytics quality. Better Next Predict AI <em>reduces churn</em> (increases service renewal rates) but does not yet function as a primary purchase driver. The feedback loop exists but runs slowly. <strong>Verdict: Loop speed is LOW.</strong> This prevents CONFIRMED status.
+        </div>
+      </div>
+      <div>
+        <!-- FLYWHEEL SCORE -->
+        <div style="background:linear-gradient(135deg,#0A1628,#0F2A4A);border-radius:12px;padding:20px;color:var(--text);border:1.5px solid rgba(0,196,224,.35)">
+          <div style="font-size:14px;font-weight:700;color:var(--cyan);margin-bottom:12px">Flywheel Scorecard</div>
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--chrome);margin-bottom:4px">
+              <span>Data Quality (volume / uniqueness / recency / outcomes)</span><span class="mono">2.0 / 3</span>
+            </div>
+            <div class="ai-score-bar"><div class="ai-score-fill" style="width:67%"></div></div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--chrome);margin-bottom:4px">
+              <span>AI Improvement Evidence (Next Predict, anomaly detection)</span><span class="mono">2.5 / 4</span>
+            </div>
+            <div class="ai-score-bar"><div class="ai-score-fill" style="width:63%"></div></div>
+          </div>
+          <div style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--chrome);margin-bottom:4px">
+              <span>Loop Speed (how fast better AI → more customers)</span><span class="mono">2.0 / 3</span>
+            </div>
+            <div class="ai-score-bar"><div class="ai-score-fill" style="width:67%"></div></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,196,224,.12);border-radius:8px;padding:12px">
+            <div>
+              <div style="font-size:11px;color:var(--chrome)">TOTAL FLYWHEEL SCORE</div>
+              <div class="mono" style="font-size:28px;font-weight:800;color:var(--cyan)">6.5 / 10</div>
+            </div>
+            <div style="text-align:right">
+              <span class="flywheel-badge fw-forming">FORMING ★★★</span>
+              <div style="font-size:11px;color:var(--chrome);margin-top:4px">2/3 core criteria met</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:12px;color:var(--chrome);line-height:1.6">
+            <strong>Path to CONFIRMED:</strong> Vertiv needs to (1) publicly disclose Next Predict accuracy improvement metrics correlated with install base growth, and (2) demonstrate that service renewal rates are materially higher for connected units vs non-connected. Monitor Q3/Q4 2026 earnings calls for relevant disclosures.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9C: AI VALUE CHAIN POSITION -->
+  <div class="card card-cyan">
+    <div class="card-title">C — AI Value Chain Position</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:14px">
+      <div style="background:var(--bg);border-radius:6px;padding:10px;text-align:center;font-size:11px">
+        <div style="font-weight:700;color:var(--muted)">Level 1</div>
+        <div style="color:var(--muted)">Infrastructure</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">NVIDIA, AMD, TSMC (chips + fabs)</div>
+      </div>
+      <div style="background:var(--bg);border-radius:6px;padding:10px;text-align:center;font-size:11px">
+        <div style="font-weight:700;color:var(--muted)">Level 2</div>
+        <div style="color:var(--muted)">Foundation Models</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">OpenAI, Anthropic, Google DeepMind</div>
+      </div>
+      <div style="background:var(--bg);border-radius:6px;padding:10px;text-align:center;font-size:11px">
+        <div style="font-weight:700;color:var(--muted)">Level 3</div>
+        <div style="color:var(--muted)">Platforms</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">AWS, Azure, GCP, CoreWeave</div>
+      </div>
+      <div style="background:var(--bg);border-radius:6px;padding:10px;text-align:center;font-size:11px">
+        <div style="font-weight:700;color:var(--muted)">Level 4</div>
+        <div style="color:var(--muted)">Vertical Apps</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">Copilot, Salesforce AI, ServiceNow</div>
+      </div>
+      <div style="background:rgba(0,196,224,.15);border-radius:6px;padding:10px;text-align:center;font-size:11px;border:2px solid var(--cyan)">
+        <div style="font-weight:800;color:var(--cyan)">⚡ LEVEL 5</div>
+        <div style="color:var(--text);font-weight:600">AI-Enabled Incumbent</div>
+        <div style="font-size:10px;color:var(--cyan);margin-top:3px"><strong>VERTIV — here</strong><br>Critical physical infrastructure for AI compute</div>
+      </div>
+    </div>
+    <div style="background:var(--bg);border-radius:8px;padding:14px;font-size:13px">
+      <div style="font-weight:700;color:var(--midnight);margin-bottom:6px">Level 5 Investment Implications</div>
+      <strong>Horizon:</strong> 7–10 years (Level 5 incumbents compound over the longest period as they serve every layer above them).<br>
+      <strong>Risk profile:</strong> Lower than Level 4 (apps can be displaced by model improvements). Level 5 risks are primarily macro-driven (capex cycles) rather than technological obsolescence.<br>
+      <strong>Moat durability:</strong> Physical infrastructure has longer replacement cycles than software. A data center built with Vertiv UPS and cooling has a 10–15 year lifecycle.<br>
+      <strong>Revenue model:</strong> Capex-intensive initial sale + recurring services (maintenance, fluid management, monitoring). Services growing as % of revenue — structural moat deepening.
+    </div>
+  </div>
+
+  <!-- 9D: GLOBAL AI OPPORTUNITY (analogous to India AI section for non-India stocks) -->
+  <div class="card card-chrome">
+    <div class="card-title">D — Global AI Infrastructure Opportunity (US-centric analysis)</div>
+    <div class="grid-2" style="font-size:13px">
+      <div style="background:var(--green-bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--green);margin-bottom:4px">✅ Hyperscaler AI CapEx</div>
+        AWS+Azure+Google+Meta combined CapEx guidance for 2026: $250–300B+. Every dollar of hyperscaler AI CapEx drives proportional Vertiv spending on power and cooling (~15–20% of total data center build cost goes to Vertiv's addressable market).
+      </div>
+      <div style="background:var(--green-bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--green);margin-bottom:4px">✅ Sovereign AI Tailwind</div>
+        Nations building domestic AI infrastructure (Saudi Arabia, UAE, India, EU member states) represent new demand beyond the Big Three hyperscalers. Vertiv's 130+ country presence positions it uniquely for sovereign AI contract wins.
+      </div>
+      <div style="background:var(--green-bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--green);margin-bottom:4px">✅ Liquid Cooling Mandate</div>
+        NVIDIA Blackwell and Rubin GPU architectures are designed with liquid cooling as the primary thermal solution. Vertiv is NVIDIA's co-development partner — being designed into the reference architecture is the strongest possible positioning.
+      </div>
+      <div style="background:var(--amber-bg);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:var(--amber);margin-bottom:4px">⚠ Edge &amp; Enterprise AI Risk/Opportunity</div>
+        Edge AI deployments (smaller, distributed) may use different thermal solutions — opportunity for VRT's prefabricated/containerised solutions (SmartRun, OneCore), or a potential reduction in per-unit content if rack densities in enterprise remain lower than hyperscale.
+      </div>
+    </div>
+  </div>
+
+  <!-- 9F: AI OPPORTUNITY SCORE -->
+  <div class="card card-orange" style="background:var(--midnight);color:var(--text)">
+    <div class="card-title" style="color:var(--orange)">F — AI Opportunity Score /100</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px">
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--chrome)">Data Flywheel</div>
+        <div class="mono" style="font-size:24px;font-weight:700;color:var(--cyan)">13/20</div>
+        <div style="font-size:10px;color:var(--chrome)">FORMING, not CONFIRMED</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--chrome)">Adoption Phase Timing</div>
+        <div class="mono" style="font-size:24px;font-weight:700;color:var(--cyan)">18/20</div>
+        <div style="font-size:10px;color:var(--chrome)">Phase 3 — peak demand cycle</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--chrome)">Value Chain Position</div>
+        <div class="mono" style="font-size:24px;font-weight:700;color:var(--cyan)">15/20</div>
+        <div style="font-size:10px;color:var(--chrome)">Level 5 — durable but hardware not software</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--chrome)">Global Structural Advantage</div>
+        <div class="mono" style="font-size:24px;font-weight:700;color:var(--cyan)">18/20</div>
+        <div style="font-size:10px;color:var(--chrome)">Hyperscaler + sovereign AI demand</div>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:8px;padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--chrome)">AI Threat Resistance</div>
+        <div class="mono" style="font-size:24px;font-weight:700;color:var(--cyan)">18/20</div>
+        <div style="font-size:10px;color:var(--chrome)">No software substitute for physical cooling</div>
+      </div>
+    </div>
+    <div style="text-align:center;background:rgba(0,196,224,.12);border-radius:10px;padding:20px">
+      <div style="font-size:12px;color:var(--chrome);margin-bottom:4px">TOTAL AI OPPORTUNITY SCORE</div>
+      <div class="mono" style="font-size:48px;font-weight:900;color:var(--cyan)">82 / 100</div>
+      <div class="ai-score-bar" style="max-width:300px;margin:10px auto">
+        <div class="ai-score-fill" style="width:82%"></div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:var(--orange);margin-top:8px">Portfolio Role: STRATEGIC (60–80 range)</div>
+      <div style="font-size:12px;color:var(--chrome);margin-top:4px">Investment horizon: 7–10 years (Level 5 incumbent). Position cap: 5–8% of portfolio at BUY.</div>
+      <div style="font-size:12px;color:var(--chrome-lt);margin-top:8px">Score held back from CORE (80–100) range primarily by FORMING (not CONFIRMED) flywheel and hardware layer (vs software moat). If flywheel confirms and margins sustainably cross 25%, score would rise to CORE territory, justifying further IV upgrade.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="background:var(--midnight);color:var(--chrome);padding:24px;text-align:center;font-size:11px;margin-top:24px;line-height:1.8">
+  <div style="margin-bottom:8px;font-weight:700;color:var(--orange)">Buffett Quality-Value Series v5.0 — Argus Research Framework</div>
+  <div><strong>SEC Disclaimer:</strong> This report is for informational purposes only and does not constitute investment advice, solicitation, or an offer to buy or sell any security. All statements regarding VRT are based on publicly available information as of June 28, 2026. Past performance is not indicative of future results. Investing involves risk, including possible loss of principal. The author/framework may hold or seek positions in securities discussed.</div>
+  <div style="margin-top:6px"><strong>Data Confidence:</strong> <span style="color:#86EFAC">[VERIFIED]</span> = SEC filing / live search this session · <span style="color:#FCD34D">[ESTIMATED]</span> = cross-referenced; high confidence · <span style="color:#FCA5A5">[UNVERIFIED]</span> = limited source. Price at analysis ~$325 is ESTIMATED from Jun 25–26, 2026 sources; verify before trading.</div>
+  <div style="margin-top:6px"><strong>Fonts:</strong> Inter (Google Fonts, SIL OFL 1.1) · JetBrains Mono (JetBrains, Apache 2.0)</div>
+  <div style="margin-top:6px;color:var(--chrome)">Report generated: June 28, 2026 · Ticker: VRT · NYSE · Category B · AI WIDENER · WATCH ★★★</div>
+</div>
+
+<!-- TAB SWITCHING JS -->
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
