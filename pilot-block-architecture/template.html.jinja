@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ ticker }} — {{ company }} | BQV {{ framework_version }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141018;
+  --onyx:#1c1622;
+  --platinum:#c9cdd6;
+  --silver:#e8e9ee;
+  --cyan:#7ff0e0;
+  --violet:#8b6bf0;
+  --white:#fbfbfd;
+  --green:#3fbf7f;
+  --amber:#e8a33d;
+  --red:#e0596b;
+  --grey:#8a8a95;
+  --card:#221a2b;
+  --card-b:#33283f;
+  --font-display:'Fraunces',serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-body:'Sora',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--white);color:var(--ink);font-family:var(--font-body);line-height:1.5;}
+a{color:inherit;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--ink) 0%,var(--onyx) 55%,#241a30 100%);color:var(--white);padding:26px 0 18px;position:relative;overflow:hidden;max-height:260px;}
+.hero::after{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(127,240,224,0.18),transparent 70%);}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
+.hero h1{font-family:var(--font-display);font-weight:700;font-size:2.1rem;letter-spacing:-0.5px;}
+.hero .ticker{font-family:var(--font-mono);color:var(--cyan);font-size:0.95rem;margin-top:2px;}
+.verdict-badge{background:linear-gradient(135deg,#2e2440,#3a2c52);border:1.5px solid var(--cyan);border-radius:10px;padding:8px 16px;text-align:right;}
+.verdict-badge .v{font-family:var(--font-display);font-weight:700;font-size:1.15rem;color:var(--cyan);}
+.verdict-badge .stars{color:var(--amber);letter-spacing:2px;}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.pill{font-family:var(--font-mono);font-size:0.72rem;padding:4px 10px;border-radius:20px;border:1px solid var(--card-b);background:rgba(255,255,255,0.06);}
+.pill.cat{border-color:var(--violet);color:#c3b3ff;}
+.pill.ai-widener{border-color:var(--green);color:#8fe3b5;}
+.pill.macro{border-color:var(--platinum);}
+.pill.verified{border-color:var(--green);color:#8fe3b5;}
+.pill.estimated{border-color:var(--amber);color:#f0c47f;}
+.hero-lede{margin-top:12px;font-size:0.92rem;color:var(--platinum);max-width:820px;}
+
+/* TAB BAR */
+#tab-bar{position:sticky;top:0;z-index:50;background:var(--white);border-bottom:1px solid #e2e2e8;overflow-x:auto;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+#tab-bar .wrap{display:flex;gap:2px;padding:0 20px;}
+.tab-btn{font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.3px;padding:12px 12px;background:none;border:none;border-bottom:3px solid transparent;color:#666;cursor:pointer;white-space:nowrap;}
+.tab-btn:hover{color:var(--ink);}
+.tab-btn.active{color:var(--ink);border-bottom-color:var(--violet);font-weight:600;}
+
+.tab-content{display:none;padding:26px 0 50px;}
+.tab-content.active{display:block;}
+h2.tabtitle{font-family:var(--font-display);font-size:1.5rem;margin-bottom:4px;}
+.sub{color:var(--grey);font-size:0.85rem;margin-bottom:18px;}
+h3{font-family:var(--font-display);font-size:1.1rem;margin:22px 0 10px;color:var(--onyx);}
+
+/* METRIC GRID */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;}
+.metric{background:var(--silver);border-left:4px solid var(--violet);border-radius:6px;padding:10px 12px;}
+.metric.g{border-left-color:var(--green);}
+.metric.a{border-left-color:var(--amber);}
+.metric.r{border-left-color:var(--red);}
+.metric .lbl{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.5px;color:#666;}
+.metric .val{font-family:var(--font-mono);font-weight:700;font-size:1.05rem;margin-top:2px;}
+
+table{width:100%;border-collapse:collapse;margin:10px 0 20px;font-size:0.85rem;}
+th,td{padding:8px 10px;border-bottom:1px solid #e6e6ec;text-align:left;}
+th{background:#f4f2f8;font-family:var(--font-mono);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.4px;}
+tr:hover{background:#faf9fc;}
+
+.card{background:#faf9fc;border:1px solid #e6e2ee;border-radius:10px;padding:16px;margin:12px 0;}
+.card.dark{background:var(--ink);color:var(--white);border:none;}
+.flywheel-box{background:linear-gradient(135deg,#1c1622,#241a30);color:var(--white);border-radius:12px;padding:20px;margin:16px 0;border:1.5px solid var(--cyan);}
+.flywheel-box .score{font-family:var(--font-display);font-size:2.4rem;color:var(--cyan);}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-family:var(--font-mono);font-size:0.72rem;font-weight:700;}
+.badge.pass{background:#e2f7ec;color:#1f8a52;}
+.badge.marginal{background:#fdf1dc;color:#a4700f;}
+.badge.fail{background:#fbe4e6;color:#c23849;}
+.badge.confirmed{background:var(--cyan);color:#0a2620;}
+.badge.forming{background:#3a2c52;color:var(--cyan);border:1px solid var(--cyan);}
+.grade{font-family:var(--font-display);font-weight:700;font-size:1.8rem;}
+.stars-row{color:var(--amber);letter-spacing:2px;font-size:1rem;}
+.verdict-box{background:var(--ink);color:var(--white);border-left:6px solid var(--cyan);border-radius:8px;padding:22px;margin:18px 0;}
+.verdict-box .vtitle{font-family:var(--font-display);font-size:1.6rem;color:var(--cyan);}
+.verdict-box blockquote{margin-top:12px;font-style:italic;color:var(--platinum);border-left:2px solid var(--violet);padding-left:12px;}
+.cond-badge{display:inline-flex;align-items:center;gap:6px;background:#2e2440;border-radius:20px;padding:5px 12px;margin:4px 6px 4px 0;font-size:0.82rem;}
+.cond-badge .n{background:var(--cyan);color:#0a2620;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;}
+.gauge-wrap{display:flex;align-items:center;gap:16px;margin:14px 0;}
+.gauge{width:130px;height:130px;border-radius:50%;background:conic-gradient(var(--cyan) 0% var(--pct,60%),#3a2c52 var(--pct,60%) 100%);display:flex;align-items:center;justify-content:center;position:relative;}
+.gauge::after{content:'';position:absolute;width:96px;height:96px;background:var(--ink);border-radius:50%;}
+.gauge .num{position:relative;z-index:2;font-family:var(--font-display);font-size:1.5rem;color:var(--white);}
+.moat-star{color:var(--amber);}
+footer{background:var(--ink);color:var(--platinum);padding:30px 0;font-size:0.78rem;margin-top:30px;}
+.confbox{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:680px){.grid{grid-template-columns:1fr 1fr;}.hero h1{font-size:1.5rem;}}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}.hero-top{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="wrap">
+  <div class="hero-top">
+    <div>
+      <h1>{{ company }}</h1>
+      <div class="ticker">{{ market }}: {{ ticker }} &nbsp;|&nbsp; {{ sector_line }}</div>
+    </div>
+    <div class="verdict-badge">
+      <div class="v">{{ verdict }}</div>
+      <div class="stars">{{ '★' * stars }}{{ '☆' * (5 - stars) }}</div>
+    </div>
+  </div>
+  <div class="badge-row">
+    <span class="pill cat">CATEGORY {{ category }} — {{ category_label }}</span>
+    <span class="pill ai-widener">{{ ai_overlay }}</span>
+    <span class="pill macro">MACRO: {{ macro_composite }}</span>
+    <span class="pill verified">[VERIFIED] Price ₹{{ price }}</span>
+    {% if history_caveat %}<span class="pill estimated">{{ history_caveat }}</span>{% endif %}
+  </div>
+  <div class="hero-lede">{{ thesis | safe }}</div>
+</div></div>
+
+<div id="tab-bar"><div class="wrap">
+  <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro & Growth</button>
+  <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+  <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intelligence</button>
+</div></div>
+
+<div class="wrap">
+
+<!-- TAB 0 OVERVIEW -->
+<div class="tab-content active" id="t0">
+{{ blocks['overview'] | safe }}</div>
+
+<!-- TAB 1 MACRO & GROWTH -->
+<div class="tab-content" id="t1">
+{{ blocks['macro_growth'] | safe }}</div>
+
+<!-- TAB 2 FINANCIALS -->
+<div class="tab-content" id="t2">
+{{ blocks['financials'] | safe }}</div>
+
+<!-- TAB 3 MOAT -->
+<div class="tab-content" id="t3">
+{{ blocks['moat'] | safe }}</div>
+
+<!-- TAB 4 MANAGEMENT -->
+<div class="tab-content" id="t4">
+{{ blocks['management'] | safe }}</div>
+
+<!-- TAB 5 VALUATION -->
+<div class="tab-content" id="t5">
+{{ blocks['valuation'] | safe }}</div>
+
+<!-- TAB 6 VERDICT -->
+<div class="tab-content" id="t6">
+{{ blocks['verdict'] | safe }}</div>
+
+<!-- TAB 7 TECHNICAL -->
+<div class="tab-content" id="t7">
+{{ blocks['technical'] | safe }}</div>
+
+<!-- TAB 8 SHAREHOLDING -->
+<div class="tab-content" id="t8">
+{{ blocks['shareholding'] | safe }}</div>
+
+<!-- TAB 9 AI INTELLIGENCE -->
+<div class="tab-content" id="t9">
+{{ blocks['ai_intelligence'] | safe }}</div>
+
+</div>
+
+<footer><div class="wrap">
+{{ footer_note | safe }}
+</div></footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+document.getElementById('t0').style.display='block';
+</script>
+</body>
+</html>
