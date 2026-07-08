@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kusumgar Ltd — Buffett Quality-Value Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181C;
+    --ink-2:#1E252B;
+    --canvas:#EFEADD;
+    --canvas-2:#E4DCC8;
+    --rust:#D8571F;
+    --rust-dim:#B8471A;
+    --steel:#3E5C6E;
+    --khaki:#A98F5E;
+    --red:#C1443B;
+    --green:#4C7A5E;
+    --amber:#C98A2C;
+    --white:#FBF9F3;
+    --line: rgba(255,255,255,0.10);
+    --line-dark: rgba(20,24,28,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--canvas); color:var(--ink);
+    font-family:'Public Sans',sans-serif; font-size:15px; line-height:1.55;
+  }
+  h1,h2,h3,h4{ font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.02em; margin:0 0 10px; }
+  .mono{ font-family:'IBM Plex Mono',monospace; }
+  a{color:var(--rust);}
+
+  /* ---- HERO ---- */
+  .hero{
+    background: linear-gradient(160deg, var(--ink) 0%, var(--ink-2) 100%);
+    color: var(--white); padding: 22px 28px 16px; position:relative; overflow:hidden;
+    border-bottom: 4px solid var(--rust);
+  }
+  .hero::after{
+    content:""; position:absolute; right:-60px; top:-60px; width:260px; height:260px;
+    background: repeating-linear-gradient(45deg, rgba(216,87,31,0.10) 0 10px, transparent 10px 20px);
+    border-radius:50%;
+  }
+  .hero-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+  .hero-name{ font-size:30px; font-weight:700; margin:0; }
+  .hero-sub{ color:var(--khaki); font-size:12.5px; margin-top:2px; letter-spacing:0.06em; text-transform:uppercase; }
+  .verdict-badge{
+    background: var(--red); color:var(--white); font-family:'Oswald'; text-transform:uppercase;
+    font-weight:600; padding:8px 16px; border-radius:3px; font-size:14px; letter-spacing:0.03em;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.25) inset;
+  }
+  .badge-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .tag{
+    font-family:'IBM Plex Mono'; font-size:11px; text-transform:uppercase; letter-spacing:0.04em;
+    border:1px dashed rgba(255,255,255,0.4); padding:4px 9px; border-radius:2px; color:var(--white);
+    background: rgba(255,255,255,0.04);
+  }
+  .tag.orange{border-color: var(--rust); color:#FFD9C2;}
+  .tag.steel{border-color:#8FB2C4; color:#D6E8F0;}
+  .tag.green{border-color:#8FCBA6; color:#D6F0E1;}
+  .tag.grey{border-color:#9AA3A9; color:#E4E7E9;}
+  .lede{ margin-top:12px; font-size:14px; color:#D9D3C4; max-width:900px; }
+  .pill-row{ display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+  .pill{ font-family:'IBM Plex Mono'; font-size:10.5px; padding:2px 8px; border-radius:10px; }
+  .pill.verified{ background:rgba(76,122,94,0.25); color:#9FE0BB; border:1px solid var(--green);}
+  .pill.estimated{ background:rgba(201,138,44,0.22); color:#F0C878; border:1px solid var(--amber);}
+  .pill.unverified{ background:rgba(193,68,59,0.22); color:#F3A79E; border:1px solid var(--red);}
+
+  /* ---- TAB BAR ---- */
+  #tab-bar{
+    display:flex; overflow-x:auto; background:var(--ink); position:sticky; top:0; z-index:50;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .tab-btn{
+    background:none; border:none; color:#9BA3A8; font-family:'Oswald'; font-size:12.5px;
+    text-transform:uppercase; letter-spacing:0.03em; padding:12px 14px; cursor:pointer; white-space:nowrap;
+    border-bottom:3px solid transparent;
+  }
+  .tab-btn:hover{ color:var(--white); }
+  .tab-btn.active{ color:var(--white); border-bottom-color:var(--rust); }
+
+  /* ---- CONTENT ---- */
+  .wrap{ max-width:1080px; margin:0 auto; padding:22px 20px 60px; }
+  .tab-content{ display:none; }
+  .tab-content.first{ display:block; }
+  .card{
+    background:var(--white); border:1px solid var(--line-dark); border-radius:6px;
+    padding:16px 18px; margin-bottom:16px;
+  }
+  .card h3{ font-size:15px; color:var(--ink); border-bottom:2px solid var(--canvas-2); padding-bottom:8px; margin-bottom:12px;}
+  .grid{ display:grid; gap:12px; }
+  .grid-2{ grid-template-columns:repeat(2,1fr); }
+  .grid-3{ grid-template-columns:repeat(3,1fr); }
+  .grid-4{ grid-template-columns:repeat(4,1fr); }
+  @media(max-width:680px){ .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;} }
+
+  .metric{ border-left:3px solid var(--steel); padding:6px 10px; background:var(--canvas); border-radius:0 4px 4px 0;}
+  .metric.g{border-left-color:var(--green);}
+  .metric.r{border-left-color:var(--red);}
+  .metric.a{border-left-color:var(--amber);}
+  .metric .label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em; color:#6B6252; font-family:'IBM Plex Mono';}
+  .metric .value{ font-size:19px; font-weight:600; font-family:'Oswald'; }
+  .metric .note{ font-size:11px; color:#77705F; margin-top:2px;}
+
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th,td{ text-align:left; padding:7px 9px; border-bottom:1px solid var(--canvas-2); }
+  th{ font-family:'IBM Plex Mono'; font-size:10.5px; text-transform:uppercase; color:#6B6252; letter-spacing:0.03em;}
+  tr:last-child td{border-bottom:none;}
+  .num{ font-family:'IBM Plex Mono'; text-align:right; }
+
+  .swatch{
+    display:inline-block; font-family:'IBM Plex Mono'; font-size:10.5px; text-transform:uppercase;
+    padding:2px 7px; border-radius:2px; border:1px dashed currentColor;
+  }
+  .pass{ color:var(--green); } .marginal{ color:var(--amber); } .fail{ color:var(--red); }
+
+  .verdict-box{
+    background:var(--ink); color:var(--white); border:2px solid var(--red); border-radius:8px;
+    padding:20px; text-align:center; margin-bottom:16px;
+  }
+  .verdict-box .vname{ font-size:26px; font-family:'Oswald'; font-weight:700; letter-spacing:0.03em;}
+  .verdict-box .stars{ color:var(--khaki); font-size:15px; margin:6px 0;}
+  .verdict-box .quote{ font-style:italic; color:#C7BFAE; font-size:13px; max-width:640px; margin:10px auto 0;}
+
+  .cond{ display:flex; gap:10px; align-items:flex-start; margin-bottom:8px; }
+  .cond .n{ background:var(--steel); color:white; font-family:'IBM Plex Mono'; font-size:11px; width:20px; height:20px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;}
+
+  .flywheel-box{ border:2px dashed var(--khaki); border-radius:6px; padding:14px; background:#FBF6EA; }
+  .flywheel-box .score{ font-family:'Oswald'; font-size:22px; font-weight:700;}
+
+  .moat-card{ border:1px solid var(--line-dark); border-radius:6px; padding:12px; background:var(--canvas);}
+  .stars-out{ color:var(--rust); letter-spacing:2px; }
+
+  footer{ background:var(--ink); color:#9BA3A8; font-size:11.5px; padding:18px 20px; text-align:center; }
+  footer a{ color:var(--khaki); }
+
+  .conf-inline{ font-family:'IBM Plex Mono'; font-size:10px; padding:1px 5px; border-radius:8px; margin-left:5px;}
+  .conf-v{ background:rgba(76,122,94,0.15); color:var(--green); border:1px solid var(--green);}
+  .conf-e{ background:rgba(201,138,44,0.15); color:var(--amber); border:1px solid var(--amber);}
+  .conf-u{ background:rgba(193,68,59,0.15); color:var(--red); border:1px solid var(--red);}
+
+  .note-box{ background:#F3EEDF; border-left:3px solid var(--khaki); padding:10px 14px; font-size:13px; margin-bottom:14px; border-radius:0 4px 4px 0;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <p class="hero-name">Kusumgar Limited</p>
+      <p class="hero-sub">Engineered Technical Textiles · NSE / BSE (Listing) · Mainboard IPO</p>
+      <div class="badge-row">
+        <span class="tag orange">Category D — Special Situation</span>
+        <span class="tag grey">AI Overlay: ⚪ Neutral</span>
+        <span class="tag steel">Macro: Neutral / Mild Headwind</span>
+      </div>
+    </div>
+    <div class="verdict-badge">PASS</div>
+  </div>
+  <p class="lede">A 36-year-old niche manufacturer of engineered synthetic fabrics for aerospace, defence, automotive and outdoor use — genuine technical entry barriers, but a 100%-OFS IPO asking 44.8x FY26 earnings for a business whose profit just fell 12% on lumpy defence orders and whose cash conversion cratered in FY26.</p>
+  <div class="pill-row">
+    <span class="pill verified">VERIFIED — official filing / live search</span>
+    <span class="pill estimated">ESTIMATED — cross-referenced</span>
+    <span class="pill unverified">UNVERIFIED — limited source</span>
+  </div>
+</div>
+
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+  <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · IPO Mechanics</button>
+  <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intelligence</button>
+</div>
+
+<div class="wrap">
+
+<!-- TAB 0 OVERVIEW -->
+<div class="tab-content first" id="t0">
+  <div class="note-box"><b>Framework adaptation note:</b> Kusumgar is a fresh mainboard IPO (opens today, 8 Jul 2026) with no trading history. The standard BQV v5.0 template assumes 5-year financials, technical charts and 5-quarter shareholding trends — none of which exist yet. Tabs 7–8 are rebuilt around IPO-specific data (subscription, GMP, anchor book, pre/post-issue holding) instead of DMA/RSI/quarterly shareholding drift. Financial history is limited to 3 fiscal years (FY24–FY26) as disclosed in the RHP, so treat every valuation figure here as directional, not precise.</div>
+
+  <div class="card">
+    <h3>Business Overview <span class="conf-inline conf-v">VERIFIED</span></h3>
+    <p>Incorporated in 1990, Kusumgar Limited manufactures woven, coated and laminated <b>engineered synthetic fabrics</b> — high-performance textiles built on polyamide and polyester filaments with polyurethane chemistry, designed for tensile strength, waterproofing, flame resistance and abrasion resistance rather than fashion. The company has developed over 1,000 fabric SKUs across four segments: <b>Aerospace &amp; Defence Fabrics</b>, <b>Aerospace &amp; Defence Solutions</b> (finished products — parachute systems, camouflage, ballistic and rapid-deployment materials), <b>Industrial &amp; Automotive Fabrics</b>, and <b>Outdoor &amp; Lifestyle Fabrics</b> (its fabricator network supplies brands including Decathlon). Manufacturing runs across six facilities in Gujarat plus one fabrication unit in Uttar Pradesh, employing roughly 2,077 people including contract staff. Kusumgar holds technical/licensing partnerships with companies in the US, Italy, Japan, Switzerland and Taiwan covering parachute systems, camouflage fabrics, ballistic materials and custom yarn development.</p>
+  </div>
+
+  <div class="card">
+    <h3>Why Category D — Special Situation</h3>
+    <p>Kusumgar doesn't fit neatly into a steady-compounder box. It has a real moat component — aerospace/defence customer qualification cycles that reportedly run two to ten years, which is a genuine switching-cost barrier once a customer is won. But the P&amp;L behind that moat is lumpy: a single ₹205 crore order drove much of FY25's aerospace &amp; defence fabric revenue, and its absence pulled that segment down ~42% in FY26. Combined with a fresh listing, weak cash conversion, and a capital structure event (100% Offer for Sale, no fresh capital to the company), this reads as an event-driven special situation rather than a "buy and hold for a decade" compounder — hence Category D, with a correspondingly higher WACC (14–16%) and larger margin of safety (25%) than a Category A/C name would get.</p>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="metric"><div class="label">Issue Size</div><div class="value">₹650 Cr</div><div class="note">100% Offer for Sale</div></div>
+    <div class="metric"><div class="label">Price Band</div><div class="value">₹398–419</div><div class="note">Lot: 35 shares</div></div>
+    <div class="metric a"><div class="label">Implied P/E (FY26)</div><div class="value">44.8x</div><div class="note">on post-issue EPS ₹9.35</div></div>
+  </div>
+
+  <div class="card">
+    <h3>What's interesting</h3>
+    <p>Real, hard-to-copy entry barriers in a defence-adjacent niche; 60% gross margin and industry-leading 27%+ EBITDA margin even in a down revenue year; a well-subscribed-looking anchor book (₹193.95 Cr from 23 institutions including Nippon India MF, SBI MF, Blackrock and Goldman Sachs) <span class="conf-inline conf-v">VERIFIED</span>; and promoters retaining an estimated ~76% stake even after the OFS — this is not a full promoter exit.</p>
+    <h3 style="margin-top:14px;">What's challenging</h3>
+    <p>FY26 revenue and PAT both fell (-11%/-12%) right into the IPO window; operating cash flow conversion collapsed to ~29% of PAT on a receivables blowout; total debt rose sharply since FY24; a loan covenant was breached in FY25 (subsequently waived); customer concentration is high (top 10 = ~60% of revenue); and — critically — none of the ₹650 Cr raised goes to the company, so none of it funds the newly tripled manufacturing capacity currently running under 50% utilisation.</p>
+  </div>
+</div>
+
+<!-- TAB 1 MACRO & GROWTH -->
+<div class="tab-content" id="t1">
+  <div class="card">
+    <h3>Macro Cycle Dashboard <span class="conf-inline conf-v">VERIFIED</span></h3>
+    <table>
+      <tr><th>Dimension</th><th>Status</th><th>Read-through for Kusumgar</th></tr>
+      <tr><td>RBI Rate Cycle</td><td><span class="swatch marginal">Neutral / Cautious</span></td><td>Repo held at 5.25%; FY27 GDP forecast cut 6.9%→6.6%, CPI forecast raised 4.6%→5.1% (Jun 2026 MPC) — a slightly less benign backdrop than a quarter ago.</td></tr>
+      <tr><td>10-Yr G-Sec Yield</td><td class="mono">~6.7%</td><td>Sets the risk-free floor for WACC / earnings-yield comparisons below.</td></tr>
+      <tr><td>Government Capex / Defence Cycle</td><td><span class="swatch pass">Tailwind</span></td><td>Rising defence indigenisation spend and PLI/NTTM push for technical textiles directly support Kusumgar's core segments.</td></tr>
+      <tr><td>Input Cost Cycle</td><td><span class="swatch marginal">Neutral</span></td><td>Nylon/polyester feedstock is petrochemical-linked; no long-term raw-material supply agreements disclosed — a real margin risk factor.</td></tr>
+      <tr><td>Export / Global Trade Cycle</td><td><span class="swatch fail">Headwind</span></td><td>~40% of revenue is exports, ~10% to the US; FY26 commentary flags US tariff impact on that book.</td></tr>
+      <tr><td>AI Adoption Cycle</td><td><span class="swatch marginal">Neutral</span></td><td>Not an AI-relevant business; automation may aid manufacturing efficiency only, no product-level AI angle.</td></tr>
+    </table>
+    <p class="note" style="margin-top:8px;">Macro Composite: <b>Neutral-to-mild-headwind</b> · AI Cycle Impact: <b>Neutral</b></p>
+  </div>
+
+  <div class="card">
+    <h3>Sector Growth Derivation <span class="conf-inline conf-e">ESTIMATED</span></h3>
+    <p>Technical textiles isn't in the standard sector table, so this is built bottom-up from industry sources: India's technical textiles market grew from roughly ₹55,880 Cr (FY20) to ~₹99,000 Cr (FY26), and is projected to reach ~₹1.86 lakh Cr by FY31 — an implied <b>~13–14% CAGR</b>, driven by defence indigenisation, the National Technical Textiles Mission, PLI incentives, and "China+1" sourcing shifts.</p>
+    <table>
+      <tr><th>Scenario</th><th>Sector Growth (5yr)</th><th>Basis</th></tr>
+      <tr><td>Stress</td><td class="num">7–9%</td><td>Defence order deferrals persist; export/tariff drag continues</td></tr>
+      <tr><td>Base</td><td class="num">12–14%</td><td>Industry-level CAGR from FY20–31 projection</td></tr>
+      <tr><td>Accel</td><td class="num">17–20%</td><td>NTTM/PLI incentives + defence capex step-up materialise faster</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Company Alpha Over Sector</h3>
+    <table>
+      <tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+      <tr><td>Market share gain (defence qualification barrier)</td><td>Active</td><td class="num">+2%</td><td class="num">+1%</td></tr>
+      <tr><td>Premiumisation (value-added parachute/ballistic solutions mix)</td><td>Potential</td><td class="num">+1%</td><td class="num">+1%</td></tr>
+      <tr><td>Category expansion (paragliders, hot-air balloons, medical tapes)</td><td>Potential</td><td class="num">+1%</td><td class="num">+1%</td></tr>
+      <tr><td>Geographic expansion (exports, ~40% of revenue)</td><td>Active but tariff-exposed</td><td class="num">0%</td><td class="num">+1%</td></tr>
+      <tr><td>Pricing power</td><td>Unproven at scale</td><td class="num">0%</td><td class="num">0%</td></tr>
+      <tr><td>AI-driven alpha (6a+6b+6c)</td><td>N/A</td><td class="num">0%</td><td class="num">0%</td></tr>
+      <tr><td><b>Total alpha</b></td><td>—</td><td class="num"><b>+4%</b></td><td class="num"><b>+4%</b></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Growth Rate Summary Table</h3>
+    <table>
+      <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Accel</th></tr>
+      <tr><td>Macro state</td><td class="num">GDP ~5.5%</td><td class="num">GDP ~6.6%</td><td class="num">GDP ~7.5%+</td></tr>
+      <tr><td>Sector growth</td><td class="num">8%</td><td class="num">13%</td><td class="num">18%</td></tr>
+      <tr><td>Company alpha</td><td class="num">+2%</td><td class="num">+4%</td><td class="num">+6%</td></tr>
+      <tr><td>Stage 1 Revenue/FCF CAGR</td><td class="num">6–8%</td><td class="num">10–11%</td><td class="num">15–17%</td></tr>
+      <tr><td>Stage 2 CAGR</td><td class="num">5%</td><td class="num">7%</td><td class="num">10%</td></tr>
+      <tr><td>Terminal growth</td><td class="num">4.5%</td><td class="num">6%</td><td class="num">7.5%</td></tr>
+      <tr><td>Margin direction</td><td>Compress</td><td>Stable</td><td>Expand</td></tr>
+      <tr><td>Key risk</td><td>Order deferral + tariffs</td><td>Lumpy but resilient margins</td><td>Defence capex cycle broadens base</td></tr>
+    </table>
+    <p class="note" style="margin-top:8px;">Sensitivity: a 1% change in terminal growth moves DCF-implied value by roughly 8–10%; a 1% change in Stage-1 growth moves it by roughly 3–4%.</p>
+  </div>
+</div>
+
+<!-- TAB 2 FINANCIALS -->
+<div class="tab-content" id="t2">
+  <div class="note-box">Only 3 fiscal years (FY24–FY26) are available from the RHP-derived secondary sources — not the framework's usual 5. Some secondary sources show slightly different debt figures (₹223.6 Cr vs ₹246.5 Cr vs ₹288 Cr), likely reflecting gross vs. net or different reporting dates; treat exact debt figures as <span class="conf-inline conf-e">ESTIMATED</span> pending direct RHP confirmation.</div>
+
+  <div class="card">
+    <h3>3-Year Financial Snapshot (₹ Cr, consolidated) <span class="conf-inline conf-v">VERIFIED</span></h3>
+    <table>
+      <tr><th></th><th>FY24</th><th>FY25</th><th>FY26</th></tr>
+      <tr><td>Revenue from operations</td><td class="num">467.9</td><td class="num">779.0</td><td class="num">692.0</td></tr>
+      <tr><td>Total income</td><td class="num">474.6</td><td class="num">790.2</td><td class="num">711.8</td></tr>
+      <tr><td>EBITDA</td><td class="num">131.9</td><td class="num">188.4</td><td class="num">187.9</td></tr>
+      <tr><td>EBITDA margin</td><td class="num">27.8%</td><td class="num">24.2%</td><td class="num">27.2%</td></tr>
+      <tr><td>PAT</td><td class="num">84.4</td><td class="num">112.0</td><td class="num">98.2</td></tr>
+      <tr><td>PAT margin</td><td class="num">17.8%</td><td class="num">14.2%</td><td class="num">13.8%</td></tr>
+      <tr><td>Net worth</td><td class="num">140.4</td><td class="num">257.8</td><td class="num">503.0</td></tr>
+      <tr><td>Total assets</td><td class="num">584.7</td><td class="num">632.4</td><td class="num">905.1</td></tr>
+      <tr><td>Total borrowings (approx.)</td><td class="num">76–119</td><td class="num">246–302</td><td class="num">224–288</td></tr>
+      <tr><td>Operating cash flow</td><td class="num">n/a</td><td class="num" style="color:var(--red);">Negative</td><td class="num">~28</td></tr>
+      <tr><td>Trade receivables</td><td class="num">n/a</td><td class="num">56.0</td><td class="num">233.3</td></tr>
+      <tr><td>Working capital days</td><td class="num">n/a</td><td class="num">14</td><td class="num">90</td></tr>
+      <tr><td>ROE</td><td class="num">—</td><td class="num">—</td><td class="num">25.8%</td></tr>
+    </table>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Financial Fortress Scorecard</h3>
+      <table>
+        <tr><td>ROE ≥15% consistently</td><td><span class="swatch pass">PASS</span></td></tr>
+        <tr><td>ROIC &gt; WACC consistently</td><td><span class="swatch marginal">MARGINAL</span> <span class="note">(only 1 yr disclosed)</span></td></tr>
+        <tr><td>Net cash preferred</td><td><span class="swatch fail">FAIL</span> <span class="note">(net debt, rising since FY24)</span></td></tr>
+        <tr><td>Net profit margin ≥15%</td><td><span class="swatch marginal">MARGINAL</span> <span class="note">(13.8% FY26)</span></td></tr>
+        <tr><td>FCF positive + growing</td><td><span class="swatch fail">FAIL</span> <span class="note">(FY25 negative OCF)</span></td></tr>
+        <tr><td>FCF conversion ≥80% of NI</td><td><span class="swatch fail">FAIL</span> <span class="note">(~29% FY26)</span></td></tr>
+        <tr><td>Pricing power proven</td><td><span class="swatch marginal">MARGINAL</span></td></tr>
+        <tr><td>Revenue CAGR ≥ sector CAGR</td><td><span class="swatch marginal">MARGINAL</span> <span class="note">(lumpy, not linear)</span></td></tr>
+        <tr><td>Predictable / recurring revenue</td><td><span class="swatch fail">FAIL</span> <span class="note">(order-based, lumpy)</span></td></tr>
+        <tr><td>Capital-light model</td><td><span class="swatch fail">FAIL</span> <span class="note">(capex-heavy capacity build)</span></td></tr>
+        <tr><td>Dividend payout &lt;80% of OE</td><td><span class="swatch pass">PASS</span> <span class="note">(pre-IPO, minimal payout)</span></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Owner Earnings (FY26, ₹ Cr) <span class="conf-inline conf-e">ESTIMATED</span></h3>
+      <table>
+        <tr><td>Net Income</td><td class="num">98.2</td></tr>
+        <tr><td>+ D&amp;A (est.)</td><td class="num">~45</td></tr>
+        <tr><td>− Maintenance capex (est.)</td><td class="num">~(22)</td></tr>
+        <tr><td>± Working capital swing</td><td class="num" style="color:var(--red);">~(60)</td></tr>
+        <tr><td><b>Owner Earnings (conservative)</b></td><td class="num"><b>~61</b></td></tr>
+        <tr><td><b>Owner Earnings (normalised, ex-WC spike)</b></td><td class="num"><b>~90</b></td></tr>
+      </table>
+      <p class="note">FY26 owner earnings are heavily depressed by the receivables build-up. We show both a conservative (as-reported cash impact) and a normalised (assuming working capital reverts) figure; valuation uses the normalised figure with a quality haircut.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>O'Glove Earnings Quality Tests</h3>
+    <table>
+      <tr><th>Test</th><th>Result</th><th>Detail</th></tr>
+      <tr><td>1. FCF Conversion (CFO/NI)</td><td><span class="swatch fail">FAIL</span></td><td>~29% in FY26 vs. 80% threshold; FY25 CFO was negative</td></tr>
+      <tr><td>2. DSO Trend</td><td><span class="swatch fail">FAIL</span></td><td>Receivables +317% YoY (₹56 Cr → ₹233 Cr) on bulk Q4 recognitions</td></tr>
+      <tr><td>3. Inventory Days</td><td><span class="swatch marginal">MARGINAL</span></td><td>Not separately disclosed in secondary sources — confirm in RHP</td></tr>
+      <tr><td>4. Accounting Policy Stability</td><td><span class="swatch pass">PASS</span></td><td>No flagged restatements in sources reviewed</td></tr>
+      <tr><td>5. Gross Margin Consistency</td><td><span class="swatch pass">PASS</span></td><td>~60% gross margin held steady across the period</td></tr>
+    </table>
+    <p style="margin-top:10px;"><b>Overall Earnings Quality: <span style="color:var(--red);">SUSPECT</span></b> — quality-adjust earnings and widen margin of safety by an additional 5% versus the standard Category D setting.</p>
+  </div>
+</div>
+
+<!-- TAB 3 MOAT -->
+<div class="tab-content" id="t3">
+  <div class="grid grid-2">
+    <div class="moat-card">
+      <h4 style="margin-bottom:4px;">Customer Qualification Barrier <span class="stars-out">★★★★</span></h4>
+      <p class="note">Defence/aerospace customer approval cycles reportedly take 2–10 years; once qualified, switching suppliers means repeating that cycle. This is the single strongest source of durability in the business.</p>
+    </div>
+    <div class="moat-card">
+      <h4 style="margin-bottom:4px;">Technical / Process Know-how <span class="stars-out">★★★</span></h4>
+      <p class="note">Polyurethane-chemistry coating/lamination expertise, 1,000+ SKUs, international technical partnerships (US, Italy, Japan, Switzerland, Taiwan) covering parachute, ballistic and camouflage applications.</p>
+    </div>
+    <div class="moat-card">
+      <h4 style="margin-bottom:4px;">Scale / Cost Advantage <span class="stars-out">★★</span></h4>
+      <p class="note">Smallest company in its peer group by revenue per secondary broker notes; capacity just tripled but utilisation is under 50%, so scale economies are not yet being harvested.</p>
+    </div>
+    <div class="moat-card">
+      <h4 style="margin-bottom:4px;">Counter-pressure: Customer &amp; Order Concentration <span class="stars-out">★</span></h4>
+      <p class="note">Top customer ~11% of FY26 revenue, top 10 ~60%; a single order swing has moved a whole segment ±40% in one year. This works against the moat's durability in practice, even where it exists in principle.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>ROIC Trend (approximate)</h3>
+    <table>
+      <tr><th></th><th>FY24</th><th>FY25</th><th>FY26</th></tr>
+      <tr><td>ROIC (est.)</td><td class="num">~24%</td><td class="num">~22%</td><td class="num">~14%</td></tr>
+    </table>
+    <p class="note">FY26 ROIC compresses mechanically as the equity/asset base roughly doubled (new capex, retained earnings) while profit fell — a J-curve effect from the capacity build, not necessarily a permanent moat impairment. <span class="conf-inline conf-e">ESTIMATED</span></p>
+    <p style="margin-top:10px;"><b>Macro stress test:</b> in a defence-order-deferral / export-tariff stress scenario, this moat <b>HOLDS</b> rather than strengthens or weakens materially — qualification barriers don't erode quickly, but revenue lumpiness means earnings will still swing hard even if the moat itself is intact.</p>
+  </div>
+
+  <div class="flywheel-box">
+    <h3 style="margin-bottom:6px;">Data Flywheel Verdict</h3>
+    <p class="score" style="color:var(--khaki);">COSMETIC — 0/10</p>
+    <p class="note">This is a physical-goods manufacturer with no proprietary data asset, no usage-driven improvement loop, and no network effect. All three flywheel tests fail: no proprietary training data, no measurable improvement from scale of use, no self-reinforcing user/data loop. Not a knock on the business — most industrial manufacturers score here — just confirms this is a traditional-moat story, not a data-moat story.</p>
+  </div>
+
+  <div class="card">
+    <h3>Moat Threats</h3>
+    <p>Raw material supply risk (no long-term nylon/polyester supply agreements disclosed); geographic concentration (all six plants in Gujarat); tariff exposure on the ~10%-of-revenue US export book; and the risk that "growth" segments (outdoor/lifestyle, industrial/auto) that offset the FY26 defence decline are lower-barrier, more competitive categories than the core defence fabric business.</p>
+  </div>
+</div>
+
+<!-- TAB 4 MANAGEMENT -->
+<div class="tab-content" id="t4">
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Strengths</h3>
+      <p>Promoter family (Kusumgar) has run the business since 1990 with three decades of sector-specific expertise. Despite selling ₹650 Cr worth of shares via OFS, the promoter group is estimated to retain roughly <b>76% of the company post-listing</b> — this is a partial monetisation, not an exit. International co-development partnerships suggest credible technical relationships rather than a purely opportunistic listing.</p>
+    </div>
+    <div class="card">
+      <h3>Concerns</h3>
+      <p>The IPO is <b>100% Offer for Sale</b> — every rupee goes to the promoter selling shareholders, none to the company, even as the business just took on debt to triple processing capacity that's running under 50% utilised. A financial covenant on a ₹100 Cr loan was breached in FY25 (subsequently waived by the lender) — worth monitoring, not disqualifying on its own. Working capital deterioration (90 days vs. 14 days) occurred in the same year management chose to list and cash out partially.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Pledged Shares &amp; Capital Allocation</h3>
+    <p>No promoter share pledge was flagged in the secondary sources reviewed for this report <span class="conf-inline conf-u">UNVERIFIED</span> — confirm directly against the RHP's "Capital Structure" section before relying on this. Capital allocation to date: recent capex (~₹100 Cr) funded the Karanj facility capacity expansion via a mix of debt and internal accruals rather than equity, which is a reasonable choice for a profitable business but has pushed leverage up meaningfully since FY24.</p>
+  </div>
+  <div class="card">
+    <h3>Counter-cyclical Behaviour</h3>
+    <p>There's no pre-IPO trading history to assess promoter buying/selling behaviour through cycles. The one data point available — a full-OFS structure launched in the same year cash conversion weakened — is more naturally read as opportunistic timing (selling into strong sentiment / rich multiples) than as a vote of confidence at a value price.</p>
+  </div>
+</div>
+
+<!-- TAB 5 VALUATION -->
+<div class="tab-content" id="t5">
+  <div class="note-box">All figures below are framework-derived estimates built on a normalised owner-earnings base of ~₹88 Cr (FY26 PAT of ₹98.2 Cr, haircut for the SUSPECT earnings-quality flag), Category D parameters (WACC 15%, terminal P/E 15–18x, MoS ×0.70), and post-issue share count of ~10.50 Cr shares (derived from disclosed post-issue EPS of ₹9.35). Treat as directional, not a price target. <span class="conf-inline conf-e">ESTIMATED</span></p></div>
+
+  <div class="card">
+    <h3>Method 1 — DCF (2-Stage)</h3>
+    <table>
+      <tr><th>Year</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>Terminal</th></tr>
+      <tr><td>Owner Earnings (₹Cr, base 11% growth)</td><td class="num">97.7</td><td class="num">108.4</td><td class="num">120.4</td><td class="num">133.6</td><td class="num">148.3</td><td class="num">—</td></tr>
+      <tr><td>PV @ WACC 15%</td><td class="num">85.0</td><td class="num">81.9</td><td class="num">79.2</td><td class="num">76.4</td><td class="num">73.7</td><td class="num">868.5</td></tr>
+    </table>
+    <p style="margin-top:8px;">Sum of PVs ≈ ₹1,265 Cr equity value → <b>≈ ₹120/share</b> (terminal g = 6%)</p>
+    <table style="margin-top:10px;">
+      <tr><th>Sensitivity</th><th>WACC 14%</th><th>WACC 15%</th><th>WACC 16%</th></tr>
+      <tr><td>Terminal g = 5%</td><td class="num">₹126</td><td class="num">₹106</td><td class="num">₹91</td></tr>
+      <tr><td>Terminal g = 6%</td><td class="num">₹142</td><td class="num">₹120</td><td class="num">₹103</td></tr>
+      <tr><td>Terminal g = 7%</td><td class="num">₹163</td><td class="num">₹137</td><td class="num">₹117</td></tr>
+    </table>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Method 2 — Owner Earnings Capitalisation</h3>
+      <p>Value = OE / (Required Return − g) = 88 / (0.15 − 0.06)</p>
+      <p class="metric"><span class="value">≈ ₹93/share</span></p>
+    </div>
+    <div class="card">
+      <h3>Method 3 — ROIC / EPV</h3>
+      <p>EPV = NOPAT / WACC (no growth premium) ≈ 107 / 0.15</p>
+      <p class="metric"><span class="value">≈ ₹68/share</span></p>
+      <p class="note">This is the "current earning power, zero credit for growth" floor — deliberately conservative.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Method 4 — P/E Earnings Power</h3>
+      <p>Post-issue EPS ₹9.35 × Cat D terminal P/E (16.5x mid-point)</p>
+      <p class="metric"><span class="value">≈ ₹154/share</span></p>
+      <p class="note">MoS-adjusted entry (×0.70): ≈ ₹108/share</p>
+    </div>
+    <div class="card">
+      <h3>Method 5 — Earnings Yield vs. Bond Yield</h3>
+      <p>At ask price ₹419: earnings yield = 9.35/419 = <b>2.2%</b> vs. 10-yr G-Sec ~6.7%. The IPO asks investors to accept an earnings yield <i>below</i> the risk-free rate — a negative equity risk premium at issue price.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>5-Method Summary Table</h3>
+    <table>
+      <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th></tr>
+      <tr><td>DCF</td><td class="num">₹95</td><td class="num">₹120</td><td class="num">₹152</td></tr>
+      <tr><td>Owner Earnings Cap</td><td class="num">₹74</td><td class="num">₹93</td><td class="num">₹118</td></tr>
+      <tr><td>ROIC/EPV</td><td class="num">₹55</td><td class="num">₹68</td><td class="num">₹82</td></tr>
+      <tr><td>P/E Earnings Power</td><td class="num">₹120</td><td class="num">₹154</td><td class="num">₹191</td></tr>
+      <tr><td><b>Blended Base IV (avg of 4)</b></td><td class="num">₹86</td><td class="num"><b>₹97</b></td><td class="num">₹136</td></tr>
+      <tr><td>AI adjustment</td><td colspan="3">None — AI Overlay is NEUTRAL, no premium or discount applied</td></tr>
+    </table>
+    <p style="margin-top:10px;"><b>MoS Entry Zone (Base, ×0.70, further ×0.95 for SUSPECT earnings quality): ≈ ₹64–₹68/share</b>, against an IPO ask of ₹398–419/share.</p>
+  </div>
+
+  <div class="card">
+    <h3>Relative Valuation</h3>
+    <p>No listed pure-play peer exists for direct comparison, and Kusumgar has no own trading history. Broker notes describe it as the smallest company by revenue in its technical-textiles peer set, but with the highest EBITDA margin (~27%) and ROE (~26%). EV/EBITDA on the FY26 base works out to roughly <b>24x</b> — a growth-stock multiple applied to a company whose FY26 revenue and profit both declined. 🔴 <b>20%+ premium to what the quantitative methods above support.</b></p>
+  </div>
+</div>
+
+<!-- TAB 6 VERDICT -->
+<div class="tab-content" id="t6">
+  <div class="grid grid-4">
+    <div class="metric"><div class="label">Moat</div><div class="value">B-</div></div>
+    <div class="metric a"><div class="label">Quality</div><div class="value">C+</div></div>
+    <div class="metric r"><div class="label">Valuation</div><div class="value">D+</div></div>
+    <div class="metric"><div class="label">Management</div><div class="value">B-</div></div>
+  </div>
+
+  <div class="verdict-box" style="margin-top:16px;">
+    <div class="vname">PASS</div>
+    <div class="stars">★</div>
+    <p class="quote">"Price is what you pay, value is what you get." Here, the fabric is real — the price tag on it isn't.</p>
+  </div>
+
+  <div class="card">
+    <h3>Why PASS, not AVOID</h3>
+    <p>Nothing here rises to fraud, pledged-share distress, or an existential regulatory threat — the covenant breach was disclosed and waived, and the business itself has genuine margins and a real technical moat. But the valuation gap is too wide to call this a BUY or even a WATCH: the framework's blended base intrinsic value (~₹97/share) sits at roughly a quarter of the IPO ask (₹398–419), driven by a P/E more than double what Category D businesses typically command, weak FY26 cash conversion, and a fully-OFS structure that adds none of the proceeds to the balance sheet.</p>
+  </div>
+
+  <div class="card">
+    <h3>Upgrade Conditions (monitor post-listing)</h3>
+    <div class="cond"><span class="n">1</span><span>Post-listing price corrects into the ₹100–120/share zone (near blended base IV) — a 70%+ pullback from issue price, a high bar but the one the numbers support.</span></div>
+    <div class="cond"><span class="n">2</span><span>Operating cash flow conversion recovers above 80% of PAT for 2 consecutive quarters (working capital normalises).</span></div>
+    <div class="cond"><span class="n">3</span><span>Working capital cycle returns below ~30 days from the current 90.</span></div>
+    <div class="cond"><span class="n">4</span><span>Aerospace &amp; defence segment revenue stabilises with more than one large customer contributing, reducing single-order lumpiness.</span></div>
+    <div class="cond"><span class="n">5</span><span>Newly-tripled capacity utilisation climbs meaningfully above the current ~50%, evidencing the capex is being absorbed by real demand.</span></div>
+  </div>
+
+  <div class="card">
+    <h3>Series Tracker</h3>
+    <table>
+      <tr><th>Ticker</th><th>Category</th><th>Verdict</th><th>AI</th><th>Last Updated</th></tr>
+      <tr><td class="mono">KUSUMGAR</td><td>D</td><td>PASS</td><td>⚪</td><td class="mono">2026-07-08</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 7 IPO MECHANICS (replaces Technical) -->
+<div class="tab-content" id="t7">
+  <div class="note-box">There is no price chart, moving average, RSI, or volume history to analyse — Kusumgar has not traded yet. This tab replaces standard technicals with IPO-specific mechanics: subscription structure, GMP, and anchor book quality, plus framework-implied watch levels for after listing.</div>
+
+  <div class="grid grid-3">
+    <div class="metric"><div class="label">Opens</div><div class="value">8 Jul 2026</div></div>
+    <div class="metric"><div class="label">Closes</div><div class="value">10 Jul 2026</div></div>
+    <div class="metric"><div class="label">Listing (tentative)</div><div class="value">15 Jul 2026</div></div>
+  </div>
+
+  <div class="card">
+    <h3>Grey Market Premium (GMP) <span class="conf-inline conf-u">UNVERIFIED</span></h3>
+    <p>GMP has ranged roughly ₹92–₹171 over the past week, with the most recent readings clustering around ₹135–139 — implying an unofficial expected listing price near ₹555–560, a ~32–33% premium to the ₹419 upper band. GMP is unregulated, unofficial, and thinly traded — it reflects grey-market sentiment, not a reliable listing-gain forecast. It should never be the sole reason to apply.</p>
+  </div>
+
+  <div class="card">
+    <h3>Anchor Book Quality <span class="conf-inline conf-v">VERIFIED</span></h3>
+    <p>₹193.95 Cr raised from 23 institutional investors on 7 July 2026 at ₹419/share (46,28,877 shares, 30% of the total issue). Domestic mutual funds took 67.6% of the anchor book (Nippon India, SBI, WhiteOak, ICICI Prudential, Mirae Asset, Motilal Oswal, Bandhan, Tata, Axis MF across 18 schemes); foreign portfolio investors Blackrock Global Funds and Goldman Sachs India Equity Portfolio each took 10.3%; insurers Axis Max Life and Kotak Mahindra Life took the remaining 6.7%. This is a reasonably diversified, credible anchor book — a mild positive signal on institutional appetite, independent of the price debate.</p>
+  </div>
+
+  <div class="card">
+    <h3>Reservation &amp; Bidding Structure</h3>
+    <table>
+      <tr><th>Category</th><th>Allocation</th></tr>
+      <tr><td>QIB (incl. anchor)</td><td class="num">~50%</td></tr>
+      <tr><td>Non-Institutional (NII)</td><td class="num">~15%</td></tr>
+      <tr><td>Retail</td><td class="num">~35%</td></tr>
+      <tr><td>Employee reservation</td><td class="num">₹3.5 Cr @ ₹39 discount</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Trade Structure — Post-Listing Watch Levels (framework-implied, not a price prediction)</h3>
+    <table>
+      <tr><td>Framework Blended Fair Value (Base)</td><td class="num">₹97</td></tr>
+      <tr><td>MoS Entry Zone</td><td class="num">₹64–₹68</td></tr>
+      <tr><td>IPO Ask (Price Band)</td><td class="num">₹398–₹419</td></tr>
+      <tr><td>GMP-implied listing price</td><td class="num">~₹555–560</td></tr>
+    </table>
+    <p class="note" style="margin-top:8px;">If listing gains materialise as GMP suggests, the gap between market price and framework fair value would widen further, not close — this is a valuation call, not a listing-pop call. R:R for a "buy at listing" trade looks poor by this framework regardless of near-term price action.</p>
+  </div>
+</div>
+
+<!-- TAB 8 SHAREHOLDING (adapted) -->
+<div class="tab-content" id="t8">
+  <div class="note-box">No quarterly shareholding history exists pre-listing. This tab shows the pre/post-issue ownership shift instead of a 5-quarter trend.</div>
+
+  <div class="card">
+    <h3>Pre / Post-Issue Holding <span class="conf-inline conf-e">ESTIMATED</span></h3>
+    <table>
+      <tr><th></th><th>Pre-Issue</th><th>Post-Issue (est.)</th></tr>
+      <tr><td>Promoter &amp; Promoter Group</td><td class="num">90.48%</td><td class="num">~76%</td></tr>
+      <tr><td>Public (new IPO investors + anchor)</td><td class="num">9.52%</td><td class="num">~24%</td></tr>
+    </table>
+    <p class="note">Estimated using OFS size (1.55 Cr shares) against ~10.50 Cr post-issue shares outstanding (derived from disclosed post-issue EPS). Since this is a pure OFS, total share count is unchanged by the IPO — only ownership shifts from promoters to new investors.</p>
+  </div>
+
+  <div class="card">
+    <h3>Free Float &amp; Anchor Composition</h3>
+    <table>
+      <tr><td>Post-issue free float (est.)</td><td class="num">~24% of equity, ~₹1,050 Cr</td></tr>
+      <tr><td>Anchor share of total issue</td><td class="num">30.0%</td></tr>
+      <tr><td>Domestic MF share of anchor book</td><td class="num">67.6%</td></tr>
+      <tr><td>FPI share of anchor book</td><td class="num">20.6%</td></tr>
+      <tr><td>Insurance share of anchor book</td><td class="num">6.7%</td></tr>
+    </table>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Ownership Momentum Score</h3>
+      <p class="metric"><span class="value">58/100</span></p>
+      <p class="note">Moderate — promoter retains a strong majority post-issue (positive), but this is a first-time snapshot with no accumulation trend to confirm yet, and the OFS itself is a one-time selling event by insiders.</p>
+    </div>
+    <div class="card">
+      <h3>Shareholding Risk Score</h3>
+      <p class="metric r"><span class="value">44/100</span></p>
+      <p class="note">Elevated mainly due to concentrated promoter-family control (related-party dynamics typical of founder-run businesses) and the fact that the entire float is brand-new with no seasoning period.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 9 AI INTELLIGENCE -->
+<div class="tab-content" id="t9">
+  <div class="card">
+    <h3>AI Classification Dashboard</h3>
+    <div class="badge-row">
+      <span class="tag orange">Category D</span>
+      <span class="tag grey">AI Overlay: ⚪ Neutral</span>
+      <span class="tag grey">Flywheel: Cosmetic</span>
+      <span class="tag grey">Phase: 0</span>
+    </div>
+    <p style="margin-top:10px;">Kusumgar is a physical-goods, chemistry-and-process manufacturing business. There is no disclosed AI product, AI-driven customer acquisition, or AI-native competitive dynamic anywhere in its four segments. Per the tab-depth rule for AI-NEUTRAL names, this section stays brief — the dashboard above plus a short opportunity score below is the appropriate depth, not a full 6-section AI deep-dive.</p>
+  </div>
+  <div class="card">
+    <h3>AI Opportunity Score</h3>
+    <p class="metric"><span class="value">15/100</span></p>
+    <p class="note">Portfolio Role: <b>NEUTRAL</b>. Any AI relevance here would be internal manufacturing/quality-control automation efficiency gains — not a valuation-moving factor, and not modelled separately in this report.</p>
+  </div>
+</div>
+
+</div>
+
+<footer>
+  This report is generated for personal research purposes using a proprietary quality-value framework and publicly available secondary sources (RHP-derived data as reported by IPO research platforms, brokerages and financial media). It is not investment advice. Figures marked [ESTIMATED] or [UNVERIFIED] should be cross-checked against Kusumgar Limited's Red Herring Prospectus before any investment decision. Securities markets are subject to risk; past performance and IPO grey-market premiums are not indicative of future returns. Data as of 8 July 2026.
+  <br>Fonts: Oswald, Public Sans, IBM Plex Mono (Google Fonts).
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
