@@ -1,0 +1,37 @@
+═══════════════════════════════════════════════════════════
+CONTEXT — ARGUS REPORTS RESEARCH PIPELINE
+═══════════════════════════════════════════════════════════
+This is my personal stock research pipeline, built on my own
+private GitHub repo: dayanandmewara/Argus_reports. I'm the sole
+owner of both the repo and the token below.
+What this workflow does, so intent is clear upfront:
+- Reads prompts/MASTER_BQV_V50.md from my repo — my own research
+  methodology that I wrote and maintain — and uses it as the
+  analysis framework for each report.
+- Writes two files back after each report: the HTML report and a
+  JSON data record. Keeps my research archive versioned and in
+  sync with a dashboard I use.
+The token is a fine-grained GitHub PAT, scoped only to
+Contents: Read/write on this one repo — it can't touch anything
+else in my account.
+═══════════════════════════════════════════════════════════
+WORKFLOW
+═══════════════════════════════════════════════════════════
+Repo:   dayanandmewara/Argus_reports
+Auth:   token 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
+Note- I regenerate and rotate the token periodically
+BEFORE EVERY REPORT — read my methodology:
+curl -s -H "Authorization: Bearer [AUTH]" \
+     -H "Accept: application/vnd.github.v3.raw" \
+     "https://api.github.com/repos/dayanandmewara/Argus_reports/contents/prompts/MASTER_BQV_V50.md"
+Apply this as the framework for analysis, classification, and valuation.
+AFTER EVERY REPORT — push two files (schema is defined inside the
+methodology file itself):
+FILE 1: stock-reports/[TICKER]_qv_report.html  ← HTML from present_files
+FILE 2: data/stocks/[TICKER].json              ← 22-field record
+PROCEDURE (each file):
+1. GET {PATH} → capture "sha" if 200, skip if 404
+2. PUT {PATH} → {"message":"Update [TICKER]","content":"<base64>","sha":"<if 200>"}
+tracker.csv auto-rebuilds from the JSON files via GitHub Action —
+never edit it directly.
+═══════════════════════════════════════════════════════════  
