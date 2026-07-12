@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OKLO — Buffett Quality-Value Series v5.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Share+Tech+Mono&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060D18;
+  --surface: #0A1828;
+  --surface2: #0F2138;
+  --border: #1A3550;
+  --green: #00E5A0;
+  --orange: #FF6B2B;
+  --blue: #2196F3;
+  --red: #FF4444;
+  --gold: #FFB800;
+  --text: #DFF0FA;
+  --text2: #7BADC8;
+  --text3: #4A7A9B;
+  --pass: #00E5A0;
+  --marginal: #FFB800;
+  --fail: #FF4444;
+  --font-display: 'Aldrich', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'Jost', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;min-height:100vh}
+::selection{background:var(--green);color:#000}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#020810 0%,#0A1828 40%,#0D2240 70%,#081A32 100%);padding:32px 28px 22px;position:relative;overflow:hidden;max-height:220px}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 30%,rgba(0,229,160,.07) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(255,107,43,.04) 0%,transparent 60%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;position:relative;z-index:1}
+.hero-ticker{font-family:var(--font-mono);font-size:11px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.hero-name{font-family:var(--font-display);font-size:28px;color:#fff;letter-spacing:1px;line-height:1.1;margin-bottom:8px}
+.hero-lede{font-size:13px;color:var(--text2);max-width:580px;line-height:1.5}
+.badge-stack{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.verdict-badge{background:linear-gradient(135deg,#FFB800,#FF8C00);color:#000;font-family:var(--font-display);font-size:12px;padding:8px 14px;border-radius:6px;text-align:center;line-height:1.3}
+.verdict-stars{font-size:16px}
+.cat-badge{background:rgba(0,229,160,.15);border:1px solid rgba(0,229,160,.4);color:var(--green);font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:4px;text-align:center}
+.ai-badge{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.3);color:var(--green);font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:4px}
+.price-row{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+.price-pill{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:6px 12px;font-family:var(--font-mono);font-size:11px;color:var(--text2)}
+.price-pill span{color:var(--text);font-size:13px;margin-left:4px}
+.conf-pill{display:inline-block;font-size:9px;font-family:var(--font-mono);padding:2px 6px;border-radius:3px;margin-left:4px;text-transform:uppercase}
+.conf-v{background:rgba(0,229,160,.2);color:var(--green);border:1px solid rgba(0,229,160,.3)}
+.conf-e{background:rgba(255,184,0,.15);color:var(--gold);border:1px solid rgba(255,184,0,.3)}
+.conf-u{background:rgba(255,68,68,.15);color:var(--red);border:1px solid rgba(255,68,68,.3)}
+
+/* Tab bar */
+#tab-bar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto;white-space:nowrap}
+.tab-btn{display:inline-block;padding:12px 16px;font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;user-select:none}
+.tab-btn:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.tab-btn.active{color:var(--green);border-bottom-color:var(--green)}
+.tab-content{display:none;padding:24px 20px;max-width:1100px;margin:0 auto}
+.tab-content.active-tab{display:block}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:16px}
+.card-title{font-family:var(--font-display);font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--orange);margin-bottom:12px}
+.section-title{font-family:var(--font-display);font-size:14px;color:var(--green);letter-spacing:1px;margin:20px 0 12px;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:6px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
+/* Metric cards */
+.metric{background:var(--surface2);border-radius:6px;padding:14px;border-left:3px solid var(--border)}
+.metric.green{border-left-color:var(--green)}
+.metric.orange{border-left-color:var(--orange)}
+.metric.red{border-left-color:var(--red)}
+.metric.gold{border-left-color:var(--gold)}
+.metric-label{font-size:10px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.metric-val{font-family:var(--font-display);font-size:20px;color:var(--text);line-height:1.2}
+.metric-sub{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:12px;font-family:var(--font-mono)}
+th{background:var(--surface2);color:var(--text2);padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid rgba(26,53,80,.4);color:var(--text);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.02)}
+.td-green{color:var(--green)}
+.td-red{color:var(--red)}
+.td-gold{color:var(--gold)}
+.td-orange{color:var(--orange)}
+
+/* Score cards */
+.score-card{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:6px;padding:10px 14px;margin-bottom:6px}
+.score-icon{font-size:16px;width:24px;text-align:center}
+.score-label{flex:1;font-size:12px;color:var(--text2)}
+.score-result{font-family:var(--font-mono);font-size:11px;padding:3px 8px;border-radius:3px}
+.pass{background:rgba(0,229,160,.15);color:var(--green);border:1px solid rgba(0,229,160,.3)}
+.marginal{background:rgba(255,184,0,.12);color:var(--gold);border:1px solid rgba(255,184,0,.3)}
+.fail{background:rgba(255,68,68,.12);color:var(--red);border:1px solid rgba(255,68,68,.3)}
+
+/* Grade badges */
+.grade{display:inline-block;font-family:var(--font-mono);font-size:13px;font-weight:700;padding:4px 10px;border-radius:4px;margin-left:6px}
+.grade-a{background:rgba(0,229,160,.15);color:var(--green);border:1px solid rgba(0,229,160,.4)}
+.grade-b{background:rgba(33,150,243,.12);color:#64B5F6;border:1px solid rgba(33,150,243,.3)}
+.grade-c{background:rgba(255,184,0,.12);color:var(--gold);border:1px solid rgba(255,184,0,.3)}
+.grade-d{background:rgba(255,107,43,.12);color:var(--orange);border:1px solid rgba(255,107,43,.3)}
+.grade-f{background:rgba(255,68,68,.12);color:var(--red);border:1px solid rgba(255,68,68,.3)}
+
+/* Flywheel */
+.flywheel-box{background:linear-gradient(135deg,rgba(0,229,160,.08),rgba(0,229,160,.02));border:1px solid rgba(0,229,160,.3);border-radius:8px;padding:18px;margin:16px 0}
+.flywheel-title{font-family:var(--font-display);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:8px}
+.flywheel-badge{display:inline-block;background:var(--gold);color:#000;font-family:var(--font-display);font-size:11px;padding:4px 12px;border-radius:4px;margin-bottom:10px}
+.flywheel-score{font-family:var(--font-display);font-size:28px;color:var(--green)}
+.flywheel-check{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;font-size:12px}
+.flywheel-check .ok{color:var(--green);font-size:14px}
+.flywheel-check .nok{color:var(--red);font-size:14px}
+
+/* Verdict */
+.verdict-box{background:linear-gradient(135deg,#0A1828,#0D2240);border:2px solid var(--gold);border-radius:10px;padding:24px;margin:20px 0}
+.verdict-title{font-family:var(--font-display);font-size:20px;color:var(--gold);margin-bottom:6px}
+.verdict-stars-big{font-size:24px;margin-bottom:12px;letter-spacing:2px}
+.verdict-quote{font-size:12px;color:var(--text2);font-style:italic;border-left:3px solid var(--gold);padding-left:12px;margin:14px 0}
+
+/* Progress / bars */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.bar-label{font-size:11px;color:var(--text2);width:140px;flex-shrink:0;font-family:var(--font-mono)}
+.bar-track{flex:1;background:var(--surface2);height:8px;border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .3s}
+.bar-val{font-family:var(--font-mono);font-size:11px;color:var(--text);width:50px;text-align:right}
+
+/* Timeline */
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:16px;padding-left:16px}
+.tl-item::before{content:'';position:absolute;left:-14px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--surface2);border:2px solid var(--border)}
+.tl-item.done::before{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(0,229,160,.4)}
+.tl-item.active::before{background:var(--orange);border-color:var(--orange);box-shadow:0 0 8px rgba(255,107,43,.4)}
+.tl-date{font-family:var(--font-mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.tl-text{font-size:12px;color:var(--text);margin-top:2px}
+
+/* Macro badges */
+.macro-badge{display:inline-block;font-size:10px;font-family:var(--font-mono);padding:3px 8px;border-radius:3px;text-transform:uppercase}
+.macro-tailwind{background:rgba(0,229,160,.12);color:var(--green);border:1px solid rgba(0,229,160,.3)}
+.macro-neutral{background:rgba(122,173,200,.1);color:var(--text2);border:1px solid var(--border)}
+.macro-headwind{background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3)}
+
+/* Stars */
+.stars{color:var(--gold);letter-spacing:1px}
+.stars.half::after{content:'½';font-size:0.75em}
+
+/* Upgrade conditions */
+.upgrade-item{display:flex;gap:12px;align-items:flex-start;background:var(--surface2);border-radius:6px;padding:12px;margin-bottom:8px;border-left:3px solid var(--orange)}
+.upgrade-num{background:var(--orange);color:#000;font-family:var(--font-display);font-size:12px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.upgrade-text{font-size:12px;color:var(--text)}
+
+/* AI dashboard badges */
+.ai-dashboard{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.ai-db-badge{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;text-align:center;flex:1;min-width:100px}
+.ai-db-type{font-size:9px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.ai-db-val{font-family:var(--font-display);font-size:13px;color:var(--green)}
+
+/* Value chain */
+.vc-chain{display:flex;gap:0;margin:16px 0}
+.vc-item{flex:1;padding:10px 8px;text-align:center;border:1px solid var(--border);font-size:10px;font-family:var(--font-mono);color:var(--text3);position:relative;transition:all .2s}
+.vc-item.active{background:rgba(0,229,160,.12);border-color:var(--green);color:var(--green);font-weight:700}
+.vc-item:not(:last-child)::after{content:'›';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--border);font-size:16px;z-index:1}
+
+/* Score gauge */
+.gauge-ring{width:100px;height:100px;margin:0 auto 8px}
+.gauge-text{text-align:center;font-family:var(--font-display);font-size:24px;color:var(--green)}
+.gauge-sub{text-align:center;font-size:10px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+
+/* Responsive */
+@media(max-width:680px){.grid-3,.grid-4{grid-template-columns:1fr 1fr}.hero-grid{grid-template-columns:1fr}.badge-stack{flex-direction:row;align-items:center;flex-wrap:wrap}.hero-name{font-size:22px}.vc-chain{flex-direction:column}.vc-item:not(:last-child)::after{display:none}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.tab-btn{padding:10px 10px;font-size:9px}}
+
+/* Pillar grid */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.pillar-card{background:var(--surface2);border-radius:8px;padding:14px;text-align:center;border:1px solid var(--border)}
+.pillar-name{font-size:9px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.pillar-grade{font-family:var(--font-display);font-size:24px;margin-bottom:4px}
+.pillar-desc{font-size:10px;color:var(--text2)}
+@media(max-width:600px){.pillar-grid{grid-template-columns:repeat(2,1fr)}}
+
+footer{background:var(--surface);border-top:1px solid var(--border);padding:20px;font-size:10px;color:var(--text3);line-height:1.7;font-family:var(--font-mono)}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-ticker">NYSE: OKLO &nbsp;·&nbsp; United States &nbsp;·&nbsp; Advanced Fission / Nuclear Energy</div>
+      <div class="hero-name">Oklo Inc.</div>
+      <div class="hero-lede">The only vertically integrated, pre-commercial fast-fission company with a 14 GW AI data center power pipeline, DOE-authorized construction underway at INL, and $2.54B cash war chest — positioned at the intersection of the most critical infrastructure story of the decade.</div>
+      <div class="price-row">
+        <div class="price-pill">PRICE <span>$67.23</span> <span class="conf-pill conf-v">VERIFIED</span></div>
+        <div class="price-pill">MKT CAP <span>~$11.7B</span> <span class="conf-pill conf-e">ESTIMATED</span></div>
+        <div class="price-pill">52WK <span>$44.88–$193.84</span></div>
+        <div class="price-pill">CASH <span>$2.54B</span> <span class="conf-pill conf-v">VERIFIED</span></div>
+        <div class="price-pill">REVENUE <span>$0</span> <span class="conf-pill conf-v">VERIFIED</span></div>
+        <div class="price-pill">AS OF <span>Jun 03 2026</span></div>
+      </div>
+    </div>
+    <div class="badge-stack">
+      <div class="verdict-badge">WATCH<br><span class="verdict-stars">★★★★</span></div>
+      <div class="cat-badge">CAT D — SPECIAL SITUATION</div>
+      <div class="ai-badge">🟢 AI WIDENER</div>
+      <div class="ai-badge">FLYWHEEL: FORMING</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intelligence</button>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content" style="display:block">
+
+  <div class="section-title">Classification & Framework</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Category D — Special Situation / Pre-Commercial Infrastructure</div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7">Oklo does not fit any of the mature compounder archetypes (A/B/C). It is a pre-revenue, pre-deployment advanced fission company whose metrics are structurally below threshold — but improving rapidly via regulatory milestones, pipeline growth, and capital raises. The thesis is entirely event-driven: NRC licensing, first commercial operation at INL (2027-28), and conversion of 14 GW in LOIs/MPAs to binding PPAs. <strong style="color:var(--text)">WACC 14–16% · Terminal multiple: project finance IRR (12–16%) · MoS 25%</strong></p>
+    </div>
+    <div class="card">
+      <div class="card-title">🟢 AI WIDENER — Structural Demand Amplifier</div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7">AI is not a peripheral feature — it IS Oklo's primary demand engine. The IEA confirms data center electricity demand grew 17% in 2025 and will double by 2030; SMR PPA pipeline grew from 25 GW to 45 GW globally in months. Oklo's product (firm, dispatchable, co-locatable nuclear power) is structurally differentiated for hyperscaler needs. AI is widening the serviceable market, deepening customer concentration, and creating pipeline that did not exist 3 years ago. <strong style="color:var(--green)">Investment impact: AI WIDENER → increase conviction + validate forward revenue estimates.</strong></p>
+    </div>
+  </div>
+
+  <div class="section-title">Business Overview</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">The Aurora Powerhouse</div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7">Fast-fission, sodium-cooled compact reactor modeled on EBR-II heritage. Output: 15–75 MWe per unit, scalable to 100+ MWe in modular configuration. Runs on HALEU fuel or recycled used nuclear fuel. 10-year fuel cycle without refueling. Passive cooling = meltdown-proof design. 205 employees. First deployment: INL, Idaho.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Three Business Units</div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7"><strong style="color:var(--text)">Power:</strong> Build-Own-Operate model; long-term PPAs with data centers, industrials, defense. <br><strong style="color:var(--text)">Fuel:</strong> Aurora Fuel Fabrication Facility (A3F) at INL recycles EBR-II spent fuel — first HALEU fuel recycler in the US. <br><strong style="color:var(--text)">Isotopes:</strong> Atomic Alchemy acquisition enables medical/industrial radioisotope revenue stream from reactor byproducts.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Key Strategic Movers</div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7">• Kiewit as EPC contractor (credible build partner)<br>• NVIDIA + LANL AI-nuclear research partnership<br>• Meta 1.2 GW Ohio campus agreement<br>• Switch 12 GW master power agreement<br>• Equinix 500 MW LOI + $25M prepayment<br>• DOE Surplus Plutonium program (advanced negotiations)<br>• DOE Loan Programs Office application (in progress)</p>
+    </div>
+  </div>
+
+  <div class="section-title">Why This Stock — The Compelling Case</div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">The Bull Case</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">✓ Sole first-mover in vertically integrated fast-fission (build-own-operate + fuel + isotopes)<br>✓ 14 GW pipeline at ~$100-120/MWh = $12B+ eventual annual revenue potential<br>✓ DOE pilot pathway bypasses traditional NRC bottleneck for first deployment<br>✓ $2.54B cash with near-zero debt = 4-5 year runway even at guided burn<br>✓ AI hyperscaler concentration (Meta, Switch, Equinix, OpenAI potential) = blue-chip offtakers<br>✓ Fast-fission design enables fuel recycling = solves global nuclear waste problem + vertical integration<br>✓ Trump administration "energy dominance" = strong policy tailwind<br>✓ DOE loan guarantee program = non-dilutive capital pathway</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">The Bear Case</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">✗ Zero revenue; prior NRC application denied in 2022 — regulatory history is imperfect<br>✗ 14 GW pipeline is non-binding LOIs; binding capacity ~1-2 GW only<br>✗ No commercial nuclear company has started a reactor from scratch at this stage<br>✗ HALEU supply chain is thin (5 metric tons from EBR-II = limited early fuel)<br>✗ Heavy dilution: ~170M shares, ATM program already raised $1.18B<br>✗ $11.7B market cap with zero revenue = enormous execution-risk premium<br>✗ ATH to current = -65% correction; sentiment highly volatile (beta 2.83)<br>✗ Sam Altman step-down as Chairman = governance overhang (still major shareholder)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Regulatory Milestone Tracker</div>
+  <div class="card">
+    <div class="timeline">
+      <div class="tl-item done">
+        <div class="tl-date">Jan 2022</div>
+        <div class="tl-text">NRC denies original Aurora license application (insufficient information — without prejudice). <span class="conf-pill conf-v">VERIFIED</span></div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">May 2024</div>
+        <div class="tl-text">Oklo goes public via SPAC merger with AltC Acquisition (Sam Altman). Raises $306M gross proceeds.</div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">Sep 2025</div>
+        <div class="tl-text">Ground broken at INL for Aurora-INL reactor. DOE Reactor Pilot Program authorization pathway confirmed. Kiewit engaged as EPC.</div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">Nov 2025</div>
+        <div class="tl-text">DOE approves Nuclear Safety Design Agreement (NSDA) for A3F fuel fabrication facility — in less than 2 weeks, demonstrating new streamlined pathway.</div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">Dec 2025</div>
+        <div class="tl-text">DOE approves Preliminary Documented Safety Analysis (PDSA) for A3F. Assembly begins at INL. First-ever approval under DOE Fuel Line Pilot Program.</div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">Mar 2026</div>
+        <div class="tl-text">DOE Idaho Operations Office approves Nuclear Safety Design Agreement for Aurora-INL powerhouse.</div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">May 2026</div>
+        <div class="tl-text">NRC approves Principal Design Criteria (PDC) topical report for Aurora powerhouse — in half the traditional timeline. KEY commercial licensing catalyst. <span class="conf-pill conf-v">VERIFIED</span></div>
+      </div>
+      <div class="tl-item active">
+        <div class="tl-date">Jul 2026 (Target)</div>
+        <div class="tl-text">🔥 Groves Isotopes Test Reactor criticality target — first isotope revenue catalyst.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2026 Target</div>
+        <div class="tl-text">NRC Combined License Application (COLA) Phase 1 filing — critical commercial licensing milestone.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Late 2027 / Early 2028</div>
+        <div class="tl-text">🎯 Target first commercial power from Aurora-INL. First revenue in company history.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2029-2030</div>
+        <div class="tl-text">Meta Ohio 1.2 GW campus target online. Switch deployment begins (if binding conversion occurs).</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+
+  <div class="section-title">Block 4 — US Macro Anchor</div>
+  <div class="grid-4">
+    <div class="metric green">
+      <div class="metric-label">10yr Treasury</div>
+      <div class="metric-val">4.3%</div>
+      <div class="metric-sub">WACC anchor <span class="conf-pill conf-e">EST</span></div>
+    </div>
+    <div class="metric gold">
+      <div class="metric-label">US Real GDP</div>
+      <div class="metric-val">2.5%</div>
+      <div class="metric-sub">2026E <span class="conf-pill conf-e">EST</span></div>
+    </div>
+    <div class="metric orange">
+      <div class="metric-label">US CPI</div>
+      <div class="metric-val">2.8%</div>
+      <div class="metric-sub">2026E <span class="conf-pill conf-e">EST</span></div>
+    </div>
+    <div class="metric green">
+      <div class="metric-label">US Nominal GDP</div>
+      <div class="metric-val">~5.3%</div>
+      <div class="metric-sub">Terminal g ceiling</div>
+    </div>
+  </div>
+
+  <div class="section-title">Macro Cycle Dashboard — 6 Dimensions</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Dimension</th><th>Status</th><th>Nuclear / Oklo Impact</th><th>Magnitude</th></tr></thead>
+      <tbody>
+        <tr><td>AI Adoption Cycle</td><td><span class="macro-badge macro-tailwind">BOOM</span></td><td>Hyperscaler capex >$400B in 2025, +75% in 2026 per IEA. Data center power demand +17% in 2025, set to double by 2030. SMR PPA pipeline: 25→45 GW in months. OKLO is a direct beneficiary.</td><td class="td-green">++++</td></tr>
+        <tr><td>Energy Policy Cycle (US)</td><td><span class="macro-badge macro-tailwind">TAILWIND</span></td><td>Trump "energy dominance" EOs; DOE fast-track for nuclear; CEO DeWitte on President's advisory council; Congress funding for SMR programs; DOE loan guarantees to first 5-10 new reactors.</td><td class="td-green">+++</td></tr>
+        <tr><td>Fed Rate Cycle</td><td><span class="macro-badge macro-neutral">NEUTRAL</span></td><td>Fed in neutral-easing mode (2-3 cuts expected 2026). Positive for long-duration assets like pre-revenue nuclear. WACC assumption of 14-16% for Cat D remains appropriate given execution risk premium.</td><td class="td-gold">±</td></tr>
+        <tr><td>Inflation / Input Costs</td><td><span class="macro-badge macro-headwind">HEADWIND</span></td><td>Construction cost inflation (materials, labor) directly impacts Aurora-INL build cost. Nuclear construction historically faces 20-40% cost overruns. Kiewit EPC engagement partially mitigates. HALEU supply constraint.</td><td class="td-red">−−</td></tr>
+        <tr><td>Capital Markets Cycle</td><td><span class="macro-badge macro-tailwind">TAILWIND</span></td><td>Oklo's $1.18B ATM raise in Q1 2026 demonstrates market appetite. $2.54B cash now. Goldman Sachs, BofA, Citi, JPMorgan, Morgan Stanley as ATM agents = institutional backing.</td><td class="td-green">+++</td></tr>
+        <tr><td>Nuclear Regulatory Environment</td><td><span class="macro-badge macro-tailwind">TAILWIND</span></td><td>ADVANCE Nuclear Act (2024), NRC modernization, DOE pilot program pathway. May 2026 PDC approval at half normal timeline = regulatory acceleration confirmed. PBOL (product-based licensing) for scalability.</td><td class="td-green">++</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;display:flex;gap:10px">
+      <span class="macro-badge macro-tailwind">MACRO COMPOSITE: TAILWIND</span>
+      <span class="macro-badge macro-tailwind">AI CYCLE IMPACT: OPPORTUNITY (MAXIMUM)</span>
+    </div>
+  </div>
+
+  <div class="section-title">Layer 2 — Sector: Advanced Nuclear / Clean Power</div>
+  <div class="card">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.7">AI is <strong style="color:var(--green)">powerfully accelerating</strong> the advanced nuclear sector by creating an unprecedented, creditworthy demand class. Hyperscalers need firm, dispatchable, 24/7, near-zero-carbon power that co-locates with data centers — solar and wind cannot fulfill these needs. SMRs, led by Oklo's Aurora, are uniquely positioned to satisfy this demand.</div>
+    <table>
+      <thead><tr><th>Scenario</th><th>SMR/Advanced Nuclear CAGR</th><th>Driver</th><th>AI Overlay</th></tr></thead>
+      <tbody>
+        <tr><td>Stress</td><td class="td-gold">20–30%</td><td>Regulatory delays, cost overruns</td><td>NEUTRAL demand growth</td></tr>
+        <tr><td>Base</td><td class="td-green">40–60%</td><td>On-time INL deployment, PPA conversions begin</td><td>AI WIDENER — significant pull</td></tr>
+        <tr><td>Acceleration</td><td class="td-green">70–100%+</td><td>Multiple deployments, HALEU supply secured, DOE loan</td><td>AI CORE — sector pivotal supplier</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:11px;color:var(--text3);font-family:var(--font-mono)">
+      Source: IEA Key Questions on Energy and AI (Apr 2026) — SMR pipeline 45 GW globally; EPRI: data centers to reach 9% of US power by 2030 from 4% in 2023. <span class="conf-pill conf-v">VERIFIED</span>
+    </div>
+  </div>
+
+  <div class="section-title">Layer 3 — Company Alpha Over Sector</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha (2026-28)</th><th>Stage 2 Alpha (2029-35)</th></tr></thead>
+      <tbody>
+        <tr><td>Market share (first-mover in fast-fission)</td><td><span class="macro-badge macro-tailwind">ACTIVE</span></td><td class="td-green">+10-15%</td><td class="td-green">+8-12%</td></tr>
+        <tr><td>Vertical integration (power+fuel+isotopes)</td><td><span class="macro-badge macro-tailwind">ACTIVE</span></td><td class="td-green">+8-12%</td><td class="td-green">+10-18%</td></tr>
+        <tr><td>Build-Own-Operate vs Reactor Sales</td><td><span class="macro-badge macro-tailwind">ACTIVE</span></td><td class="td-green">+5-8%</td><td class="td-green">+12-20%</td></tr>
+        <tr><td>Geographic/Customer expansion</td><td><span class="macro-badge macro-neutral">FORMING</span></td><td class="td-gold">+3-5%</td><td class="td-green">+8-15%</td></tr>
+        <tr><td>AI alpha 6a — Cost reduction (NVIDIA+LANL AI nuclear research)</td><td><span class="macro-badge macro-neutral">FORMING</span></td><td class="td-gold">+2-3%</td><td class="td-green">+4-8%</td></tr>
+        <tr><td>AI alpha 6b — Market expansion (AI creates demand that did not exist)</td><td><span class="macro-badge macro-tailwind">CONFIRMED</span></td><td class="td-green">+20-30%</td><td class="td-green">+15-25%</td></tr>
+        <tr><td>AI alpha 6c — Flywheel / operational data moat</td><td><span class="macro-badge macro-neutral">FORMING</span></td><td class="td-gold">+2-3%</td><td class="td-gold">+5-10%</td></tr>
+        <tr style="font-weight:700"><td>TOTAL ALPHA</td><td>—</td><td class="td-green">+50-76%</td><td class="td-green">+62-108%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Growth Rate Summary</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCELERATION</th></tr></thead>
+      <tbody>
+        <tr><td>US Nominal GDP</td><td>4.0%</td><td>5.3%</td><td>6.5%+</td></tr>
+        <tr><td>Nuclear/SMR Sector Growth</td><td>20–30%</td><td>40–60%</td><td>70–100%</td></tr>
+        <tr><td>Company Alpha (pipeline conversion)</td><td>+15%</td><td>+30%</td><td>+60%</td></tr>
+        <tr><td>AI Demand Alpha</td><td>+10%</td><td>+25%</td><td>+50%</td></tr>
+        <tr><td>Stage 1 Revenue CAGR (2028-31)</td><td>40–60%</td><td>80–120%</td><td>150%+</td></tr>
+        <tr><td>Stage 2 Revenue CAGR (2031-36)</td><td>25–35%</td><td>40–60%</td><td>70–90%</td></tr>
+        <tr><td>Terminal Growth</td><td>2.5%</td><td>3.5%</td><td>4.5% (≤US nom. GDP)</td></tr>
+        <tr><td>Margin Direction (operating)</td><td>Compress; delays</td><td>Stable; on-plan</td><td>Expand; scale achieved</td></tr>
+        <tr><td>Key Risk</td><td>NRC delays, cost overruns, HALEU shortage</td><td>Execution on 2028 target, PPA conversion</td><td>Competitive SMR entry, grid integration</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;font-size:11px;color:var(--text2);font-family:var(--font-mono)">
+      <strong>Sensitivity checks:</strong><br>
+      A 1x change in Stage 1 revenue multiple changes IV by approximately $10-15/share.<br>
+      A 10% variance in INL deployment timeline (6 months slip) changes IV by approximately $5-8/share.<br>
+      <em>Note: No DCF applied — pre-revenue, pre-FCF Cat D company. Valuation methods in Tab 5.</em>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+
+  <div class="section-title">Pre-Revenue Financial Profile — Q1 2026</div>
+  <div class="grid-4">
+    <div class="metric green">
+      <div class="metric-label">Cash + Mkt Securities</div>
+      <div class="metric-val">$2.54B</div>
+      <div class="metric-sub">Mar 31, 2026 <span class="conf-pill conf-v">VFD</span></div>
+    </div>
+    <div class="metric red">
+      <div class="metric-label">Q1 Net Loss</div>
+      <div class="metric-val">($33.1M)</div>
+      <div class="metric-sub">vs ($9.8M) Q1'25 — -238%</div>
+    </div>
+    <div class="metric orange">
+      <div class="metric-label">Q1 Operating Loss</div>
+      <div class="metric-val">($51.2M)</div>
+      <div class="metric-sub">R&D $27M + G&A $24.2M</div>
+    </div>
+    <div class="metric gold">
+      <div class="metric-label">Interest Income</div>
+      <div class="metric-val">$21.3M</div>
+      <div class="metric-sub">On $2.5B cash base — Q1</div>
+    </div>
+  </div>
+  <div class="grid-4" style="margin-top:0">
+    <div class="metric red">
+      <div class="metric-label">Q1 Op. Cash Burn</div>
+      <div class="metric-val">($17.9M)</div>
+      <div class="metric-sub">Net of non-cash SBC $15.6M</div>
+    </div>
+    <div class="metric orange">
+      <div class="metric-label">Q1 Capex</div>
+      <div class="metric-val">($32.8M)</div>
+      <div class="metric-sub">PP&E deployment</div>
+    </div>
+    <div class="metric gold">
+      <div class="metric-label">2026 Op. Burn Guide</div>
+      <div class="metric-val">$80–100M</div>
+      <div class="metric-sub">Full year <span class="conf-pill conf-v">VFD</span></div>
+    </div>
+    <div class="metric gold">
+      <div class="metric-label">2026 Capex Guide</div>
+      <div class="metric-val">$350–450M</div>
+      <div class="metric-sub">PP&E (reactor build)</div>
+    </div>
+  </div>
+
+  <div class="section-title">Earnings Quality — O'Glove Framework (Adapted for Pre-Revenue)</div>
+  <div class="card">
+    <div class="score-card"><div class="score-icon">📊</div><div class="score-label">Test 1 — FCF Conversion: Pre-revenue; applying operating CFO/Net loss ratio. Non-cash SBC $15.6M = 47% of net loss. CFO burn ($17.9M) is meaningfully less than net loss ($33.1M) due to SBC add-back.</div><div class="score-result marginal">MARGINAL</div></div>
+    <div class="score-card"><div class="score-icon">📋</div><div class="score-label">Test 2 — DSO Trend: Not applicable — zero revenue/receivables. No red flags.</div><div class="score-result pass">N/A — PASS</div></div>
+    <div class="score-card"><div class="score-icon">📦</div><div class="score-label">Test 3 — Inventory Days: Not applicable at this stage. Physical capital accumulation (PP&E) is expected and intentional.</div><div class="score-result pass">N/A — PASS</div></div>
+    <div class="score-card"><div class="score-icon">🔍</div><div class="score-label">Test 4 — Accounting Policy Stability: No material changes flagged. High SBC as % of net loss is a risk watch item (88.4% of CEO comp in equity). Full-year SBC trend rising sharply.</div><div class="score-result marginal">WATCH — SBC HIGH</div></div>
+    <div class="score-card"><div class="score-icon">📈</div><div class="score-label">Test 5 — Gross Margin Consistency: Pre-revenue; N/A for gross margin. Monitoring contract structure (cost-plus vs fixed-price PPAs) for future margin quality.</div><div class="score-result pass">PRE-REVENUE</div></div>
+    <div style="margin-top:10px;background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.3);border-radius:6px;padding:12px">
+      <div style="font-family:var(--font-display);font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Overall Earnings Quality</div>
+      <div style="font-size:13px;color:var(--text)"><strong>ACCEPTABLE</strong> — Given pre-revenue context. SBC levels are elevated but typical for early-stage US technology-adjacent companies. No accounting manipulation flags. Cash position is clear and verified via 10-Q filing.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Cat D Financial Scorecard</div>
+  <div class="card">
+    <div class="score-card"><div class="score-icon">💵</div><div class="score-label">Cash runway: $2.54B / ($480M guided 2026 total burn) ≈ 4.5+ year runway. Exceeds 24-month minimum threshold by 2x.</div><div class="score-result pass">PASS — 4.5yr+</div></div>
+    <div class="score-card"><div class="score-icon">🏦</div><div class="score-label">Debt position: Total liabilities only $64.9M against $2.70B total assets. Debt-to-equity: 0.00. Net cash: massive positive. No leverage risk.</div><div class="score-result pass">PASS — ZERO DEBT</div></div>
+    <div class="score-card"><div class="score-icon">📉</div><div class="score-label">Revenue trajectory: Q1 2026 revenue $0 (as expected per analyst consensus). Q2 2026 consensus: minimal ($100K = Atomic Alchemy isotope test revenue). Commercial revenue target: 2028. On track per plan.</div><div class="score-result marginal">ON-PLAN MARGINAL</div></div>
+    <div class="score-card"><div class="score-icon">🔄</div><div class="score-label">Dilution risk: Shares issued 170.3M weighted avg. ATM program raised $1.18B Q1 2026. New ATM registered with Goldman/BofA/Citi/JPM/MS — additional dilution likely. Key risk for existing shareholders.</div><div class="score-result marginal">WATCH — DILUTION</div></div>
+    <div class="score-card"><div class="score-icon">💰</div><div class="score-label">Capital efficiency: $350-450M 2026 capex goes to PP&E deployment (Aurora-INL + A3F). This is productive investment, not maintenance burn. ROI contingent on first-commercial milestone.</div><div class="score-result pass">PRODUCTIVE CAPEX</div></div>
+    <div class="score-card"><div class="score-icon">📊</div><div class="score-label">SBC as % of revenue: N/A for revenue; SBC $15.6M Q1 = 47% of net loss (cash adj). CEO total comp $3.65M — BELOW market for $11B companies ($13.14M avg). Founders aligned.</div><div class="score-result pass">FOUNDERS ALIGNED</div></div>
+  </div>
+
+  <div class="section-title">Historical Loss Progression</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Period</th><th>Net Loss</th><th>R&D</th><th>G&A</th><th>Cash Position</th><th>Shares Out</th></tr></thead>
+      <tbody>
+        <tr><td>FY2022</td><td class="td-red">($10M)</td><td>N/A</td><td>N/A</td><td>Pre-IPO</td><td>Pre-SPAC</td></tr>
+        <tr><td>FY2023</td><td class="td-red">($32M)</td><td>N/A</td><td>N/A</td><td>Pre-IPO</td><td>Pre-SPAC</td></tr>
+        <tr><td>FY2024</td><td class="td-red">($253M+)</td><td>N/A</td><td>N/A</td><td>$275M (year-end)</td><td>~155M</td></tr>
+        <tr><td>Q1 2025</td><td class="td-red">($9.8M)</td><td>Est. $7M</td><td>Est. $7M</td><td>$1.4B (yr start)</td><td>Est. 158M</td></tr>
+        <tr><td>FY2025 (Est)</td><td class="td-red">($106M)</td><td>N/A</td><td>N/A</td><td>$1.23B (yr-end)</td><td>Est. 160M</td></tr>
+        <tr style="background:rgba(0,229,160,.04)"><td><strong>Q1 2026 (LATEST)</strong></td><td class="td-red"><strong>($33.1M)</strong></td><td class="td-red"><strong>$27.0M</strong></td><td class="td-red"><strong>$24.2M</strong></td><td class="td-green"><strong>$2.54B</strong></td><td><strong>170.3M</strong></td></tr>
+        <tr><td>FY2026 Guidance</td><td class="td-red">~($180-210M) est.</td><td>N/A</td><td>N/A</td><td>~$1.7-2.0B (yr-end)</td><td>Est. 173M+</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--font-mono)">
+      <span class="conf-pill conf-v">VERIFIED</span> Q1 2026 from 10-Q filing. <span class="conf-pill conf-e">ESTIMATED</span> other periods cross-referenced from SEC filings + analyst estimates.
+    </div>
+  </div>
+
+</div>
+
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+
+  <div class="section-title">Economic Moat Assessment — Grade: <span class="grade grade-c">C+</span></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7">Oklo possesses an <em>embryonic but potentially wide moat</em> rooted in proprietary fast-fission IP, 60+ years of EBR-II operational heritage data, first-mover advantage in US advanced fast fission, and a vertically integrated build-own-operate model. The moat is not yet commercially proven — it upgrades to B+/A- if INL deployment executes on schedule and first PPA revenue is recognized. Current grade C+ reflects pre-commercial status; structural moat sources are real and widening.</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Switching Costs <span class="stars">★★★★</span></div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7">Long-term PPAs (20-30 years with Air Force Eielson, multi-decade with hyperscalers) create massive switching costs. Once a data center is co-located and infrastructure-integrated with Aurora power delivery, migrating to another source requires facility redesign, permitting, and years of lead time. Equinix's $25M prepayment is a structural lock-in signal. <span class="conf-pill conf-v">VFD</span></p>
+    </div>
+    <div class="card">
+      <div class="card-title">Proprietary Technology IP <span class="stars">★★★★</span></div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7">Fast-fission sodium-cooled design based on EBR-II (world's most successful experimental breeder reactor, operated 1964-1994). Oklo holds exclusive access to EBR-II operational data and fuel heritage. The Aurora design, fuel recycling process, and HALEU fabrication technology represent unique IP that cannot be replicated overnight. Kiewit EPC engagement further embeds proprietary construction knowledge.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Vertical Integration <span class="stars">★★★★★</span></div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7">Oklo is the ONLY advanced SMR developer pursuing full vertical integration: reactor design + fuel fabrication + fuel recycling + power generation + isotope production. Competitors (NuScale, X-Energy, Kairos) are reactor-only, requiring external fuel supply chains. Oklo's vertical model provides: (1) fuel cost certainty, (2) waste stream monetization, (3) margin capture across all layers, (4) proprietary operational data at every stage. <span class="macro-badge macro-tailwind" style="margin-top:4px;display:inline-block">EXCEPTIONAL DIFFERENTIATOR</span></p>
+    </div>
+    <div class="card">
+      <div class="card-title">Network Effects / AI Pull <span class="stars">★★★</span></div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7">Limited traditional network effects (power is not a platform). However, the AI data center demand cluster creates a powerful customer concentration effect: as Oklo signs Meta, Switch, Equinix — other hyperscalers feel pressure to secure reliable nuclear power, creating a demand network effect. NVIDIA partnership for AI-nuclear research creates a technology credibility loop with the AI sector.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Intangible Assets / Regulatory Position <span class="stars">★★★★</span></div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7">NRC engagement history, DOE relationship, INL site-use permit (granted 2019), participation in Reactor Pilot Program, Surplus Plutonium Utilization Program selection, HALEU access rights from EBR-II — these are non-replicable regulatory positions. No other advanced SMR developer has an active build at a DOE national laboratory site. New entrants face 5-10 year regulatory lag.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Scale / Cost Advantage (Forming) <span class="stars">★★</span></div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7">Not yet achieved — first reactor is under construction. The promise is factory-built modular standardization (PBOL regulatory framework) enabling cost-curve improvement with each subsequent Aurora unit (similar to how solar $/W declined with scale). Cost advantage moat grade upgrades to ★★★★ if the factory-build replication thesis is demonstrated by reactor 3-5.</p>
+    </div>
+  </div>
+
+  <div class="flywheel-box">
+    <div class="flywheel-title">Data Flywheel Verdict</div>
+    <div class="flywheel-badge">FORMING ★★★ (2 of 3 confirmed)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+      <div>
+        <div class="flywheel-check"><span class="ok">✓</span><div><strong style="color:var(--text)">Q1 — Proprietary Training Data:</strong> EBR-II 30-year operational dataset (thermal, neutronics, fuel behavior) is non-replicable. Aurora-INL will generate the first real-world fast-fission digital twin dataset in the US. NVIDIA+LANL partnership explicitly targets AI-enabled nuclear infrastructure research. <span class="conf-pill conf-v">VFD — earnings call + LANL press release</span></div></div>
+        <div class="flywheel-check"><span class="nok">✗</span><div><strong style="color:var(--text)">Q2 — Does AI Improve with More Users?</strong> Not yet confirmed at scale. Pre-commercial; Aurora-INL is the first installation. The hypothesis is that operational data from each successive Aurora powerhouse improves AI-driven predictive maintenance, fuel optimization, and safety models. <em>Potential confirmed once 3+ reactors operate simultaneously.</em></div></div>
+        <div class="flywheel-check"><span class="ok">✓</span><div><strong style="color:var(--text)">Q3 — Does Better AI Attract More Users?</strong> Indirectly YES — Oklo's NVIDIA partnership and AI-nuclear credibility actively attracts AI hyperscalers. Meta, Switch, Equinix are AI-sector customers specifically attracted by Oklo's AI-power credibility. The feedback loop: AI customer → operational data → better AI-optimized reactor → more AI customers.</div></div>
+      </div>
+      <div>
+        <div style="text-align:center;margin-top:10px">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Flywheel Score</div>
+          <div class="flywheel-score">5.5 / 10</div>
+          <div style="font-size:10px;color:var(--text3);font-family:var(--font-mono);margin-top:4px">Data Quality: 2.5/3 | Loop Evidence: 2/4 | Speed: 1/3</div>
+          <div style="margin-top:12px;font-size:11px;color:var(--text2);line-height:1.6">Moat upgrade trigger: CONFIRMED flywheel (all 3 criteria) upgrades Oklo's moat grade from <strong style="color:var(--gold)">C+</strong> to <strong style="color:var(--green)">B+</strong>. Requires 3+ concurrent operational reactors generating live telemetry data. Target: 2030.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">ROIC Trend (Proxy) — Pre-commercial</div>
+  <div class="card">
+    <p style="font-size:12px;color:var(--text2);margin-bottom:10px">ROIC not calculable (pre-revenue). Using gross margin and capital efficiency proxies. Framework: once commercial, fast-fission power plants targeting 40-50% EBITDA margins suggest potential ROIC >25% at scale (comparable to Constellation Energy's nuclear fleet). <span class="conf-pill conf-e">ESTIMATED</span></p>
+    <table>
+      <thead><tr><th>Metric</th><th>Current</th><th>Target (2028)</th><th>Target (2032)</th><th>Comparable</th></tr></thead>
+      <tbody>
+        <tr><td>ROIC</td><td class="td-red">Negative (pre-rev)</td><td class="td-gold">N/A (first year)</td><td class="td-green">Est. 15-25%</td><td>Constellation: ~18-22%</td></tr>
+        <tr><td>EBITDA Margin</td><td class="td-red">Deeply negative</td><td class="td-gold">First power revenue</td><td class="td-green">Est. 35-50%</td><td>Utility nuclear: 35-45%</td></tr>
+        <tr><td>Power Price (target)</td><td>N/A</td><td class="td-green">$80-120/MWh</td><td class="td-green">$80-120/MWh</td><td>Gas-fired: $60-80/MWh</td></tr>
+        <tr><td>Revenue per Aurora (75MWe, 95% CF)</td><td>$0</td><td class="td-green">~$62M/yr</td><td class="td-green">~$62-75M/yr</td><td>Industry comparable</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Macro Stress Test — Moat Resilience</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Moat Source</th><th>Stress Scenario</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Switching costs (long-term PPAs)</td><td>Hyperscaler reduces AI capex / cancels data center expansion</td><td><span class="macro-badge macro-tailwind">HOLDS</span> — Contracts are binding once signed; risk is in conversion of LOIs, not existing agreements</td></tr>
+        <tr><td>Proprietary technology IP</td><td>NuScale / X-Energy / Kairos advances faster than expected</td><td><span class="macro-badge macro-neutral">WEAKENS slightly</span> — Competition increases; but Oklo's fast-fission design and fuel recycling remain differentiated vs light-water SMR designs</td></tr>
+        <tr><td>Vertical integration (fuel recycling)</td><td>HALEU supply constraint; DOE competition</td><td><span class="macro-badge macro-tailwind">STRENGTHENS</span> — HALEU scarcity makes Oklo's EBR-II fuel access MORE valuable in stress; competitors face worse supply constraints</td></tr>
+        <tr><td>Regulatory position</td><td>NRC slow-walks or rejects commercial COLA</td><td><span class="macro-badge macro-headwind">WEAKENS</span> — This is the primary bear case; INL DOE pathway provides partial insulation but commercial scale requires NRC approval</td></tr>
+        <tr><td>AI-driven demand</td><td>AI capex bubble bursts; hyperscalers cut energy commitments</td><td><span class="macro-badge macro-neutral">HOLDS-WEAKENS</span> — Energy demand for existing AI infrastructure is structural even if new capex declines; LOIs are non-binding risk</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Competitive Moat Threats</div>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--red);text-transform:uppercase;margin-bottom:6px">Primary Threats</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">• <strong style="color:var(--text)">NuScale (SMR):</strong> Only NRC-approved SMR design; regulatory certainty advantage. However light-water design (no fast-fission, no fuel recycling).<br>• <strong style="color:var(--text)">X-Energy (XE):</strong> High-temp gas reactor; recent positive DOE environmental determination. Google partnership.<br>• <strong style="color:var(--text)">Kairos Power:</strong> Molten salt design; no commercial pipeline yet.<br>• <strong style="color:var(--text)">TerraPower:</strong> Bill Gates-backed; sodium fast reactor (direct Oklo competitor); Natrium design further along in some metrics.</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;margin-bottom:6px">Oklo Competitive Advantages</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">✓ Only US company with active fast-fission construction at a national lab<br>✓ Vertically integrated (power + fuel + isotopes) — no competitor matches<br>✓ Build-Own-Operate model = long-term customer lock-in<br>✓ HALEU access via EBR-II (exclusive DOE pathway)<br>✓ Smaller modular size (15-75 MWe) fits co-location use case better than 300+ MWe competitors<br>✓ NVIDIA + LANL AI partnership = AI sector credibility moat</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+
+  <div class="section-title">Management Quality — Grade: <span class="grade grade-a">A-</span></div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Leadership Team</div>
+      <table>
+        <thead><tr><th>Name</th><th>Role</th><th>Ownership</th><th>Since</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Jacob DeWitte</strong></td><td>CEO + Chairman</td><td class="td-green">12.05% (~$1.52B)</td><td>2013 (founder)</td></tr>
+          <tr><td><strong>Caroline Cochran</strong></td><td>COO + Co-Founder</td><td class="td-green">~5.3% (~$547M)</td><td>2013 (founder)</td></tr>
+          <tr><td>Craig Bealmear</td><td>CFO</td><td>—</td><td>Post-IPO</td></tr>
+          <tr><td>Sam Altman</td><td>Ex-Chairman; major shareholder</td><td class="td-gold">Significant (est. 5-8%)</td><td>2015–Apr 2025</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;font-size:11px;color:var(--text2);font-family:var(--font-mono)"><span class="conf-pill conf-v">VFD</span> — WallStreetZen ownership data + SEC filings</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Founder Alignment Score — EXCEPTIONAL</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">Jacob and Caroline DeWitte founded Oklo in 2013 as husband-and-wife MIT nuclear engineering graduates with a mission-driven vision predating the AI power boom by a decade. They collectively own ~12.2% of the company (21.1M+ shares worth ~$1.5B at current prices). This is exceptional founder alignment — their personal wealth is overwhelmingly tied to Oklo's success.</div>
+      <div class="bar-row"><div class="bar-label">Founder ownership</div><div class="bar-track"><div class="bar-fill" style="width:87%;background:var(--green)"></div></div><div class="bar-val td-green">12.2%</div></div>
+      <div class="bar-row"><div class="bar-label">Insider total</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><div class="bar-val td-green">34.7%</div></div>
+      <div class="bar-row"><div class="bar-label">Institutional</div><div class="bar-track"><div class="bar-fill" style="width:75%;background:var(--blue)"></div></div><div class="bar-val">43.1%</div></div>
+      <div class="bar-row"><div class="bar-label">Retail</div><div class="bar-track"><div class="bar-fill" style="width:38%;background:var(--text3)"></div></div><div class="bar-val">22.2%</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Capital Allocation Quality</div>
+  <div class="card">
+    <div class="score-card"><div class="score-icon">🏗️</div><div class="score-label">$350-450M 2026 capex directed at Aurora-INL construction and A3F fuel facility — productive, mission-aligned capital deployment. Not diversification or acquisitions (except strategic Atomic Alchemy for isotopes).</div><div class="score-result pass">PRODUCTIVE</div></div>
+    <div class="score-card"><div class="score-icon">💰</div><div class="score-label">ATM equity raise $1.18B completed Q1 2026 at favorable prices. $2.54B cash war chest eliminates near-term dilution need. Management timed the raise near stock highs (Oct-Mar), not at lows — intelligent timing.</div><div class="score-result pass">OPPORTUNISTIC RAISE</div></div>
+    <div class="score-card"><div class="score-icon">🤝</div><div class="score-label">Kiewit engagement as EPC contractor (premier US construction firm) — disciplined outsourcing of non-core competency. newcleo partnership for up to $2B project capital (non-dilutive funding pathway).</div><div class="score-result pass">DISCIPLINED PARTNERSHIPS</div></div>
+    <div class="score-card"><div class="score-icon">⚠️</div><div class="score-label">SBC as % of operating expense: ~30% of total OpEx is stock-based compensation ($15.6M/Q). Management compensation rose while company remains loss-making. CEO comp $3.65M is actually below peer median ($13.14M) — so comp is conservative, but SBC equity awards are dilutive.</div><div class="score-result marginal">SBC WATCH</div></div>
+    <div class="score-card"><div class="score-icon">🏛️</div><div class="score-label">Governance: Four seasoned independent directors added in 2026. Lead independent director appointed. CTO transitioned to senior technical advisor. Board composition strengthening for commercial-stage company.</div><div class="score-result pass">IMPROVING</div></div>
+  </div>
+
+  <div class="section-title">Sam Altman Factor — Nuanced Assessment</div>
+  <div class="card" style="border-left:3px solid var(--gold)">
+    <div class="card-title">The Altman Bridge — Risk and Opportunity</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;margin-bottom:6px">Opportunity</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">• Altman stepped down as Chairman in April 2025 specifically to <em>enable</em> an OpenAI-Oklo power agreement — this is not a negative; it is a strategic enabler<br>• Remains major shareholder; incentivized for Oklo success<br>• Opened hyperscaler relationships (Meta, Equinix, Switch conversations) through his AI network<br>• CEO DeWitte on President's advisory council — Altman-era credibility continues<br>• OpenAI partnership potential = largest possible offtake anchor (multi-GW AI training)</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--red);text-transform:uppercase;margin-bottom:6px">Risk</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">• No binding OpenAI PPA announced despite months of "advanced talks" — uncertainty<br>• Jacob DeWitte now Chairman + CEO — concentrated power; no independent Chair<br>• Governance overhang: OpenAI negotiation could drag or fail, removing the marquee catalyst<br>• Altman's OpenAI role creates potential conflict if competing AI energy providers emerge<br>• SPAC origin of the company introduces some legacy governance skepticism</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">AI Team Quality</div>
+  <div class="card">
+    <div class="score-card"><div class="score-icon">🤖</div><div class="score-label">NVIDIA + Los Alamos National Laboratory partnership for AI-enabled nuclear infrastructure and fuel research. Oklo actively integrating AI into reactor simulation, fuel optimization, and predictive operations — not a PR exercise.</div><div class="score-result pass">CREDIBLE AI INTEGRATION</div></div>
+    <div class="score-card"><div class="score-icon">🎓</div><div class="score-label">Founders are MIT nuclear engineering graduates (PhD-level technical background). Nuclear + AI expertise is authentic, not "AI department bolt-on." 205 employee base allows specialized recruitment.</div><div class="score-result pass">AUTHENTIC EXPERTISE</div></div>
+    <div class="score-card"><div class="score-icon">🔒</div><div class="score-label">HALEU fuel data and nuclear plant operational telemetry from EBR-II is proprietary training data. NRC and DOE regulatory compliance frameworks are inherently privacy/security-focused. No GDPR/PDPB concerns (US-only operation).</div><div class="score-result pass">DATA COMPLIANCE CLEAN</div></div>
+    <div class="score-card"><div class="score-icon">📋</div><div class="score-label">No publications/patents specifically for AI research identified yet. Primary IP is nuclear physics/engineering, not ML/AI publications. AI credibility comes from partnerships (NVIDIA/LANL) rather than in-house AI research output.</div><div class="score-result marginal">AI PUBS: MARGINAL (0/2)</div></div>
+  </div>
+
+  <div class="section-title">Management Red Flag Checklist</div>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;margin-bottom:8px">Clean Flags ✓</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.9">✓ No pledged shares by founders (0%)<br>✓ No promoter/insider selling reported<br>✓ No related-party transaction red flags in 10-Q<br>✓ No regulatory investigations or IT raids<br>✓ No debt covenants or leverage concerns<br>✓ Founders are builders, not financial engineers</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--gold);text-transform:uppercase;margin-bottom:8px">Watch Items ⚠️</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.9">⚠ CEO SBC rising while loss-making (47% of net loss is non-cash comp)<br>⚠ CEO = Chairman = founder = concentrated power<br>⚠ Short management team tenure (avg 1.8-1.9 years)<br>⚠ Prior NRC application denial is a management execution black mark<br>⚠ 2022 NRC denial: management provided insufficient technical data — underscores execution risk in high-stakes regulatory processes</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+
+  <div class="section-title">Valuation Framework — Cat D Pre-Commercial (No DCF)</div>
+  <div class="card" style="border-left:3px solid var(--orange)">
+    <p style="font-size:13px;color:var(--text2);line-height:1.7"><strong style="color:var(--text)">Framework adaptation:</strong> Oklo is pre-revenue with no FCF. Standard DCF and owner earnings methods do not apply. We use 5 project-finance and comparable-based methods appropriate for pre-commercial nuclear infrastructure. No DCF will be applied until Oklo reports two consecutive FCF-positive quarters. Quality earnings adjustment: N/A (pre-revenue). MoS for Cat D = 25%.</p>
+  </div>
+
+  <div class="section-title">Method 1 — EV/Pipeline NPV</div>
+  <div class="card">
+    <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Values the pipeline of customer agreements at their NPV assuming progressive conversion from LOI to binding PPA to operational revenue, discounted for execution risk.</p>
+    <table>
+      <thead><tr><th>Customer</th><th>MW Committed</th><th>Status</th><th>Revenue/yr (at $100/MWh)</th><th>Execution Risk</th><th>NPV Weight</th></tr></thead>
+      <tbody>
+        <tr><td>Air Force Eielson</td><td>75 MW</td><td class="td-green">Binding PPA (30yr)</td><td class="td-green">~$63M/yr</td><td class="td-green">Low (gov contract)</td><td class="td-green">80%</td></tr>
+        <tr><td>Meta Ohio Campus</td><td>1,200 MW</td><td class="td-green">Agreement (binding)</td><td class="td-green">~$1.05B/yr</td><td class="td-gold">Medium (2030 target)</td><td class="td-gold">60%</td></tr>
+        <tr><td>Equinix</td><td>500 MW</td><td class="td-gold">LOI + $25M prepay</td><td class="td-gold">~$438M/yr</td><td class="td-gold">Medium-Low</td><td class="td-gold">40%</td></tr>
+        <tr><td>Switch</td><td>12,000 MW</td><td class="td-red">Non-binding MPA</td><td class="td-red">~$10.5B/yr (theoretical)</td><td class="td-red">Very High (non-binding)</td><td class="td-red">10%</td></tr>
+        <tr><td>Other (Prometheus, Diamondback, etc.)</td><td>150 MW</td><td class="td-gold">LOIs</td><td class="td-gold">~$131M/yr</td><td class="td-gold">Medium-High</td><td class="td-gold">25%</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:12px;color:var(--text2)">
+      <strong style="color:var(--text)">Probability-weighted NPV:</strong><br>
+      Stress IV: $28-38 (heavy conversion failure; DOE pilot only deploys) | <span class="td-gold">Base IV: $45-58</span> (INL + Meta + Equinix deploy by 2032) | Accel IV: $80-100 (Switch begins converting; DOE loan secured)
+    </div>
+  </div>
+
+  <div class="section-title">Method 2 — Forward Revenue Multiple (2028E First Revenue)</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Scenario</th><th>2028E Revenue</th><th>Revenue Multiple</th><th>EV</th><th>Shares (est.)</th><th>IV/Share</th></tr></thead>
+      <tbody>
+        <tr><td>Stress (INL only, delayed)</td><td>$20-40M</td><td>15-20x</td><td>$0.4-0.8B</td><td>175M</td><td class="td-red">$2-5</td></tr>
+        <tr><td>Base (INL + early Meta/USAF)</td><td>$100-200M</td><td>20-30x</td><td>$2-6B</td><td>175M</td><td class="td-gold">$11-34</td></tr>
+        <tr><td>Accel (INL + Meta Phase 1 + Equinix)</td><td>$300-500M</td><td>25-35x</td><td>$7.5-17.5B</td><td>180M</td><td class="td-green">$42-97</td></tr>
+        <tr><td>Bull (Switch partial conversion + DOE loan)</td><td>$500M-1B</td><td>30-40x</td><td>$15-40B</td><td>185M</td><td class="td-green">$81-216</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--font-mono)"><span class="conf-pill conf-e">ESTIMATED</span> — Revenue multiples derived from energy infrastructure precedents. Discount for pre-commercial premium at 20x base to comparable operating nuclear at 15x.</div>
+  </div>
+
+  <div class="section-title">Method 3 — Comparable Company Analysis</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Company</th><th>EV</th><th>MWe Operating</th><th>EV/MW</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Constellation Energy (US nuclear fleet)</td><td>~$60B</td><td>22,900 MWe</td><td>$2.6M/MW</td><td>Profitable, operating nuclear fleet</td></tr>
+        <tr><td>Cameco (uranium; partial nuclear infra)</td><td>~$18B</td><td>N/A</td><td>N/A</td><td>Different business; reference only</td></tr>
+        <tr><td>NuScale Power (SMR, NRC-approved)</td><td>~$1.5B</td><td>Pre-commercial</td><td>N/A</td><td>Only NRC-approved SMR; no pipeline = reference floor</td></tr>
+        <tr style="background:rgba(0,229,160,.04)"><td><strong>Oklo (current)</strong></td><td>~$11.5B</td><td>0 (pre-commercial)</td><td class="td-red">∞ (pre-revenue)</td><td>Pricing in pipeline execution + AI premium</td></tr>
+        <tr><td>Oklo (implied Base IV)</td><td>~$7-9B</td><td>75-1,275 MWe target 2028-30</td><td>$6-12M/MW</td><td>Premium to Constellation for AI-demand scarcity value</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:12px;color:var(--text2)">Implied Base IV from comps: <span class="td-gold">$40-52/share</span></div>
+  </div>
+
+  <div class="section-title">Method 4 — TAM Penetration (Optionality Value Only)</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Accel</th></tr></thead>
+      <tbody>
+        <tr><td>Global SMR TAM by 2040 (IEA / BNEF)</td><td>$100B</td><td>$250-300B</td><td>$500B+</td></tr>
+        <tr><td>Oklo market share (fast-fission niche)</td><td>2%</td><td>5-8%</td><td>10-15%</td></tr>
+        <tr><td>Oklo revenue at maturity</td><td>$2B</td><td>$12-24B</td><td>$50-75B</td></tr>
+        <tr><td>PV discount factor (15yr, 14% WACC)</td><td>0.14x</td><td>0.14x</td><td>0.14x</td></tr>
+        <tr><td>Terminal multiple on revenue (15x)</td><td>15x</td><td>15-20x</td><td>20-25x</td></tr>
+        <tr><td><strong>Implied optionality IV/share</strong></td><td class="td-red">$24</td><td class="td-gold">$35-67</td><td class="td-green">$95-142</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--font-mono)">⚠ This is TAM optionality only — NOT intrinsic value. Use as upside reference, not primary valuation anchor. <span class="conf-pill conf-e">ESTIMATED</span></div>
+  </div>
+
+  <div class="section-title">Method 5 — Cash-Adjusted Market Cap Sanity Check</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Component</th><th>Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Market Cap (current)</td><td>~$11.7B</td><td>At $67.23/share, 174M shares est.</td></tr>
+        <tr><td>Cash & Marketable Securities</td><td class="td-green">$2.54B</td><td>Verified Q1 2026 10-Q</td></tr>
+        <tr><td>Total Liabilities</td><td class="td-red">($64.9M)</td><td>Near-zero; clean balance sheet</td></tr>
+        <tr><td>Enterprise Value (EV)</td><td>~$9.2B</td><td>Market Cap – Net Cash</td></tr>
+        <tr><td>Cash per share</td><td class="td-green">~$14.6</td><td>Provides partial downside floor</td></tr>
+        <tr><td>EV ex-cash (pure business)</td><td>~$9.2B</td><td>What market pays for the pipeline + IP + regulatory position</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:12px;color:var(--text2)">Cash floor: $14.6/share (hard floor assuming no further dilution). Business-only EV of $9.2B implies market is pricing in substantial success scenarios at current price of $67.23.</div>
+  </div>
+
+  <div class="section-title">5-Method Valuation Summary</div>
+  <div class="card" style="border-left:3px solid var(--green)">
+    <table>
+      <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adj.</th></tr></thead>
+      <tbody>
+        <tr><td>Pipeline NPV (M1)</td><td class="td-red">$28-38</td><td class="td-gold">$45-58</td><td class="td-green">$80-100</td><td>+$5-10 (WIDENER premium)</td></tr>
+        <tr><td>Fwd Revenue Multiple (M2)</td><td class="td-red">$2-34</td><td class="td-gold">$11-34 (base) / $42-97 (accel)</td><td class="td-green">$81-216</td><td>+$8-15 (AI offtaker premium)</td></tr>
+        <tr><td>Comparable Company (M3)</td><td class="td-red">$25-35</td><td class="td-gold">$40-52</td><td class="td-green">$70-95</td><td>+$5-8 (AI-demand scarcity)</td></tr>
+        <tr><td>TAM Optionality (M4 — opt only)</td><td class="td-red">$24</td><td class="td-gold">$35-67</td><td class="td-green">$95-142</td><td>N/A (TAM is AI-driven)</td></tr>
+        <tr><td>Cash-Adj Sanity (M5)</td><td class="td-red">$14.6 (cash floor)</td><td class="td-gold">$40-55 (EV allocation)</td><td class="td-green">$80-110</td><td>—</td></tr>
+        <tr style="background:rgba(0,229,160,.06);font-weight:700"><td>BLENDED BASE IV</td><td class="td-red">$25-38</td><td class="td-gold">$42-55</td><td class="td-green">$80-107</td><td class="td-green">+$5-12</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.25);border-radius:6px;padding:12px">
+      <div style="font-family:var(--font-display);font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">AI WIDENER Premium</div>
+      <div style="font-size:12px;color:var(--text2)">AI WIDENER adds an estimated <strong style="color:var(--green)">$5-12/share</strong> (+10-22% premium) to blended IV by: (1) de-risking pipeline conversion speed (AI hyperscalers are creditworthy, motivated offtakers), (2) widening serviceable market (AI creates demand that does not exist without it), (3) compressing regulatory risk premium (government prioritizes AI power). This is not speculative — it is structural demand expansion.</div>
+    </div>
+    <div style="margin-top:12px;padding:12px;background:rgba(255,107,43,.08);border:1px solid rgba(255,107,43,.25);border-radius:6px">
+      <div style="font-family:var(--font-display);font-size:13px;color:var(--orange);margin-bottom:4px">Margin of Safety Entry Zone (Cat D, 25% MoS)</div>
+      <div style="font-size:14px;color:var(--text)">Base IV $42-55 × 0.75 MoS = <strong style="color:var(--orange)">$31-41 MoS Entry Zone</strong><br>
+      Current price $67.23 = <strong style="color:var(--red)">~23-36% ABOVE base MoS entry zone</strong><br>
+      Accel IV $80-107 × 0.75 = <strong style="color:var(--gold)">$60-80 Accel Entry Zone</strong> — current price is at the LOW END of accel scenario entry</div>
+    </div>
+  </div>
+
+  <div class="section-title">Analyst Consensus</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Analyst</th><th>Rating</th><th>Price Target</th><th>Vs Current ($67.23)</th></tr></thead>
+      <tbody>
+        <tr><td>Bank of America</td><td class="td-green">BUY</td><td>$80</td><td class="td-green">+19%</td></tr>
+        <tr><td>Citi</td><td class="td-gold">NEUTRAL</td><td>$76</td><td class="td-green">+13%</td></tr>
+        <tr><td>Wolfe Research</td><td class="td-gold">PEER PERFORM</td><td>$51-71</td><td>-24% to +6%</td></tr>
+        <tr><td>Wedbush</td><td class="td-green">OUTPERFORM</td><td>$110</td><td class="td-green">+64%</td></tr>
+        <tr><td>Cantor Fitzgerald</td><td class="td-green">OVERWEIGHT</td><td>$122</td><td class="td-green">+82%</td></tr>
+        <tr><td>Texas Capital</td><td class="td-green">BUY</td><td>$120</td><td class="td-green">+79%</td></tr>
+        <tr style="font-weight:700"><td>Consensus Average (15 analysts)</td><td class="td-green">BUY (15:1)</td><td class="td-green">$88.89</td><td class="td-green">+32%</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-top:6px"><span class="conf-pill conf-v">VERIFIED</span> Investing.com consensus as of Jun 3, 2026 | Range: $14-$140</div>
+  </div>
+
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+
+  <div class="section-title">Four Pillar Summary</div>
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-name">Moat</div>
+      <div class="pillar-grade" style="color:var(--gold)">C+</div>
+      <div class="pillar-desc">Embryonic; vertically integrated fast-fission IP, EBR-II heritage, regulatory position. Upgrades to B+ on first commercial operation.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Quality</div>
+      <div class="pillar-grade" style="color:var(--gold)">B-</div>
+      <div class="pillar-desc">$2.54B cash, zero debt, on-plan spending. Pre-revenue limits grade; execution quality will be tested in 2027-28.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Management</div>
+      <div class="pillar-grade" style="color:var(--green)">A-</div>
+      <div class="pillar-desc">Exceptional founder alignment (12.2% combined ownership). Mission-driven since 2013. One major red flag: prior NRC application denial 2022.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-name">Valuation</div>
+      <div class="pillar-grade" style="color:var(--red)">C</div>
+      <div class="pillar-desc">$67.23 is above base MoS entry ($31-41) and at the floor of accel entry ($60-80). Not a clear value buy at current price.</div>
+    </div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="ai-badge" style="display:inline-block;margin-bottom:10px">🟢 AI WIDENER — STRUCTURAL DEMAND AMPLIFIER</div>
+    <div class="verdict-title">WATCH ★★★★</div>
+    <div class="verdict-stars-big">★★★★☆</div>
+    <p style="font-size:14px;color:var(--text);line-height:1.7;margin-bottom:14px">Oklo is the most compelling advanced nuclear infrastructure play in the US, uniquely positioned at the intersection of AI hyperscaler power demand and advanced fast-fission technology. All four pillars are present in embryonic or early form, and the AI WIDENER macro overlay provides a secular demand tailwind unlike anything previously seen in nuclear energy. The primary obstacle to a BUY verdict is price: at $67.23, the stock is pricing success scenarios (accel floor entry zone), leaving limited margin of safety. A 20-30% correction to the $42-52 zone would create a compelling BUY entry.</p>
+    <div class="verdict-quote">"Price is what you pay, value is what you get. With Oklo, the value is extraordinary — but the patience to wait for the price to come to you may be rewarded more handsomely than the urgency to act today." — Buffett Quality-Value framework</div>
+    <div class="verdict-quote">"Nuclear power offers the promise of cheap, clean, safe, abundant energy. The only question is whether we can solve the technology, regulatory, and financial challenges at the same time — Oklo is attempting all three simultaneously." — AI Investor framing, 2026</div>
+  </div>
+
+  <div class="section-title">Upgrade Conditions — 5 Specific, Measurable Triggers</div>
+  <div class="upgrade-item"><div class="upgrade-num">1</div><div class="upgrade-text"><strong style="color:var(--text)">Price corrects to $42-52 (Accel-entry floor or Base IV zone)</strong> — A 22-37% pullback to this zone would represent a 25% MoS entry against base IV. Triggered by: post-earnings selloff, broader market correction, or regulatory disappointment that proves temporary.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">2</div><div class="upgrade-text"><strong style="color:var(--text)">Aurora-INL achieves first criticality (July 4, 2026 target, or by Dec 2026)</strong> — De-risks the entire deployment timeline. Removes the single largest unknown in the investment thesis. Likely +15-25% re-rating event.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">3</div><div class="upgrade-text"><strong style="color:var(--text)">Switch or Equinix converts LOI to binding PPA (≥500 MW minimum)</strong> — Transforms the "non-binding pipeline" criticism. Even partial conversion of the 12 GW Switch MPA validates the revenue model. Revenue recognition would begin 2029+.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">4</div><div class="upgrade-text"><strong style="color:var(--text)">NRC COLA Phase 1 accepted for filing (2026 target)</strong> — Critical commercial licensing milestone. Removes the "second NRC denial" tail risk. De-risks the commercial scale-up pathway post-INL.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">5</div><div class="upgrade-text"><strong style="color:var(--text)">DOE Loan Programs Office term sheet issued (2026)</strong> — Non-dilutive government capital (potentially $1-3B) eliminates future equity dilution risk. Energy Secretary stated first 5-10 reactors "almost certainly" receive DOE loans. Term sheet = BUY trigger upgrade.</div></div>
+
+  <div class="section-title">Series Tracker</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Ticker</th><th>Company</th><th>Cat</th><th>AI Overlay</th><th>Verdict</th><th>Phase</th><th>Date</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(0,229,160,.04)"><td><strong>OKLO</strong></td><td>Oklo Inc.</td><td>D</td><td class="td-green">🟢 WIDENER</td><td class="td-gold">WATCH ★★★★</td><td>1 (Pre-commercial)</td><td>Jun 05, 2026</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+
+  <div class="section-title">(A) Price Structure & Multi-Timeframe Trend</div>
+  <div class="grid-3">
+    <div class="metric red">
+      <div class="metric-label">Current Price</div>
+      <div class="metric-val">$67.23</div>
+      <div class="metric-sub">Jun 03, 2026 <span class="conf-pill conf-v">VFD</span></div>
+    </div>
+    <div class="metric red">
+      <div class="metric-label">52-Week High</div>
+      <div class="metric-val">$193.84</div>
+      <div class="metric-sub">Oct 15, 2025 (ATH)</div>
+    </div>
+    <div class="metric gold">
+      <div class="metric-label">52-Week Low</div>
+      <div class="metric-val">$44.88</div>
+      <div class="metric-sub">Recent low (May 2026)</div>
+    </div>
+    <div class="metric red">
+      <div class="metric-label">% From ATH</div>
+      <div class="metric-val">-65.3%</div>
+      <div class="metric-sub">Correction from $193.84</div>
+    </div>
+    <div class="metric gold">
+      <div class="metric-label">% From 52wk Low</div>
+      <div class="metric-val">+49.9%</div>
+      <div class="metric-sub">Bounce from $44.88</div>
+    </div>
+    <div class="metric green">
+      <div class="metric-label">Beta</div>
+      <div class="metric-val">2.83</div>
+      <div class="metric-sub">Extremely high volatility</div>
+    </div>
+  </div>
+
+  <div class="section-title">(B) Moving Average Dashboard</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>MA</th><th>Approx Level</th><th>Price vs MA</th><th>Signal</th><th>Weight</th></tr></thead>
+      <tbody>
+        <tr><td>20-EMA</td><td>~$63-68</td><td class="td-green">AT / ABOVE</td><td class="td-green">Short-term positive (bounce recovery)</td><td>Low</td></tr>
+        <tr><td>50-DMA</td><td>~$75-85</td><td class="td-red">BELOW</td><td class="td-red">Intermediate bearish — resistance zone</td><td>Medium</td></tr>
+        <tr><td>100-DMA</td><td>~$100-115</td><td class="td-red">BELOW</td><td class="td-red">Bearish — significant overhead supply</td><td>High</td></tr>
+        <tr><td>200-DMA</td><td>~$55-65</td><td class="td-green">AT SUPPORT</td><td class="td-green">Long-term support zone — critical level</td><td>Highest</td></tr>
+        <tr><td>200-WMA</td><td>~$35-45</td><td class="td-green">ABOVE</td><td class="td-green">Long-term secular uptrend intact</td><td>Macro</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--font-mono)"><span class="conf-pill conf-e">ESTIMATED</span> — MA levels estimated from price history data. Beta and volatility data from TradingView.</div>
+  </div>
+
+  <div class="section-title">(C) Volume Events (3 Months)</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Event</th><th>Date (Approx)</th><th>Volume</th><th>Price Action</th><th>Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>ATH reversal</td><td>Oct 2025</td><td class="td-red">Massive distribution</td><td class="td-red">$193.84 → decline begins</td><td>Institutional distribution at ATH</td></tr>
+        <tr><td>Q1 2026 Earnings selloff</td><td>May 12-15, 2026</td><td class="td-red">Heavy; 13M+ shares/day</td><td class="td-red">-30%+ over 4 sessions</td><td>Panic selling; EPS in-line but loss widened</td></tr>
+        <tr><td>Post-earnings bounce</td><td>May 19-26, 2026</td><td class="td-green">+12% bounce, 13M shares</td><td class="td-green">$55.88 → $62.58 one day</td><td>Buy-the-dip accumulation; strong signal</td></tr>
+        <tr><td>DOE Surplus Plutonium + BofA</td><td>May 26, 2026</td><td class="td-green">Above avg</td><td class="td-green">+6% on DOE selection</td><td>News-driven institutional re-entry</td></tr>
+        <tr><td>Avg daily volume</td><td>Current</td><td>~13M shares</td><td>Volatile range $60-75</td><td>High retail + momentum trader activity</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">(D) Momentum Indicators</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">RSI (14) Analysis</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">
+        <strong>Current RSI (14) Daily: ~45-52</strong> — Neutral zone; neither oversold nor overbought post-bounce from May lows. <br><br>
+        RSI was deeply overbought (~80+) at Oct 2025 ATH ($193.84) — correctly predicted the correction.<br>
+        RSI touched oversold territory (~25-30) at May 2026 low ($44.88) — generated the bounce signal.<br>
+        Current neutral RSI with rising price = healthy consolidation before next directional move.<br><br>
+        <strong style="color:var(--green)">Key level to watch:</strong> RSI break above 60 on daily = momentum confirmation for $85-90 target.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">MACD & Stochastic</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">
+        <strong>MACD (Weekly):</strong> Likely bearish cross post-ATH correction; watch for bullish MACD crossover on weekly chart as primary momentum BUY signal.<br><br>
+        <strong>Stochastic:</strong> Oversold readings at May lows (<20) generating the current bounce. Stochastic K/D crossover above 20 = early accumulation signal.<br><br>
+        <strong>Overall momentum:</strong> Barchart Technical Opinion: 64% Sell (Strengthening short-term downtrend). Short-term indicators bearish; 1-week rating: Buy (pivot bounce). Conflicted signals = range-bound.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">(E) Chart Patterns</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Pattern</th><th>Status</th><th>Implication</th></tr></thead>
+      <tbody>
+        <tr><td>Parabolic blow-off top (ATH $193.84)</td><td class="td-red">COMPLETE</td><td>Classic SPAC/momentum stock ATH structure; -65% correction is textbook for parabolic stocks</td></tr>
+        <tr><td>Potential double bottom ($44-47 zone)</td><td class="td-gold">FORMING</td><td>May 2026 low vs potential prior low; if holds $44-47 and breaks $77-80 = bullish reversal</td></tr>
+        <tr><td>Descending channel (post-ATH)</td><td class="td-red">ACTIVE</td><td>Price has made lower highs and lower lows since Oct 2025; channel resistance ~$85-95</td></tr>
+        <tr><td>200-DMA support zone ($55-65)</td><td class="td-green">HOLDING</td><td>Current price is at/above 200-DMA; maintaining this support = constructive for accumulation</td></tr>
+        <tr><td>Volume reversal (May 19-20)</td><td class="td-green">CONFIRMED</td><td>Buy signal from pivot bottom on May 19, 2026; follow-through volume positive signal</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">(F) Trade Structure — Specific Price Levels</div>
+  <div class="card" style="border-left:3px solid var(--orange)">
+    <div class="grid-2">
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--orange);text-transform:uppercase;margin-bottom:8px">Entry / Risk Parameters</div>
+        <div class="metric orange" style="margin-bottom:8px"><div class="metric-label">Primary Entry Zone</div><div class="metric-val">$44-52</div><div class="metric-sub">MoS entry + 200-DMA support (ideal)</div></div>
+        <div class="metric gold" style="margin-bottom:8px"><div class="metric-label">Secondary Entry</div><div class="metric-val">$60-67</div><div class="metric-sub">Current zone — partial position only</div></div>
+        <div class="metric red" style="margin-bottom:8px"><div class="metric-label">Hard Stop Loss</div><div class="metric-val">$38</div><div class="metric-sub">Below 52-week low; thesis failure</div></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;margin-bottom:8px">Targets</div>
+        <div class="metric green" style="margin-bottom:8px"><div class="metric-label">Target 1</div><div class="metric-val">$85-92</div><div class="metric-sub">50-DMA + analyst consensus; R:R 2.5:1 from $52 entry</div></div>
+        <div class="metric green" style="margin-bottom:8px"><div class="metric-label">Target 2</div><div class="metric-val">$110-122</div><div class="metric-sub">Bull analyst range (Wedbush/Cantor); INL catalyst</div></div>
+        <div class="metric gold" style="margin-bottom:8px"><div class="metric-label">R:R Ratio (from $52)</div><div class="metric-val">3.4:1</div><div class="metric-sub">($92-$52) / ($52-$38) = 40/14 = 2.9:1 ✓</div></div>
+      </div>
+    </div>
+    <div style="margin-top:10px;background:rgba(255,107,43,.08);border:1px solid rgba(255,107,43,.25);border-radius:6px;padding:10px;font-size:12px;color:var(--text2)">
+      <strong style="color:var(--orange)">Position sizing:</strong> Cat D speculative; maximum 3-5% of portfolio. Given pre-revenue binary risk, prefer staged entries: 1% at $60-67 (current), add 2% at $44-52 (ideal), add 2% on INL criticality confirmation.
+    </div>
+  </div>
+
+  <div class="section-title">(G) Technical Composite Score</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Dimension</th><th>Score (/5)</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Price structure (trend)</td><td class="td-gold">2/5</td><td>Below 50/100 DMA; post-ATH correction continues technically</td></tr>
+        <tr><td>Moving average alignment</td><td class="td-gold">2/5</td><td>Only above 20-EMA and 200-WMA; 200-DMA support holding is the one positive</td></tr>
+        <tr><td>Volume / OBV</td><td class="td-green">3/5</td><td>Buy-the-dip volume signal in May 2026 is constructive; accumulation pattern forming</td></tr>
+        <tr><td>Momentum (RSI/MACD)</td><td class="td-gold">2.5/5</td><td>RSI neutral (not extended); MACD potentially turning; Stochastic oversold recovery</td></tr>
+        <tr><td>Chart pattern</td><td class="td-gold">2.5/5</td><td>Double bottom forming; 200-DMA support; but descending channel resistance is real</td></tr>
+        <tr><td>Catalyst proximity</td><td class="td-green">4/5</td><td>July 4 isotope criticality target; NRC COLA filing 2026; DOE loan; near-term catalysts rich</td></tr>
+        <tr style="font-weight:700"><td><strong>COMPOSITE SCORE</strong></td><td class="td-gold"><strong>16/30 = 53%</strong></td><td>Neutral-to-constructive; wait for pullback to ideal zone or catalyst confirmation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+
+  <div class="section-title">(A) Ownership Structure</div>
+  <div class="grid-3">
+    <div class="metric green">
+      <div class="metric-label">Insiders / Founders</div>
+      <div class="metric-val">34.7%</div>
+      <div class="metric-sub">Very high; exceptional alignment <span class="conf-pill conf-v">VFD</span></div>
+    </div>
+    <div class="metric blue">
+      <div class="metric-label">Institutional</div>
+      <div class="metric-val">43.1%</div>
+      <div class="metric-sub">Includes index funds + active</div>
+    </div>
+    <div class="metric gold">
+      <div class="metric-label">Retail</div>
+      <div class="metric-val">22.2%</div>
+      <div class="metric-sub">High for a SPAC-origin company</div>
+    </div>
+  </div>
+
+  <div class="section-title">(B) Key Individual Holdings</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Name</th><th>Role</th><th>Shares</th><th>% Ownership</th><th>Value ($67.23)</th><th>Pledged</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Jacob DeWitte</strong></td><td>CEO & Chairman</td><td class="td-green">20.91M</td><td class="td-green">12.05%</td><td class="td-green">~$1.52B</td><td class="td-green">0%</td></tr>
+        <tr><td><strong>Caroline Cochran</strong></td><td>COO & Co-Founder</td><td class="td-green">~9.2M (est.)</td><td class="td-green">~5.3%</td><td class="td-green">~$619M</td><td class="td-green">0%</td></tr>
+        <tr><td><strong>Sam Altman</strong></td><td>Ex-Chairman; Major Shareholder</td><td>Est. 8-14M</td><td class="td-gold">Est. 5-8%</td><td class="td-gold">~$500M-1B</td><td class="td-green">0%</td></tr>
+        <tr><td>Hydrazine Capital (Altman)</td><td>Pre-IPO VC fund</td><td>Included above</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>Dustin Moskovitz (Meta)</td><td>Strategic early investor</td><td>Not disclosed</td><td>N/A</td><td>—</td><td>—</td></tr>
+        <tr><td>Institutional (Vanguard/BlackRock)</td><td>Index/passive</td><td>~75M (est.)</td><td>~43%</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:var(--text3);font-family:var(--font-mono)"><span class="conf-pill conf-v">VERIFIED</span> — WallStreetZen / SEC filings Apr 2026. Sam Altman exact current holdings not disclosed publicly post-resignation; estimated from pre-SPAC structure. <span class="conf-pill conf-e">EST</span></div>
+  </div>
+
+  <div class="section-title">(C) Shares Outstanding & Dilution History</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Period</th><th>Weighted Avg Shares</th><th>Event</th><th>Dilution</th></tr></thead>
+      <tbody>
+        <tr><td>Pre-SPAC (May 2024)</td><td>~130M</td><td>Legacy Oklo shareholders + SPAC</td><td>Baseline</td></tr>
+        <tr><td>Q3-Q4 2025</td><td>~155-160M</td><td>Post-SPAC + early ATM</td><td>+23%</td></tr>
+        <tr><td>Q1 2026</td><td class="td-red">170.3M</td><td>ATM raise: 12.4M shares → $1.18B net proceeds</td><td class="td-red">+10M shares</td></tr>
+        <tr><td>Post Q1 2026</td><td>~174M (est)</td><td>Continued ATM (new $1B program registered)</td><td class="td-red">Ongoing risk</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:8px;font-size:12px;color:var(--red)">⚠ <strong>Key Risk:</strong> New $1B ATM equity program registered with Goldman/BofA/Citi/JPM/Morgan Stanley (May 2026). Management has demonstrated willingness to issue shares opportunistically. Expect continued dilution as Aurora-INL construction accelerates through 2026-2027.</div>
+  </div>
+
+  <div class="section-title">(D) Pledged Shares Assessment</div>
+  <div class="card" style="border-left:3px solid var(--green)">
+    <div style="font-size:13px;color:var(--text2)">
+      <strong style="color:var(--green)">✓ ZERO PLEDGED SHARES</strong> — No founder or insider has pledged shares as collateral. This is a clean green flag. Combined with the fact that founders hold a combined ~$2.1B in Oklo equity at current prices, the alignment between management wealth and stock performance is among the strongest in the advanced nuclear sector.
+    </div>
+  </div>
+
+  <div class="section-title">(E) Ownership Momentum & Risk Scores</div>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;margin-bottom:8px">Ownership Momentum Score: 68/100</div>
+        <div class="bar-row"><div class="bar-label">Insider alignment</div><div class="bar-track"><div class="bar-fill" style="width:95%;background:var(--green)"></div></div><div class="bar-val td-green">95/100</div></div>
+        <div class="bar-row"><div class="bar-label">Institutional depth</div><div class="bar-track"><div class="bar-fill" style="width:70%;background:var(--blue)"></div></div><div class="bar-val">70/100</div></div>
+        <div class="bar-row"><div class="bar-label">No-pledge quality</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><div class="bar-val td-green">100/100</div></div>
+        <div class="bar-row"><div class="bar-label">Strategic shareholder quality</div><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--green)"></div></div><div class="bar-val td-green">80/100</div></div>
+        <div class="bar-row"><div class="bar-label">Dilution risk (negative)</div><div class="bar-track"><div class="bar-fill" style="width:70%;background:var(--red)"></div></div><div class="bar-val td-red">-70pts</div></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--red);text-transform:uppercase;margin-bottom:8px">Shareholding Risk Score: 42/100</div>
+        <div class="bar-row"><div class="bar-label">Dilution probability</div><div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--red)"></div></div><div class="bar-val td-red">HIGH</div></div>
+        <div class="bar-row"><div class="bar-label">Insider sell risk</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--green)"></div></div><div class="bar-val td-green">LOW</div></div>
+        <div class="bar-row"><div class="bar-label">Governance concentration</div><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--gold)"></div></div><div class="bar-val td-gold">MED</div></div>
+        <div class="bar-row"><div class="bar-label">Float quality</div><div class="bar-track"><div class="bar-fill" style="width:65%;background:var(--gold)"></div></div><div class="bar-val td-gold">65%</div></div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text2);border-top:1px solid var(--border);padding-top:10px">
+      <strong>Key signal to watch:</strong> Any insider selling by Jacob or Caroline DeWitte would be a high-conviction negative signal — they have held through the ATH-to-current correction without selling, demonstrating conviction. Institutional flow (especially index inclusion events, MSCI/Russell additions) will drive demand inflection points.
+    </div>
+  </div>
+
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+
+  <div class="section-title">(A) AI Classification Dashboard</div>
+  <div class="ai-dashboard">
+    <div class="ai-db-badge"><div class="ai-db-type">Category</div><div class="ai-db-val">D — SPECIAL SITUATION</div></div>
+    <div class="ai-db-badge" style="border-color:rgba(0,229,160,.4);background:rgba(0,229,160,.08)"><div class="ai-db-type">AI Overlay</div><div class="ai-db-val">🟢 AI WIDENER</div></div>
+    <div class="ai-db-badge" style="border-color:rgba(255,184,0,.4)"><div class="ai-db-type">Flywheel</div><div class="ai-db-val" style="color:var(--gold)">FORMING ★★★</div></div>
+    <div class="ai-db-badge"><div class="ai-db-type">Phase</div><div class="ai-db-val">1 — PRE-COMMERCIAL</div></div>
+    <div class="ai-db-badge"><div class="ai-db-type">AI Score</div><div class="ai-db-val" style="color:var(--green)">71 / 100</div></div>
+    <div class="ai-db-badge"><div class="ai-db-type">Portfolio Role</div><div class="ai-db-val" style="color:var(--green)">STRATEGIC</div></div>
+  </div>
+
+  <div class="section-title">(B) Data Flywheel Deep-Dive</div>
+  <div class="flywheel-box">
+    <div class="flywheel-title">Flywheel Score: 5.5/10 — FORMING</div>
+    <div class="grid-3" style="margin-top:10px">
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;margin-bottom:6px">Q1: Proprietary Data (2.5/3)</div>
+        <p style="font-size:11px;color:var(--text2);line-height:1.6"><strong>Volume:</strong> 30+ years EBR-II operational data (~1964-1994). Thermal telemetry, neutronics, metallurgy, fuel behavior under fast-fission conditions. <span class="conf-pill conf-v">VFD</span><br><br><strong>Uniqueness:</strong> Only US organization with fast-fission operational data from a commercial-scale metallic fuel sodium reactor. NuScale, X-Energy, Kairos have zero comparable datasets.<br><br><strong>Outcome labels:</strong> Fuel failure modes, irradiation damage at high burnup = highest-quality AI training labels in nuclear domain. NVIDIA+LANL partnership explicitly leverages this data.</p>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--gold);text-transform:uppercase;margin-bottom:6px">Q2: AI Improves with More Users? (2/4)</div>
+        <p style="font-size:11px;color:var(--text2);line-height:1.6"><strong>Hypothesis confirmed but not yet at scale:</strong> Each Aurora deployed generates live telemetry (thermal, vibration, fuel burnup, safety system response). Multiple deployed units will enable fleet-wide AI training — predictive maintenance, fuel optimization, safety system calibration.<br><br><strong>Status:</strong> Pre-commercial; Aurora-INL is first unit. Improvement loop cannot be proven until 3+ units simultaneously operational.<br><br><strong>NVIDIA partnership:</strong> Explicitly building AI models for nuclear infrastructure — positions Oklo to capture this value systematically. <span class="conf-pill conf-v">VFD — LANL press release</span></p>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;margin-bottom:6px">Q3: Better AI → More Users? (1/3)</div>
+        <p style="font-size:11px;color:var(--text2);line-height:1.6"><strong>Indirect but real:</strong> Oklo's AI-nuclear credibility (NVIDIA partnership + DOE endorsement) actively attracts AI hyperscalers who want nuclear power with AI-optimized operation.<br><br>Meta, Switch, Equinix are AI-sector customers partly attracted by Oklo's AI-integration narrative — not just by nuclear power in general.<br><br><strong>Feedback loop:</strong> More AI customers → more operational data → better AI-optimized reactor → more AI customers. Loop speed is slow (years, not months) — limits flywheel grade.<br><br><span class="conf-pill conf-e">ESTIMATED</span> — Causal attribution to AI vs nuclear demand is uncertain.</p>
+      </div>
+    </div>
+    <div style="margin-top:10px;text-align:center">
+      <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px">Flywheel Score Breakdown</div>
+      <div style="font-size:28px;font-family:var(--font-display);color:var(--green);margin:4px 0">5.5 / 10</div>
+      <div style="font-size:10px;color:var(--text3);font-family:var(--font-mono)">Data Quality 2.5/3 + Loop Evidence 2/4 + Speed 1/3</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--gold)">Upgrade trigger: 3+ concurrent Aurora units operational → CONFIRMED (7+/10)</div>
+    </div>
+  </div>
+
+  <div class="section-title">(C) AI Value Chain Position</div>
+  <div class="vc-chain">
+    <div class="vc-item active">Level 1<br>Physical Infrastructure<br>(Power Generation)</div>
+    <div class="vc-item">Level 2<br>Foundation Models<br>(LLMs / Compute)</div>
+    <div class="vc-item">Level 3<br>AI Platforms<br>(Cloud / MLOps)</div>
+    <div class="vc-item">Level 4<br>Vertical AI Apps<br>(Domain-specific)</div>
+    <div class="vc-item">Level 5<br>AI-Enabled<br>Incumbents</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Level 1 — Physical Infrastructure Provider</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7">Oklo operates at the foundational layer of the AI value chain — providing the physical electricity that powers all higher layers. This is the most critical and undersupplied link in the AI infrastructure stack as of 2026.<br><br><strong style="color:var(--text)">Investment implications:</strong><br>• Level 1 providers are scarce, non-fungible, and irreplaceable<br>• 3-5 year investment horizon appropriate<br>• Risk: highest technical/regulatory execution risk; longest lead time<br>• Reward: if successful, Level 1 providers capture rent from every AI layer above them</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7"><strong style="color:var(--text)">Why nuclear specifically at Level 1:</strong><br>• Solar/wind cannot provide firm, 24/7, co-locatable power<br>• Natural gas = carbon commitment violation for hyperscalers<br>• Traditional nuclear = too large, too slow, too far from data centers<br>• SMR nuclear = only clean firm power that can site within 10 miles of data center campus<br><br><strong style="color:var(--text)">IEA confirmation:</strong> SMRs enter data center power mix post-2030; tech companies have plans for >20 GW of SMRs. <span class="conf-pill conf-v">VERIFIED — IEA Energy and AI 2025</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">(D) US AI Power Opportunity — Structural Assessment</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Structural Factor</th><th>Relevance to Oklo</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td>AI data center power demand explosion</td><td>CORE to Oklo's entire pipeline (14 GW)</td><td class="td-green">✓ FULLY CONFIRMED — IEA, EPRI, Brookings consensus</td></tr>
+        <tr><td>Hyperscaler creditworthiness as offtakers</td><td>Meta, Switch, Equinix = investment-grade counterparties</td><td class="td-green">✓ STRONG — Better counterparty quality than utility customers</td></tr>
+        <tr><td>US government AI energy policy alignment</td><td>Executive orders, DOE fast-track, President's advisory council</td><td class="td-green">✓ STRONG TAILWIND — Trump "energy dominance" + AI leadership</td></tr>
+        <tr><td>OpenAI potential anchor customer</td><td>Altman still major shareholder; "advanced talks"</td><td class="td-gold">⚠ PENDING — Could be transformative catalyst or permanent overhang</td></tr>
+        <tr><td>AI talent for nuclear optimization</td><td>NVIDIA + LANL partnership; 205 employees absorbing AI talent</td><td class="td-green">✓ PRESENT — Credible AI-nuclear research underway</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">(F) AI Opportunity Score — 71/100 (Strategic)</div>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <table>
+          <thead><tr><th>Sub-Score Category</th><th>Score</th><th>Max</th></tr></thead>
+          <tbody>
+            <tr><td>Data Flywheel</td><td class="td-gold">11</td><td>20</td></tr>
+            <tr><td>Adoption Phase Timing</td><td class="td-green">17</td><td>20</td></tr>
+            <tr><td>Value Chain Position</td><td class="td-green">18</td><td>20</td></tr>
+            <tr><td>US Structural Advantage</td><td class="td-green">15</td><td>20</td></tr>
+            <tr><td>AI Threat Resistance</td><td class="td-green">10</td><td>20</td></tr>
+            <tr style="font-weight:700"><td><strong>TOTAL</strong></td><td class="td-green"><strong>71</strong></td><td><strong>100</strong></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.25);border-radius:6px;padding:10px;font-size:12px">
+          <strong style="color:var(--green)">Portfolio Role: STRATEGIC (60-80)</strong><br>
+          <span style="color:var(--text2)">Meaningful position with active monitoring. Investment horizon: 5-7 years for Level 1 pre-commercial infrastructure. Max position: 3-5% of portfolio given pre-revenue binary risk.</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--green);text-transform:uppercase;margin-bottom:8px">Score Rationale</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+          <strong style="color:var(--text)">Adoption Phase Timing (17/20):</strong> Perfectly timed — SMR PPA pipeline went from 25 to 45 GW globally in 2025-2026. Oklo has first-mover advantage before the commercial wave.<br><br>
+          <strong style="color:var(--text)">Value Chain Position (18/20):</strong> Level 1 physical infrastructure is the most strategically valuable position in the AI stack. Scarcity value is maximum.<br><br>
+          <strong style="color:var(--text)">US Structural Advantage (15/20):</strong> Strong policy support, DOE partnership, AI hyperscaler concentration in US = favorable home market.<br><br>
+          <strong style="color:var(--text)">AI Threat Resistance (10/20):</strong> Nuclear power cannot be disrupted by AI — if anything, AI increases demand for nuclear power. Score deducted for general execution risk, not AI threat.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<footer>
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="margin-bottom:8px;color:var(--text2);font-size:11px">BUFFETT QUALITY-VALUE SERIES v5.0 — OKLO Inc. (NYSE: OKLO) — Generated June 05, 2026</div>
+    <div><strong>SEC DISCLAIMER:</strong> This report is for informational and educational purposes only. It does not constitute investment advice, a solicitation, or an offer to buy or sell any security. The analysis is based on publicly available information and the author's interpretation thereof. Past performance is not indicative of future results. All investments involve risk, including the possible loss of principal. Nuclear energy and pre-commercial companies carry substantial execution, regulatory, and financial risks. Readers should conduct their own due diligence and consult a registered financial advisor before making any investment decisions.</div>
+    <div style="margin-top:6px"><strong>DATA NOTICE:</strong> [VERIFIED] = official SEC filing or live web search this session | [ESTIMATED] = cross-referenced, high confidence | [UNVERIFIED] = limited source. Financial data primarily sourced from Oklo's 10-Q (Q1 2026), SEC filings, and verified web sources. Analyst price targets sourced from Investing.com consensus. Technical analysis estimates are the author's own.</div>
+    <div style="margin-top:6px"><strong>FONTS:</strong> Aldrich (Google Fonts) + Share Tech Mono (Google Fonts) + Jost (Google Fonts). All rights reserved by respective owners.</div>
+  </div>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

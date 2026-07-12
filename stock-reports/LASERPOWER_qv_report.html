@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laser Power & Infra Ltd — BQV Research Report</title>
+<style>
+:root{
+  --race-orange:#FF6A1A;
+  --race-orange-dim:#B84E14;
+  --midnight:#0B0E14;
+  --midnight-2:#131722;
+  --chrome:#9FB0C3;
+  --chrome-bright:#E3E9F0;
+  --muted:#6A80A0;
+  --green:#3FBF7F;
+  --amber:#E0A83E;
+  --red:#E15252;
+  --card-bg:#161B26;
+  --card-bg-2:#1B2130;
+  --border:#293244;
+  --bg:#0E121B;
+  --text:#E9EDF3;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size:16px;
+  font-weight:400;
+  line-height:1.55;
+}
+.mono, .metric-value, .data-num, table td.num, .badge-mono{
+  font-family:'JetBrains Mono',monospace;
+}
+h1,h2,h3,h4{
+  font-family:'Inter',sans-serif;
+  font-weight:700;
+  margin:0 0 12px 0;
+}
+p{margin:0 0 12px 0;color:var(--text);}
+.muted{color:var(--muted);}
+a{color:var(--race-orange);}
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,var(--midnight) 0%, var(--midnight-2) 100%);
+  border-bottom:3px solid var(--race-orange);
+  padding:22px 28px;
+  max-height:220px;
+  overflow:hidden;
+  position:relative;
+}
+.hero-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.hero-name{
+  font-size:28px;
+  font-weight:700;
+  color:var(--chrome-bright);
+  margin:0;
+}
+.hero-sub{
+  font-size:14px;
+  color:var(--chrome);
+  margin-top:2px;
+}
+.hero-badges{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:600;
+  border:1px solid var(--border);
+  white-space:nowrap;
+}
+.badge-verdict{
+  background:rgba(255,106,26,0.15);
+  border-color:var(--race-orange);
+  color:#FFB088;
+  font-size:15px;
+  font-weight:700;
+}
+.badge-cat{background:rgba(159,176,195,0.12);color:var(--chrome-bright);}
+.badge-ai-neutral{background:rgba(230,230,230,0.08);color:#C7CDD6;}
+.badge-macro{background:rgba(63,191,127,0.12);color:var(--green);}
+.hero-lede{
+  margin-top:12px;
+  font-size:14.5px;
+  color:var(--chrome-bright);
+  max-width:900px;
+}
+.pills{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
+.pill{
+  font-size:11px;
+  padding:3px 9px;
+  border-radius:10px;
+  font-weight:600;
+  font-family:'JetBrains Mono',monospace;
+}
+.pill-verified{background:rgba(63,191,127,0.15);color:var(--green);border:1px solid var(--green);}
+.pill-estimated{background:rgba(224,168,62,0.15);color:var(--amber);border:1px solid var(--amber);}
+.pill-unverified{background:rgba(225,82,82,0.15);color:var(--red);border:1px solid var(--red);}
+
+/* TAB BAR */
+#tab-bar{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:var(--midnight);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  overflow-x:auto;
+  scrollbar-width:thin;
+}
+.tab-btn{
+  background:transparent;
+  border:none;
+  color:var(--chrome);
+  padding:14px 16px;
+  font-family:'Inter',sans-serif;
+  font-size:13.5px;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  border-bottom:3px solid transparent;
+  transition:color 0.15s;
+}
+.tab-btn:hover{color:var(--chrome-bright);}
+.tab-btn.active{
+  color:var(--race-orange);
+  border-bottom:3px solid var(--race-orange);
+}
+
+/* CONTENT */
+.tab-content{display:none;padding:28px;max-width:1200px;margin:0 auto;}
+.section-title{
+  font-size:20px;
+  color:var(--chrome-bright);
+  border-left:4px solid var(--race-orange);
+  padding-left:12px;
+  margin-top:28px;
+  margin-bottom:16px;
+}
+.section-title:first-child{margin-top:0;}
+
+/* CARDS / GRID */
+.grid{display:grid;gap:14px;margin-bottom:20px;}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr);} .grid-3{grid-template-columns:repeat(2,1fr);} .grid-2{grid-template-columns:1fr;}}
+@media(max-width:600px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+.card{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-left:4px solid var(--chrome);
+  border-radius:8px;
+  padding:16px;
+}
+.card.status-pass{border-left-color:var(--green);}
+.card.status-marginal{border-left-color:var(--amber);}
+.card.status-fail{border-left-color:var(--red);}
+.card.status-accent{border-left-color:var(--race-orange);}
+
+.metric-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;}
+.metric-value{font-size:22px;font-weight:700;color:var(--chrome-bright);}
+.metric-note{font-size:12.5px;color:var(--muted);margin-top:4px;}
+
+table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14px;}
+th{
+  background:var(--card-bg-2);
+  color:var(--chrome-bright);
+  text-align:left;
+  padding:10px 12px;
+  font-size:12.5px;
+  text-transform:uppercase;
+  letter-spacing:0.3px;
+  border-bottom:2px solid var(--border);
+}
+td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);}
+td.num{font-family:'JetBrains Mono',monospace;}
+tr:hover td{background:rgba(255,106,26,0.04);}
+
+.status-tag{
+  display:inline-block;
+  padding:2px 10px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:700;
+  font-family:'JetBrains Mono',monospace;
+}
+.tag-pass{background:rgba(63,191,127,0.15);color:var(--green);}
+.tag-marginal{background:rgba(224,168,62,0.15);color:var(--amber);}
+.tag-fail{background:rgba(225,82,82,0.15);color:var(--red);}
+
+.callout{
+  border-radius:8px;
+  padding:16px 18px;
+  margin-bottom:20px;
+  border:1px solid;
+}
+.callout-adapt{background:rgba(255,106,26,0.08);border-color:var(--race-orange);}
+.callout-warn{background:rgba(225,82,82,0.08);border-color:var(--red);}
+.callout-info{background:rgba(159,176,195,0.08);border-color:var(--chrome);}
+.callout-title{font-weight:700;color:var(--chrome-bright);margin-bottom:6px;font-size:13.5px;text-transform:uppercase;letter-spacing:0.4px;}
+
+.verdict-box{
+  background:var(--midnight);
+  border:2px solid var(--race-orange);
+  border-radius:10px;
+  padding:24px;
+  margin-bottom:20px;
+}
+.verdict-box .verdict-title{font-size:24px;font-weight:700;color:#FFB088;margin-bottom:8px;}
+.verdict-box .quote{font-style:italic;color:var(--chrome-bright);border-left:3px solid var(--chrome);padding-left:14px;margin-top:14px;}
+
+.upgrade-list{list-style:none;padding:0;margin:0;}
+.upgrade-list li{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:10px 14px;
+  margin-bottom:8px;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+}
+.upgrade-num{
+  background:var(--race-orange);
+  color:var(--midnight);
+  font-weight:700;
+  border-radius:50%;
+  width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;
+  flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;
+}
+
+.stars{color:var(--race-orange);letter-spacing:2px;}
+
+footer{
+  padding:24px 28px;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:12px;
+  max-width:1200px;
+  margin:0 auto;
+}
+footer p{color:var(--muted);margin-bottom:8px;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:800px){.two-col{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-name">Laser Power &amp; Infra Limited</div>
+      <div class="hero-sub">NSE &amp; BSE (Pending Listing) · Ticker: LASERPOWER [ESTIMATED] · Power Cables, Conductors &amp; EPC · Kolkata, India</div>
+    </div>
+    <div class="hero-badges">
+      <span class="badge badge-verdict">PASS</span>
+      <span class="badge badge-cat">Category E — Wrong Framework / Commodity</span>
+      <span class="badge badge-ai-neutral">⚪ AI NEUTRAL</span>
+    </div>
+  </div>
+  <div class="hero-lede">
+    Pre-IPO analysis (issue open Jul 9–13, 2026; price band ₹203–₹214; tentative listing Jul 16, 2026). Laser Power &amp; Infra is a Kolkata-based integrated cable/conductor manufacturer and power-EPC contractor priced at a steep discount to large listed peers — but FY26's record profit rode on a one-time gain and coincided with negative operating cash flow, a sharply deteriorating receivables cycle, and a declining RoCE trend, which outweigh the headline valuation discount.
+  </div>
+  <div class="pills">
+    <span class="pill pill-estimated">MACRO: NEUTRAL-TO-TAILWIND</span>
+    <span class="pill pill-unverified">EARNINGS QUALITY: SUSPECT/UNRELIABLE</span>
+    <span class="pill pill-estimated">PRE-LISTING — NO PRICE HISTORY</span>
+  </div>
+</div>
+
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · IPO Signals</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+</div>
+<div class="tab-content" id="tab0" style="display:block;">
+  <h2 class="section-title">Overview</h2>
+
+  <div class="callout callout-adapt">
+    <div class="callout-title">Framework Adaptation Notices</div>
+    <p><strong>1. Category E treatment:</strong> Cable/conductor manufacturing is a commodity-input business (copper, aluminium) inside a fragmented industry (~400 players, no single player above 15–20% share). No DCF is run; valuation leans on EV/EBITDA and P/E peer comparison instead, per framework Category E rules.</p>
+    <p><strong>2. Pre-listing entity:</strong> This is an open IPO (subscription window Jul 9–13, 2026; listing tentatively Jul 16, 2026), not a trading stock. No price history, moving averages, RSI, or shareholding trend exists. Tab 7 (normally Technical Analysis) is replaced with <strong>IPO Market Signals</strong> — grey market premium, anchor book quality, and subscription demand — clearly flagged as a substitute, not a technical analysis.</p>
+    <p><strong>3. Price basis:</strong> All valuation and "Price at Analysis" references use the IPO price band (₹203–₹214), not a live market price.</p>
+    <p><strong>4. Shareholding tab:</strong> Uses pre/post-IPO promoter dilution and anchor allocation instead of a 5-quarter trend, since no quarterly history exists pre-listing.</p>
+    <p><strong>5. Earnings-quality override:</strong> Although Category E does not mandate the full standard scorecard, an O'Glove-style earnings-quality check is applied because multiple independent analysts flag FY26's profit as boosted by a one-time gain alongside negative operating cash flow. Per framework rules, a SUSPECT/UNRELIABLE earnings-quality rating is treated as a hard entry blocker regardless of category — this materially shapes the verdict below.</p>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">Business Description</h3>
+  <p>Incorporated in 1988 and headquartered in Kolkata, Laser Power &amp; Infra Limited is an integrated manufacturer of power cables, conductors and specialised components for India's power transmission and distribution sector, operating through two segments: <strong>Manufacturing</strong> (~73% of FY26 revenue — LV/MV power cables, aerial bunched cables, control &amp; quad cables, specialty cables, aluminium rods, PVC compounds, and conductors including ACSR) and <strong>EPC</strong> (~27% of FY26 revenue — turnkey power distribution projects: rural/urban electrification, substations, transmission lines). The manufacturing division supplies both third parties and the company's own EPC arm, an integrated model management calls a cost and quality advantage. The company operates three manufacturing units in West Bengal (two in Dhulagarh, one in Kharagpur) with combined installed capacity in the 73,100–85,448 MT range <span class="pill pill-estimated" style="font-size:10px;">ESTIMATED — sources vary</span>, is an RDSO-accredited registered supplier to Indian Railways, has completed 43+ EPC projects across 26 states, 4 union territories and 10 countries, and holds a manufacturing partnership with US-based transmission technology firm TS Conductor Corp. It is also diversifying into solar, battery energy storage, and water pipeline projects.</p>
+
+  <h3 style="color:var(--chrome-bright);">Series Rationale — Why This Stock</h3>
+  <p>This report exists to stress-test a live, actively-marketed mainboard IPO (₹742 crore; fresh issue ₹542 cr + OFS ₹200 cr) against the same quality-value discipline applied to listed compounders — precisely because IPO marketing materials and brokerage "Subscribe" calls tend to foreground growth narrative (order book +49% FY24–26, sector CAGR of 11–13%, de-leveraging use of proceeds) while underweighting cash-flow quality. The interesting tension here: SBI Securities and Swastika Investmart both recommend subscribing, citing a valuation discount to peers and debt paydown; Value Research flags the same numbers as concerning. Both readings use identical data — the difference is entirely in how much weight is placed on FY26's negative operating cash flow and one-time gain.</p>
+
+  <h3 style="color:var(--chrome-bright);">What Makes This Challenging</h3>
+  <div class="grid grid-2">
+    <div class="card status-fail">
+      <div class="metric-label">The core problem</div>
+      <p style="margin:0;font-size:14px;">FY26 revenue <em>declined</em> 9.4% while EBITDA margin and PAT rose — an unusual combination that resolves once you see receivables ballooned by ₹357 cr in one year (DSO 135→196 days) and operating cash flow went <em>negative</em> ₹119 cr against a positive ₹60 cr the year before, in the same year the company booked a ₹32.79 cr one-time gain from selling a subsidiary.</p>
+    </div>
+    <div class="card status-marginal">
+      <div class="metric-label">The counter-argument</div>
+      <p style="margin:0;font-size:14px;">The IPO prices at ~19.8–25.3x FY26 earnings post-issue versus large peers (Polycab, KEI, Havells) at 45–65x, with ₹490 cr of the fresh issue earmarked for debt repayment that should mechanically lower interest costs and could improve reported quality going forward.</p>
+    </div>
+  </div>
+  <p class="muted" style="font-size:13px;">No framework adaptation is silently absorbed — every substitution above is re-flagged in the relevant downstream tab.</p>
+</div>
+<div class="tab-content" id="tab1">
+  <h2 class="section-title">Macro &amp; Growth</h2>
+
+  <h3 style="color:var(--chrome-bright);">Macro Cycle Status Dashboard</h3>
+  <div class="grid grid-3">
+    <div class="card status-marginal">
+      <div class="metric-label">Rural Income Cycle</div>
+      <div class="metric-value" style="font-size:16px;">NEUTRAL</div>
+      <div class="metric-note">Rural electrification is a customer-side tailwind (DISCOM/government demand) but doesn't directly move volumes the way it would for an FMCG name. Impact: 0 to +2%.</div>
+    </div>
+    <div class="card status-marginal">
+      <div class="metric-label">Urban Consumption</div>
+      <div class="metric-value" style="font-size:16px;">NEUTRAL</div>
+      <div class="metric-note">Not a consumer-discretionary business; limited relevance.</div>
+    </div>
+    <div class="card status-fail">
+      <div class="metric-label">Input Cost Cycle</div>
+      <div class="metric-value" style="font-size:16px;">HEADWIND</div>
+      <div class="metric-note">Copper &amp; aluminium prices are broadly expected to firm through 2026 on electrification/data-centre demand even after a brief early-2026 stabilisation. Margin impact: −2% to −4%.</div>
+    </div>
+    <div class="card status-pass">
+      <div class="metric-label">RBI Rate Cycle</div>
+      <div class="metric-value" style="font-size:16px;">EASING</div>
+      <div class="metric-note">India 10Y G-Sec ~6.7% [VERIFIED, 8 Jul 2026], down ~37bps in six weeks on FPI inflows and softer crude. Tailwind for a company refinancing ₹800+ cr of debt.</div>
+    </div>
+    <div class="card status-pass">
+      <div class="metric-label">Govt Capex Cycle</div>
+      <div class="metric-value" style="font-size:16px;">TAILWIND</div>
+      <div class="metric-note">Rural electrification, RDSS, BharatNet and grid-strengthening programmes remain funded; order book grew ~49% (₹2,172.74 cr → ₹3,243.40 cr) FY24–FY26 [VERIFIED].</div>
+    </div>
+    <div class="card status-marginal">
+      <div class="metric-label">AI Adoption Cycle</div>
+      <div class="metric-value" style="font-size:16px;">NEUTRAL</div>
+      <div class="metric-note">No disclosed AI deployment; physical manufacturing/EPC model has limited AI disruption or upside exposure either way.</div>
+    </div>
+  </div>
+  <p><strong>Macro Composite: NEUTRAL-TO-TAILWIND</strong> &nbsp;|&nbsp; <strong>AI Cycle Impact: NEUTRAL</strong> — government capex and an easing rate cycle offset input-cost pressure and rising competitive entry (see below).</p>
+
+  <h3 style="color:var(--chrome-bright);">Sector Growth Derivation</h3>
+  <div class="callout callout-adapt">
+    <div class="callout-title">Bespoke Sector CAGR — Framework Adaptation</div>
+    <p style="margin:0;">No native "Cables &amp; Conductors / Power EPC" row exists in the master sector table. A bespoke rate is derived from CRISIL Intelligence data (cables &amp; wires market: ₹1,951 bn FY25, up from ₹781 bn FY20 at 20.1% CAGR; projected to ₹3,350–3,550 bn by FY30, an 11–13% CAGR) cross-validated against a broader ₹80,000 cr wires-and-wires-plus-EPC estimate growing toward ₹1.3 lakh cr by FY29.</p>
+  </div>
+  <table>
+    <tr><th>Sector</th><th>Stress</th><th>Base</th><th>Accel</th><th>AI Impact</th></tr>
+    <tr><td>Cables, Conductors &amp; Power EPC <span class="pill pill-estimated" style="font-size:9px;">DERIVED</span></td><td class="num">6–8%</td><td class="num">11–13%</td><td class="num">15–18%</td><td>NEUTRAL</td></tr>
+  </table>
+
+  <h3 style="color:var(--chrome-bright);">Company Alpha Over Sector</h3>
+  <table>
+    <tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+    <tr><td>Market share gain</td><td>Contested — Adani, Aditya Birla Group and reportedly UltraTech are all entering wires/cables</td><td class="num">−2 to 0%</td><td class="num">−1 to +1%</td></tr>
+    <tr><td>Premiumisation</td><td>Limited — commodity-priced products</td><td class="num">0%</td><td class="num">+1%</td></tr>
+    <tr><td>Category expansion</td><td>Potential — solar, BESS, water pipelines are nascent, unproven</td><td class="num">0 to +1%</td><td class="num">+1 to +2%</td></tr>
+    <tr><td>Geographic expansion</td><td>Largely exhausted — already PAN-India + 10 export countries</td><td class="num">0%</td><td class="num">0 to +1%</td></tr>
+    <tr><td>Pricing power</td><td>Weak/negative — revenue fell 9.4% in a growing sector while peers grew</td><td class="num">−3 to −1%</td><td class="num">−1 to 0%</td></tr>
+    <tr><td>AI alpha (6a+6b+6c)</td><td>N/A — no AI-driven cost, market-expansion or flywheel lever identified</td><td class="num">0%</td><td class="num">0%</td></tr>
+    <tr style="font-weight:700;"><td>Total alpha</td><td>—</td><td class="num">−5 to −1%</td><td class="num">0 to +4%</td></tr>
+  </table>
+
+  <h3 style="color:var(--chrome-bright);">Growth Rate Summary (context only — feeds EV/EBITDA framing, not a DCF)</h3>
+  <table>
+    <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Accel</th></tr>
+    <tr><td>Macro state</td><td class="num">GDP ~5.5%</td><td class="num">GDP ~6.8%</td><td class="num">GDP ~8%+</td></tr>
+    <tr><td>Sector growth</td><td class="num">6–8%</td><td class="num">11–13%</td><td class="num">15–18%</td></tr>
+    <tr><td>Company alpha</td><td class="num">−5 to −1%</td><td class="num">−1 to +2%</td><td class="num">+2 to +4%</td></tr>
+    <tr><td>Implied revenue CAGR</td><td class="num">1–3%</td><td class="num">10–14%</td><td class="num">17–21%</td></tr>
+    <tr><td>Margin direction</td><td>Compress</td><td>Stable</td><td>Expand</td></tr>
+    <tr><td>Key risk</td><td>New entrants (Adani/Aditya Birla/UltraTech) + input cost spike</td><td>Execution on order book without further WC deterioration</td><td>Sustained backward-integration margin gains</td></tr>
+  </table>
+  <p class="muted" style="font-size:13px;">Sensitivity: given Category E treatment, no formal DCF sensitivity is computed; a 1pp swing in sector CAGR shifts the EV/EBITDA-implied fair range by roughly the same proportion applied in Tab 5.</p>
+</div>
+<div class="tab-content" id="tab2">
+  <h2 class="section-title">Financials</h2>
+
+  <h3 style="color:var(--chrome-bright);">Consolidated Financial Snapshot (₹ Cr) <span class="pill pill-verified">VERIFIED</span></h3>
+  <table>
+    <tr><th>Metric</th><th>FY24</th><th>FY25</th><th>FY26</th><th>Trend</th></tr>
+    <tr><td>Revenue / Total Income</td><td class="num">1,763.65</td><td class="num">2,592.53</td><td class="num">2,347.89</td><td><span class="status-tag tag-fail">−9.4% YoY</span></td></tr>
+    <tr><td>EBITDA</td><td class="num">156.10</td><td class="num">250.39</td><td class="num">301.44</td><td><span class="status-tag tag-pass">+20.4% YoY</span></td></tr>
+    <tr><td>EBITDA Margin</td><td class="num">8.93%</td><td class="num">9.66%</td><td class="num">12.96%</td><td><span class="status-tag tag-pass">Expanding</span></td></tr>
+    <tr><td>PAT</td><td class="num">40.41</td><td class="num">106.75</td><td class="num">151.59</td><td><span class="status-tag tag-marginal">+42% — incl. one-time gain</span></td></tr>
+    <tr><td>Total Borrowings</td><td class="num">393.75–403</td><td class="num">502.95</td><td class="num">828.23–871</td><td><span class="status-tag tag-fail">+65% YoY</span></td></tr>
+    <tr><td>Net Worth</td><td class="num">473.44</td><td class="num">574.58</td><td class="num">725.41</td><td><span class="status-tag tag-pass">Growing</span></td></tr>
+    <tr><td>Operating Cash Flow (CFO)</td><td class="num">n/a</td><td class="num">+60</td><td class="num">−119</td><td><span class="status-tag tag-fail">Turned negative</span></td></tr>
+    <tr><td>RoCE</td><td class="num">19.25%</td><td class="num">17.66%</td><td class="num">13.32%</td><td><span class="status-tag tag-fail">Declining 4 years running (FY23: 22.14%)</span></td></tr>
+    <tr><td>Debtor Collection Period</td><td class="num">135–145 days</td><td class="num">145 days</td><td class="num">196 days</td><td><span class="status-tag tag-fail">Sharp deterioration</span></td></tr>
+    <tr><td>Order Book</td><td class="num">2,172.74</td><td class="num">—</td><td class="num">3,243.40</td><td><span class="status-tag tag-pass">+49%</span></td></tr>
+  </table>
+  <p class="muted" style="font-size:12.5px;">Note: an unrelated aggregator page cited a much smaller financial series (Total income ₹184.81/206.45/322.58 cr, FY23–25) that appears to be a data-scraping artifact mixing content from a different IPO listing on the same page — disregarded as [UNVERIFIED/inconsistent]. Borrowings and Base IV figures show minor cross-source variance, both ranges shown.</p>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Earnings Quality Red Flag — FY26 Profit Composition</div>
+    <p style="margin:0;">FY26's record PAT (₹151.59 cr, +42% YoY) includes a one-time <strong>₹32.79 cr gain</strong> from the fair-value disposal of subsidiary UIC Udyog Limited, plus inventory-related accounting adjustments. Strip the one-time gain and quality-adjusted PAT falls to roughly ₹118.8 cr — still a beat on FY25, but a meaningfully smaller one. This coincided with operating cash flow turning <strong>negative ₹119 cr</strong> (from +₹60 cr in FY25) as receivables grew ₹357 cr in a single year.</p>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">Financial Fortress Scorecard (informational — Category E does not mandate a pass bar)</h3>
+  <table>
+    <tr><th>Test</th><th>Result</th><th>Note</th></tr>
+    <tr><td>ROE ≥15% for 5 consecutive years</td><td><span class="status-tag tag-fail">FAIL</span></td><td>FY24 ROE ~8.5%; only 2 of 3 disclosed years clear 15%</td></tr>
+    <tr><td>ROIC/RoCE > WACC, 5yr consistent</td><td><span class="status-tag tag-fail">FAIL</span></td><td>RoCE declining every year since FY23 (22.1%→13.3%)</td></tr>
+    <tr><td>Net cash preferred</td><td><span class="status-tag tag-fail">FAIL</span></td><td>D/E ~1.1–1.2x; borrowings +65% YoY in FY26</td></tr>
+    <tr><td>Net profit margin ≥15%</td><td><span class="status-tag tag-marginal">MARGINAL</span></td><td>Volatile 9–17.6% range across years</td></tr>
+    <tr><td>FCF positive + growing</td><td><span class="status-tag tag-fail">FAIL</span></td><td>CFO negative ₹119 cr in FY26</td></tr>
+    <tr><td>Owner earnings ≥ net income</td><td><span class="status-tag tag-fail">FAIL</span></td><td>One-time gain inflates reported NI above sustainable earnings power</td></tr>
+    <tr><td>Pricing power proven</td><td><span class="status-tag tag-fail">FAIL</span></td><td>Revenue fell 9.4% in FY26 while sector and named peers grew</td></tr>
+    <tr><td>Revenue CAGR ≥ sector CAGR</td><td><span class="status-tag tag-fail">FAIL</span></td><td>FY26 revenue declined vs. sector's double-digit growth</td></tr>
+    <tr><td>Predictable / recurring revenue</td><td><span class="status-tag tag-marginal">MARGINAL</span></td><td>EPC book is lumpy/project-based; manufacturing more recurring</td></tr>
+    <tr><td>Capital-light model</td><td><span class="status-tag tag-fail">FAIL</span></td><td>Capital-intensive manufacturing + working-capital-heavy EPC</td></tr>
+  </table>
+
+  <h3 style="color:var(--chrome-bright);">O'Glove Earnings Quality — 5 Test Cards</h3>
+  <div class="grid grid-3">
+    <div class="card status-fail"><div class="metric-label">Test 1 — FCF Conversion</div><div class="metric-value" style="font-size:16px;">FAIL</div><div class="metric-note">CFO/NI negative in FY26 vs. positive NI</div></div>
+    <div class="card status-fail"><div class="metric-label">Test 2 — DSO Trend</div><div class="metric-value" style="font-size:16px;">FAIL</div><div class="metric-note">DSO +45% YoY (135→196 days), receivables/revenue 44%→59%, well above peers Apar/Dynamic Cables (~23–24%)</div></div>
+    <div class="card status-marginal"><div class="metric-label">Test 3 — Inventory Days</div><div class="metric-value" style="font-size:16px;">UNVERIFIED</div><div class="metric-note">Granular inventory schedule not available outside full RHP</div></div>
+    <div class="card status-fail"><div class="metric-label">Test 4 — Accounting Policy Stability</div><div class="metric-value" style="font-size:16px;">FAIL</div><div class="metric-note">One-time subsidiary-sale gain + inventory adjustments boosted FY26 earnings — flagged again in Pillar 3 (Management)</div></div>
+    <div class="card status-marginal"><div class="metric-label">Test 5 — Gross Margin Consistency</div><div class="metric-value" style="font-size:16px;">MARGINAL/PASS</div><div class="metric-note">EBITDA margin genuinely improved 8.93%→12.96% via backward integration — one real positive</div></div>
+  </div>
+  <div class="verdict-box" style="border-color:var(--red);">
+    <div class="verdict-title" style="color:var(--red);">Overall O'Glove Grade: SUSPECT → UNRELIABLE</div>
+    <p style="margin:0;">Two outright core-test FAILs (FCF conversion, DSO) plus a confirmed one-time-gain contamination of reported earnings. Per framework rule, this triggers <strong>quality-adjusted (CFO-only) earnings basis, MoS widened +10%, and a hard lean toward PASS</strong> — this is a genuine entry blocker independent of the Category E "wrong framework" classification.</p>
+  </div>
+</div>
+<div class="tab-content" id="tab3">
+  <h2 class="section-title">Moat</h2>
+
+  <div class="grid grid-3">
+    <div class="card status-fail">
+      <div class="metric-label">RoCE Trend (Moat Proxy)</div>
+      <div class="metric-value">13.3%</div>
+      <div class="metric-note">Down from 22.1% (FY23) — falls in the "weak" 10–15% band per framework, and the direction of travel is the more important signal than the level.</div>
+    </div>
+    <div class="card status-fail">
+      <div class="metric-label">Data Flywheel Test</div>
+      <div class="metric-value" style="font-size:16px;">COSMETIC / N/A</div>
+      <div class="metric-note">Physical manufacturing + EPC construction business — no proprietary data advantage, no usage-driven improvement loop. Not an AI or data-network business by design, not by failure.</div>
+    </div>
+    <div class="card status-marginal">
+      <div class="metric-label">Customer Concentration</div>
+      <div class="metric-value">72%</div>
+      <div class="metric-note">Top-10 customers = 72% of FY26 revenue (up from 53% in FY24); largest single customer ~25%. Cuts both ways — sticky relationships, but concentrated bargaining power on the other side.</div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">Moat Source Analysis</h3>
+  <table>
+    <tr><th>Potential Moat Source</th><th>Assessment</th></tr>
+    <tr><td>Backward integration (own cable use in EPC)</td><td>Genuine but modest — internal consumption rose ₹259.64 cr → ₹354.39 cr (FY24–26), giving cost/quality control, not a hard switching-cost moat</td></tr>
+    <tr><td>Long operating history (since 1988) &amp; DISCOM/Railway relationships</td><td>Real intangible advantage (RDSO accreditation, registered Railways supplier) but not unique — many peers hold similar accreditations</td></tr>
+    <tr><td>TS Conductor Corp technology partnership</td><td>Potential technology edge in high-efficiency conductors; too nascent to underwrite as a durable moat today</td></tr>
+    <tr><td>Scale / cost leadership</td><td>Absent — company is mid-sized versus Polycab, KEI, Havells; industry itself is fragmented with ~400 players and no dominant share holder</td></tr>
+    <tr><td>Brand / pricing power</td><td>Weak — evidenced directly by a 9.4% revenue decline in FY26 while the sector and named peers (Apar +23%, Dynamic Cables +17%) grew</td></tr>
+  </table>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Competitive Intensity Rising</div>
+    <p style="margin:0;">Both the Adani Group and the Aditya Birla Group are entering the wires &amp; cables segment, and UltraTech Cement is reportedly preparing its own entry by mid-August 2026. A commodity-adjacent, fragmented industry attracting well-capitalised new entrants is a headwind for any existing player's already-thin moat.</p>
+  </div>
+
+  <div class="verdict-box" style="border-color:var(--chrome);">
+    <div class="verdict-title" style="color:var(--chrome-bright);font-size:20px;">Moat Grade: C-</div>
+    <p style="margin:0;">Weak-to-no durable moat. Some genuine backward-integration and relationship benefits exist, but they are outweighed by declining RoCE, proven weak pricing power, and rising well-funded competitive entry into an already-fragmented, commodity-input industry.</p>
+  </div>
+</div>
+<div class="tab-content" id="tab4">
+  <h2 class="section-title">Management</h2>
+
+  <div class="grid grid-3">
+    <div class="card status-pass">
+      <div class="metric-label">Promoter Pledge</div>
+      <div class="metric-value">0%</div>
+      <div class="metric-note">No share pledge reported. 100% promoter holding pre-issue is simply un-pledged ownership diluting via the offer. Clears the framework's hard pledge gate (>40% pledge = automatic AVOID) with room to spare.</div>
+    </div>
+    <div class="card status-marginal">
+      <div class="metric-label">Operating Tenure</div>
+      <div class="metric-value" style="font-size:16px;">Since 1988</div>
+      <div class="metric-note">Family-run under Chairman &amp; MD Deepak Goel, with Devesh Goel, Akshat Goel and Rakhi Goel as whole-time directors; 3 independent directors on the board (Ajit Kumar Das, Rajnish Rikhy, Ratnabali Kakkar).</div>
+    </div>
+    <div class="card status-fail">
+      <div class="metric-label">Capital Allocation Discipline</div>
+      <div class="metric-value" style="font-size:16px;">Questionable</div>
+      <div class="metric-note">~70% of a 38% capacity expansion went into the lower-margin Kharagpur (LT cables/conductors) unit rather than the higher-margin Dhulagarh (railway signalling/specialty) unit, while utilisation fell from 86% to 62%.</div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">Management Integrity Notes</h3>
+  <table>
+    <tr><th>Item</th><th>Observation</th></tr>
+    <tr><td>Pre-IPO one-time gain timing</td><td>The ₹32.79 cr gain from selling subsidiary UIC Udyog Limited landed in the same year the company reports its highest-ever profit, immediately ahead of the IPO. Not evidence of wrongdoing, but the timing warrants scrutiny of whether reported earnings reflect underlying run-rate profitability.</td></tr>
+    <tr><td>Use of IPO proceeds</td><td>₹490 cr of the ₹542 cr fresh issue is earmarked for debt prepayment/repayment — a genuinely shareholder-friendly, de-risking use of funds if executed as stated.</td></tr>
+    <tr><td>Promoter post-issue commitment</td><td>Promoters retain ~75.29–75.30% post-issue (down from 100%) — a majority, engaged stake remains, though the ₹200 cr OFS component means promoters are partial sellers in this transaction, not purely raising primary capital.</td></tr>
+    <tr><td>Related-party / customer concentration overlap</td><td>No specific related-party revenue concentration flagged in available sources, but the combination of rising customer concentration (72%) and a EPC-manufacturing captive relationship warrants monitoring in post-listing disclosures.</td></tr>
+  </table>
+
+  <div class="verdict-box" style="border-color:var(--chrome);">
+    <div class="verdict-title" style="color:var(--chrome-bright);font-size:20px;">Management Grade: C+</div>
+    <p style="margin:0;">Experienced, long-tenured promoter-management with no pledge or fraud red flag and a genuinely deleveraging use of proceeds. Grade is capped below "B" by capital-allocation choices that widened the utilisation gap and by earnings-timing optics around the pre-IPO subsidiary sale that both warrant continued scrutiny post-listing.</p>
+  </div>
+</div>
+<div class="tab-content" id="tab5">
+  <h2 class="section-title">Valuation</h2>
+
+  <div class="callout callout-adapt">
+    <div class="callout-title">Category E Valuation Method</div>
+    <p style="margin:0;">No DCF is run per framework Category E rules (commodity pricing, unreliable FCF). Valuation instead relies on IPO-implied P/E and EV/EBITDA benchmarked against listed peers, with earnings quality-adjusted for the one-time gain flagged in Tab 2.</p>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">IPO Pricing Snapshot</h3>
+  <div class="grid grid-4">
+    <div class="card"><div class="metric-label">Price Band</div><div class="metric-value">₹203–214</div><div class="metric-note">Face value ₹5; lot size 70 shares</div></div>
+    <div class="card"><div class="metric-label">Issue Size</div><div class="metric-value">₹742 Cr</div><div class="metric-note">Fresh ₹542 cr + OFS ₹200 cr</div></div>
+    <div class="card status-marginal"><div class="metric-label">Post-issue P/E (FY26)</div><div class="metric-value">19.8–25.3x</div><div class="metric-note">Range reflects differing analyst methodologies [UNVERIFIED spread]</div></div>
+    <div class="card"><div class="metric-label">EV/EBITDA</div><div class="metric-value">~12.6x</div><div class="metric-note">Value Research estimate</div></div>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">Peer Valuation Comparison</h3>
+  <table>
+    <tr><th>Company</th><th>P/E (approx.)</th><th>Notes</th></tr>
+    <tr><td>Polycab India</td><td class="num">47–57x</td><td>Market leader, industry-leading growth</td></tr>
+    <tr><td>Havells India</td><td class="num">58–65x</td><td>Diversified consumer electricals + cables</td></tr>
+    <tr><td>KEI Industries</td><td class="num">50–53x</td><td>Cables &amp; wires + EPC/turnkey</td></tr>
+    <tr><td>Apar Industries</td><td class="num">~45.4x</td><td>Transitioning toward cables-led mix, revenue +23% FY26</td></tr>
+    <tr><td>RR Kabel</td><td class="num">~36x</td><td>Recently listed cables peer</td></tr>
+    <tr><td>Industry average (cables)</td><td class="num">~40–42x</td><td>Broad sector benchmark</td></tr>
+    <tr style="background:rgba(255,106,26,0.08);"><td><strong>Laser Power &amp; Infra (IPO ask)</strong></td><td class="num"><strong>19.8–25.3x</strong></td><td><strong>40–55% discount to large peers</strong></td></tr>
+  </table>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Is the Discount a Bargain, or Warranted?</div>
+    <p style="margin:0;">Two readings are possible from identical facts. <strong>Bull case:</strong> smaller scale and early-stage diversification (solar/BESS/water) simply command a lower multiple, and de-leveraging post-IPO closes the gap over time. <strong>Bear case (favoured here):</strong> the discount is appropriately sized for real quality gaps — declining RoCE, negative operating cash flow in the very year profit peaked, DSO nearly 200 days versus ~23–24% receivables/revenue at Apar and Dynamic Cables, and a one-time gain propping up the headline earnings the P/E is built on. Quality-adjusting PAT by removing the ₹32.79 cr one-time gain pushes the effective multiple higher than the headline 19.8–25.3x suggests.</p>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">Valuation Verdict</h3>
+  <table>
+    <tr><th>Basis</th><th>Value</th></tr>
+    <tr><td>Base Intrinsic Value (DCF)</td><td>N/A — Category E, no DCF run</td></tr>
+    <tr><td>P/BV (pre-issue, Dec-2025 NAV ₹140.81/share)</td><td class="num">2.44x</td></tr>
+    <tr><td>Margin of Safety Entry Zone</td><td>N/A — statistically cheap vs. peers on an unadjusted basis, but not on a quality-adjusted basis; no MoS entry price is recommended given the PASS verdict</td></tr>
+  </table>
+  <p style="font-size:13px;color:var(--muted);">Valuation Grade: <strong style="color:var(--chrome-bright);">C</strong> — nominally cheap, not compellingly cheap once earnings are quality-adjusted.</p>
+</div>
+<div class="tab-content" id="tab6">
+  <h2 class="section-title">Verdict</h2>
+
+  <div class="grid grid-4">
+    <div class="card status-fail"><div class="metric-label">Moat</div><div class="metric-value">C-</div></div>
+    <div class="card status-fail"><div class="metric-label">Financial Fortress</div><div class="metric-value">D+</div></div>
+    <div class="card status-marginal"><div class="metric-label">Management</div><div class="metric-value">C+</div></div>
+    <div class="card status-marginal"><div class="metric-label">Valuation</div><div class="metric-value">C</div></div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-title">PASS <span style="font-size:14px;color:var(--chrome);font-weight:400;">(no stars — category E + earnings-quality blocker)</span></div>
+    <p>Category E ("wrong framework / commodity") classification, a SUSPECT-to-UNRELIABLE O'Glove earnings-quality grade, a four-year declining RoCE trend, and rising leverage together outweigh a genuine — but not compelling once quality-adjusted — valuation discount to peers. No fraud or promoter-pledge red flag is present (this is not an AVOID), and the debt-paydown use of proceeds is a real positive, but the combination does not clear the bar for a BUY or WATCH under BQV discipline.</p>
+    <div class="quote">"The core tension: two respected brokerages recommend Subscribe on relative valuation and de-leveraging logic. Value Research reads the same negative operating cash flow and one-time gain as reasons for caution. Both are looking at the same numbers — the difference is entirely in how much weight is placed on cash-flow quality over headline growth. This report weights cash-flow quality more heavily, consistent with the BQV framework's O'Glove discipline."</div>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">Upgrade Conditions (position-sizing triggers if 3+ are met over time — not binary gates)</h3>
+  <ul class="upgrade-list">
+    <li><span class="upgrade-num">1</span><div>Operating cash flow (CFO) turns and sustains positive for 2 consecutive quarters post-listing</div></li>
+    <li><span class="upgrade-num">2</span><div>Trade receivable days fall back below 150 days for 2 consecutive quarters</div></li>
+    <li><span class="upgrade-num">3</span><div>RoCE stabilizes and improves for 2 consecutive quarters from the FY26 base of 13.32%</div></li>
+    <li><span class="upgrade-num">4</span><div>Promoter holding remains stable or increases (no further OFS/stake sale) for 4 consecutive quarters post-listing</div></li>
+    <li><span class="upgrade-num">5</span><div>FY27 revenue growth resumes and matches or exceeds peer growth rates (Apar +23%, Dynamic Cables +17% in FY26)</div></li>
+  </ul>
+
+  <div class="callout callout-info" style="margin-top:20px;">
+    <div class="callout-title">Note on the Hard O'Glove Gate</div>
+    <p style="margin:0;">Per framework rules, a SUSPECT/UNRELIABLE O'Glove rating is a hard blocker across all entry tiers (Tier 1/2/3), independent of any other pillar score. Even if Moat, Management or Valuation improved materially, this position would remain gated until conditions 1–2 above (CFO and DSO) are demonstrably resolved.</p>
+  </div>
+</div>
+<div class="tab-content" id="tab7">
+  <h2 class="section-title">IPO Market Signals <span style="font-size:13px;color:var(--muted);font-weight:400;">(substitute for Technical Analysis — no price history exists pre-listing)</span></h2>
+
+  <div class="callout callout-adapt">
+    <div class="callout-title">Framework Adaptation</div>
+    <p style="margin:0;">This tab replaces standard price/RSI/moving-average technical analysis, which cannot exist for an unlisted security. It is a sentiment/demand gauge only, not a technical analysis in the framework's normal sense.</p>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="card status-marginal">
+      <div class="metric-label">Grey Market Premium (GMP)</div>
+      <div class="metric-value">₹13</div>
+      <div class="metric-note">~6% over upper band (₹214), as of Jul 9, 2026, 12:45pm IST — down from ₹14 prior session. Tracked GMP has ranged ₹10–40 over the pre-listing period. <span class="pill pill-unverified" style="font-size:9px;">UNVERIFIED — informal, unregulated market</span></div>
+    </div>
+    <div class="card status-pass">
+      <div class="metric-label">Anchor Book</div>
+      <div class="metric-value">₹222.60 Cr</div>
+      <div class="metric-note">Raised Jul 8, 2026 from 19 institutions at ₹214/share. Domestic mutual funds took 73.67% of the anchor book (Nippon India MF, HDFC Manufacturing Fund, Kotak MF, Mirae Asset, Motilal Oswal, Bandhan Small Cap, Edelweiss, Bank of India Mid Cap); insurers Kotak Mahindra Life &amp; Edelweiss Life took 6.74%. A reasonably broad-based, credible institutional anchor list.</div>
+    </div>
+    <div class="card status-marginal">
+      <div class="metric-label">Subscription Demand (Day 1, partial)</div>
+      <div class="metric-value" style="font-size:16px;">Measured</div>
+      <div class="metric-note">Early Day-1 data showed ~1.29 million bids against ~25.58 million shares on offer <span class="pill pill-unverified" style="font-size:9px;">UNVERIFIED — early/partial, window open through Jul 13</span></div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">Brokerage Stance</h3>
+  <table>
+    <tr><th>Source</th><th>Call</th><th>Basis</th></tr>
+    <tr><td>SBI Securities</td><td><span class="status-tag tag-pass">Subscribe</span></td><td>Reasonable relative valuation, de-leveraging tailwind from proceeds</td></tr>
+    <tr><td>Swastika Investmart</td><td><span class="status-tag tag-pass">Subscribe</span></td><td>Growth in order book, sector tailwinds</td></tr>
+    <tr><td>Value Research</td><td><span class="status-tag tag-fail">Caution flagged</span></td><td>Negative operating cash flow, deteriorating receivables, revenue underperformance vs. peers</td></tr>
+  </table>
+  <p class="muted" style="font-size:12.5px;">Key dates: subscription window Jul 9–13, 2026; allotment finalisation ~Jul 14; tentative listing Jul 16, 2026 (NSE, BSE).</p>
+</div>
+<div class="tab-content" id="tab8">
+  <h2 class="section-title">Shareholding <span style="font-size:13px;color:var(--muted);font-weight:400;">(pre/post-IPO basis — no quarterly trend exists pre-listing)</span></h2>
+
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="metric-label">Promoter Holding — Pre-Issue</div>
+      <div class="metric-value">100%</div>
+      <div class="metric-note">99.99% promoters + 0.01% promoter group</div>
+    </div>
+    <div class="card status-marginal">
+      <div class="metric-label">Promoter Holding — Post-Issue</div>
+      <div class="metric-value">~75.3%</div>
+      <div class="metric-note">Dilution via ₹542 cr fresh issue + ₹200 cr promoter OFS</div>
+    </div>
+    <div class="card">
+      <div class="metric-label">Promoter Pledge</div>
+      <div class="metric-value">0%</div>
+      <div class="metric-note">No pledge reported — clears the framework's hard gate</div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--chrome-bright);">Offer Structure</h3>
+  <table>
+    <tr><th>Category</th><th>Reservation</th></tr>
+    <tr><td>QIB (incl. anchor)</td><td class="num">50% of net offer</td></tr>
+    <tr><td>Non-Institutional (NII)</td><td class="num">15% of net offer</td></tr>
+    <tr><td>Retail</td><td class="num">35% of net offer</td></tr>
+    <tr><td>Anchor investor allocation</td><td class="num">₹222.60 Cr (30% of QIB portion), 19 institutions</td></tr>
+  </table>
+
+  <div class="callout callout-adapt">
+    <div class="callout-title">Not Applicable — Pre-Listing</div>
+    <p style="margin:0;">FII/DII quarterly holding trend, free-float percentage, and index-weight data do not exist for an unlisted security and are omitted rather than estimated.</p>
+  </div>
+</div>
+<div class="tab-content" id="tab9">
+  <h2 class="section-title">AI Intelligence <span style="font-size:13px;color:var(--muted);font-weight:400;">(NEUTRAL overlay — dashboard + brief note only, per framework rule)</span></h2>
+
+  <div class="hero-badges" style="margin-bottom:16px;">
+    <span class="badge badge-cat">Category E</span>
+    <span class="badge badge-ai-neutral">⚪ AI Overlay: NEUTRAL</span>
+    <span class="badge badge-cat">Flywheel: N/A</span>
+    <span class="badge badge-cat">Adoption Phase: N/A</span>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="card"><div class="metric-label">Data Flywheel</div><div class="metric-value">0/20</div><div class="metric-note">No data-driven business model</div></div>
+    <div class="card"><div class="metric-label">Adoption Phase Timing</div><div class="metric-value">N/A</div><div class="metric-note">Not applicable to physical manufacturing/EPC</div></div>
+    <div class="card"><div class="metric-label">Value Chain Position</div><div class="metric-value">N/A</div><div class="metric-note">Not in the AI value chain</div></div>
+    <div class="card status-marginal"><div class="metric-label">AI Threat Resistance</div><div class="metric-value">15/20</div><div class="metric-note">Not disrupted by AI, but also not benefited</div></div>
+  </div>
+
+  <p>Laser Power &amp; Infra is a physical cable-manufacturing and power-EPC contractor with no disclosed AI deployment and no data-flywheel characteristics. It is neither an AI beneficiary (WIDENER) nor an AI casualty (THREAT) — the business is simply outside the scope of AI-driven disruption or advantage in its current form. <strong>Total AI Opportunity Score: ~18/100 — Portfolio Role: NEUTRAL.</strong></p>
+</div>
+
+<footer>
+  <p><strong>Disclaimer:</strong> This report is generated for personal research purposes under the Buffett Quality-Value (BQV) Framework v5.0 and does not constitute investment advice, a recommendation to subscribe/buy/sell, or a solicitation under SEBI (Research Analysts) Regulations, 2014 or any other regulation. This is a pre-listing IPO analysis based on publicly available offer documents, brokerage notes, and financial media as of July 9–11, 2026; figures may change upon final RHP/prospectus reconciliation and listing-day price discovery. Past performance and pre-listing estimates are not indicative of future or listed performance. Consult a SEBI-registered investment adviser before making investment decisions.</p>
+  <p>Framework: Buffett Quality-Value v5.0 · Category E (Wrong Framework/Commodity) adaptation applied · Design Standard v2.0 (Inter / JetBrains Mono) · Generated via Argus Reports pipeline, July 11, 2026.</p>
+</footer>
+
+<script>
+function switchTab(tabId){
+  document.querySelectorAll('.tab-content').forEach(function(el){el.style.display='none';});
+  document.querySelectorAll('.tab-btn').forEach(function(el){el.classList.remove('active');});
+  document.getElementById(tabId).style.display='block';
+  document.querySelector('.tab-btn[data-tab="'+tabId+'"]').classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JAYBARMARU — Buffett QV Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --midnight: #0D0D14;
+  --deep: #13131E;
+  --panel: #1A1A2A;
+  --card: #1E1E2E;
+  --border: #2A2A3E;
+  --race-orange: #F05A1A;
+  --orange-soft: #FF7540;
+  --chrome: #8B9BAF;
+  --chrome-light: #B4C4D4;
+  --gold: #D4AA50;
+  --text: #E8E8EC;
+  --muted: #7A8A9E;
+  --dim: #4A5A6E;
+  --green: #4CAF86;
+  --red: #E05A5A;
+  --amber: #E0A040;
+  --blue: #5090D0;
+  --pass: #4CAF86;
+  --marginal: #E0A040;
+  --fail: #E05A5A;
+  --stripe-orange: #F05A1A;
+  --stripe-chrome: #8B9BAF;
+  --stripe-gold: #D4AA50;
+  --stripe-green: #4CAF86;
+  --stripe-blue: #5090D0;
+  --stripe-amber: #E0A040;
+  --stripe-red: #E05A5A;
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--midnight); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.6; min-height: 100vh; }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #0D0D14 0%, #131320 50%, #0A1028 100%);
+  border-bottom: 3px solid var(--race-orange);
+  padding: 28px 28px 20px;
+  max-height: 220px;
+  overflow: hidden;
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--race-orange), var(--gold), var(--race-orange));
+}
+.hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.hero-left {}
+.hero-ticker { font-family: var(--font-mono); font-size: 12px; color: var(--race-orange); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 2px; }
+.hero-name { font-family: var(--font-display); font-size: 36px; font-weight: 800; line-height: 1; color: var(--text); letter-spacing: -0.5px; }
+.hero-tagline { font-size: 13px; color: var(--chrome); margin-top: 4px; }
+.hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.verdict-badge {
+  background: var(--amber);
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.badge-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.badge-cat { color: var(--race-orange); border-color: var(--race-orange); background: rgba(240,90,26,0.08); }
+.badge-ai { color: var(--chrome-light); border-color: var(--chrome); background: rgba(139,155,175,0.08); }
+.badge-macro { color: var(--amber); border-color: var(--amber); background: rgba(224,160,64,0.08); }
+.badge-fly { color: var(--muted); border-color: var(--dim); background: rgba(74,90,110,0.1); }
+
+.hero-metrics { display: flex; gap: 20px; margin-top: 12px; flex-wrap: wrap; }
+.hm { display: flex; flex-direction: column; }
+.hm-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.hm-val { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text); }
+.hm-val.orange { color: var(--race-orange); }
+.hm-val.gold { color: var(--gold); }
+.hm-val.green { color: var(--green); }
+
+.conf-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.pill { font-family: var(--font-mono); font-size: 10px; padding: 2px 7px; border-radius: 2px; }
+.pill-v { background: rgba(76,175,134,0.15); color: var(--green); border: 1px solid rgba(76,175,134,0.3); }
+.pill-e { background: rgba(224,160,64,0.15); color: var(--amber); border: 1px solid rgba(224,160,64,0.3); }
+.pill-u { background: rgba(224,90,90,0.15); color: var(--red); border: 1px solid rgba(224,90,90,0.3); }
+
+/* ── TAB BAR ── */
+#tab-bar {
+  background: var(--deep);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.tab-scroll { display: flex; min-width: max-content; }
+.tab-btn {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--race-orange); border-bottom-color: var(--race-orange); }
+
+.tab-content { display: none; padding: 24px 24px 48px; max-width: 1100px; margin: 0 auto; }
+.tab-content.active { display: block; }
+
+/* ── CARDS & LAYOUT ── */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title span { color: var(--race-orange); }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+@media (max-width: 680px) { .grid-2,.grid-3,.grid-4 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .grid-3,.grid-4 { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.card-stripe { height: 3px; }
+.card-body { padding: 14px 16px; }
+.card-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.card-value { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--text); }
+.card-value.sm { font-size: 18px; }
+.card-sub { font-size: 12px; color: var(--chrome); margin-top: 2px; }
+
+.info-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+.info-card h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+
+/* ── TABLES ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
+.data-table th { background: var(--panel); color: var(--muted); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.5px; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+.data-table td { padding: 7px 10px; border-bottom: 1px solid rgba(42,42,62,0.5); color: var(--text); font-family: var(--font-mono); font-size: 12px; }
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table .lbl { color: var(--chrome-light); font-family: var(--font-body); font-size: 13px; }
+.data-table .pass { color: var(--green); }
+.data-table .fail { color: var(--red); }
+.data-table .marginal { color: var(--amber); }
+.data-table .num { text-align: right; }
+.data-table .bold { font-weight: 600; }
+
+/* ── VERDICT / SCORE BOXES ── */
+.verdict-box {
+  background: linear-gradient(135deg, #1A1A2A, #0F0F1A);
+  border: 2px solid var(--amber);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  position: relative;
+}
+.verdict-stars { font-family: var(--font-display); font-size: 32px; color: var(--gold); margin-bottom: 4px; }
+.verdict-label { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--amber); margin-bottom: 8px; }
+.verdict-quote { font-style: italic; color: var(--chrome); font-size: 13px; border-left: 3px solid var(--race-orange); padding-left: 12px; margin-top: 12px; }
+.verdict-lede { font-size: 14px; color: var(--text); line-height: 1.7; }
+
+.pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+@media (max-width: 680px) { .pillar-grid { grid-template-columns: repeat(2, 1fr); } }
+.pillar-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px;
+  text-align: center;
+}
+.pillar-grade {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.pillar-name { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.grade-a { color: #4CAF86; }
+.grade-b { color: #7DC08A; }
+.grade-c { color: var(--amber); }
+.grade-d { color: var(--orange-soft); }
+.grade-f { color: var(--red); }
+
+/* Scorecard pass/marginal/fail */
+.sc-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.sc-label { color: var(--chrome-light); }
+.sc-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+.sc-pass { background: rgba(76,175,134,0.15); color: var(--green); }
+.sc-marginal { background: rgba(224,160,64,0.15); color: var(--amber); }
+.sc-fail { background: rgba(224,90,90,0.15); color: var(--red); }
+
+/* Moat stars */
+.moat-stars { color: var(--gold); font-size: 14px; }
+.moat-card {
+  background: var(--card);
+  border-left: 3px solid var(--race-orange);
+  border-radius: 0 5px 5px 0;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+.moat-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.moat-card p { font-size: 12px; color: var(--chrome); }
+
+/* Upgrade conditions */
+.upgrade-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  margin-bottom: 8px;
+}
+.upgrade-num {
+  background: var(--race-orange);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.upgrade-text { font-size: 13px; color: var(--text); }
+
+/* Flywheel box */
+.flywheel-box {
+  background: linear-gradient(135deg, #1A1A2E, #131320);
+  border: 2px solid var(--dim);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.flywheel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.flywheel-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text); }
+.flywheel-badge {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 4px;
+  background: rgba(74,90,110,0.3);
+  color: var(--chrome-light);
+  border: 1px solid var(--dim);
+}
+
+/* Technical indicators */
+.tech-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.tech-label { font-size: 12px; color: var(--muted); width: 120px; flex-shrink: 0; }
+.tech-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.tech-fill { height: 100%; border-radius: 3px; }
+.tech-val { font-family: var(--font-mono); font-size: 12px; color: var(--chrome-light); width: 60px; text-align: right; }
+
+/* Shareholding progress bars */
+.sh-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.sh-label { font-size: 13px; color: var(--chrome-light); width: 100px; flex-shrink: 0; }
+.sh-bar-wrap { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.sh-bar { height: 100%; border-radius: 4px; }
+.sh-pct { font-family: var(--font-mono); font-size: 12px; color: var(--text); width: 50px; text-align: right; }
+
+/* AI section */
+.ai-badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.ai-badge {
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+.ai-badge-neutral { background: rgba(139,155,175,0.15); color: var(--chrome-light); border: 1px solid var(--chrome); }
+.ai-badge-cat { background: rgba(240,90,26,0.1); color: var(--race-orange); border: 1px solid var(--race-orange); }
+.ai-badge-fly { background: rgba(74,90,110,0.2); color: var(--muted); border: 1px solid var(--dim); }
+.ai-badge-phase { background: rgba(80,144,208,0.1); color: var(--blue); border: 1px solid var(--blue); }
+
+/* Score gauge */
+.score-circle { display: inline-flex; flex-direction: column; align-items: center; }
+.score-num { font-family: var(--font-display); font-size: 48px; font-weight: 800; color: var(--chrome); }
+.score-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* OE box */
+.oe-box {
+  background: linear-gradient(90deg, rgba(240,90,26,0.05), rgba(13,13,20,0.5));
+  border: 1px solid rgba(240,90,26,0.3);
+  border-left: 4px solid var(--race-orange);
+  border-radius: 0 6px 6px 0;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+.oe-box h3 { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--race-orange); margin-bottom: 12px; }
+.oe-line { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--border); font-size: 13px; }
+.oe-line:last-child { border-bottom: none; font-weight: 600; color: var(--race-orange); }
+.oe-line .oe-v { font-family: var(--font-mono); }
+
+/* Trade box */
+.trade-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.trade-box h3 { font-family: var(--font-display); font-size: 16px; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+.trade-levels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+@media (max-width: 600px) { .trade-levels { grid-template-columns: repeat(2, 1fr); } }
+.tl { background: var(--panel); border-radius: 4px; padding: 8px 10px; text-align: center; }
+.tl-type { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 2px; }
+.tl-price { font-family: var(--font-display); font-size: 20px; font-weight: 700; }
+.tl-entry { color: var(--green); }
+.tl-sl { color: var(--red); }
+.tl-t1 { color: var(--amber); }
+.tl-t2 { color: var(--race-orange); }
+
+/* ROIC cards */
+.roic-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px; }
+@media (max-width: 680px) { .roic-row { grid-template-columns: repeat(3, 1fr); } }
+.roic-yr { background: var(--card); border: 1px solid var(--border); border-radius: 5px; padding: 10px; text-align: center; }
+.roic-yr-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+.roic-yr-val { font-family: var(--font-display); font-size: 20px; font-weight: 700; }
+
+/* Valuation method cards */
+.val-method { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px; margin-bottom: 12px; }
+.val-method h4 { font-size: 13px; font-weight: 600; color: var(--chrome-light); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.val-range { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.vr-block { background: var(--panel); border-radius: 4px; padding: 8px 10px; text-align: center; }
+.vr-label { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+.vr-val { font-family: var(--font-display); font-size: 22px; font-weight: 700; }
+.stress { color: var(--red); }
+.base { color: var(--amber); }
+.accel { color: var(--green); }
+
+/* Sensitivity table */
+.sensitivity-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: var(--font-mono); }
+.sensitivity-table th { background: var(--panel); color: var(--muted); padding: 6px 8px; text-align: center; border: 1px solid var(--border); font-size: 11px; }
+.sensitivity-table td { text-align: center; padding: 6px 8px; border: 1px solid var(--border); }
+.sensitivity-table .hl { color: var(--race-orange); font-weight: 600; }
+
+p { margin-bottom: 12px; color: var(--chrome); font-size: 14px; line-height: 1.7; }
+h2 { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 16px; margin-top: 8px; }
+h3 { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 10px; margin-top: 16px; }
+ul { padding-left: 20px; margin-bottom: 12px; }
+li { color: var(--chrome); font-size: 14px; margin-bottom: 4px; }
+strong { color: var(--text); }
+
+.tag-v { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border-radius: 2px; background: rgba(76,175,134,0.15); color: var(--green); border: 1px solid rgba(76,175,134,0.3); }
+.tag-e { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border-radius: 2px; background: rgba(224,160,64,0.15); color: var(--amber); border: 1px solid rgba(224,160,64,0.3); }
+.tag-u { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border-radius: 2px; background: rgba(224,90,90,0.15); color: var(--red); border: 1px solid rgba(224,90,90,0.3); }
+
+.mb16 { margin-bottom: 16px; }
+.mb24 { margin-bottom: 24px; }
+
+.alert-box { background: rgba(240,90,26,0.08); border: 1px solid rgba(240,90,26,0.3); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: var(--chrome-light); }
+.alert-box strong { color: var(--race-orange); }
+
+footer { background: var(--deep); border-top: 1px solid var(--border); padding: 24px 28px; margin-top: 40px; font-size: 11px; color: var(--dim); line-height: 1.8; }
+footer strong { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-left">
+      <div class="hero-ticker">NSE: JAYBARMARU &nbsp;|&nbsp; Buffett QV Series</div>
+      <div class="hero-name">Jay Bharat Maruti</div>
+      <div class="hero-tagline">Body-in-white & chassis supplier to Maruti Suzuki — margin inflection story</div>
+    </div>
+    <div class="hero-right">
+      <div class="verdict-badge">WATCH ★★★★</div>
+      <div class="badge-row">
+        <span class="badge badge-cat">CAT C</span>
+        <span class="badge badge-ai">⚪ NEUTRAL</span>
+        <span class="badge badge-macro">TAILWIND</span>
+        <span class="badge badge-fly">COSMETIC</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-metrics">
+    <div class="hm"><span class="hm-label">CMP</span><span class="hm-val orange">₹128</span></div>
+    <div class="hm"><span class="hm-label">Mkt Cap</span><span class="hm-val">₹1,385 Cr</span></div>
+    <div class="hm"><span class="hm-label">FY26 Rev</span><span class="hm-val">₹2,551 Cr</span></div>
+    <div class="hm"><span class="hm-label">OPM FY26</span><span class="hm-val gold">11%</span></div>
+    <div class="hm"><span class="hm-label">Norm P/E</span><span class="hm-val">14.3x</span></div>
+    <div class="hm"><span class="hm-label">ROCE FY26</span><span class="hm-val green">16.4%</span></div>
+    <div class="hm"><span class="hm-label">Base IV</span><span class="hm-val gold">₹145</span></div>
+  </div>
+  <div class="conf-pills">
+    <span class="pill pill-v">VERIFIED: Screener/BSE</span>
+    <span class="pill pill-e">ESTIMATED: Projections</span>
+    <span class="pill pill-u">UNVERIFIED: AI intel</span>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <div class="tab-scroll">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro & Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intelligence</button>
+  </div>
+</div>
+
+<!-- TAB 0: OVERVIEW -->
+<div id="tab0" class="tab-content active">
+  <h2>Business <span style="color:var(--race-orange)">Overview</span></h2>
+  <div class="alert-box"><strong>SERIES RATIONALE:</strong> Jay Bharat Maruti is a Category C mature compounder undergoing a structural margin inflection. ROCE bottomed at 8% in FY24, recovered to 16% in FY26 driven by operating leverage on new capacity. The normalized P/E of 14x at ₹128 is attractive relative to the franchise, but single-customer concentration (>95% MSIL) and a one-time FY26 tax credit of ~₹41 Cr require careful normalization before any valuation conclusion.</div>
+
+  <div class="grid-2">
+    <div class="info-card">
+      <h3>What JBML Does</h3>
+      <p>Jay Bharat Maruti Limited (JBML), incorporated in 1987, is the largest joint venture of Maruti Suzuki India Limited (MSIL). It manufactures <strong>body-in-white (BIW) sheet metal components</strong>, rear axle assemblies, muffler assemblies, fuel neck assemblies, chassis and suspension parts, and tools & dies for MSIL's entire model range. MSIL owns 29.28% of JBML — a captive relationship, not a commercial one.</p>
+      <p>Four manufacturing plants: two in Gurgaon/Manesar (Haryana), one in Vithlapur (Gujarat), and a new Phase I at Kharkhoda (Haryana), which commenced in FY25. A JV, JBM Ogihara Die Tech Pvt Ltd (JODT), operates die manufacturing facilities. The Kharkhoda and SMG (Gujarat) plants, opened in FY25-26, are the primary drivers of FY26 operating leverage.</p>
+    </div>
+    <div class="info-card">
+      <h3>Framework Classification</h3>
+      <table class="data-table">
+        <tr><td class="lbl">Category</td><td><strong>C — Mature Quality Compounder</strong></td></tr>
+        <tr><td class="lbl">AI Overlay</td><td><strong>⚪ NEUTRAL</strong> — AI used for efficiency only; no structural moat change</td></tr>
+        <tr><td class="lbl">Flywheel</td><td><strong>COSMETIC</strong> — No proprietary data flywheel; standard auto manufacturing</td></tr>
+        <tr><td class="lbl">WACC Applied</td><td><strong>12%</strong> (Cat C standard; +100bps for customer concentration)</td></tr>
+        <tr><td class="lbl">Terminal P/E</td><td><strong>16–18x</strong> (Cat C range, adjusted for thin margins)</td></tr>
+        <tr><td class="lbl">MoS Required</td><td><strong>20%</strong> (Cat C standard)</td></tr>
+        <tr><td class="lbl">Horizon</td><td><strong>3–5 years</strong></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid-4">
+    <div class="card"><div class="card-stripe" style="background:var(--race-orange)"></div><div class="card-body"><div class="card-label">Revenue FY26</div><div class="card-value">₹2,551</div><div class="card-sub">Cr standalone | +11% YoY</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--gold)"></div><div class="card-body"><div class="card-label">OPM FY26</div><div class="card-value">11%</div><div class="card-sub">vs 7% in FY22–25 (+400 bps)</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-body"><div class="card-label">Reported PAT FY26</div><div class="card-value">₹138 Cr</div><div class="card-sub">Incl. ~₹41 Cr one-time tax credit</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--blue)"></div><div class="card-body"><div class="card-label">Normalized PAT</div><div class="card-value">~₹97 Cr</div><div class="card-sub">Ex one-time; Norm EPS ~₹8.97</div></div></div>
+  </div>
+
+  <div class="info-card mb16">
+    <h3>Why This Stock Is Interesting — And Challenging</h3>
+    <p><strong>Interesting:</strong> JBML is experiencing a genuine structural improvement in margins after a 4-year plateau at 7% OPM (FY22–FY25). New capacity at Kharkhoda and SMG plants has created operating leverage — four consecutive quarters of 10–12% OPM in FY26. The stock is up 63.6% in 1 year but still trades at a normalized P/E of 14x. ROCE has recovered from a 5-year trough of 8% to 16.4% in FY26.</p>
+    <p><strong>Challenging:</strong> Single-customer concentration exceeding 95% revenue from MSIL. JBML is essentially an outsourced manufacturing arm of Maruti — it has no independent pricing power. Margins are structurally thin (auto OEM-supplier dynamics). The FY26 PAT of ₹138 Cr includes a deferred tax asset recognition (Q4 FY26: -43% effective tax rate), materially inflating the headline EPS of ₹12.74. The stock currently trades above its Earnings Yield MoS boundary — the equity risk premium is near zero. Framework adaptations: EPV analysis used as floor; normalized earnings essential throughout.</p>
+  </div>
+
+  <div class="info-card">
+    <h3>JBM Group Context</h3>
+    <p>JBML is part of the broader <strong>JBM Group</strong>, which also includes JBM Auto Ltd (JBMA — separately listed, electric buses, mkt cap ~₹15,250 Cr). JBML is the "legacy auto components" arm of the group; JBMA is the high-growth EV play. They are distinct listed entities. The JBM Group is the co-promoter (Arya family) alongside MSIL's 29.28% stake. This context matters: JBML's growth is tethered to MSIL volumes, while the EV optionality sits elsewhere in the group.</p>
+  </div>
+</div>
+
+<!-- TAB 1: MACRO & GROWTH -->
+<div id="tab1" class="tab-content">
+  <h2>Macro &amp; <span style="color:var(--race-orange)">Growth</span></h2>
+
+  <div class="section-title">Layer 1 — Macro <span>Cycle Status</span></div>
+  <table class="data-table mb24">
+    <thead><tr><th>Dimension</th><th>Status</th><th>Reading</th><th>Impact on JBML</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">Rural Income Cycle</td><td class="pass">RECOVERY</td><td>Good monsoon FY26; MSP hikes; MGNREGA support</td><td>+ve for entry-level PVs (Alto, S-Presso)</td></tr>
+      <tr><td class="lbl">Urban Consumption</td><td class="pass">BOOM</td><td>IT wage growth, real estate wealth effect</td><td>Strong demand for mid-segment Maruti models</td></tr>
+      <tr><td class="lbl">Input Cost Cycle</td><td class="pass">NEUTRAL</td><td>Steel/HRC prices stable; auto commodity costs easing</td><td>OPM tailwind; JBML passes through most steel cost</td></tr>
+      <tr><td class="lbl">RBI Rate Cycle</td><td class="pass">EASING</td><td>Repo at 5.25% (down from 6.5%); inflation sub-3%</td><td>Lower auto loan EMIs → volume tailwind for MSIL</td></tr>
+      <tr><td class="lbl">Govt Capex Cycle</td><td class="marginal">NEUTRAL</td><td>Road infra spending; Kharkhoda Industrial Corridor</td><td>Indirect; Kharkhoda plant benefits from corridor</td></tr>
+      <tr><td class="lbl">AI Adoption Cycle</td><td class="marginal">NEUTRAL</td><td>Auto sector: process AI only; no structural shift</td><td>Efficiency gains; no moat change</td></tr>
+    </tbody>
+  </table>
+  <div class="card mb24"><div class="card-stripe" style="background:var(--green)"></div><div class="card-body"><div class="card-label">Macro Composite</div><div class="card-value sm">🟢 TAILWIND &nbsp;|&nbsp; AI Cycle: ⚪ NEUTRAL</div><div class="card-sub">India nominal GDP ≈ 6.6% real + ~4% CPI = ~10.6% ceiling | G-Sec 6.86% | Repo 5.25%</div></div></div>
+
+  <div class="section-title">Layer 2 — Sector <span>Growth Derivation</span></div>
+  <div class="alert-box" style="background:rgba(80,144,208,0.06); border-color:rgba(80,144,208,0.3)"><strong>Sector:</strong> Auto Ancillaries — BIW components & chassis parts for PV segment<br><strong>India PV Industry:</strong> Volume CAGR 3yr ~8-10%; Maruti domestic growth was only 3% in FY25 but accelerating in FY26 with new models (Dzire EV, new launches). "AI is neutral for this sector — process automation benefits are replicable; no structural competitive shift over 5 years."</div>
+  <table class="data-table mb24">
+    <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">India PV Volume CAGR</td><td class="fail">4–6%</td><td class="marginal">8–10%</td><td class="pass">12–15%</td></tr>
+      <tr><td class="lbl">Auto Ancillary Sector CAGR</td><td class="fail">7–9%</td><td class="marginal">10–13%</td><td class="pass">14–17%</td></tr>
+      <tr><td class="lbl">MSIL Market Share</td><td class="fail">Eroding (&lt;40%)</td><td class="marginal">Holding (41–43%)</td><td class="pass">Gaining (&gt;43%)</td></tr>
+      <tr><td class="lbl">JBML Content per Vehicle</td><td class="fail">Flat/Decline</td><td class="marginal">Stable</td><td class="pass">+5–8% (EV components)</td></tr>
+      <tr><td class="lbl">AI Impact</td><td colspan="3" style="text-align:center; color:var(--muted)">⚪ NEUTRAL — no material change to sector growth trajectory</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Layer 3 — Company <span>Alpha over Sector</span></div>
+  <table class="data-table mb24">
+    <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1</th><th>Stage 2</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">Market share gain</td><td class="marginal">POTENTIAL</td><td>+1–2%</td><td>+0–1%</td></tr>
+      <tr><td class="lbl">Premiumisation lever</td><td class="fail">N/A</td><td>0%</td><td>0%</td></tr>
+      <tr><td class="lbl">Category/product expansion</td><td class="marginal">POTENTIAL</td><td>+1–2%</td><td>+1–3%</td></tr>
+      <tr><td class="lbl">Geographic expansion</td><td class="fail">EXHAUSTED</td><td>0%</td><td>0%</td></tr>
+      <tr><td class="lbl">Pricing power above inflation</td><td class="fail">N/A</td><td>0%</td><td>0%</td></tr>
+      <tr><td class="lbl">AI Alpha (6a+6b+6c)</td><td class="fail">N/A</td><td>0%</td><td>0%</td></tr>
+      <tr><td class="lbl bold">Total Alpha</td><td>—</td><td class="pass bold">+2–4%</td><td class="marginal bold">+1–4%</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px; color:var(--muted)">Alpha note: Key expansion is capacity utilization at new Kharkhoda & SMG plants driving operating leverage, not pricing power or product diversification.</p>
+
+  <div class="section-title">Growth Rate <span>Summary</span></div>
+  <table class="data-table mb24">
+    <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">Macro State</td><td class="fail">GDP ~5.5%</td><td class="marginal">GDP ~6.6%</td><td class="pass">GDP ~8%+</td></tr>
+      <tr><td class="lbl">Sector Growth</td><td class="fail">7–9%</td><td class="marginal">10–13%</td><td class="pass">14–17%</td></tr>
+      <tr><td class="lbl">Company Alpha</td><td>+1%</td><td>+2–3%</td><td>+3–4%</td></tr>
+      <tr><td class="lbl">Stage 1 Revenue CAGR</td><td class="fail">8%</td><td class="marginal">12%</td><td class="pass">18%</td></tr>
+      <tr><td class="lbl">Stage 2 Revenue CAGR</td><td class="fail">5%</td><td class="marginal">9%</td><td class="pass">12%</td></tr>
+      <tr><td class="lbl">Net Margin (normalized)</td><td class="fail">2.5–3%</td><td class="marginal">4–4.5%</td><td class="pass">5–6%</td></tr>
+      <tr><td class="lbl">Terminal Growth</td><td class="fail">5%</td><td class="marginal">6.5%</td><td class="pass">7.5%</td></tr>
+      <tr><td class="lbl">Margin Direction</td><td>Compress</td><td>Stable/Expanding</td><td>Expanding</td></tr>
+      <tr><td class="lbl">Key Risk (Scenario)</td><td>MSIL volume shock or loss of model</td><td>Competition in BIW from peers</td><td>New EV content per vehicle</td></tr>
+    </tbody>
+  </table>
+  <div class="info-card">
+    <p><strong>Sensitivity Check:</strong> A 1% change in terminal growth rate changes base IV by approximately 12–15%. A 1% change in Stage 1 revenue CAGR changes base IV by approximately 8–10%.</p>
+  </div>
+</div>
+
+<!-- TAB 2: FINANCIALS -->
+<div id="tab2" class="tab-content">
+  <h2>Financial <span style="color:var(--race-orange)">Fortress</span></h2>
+
+  <div class="alert-box"><strong>⚠️ KEY NORMALIZATION NOTE:</strong> FY26 PAT of ₹138 Cr includes a one-time deferred tax asset recognition (~₹41 Cr) in Q4 FY26 (effective tax rate: -43%). Normalized FY26 PAT ≈ ₹97 Cr | Normalized EPS ≈ ₹8.97. All valuation work uses normalized figures. Reported figures shown separately.</div>
+
+  <div class="section-title">Standalone P&amp;L <span>(₹ Crores)</span></div>
+  <table class="data-table mb24">
+    <thead><tr><th>Year</th><th class="num">Revenue</th><th class="num">EBITDA</th><th class="num">OPM%</th><th class="num">PAT</th><th class="num">EPS(₹)</th><th class="num">CFO</th><th class="num">FCF</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">FY22</td><td class="num">2,078</td><td class="num">150</td><td class="num">7%</td><td class="num">27</td><td class="num">2.54</td><td class="num">106</td><td class="num">29</td></tr>
+      <tr><td class="lbl">FY23</td><td class="num">2,344</td><td class="num">173</td><td class="num">7%</td><td class="num">37</td><td class="num">3.45</td><td class="num">154</td><td class="num">88</td></tr>
+      <tr><td class="lbl">FY24</td><td class="num">2,292</td><td class="num">167</td><td class="num">7%</td><td class="num">31</td><td class="num">2.90</td><td class="num">188</td><td class="num">44</td></tr>
+      <tr><td class="lbl">FY25</td><td class="num">2,290</td><td class="num">165</td><td class="num">7%</td><td class="num">32</td><td class="num">2.94</td><td class="num">199</td><td class="num">-63</td></tr>
+      <tr><td class="lbl bold" style="color:var(--race-orange)">FY26</td><td class="num bold">2,551</td><td class="num bold">283</td><td class="num bold" style="color:var(--green)">11%</td><td class="num bold" style="color:var(--race-orange)">138*</td><td class="num bold">12.74*</td><td class="num bold">197</td><td class="num bold" style="color:var(--green)">63</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px; color:var(--muted)">*Reported; normalized PAT ~₹97 Cr (EPS ₹8.97) excl. ~₹41 Cr one-time Q4 tax credit | FCF = CFO − Total CapEx (standalone)</p>
+
+  <div class="section-title">ROCE &amp; <span>ROE Trend</span></div>
+  <div class="roic-row">
+    <div class="roic-yr"><div class="roic-yr-label">FY22</div><div class="roic-yr-val" style="color:var(--red)">9%</div><div style="font-size:10px;color:var(--muted)">ROCE</div></div>
+    <div class="roic-yr"><div class="roic-yr-label">FY23</div><div class="roic-yr-val" style="color:var(--marginal); color:var(--amber)">11%</div><div style="font-size:10px;color:var(--muted)">ROCE</div></div>
+    <div class="roic-yr"><div class="roic-yr-label">FY24</div><div class="roic-yr-val" style="color:var(--red)">9%</div><div style="font-size:10px;color:var(--muted)">ROCE</div></div>
+    <div class="roic-yr"><div class="roic-yr-label">FY25</div><div class="roic-yr-val" style="color:var(--red)">8%</div><div style="font-size:10px;color:var(--muted)">ROCE</div></div>
+    <div class="roic-yr"><div class="roic-yr-label">FY26</div><div class="roic-yr-val" style="color:var(--green)">16.4%</div><div style="font-size:10px;color:var(--muted)">ROCE</div></div>
+  </div>
+  <div class="roic-row">
+    <div class="roic-yr"><div class="roic-yr-label">FY22</div><div class="roic-yr-val" style="color:var(--red)">5.3%</div><div style="font-size:10px;color:var(--muted)">ROE</div></div>
+    <div class="roic-yr"><div class="roic-yr-label">FY23</div><div class="roic-yr-val" style="color:var(--amber)">7.1%</div><div style="font-size:10px;color:var(--muted)">ROE</div></div>
+    <div class="roic-yr"><div class="roic-yr-label">FY24</div><div class="roic-yr-val" style="color:var(--red)">5.8%</div><div style="font-size:10px;color:var(--muted)">ROE</div></div>
+    <div class="roic-yr"><div class="roic-yr-label">FY25</div><div class="roic-yr-val" style="color:var(--red)">5.9%</div><div style="font-size:10px;color:var(--muted)">ROE</div></div>
+    <div class="roic-yr"><div class="roic-yr-label">FY26*</div><div class="roic-yr-val" style="color:var(--green)">22.1%</div><div style="font-size:10px;color:var(--muted)">ROE</div></div>
+  </div>
+  <p style="font-size:11px; color:var(--muted)">*FY26 ROE inflated by one-time tax credit. Normalized FY26 ROE ≈ 15.5% | ROIC trend: Below WACC for FY22-FY25; recovering toward WACC in FY26.</p>
+
+  <div class="section-title">Financial Fortress <span>Scorecard</span></div>
+  <div class="sc-card"><span class="sc-label">ROE ≥15% for 5 consecutive years</span><span class="sc-badge sc-fail">✗ FAIL</span></div>
+  <div class="sc-card"><span class="sc-label">ROIC > WACC for 5 consecutive years</span><span class="sc-badge sc-fail">✗ FAIL (FY22–25 ROIC &lt; WACC 12%)</span></div>
+  <div class="sc-card"><span class="sc-label">Net cash preferred / Net debt position</span><span class="sc-badge sc-fail">✗ FAIL — Net Debt ₹~520 Cr, D/E 0.77x</span></div>
+  <div class="sc-card"><span class="sc-label">Net profit margin ≥15%</span><span class="sc-badge sc-fail">✗ FAIL — FY26 norm margin ~3.8%</span></div>
+  <div class="sc-card"><span class="sc-label">FCF positive + growing</span><span class="sc-badge sc-marginal">~ MARGINAL — FCF volatile: ₹88/44/-63/63 Cr (FY23–26)</span></div>
+  <div class="sc-card"><span class="sc-label">Owner Earnings ≥ Net Income</span><span class="sc-badge sc-pass">✓ PASS — OE ~₹152 Cr &gt; norm PAT ₹97 Cr</span></div>
+  <div class="sc-card"><span class="sc-label">Pricing power proven</span><span class="sc-badge sc-fail">✗ FAIL — Price taker, MSIL dictates terms</span></div>
+  <div class="sc-card"><span class="sc-label">Revenue CAGR ≥ sector CAGR</span><span class="sc-badge sc-marginal">~ MARGINAL — 3yr CAGR 3%; 5yr CAGR 11%</span></div>
+  <div class="sc-card"><span class="sc-label">Predictable/recurring revenue</span><span class="sc-badge sc-pass">✓ PASS — Volume-linked to MSIL; stable offtake</span></div>
+  <div class="sc-card"><span class="sc-label">Capital-light model (high ROIC)</span><span class="sc-badge sc-fail">✗ FAIL — Capital intensive; ROIC historically 8–11%</span></div>
+  <div class="sc-card"><span class="sc-label">Dividend payout &lt;80% of OE</span><span class="sc-badge sc-pass">✓ PASS — FY26 payout 6%; consistent ~10–24% of PAT</span></div>
+  <div class="sc-card" style="background:rgba(224,160,64,0.06); border-color:rgba(224,160,64,0.3)"><span class="sc-label" style="color:var(--text); font-weight:600">Financial Grade: C+</span><span class="sc-badge sc-marginal">5 PASS / 3 MARGINAL / 3 FAIL</span></div>
+
+  <div class="section-title" style="margin-top:24px">Owner <span>Earnings</span> (FY26 Normalized)</div>
+  <div class="oe-box mb24">
+    <h3>Owner Earnings Box</h3>
+    <div class="oe-line"><span>Normalized Net Income (ex-tax credit)</span><span class="oe-v">₹97 Cr</span></div>
+    <div class="oe-line"><span>+ Depreciation & Amortization</span><span class="oe-v">+₹95 Cr</span></div>
+    <div class="oe-line"><span>+ Non-cash FX / SBC</span><span class="oe-v">₹0 Cr</span></div>
+    <div class="oe-line"><span>− Maintenance CapEx (est. 50% of D&A)</span><span class="oe-v">−₹48 Cr</span></div>
+    <div class="oe-line"><span>± Working Capital Changes (est.)</span><span class="oe-v">+₹8 Cr</span></div>
+    <div class="oe-line"><span>= Owner Earnings (Conservative)</span><span class="oe-v">≈ ₹152 Cr</span></div>
+    <p style="font-size:11px; color:var(--muted); margin-top:8px">Growth CapEx (FY26): ~₹84 Cr invested in new capacity at Kharkhoda/SMG plants.</p>
+  </div>
+
+  <div class="section-title">O'Glove Earnings <span>Quality Framework</span></div>
+  <div class="grid-2">
+    <div><div class="sc-card"><span class="sc-label">Test 1: FCF Conversion (5yr CFO/Net Income)</span><span class="sc-badge sc-pass">✓ PASS — Avg CFO/PAT &gt;200% (low PAT base)</span></div>
+    <div class="sc-card"><span class="sc-label">Test 2: DSO Trend (3yr)</span><span class="sc-badge sc-pass">✓ PASS — Debtor days: 20→14→17 days; &lt;20 days</span></div>
+    <div class="sc-card"><span class="sc-label">Test 3: Inventory Days (3yr)</span><span class="sc-badge sc-pass">✓ PASS — 55→51→52 days; Stable, no accumulation</span></div></div>
+    <div><div class="sc-card"><span class="sc-label">Test 4: Accounting Policy Stability</span><span class="sc-badge sc-marginal">~ MARGINAL — Tax policy change (deferred asset recognition)</span></div>
+    <div class="sc-card"><span class="sc-label">Test 5: Gross Margin Consistency (5yr)</span><span class="sc-badge sc-marginal">~ ACCEPTABLE — OPM +400 bps in FY26; structural vs cyclical unclear</span></div>
+    <div class="sc-card" style="background:rgba(224,160,64,0.06); border-color:rgba(224,160,64,0.3)"><span class="sc-label" style="font-weight:600; color:var(--text)">Overall: ACCEPTABLE</span><span class="sc-badge sc-marginal">Monitor OPM sustainability</span></div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:16px">Quarterly <span>Progression (₹ Cr)</span></div>
+  <table class="data-table">
+    <thead><tr><th>Quarter</th><th class="num">Revenue</th><th class="num">EBITDA</th><th class="num">OPM%</th><th class="num">PBT</th><th class="num">PAT</th><th class="num">EPS</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">Q1 FY25</td><td class="num">533</td><td class="num">38</td><td class="num">7%</td><td class="num">8</td><td class="num">5</td><td class="num">0.50</td></tr>
+      <tr><td class="lbl">Q2 FY25</td><td class="num">555</td><td class="num">34</td><td class="num">6%</td><td class="num">5</td><td class="num">3</td><td class="num">0.28</td></tr>
+      <tr><td class="lbl">Q3 FY25</td><td class="num">591</td><td class="num">35</td><td class="num">6%</td><td class="num">6</td><td class="num">4</td><td class="num">0.36</td></tr>
+      <tr><td class="lbl">Q4 FY25</td><td class="num">611</td><td class="num">58</td><td class="num">9%</td><td class="num">29</td><td class="num">20</td><td class="num">1.81</td></tr>
+      <tr><td class="lbl" style="color:var(--green)">Q1 FY26</td><td class="num" style="color:var(--green)">557</td><td class="num" style="color:var(--green)">66</td><td class="num" style="color:var(--green)">12%</td><td class="num" style="color:var(--green)">36</td><td class="num" style="color:var(--green)">23</td><td class="num" style="color:var(--green)">2.13</td></tr>
+      <tr><td class="lbl" style="color:var(--green)">Q2 FY26</td><td class="num" style="color:var(--green)">583</td><td class="num" style="color:var(--green)">61</td><td class="num" style="color:var(--green)">11%</td><td class="num" style="color:var(--green)">28</td><td class="num" style="color:var(--green)">18</td><td class="num" style="color:var(--green)">1.67</td></tr>
+      <tr><td class="lbl" style="color:var(--green)">Q3 FY26</td><td class="num" style="color:var(--green)">645</td><td class="num" style="color:var(--green)">64</td><td class="num" style="color:var(--green)">10%</td><td class="num" style="color:var(--green)">28</td><td class="num" style="color:var(--green)">18</td><td class="num" style="color:var(--green)">1.65</td></tr>
+      <tr><td class="lbl" style="color:var(--race-orange)">Q4 FY26*</td><td class="num" style="color:var(--race-orange)">766</td><td class="num" style="color:var(--race-orange)">91</td><td class="num" style="color:var(--race-orange)">12%</td><td class="num" style="color:var(--race-orange)">55</td><td class="num" style="color:var(--race-orange)">79</td><td class="num" style="color:var(--race-orange)">7.28</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px; color:var(--muted)">*Q4 FY26: Effective tax rate -43% due to deferred tax asset recognition (~₹41 Cr one-time). Normalized Q4 PAT ≈ ₹38 Cr. Operating trend (OPM) is genuine — 4 consecutive quarters at 10–12% vs 7% historically.</p>
+</div>
+
+<!-- TAB 3: MOAT -->
+<div id="tab3" class="tab-content">
+  <h2>Economic <span style="color:var(--race-orange)">Moat</span></h2>
+
+  <div class="section-title">Moat <span>Sources</span></div>
+  <div class="moat-card"><h4>JV Relationship / Approved Supplier Status <span class="moat-stars">★★★★</span></h4><p>MSIL owns 29.28% of JBML — making it a captive supplier by design, not by market competition. JBML supplies BIW components across MSIL's entire model range. Switching JBML would require MSIL to redesign tooling, retool lines, and qualify new vendors — a 2–4 year process. This creates bilateral lock-in that is atypical in auto-ancillary. <span class="tag-v">VERIFIED</span> Strengthens in stress (MSIL needs loyal, invested suppliers).</p></div>
+  <div class="moat-card" style="border-color:var(--gold)"><h4>Proprietary Dies & Tooling <span class="moat-stars">★★★</span></h4><p>JBML designs and manufactures its own dies and moulds via JBM Ogihara Die Tech JV. Tooling is model-specific and prohibitively expensive to replicate externally. As the die owner, JBML controls the IP that makes switching even harder. <span class="tag-e">ESTIMATED</span> Holds in stress; no pricing power benefit.</p></div>
+  <div class="moat-card" style="border-color:var(--blue)"><h4>Geographic Proximity / Cluster Effect <span class="moat-stars">★★</span></h4><p>Gurgaon/Manesar plants co-located with MSIL's primary manufacturing complex — just-in-time delivery requires physical proximity. Kharkhoda plant co-located with MSIL's new plant in the same industrial corridor. Moat weakens only if MSIL shifts production to entirely different geographies. <span class="tag-e">ESTIMATED</span> Holds in stress.</p></div>
+  <div class="moat-card" style="border-color:var(--chrome)"><h4>Switching Costs <span class="moat-stars">★★</span></h4><p>BIW components are stamped to millimetre tolerances specific to each model's body geometry. New vendor qualification involves 12–18 months of PPAP (Production Part Approval Process) under MSIL's stringent quality protocols. Cost and time create practical switching friction. <span class="tag-e">ESTIMATED</span> Holds in stress.</p></div>
+  <div class="moat-card" style="border-color:var(--red)"><h4>Network Effects / Intangible Assets <span class="moat-stars">★</span></h4><p>No network effects. Brand is invisible to end consumer. No patents of strategic significance. Moat is relationship-based and operational — not intangible-asset based. <span class="tag-u">UNVERIFIED</span></p></div>
+
+  <div class="section-title" style="margin-top:20px">ROIC as Moat <span>Proof</span></div>
+  <div class="alert-box" style="background:rgba(224,90,90,0.05); border-color:rgba(224,90,90,0.3)"><strong>Concern:</strong> ROIC was below WACC (12%) from FY22–FY25. This is atypical for a company claiming a moat. However, FY22–25 reflect a capital investment cycle (new plants) depressing near-term returns — a known auto-supplier dynamic. ROIC recovering to 16.4% in FY26 is the first validation of the moat thesis in 5 years.</div>
+
+  <div class="section-title" style="margin-top:20px">Macro Stress <span>Test</span></div>
+  <table class="data-table mb24">
+    <thead><tr><th>Moat Source</th><th>In Stress</th><th>Justification</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">JV relationship</td><td class="pass">STRENGTHENS</td><td>MSIL needs reliable captive suppliers in downturns; JBML's JV status protects offtake</td></tr>
+      <tr><td class="lbl">Proprietary dies</td><td class="pass">HOLDS</td><td>Tooling investment already sunk; can't be replaced during a downturn</td></tr>
+      <tr><td class="lbl">Geographic proximity</td><td class="pass">HOLDS</td><td>Just-in-time logistics become more critical in downturns, not less</td></tr>
+      <tr><td class="lbl">Switching costs</td><td class="pass">HOLDS</td><td>MSIL has less bandwidth for vendor changes in a stressed environment</td></tr>
+      <tr><td class="lbl">ROCE level</td><td class="fail">WEAKENS</td><td>Revenue decline → operating deleverage → ROIC drops below WACC (as seen in FY22–25)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="flywheel-box mb24">
+    <div class="flywheel-header">
+      <div class="flywheel-title">Data Flywheel Assessment</div>
+      <div class="flywheel-badge">COSMETIC — 0/3</div>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Test</th><th>Result</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">Q1: Proprietary training data?</td><td class="fail">✗ FAIL</td><td>Manufacturing processes yield operational data, not proprietary AI training data</td></tr>
+        <tr><td class="lbl">Q2: AI improves with more users/data?</td><td class="fail">✗ FAIL</td><td>No evidence of AI systems that improve with production volume</td></tr>
+        <tr><td class="lbl">Q3: Better AI → more customers?</td><td class="fail">✗ FAIL</td><td>Customers are single (MSIL); no self-reinforcing loop possible</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px; color:var(--muted); margin-top:8px">Flywheel Score: 0/10 | Classification: COSMETIC | No moat grade adjustment required.</p>
+  </div>
+
+  <div class="card"><div class="card-stripe" style="background:var(--amber)"></div><div class="card-body">
+    <div class="card-label">Overall Moat Grade</div>
+    <div style="display:flex; align-items:center; gap:16px; margin-top:6px;">
+      <div class="pillar-grade grade-b" style="font-size:48px">B−</div>
+      <div>
+        <div style="font-size:14px; color:var(--text)">Narrow moat via JV captive relationship + proprietary tooling</div>
+        <div style="font-size:12px; color:var(--chrome); margin-top:4px">Structurally defensible but ROIC not consistently above WACC. Customer concentration is the primary moat risk — MSIL has the power, not JBML.</div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- TAB 4: MANAGEMENT -->
+<div id="tab4" class="tab-content">
+  <h2>Management <span style="color:var(--race-orange)">Integrity</span></h2>
+
+  <div class="grid-2">
+    <div class="info-card">
+      <h3>✅ Strengths</h3>
+      <ul>
+        <li><strong>No promoter pledging</strong> — 0% of promoter holding pledged. Strong signal of financial confidence. <span class="tag-v">VERIFIED</span></li>
+        <li><strong>Stable governance via dual-promoter structure</strong> — Arya family (long-standing industrialists) + MSIL ensures checks and balances on capital allocation decisions.</li>
+        <li><strong>MSIL board representation</strong> — Maruti Suzuki nominee directors on JBML board. Alignment of interests with the key customer ensures supplier viability is protected.</li>
+        <li><strong>Consistent capital returns</strong> — 10–24% payout ratio maintained across cycles. Small but dependable.</li>
+        <li><strong>Strategic capacity expansion</strong> — Kharkhoda (Haryana) and SMG (Gujarat) expansions align with MSIL's announced new plant clusters. Capital allocation is disciplined and forward-looking.</li>
+        <li><strong>JBM Ogihara Die Tech JV</strong> — 100% acquisition of OGIHARA's 10% stake in FY25 demonstrates commitment to backward integration and tooling control.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>⚠️ Concerns</h3>
+      <ul>
+        <li><strong>Single customer risk</strong> — MSIL represents >95% of revenue. This is an existential concentration that no management action can fully mitigate within this business model.</li>
+        <li><strong>Leverage rising</strong> — Borrowings grew from ₹380 Cr (FY22) to ₹540 Cr (FY25) to ₹531 Cr (FY26). Debt has nearly doubled in 4 years due to expansion CapEx. Interest costs of ₹44 Cr materially dilute thin margins.</li>
+        <li><strong>FY26 tax structuring</strong> — The deferred tax asset recognition in Q4 FY26 (-43% effective rate) inflated reported PAT by ~₹41 Cr. While legally valid, it warrants scrutiny for earnings quality signalling. <span class="tag-e">ESTIMATED</span></li>
+        <li><strong>Low absolute earnings level</strong> — Despite ₹2,551 Cr revenue, normalized PAT is only ₹97 Cr. Management has limited levers to improve this absent MSIL volume growth or structural margin catalysts.</li>
+        <li><strong>JBM Group complexity</strong> — JBML and JBMA (JBM Auto) are separate entities but share the JBM brand and promoters. No inter-company conflicts reported, but group complexity adds governance risk. <span class="tag-u">UNVERIFIED</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">Capital <span>Allocation Assessment</span></div>
+  <div class="sc-card"><span class="sc-label">Promoter pledging</span><span class="sc-badge sc-pass">✓ PASS — 0% pledged <span class="tag-v">VERIFIED</span></span></div>
+  <div class="sc-card"><span class="sc-label">Promoter holding trend</span><span class="sc-badge sc-pass">✓ PASS — Stable at 59.35% for last 2+ quarters; no dilution</span></div>
+  <div class="sc-card"><span class="sc-label">Counter-cyclical behaviour</span><span class="sc-badge sc-pass">✓ PASS — Invested in Kharkhoda plant during industry slowdown (FY24–25)</span></div>
+  <div class="sc-card"><span class="sc-label">Related party transactions</span><span class="sc-badge sc-pass">✓ PASS — Transactions with MSIL are at arm's length (SEBI LODR compliant)</span></div>
+  <div class="sc-card"><span class="sc-label">IT raids / regulatory flags</span><span class="sc-badge sc-pass">✓ PASS — No adverse regulatory history on record</span></div>
+  <div class="sc-card"><span class="sc-label">Guidance reliability</span><span class="sc-badge sc-marginal">~ MARGINAL — Company provides minimal forward guidance; tracks MSIL volumes</span></div>
+  <div class="sc-card"><span class="sc-label">CapEx efficiency</span><span class="sc-badge sc-marginal">~ MARGINAL — CWIP high (₹308 Cr in FY25 → ₹110 Cr in FY26); executing well</span></div>
+
+  <div class="section-title" style="margin-top:24px">Management <span>Grade</span></div>
+  <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-body">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="pillar-grade grade-b" style="font-size:48px">B</div>
+      <div>
+        <div style="font-size:14px; color:var(--text)">Solid governance for a mid-cap auto ancillary. Zero pledging, counter-cyclical expansion, disciplined MSIL-aligned capital allocation.</div>
+        <div style="font-size:12px; color:var(--chrome); margin-top:4px">Key risk: Customer concentration is structural, not a management failure — but it limits the upside of any management quality premium.</div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- TAB 5: VALUATION -->
+<div id="tab5" class="tab-content">
+  <h2>Valuation <span style="color:var(--race-orange)">Analysis</span></h2>
+
+  <div class="alert-box"><strong>NOTE:</strong> All five methods use <strong>normalized FY26 figures</strong> (PAT ₹97 Cr, EPS ₹8.97) — not reported (₹138 Cr / ₹12.74). The Q4 FY26 deferred tax credit was one-time. Price-sensitive metrics (EV multiples, current P/E, earnings yield) require live price verification — CMP ₹128 used as reference.</div>
+
+  <!-- METHOD 1: DCF -->
+  <div class="val-method">
+    <h4>Method 1 — Two-Stage DCF (Owner Earnings)</h4>
+    <p style="font-size:12px;">Base: OE ₹152 Cr | Stage 1 CAGR 12% | Stage 2 CAGR 9% | WACC 12% | Terminal P/E 16x | Horizon 8yr</p>
+    <div class="val-range">
+      <div class="vr-block"><div class="vr-label">STRESS</div><div class="vr-val stress">₹88</div><div style="font-size:10px;color:var(--muted)">Rev CAGR 8% | Margin 2.5% | WACC 13%</div></div>
+      <div class="vr-block"><div class="vr-label">BASE</div><div class="vr-val base">₹165</div><div style="font-size:10px;color:var(--muted)">Rev CAGR 12% | Margin 4.5% | WACC 12%</div></div>
+      <div class="vr-block"><div class="vr-label">ACCEL</div><div class="vr-val accel">₹255</div><div style="font-size:10px;color:var(--muted)">Rev CAGR 18% | Margin 5.5% | WACC 11%</div></div>
+    </div>
+  </div>
+
+  <!-- METHOD 2: OE CAPITALISATION -->
+  <div class="val-method">
+    <h4>Method 2 — Owner Earnings Capitalisation</h4>
+    <p style="font-size:12px;">OE ₹152 Cr normalized | Required Return 12% | Perpetuity growth g varying by scenario</p>
+    <div class="val-range">
+      <div class="vr-block"><div class="vr-label">STRESS</div><div class="vr-val stress">₹115</div><div style="font-size:10px;color:var(--muted)">OE ₹120 Cr | g 5% | R 13%: IV=₹1,200Cr</div></div>
+      <div class="vr-block"><div class="vr-label">BASE</div><div class="vr-val base">₹195</div><div style="font-size:10px;color:var(--muted)">OE ₹152 Cr | g 7% | R 12%: IV=₹3,040Cr÷0.15</div></div>
+      <div class="vr-block"><div class="vr-label">ACCEL</div><div class="vr-val accel">₹265</div><div style="font-size:10px;color:var(--muted)">OE ₹180 Cr | g 8% | R 12%: IV=₹3,600Cr÷4</div></div>
+    </div>
+  </div>
+
+  <!-- METHOD 3: ROIC/EPV -->
+  <div class="val-method">
+    <h4>Method 3 — ROIC / Earnings Power Value (EPV) Floor</h4>
+    <p style="font-size:12px;">EPV = Normalized NOPAT / WACC. NOPAT = EBIT×(1−tax). No growth assumed — absolute floor value.</p>
+    <div class="val-range">
+      <div class="vr-block"><div class="vr-label">STRESS</div><div class="vr-val stress">₹75</div><div style="font-size:10px;color:var(--muted)">NOPAT ₹80 Cr ÷ WACC 13% = ₹615 Cr → ₹75/sh</div></div>
+      <div class="vr-block"><div class="vr-label">BASE (EPV)</div><div class="vr-val base">₹99</div><div style="font-size:10px;color:var(--muted)">NOPAT ₹128 Cr ÷ 12% = ₹1,067 Cr → ₹99/sh</div></div>
+      <div class="vr-block"><div class="vr-label">ACCEL</div><div class="vr-val accel">₹128</div><div style="font-size:10px;color:var(--muted)">NOPAT ₹165 Cr ÷ 12% = ₹1,375 Cr → ₹127/sh</div></div>
+    </div>
+    <p style="font-size:11px; color:var(--race-orange); margin-top:8px;">⚠️ Current price ₹128 ≈ EPV accel floor — markets are pricing ZERO growth premium at current levels relative to a pessimistic no-growth scenario. This is significant.</p>
+  </div>
+
+  <!-- METHOD 4: P/E EARNINGS POWER -->
+  <div class="val-method">
+    <h4>Method 4 — P/E Earnings Power</h4>
+    <p style="font-size:12px;">Normalized EPS ₹8.97 × historical/sector P/E range. Auto ancillaries trade 8–22x depending on ROIC and growth quality.</p>
+    <div class="val-range">
+      <div class="vr-block"><div class="vr-label">STRESS</div><div class="vr-val stress">₹90</div><div style="font-size:10px;color:var(--muted)">₹8.97 × 10x (cyclical downturn de-rating)</div></div>
+      <div class="vr-block"><div class="vr-label">BASE</div><div class="vr-val base">₹135</div><div style="font-size:10px;color:var(--muted)">₹8.97 × 15x (sector avg for narrow moat)</div></div>
+      <div class="vr-block"><div class="vr-label">ACCEL</div><div class="vr-val accel">₹180</div><div style="font-size:10px;color:var(--muted)">₹8.97 × 20x (re-rating on sustained ROCE 20%+)</div></div>
+    </div>
+  </div>
+
+  <!-- METHOD 5: EARNINGS YIELD -->
+  <div class="val-method">
+    <h4>Method 5 — Earnings Yield vs Bond Yield</h4>
+    <p style="font-size:12px;">India 10yr G-Sec: 6.86% | Risk-Free Rate: 6.86% | ERP target: 3–5%</p>
+    <div class="val-range">
+      <div class="vr-block"><div class="vr-label">STRESS (ERP 5%)</div><div class="vr-val stress">₹76</div><div style="font-size:10px;color:var(--muted)">EY=11.86% → Price = ₹8.97÷11.86%</div></div>
+      <div class="vr-block"><div class="vr-label">BASE (ERP 3%)</div><div class="vr-val base">₹91</div><div style="font-size:10px;color:var(--muted)">EY=9.86% → Price = ₹8.97÷9.86%</div></div>
+      <div class="vr-block"><div class="vr-label">ACCEL (ERP 2%)</div><div class="vr-val accel">₹102</div><div style="font-size:10px;color:var(--muted)">EY=8.86% → Price = ₹8.97÷8.86%</div></div>
+    </div>
+    <p style="font-size:11px; color:var(--red); margin-top:8px;">⚠️ Current ERP = (₹8.97÷₹128) − 6.86% = 7.0% − 6.86% = <strong>+0.14%</strong>. Near-zero ERP signals the stock is NOT cheap on a static normalized earnings basis. Growth premium must materialize to justify current price.</p>
+  </div>
+
+  <!-- BLENDED IV -->
+  <div class="section-title" style="margin-top:24px">Blended <span>Intrinsic Value</span></div>
+  <table class="data-table mb16">
+    <thead><tr><th>Method</th><th class="num">Weight</th><th class="num stress">Stress IV</th><th class="num base">Base IV</th><th class="num accel">Accel IV</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">DCF (2-stage)</td><td class="num">30%</td><td class="num stress">₹88</td><td class="num base">₹165</td><td class="num accel">₹255</td></tr>
+      <tr><td class="lbl">Owner Earnings Cap</td><td class="num">25%</td><td class="num stress">₹115</td><td class="num base">₹195</td><td class="num accel">₹265</td></tr>
+      <tr><td class="lbl">ROIC / EPV</td><td class="num">15%</td><td class="num stress">₹75</td><td class="num base">₹99</td><td class="num accel">₹128</td></tr>
+      <tr><td class="lbl">P/E Earnings Power</td><td class="num">20%</td><td class="num stress">₹90</td><td class="num base">₹135</td><td class="num accel">₹180</td></tr>
+      <tr><td class="lbl">Earnings Yield</td><td class="num">10%</td><td class="num stress">₹76</td><td class="num base">₹91</td><td class="num accel">₹102</td></tr>
+      <tr style="background:rgba(240,90,26,0.05)"><td class="lbl bold" style="color:var(--race-orange)">Blended IV</td><td class="num bold">100%</td><td class="num bold stress">₹90</td><td class="num bold base">₹147</td><td class="num bold accel">₹210</td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid-3 mb24">
+    <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-body"><div class="card-label">Base IV</div><div class="card-value">₹147</div><div class="card-sub">Blended 5-method</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--race-orange)"></div><div class="card-body"><div class="card-label">MoS Entry Zone (20%)</div><div class="card-value">₹115–₹130</div><div class="card-sub">Current CMP ₹128 = AT UPPER BOUNDARY</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--amber)"></div><div class="card-body"><div class="card-label">CMP vs Base IV</div><div class="card-value">−13%</div><div class="card-sub">₹128 trades 13% below ₹147 base IV</div></div></div>
+  </div>
+
+  <div class="section-title">WACC Sensitivity <span>Table</span></div>
+  <table class="sensitivity-table mb24">
+    <thead>
+      <tr><th>WACC \ g (terminal)</th><th>5.0%</th><th>6.0%</th><th>6.5%</th><th>7.0%</th><th>7.5%</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="color:var(--muted);padding:6px 8px;border:1px solid var(--border)">11%</td><td>₹172</td><td>₹195</td><td>₹211</td><td>₹232</td><td>₹260</td></tr>
+      <tr><td style="color:var(--muted);padding:6px 8px;border:1px solid var(--border)">12%</td><td>₹148</td><td>₹165</td><td>₹176</td><td>₹190</td><td>₹208</td></tr>
+      <tr><td style="color:var(--race-orange);padding:6px 8px;border:1px solid var(--border);font-weight:600">12.5% (used)</td><td>₹138</td><td>₹152</td><td class="hl">₹162</td><td>₹174</td><td>₹189</td></tr>
+      <tr><td style="color:var(--muted);padding:6px 8px;border:1px solid var(--border)">13%</td><td>₹128</td><td>₹141</td><td>₹149</td><td>₹159</td><td>₹172</td></tr>
+      <tr><td style="color:var(--muted);padding:6px 8px;border:1px solid var(--border)">14%</td><td>₹110</td><td>₹119</td><td>₹125</td><td>₹132</td><td>₹141</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:11px; color:var(--muted)">Highlighted cell = framework base case. At WACC 13% + g 5% (stress+): IV ₹128 = current price. No margin of safety at WACC ≥13% and g ≤5.5%.</p>
+</div>
+
+<!-- TAB 6: VERDICT -->
+<div id="tab6" class="tab-content">
+  <h2>Investment <span style="color:var(--race-orange)">Verdict</span></h2>
+
+  <div class="pillar-grid mb24">
+    <div class="pillar-card"><div class="pillar-grade grade-b">B−</div><div class="pillar-name">Economic Moat</div></div>
+    <div class="pillar-card"><div class="pillar-grade grade-c">C+</div><div class="pillar-name">Financial Fortress</div></div>
+    <div class="pillar-card"><div class="pillar-grade grade-b">B</div><div class="pillar-name">Management</div></div>
+    <div class="pillar-card"><div class="pillar-grade grade-b">B−</div><div class="pillar-name">Valuation</div></div>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-stars">★★★★☆</div>
+    <div class="verdict-label">WATCH ★★★★</div>
+    <div class="verdict-lede">Jay Bharat Maruti is a narrow-moat auto ancillary undergoing a genuine operating margin inflection — OPM has expanded from a 4-year plateau of 7% to 10–12% in FY26, driven by operating leverage from new Kharkhoda and SMG plants. ROCE has recovered from a trough of 8% to 16.4%. At a normalized P/E of 14.3x and CMP ₹128 within the base-case MoS entry zone (₹115–130), the setup is compelling — but not yet a BUY. Three factors hold conviction back: (a) the OPM inflection needs 2 more quarters of confirmation; (b) a one-time tax credit inflated FY26 reported earnings by ₹41 Cr, creating headline noise; and (c) the earnings yield versus bond yield gap is near zero on normalized earnings, meaning the margin of safety is thin on a static basis. Position sizing should remain partial (Tier 1 only) until upgrade conditions are met.</div>
+    <div class="verdict-quote">"A captive supplier with a recovering ROCE — the franchise is protected, the price is fair, but margin of safety is still forming. Patience earns the better entry."</div>
+  </div>
+
+  <div class="grid-3 mb24">
+    <div class="card"><div class="card-stripe" style="background:var(--amber)"></div><div class="card-body"><div class="card-label">Base IV</div><div class="card-value">₹147</div><div class="card-sub">Blended 5-method normalized</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--race-orange)"></div><div class="card-body"><div class="card-label">MoS Entry Zone</div><div class="card-value">₹115–130</div><div class="card-sub">20% discount to ₹147 base IV</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-body"><div class="card-label">Accelerated IV</div><div class="card-value">₹210</div><div class="card-sub">Partial trim zone; not hard exit</div></div></div>
+  </div>
+
+  <div class="section-title">Three-Tier <span>Entry Structure</span></div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">T1</div>
+    <div class="upgrade-text"><strong>Tier 1 — Quality Floor (Deploy 40–50% now at ₹115–130):</strong> The JV moat is intact, no promoter pledging, and the OPM expansion is visible in 4 consecutive quarters. At normalized P/E of 14x, the price is reasonable. A starter position is justified at current levels.</div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">T2</div>
+    <div class="upgrade-text"><strong>Tier 2 — 1–2 Conditions Met (Add 25–30% at ₹95–115):</strong> If stock corrects to the 200-DMA zone (~₹88–100), or if Q1 FY27 confirms OPM ≥10% for a 5th consecutive quarter — add to position.</div>
+  </div>
+  <div class="upgrade-item">
+    <div class="upgrade-num">T3</div>
+    <div class="upgrade-text"><strong>Tier 3 — 3+ Conditions Met (Full position at ₹85–100):</strong> Technical correction to 200-DMA + OPM sustained + FII accumulation beginning. Full conviction entry.</div>
+  </div>
+
+  <div class="section-title" style="margin-top:24px">Upgrade Conditions <span>to BUY ★★★★★</span></div>
+  <div class="upgrade-item"><div class="upgrade-num">1</div><div class="upgrade-text"><strong>OPM sustainability:</strong> Q1 FY27 OPM ≥10% (5th consecutive quarter at 10%+ would confirm structural, not cyclical, inflection)</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">2</div><div class="upgrade-text"><strong>Technical correction:</strong> RSI weekly &lt;45 or price retest of ₹95–105 (200-DMA area) — offers a better-risk-adjusted entry with 40%+ upside to base IV</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">3</div><div class="upgrade-text"><strong>FII accumulation:</strong> FII holding increases for 2 consecutive quarters above 1.5% (currently 0.86%) — signals institutional recognition of the re-rating story</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">4</div><div class="upgrade-text"><strong>Revenue acceleration:</strong> Two consecutive quarters of revenue >₹700 Cr (annualized ~₹2,800 Cr) confirms Kharkhoda utilization is ramping and growth is not seasonal</div></div>
+  <div class="upgrade-item"><div class="upgrade-num">5</div><div class="upgrade-text"><strong>Debt reduction:</strong> Net borrowings fall below ₹400 Cr as expansion CapEx cycle ends — D/E below 0.5x removes leverage risk and earnings volatility</div></div>
+
+  <div class="section-title" style="margin-top:24px">Exit <span>Philosophy</span></div>
+  <div class="info-card">
+    <table class="data-table">
+      <thead><tr><th>Exit Trigger</th><th>Action</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">OPM falls back to &lt;8% for 2 consecutive quarters</td><td class="fail">EXIT — Thesis broken</td><td>HIGH</td></tr>
+        <tr><td class="lbl">MSIL loses 5%+ domestic market share in one year</td><td class="fail">EXIT — Revenue risk extreme</td><td>HIGH</td></tr>
+        <tr><td class="lbl">Promoter pledging exceeds 15%</td><td class="fail">EXIT — Hard gate</td><td>HIGH</td></tr>
+        <tr><td class="lbl">Price reaches ₹210 (accelerated IV)</td><td class="marginal">TRIM 30-40% — Partial exit</td><td>MEDIUM</td></tr>
+        <tr><td class="lbl">Better opportunity (ROIC > 25%) at &gt;30% MoS</td><td class="marginal">REBALANCE — Opportunity cost</td><td>LOW</td></tr>
+        <tr><td class="lbl">MSIL starts in-housing BIW manufacturing</td><td class="fail">EXIT — Structural moat erosion</td><td>CRITICAL</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 7: TECHNICAL -->
+<div id="tab7" class="tab-content">
+  <h2>Technical <span style="color:var(--race-orange)">Setup</span></h2>
+
+  <div class="alert-box"><strong>FRAMEWORK REMINDER:</strong> Price-sensitive metrics require live verification via NSE/BSE apps or TradingView. CMP ₹128, 52W range ₹71–₹137, and DMA estimates below are sourced from publicly available data (June 2026) and may have drifted. Verify before executing.</div>
+
+  <div class="grid-4 mb24">
+    <div class="card"><div class="card-stripe" style="background:var(--race-orange)"></div><div class="card-body"><div class="card-label">CMP</div><div class="card-value">₹128</div><div class="card-sub">Jun 5–8, 2026</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--red)"></div><div class="card-body"><div class="card-label">52W High</div><div class="card-value">₹137</div><div class="card-sub">Near all-time high</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--green)"></div><div class="card-body"><div class="card-label">52W Low</div><div class="card-value">₹71</div><div class="card-sub">Trailing 52 weeks</div></div></div>
+    <div class="card"><div class="card-stripe" style="background:var(--amber)"></div><div class="card-body"><div class="card-label">1-Year Return</div><div class="card-value">+63%</div><div class="card-sub">Strong momentum</div></div></div>
+  </div>
+
+  <div class="section-title">Moving Average <span>Levels</span></div>
+  <div class="mb24">
+    <div class="tech-bar">
+      <span class="tech-label">200 DMA</span>
+      <div class="tech-track"><div class="tech-fill" style="width:65%; background:var(--green);"></div></div>
+      <span class="tech-val">~₹88–92</span>
+    </div>
+    <div class="tech-bar">
+      <span class="tech-label">100 DMA</span>
+      <div class="tech-track"><div class="tech-fill" style="width:72%; background:var(--amber);"></div></div>
+      <span class="tech-val">~₹98–105</span>
+    </div>
+    <div class="tech-bar">
+      <span class="tech-label">50 DMA</span>
+      <div class="tech-track"><div class="tech-fill" style="width:79%; background:var(--amber);"></div></div>
+      <span class="tech-val">~₹105–112</span>
+    </div>
+    <div class="tech-bar">
+      <span class="tech-label">CMP</span>
+      <div class="tech-track"><div class="tech-fill" style="width:88%; background:var(--race-orange);"></div></div>
+      <span class="tech-val">₹128</span>
+    </div>
+    <div class="tech-bar">
+      <span class="tech-label">52W High</span>
+      <div class="tech-track"><div class="tech-fill" style="width:95%; background:var(--red);"></div></div>
+      <span class="tech-val">₹137</span>
+    </div>
+    <p style="font-size:11px; color:var(--muted); margin-top:8px;">DMA levels estimated from trajectory — verify on TradingView (NSE:JAYBARMARU). Stock trades +38–45% above 200 DMA = extended. Corrections typically reset to 200 DMA in mean-reversion cycles.</p>
+  </div>
+
+  <div class="section-title">Trade <span>Structure</span></div>
+  <div class="trade-box">
+    <h3>Optimal Entry — Staggered Accumulation</h3>
+    <div class="trade-levels">
+      <div class="tl"><div class="tl-type">TIER 1 ENTRY</div><div class="tl-price tl-entry">₹115–130</div><div style="font-size:10px;color:var(--muted)">40% position near MoS zone</div></div>
+      <div class="tl"><div class="tl-type">TIER 2 ENTRY</div><div class="tl-price tl-entry">₹95–110</div><div style="font-size:10px;color:var(--muted)">Near 50 DMA; add 25%</div></div>
+      <div class="tl"><div class="tl-type">TIER 3 ENTRY</div><div class="tl-price tl-entry">₹83–95</div><div style="font-size:10px;color:var(--muted)">200 DMA support; add 35%</div></div>
+      <div class="tl"><div class="tl-type">HARD STOP</div><div class="tl-price tl-sl">₹78</div><div style="font-size:10px;color:var(--muted)">Below 200 DMA; thesis review</div></div>
+    </div>
+  </div>
+  <div class="trade-box">
+    <h3>Target Levels</h3>
+    <div class="trade-levels">
+      <div class="tl"><div class="tl-type">TARGET 1</div><div class="tl-price tl-t1">₹147</div><div style="font-size:10px;color:var(--muted)">Base IV; partial trim 20%</div></div>
+      <div class="tl"><div class="tl-type">TARGET 2</div><div class="tl-price tl-t2">₹175</div><div style="font-size:10px;color:var(--muted)">DCF base; trim another 20%</div></div>
+      <div class="tl"><div class="tl-type">TARGET 3</div><div class="tl-price" style="color:var(--gold)">₹210</div><div style="font-size:10px;color:var(--muted)">Accel IV; trim 30%</div></div>
+      <div class="tl"><div class="tl-type">HOLD CORE</div><div class="tl-price" style="color:var(--chrome-light)">30%</div><div style="font-size:10px;color:var(--muted)">If thesis intact through cycle</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Risk-Reward <span>Matrix</span></div>
+  <table class="data-table mb24">
+    <thead><tr><th>Entry Point</th><th class="num">SL</th><th class="num">T1 (Base)</th><th class="num">T2 (Accel)</th><th class="num">R:R (T1)</th><th class="num">R:R (T2)</th></tr></thead>
+    <tbody>
+      <tr><td class="lbl">₹130 (current)</td><td class="num fail">₹78</td><td class="num pass">₹147</td><td class="num pass">₹210</td><td class="num marginal">0.33:1</td><td class="num pass">1.54:1</td></tr>
+      <tr><td class="lbl">₹115 (Tier 1 lower)</td><td class="num fail">₹78</td><td class="num pass">₹147</td><td class="num pass">₹210</td><td class="num marginal">0.86:1</td><td class="num pass">2.57:1</td></tr>
+      <tr><td class="lbl">₹100 (Tier 2)</td><td class="num fail">₹78</td><td class="num pass">₹147</td><td class="num pass">₹210</td><td class="num pass">2.14:1</td><td class="num pass">5.0:1</td></tr>
+      <tr><td class="lbl">₹88 (200 DMA)</td><td class="num fail">₹78</td><td class="num pass">₹147</td><td class="num pass">₹210</td><td class="num pass">5.9:1</td><td class="num pass">12.2:1</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:12px; color:var(--muted);">At current ₹130, the R:R to T1 (₹147) is only 0.33:1 — not compelling. The best-risk-adjusted entry is a correction to ₹88–100 zone (200 DMA). For long-term investors, a Tier 1 starter at ₹115–130 is acceptable given the thesis quality.</p>
+</div>
+
+<!-- TAB 8: SHAREHOLDING -->
+<div id="tab8" class="tab-content">
+  <h2>Shareholding <span style="color:var(--race-orange)">Pattern</span></h2>
+
+  <div class="grid-2 mb24">
+    <div class="info-card">
+      <h3>Current Shareholding (Latest Available)</h3>
+      <div class="sh-row"><span class="sh-label">Promoters</span><div class="sh-bar-wrap"><div class="sh-bar" style="width:59.35%; background:var(--race-orange);"></div></div><span class="sh-pct">59.35%</span></div>
+      <div class="sh-row"><span class="sh-label">FII</span><div class="sh-bar-wrap"><div class="sh-bar" style="width:0.86%; background:var(--blue);"></div></div><span class="sh-pct">0.86%</span></div>
+      <div class="sh-row"><span class="sh-label">DII / MF</span><div class="sh-bar-wrap"><div class="sh-bar" style="width:0.02%; background:var(--green);"></div></div><span class="sh-pct">0.02%</span></div>
+      <div class="sh-row"><span class="sh-label">Public</span><div class="sh-bar-wrap"><div class="sh-bar" style="width:39.77%; background:var(--chrome);"></div></div><span class="sh-pct">39.77%</span></div>
+      <p style="font-size:11px; color:var(--muted); margin-top:8px;">Total shares: ~10.825 Cr | Face value: ₹2 | No pledging. Public holding is high (39.77%) for a company with a majority institutional (MSIL) co-promoter.</p>
+    </div>
+    <div class="info-card">
+      <h3>Promoter Breakdown</h3>
+      <table class="data-table">
+        <thead><tr><th>Entity</th><th class="num">Holding %</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td class="lbl">Maruti Suzuki India Ltd</td><td class="num" style="color:var(--race-orange)">29.28%</td><td>Co-promoter / anchor customer</td></tr>
+          <tr><td class="lbl">Focal Leasing & Credits</td><td class="num">4.53%</td><td>Arya family entity</td></tr>
+          <tr><td class="lbl">Arya family (others)</td><td class="num">~25.54%</td><td>Founding promoter</td></tr>
+          <tr><td class="lbl bold" style="color:var(--race-orange)">Total Promoter</td><td class="num bold" style="color:var(--race-orange)">59.35%</td><td>Stable; no pledging</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title">Shareholding <span>Trend Assessment</span></div>
+  <div class="sc-card"><span class="sc-label">Promoter pledging</span><span class="sc-badge sc-pass">✓ PASS — 0% pledged | Hard framework gate: CLEARED</span></div>
+  <div class="sc-card"><span class="sc-label">Promoter holding direction</span><span class="sc-badge sc-pass">✓ PASS — Stable at 59.35%, no dilution in recent quarters</span></div>
+  <div class="sc-card"><span class="sc-label">FII accumulation</span><span class="sc-badge sc-fail">✗ FAIL — FII at 0.86%, extremely low for a company this size. No institutional accumulation visible.</span></div>
+  <div class="sc-card"><span class="sc-label">DII/MF presence</span><span class="sc-badge sc-fail">✗ FAIL — 0.02% DII. No major domestic funds own JBML. Under the radar.</span></div>
+  <div class="sc-card"><span class="sc-label">Public float quality</span><span class="sc-badge sc-marginal">~ MARGINAL — 39.77% public float is high; mostly retail. Vulnerable to sentiment swings.</span></div>
+
+  <div class="info-card" style="margin-top:20px">
+    <h3>Why JBML Is Ignored by Institutions</h3>
+    <p>Despite being a JV of India's largest carmaker, JBML has virtually zero institutional coverage and sub-1% FII holding. Three structural reasons: (a) market cap ₹1,385 Cr is below minimum ticket size for most institutional mandates (~₹3,000 Cr), (b) net profit margins of 1–5% and historically sub-WACC ROIC make it uninvestable for quality-focused funds, and (c) single customer concentration triggers concentration risk screens at most institutional compliance desks.</p>
+    <p>The low institutional ownership is a double-edged sword: on the upside, it means the re-rating when it comes (if ROCE sustains 15%+) could be dramatic; on the downside, it means price discovery is slow and the stock can languish for extended periods regardless of fundamentals. This is core to why a WATCH rating is appropriate today versus a BUY.</p>
+  </div>
+</div>
+
+<!-- TAB 9: AI INTELLIGENCE -->
+<div id="tab9" class="tab-content">
+  <h2>AI <span style="color:var(--race-orange)">Intelligence Layer</span></h2>
+
+  <div class="ai-badge-row">
+    <div class="ai-badge ai-badge-neutral">⚪ NEUTRAL</div>
+    <div class="ai-badge ai-badge-cat">CAT C</div>
+    <div class="ai-badge ai-badge-fly">COSMETIC FLYWHEEL</div>
+    <div class="ai-badge ai-badge-phase">PHASE 1 — Process AI</div>
+  </div>
+
+  <div class="grid-2 mb24">
+    <div class="score-circle" style="margin: 0 auto;">
+      <div class="score-num">22</div>
+      <div class="score-label">AI Score / 100</div>
+    </div>
+    <div class="info-card">
+      <h3>Score Breakdown</h3>
+      <table class="data-table">
+        <thead><tr><th>Dimension</th><th class="num">Score</th><th class="num">Max</th></tr></thead>
+        <tbody>
+          <tr><td class="lbl">AI-native business model</td><td class="num">0</td><td class="num">25</td></tr>
+          <tr><td class="lbl">Data flywheel / proprietary data</td><td class="num">0</td><td class="num">20</td></tr>
+          <tr><td class="lbl">AI-driven cost reduction</td><td class="num">10</td><td class="num">20</td></tr>
+          <tr><td class="lbl">AI in product/service (revenue side)</td><td class="num">2</td><td class="num">20</td></tr>
+          <tr><td class="lbl">AI threat resistance</td><td class="num">10</td><td class="num">15</td></tr>
+          <tr><td class="lbl bold" style="color:var(--chrome)">TOTAL</td><td class="num bold">22</td><td class="num bold">100</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title">AI Threat <span>Assessment</span></div>
+  <div class="sc-card"><span class="sc-label">AI threatens core manufacturing moat</span><span class="sc-badge sc-pass">✓ LOW RISK — Physical BIW stamping cannot be AI-disrupted; requires capital equipment</span></div>
+  <div class="sc-card"><span class="sc-label">AI enables competitor capacity advantage</span><span class="sc-badge sc-marginal">~ MONITOR — Generative design AI could reduce tooling development time by 30–40%; levels playing field on die development speed</span></div>
+  <div class="sc-card"><span class="sc-label">AI disrupts customer (MSIL) demand</span><span class="sc-badge sc-pass">✓ LOW RISK — EV transition is a volume shift, not a volume loss; BIW components still required</span></div>
+  <div class="sc-card"><span class="sc-label">AI-native competitor enters the market</span><span class="sc-badge sc-pass">✓ LOW RISK — No AI-first auto components startup can replicate MSIL's 29% stake relationship</span></div>
+
+  <div class="section-title" style="margin-top:20px">AI Opportunity <span>Assessment</span></div>
+  <div class="sc-card"><span class="sc-label">AI in quality control / visual inspection</span><span class="sc-badge sc-pass">✓ DEPLOYING — JBM Group reportedly using computer vision for weld quality and dimensional inspection. Reduces rejection rates. <span class="tag-u">UNVERIFIED</span></span></div>
+  <div class="sc-card"><span class="sc-label">AI in predictive maintenance</span><span class="sc-badge sc-marginal">~ POTENTIAL — Press and stamping equipment downtime reduction. Standard IIoT deployment.</span></div>
+  <div class="sc-card"><span class="sc-label">AI in supply chain optimization</span><span class="sc-badge sc-marginal">~ POTENTIAL — Steel coil inventory optimization; AI demand forecasting linked to MSIL production schedules.</span></div>
+  <div class="sc-card"><span class="sc-label">Generative design for tooling</span><span class="sc-badge sc-marginal">~ POTENTIAL — Could reduce die development time; but JBML's JODT JV already does this at scale manually</span></div>
+
+  <div class="section-title" style="margin-top:20px">EV Transition <span>Impact on JBML</span></div>
+  <div class="info-card">
+    <p><strong>Net Assessment: ⚪ NEUTRAL to slight TAILWIND.</strong> The transition from ICE to EV does not eliminate demand for JBML's core products — body-in-white panels, chassis members, and structural components are required on all vehicle types. In fact, EVs have more structural complexity (battery enclosures, crash management systems) that could increase BIW content per vehicle by 5–8%.</p>
+    <p>Key risk: MSIL's own EV models (e3, Dzire EV, Jimny EV rumored) need to be confirmed for sourcing from JBML. If MSIL sources EV-specific BIW components from its Japanese JV partners (Suzuki direct), JBML's content per vehicle could decline. <span class="tag-u">UNVERIFIED — monitor MSIL supplier disclosures</span></p>
+    <p>Key opportunity: Kharkhoda plant was co-developed alongside MSIL's new greenfield EV-capable plant in the same industrial corridor. This strongly implies JBML is the designated BIW supplier for MSIL's next-generation models including EVs. <span class="tag-e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section-title" style="margin-top:20px">Strategic Watch <span>Items</span></div>
+  <div class="upgrade-item"><div class="upgrade-num" style="background:var(--blue)">W</div><div class="upgrade-text"><strong>Monitor:</strong> MSIL's annual reports for JBML sourcing disclosures on EV models. If confirmed as EV BIW supplier, upgrade AI overlay to 🟢 WIDENER.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num" style="background:var(--amber)">W</div><div class="upgrade-text"><strong>Monitor:</strong> Generative AI tooling design — if JODT JV adopts AI-assisted die design at scale, die development time could compress from 18 to 8 months, improving JBML's market share in new model awards.</div></div>
+  <div class="upgrade-item"><div class="upgrade-num" style="background:var(--red)">R</div><div class="upgrade-text"><strong>Risk:</strong> If MSIL partners with a full-stack robotics + BIW manufacturer (e.g., Foxconn-style EV supplier) for new EV plants, JBML's moat could be bypassed for new model launches. Low probability, high impact — monitor MSIL capex strategy.</div></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Buffett Quality-Value Series</strong> | JAYBARMARU_qv_report.html | Analysis Date: June 16, 2026<br>
+  Data Sources: Screener.in (standalone financials, verified), BSE disclosures, web search (institutional data). CMP ₹128 as of June 5–8, 2026 — verify live before acting.<br>
+  <strong>DISCLAIMER:</strong> This report is for educational and research purposes only. It does not constitute financial advice, a solicitation, or a recommendation to buy or sell any security. Intrinsic value estimates are based on assumptions that may prove incorrect. Past financial performance is not indicative of future results. Always consult a SEBI-registered investment advisor before making investment decisions. The author may hold positions in securities mentioned herein.<br>
+  <strong>Framework version:</strong> Buffett QV v2.0 | Category C | Five-method valuation blend | O'Glove earnings quality | Design Standard v2.0
+</footer>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  const btn = document.querySelector('[data-tab="' + id + '"]');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

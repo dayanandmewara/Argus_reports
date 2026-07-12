@@ -3,1190 +3,737 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NUVAMA — Buffett Quality-Value Report v5.0</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<title>NUVAMA — Buffett Quality-Value Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --navy: #0A1628;
-  --navy-mid: #112244;
-  --navy-light: #1a3260;
-  --gold: #C9A84C;
-  --gold-light: #E8C96A;
-  --gold-pale: #F5E8C0;
-  --parchment: #F5F0E8;
-  --cream: #FAF7F2;
-  --ink: #1C1C2E;
-  --muted: #6B7280;
-  --red: #CC4444;
-  --red-light: #FF6B6B;
-  --green: #2D7A4F;
-  --green-light: #4CAF50;
-  --amber: #D97706;
-  --amber-light: #F59E0B;
-  --border: rgba(201,168,76,0.25);
-  --pass: #2D7A4F;
-  --marginal: #D97706;
-  --fail: #CC4444;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Source Serif 4',Georgia,serif;background:var(--cream);color:var(--ink);line-height:1.6;font-size:15px}
+  :root{
+    --navy:#0E1B2E; --navy-2:#17293F; --navy-3:#1F3350;
+    --parchment:#F3EEE1; --paper:#FBF8F2; --paper-dim:#EFE8D8;
+    --gold:#AD8A3F; --gold-bright:#C9A227; --gold-pale:#E6D9B8;
+    --wine:#7A2C33; --wine-pale:#F3E1E0;
+    --green:#2E5D45; --green-pale:#DEE9DF;
+    --amber:#9C6B1F; --amber-pale:#F1E4C9;
+    --ink:#1C2230; --ink-soft:#5B6072; --ink-faint:#8A8F9E;
+    --line:#DCD2B8; --line-soft:#E9E2CE;
+    --line-navy:rgba(255,255,255,0.14); --text-navy-soft:rgba(237,232,216,0.72);
+    --font-display:'Fraunces',serif; --font-body:'Source Sans 3',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+    --radius:3px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--parchment); color:var(--ink); font-family:var(--font-body); font-size:15.5px; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4{font-family:var(--font-display); font-weight:600; margin:0; color:var(--navy); letter-spacing:-0.01em;}
+  p{margin:0 0 12px 0;}
+  .mono{font-family:var(--font-mono);}
+  .container{max-width:1180px; margin:0 auto; padding:0 32px;}
 
-/* HERO */
-.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,var(--navy-light) 100%);color:#fff;padding:24px 28px 18px;position:relative;overflow:hidden;max-height:220px}
-.hero::before{content:'';position:absolute;top:-40px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%)}
-.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.hero-ticker{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold-light);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
-.hero-name{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;line-height:1.1;color:#fff}
-.hero-sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:3px;font-style:italic}
-.verdict-badge{background:linear-gradient(135deg,#D97706,#F59E0B);color:#fff;padding:6px 14px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;text-align:center;letter-spacing:1px;white-space:nowrap;min-width:160px}
-.verdict-badge .stars{font-size:14px;display:block;margin-top:2px}
-.hero-badges{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:1px;border:1px solid}
-.badge-cat{background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.5);color:var(--gold-light)}
-.badge-neutral{background:rgba(156,163,175,0.15);border-color:rgba(156,163,175,0.4);color:#9CA3AF}
-.badge-warn{background:rgba(204,68,68,0.15);border-color:rgba(204,68,68,0.5);color:#FF6B6B}
-.badge-macro{background:rgba(45,122,79,0.15);border-color:rgba(45,122,79,0.5);color:#4CAF50}
-.hero-lede{font-size:11px;color:rgba(255,255,255,0.65);margin-top:8px;font-style:italic;line-height:1.5}
-.data-pills{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
-.pill{padding:2px 8px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600}
-.pill-v{background:rgba(45,122,79,0.3);color:#6EE7B7}
-.pill-e{background:rgba(217,119,6,0.3);color:#FCD34D}
-.pill-u{background:rgba(204,68,68,0.3);color:#FCA5A5}
+  /* ---------- HERO ---------- */
+  .hero{background:linear-gradient(160deg,var(--navy) 0%, var(--navy-2) 55%, var(--navy-3) 100%); color:var(--paper); padding:44px 0 30px 0; border-bottom:3px solid var(--gold);}
+  .hero-top{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap;}
+  .hero-id .eyebrow{font-family:var(--font-mono); font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold-bright); margin-bottom:10px;}
+  .hero-id h1{font-size:38px; color:#fff; line-height:1.08;}
+  .hero-id .company-name{font-size:16px; color:var(--text-navy-soft); margin-top:6px; font-family:var(--font-body); font-weight:500;}
+  .hero-price{text-align:right;}
+  .hero-price .px{font-family:var(--font-mono); font-size:32px; color:#fff; font-weight:600;}
+  .hero-price .px-meta{font-size:12.5px; color:var(--text-navy-soft); margin-top:4px;}
+  .verdict-badge{display:inline-block; margin-top:10px; padding:7px 16px; border-radius:20px; font-family:var(--font-display); font-weight:700; font-size:16px; background:var(--amber-pale); color:#4A3410; border:1.5px solid var(--gold);}
+  .verdict-badge.watch{background:#3A3418; color:var(--gold-pale); border-color:var(--gold-bright);}
+  .hero-badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .hbadge{font-family:var(--font-mono); font-size:12px; padding:6px 12px; border:1px solid var(--line-navy); border-radius:20px; color:var(--text-navy-soft); background:rgba(255,255,255,0.03);}
+  .hbadge b{color:#fff; font-weight:600;}
+  .hero-lede{margin-top:22px; padding-top:20px; border-top:1px solid var(--line-navy); font-size:16px; line-height:1.65; color:#EDE8D8; max-width:920px; font-family:var(--font-display); font-weight:400; font-style:italic;}
+  .confidence-legend{margin-top:16px; display:flex; gap:16px; flex-wrap:wrap; font-size:11px; color:var(--text-navy-soft); font-family:var(--font-mono);}
+  .confidence-legend span{display:inline-flex; align-items:center; gap:5px;}
+  .dot{width:7px; height:7px; border-radius:50%; display:inline-block;}
+  .dot.v{background:#5BAE7B;} .dot.e{background:#D8A63C;} .dot.u{background:#C4645E;}
 
-/* TAB BAR */
-#tab-bar{background:var(--navy);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;overflow-x:auto;white-space:nowrap}
-.tab-btn{display:inline-block;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.55);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;letter-spacing:0.5px;border:none;background:none}
-.tab-btn:hover{color:var(--gold-light)}
-.tab-btn.active{color:var(--gold-light);border-bottom-color:var(--gold)}
-.tab-content{display:none;padding:24px 20px}
-.tab-content.active-tab{display:block}
+  /* ---------- TAB BAR ---------- */
+  .tabbar-wrap{position:sticky; top:0; z-index:50; background:var(--paper); border-bottom:1px solid var(--line); box-shadow:0 2px 10px rgba(14,27,46,0.06);}
+  .tabbar{display:flex; overflow-x:auto; max-width:1180px; margin:0 auto; padding:0 32px; scrollbar-width:thin;}
+  .tabbtn{font-family:var(--font-mono); font-size:12.5px; white-space:nowrap; background:none; border:none; padding:15px 16px; cursor:pointer; color:var(--ink-soft); border-bottom:3px solid transparent; transition:all .15s ease; letter-spacing:0.02em;}
+  .tabbtn:hover{color:var(--navy); background:var(--paper-dim);}
+  .tabbtn.active{color:var(--navy); border-bottom-color:var(--gold); font-weight:600;}
+  .tabbtn .num{color:var(--gold); margin-right:6px; font-weight:700;}
 
-/* LAYOUT */
-.section-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--border)}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-@media(max-width:680px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
-@media(max-width:680px){.hero-top{flex-direction:column}}
+  /* ---------- TAB CONTENT ---------- */
+  .tab-content{display:none; padding:36px 0 60px 0; animation:fadein .2s ease;}
+  .tab-content.active{display:block;}
+  @keyframes fadein{from{opacity:0;} to{opacity:1;}}
+  .section{margin-bottom:36px;}
+  .section-head{display:flex; align-items:baseline; gap:12px; margin-bottom:16px; padding-bottom:8px; border-bottom:2px solid var(--navy);}
+  .section-head h2{font-size:22px;}
+  .section-head .tag{font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.08em;}
+  .subhead{font-family:var(--font-mono); font-size:12.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold); font-weight:600; margin-bottom:10px;}
 
-/* CARDS */
-.card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
-.card-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
-.card-value{font-size:22px;font-weight:700;color:var(--navy);font-family:'Playfair Display',serif}
-.card-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.card-delta{font-size:12px;font-weight:600;margin-top:4px}
-.delta-pos{color:var(--green)}
-.delta-neg{color:var(--red)}
-.delta-warn{color:var(--amber)}
+  /* ---------- CARDS / GRIDS ---------- */
+  .grid{display:grid; gap:16px;}
+  .grid-2{grid-template-columns:1fr 1fr;}
+  .grid-3{grid-template-columns:repeat(3,1fr);}
+  .grid-4{grid-template-columns:repeat(4,1fr);}
+  .card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;}
+  .card h4{font-size:15px; margin-bottom:8px;}
+  .card.dark{background:var(--navy); color:var(--paper); border-color:var(--navy);}
+  .card.dark h4{color:#fff;}
+  .card.dark p{color:var(--text-navy-soft);}
+  .metric{background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:var(--radius); padding:14px 16px;}
+  .metric .lbl{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-faint); margin-bottom:6px;}
+  .metric .val{font-family:var(--font-mono); font-size:21px; font-weight:600; color:var(--navy);}
+  .metric .sub{font-size:12px; color:var(--ink-soft); margin-top:4px;}
+  .metric.pos{border-left-color:var(--green);} .metric.neg{border-left-color:var(--wine);} .metric.warn{border-left-color:var(--amber);}
 
-/* LEFT-BORDER METRIC */
-.metric-row{border-left:3px solid var(--gold);padding:10px 14px;background:#fff;border-radius:0 6px 6px 0;margin-bottom:8px}
-.metric-row.pass{border-left-color:var(--pass)}
-.metric-row.fail{border-left-color:var(--fail)}
-.metric-row.warn{border-left-color:var(--amber)}
-.metric-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
-.metric-val{font-size:15px;font-weight:600;color:var(--navy);font-family:'Playfair Display',serif}
-.metric-note{font-size:11px;color:var(--muted);margin-top:2px}
+  /* ---------- BADGES / PILLS ---------- */
+  .pill{display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:11.5px; padding:4px 10px; border-radius:20px; font-weight:600;}
+  .pill.pass{background:var(--green-pale); color:var(--green);}
+  .pill.marginal{background:var(--amber-pale); color:var(--amber);}
+  .pill.fail{background:var(--wine-pale); color:var(--wine);}
+  .conf{font-family:var(--font-mono); font-size:10px; padding:1px 6px; border-radius:8px; margin-left:6px; vertical-align:middle;}
+  .conf.v{background:#DEEEE3; color:#2C6B45;} .conf.e{background:#F4E9CC; color:#8A5F17;} .conf.u{background:#F5DEDC; color:#A03E38;}
 
-/* TABLES */
-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
-thead{background:var(--navy)}
-thead th{color:var(--gold-light);padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-align:left;font-weight:600}
-tbody tr:nth-child(even){background:rgba(0,0,0,0.025)}
-tbody td{padding:7px 10px;border-bottom:1px solid rgba(0,0,0,0.06);color:var(--ink)}
-.tbl-highlight td{background:rgba(201,168,76,0.1);font-weight:600}
+  /* ---------- TABLES ---------- */
+  table{width:100%; border-collapse:collapse; font-size:14px;}
+  th{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:0.05em; text-align:left; color:var(--ink-faint); padding:9px 12px; border-bottom:2px solid var(--navy); background:var(--paper-dim);}
+  td{padding:10px 12px; border-bottom:1px solid var(--line-soft);}
+  tr:last-child td{border-bottom:none;}
+  td.num, th.num{text-align:right; font-family:var(--font-mono);}
+  .tbl-wrap{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; background:var(--paper);}
+  .highlight-row td{background:var(--gold-pale); font-weight:600;}
 
-/* SCORECARD */
-.test-card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:6px;padding:12px 14px;display:flex;align-items:center;gap:10px}
-.test-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.test-icon.pass{background:rgba(45,122,79,0.12);color:var(--pass)}
-.test-icon.fail{background:rgba(204,68,68,0.12);color:var(--fail)}
-.test-icon.marginal{background:rgba(217,119,6,0.12);color:var(--amber)}
-.test-title{font-size:13px;font-weight:600;color:var(--navy)}
-.test-detail{font-size:11px;color:var(--muted)}
-.score-badge{display:inline-block;padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;margin-left:auto;white-space:nowrap}
-.score-clean{background:rgba(45,122,79,0.12);color:var(--pass)}
-.score-accept{background:rgba(217,119,6,0.12);color:var(--amber)}
-.score-suspect{background:rgba(204,68,68,0.12);color:var(--fail)}
+  /* ---------- GRADE / SCORE ---------- */
+  .grade-circle{width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:700; font-size:24px; color:#fff; margin:0 auto 10px auto;}
+  .pillar-card{text-align:center; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:22px 14px;}
+  .pillar-card .pname{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-faint); margin-bottom:12px;}
+  .pillar-card .pnote{font-size:12.5px; color:var(--ink-soft); margin-top:8px; line-height:1.5;}
 
-/* MOAT */
-.moat-card{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:8px;padding:14px}
-.moat-stars{color:var(--gold);font-size:14px;margin-bottom:4px}
-.moat-title{font-size:14px;font-weight:700;color:var(--navy)}
-.moat-desc{font-size:12px;color:var(--muted);margin-top:4px}
-.moat-stress{font-size:11px;font-style:italic;margin-top:6px;padding-top:6px;border-top:1px dashed rgba(0,0,0,0.1)}
+  /* ---------- VERDICT BOX ---------- */
+  .verdict-box{background:var(--navy); color:var(--paper); border-radius:var(--radius); padding:30px 32px; position:relative; overflow:hidden;}
+  .verdict-box::before{content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--gold),var(--gold-bright));}
+  .verdict-box h2{color:#fff; font-size:30px;}
+  .verdict-box .stars{color:var(--gold-bright); font-size:22px; letter-spacing:2px;}
+  .verdict-box p{color:var(--text-navy-soft); font-size:15.5px;}
 
-/* FLYWHEEL BOX */
-.flywheel-box{background:var(--navy);color:#fff;border-radius:10px;padding:20px;margin:16px 0}
-.flywheel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.flywheel-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
-.flywheel-badge{padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px}
-.fw-forming{background:rgba(217,119,6,0.3);color:#FCD34D;border:1px solid rgba(217,119,6,0.5)}
-.fw-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;font-size:12px}
-.fw-check{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:2px}
-.fw-yes{background:rgba(45,122,79,0.3);color:#6EE7B7}
-.fw-no{background:rgba(204,68,68,0.3);color:#FCA5A5}
-.fw-partial{background:rgba(217,119,6,0.3);color:#FCD34D}
-.fw-score{text-align:center;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1)}
-.fw-score-num{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;color:var(--gold)}
-.fw-score-label{font-size:11px;color:rgba(255,255,255,0.6)}
+  /* ---------- LADDER (signature viz) ---------- */
+  .ladder{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:28px 26px 18px 26px;}
+  .ladder-track{position:relative; height:64px; margin:30px 10px 46px 10px; background:linear-gradient(90deg, var(--green-pale), var(--amber-pale) 55%, var(--wine-pale)); border-radius:6px;}
+  .ladder-pt{position:absolute; top:-8px; transform:translateX(-50%); text-align:center;}
+  .ladder-pt .stem{width:2px; height:80px; background:var(--ink-faint); margin:0 auto;}
+  .ladder-pt .knob{width:14px; height:14px; border-radius:50%; background:var(--navy); border:2.5px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,0.25); position:absolute; top:76px; left:50%; transform:translateX(-50%);}
+  .ladder-pt .lab{font-family:var(--font-mono); font-size:11px; color:var(--ink-soft); white-space:nowrap; position:absolute; top:96px; left:50%; transform:translateX(-50%); text-align:center;}
+  .ladder-pt .lab b{display:block; color:var(--navy); font-size:13px;}
+  .ladder-pt.cmp .knob{background:var(--wine); width:18px; height:18px; top:74px;}
+  .ladder-pt.cmp .lab b{color:var(--wine); font-size:15px;}
+  .ladder-pt.cmp .stem{background:var(--wine); height:82px;}
 
-/* VERDICT BOX */
-.verdict-box{background:var(--navy);border:2px solid var(--amber);border-radius:10px;padding:24px;color:#fff;margin:16px 0}
-.verdict-box.watch-box{border-color:var(--amber)}
-.verdict-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:2px;margin-bottom:8px}
-.verdict-main{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:var(--gold-light)}
-.verdict-stars{font-size:20px;margin-left:8px}
-.verdict-quote{font-style:italic;font-size:13px;color:rgba(255,255,255,0.65);margin-top:12px;padding:10px 14px;border-left:3px solid var(--gold);background:rgba(255,255,255,0.04)}
-.pillar-grades{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
-.pillar-grade{text-align:center;background:rgba(255,255,255,0.06);border-radius:6px;padding:10px 6px}
-.pillar-letter{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:var(--gold-light)}
-.pillar-name{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,0.5);margin-top:2px;letter-spacing:0.5px}
+  /* ---------- GAUGE ---------- */
+  .gauge-wrap{display:flex; align-items:center; gap:20px;}
+  .gauge-bar-bg{flex:1; height:14px; background:var(--paper-dim); border-radius:8px; border:1px solid var(--line); overflow:hidden;}
+  .gauge-bar-fill{height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-bright)); border-radius:8px;}
+  .gauge-num{font-family:var(--font-mono); font-size:20px; font-weight:600; color:var(--navy); min-width:60px; text-align:right;}
 
-/* ALERT BOX */
-.alert-box{border-radius:8px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start}
-.alert-critical{background:rgba(204,68,68,0.08);border:1px solid rgba(204,68,68,0.3)}
-.alert-warn{background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.3)}
-.alert-info{background:rgba(10,22,40,0.06);border:1px solid rgba(10,22,40,0.15)}
-.alert-icon{font-size:18px;flex-shrink:0;margin-top:2px}
-.alert-title{font-weight:700;font-size:13px;color:var(--navy);margin-bottom:3px}
-.alert-body{font-size:12px;color:#4B5563;line-height:1.6}
+  /* ---------- FLYWHEEL BOX ---------- */
+  .flywheel-box{border:1.5px dashed var(--gold); border-radius:var(--radius); padding:20px 22px; background:#FBF6E9;}
+  .flywheel-box .q{font-size:13.5px; margin-bottom:6px;}
+  .flywheel-box .q b{color:var(--navy);}
 
-/* UPGRADE CONDITIONS */
-.condition{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:6px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}
-.cond-num{width:24px;height:24px;border-radius:50%;background:var(--navy);color:var(--gold-light);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.cond-text{font-size:12px;color:var(--ink)}
+  /* misc */
+  .small{font-size:12.5px; color:var(--ink-soft);}
+  .divider{height:1px; background:var(--line); margin:28px 0;}
+  ul.clean{margin:0; padding-left:18px;}
+  ul.clean li{margin-bottom:7px;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  .flag{display:inline-block; font-family:var(--font-mono); font-size:11px; padding:2px 8px; border-radius:3px; font-weight:600; margin-right:6px;}
+  .flag.risk{background:var(--wine); color:#fff;}
+  .flag.good{background:var(--green); color:#fff;}
+  .footnote{font-size:11.5px; color:var(--ink-faint); font-family:var(--font-mono);}
 
-/* SHAREHOLDING */
-.sh-bar{background:#E5E7EB;border-radius:4px;height:10px;overflow:hidden;margin:4px 0}
-.sh-fill{height:100%;border-radius:4px}
-.sh-promoter{background:var(--navy)}
-.sh-fii{background:var(--gold)}
-.sh-dii{background:var(--green)}
-.sh-retail{background:var(--amber)}
+  footer{background:var(--navy); color:var(--text-navy-soft); padding:36px 0; margin-top:20px;}
+  footer .container{font-size:12.5px; line-height:1.7;}
+  footer strong{color:var(--gold-bright);}
 
-/* TECHNICAL */
-.ma-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px}
-.ma-above{color:var(--green);font-weight:600}
-.ma-below{color:var(--red);font-weight:600}
-
-/* EXIT BOX */
-.exit-box{background:linear-gradient(135deg,#1C0A0A,#2D1010);border:2px solid var(--red);border-radius:10px;padding:22px;color:#fff;margin:16px 0}
-.exit-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:800;color:#FF6B6B;margin-bottom:10px}
-.exit-item{display:flex;gap:10px;margin-bottom:8px;font-size:12px;color:rgba(255,255,255,0.8)}
-.exit-icon{font-size:14px;flex-shrink:0}
-
-/* VALUATION */
-.val-table th{background:var(--navy-mid)}
-.val-highlight{background:rgba(201,168,76,0.15)!important;font-weight:700}
-.iv-number{font-family:'Playfair Display',serif;font-weight:700;font-size:15px}
-
-/* FOOTER */
-footer{background:var(--navy);color:rgba(255,255,255,0.4);padding:16px 20px;font-size:10px;font-family:'JetBrains Mono',monospace;line-height:1.8;margin-top:24px}
-
-/* PROGRESS BAR */
-.prog-bar{background:#E5E7EB;border-radius:4px;height:8px;overflow:hidden;margin-top:4px}
-.prog-fill{height:100%;border-radius:4px;background:linear-gradient(to right,var(--navy),var(--gold))}
-
-/* SECTOR TABLE */
-.sector-badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace}
-.sb-tail{background:rgba(45,122,79,0.12);color:var(--pass)}
-.sb-neut{background:rgba(107,114,128,0.12);color:var(--muted)}
-.sb-head{background:rgba(204,68,68,0.12);color:var(--fail)}
-
-/* NSE PENALTY NOTICE */
-.penalty-box{background:rgba(204,68,68,0.06);border:1px solid rgba(204,68,68,0.25);border-radius:6px;padding:12px;margin-bottom:12px}
+  @media (max-width:820px){
+    .grid-4{grid-template-columns:repeat(2,1fr);} .grid-3{grid-template-columns:repeat(2,1fr);} .grid-2, .two-col{grid-template-columns:1fr;}
+    .hero-price{text-align:left;} .hero-top{flex-direction:column;}
+    .hero-id h1{font-size:28px;}
+  }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ HERO ═══════════════ -->
 <div class="hero">
-  <div class="hero-top">
-    <div>
-      <div class="hero-ticker">NSE: NUVAMA · BSE: 543988 · BUFFETT QUALITY-VALUE SERIES v5.0</div>
-      <div class="hero-name">Nuvama Wealth Management</div>
-      <div class="hero-sub">India's Integrated HNI/UHNI Wealth Platform · Formerly Edelweiss Securities · PAG-backed</div>
+  <div class="container">
+    <div class="hero-top">
+      <div class="hero-id">
+        <div class="eyebrow">Buffett Quality-Value Series · v5.0 · Category C</div>
+        <h1>NUVAMA</h1>
+        <div class="company-name">Nuvama Wealth Management Ltd · NSE &amp; BSE</div>
+      </div>
+      <div class="hero-price">
+        <div class="px">₹1,809</div>
+        <div class="px-meta">as of 1 Jul 2026 · 52w range ₹1,096.90–₹1,825</div>
+        <div class="verdict-badge watch">WATCH ★★</div>
+      </div>
     </div>
-    <div class="verdict-badge">
-      WATCH ★★★<br>
-      <span style="font-size:8px;opacity:0.85">PLEDGE RISK · GROWTH DECEL</span>
+    <div class="hero-badges">
+      <div class="hbadge">CATEGORY <b>C — Mature Quality Compounder</b></div>
+      <div class="hbadge">AI OVERLAY <b>⚪ NEUTRAL</b></div>
+      <div class="hbadge">MACRO CYCLE <b>Rate-easing / Equity re-rating</b></div>
+      <div class="hbadge">PRIOR REPORT <b>WATCH ★★★ · 12 May 2026 @ ₹1,735</b></div>
     </div>
-  </div>
-  <div class="hero-badges">
-    <span class="badge badge-cat">CAT C · MATURE COMPOUNDER</span>
-    <span class="badge badge-neutral">⚪ AI NEUTRAL</span>
-    <span class="badge badge-warn">⚠ PLEDGE 62.8% — CRITICAL</span>
-    <span class="badge badge-macro">MACRO: TAILWIND</span>
-  </div>
-  <div class="hero-lede">India's wealth financialization wave is genuine — but 62.8% promoter pledge, FY26 PAT growth of only 5.6%, NSE penalties, and a price 19% above 200-DMA demand serious caution before adding exposure.</div>
-  <div class="data-pills">
-    <span class="pill pill-v">[VERIFIED] Q4 FY26 Results: 11 May 2026</span>
-    <span class="pill pill-e">[ESTIMATED] Technical levels from screeners</span>
-    <span class="pill pill-v">[VERIFIED] Shareholding: latest filing</span>
+    <div class="hero-lede">
+      A high-ROE, PAG-backed wealth platform riding a genuine structural HNI/UHNI boom — but FY26 revenue growth decelerated to +8% from FY25's +41%, operating cash flow turned negative, and a 62.8% promoter share pledge remains unresolved. Since the May report, price has run further away from every intrinsic-value method rather than toward it. Business quality is real; today's price is not a margin-of-safety entry.
+    </div>
+    <div class="confidence-legend">
+      <span><span class="dot v"></span> VERIFIED — company filings / exchange data</span>
+      <span><span class="dot e"></span> ESTIMATED — derived / reasoned from available data</span>
+      <span><span class="dot u"></span> UNVERIFIED — flagged gap, treat with caution</span>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════ TAB BAR ═══════════════ -->
-<div id="tab-bar">
-  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
-  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro & Growth</button>
-  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
-  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
-  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
-  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
-  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
-  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
-  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
-  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intel</button>
+<div class="tabbar-wrap">
+  <div class="tabbar" id="tabbar">
+    <button class="tabbtn active" data-tab="0"><span class="num">0</span>Overview</button>
+    <button class="tabbtn" data-tab="1"><span class="num">1</span>Macro &amp; Growth</button>
+    <button class="tabbtn" data-tab="2"><span class="num">2</span>Financials</button>
+    <button class="tabbtn" data-tab="3"><span class="num">3</span>Moat</button>
+    <button class="tabbtn" data-tab="4"><span class="num">4</span>Management</button>
+    <button class="tabbtn" data-tab="5"><span class="num">5</span>Valuation</button>
+    <button class="tabbtn" data-tab="6"><span class="num">6</span>Verdict</button>
+    <button class="tabbtn" data-tab="7"><span class="num">7</span>Technical</button>
+    <button class="tabbtn" data-tab="8"><span class="num">8</span>Shareholding</button>
+    <button class="tabbtn" data-tab="9"><span class="num">9</span>AI Intelligence</button>
+  </div>
 </div>
 
-<!-- ═══════════════ TAB 0: OVERVIEW ═══════════════ -->
-<div id="tab0" class="tab-content" style="display:block">
-  <h2 class="section-title">Business Overview</h2>
+<div class="container">
 
-  <div class="alert-box alert-critical">
-    <span class="alert-icon">🚨</span>
-    <div>
-      <div class="alert-title">CRITICAL FLAG: 62.8% Promoter Pledge + NSE Penalties (April 2026)</div>
-      <div class="alert-body">Framework rule: promoter pledge &gt;40% = AVOID. Nuvama's promoter (PAG-linked entity) has pledged 62.8% of its holding. Additionally, NSE issued two warning letters (April 29, 2026) and levied ₹8.7L penalty (April 22, 2026) on NWIL for margin statement reporting observations. These are hard red flags that cannot be ignored regardless of business quality.</div>
-    </div>
-  </div>
-
-  <div class="alert-box alert-warn">
-    <span class="alert-icon">⚠️</span>
-    <div>
-      <div class="alert-title">Q4 FY26 Results (Just Released — May 11, 2026): Growth Deceleration</div>
-      <div class="alert-body">FY26 Net Profit: ₹1,040 Cr (+5.6% YoY) vs FY25 ₹985 Cr (+65% YoY). Q4 FY26 revenue ₹1,269 Cr (+13.3% YoY). The dramatic PAT slowdown from 65% to 5.6% suggests capital markets cyclicality has faded and wealth management alone cannot maintain prior growth rates at current scale. Interim dividend of ₹14/share declared (record date May 15, 2026) — positive signal but dividend yield of ~0.9% is negligible.</div>
-    </div>
-  </div>
-
-  <div class="grid-4" style="margin-bottom:16px">
-    <div class="card">
-      <div class="card-label">Current Price</div>
-      <div class="card-value">₹1,597</div>
-      <div class="card-sub">As of May 11, 2026</div>
-      <div class="card-delta delta-warn">52wk: ₹1,097 – ₹1,702</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Market Cap</div>
-      <div class="card-value">₹29,100 Cr</div>
-      <div class="card-sub">Small Cap (SEBI classification)</div>
-      <div class="card-delta delta-pos">+35% in 1 year [VERIFIED]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">FY26 Net Profit</div>
-      <div class="card-value">₹1,040 Cr</div>
-      <div class="card-sub">vs ₹985 Cr FY25</div>
-      <div class="card-delta delta-warn">+5.6% YoY — Deceleration ⚠️</div>
-    </div>
-    <div class="card">
-      <div class="card-label">P/E Ratio</div>
-      <div class="card-value">28–30×</div>
-      <div class="card-sub">TTM (split-adjusted)</div>
-      <div class="card-delta delta-warn">Above Base IV of ₹1,392</div>
-    </div>
-  </div>
-
-  <div class="grid-2">
-    <div>
-      <h3 style="font-family:'Playfair Display',serif;margin-bottom:12px;color:var(--navy)">What Nuvama Does</h3>
-      <p style="font-size:13px;color:#4B5563;margin-bottom:12px">Nuvama Wealth Management (formerly Edelweiss Securities) is India's integrated wealth management platform. Carved out of Edelweiss Financial Services in 2022-23 and majority-owned by PAG (~USD 57B AUM, Asia's premier alternative asset manager), Nuvama operates three interlocked businesses:</p>
-      <div class="metric-row">
-        <div class="metric-label">Wealth Management</div>
-        <div class="metric-val">HNI/UHNI advisory, distribution, MPIS</div>
-        <div class="metric-note">FY25: ₹1,322 Cr rev · 1,300+ RMs · 4,500+ UHNI families · NPS 82</div>
+<!-- ===================== TAB 0 — OVERVIEW ===================== -->
+<div class="tab-content active" id="tab-0">
+  <div class="section">
+    <div class="section-head"><h2>Business Overview</h2><span class="tag">Est. 1993 · HQ Mumbai · ~3,400 employees</span></div>
+    <div class="two-col">
+      <div>
+        <p>Nuvama Wealth Management Ltd (formerly Edelweiss Securities Ltd, renamed August 2022) is the demerged wealth-management arm of the erstwhile Edelweiss Group, listed independently since the demerger became effective in May 2023. The controlling shareholder is <b>PAGAC Ecstasy Pte Ltd</b>, an entity of Pacific Alliance Group (PAG), a large Asia-focused alternative investment manager that acquired control in FY2020-21.</p>
+        <p>The business runs four integrated segments: <b>Wealth Management</b> (the largest and fastest-growing, split between "Nuvama Wealth" for affluent/HNI clients and "Nuvama Private" for UHNI families and family offices), <b>Asset Management</b> (AIFs and PMS across public markets and commercial real estate, run with a Cushman &amp; Wakefield JV), <b>Capital Markets</b> (institutional broking, investment banking, merchant banking, fixed income) and <b>Asset Services</b> (custody and clearing for institutional clients — record profits in FY26).</p>
+        <p>Scale as of March 2026: total client assets of <b>₹4,52,548 Cr</b> (+5% YoY) across <b>1.3 million</b> affluent/HNI clients and <b>4,750+</b> UHNI families, served by roughly 1,250 relationship managers from 100+ offices. A Dubai (DIFC) subsidiary launched in FY25 extends the platform to offshore private wealth.</p>
       </div>
-      <div class="metric-row">
-        <div class="metric-label">Capital Markets</div>
-        <div class="metric-val">Institutional broking, IB, clearing</div>
-        <div class="metric-note">FY25: ₹759 Cr rev · 900+ institutional clients · 500+ IB deals</div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-label">Asset Management</div>
-        <div class="metric-val">AIFs, PMS, CRE (JV with C&W)</div>
-        <div class="metric-note">FY25: ₹171 Cr rev · AUM ~USD 1.4B · CRE fund launched Dubai</div>
+      <div>
+        <div class="card">
+          <h4>Why this stock, this cycle</h4>
+          <p class="small">India's HNI/UHNI population is compounding faster than the broader economy, and wealth management remains structurally under-penetrated relative to developed markets — Bernstein has likened the sector's current stage to private banking's early rise in India in the late 1990s. Nuvama sits among the top-3 listed pure-play platforms addressing that pool, with an integrated model (wealth + AMC + capital markets + custody) that few peers replicate end-to-end.</p>
+        </div>
+        <div class="card" style="margin-top:14px;">
+          <h4>What makes this one hard, not easy</h4>
+          <p class="small">The growth story is real but has visibly decelerated (FY26 revenue +8% vs FY25's +41%), the balance sheet carries real leverage from the margin-funding book, FY26 operating cash flow went negative on working-capital swings, and — the standout concern — <b>62.8% of the promoter's own stake is pledged</b>. None of this makes the business bad; it makes today's price a much harder bar to clear.</p>
+        </div>
       </div>
     </div>
-    <div>
-      <h3 style="font-family:'Playfair Display',serif;margin-bottom:12px;color:var(--navy)">Series Rationale & Framework Fit</h3>
-      <p style="font-size:13px;color:#4B5563;margin-bottom:10px"><strong>Why Category C (not A or B):</strong> Nuvama has strong ROIC (~28%) and durable moat through client stickiness, but capital markets creates revenue cyclicality that disqualifies it from Cat A (non-discretionary monopoly). Revenue CAGR of 31% over 4 years is strong but has now sharply decelerated — not pure Cat B high-growth.</p>
-      <p style="font-size:13px;color:#4B5563;margin-bottom:10px"><strong>Why AI NEUTRAL:</strong> Nuvama uses tech for digital onboarding, RM productivity tools, and client reporting. The data advantage is real (wealth transaction history) but no confirmed data flywheel or AI-driven moat expansion is evident from filings.</p>
-      <p style="font-size:13px;color:#4B5563"><strong>Key tension:</strong> Excellent structural positioning in India's wealth boom meets a 62.8% promoter pledge, a dramatic PAT growth slowdown, NSE regulatory warnings, and a stock priced for perfection at 28–30× earnings while sitting 14% above base intrinsic value.</p>
-    </div>
   </div>
 
-  <h3 style="font-family:'Playfair Display',serif;margin:16px 0 10px;color:var(--navy)">Revenue Journey (4-Year View)</h3>
-  <table>
-    <thead>
-      <tr><th>Fiscal Year</th><th>Revenue (₹ Cr)</th><th>PAT (₹ Cr)</th><th>PAT Growth</th><th>Key Driver</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>FY22</td><td>1,322</td><td>~220 [EST]</td><td>—</td><td>Post-demerger; wealth segment scaling</td></tr>
-      <tr><td>FY23</td><td>1,575</td><td>~360 [EST]</td><td>~64%</td><td>Wealth AUM growth; RM expansion</td></tr>
-      <tr><td>FY24</td><td>2,063</td><td>597</td><td>+66% [VER]</td><td>Record markets, Capital Markets surge</td></tr>
-      <tr><td>FY25</td><td>2,901</td><td>985</td><td>+65% [VER]</td><td>Wealth mgmt + Capital Markets peak</td></tr>
-      <tr class="tbl-highlight"><td>FY26</td><td>~4,100 rev ops / ₹4,649 total inc</td><td>1,040</td><td>+5.6% [VER]</td><td>Capital markets slowdown; wealth steady</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:12px;color:var(--muted);font-style:italic">Note: FY25 revenue per Investor Presentation (₹2,901 Cr) = revenue from operations. Total income (incl. interest income from NBFC sub) = ₹4,169 Cr FY25 / ₹4,649 Cr FY26. Revenue from operations Q4 FY26 = ₹1,269 Cr.</p>
+  <div class="section">
+    <div class="section-head"><h2>Category &amp; AI Overlay</h2></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h4>Category C — Mature Quality Compounder <span class="conf e">ESTIMATED</span></h4>
+        <p class="small">ROE has run 24–31% over FY24–FY26 (comfortably inside the 15–40% Cat-C ROIC band) and FY26's growth print (+8%) sits inside the "stable growth 8–18%" range the framework uses for this tier. The stock doesn't cleanly fit Category B (High-Growth Compounder) despite a 26% 5-year revenue CAGR, because that tier wants <i>accelerating</i> FCF and growth — Nuvama's FY26 shows the opposite: decelerating growth and negative operating cash flow. Category C — WACC 12–14%, terminal P/E 18–22x, MoS ×0.70 — is the better fit and is used throughout this report.</p>
+      </div>
+      <div class="card">
+        <h4>AI Overlay — ⚪ NEUTRAL <span class="conf e">ESTIMATED</span></h4>
+        <p class="small">Nuvama has deployed an "Agentic AI" assistant and a multicurrency portfolio-reporting module for relationship managers, disclosed as delivering a 10–15% productivity lift per RM. That's a genuine, quantified efficiency gain — but it's an internal productivity tool, not evidence of a proprietary data flywheel that deepens the moat or raises client switching costs. Full reasoning in Tab 9.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- ═══════════════ TAB 1: MACRO & GROWTH ═══════════════ -->
-<div id="tab1" class="tab-content">
-  <h2 class="section-title">Macro & Sector Context</h2>
+<!-- ===================== TAB 1 — MACRO & GROWTH ===================== -->
+<div class="tab-content" id="tab-1">
+  <div class="section">
+    <div class="section-head"><h2>Macro Cycle Dashboard</h2><span class="tag">Fetched fresh · 1–2 Jul 2026</span></div>
+    <p class="small" style="margin-bottom:16px;">The framework's six standard macro dimensions are built primarily for consumer/industrial businesses. For a capital-markets-linked wealth manager, the more load-bearing drivers are the equity-market cycle, the rate cycle and FPI flows — noted below where the standard dimension doesn't map cleanly. <span class="conf e">FRAMEWORK ADAPTED</span></p>
+    <div class="grid grid-3">
+      <div class="metric warn"><div class="lbl">Rural Income Cycle</div><div class="val">Low relevance</div><div class="sub">Client base is HNI/UHNI/institutional — minimal direct linkage</div></div>
+      <div class="metric pos"><div class="lbl">Urban / HNI Wealth Creation</div><div class="val">Expanding</div><div class="sub">Primary demand driver for the wealth segment <span class="conf e">E</span></div></div>
+      <div class="metric"><div class="lbl">Input Cost Cycle</div><div class="val">N/A</div><div class="sub">Not a materials-intensive business</div></div>
+      <div class="metric pos"><div class="lbl">RBI Rate Cycle</div><div class="val">Easing</div><div class="sub">10Y G-Sec 6.75% (1 Jul), down from ~6.9–7% in Apr <span class="conf v">V</span></div></div>
+      <div class="metric"><div class="lbl">Govt Capex Cycle</div><div class="val">Low relevance</div><div class="sub">Indirect only, via broader market sentiment</div></div>
+      <div class="metric warn"><div class="lbl">AI Adoption Cycle</div><div class="val">Early / Internal</div><div class="sub">RM-productivity tooling stage, see Tab 9 <span class="conf e">E</span></div></div>
+    </div>
+    <div class="grid grid-4" style="margin-top:14px;">
+      <div class="metric"><div class="lbl">India Real GDP (2026e)</div><div class="val">~6.8%</div><div class="sub">Goldman Sachs forecast <span class="conf v">V</span></div></div>
+      <div class="metric"><div class="lbl">India CPI (2026e)</div><div class="val">~4.4%</div><div class="sub">Goldman Sachs forecast <span class="conf v">V</span></div></div>
+      <div class="metric"><div class="lbl">Nifty 50 P/E (TTM)</div><div class="val">~20.7x</div><div class="sub">Near long-run average <span class="conf v">V</span></div></div>
+      <div class="metric"><div class="lbl">Nominal GDP ceiling</div><div class="val">~11.2%</div><div class="sub">Real + CPI — terminal-growth cap used below <span class="conf e">E</span></div></div>
+    </div>
+  </div>
 
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:12px;color:var(--navy)">Layer 1 — Macro Cycle Dashboard</h3>
-  <div class="grid-2" style="margin-bottom:16px">
-    <div>
+  <div class="section">
+    <div class="section-head"><h2>Sector Growth Derivation</h2></div>
+    <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Macro Dimension</th><th>Status</th><th>Impact on Nuvama</th></tr></thead>
-        <tbody>
-          <tr><td>Urban Income Cycle</td><td><span class="sector-badge sb-tail">BOOM</span></td><td>+3% to wealth management flows; HNI wealth creation accelerating</td></tr>
-          <tr><td>RBI Rate Cycle</td><td><span class="sector-badge sb-tail">EASING</span></td><td>10yr G-Sec ~6.95-7.0% [VER]; rate easing supports equity allocations</td></tr>
-          <tr><td>Rural Income Cycle</td><td><span class="sector-badge sb-neut">NEUTRAL</span></td><td>Minimal direct impact; Nuvama's HNI/UHNI focus is urban</td></tr>
-          <tr><td>Input Cost Cycle</td><td><span class="sector-badge sb-neut">NEUTRAL</span></td><td>Staff costs = primary input; RM attrition is key risk</td></tr>
-          <tr><td>Govt Capex Cycle</td><td><span class="sector-badge sb-tail">TAILWIND</span></td><td>Infrastructure wealth creation → new UHNI families → new clients</td></tr>
-          <tr><td>AI Adoption Cycle</td><td><span class="sector-badge sb-neut">NEUTRAL</span></td><td>Efficiency gains only; no AI threat or structural moat widening yet</td></tr>
-        </tbody>
+        <tr><th>Basis</th><th class="num">Stress</th><th class="num">Base</th><th class="num">Accel</th><th>Note</th></tr>
+        <tr><td>Nearest sector analog: Private Banking / Wealth Mgmt band</td><td class="num">10–13%</td><td class="num">15–17%</td><td class="num">18–22%</td><td class="small">No dedicated "wealth management" row in framework's sector table — mapped to nearest analog <span class="conf e">E</span></td></tr>
+        <tr><td>Company's own FY26 actual</td><td class="num" colspan="3" style="text-align:center;">+8% revenue YoY</td><td class="small">Sits at/below even the stress band — the reason for caution <span class="conf v">V</span></td></tr>
+        <tr><td>Company 5-yr revenue CAGR</td><td class="num" colspan="3" style="text-align:center;">~26%</td><td class="small">Company-disclosed; heavily skewed by FY25's outsized +41% <span class="conf v">V</span></td></tr>
       </table>
     </div>
-    <div>
-      <div class="card">
-        <div class="card-label">India Macro Anchors [VERIFIED]</div>
-        <div style="margin-top:8px">
-          <div class="ma-row"><span>10yr G-Sec Yield</span><span style="font-weight:600">~6.95–7.0%</span></div>
-          <div class="ma-row"><span>India Real GDP (IMF proj.)</span><span style="font-weight:600">~6.5–6.8%</span></div>
-          <div class="ma-row"><span>India CPI</span><span style="font-weight:600">~4.5–5.0%</span></div>
-          <div class="ma-row"><span>Nominal GDP Ceiling</span><span style="font-weight:600">~11.5–12%</span></div>
-          <div class="ma-row"><span>Nifty P/E (approx.)</span><span style="font-weight:600">~22–24x</span></div>
-        </div>
-        <div style="margin-top:10px;padding:8px;background:rgba(45,122,79,0.08);border-radius:6px;font-size:11px;color:var(--pass)">
-          <strong>Macro Composite: TAILWIND</strong> — Rate easing cycle + urban wealth creation + market participation growth = structural support for Nuvama's business model
-        </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Company Alpha vs Sector</h2></div>
+    <div class="two-col">
+      <div class="card"><h4>Where Nuvama should beat the sector average</h4>
+        <ul class="clean small">
+          <li>Integrated platform (wealth + AMC + capital markets + custody) — fewer pure-plays replicate all four legs</li>
+          <li>ARR (recurring/annuity) revenue now 59% of total, up from 56% in FY25 — better revenue quality than transaction-led peers</li>
+          <li>Institutional-grade promoter (PAG) with capital and M&amp;A capacity</li>
+        </ul>
+      </div>
+      <div class="card"><h4>Where Nuvama trails</h4>
+        <ul class="clean small">
+          <li>Cost-to-income ~56%, above best-in-class peer 360 ONE WAM (~49%)</li>
+          <li>Operating margin ~55% vs 360 ONE's ~61%</li>
+          <li>Net debt/equity ~2.37x — higher balance-sheet risk than most peers</li>
+        </ul>
       </div>
     </div>
   </div>
 
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Layer 2 — Sector Growth Derivation</h3>
-  <div class="alert-box alert-info">
-    <span class="alert-icon">📊</span>
-    <div>
-      <div class="alert-title">Wealth Management Sector: India [ESTIMATED — Deloitte, IMaRC, Knight Frank]</div>
-      <div class="alert-body">India's wealth management AUM expected to nearly double from $1.1T (FY24) to $2.3T by FY29 (Deloitte). HNI population growing at 10-12% CAGR. UHNW count rising from 13,263 (2023) to 19,908 by 2028. India wealth-to-GDP at 4.5x vs US 6.5x — massive headroom. Professionally managed wealth at 15% vs US 75%. AI cycle assessment: NEUTRAL for wealth management — AI enhances RM productivity but does not disrupt the business model.</div>
+  <div class="section">
+    <div class="section-head"><h2>Growth Rate Summary — 3 Scenarios</h2></div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Scenario</th><th class="num">Stage-1 growth (Yr1)</th><th class="num">Terminal growth</th><th class="num">Terminal P/E</th><th>Rationale</th></tr>
+        <tr><td><b>Stress</b></td><td class="num">8%</td><td class="num">6%</td><td class="num">16x</td><td class="small">Repeat of FY26's actual soft print, held flat</td></tr>
+        <tr class="highlight-row"><td><b>Base</b></td><td class="num">15%</td><td class="num">7%</td><td class="num">19x</td><td class="small">Between FY26's soft print and FY25's outsized year; mid of Cat-C terminal band</td></tr>
+        <tr><td><b>Accel</b></td><td class="num">20%</td><td class="num">8%</td><td class="num">22x</td><td class="small">Re-acceleration, conservative vs FY25's actual +41%</td></tr>
+      </table>
     </div>
-  </div>
-
-  <table>
-    <thead><tr><th>Sector Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th><th>AI Impact</th></tr></thead>
-    <tbody>
-      <tr><td>Wealth Mgmt sector AUM CAGR</td><td>12%</td><td>18%</td><td>25%</td><td>NEUTRAL</td></tr>
-      <tr><td>Wealth mgmt fee revenue CAGR</td><td>10%</td><td>15%</td><td>20%</td><td>WIDENER (minor)</td></tr>
-      <tr><td>Capital markets revenue cyclicality</td><td>-20%</td><td>+5%</td><td>+25%</td><td>NEUTRAL</td></tr>
-      <tr><td>HNI/UHNI population growth</td><td>8%</td><td>12%</td><td>16%</td><td>NEUTRAL</td></tr>
-      <tr><td>Alternates (AIF/PMS) market CAGR</td><td>15%</td><td>22%</td><td>35%</td><td>WIDENER</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Layer 3 — Company Alpha Over Sector</h3>
-  <table>
-    <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr></thead>
-    <tbody>
-      <tr><td>Market Share Gain (wealth mgmt)</td><td>Active — only scaled player across all HNI segments</td><td>+3–5%</td><td>+2–3%</td></tr>
-      <tr><td>Premiumisation (UHNI/Family Office)</td><td>Active — Nuvama Private expansion, Dubai office</td><td>+2%</td><td>+3–4%</td></tr>
-      <tr><td>Category Expansion (Alternates)</td><td>Active — CRE fund, PMS scaling, AIF growth</td><td>+2%</td><td>+2%</td></tr>
-      <tr><td>Geographic Expansion (Dubai/offshore)</td><td>Forming — DIFC entity launched FY25</td><td>+1%</td><td>+3%</td></tr>
-      <tr><td>Pricing Power</td><td>Active — ARR model growing; yield stable at ~1.02%</td><td>+1%</td><td>+1%</td></tr>
-      <tr><td>AI Alpha (6a+6b+6c)</td><td>Potential — digital tools; no confirmed flywheel</td><td>+0.5%</td><td>+1–2%</td></tr>
-      <tr class="tbl-highlight"><td>Total Alpha</td><td></td><td>+9.5–12.5%</td><td>+12–15%</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Growth Rate Summary Table</h3>
-  <table>
-    <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr></thead>
-    <tbody>
-      <tr><td>Macro State (India GDP)</td><td>~5.5%</td><td>~6.8%</td><td>~8%+</td></tr>
-      <tr><td>Wealth sector growth</td><td>10%</td><td>15%</td><td>22%</td></tr>
-      <tr><td>Company alpha</td><td>+5%</td><td>+10%</td><td>+12%</td></tr>
-      <tr><td>AI alpha</td><td>0%</td><td>+0.5%</td><td>+1%</td></tr>
-      <tr><td>Stage 1 PAT CAGR (5yr)</td><td>10%</td><td>15%</td><td>22%</td></tr>
-      <tr><td>Stage 2 PAT CAGR (5yr)</td><td>7%</td><td>10%</td><td>15%</td></tr>
-      <tr><td>Terminal growth</td><td>5.5%</td><td>6.5%</td><td>7.5%</td></tr>
-      <tr><td>Margin direction</td><td>Compress (cap mkts drag)</td><td>Stable (25–28% PAT)</td><td>Expand (scale benefits)</td></tr>
-      <tr><td>Key risk</td><td>Capital mkts downturn + pledge unwinding</td><td>Pledge resolution, RM attrition</td><td>Remains if mkts remain strong</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:11px;color:var(--muted);font-style:italic">Sensitivity: A 1% change in terminal growth rate changes IV by approximately 8-10%. A 1% change in Stage 1 growth changes IV by approximately 5-7%.</p>
-</div>
-
-<!-- ═══════════════ TAB 2: FINANCIALS ═══════════════ -->
-<div id="tab2" class="tab-content">
-  <h2 class="section-title">Financial Fortress</h2>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Q4 FY26 Quarterly Results — Just Released (May 11, 2026)</h3>
-  <div class="grid-4" style="margin-bottom:16px">
-    <div class="card">
-      <div class="card-label">Q4 FY26 Revenue Ops</div>
-      <div class="card-value" style="font-size:18px">₹1,269 Cr</div>
-      <div class="card-delta delta-pos">+13.3% YoY [VERIFIED]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Q4 FY26 Net Profit</div>
-      <div class="card-value" style="font-size:18px">₹268.8 Cr</div>
-      <div class="card-delta delta-warn">+5.3% YoY [VERIFIED]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">FY26 Full Year PAT</div>
-      <div class="card-value" style="font-size:18px">₹1,040 Cr</div>
-      <div class="card-delta delta-warn">+5.6% YoY — Major slowdown</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Dividend Declared</div>
-      <div class="card-value" style="font-size:18px">₹14/sh</div>
-      <div class="card-delta" style="font-size:11px">Record: May 15, 2026 · Pay: Jun 9</div>
-    </div>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">5-Year P&L Trend [VERIFIED/ESTIMATED]</h3>
-  <table>
-    <thead><tr><th>Metric</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>FY26</th></tr></thead>
-    <tbody>
-      <tr><td>Revenue from Ops (₹ Cr)</td><td>1,322</td><td>1,575</td><td>2,063</td><td>2,901</td><td>~4,100 est.</td></tr>
-      <tr><td>Total Income (₹ Cr)</td><td>[EST]</td><td>[EST]</td><td>~2,500</td><td>4,169</td><td>4,650</td></tr>
-      <tr><td>Net Profit (₹ Cr)</td><td>~220</td><td>~360</td><td>597</td><td>985</td><td>1,040</td></tr>
-      <tr><td>PAT Growth YoY</td><td>—</td><td>~64%</td><td>+66%</td><td>+65%</td><td style="color:var(--amber);font-weight:600">+5.6% ⚠️</td></tr>
-      <tr><td>PAT Margin (on total income)</td><td>~17%</td><td>~23%</td><td>~24%</td><td>~24%</td><td>~22%</td></tr>
-      <tr><td>EPS (split-adjusted, ₹)</td><td>~12</td><td>~20</td><td>~33</td><td>~54</td><td>~57.1</td></tr>
-      <tr><td>ROE (estimated)</td><td>~15%</td><td>~22%</td><td>~28%</td><td>~32%</td><td>~28% [EST]</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Financial Fortress Scorecard</h3>
-  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
-    <div class="test-card">
-      <div class="test-icon pass">✓</div>
-      <div><div class="test-title">ROE ≥15% for 5 consecutive years</div><div class="test-detail">ROE ~15% (FY22) scaling to ~32% (FY25), ~28% (FY26 est.). Strong improvement trajectory [ESTIMATED]</div></div>
-      <span class="score-badge score-clean">PASS</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon pass">✓</div>
-      <div><div class="test-title">ROIC &gt; WACC (13%) for 5 consecutive years</div><div class="test-detail">ROIC ~28% (FY26 est.) well above WACC of 13% [ESTIMATED]</div></div>
-      <span class="score-badge score-clean">PASS</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon marginal">~</div>
-      <div><div class="test-title">Net cash preferred</div><div class="test-detail">Nuvama Wealth Finance (NBFC sub) carries debt; wealth management parent is capital-light. Net cash at group level unclear due to NBFC funding lines [ESTIMATED]</div></div>
-      <span class="score-badge score-accept">MARGINAL</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon pass">✓</div>
-      <div><div class="test-title">Net profit margin ≥15%</div><div class="test-detail">PAT margin ~22-24% on total income [VERIFIED from filings]</div></div>
-      <span class="score-badge score-clean">PASS</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon marginal">~</div>
-      <div><div class="test-title">FCF positive + growing; FCF conversion ≥80%</div><div class="test-detail">FCF data not explicitly disclosed; wealth management model is capital-light suggesting high conversion, but NBFC sub consumes capital [ESTIMATED]</div></div>
-      <span class="score-badge score-accept">MARGINAL</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon pass">✓</div>
-      <div><div class="test-title">Revenue CAGR ≥ macro-derived sector CAGR</div><div class="test-detail">FY21-FY25 revenue CAGR ~31% vs sector base of 15-18% — exceptional alpha over sector [VERIFIED]</div></div>
-      <span class="score-badge score-clean">PASS</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon fail">✗</div>
-      <div><div class="test-title">Predictable / recurring revenue</div><div class="test-detail">Capital markets (~30-35% of revenue) is highly cyclical. FY26 slowdown largely reflects market activity normalization. ARR assets growing (₹44,457 Cr, +33% YoY FY25) but still minority of revenue mix [VERIFIED]</div></div>
-      <span class="score-badge score-suspect">MARGINAL-FAIL</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon fail">✗</div>
-      <div><div class="test-title">Pricing power proven</div><div class="test-detail">ARR yield compressed; competitive pressure in wealth management from banks, fintech. Yield stable at ~1.02% but not clearly rising [ESTIMATED]</div></div>
-      <span class="score-badge score-accept">MARGINAL</span>
-    </div>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">O'Glove Earnings Quality — 5 Tests</h3>
-  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
-    <div class="test-card">
-      <div class="test-icon pass">✓</div>
-      <div><div class="test-title">Test 1 — FCF Conversion (CFO/Net Income ≥80%)</div><div class="test-detail">Wealth management is inherently high FCF. Estimated CFO/NI ~75-85%. Capital-light model supports high conversion [ESTIMATED]</div></div>
-      <span class="score-badge score-clean">PASS</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon pass">✓</div>
-      <div><div class="test-title">Test 2 — DSO Trend (AR/Rev rising &gt;10% YoY)</div><div class="test-detail">Fee-based wealth business with quick settlement cycle. No significant AR buildup reported [ESTIMATED]</div></div>
-      <span class="score-badge score-clean">PASS</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon pass">✓</div>
-      <div><div class="test-title">Test 3 — Inventory Days</div><div class="test-detail">Not applicable for pure financial services (N/A → PASS by default)</div></div>
-      <span class="score-badge score-clean">N/A — PASS</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon marginal">~</div>
-      <div><div class="test-title">Test 4 — Accounting Policy Stability</div><div class="test-detail">AIF revenue recognition change absorbed in FY25 (mentioned in Q4 FY25 presentation). Management flagged impact of change in AIF revenue recognition on ARR yield — this warrants monitoring [ESTIMATED]</div></div>
-      <span class="score-badge score-accept">WATCH</span>
-    </div>
-    <div class="test-card">
-      <div class="test-icon pass">✓</div>
-      <div><div class="test-title">Test 5 — Revenue/Gross Margin Consistency</div><div class="test-detail">PAT margins stable 22-24% over 3 years. Capital markets cyclicality is the only material swing factor [VERIFIED]</div></div>
-      <span class="score-badge score-clean">PASS</span>
-    </div>
-  </div>
-  <div style="text-align:right"><span class="score-badge score-accept" style="font-size:12px;padding:6px 16px">EARNINGS QUALITY: ACCEPTABLE</span></div>
-
-  <div style="background:var(--parchment);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:16px">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px">OWNER EARNINGS ESTIMATE [ESTIMATED — Cat C Framework]</div>
-    <table>
-      <thead><tr><th>Component</th><th>FY25</th><th>FY26E</th></tr></thead>
-      <tbody>
-        <tr><td>Net Income (₹ Cr)</td><td>985</td><td>1,040</td></tr>
-        <tr><td>+ D&amp;A (est.)</td><td>~30</td><td>~35</td></tr>
-        <tr><td>− Maintenance CapEx (est.)</td><td>~(40)</td><td>~(45)</td></tr>
-        <tr><td>± Working Capital Changes</td><td>~0</td><td>~0</td></tr>
-        <tr class="tbl-highlight"><td>Owner Earnings (est.)</td><td>~975 Cr</td><td>~1,030 Cr</td></tr>
-        <tr><td>Per share (18.2 Cr shares)</td><td>~₹53.6</td><td>~₹56.6</td></tr>
-      </tbody>
-    </table>
+    <p class="footnote" style="margin-top:8px;">WACC 13% (Cat-C mid-point) held constant across scenarios; growth fades linearly from Yr1 rate to terminal rate over the 5-year explicit window. Terminal g capped well below the ~11.2% nominal-GDP ceiling in every case.</p>
   </div>
 </div>
 
-<!-- ═══════════════ TAB 3: MOAT ═══════════════ -->
-<div id="tab3" class="tab-content">
-  <h2 class="section-title">Economic Moat Analysis</h2>
+<!-- ===================== TAB 2 — FINANCIALS ===================== -->
+<div class="tab-content" id="tab-2">
+  <div class="section">
+    <div class="section-head"><h2>ROE Trend (proxy for ROIC — financial services)</h2></div>
+    <div class="grid grid-4">
+      <div class="metric"><div class="lbl">FY24</div><div class="val">~24.3%</div><div class="sub">External estimate <span class="conf e">E</span></div></div>
+      <div class="metric pos"><div class="lbl">FY25</div><div class="val">31.5%</div><div class="sub">Peak year, company IR <span class="conf v">V</span></div></div>
+      <div class="metric"><div class="lbl">FY26</div><div class="val">28.1%</div><div class="sub">-3.4pp YoY, company IR <span class="conf v">V</span></div></div>
+      <div class="metric pos"><div class="lbl">FY26 Net Worth</div><div class="val">₹3,490 Cr</div><div class="sub">+20.6% YoY <span class="conf v">V</span></div></div>
+    </div>
+    <p class="small" style="margin-top:12px;">Every year on record clears the ≥15% bar comfortably; FY26's dip is a moderation from an unusually strong FY25, not a break in the compounding pattern.</p>
+  </div>
 
-  <div class="grid-2" style="margin-bottom:16px">
-    <div class="moat-card">
-      <div class="moat-stars">★★★★</div>
-      <div class="moat-title">Client Relationship Stickiness</div>
-      <div class="moat-desc">Serving 4,500+ UHNI families with NPS of 82. Wealth relationships are deeply personal and multi-generational. Switching costs are high due to investment history, advisor trust, and platform lock-in (tax history, document storage, family office services).</div>
-      <div class="moat-stress">STRESS TEST: HOLDS — UHNI relationships are resilient; market downturns rarely cause permanent RM attrition from top performers.</div>
-    </div>
-    <div class="moat-card">
-      <div class="moat-stars">★★★½</div>
-      <div class="moat-title">Integrated Platform (Full-Platform Moat)</div>
-      <div class="moat-desc">Only scaled player offering Full-Platform solutions across all HNI segments. Competitors (boutiques, banks) cover 1-2 segments. Bundling of wealth, capital markets, lending, and custody creates multi-service lock-in.</div>
-      <div class="moat-stress">STRESS TEST: HOLDS — Integration advantage deepens with scale. Competitors can copy individual services but not the integrated experience.</div>
-    </div>
-    <div class="moat-card">
-      <div class="moat-stars">★★★</div>
-      <div class="moat-title">PAG Brand & Institutional Credibility</div>
-      <div class="moat-desc">PAG (USD 57B AUM) parentage provides UHNI clients with confidence in governance and stability. Access to PAG's global network for offshore products is a differentiator for Dubai expansion.</div>
-      <div class="moat-stress">STRESS TEST: STRENGTHENS if PAG stays invested and grows global footprint. WEAKENS if PAG exits or reduces stake (pledge risk).</div>
-    </div>
-    <div class="moat-card">
-      <div class="moat-stars">★★★</div>
-      <div class="moat-title">RM Network & Talent Scale</div>
-      <div class="moat-desc">1,300+ RMs built over 25+ years. Top RM talent is scarce; relationships are personal. Network effects within the RM ecosystem (referrals, shared intelligence) reinforce retention.</div>
-      <div class="moat-stress">STRESS TEST: WEAKENS in stress — market downturns compress RM income; attrition to competitors is primary moat risk.</div>
-    </div>
-    <div class="moat-card">
-      <div class="moat-stars">★★½</div>
-      <div class="moat-title">ARR (Annual Recurring Revenue) Model</div>
-      <div class="moat-desc">ARR earning assets at ₹44,457 Cr (+33% YoY FY25), contributing recurring fee income. MPIS NNM strong at ₹10,097 Cr for FY25. This reduces dependence on transaction-based (volatile) capital markets revenue over time.</div>
-      <div class="moat-stress">STRESS TEST: HOLDS — ARR contracts don't cancel in mild downturns. Severe market crash could reduce AUM-linked fees.</div>
-    </div>
-    <div class="moat-card">
-      <div class="moat-stars">★★</div>
-      <div class="moat-title">Capital Markets Franchise</div>
-      <div class="moat-desc">900+ institutional clients, 500+ IB deals. But this is a cyclical, competitive business. FY26 deceleration reflects normalization from peak FY25 market activity. This is the weakest moat source.</div>
-      <div class="moat-stress">STRESS TEST: WEAKENS — Capital markets revenue correlates with market activity. In downturns, this segment can swing negative.</div>
+  <div class="section">
+    <div class="section-head"><h2>Owner Earnings</h2></div>
+    <div class="card">
+      <p class="small">Fixed assets are small and stable (~₹271 Cr) — this is an asset-light, people-and-platform business, so maintenance capex is minor relative to profit. Owner Earnings is approximated directly by Operating PAT rather than needing a large capex add-back.</p>
+      <div class="grid grid-3" style="margin-top:10px;">
+        <div class="metric"><div class="lbl">FY26 Operating PAT</div><div class="val">₹1,049 Cr</div><div class="sub">+6% YoY <span class="conf v">V</span></div></div>
+        <div class="metric"><div class="lbl">FY26 Reported Net Profit</div><div class="val">₹1,040 Cr</div><div class="sub">+5.6% YoY <span class="conf v">V</span></div></div>
+        <div class="metric"><div class="lbl">Owner Earnings / share</div><div class="val">₹57.60</div><div class="sub">on 18.06 Cr shares <span class="conf e">E</span></div></div>
+      </div>
     </div>
   </div>
 
-  <div class="flywheel-box">
-    <div class="flywheel-header">
-      <div class="flywheel-title">🌀 Data Flywheel Assessment</div>
-      <span class="flywheel-badge fw-forming">FORMING ★★★ (2/3)</span>
+  <div class="section">
+    <div class="section-head"><h2>Financial Fortress Scorecard</h2></div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Test</th><th>Result</th><th>Evidence</th></tr>
+        <tr><td>ROE ≥15%, 5 consecutive years</td><td><span class="pill pass">PASS</span></td><td class="small">24–31% range FY24–FY26 <span class="conf v">V</span></td></tr>
+        <tr><td>Net profit margin (op. PAT / revenue)</td><td><span class="pill pass">PASS</span></td><td class="small">~34% FY26 — high for a services model <span class="conf v">V</span></td></tr>
+        <tr><td>FCF / CFO positive and growing</td><td><span class="pill fail">FAIL</span></td><td class="small">FY26 CFO −₹371 Cr on ₹1,505 Cr working-capital outflow <span class="conf v">V</span></td></tr>
+        <tr><td>Net cash (or manageable debt)</td><td><span class="pill fail">FAIL</span></td><td class="small">Net debt/equity 2.37x — structural to the margin-funding book, but a real leverage load <span class="conf v">V</span></td></tr>
+        <tr><td>Dividend payout &lt;80% (sustainable)</td><td><span class="pill pass">PASS</span></td><td class="small">~49% FY26 payout (₹14/sh declared) <span class="conf v">V</span></td></tr>
+        <tr><td>Revenue growth ≥ sector-derived floor</td><td><span class="pill fail">FAIL</span></td><td class="small">FY26 +8% vs 10–13% stress-case sector floor <span class="conf v">V</span></td></tr>
+        <tr><td>Recurring / ARR revenue share</td><td><span class="pill pass">PASS</span></td><td class="small">59% of revenue, up from 56% FY25 <span class="conf v">V</span></td></tr>
+        <tr><td>Cost-to-income trend</td><td><span class="pill marginal">MARGINAL</span></td><td class="small">56% FY26 vs 55% FY25, drifting up; above best peer's ~49% <span class="conf v">V</span></td></tr>
+      </table>
     </div>
-    <div class="fw-row">
-      <div class="fw-check fw-yes">✓</div>
-      <div><strong>Q1: Proprietary Training Data</strong> — Nuvama holds 25+ years of client wealth data: transaction history, investment preferences, behavior under different market conditions, multi-generational relationship data. This is not publicly available and competitors cannot replicate it. Data quality: High Volume + High Uniqueness + High Recency + Outcome labels (e.g., who sold in March 2020 and who held, who defaulted on margin). <span class="pill pill-v" style="font-size:8px">[VERIFIED conceptually]</span></div>
-    </div>
-    <div class="fw-row">
-      <div class="fw-check fw-partial">~</div>
-      <div><strong>Q2: AI Improves with More Users?</strong> — Partially confirmed. Nuvama has launched digital onboarding and productivity tools for RMs. Personalization using client history is plausible. However, no specific metrics cited in investor presentations on AI accuracy improving with scale. <span class="pill pill-e" style="font-size:8px">[ESTIMATED]</span></div>
-    </div>
-    <div class="fw-row">
-      <div class="fw-check fw-no">✗</div>
-      <div><strong>Q3: Better AI Attracts More Users?</strong> — Not confirmed. Client acquisition is still driven by RM relationships, brand, and product performance — not AI recommendation quality. No self-reinforcing AI loop evidenced in any filing or earnings call. <span class="pill pill-u" style="font-size:8px">[UNVERIFIED]</span></div>
-    </div>
-    <div class="fw-score">
-      <div class="fw-score-num">5.5 / 10</div>
-      <div class="fw-score-label">Flywheel Score: Data Quality 2.5/3 · Improvement Evidence 2/4 · Loop Speed 1/3</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px">FORMING: Monitor for AI-driven RM tools and personalization evidence in FY27 results. Moat grade NOT upgraded — no 3/3 confirmation.</div>
-    </div>
+    <div style="margin-top:14px;"><span class="pill marginal" style="font-size:13px; padding:7px 14px;">OVERALL: MIXED — strong core profitability, real cash-flow &amp; growth-momentum concerns</span></div>
   </div>
 
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">ROIC as Moat Proof [ESTIMATED]</h3>
-  <table>
-    <thead><tr><th>Year</th><th>ROIC (est.)</th><th>WACC (13%)</th><th>ROIC-WACC Spread</th><th>Assessment</th></tr></thead>
-    <tbody>
-      <tr><td>FY22</td><td>~15%</td><td>13%</td><td>+2%</td><td>Narrow moat (building)</td></tr>
-      <tr><td>FY23</td><td>~20%</td><td>13%</td><td>+7%</td><td>Narrow-wide moat transition</td></tr>
-      <tr><td>FY24</td><td>~25%</td><td>13%</td><td>+12%</td><td>Wide moat</td></tr>
-      <tr><td>FY25</td><td>~30%</td><td>13%</td><td>+17%</td><td>Wide moat (peak?)</td></tr>
-      <tr class="tbl-highlight"><td>FY26E</td><td>~28%</td><td>13%</td><td>+15%</td><td>Wide moat — slight compression</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:12px;color:var(--muted);font-style:italic">Overall Moat Grade: <strong>B+</strong> — Wide moat in wealth management, narrow in capital markets. PAG pledge risk and RM attrition are key moat threats.</p>
+  <div class="section">
+    <div class="section-head"><h2>O'Glove Earnings-Quality Tests</h2></div>
+    <div class="grid grid-2">
+      <div class="card"><h4>1. FCF Conversion (CFO/NI ≥80%)</h4><p class="small"><span class="pill fail">FAIL</span> CFO was negative against positive net income in FY26 — the single biggest earnings-quality flag in this report. Driven by a working-capital swing typical of a capital-markets/margin-book business, but the ratio itself fails cleanly. <span class="conf v">VERIFIED</span></p></div>
+      <div class="card"><h4>2. Receivables vs Revenue Growth</h4><p class="small"><span class="pill marginal">UNVERIFIED</span> Traditional AR/DSO metrics don't map cleanly onto a margin-funding book; granular data wasn't available in the sources reviewed. Flagged as a gap rather than assumed clean.</p></div>
+      <div class="card"><h4>3. One-off / Non-recurring Income Reliance</h4><p class="small"><span class="pill pass">PASS</span> No evidence found of unusual one-time gains inflating FY26 profit — growth deceleration appears to be a real operating trend, not a comp-base artifact. <span class="conf e">ESTIMATED</span></p></div>
+      <div class="card"><h4>4. Related-Party Transaction Visibility</h4><p class="small"><span class="pill marginal">MARGINAL</span> Not independently deep-dived in this pass; standard practice would be to check the FY26 annual report's related-party note directly before sizing a position. <span class="conf u">UNVERIFIED</span></p></div>
+    </div>
+  </div>
 </div>
 
-<!-- ═══════════════ TAB 4: MANAGEMENT ═══════════════ -->
-<div id="tab4" class="tab-content">
-  <h2 class="section-title">Management Integrity</h2>
-
-  <div class="alert-box alert-critical">
-    <span class="alert-icon">🚨</span>
-    <div>
-      <div class="alert-title">CRITICAL: Promoter Pledge at 62.8% — Framework AVOID Trigger</div>
-      <div class="alert-body">The Buffett QV framework grades pledging as: &lt;5% PASS | 5-20% MARGINAL | &gt;20% FAIL | &gt;40% AVOID. At 62.8%, Nuvama's promoter pledge is firmly in AVOID territory. In a market downturn, forced unwinding of pledged shares can cause a price spiral that is beyond management's control. PAG's pledge is likely against Nuvama shares used to fund PAG's own alternative investments — structurally concerning regardless of business quality.</div>
+<!-- ===================== TAB 3 — MOAT ===================== -->
+<div class="tab-content" id="tab-3">
+  <div class="section">
+    <div class="section-head"><h2>Moat Sources</h2></div>
+    <div class="grid grid-2">
+      <div class="card"><h4>Integrated platform / switching costs</h4><p class="small">UHNI and family-office relationships (Nuvama Private) are advisory-intensive and multi-year — once tax, estate and cross-border structuring is embedded with a firm, switching is costly and disruptive for the client. This is the strongest leg of the moat. <span class="conf e">E</span></p></div>
+      <div class="card"><h4>Scale &amp; brand within a narrow field</h4><p class="small">₹4.5 trillion in client assets and a top-3 position among listed pure-play wealth platforms is a real scale advantage in a field with a limited number of credible competitors at this size. <span class="conf v">V</span></p></div>
+      <div class="card"><h4>Regulatory / licensing barriers</h4><p class="small">SEBI broking, PMS, AIF, depository-participant and merchant-banking licenses represent real (if not insurmountable) barriers to a new entrant replicating the full integrated model. <span class="conf e">E</span></p></div>
+      <div class="card"><h4>Institutional promoter capacity</h4><p class="small">PAG brings capital and M&amp;A capability (e.g. the Cushman &amp; Wakefield JV, Dubai expansion) that a standalone founder-led peer would find harder to fund. Cuts both ways — see Management tab on the pledge. <span class="conf e">E</span></p></div>
     </div>
   </div>
 
-  <div class="penalty-box">
-    <strong style="color:var(--red);font-size:13px">⚠️ Regulatory Observations (April 2026)</strong>
-    <ul style="margin-top:6px;font-size:12px;color:#4B5563;list-style:disc;padding-left:18px">
-      <li>April 29, 2026: NSE issued two warning letters to NWIL for periodical submission observations [VERIFIED — Screener filing]</li>
-      <li>April 22, 2026: NSE levied ₹8,69,600 penalty on NWIL for margin statement reporting observations [VERIFIED]</li>
-      <li>These are procedural/operational observations, not fraud or material violations — but they indicate compliance friction that should be monitored</li>
+  <div class="section">
+    <div class="section-head"><h2>ROIC as Moat Evidence</h2></div>
+    <p class="small">ROE of 24–31% across FY24–FY26 sits inside the framework's "wide moat" band (20–40% ROIC) — genuine value creation, not a boundary case. It is <i>not</i> in the &gt;40% "exceptional/unassailable" band, which is consistent with a real but contestable moat rather than a structural monopoly.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Macro Stress Test</h2></div>
+    <div class="card">
+      <p class="small">The single biggest structural vulnerability: a large share of revenue (ARR, brokerage, AUM-linked fees) scales with <b>equity-market levels and transaction activity</b>. A sharp Nifty correction would compress fee income across Wealth, Capital Markets and Asset Management simultaneously — this isn't a diversified-away risk, it's a shared macro factor across all four segments. FY26's own deceleration (+8% vs +41% in FY25) is a mild preview of what a harder market slowdown could do to the growth line.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Data Flywheel Check</h2></div>
+    <div class="flywheel-box">
+      <div class="q"><b>Q1 — Proprietary data no one else has?</b> Client portfolio and transaction data is real but not obviously more proprietary than what 360 ONE, Anand Rathi or bank private-wealth arms hold on their own books. <span class="conf e">E</span></div>
+      <div class="q"><b>Q2 — Does the product improve as more clients use it?</b> No disclosed evidence of AI/advisory quality compounding with client-base growth.</div>
+      <div class="q"><b>Q3 — Does that improvement attract more clients?</b> Not evidenced — client growth appears driven by RM relationships and market conditions, not a product flywheel.</div>
+      <p style="margin-top:10px; margin-bottom:0;"><b>Verdict: FEATURE</b> — AI/data tooling adds real value (RM productivity) but doesn't yet compound into a self-reinforcing moat. Full AI scoring in Tab 9.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Moat Threats</h2></div>
+    <ul class="clean small">
+      <li><b>360 ONE WAM</b> — best-in-class margins (~61% vs Nuvama's ~55%) and lower cost-to-income; the platform to beat on efficiency</li>
+      <li><b>Bank private-wealth arms</b> (HDFC, ICICI, Kotak) — balance-sheet scale and captive client bases at the affluent end</li>
+      <li><b>Discount/robo-advisory platforms</b> — limited direct threat to true UHNI advisory, more relevant at the mass-affluent margin over time</li>
+      <li><b>Fee compression</b> — a structural industry risk as distribution commoditizes; ARR mix shift is Nuvama's stated hedge</li>
     </ul>
   </div>
-
-  <div class="grid-2">
-    <div>
-      <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Management Strengths</h3>
-      <div class="metric-row pass">
-        <div class="metric-label">Leadership Quality</div>
-        <div class="metric-val">Ashish Kehair (MD & CEO)</div>
-        <div class="metric-note">Experienced wealth management professional; consistent messaging on long-term growth; client-first articulation</div>
-      </div>
-      <div class="metric-row pass">
-        <div class="metric-label">Capital Allocation</div>
-        <div class="metric-val">ESAR grants + dividend</div>
-        <div class="metric-note">Employee retention via ESARs (93,930 granted May 11); ₹14/share dividend demonstrates cash generation confidence</div>
-      </div>
-      <div class="metric-row pass">
-        <div class="metric-label">Strategic Clarity</div>
-        <div class="metric-val">People, Platform, Portfolio</div>
-        <div class="metric-note">Consistent 3-pillar strategy; Dubai expansion shows global ambition; ARR-first revenue shift is right direction</div>
-      </div>
-      <div class="metric-row pass">
-        <div class="metric-label">PAG Parentage</div>
-        <div class="metric-val">USD 57B AUM sponsor</div>
-        <div class="metric-note">Strong institutional backing; global network; governance framework from a listed professional manager</div>
-      </div>
-    </div>
-    <div>
-      <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Management Concerns</h3>
-      <div class="metric-row fail">
-        <div class="metric-label">Promoter Pledge</div>
-        <div class="metric-val">62.8% — FRAMEWORK AVOID</div>
-        <div class="metric-note">Primary and unambiguous red flag. No resolution timeline communicated to investors [VERIFIED]</div>
-      </div>
-      <div class="metric-row fail">
-        <div class="metric-label">NSE Penalties (April 2026)</div>
-        <div class="metric-val">₹8.7L + 2 warning letters</div>
-        <div class="metric-note">Margin statement reporting observations; not material but indicates compliance process gaps [VERIFIED]</div>
-      </div>
-      <div class="metric-row warn">
-        <div class="metric-label">Capital Markets Dependency</div>
-        <div class="metric-val">~30-35% of revenue</div>
-        <div class="metric-note">Management has not fully diversified away from volatile capital markets revenues despite stated ARR-first strategy</div>
-      </div>
-      <div class="metric-row warn">
-        <div class="metric-label">RM Attrition Risk</div>
-        <div class="metric-val">High in competitive market</div>
-        <div class="metric-note">Competitors including HDFC Bank, Kotak, DSP, 360 One aggressively poaching RMs; talent retention = moat risk</div>
-      </div>
-    </div>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-top:16px;margin-bottom:10px;color:var(--navy)">Pledge Dynamics — Scoring</h3>
-  <table>
-    <thead><tr><th>Framework Rule</th><th>Threshold</th><th>Nuvama</th><th>Grade</th></tr></thead>
-    <tbody>
-      <tr><td>Pledge &lt;5%</td><td>PASS</td><td>—</td><td>—</td></tr>
-      <tr><td>Pledge 5-20%</td><td>MARGINAL</td><td>—</td><td>—</td></tr>
-      <tr><td>Pledge &gt;20%</td><td>FAIL</td><td>—</td><td>—</td></tr>
-      <tr class="tbl-highlight"><td>Pledge &gt;40%</td><td>AVOID</td><td style="color:var(--red);font-weight:700">62.8%</td><td style="color:var(--red);font-weight:700">AVOID TRIGGER</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:12px;color:var(--muted)">Management Grade: <strong>C+</strong> — Good operational leadership but the pledge and regulatory observations pull the grade down significantly. Until pledge is resolved below 20%, this is a structural governance concern.</p>
 </div>
 
-<!-- ═══════════════ TAB 5: VALUATION ═══════════════ -->
-<div id="tab5" class="tab-content">
-  <h2 class="section-title">Valuation & Margin of Safety</h2>
-
-  <div class="alert-box alert-warn">
-    <span class="alert-icon">📌</span>
-    <div>
-      <div class="alert-title">Starting Point: All growth rates from Tab 1 Growth Rate Summary Table</div>
-      <div class="alert-body">Earnings Quality: ACCEPTABLE → no quality adjustment. WACC: 13% (Cat C). Terminal P/E: 20x (Cat C mid-range). All valuations per split-adjusted share (18.2 Cr shares, FV ₹2 each, after 1:5 stock split).</div>
+<!-- ===================== TAB 4 — MANAGEMENT ===================== -->
+<div class="tab-content" id="tab-4">
+  <div class="section">
+    <div class="section-head"><h2>Strengths</h2></div>
+    <div class="grid grid-2">
+      <div class="card"><h4>CRISIL rating upgrade</h4><p class="small">Long-term rating upgraded to <b>AA/Stable</b> on 19 Jun 2026 — a genuinely new positive data point since the prior report. <span class="conf v">V</span></p></div>
+      <div class="card"><h4>Institutional promoter</h4><p class="small">PAG is a large, professionally-run alternative asset manager, not a founder needing personal liquidity — a materially different risk profile than an individual-promoter pledge. <span class="conf e">E</span></p></div>
     </div>
   </div>
 
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Method 1 — 2-Stage DCF</h3>
-  <table class="val-table">
-    <thead><tr><th>Year</th><th>Growth Rate</th><th>STRESS PAT (₹ Cr)</th><th>BASE PAT (₹ Cr)</th><th>ACCEL PAT (₹ Cr)</th></tr></thead>
-    <tbody>
-      <tr><td>FY26 (Base)</td><td>—</td><td>1,040</td><td>1,040</td><td>1,040</td></tr>
-      <tr><td>FY27</td><td>10/15/22%</td><td>1,144</td><td>1,196</td><td>1,269</td></tr>
-      <tr><td>FY28</td><td>10/15/22%</td><td>1,258</td><td>1,375</td><td>1,548</td></tr>
-      <tr><td>FY29</td><td>10/15/22%</td><td>1,384</td><td>1,582</td><td>1,888</td></tr>
-      <tr><td>FY30</td><td>10/15/22%</td><td>1,522</td><td>1,819</td><td>2,303</td></tr>
-      <tr><td>FY31</td><td>10/15/22%</td><td>1,674</td><td>2,092</td><td>2,809</td></tr>
-      <tr><td>FY32-FY36</td><td>7/10/15%</td><td>~2,348</td><td>~3,368</td><td>~5,650</td></tr>
-      <tr><td>Terminal Value (P/E 18/20/22x)</td><td></td><td style="font-weight:600">₹42,264</td><td style="font-weight:600">₹67,360</td><td style="font-weight:600">₹1,24,300</td></tr>
-      <tr class="tbl-highlight val-highlight"><td>Intrinsic Value (₹/share)</td><td></td><td class="iv-number">₹989</td><td class="iv-number">₹1,392</td><td class="iv-number">₹2,088</td></tr>
-      <tr><td>MoS Entry (×0.80)</td><td></td><td>₹791</td><td style="font-weight:700;color:var(--navy)">₹1,114</td><td>₹1,670</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Method 2 — Owner Earnings Capitalisation</h3>
-  <table class="val-table">
-    <thead><tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr></thead>
-    <tbody>
-      <tr><td>Owner Earnings (FY26, ₹ Cr)</td><td>1,030</td><td>1,030</td><td>1,030</td></tr>
-      <tr><td>Required Return</td><td>13%</td><td>13%</td><td>13%</td></tr>
-      <tr><td>Terminal growth (g)</td><td>5.5%</td><td>6.5%</td><td>7.5%</td></tr>
-      <tr><td>Value = OE / (r − g) (₹ Cr)</td><td>13,733</td><td>15,846</td><td>20,600</td></tr>
-      <tr class="tbl-highlight val-highlight"><td>Per share (₹)</td><td class="iv-number">₹755</td><td class="iv-number">₹871</td><td class="iv-number">₹1,132</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:11px;color:var(--muted);font-style:italic">Note: Owner Earnings Cap gives lower IV because it uses no growth premium. This is the EPV (Earnings Power Value) — minimum floor.</p>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Method 3 — ROIC/EPV</h3>
-  <table class="val-table">
-    <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
-    <tbody>
-      <tr><td>NOPAT FY26 (est.)</td><td>~₹1,100 Cr</td></tr>
-      <tr><td>WACC</td><td>13%</td></tr>
-      <tr><td>EPV (NOPAT/WACC)</td><td>~₹8,462 Cr</td></tr>
-      <tr><td>Growth premium (ROIC 28% vs WACC 13%)</td><td>~×2.15</td></tr>
-      <tr class="tbl-highlight val-highlight"><td>EPV with growth premium (per share)</td><td class="iv-number">₹998 (base)</td></tr>
-      <tr><td>AI adjustment (NEUTRAL)</td><td>+0% premium</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Method 4 — P/E Earnings Power</h3>
-  <table class="val-table">
-    <thead><tr><th>P/E Metric</th><th>Value</th><th>Implied IV</th></tr></thead>
-    <tbody>
-      <tr><td>TTM EPS (FY26)</td><td>₹57.14</td><td>—</td></tr>
-      <tr><td>Historical avg P/E (2-3yr, limited history)</td><td>~25-30x</td><td>—</td></tr>
-      <tr><td>Fair P/E at base growth (15% CAGR)</td><td>20x (Cat C terminal)</td><td>₹1,143/share</td></tr>
-      <tr><td>PEG ratio (P/E 28x / growth 15%)</td><td>1.87x (above 1.5 = overvalued)</td><td>Expensive</td></tr>
-      <tr><td>Reverse DCF implied growth</td><td>20%+ YoY required to justify ₹1,597</td><td>Demanding</td></tr>
-      <tr class="tbl-highlight val-highlight"><td>P/E Method IV (Base)</td><td></td><td class="iv-number">₹1,143</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Method 5 — Earnings Yield vs Bond Yield</h3>
-  <table class="val-table">
-    <thead><tr><th>Metric</th><th>Value</th><th>Signal</th></tr></thead>
-    <tbody>
-      <tr><td>Earnings Yield (EPS/Price)</td><td>57.14/1,597 = 3.58%</td><td>Below 10yr G-Sec of 6.95% → Expensive</td></tr>
-      <tr><td>Earnings Risk Premium</td><td>3.58% − 6.95% = −3.37%</td><td>Negative ERP → No margin of safety in bonds vs equity</td></tr>
-      <tr><td>FCF Yield (est.)</td><td>~3.2–3.5%</td><td>FCF yield &lt; risk-free rate → Caution</td></tr>
-      <tr><td>Dividend Yield (₹14/₹1,597)</td><td>0.88%</td><td>Minimal cash return</td></tr>
-      <tr class="tbl-highlight"><td>Verdict</td><td colspan="2" style="color:var(--red);font-weight:600">Earnings yield BELOW risk-free rate — not compensating for equity risk at current price</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">5-Method Summary Table</h3>
-  <table class="val-table">
-    <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adjustment</th></tr></thead>
-    <tbody>
-      <tr><td>DCF (2-Stage)</td><td>₹989</td><td>₹1,392</td><td>₹2,088</td><td>NEUTRAL: +0%</td></tr>
-      <tr><td>Owner Earnings Cap</td><td>₹755</td><td>₹871</td><td>₹1,132</td><td>NEUTRAL: +0%</td></tr>
-      <tr><td>ROIC/EPV</td><td>₹820</td><td>₹998</td><td>₹1,350</td><td>NEUTRAL: +0%</td></tr>
-      <tr><td>P/E Earnings Power</td><td>₹900</td><td>₹1,143</td><td>₹1,500</td><td>NEUTRAL: +0%</td></tr>
-      <tr><td>Earnings Yield</td><td>N/A (signal only)</td><td colspan="2">Negative ERP — expensive</td><td>—</td></tr>
-      <tr class="tbl-highlight val-highlight"><td>Blended Base IV (avg of 4)</td><td>₹866</td><td style="font-size:16px;color:var(--navy)">₹1,101</td><td>₹1,518</td><td></td></tr>
-      <tr><td><strong>Current Price</strong></td><td colspan="4" style="font-weight:700;color:var(--red)">₹1,597 — 45% ABOVE Blended Base IV / 14.7% above DCF Base IV</td></tr>
-    </tbody>
-  </table>
-
-  <div style="background:rgba(204,68,68,0.06);border:1px solid rgba(204,68,68,0.25);border-radius:8px;padding:14px;margin-top:12px">
-    <strong style="font-size:13px;color:var(--red)">MoS Entry Zone: ₹900–₹1,100 (blended) / ₹1,114 (DCF-based)</strong>
-    <p style="font-size:12px;color:#4B5563;margin-top:6px">The current price of ₹1,597 offers <strong>no margin of safety</strong> under the base scenario. To justify ₹1,597, you need sustained 20%+ PAT growth — which Q4 FY26 results at +5.6% do NOT support. The stock would need to correct ~30-33% to reach the entry zone.</p>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-top:16px;margin-bottom:10px;color:var(--navy)">DCF Sensitivity Table</h3>
-  <table class="val-table">
-    <thead><tr><th>Stage 1 Growth \ Terminal g</th><th>5.5%</th><th>6.5%</th><th>7.5%</th></tr></thead>
-    <tbody>
-      <tr><td>10% Stage 1</td><td>₹820</td><td>₹989</td><td>₹1,260</td></tr>
-      <tr><td>15% Stage 1 (Base)</td><td>₹1,180</td><td>₹1,392</td><td>₹1,680</td></tr>
-      <tr><td>20% Stage 1</td><td>₹1,620</td><td>₹1,890</td><td>₹2,280</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:11px;color:var(--muted);font-style:italic">At 20%+ Stage 1 growth and 7.5% terminal g, price is justified. Post-FY26's 5.6% PAT growth, the 20%+ growth assumption requires significant capital markets recovery AND wealth management acceleration simultaneously.</p>
-</div>
-
-<!-- ═══════════════ TAB 6: VERDICT ═══════════════ -->
-<div id="tab6" class="tab-content">
-  <h2 class="section-title">Investment Verdict</h2>
-
-  <div class="pillar-grades" style="background:var(--navy);border-radius:8px;padding:16px;margin-bottom:16px">
-    <div class="pillar-grade">
-      <div class="pillar-letter">B+</div>
-      <div class="pillar-name">ECONOMIC MOAT</div>
+  <div class="section">
+    <div class="section-head"><h2>Concerns — Led by the Promoter Pledge</h2></div>
+    <div class="card" style="border-left:4px solid var(--wine);">
+      <h4><span class="flag risk">RED FLAG</span> Promoter pledge: 62.8% of promoter holding (Mar 2026)</h4>
+      <p class="small">Independently corroborated across four sources (Screener.in, MarketsMojo, and two data aggregators). This mechanically trips the framework's own governance rule: <span class="mono" style="font-size:12.5px;">pledges &gt;40% of promoter holding = AVOID-level trigger</span>. <span class="conf v">VERIFIED (figure) </span><span class="conf u">UNVERIFIED (specific purpose)</span></p>
+      <p class="small" style="margin-top:8px;">Context that matters before treating this as disqualifying: PAG is an institutional PE-style promoter, and a pledge this size is more consistent with acquisition-financing collateral (shares pledged against the debt used to fund the original controlling-stake purchase) than with the individual-promoter distress pattern the rule was designed to catch. That said, none of the sources reviewed confirm the specific purpose — this is a real, unresolved gap, not a resolved non-issue, and it's the single biggest reason this report doesn't go above WATCH.</p>
     </div>
-    <div class="pillar-grade">
-      <div class="pillar-letter">B</div>
-      <div class="pillar-name">FINANCIAL FORTRESS</div>
-    </div>
-    <div class="pillar-grade" style="background:rgba(204,68,68,0.2)">
-      <div class="pillar-letter" style="color:#FF6B6B">D+</div>
-      <div class="pillar-name">MANAGEMENT (PLEDGE)</div>
-    </div>
-    <div class="pillar-grade" style="background:rgba(204,68,68,0.15)">
-      <div class="pillar-letter" style="color:#FCA5A5">D</div>
-      <div class="pillar-name">VALUATION (EXPENSIVE)</div>
+    <div class="grid grid-2" style="margin-top:14px;">
+      <div class="card"><h4>Promoter holding drifting down</h4><p class="small">54.78% (Mar-25) → 54.20% (Dec-25) → 54.10% (Mar-26). Most likely ESOP-related dilution rather than active selling, but the direction is worth tracking. <span class="conf e">E</span></p></div>
+      <div class="card"><h4>Cost discipline slipping</h4><p class="small">Cost-to-income ticked up to 56% from 55%, moving the wrong direction versus best-in-class peer 360 ONE (~49%). <span class="conf v">V</span></p></div>
     </div>
   </div>
 
-  <div class="verdict-box watch-box">
-    <div class="verdict-label">VERDICT — CAT C · NSE: NUVAMA · 11 MAY 2026</div>
-    <div class="verdict-main">WATCH <span class="verdict-stars">★★★</span></div>
-    <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:6px">Solid business, excellent sector, but wrong price + unresolved pledge + growth deceleration</div>
-    <div class="verdict-quote">
-      "Price is what you pay. Value is what you get. Right now, you are paying too much for too little certainty." — Buffett principle applied. The business is worthy; the entry is not. The pledge problem alone disqualifies this from a BUY rating regardless of all other factors.
-    </div>
-    <div style="margin-top:14px;font-size:12px;color:rgba(255,255,255,0.65)">
-      <strong style="color:var(--gold-light)">Why not higher:</strong> 62.8% pledge (AVOID trigger) + FY26 PAT growth decelerated to 5.6% from 65% + negative earnings risk premium vs G-Sec + stock at 45% premium to blended IV + NSE regulatory warnings April 2026.<br><br>
-      <strong style="color:var(--gold-light)">Why not lower:</strong> Genuine structural business in India's wealth creation boom + PAG institutional backing + ARR model growing + ROIC 28% well above WACC + wealth management moat is real and durable.
-    </div>
-  </div>
-
-  <!-- EXIT ADVICE BOX — User-specific section -->
-  <div class="exit-box">
-    <div class="exit-title">🚨 Your Specific Situation: "I Am Heavily Invested — Should I Exit?"</div>
-    <p style="font-size:12px;color:rgba(255,255,255,0.8);margin-bottom:12px">This is the most important section of this report. You asked directly, so here is a direct answer — not financial advice, but an honest framework-based assessment:</p>
-
-    <div class="exit-item">
-      <span class="exit-icon">⚠️</span>
-      <div><strong>The pledge alone (62.8%) is a reason to reduce.</strong> If PAG (promoter) faces liquidity stress for any reason — macro shock, PE cycle downturn, credit call — lenders can forcibly sell pledged Nuvama shares. This is not theoretical. This is exactly what happened with Zee, DHFL, IL&FS-linked stocks. You cannot know when or if this happens. It is an uncontrolled, structural risk.</div>
-    </div>
-    <div class="exit-item">
-      <span class="exit-icon">📉</span>
-      <div><strong>FY26 results are genuinely disappointing.</strong> +5.6% PAT growth after 65% and 66% in prior two years signals the capital markets tailwind has faded. The market is now pricing Nuvama at 28-30x for ~15% forward growth — that's not a cheap entry point, it's optimism already priced in.</div>
-    </div>
-    <div class="exit-item">
-      <span class="exit-icon">🎯</span>
-      <div><strong>Recommended action (framework, not advice):</strong> Consider a <strong>staged reduction</strong>. Do not panic-sell all at once — the underlying business is good and selling at a bad time compounds mistakes. Instead, reduce to a position size where you can sleep at night even if the pledge unwinds and the stock falls 30-40%.</div>
-    </div>
-    <div class="exit-item">
-      <span class="exit-icon">📊</span>
-      <div><strong>If price falls to ₹1,100-₹1,250 zone</strong> (MoS entry), the math changes. At that price and with pledge resolution, this could be a BUY. So book some profits now, keep a watchlist position, and re-enter at a better price.</div>
-    </div>
-    <div class="exit-item">
-      <span class="exit-icon">✅</span>
-      <div><strong>The one thing that could change the picture immediately:</strong> PAG announces pledge reduction/elimination. That single event would remove the primary red flag and materially improve the verdict. Watch for it.</div>
-    </div>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">Upgrade Conditions (Specific & Measurable)</h3>
-  <div class="condition">
-    <div class="cond-num">1</div>
-    <div class="cond-text"><strong>Promoter pledge falls below 20%</strong> over 2 consecutive quarters with official stock exchange disclosures. This is the single most important condition — nothing else matters more.</div>
-  </div>
-  <div class="condition">
-    <div class="cond-num">2</div>
-    <div class="cond-text"><strong>Price corrects to ₹1,100–₹1,250</strong> range (30-40% correction from current price), implying ~18-20x FY26 earnings — DCF base IV with MoS applied.</div>
-  </div>
-  <div class="condition">
-    <div class="cond-num">3</div>
-    <div class="cond-text"><strong>FY27 Q1 or Q2 PAT growth rebounds to 15%+ YoY</strong> from the FY26 low base, indicating capital markets recovery and wealth management scale benefits are flowing through.</div>
-  </div>
-  <div class="condition">
-    <div class="cond-num">4</div>
-    <div class="cond-text"><strong>NSE regulatory observations are formally resolved</strong> with clean compliance certificate and no further warnings for 2 consecutive quarters.</div>
-  </div>
-  <div class="condition">
-    <div class="cond-num">5</div>
-    <div class="cond-text"><strong>ARR assets cross ₹60,000 Cr</strong> with ARR revenue share exceeding 55% of total wealth revenues — demonstrating sustainable shift away from cyclical capital markets dependence.</div>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-top:16px;margin-bottom:10px;color:var(--navy)">Series Tracker</h3>
-  <table>
-    <thead><tr><th>Parameter</th><th>Value</th><th>AI</th><th>Verdict</th></tr></thead>
-    <tbody>
-      <tr><td>NUVAMA (11 May 2026)</td><td>₹1,597 · Cat C · P/E 28x · PAT ₹1,040 Cr</td><td>⚪ NEUTRAL</td><td>WATCH★★★ — Pledge 62.8% · Growth decel · Expensive</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- ═══════════════ TAB 7: TECHNICAL ═══════════════ -->
-<div id="tab7" class="tab-content">
-  <h2 class="section-title">Technical Analysis</h2>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(A) Price Structure & Multi-Timeframe</h3>
-  <div class="grid-4" style="margin-bottom:16px">
+  <div class="section">
+    <div class="section-head"><h2>Regulatory Matter — SEBI Front-Running Case</h2></div>
     <div class="card">
-      <div class="card-label">Current Price</div>
-      <div class="card-value" style="font-size:18px">₹1,597</div>
-      <div class="card-delta">May 11, 2026 close [VER]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">52-Wk High</div>
-      <div class="card-value" style="font-size:18px">₹1,702</div>
-      <div class="card-delta delta-warn">−6.2% from high [VER]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">52-Wk Low</div>
-      <div class="card-value" style="font-size:18px">₹1,097</div>
-      <div class="card-delta delta-pos">+45.6% from low [VER]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">1-Year Return</div>
-      <div class="card-value" style="font-size:18px">+35%</div>
-      <div class="card-delta delta-pos">Strong but priced in [VER]</div>
+      <p class="small">Nuvama is named — as a facilitating broker, not an accused party — in a SEBI case against Ketan Parekh, Rohit Salgaocar and Ashok Kumar Poddar over front-running of a large FPI client's trades (originally a Jan-2025 interim order; proceedings, including show-cause notices to Capital Group entities, continued into mid-2026). SEBI's own order <b>explicitly states no evidence was found implicating Nuvama or Motilal Oswal</b> in the front-running itself. The scrutiny centred on a referral/revenue-sharing arrangement (~₹19 Cr in commissions Nuvama paid to Salgaocar's firm) that SEBI linked to the information leak. Separately, Bernstein flagged this matter as a source of near-term revenue headwind from one large affected client. <span class="conf v">V</span></p>
     </div>
   </div>
 
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(B) Moving Average Dashboard [ESTIMATED — screener data]</h3>
-  <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:8px;padding:16px;margin-bottom:16px">
-    <div class="ma-row">
-      <span>50-DMA</span><span>₹1,322</span>
-      <span class="ma-above">Price +20.8% ABOVE 50-DMA</span>
-    </div>
-    <div class="ma-row">
-      <span>200-DMA</span><span>₹1,334</span>
-      <span class="ma-above">Price +19.7% ABOVE 200-DMA</span>
-    </div>
-    <div class="ma-row">
-      <span>Golden Cross Status</span><span>50-DMA &gt; 200-DMA</span>
-      <span class="ma-above">CONFIRMED (bullish structure)</span>
-    </div>
-    <div class="ma-row">
-      <span>EMA Ribbon</span><span>All short-term EMAs above long-term</span>
-      <span class="ma-above">BULLISH — but extended</span>
+  <div class="section">
+    <div class="section-head"><h2>Capital Allocation</h2></div>
+    <div class="grid grid-3">
+      <div class="metric"><div class="lbl">FY26 Dividend</div><div class="val">₹14/sh</div><div class="sub">~49% payout ratio <span class="conf v">V</span></div></div>
+      <div class="metric"><div class="lbl">Stock Split</div><div class="val">1:5</div><div class="sub">Executed Dec 2025 <span class="conf v">V</span></div></div>
+      <div class="metric"><div class="lbl">Counter-cyclical capital use</div><div class="val">Not evidenced</div><div class="sub">No buybacks or distressed-period accumulation found in sources reviewed <span class="conf u">U</span></div></div>
     </div>
   </div>
 
-  <div class="alert-box alert-warn">
-    <span class="alert-icon">📐</span>
-    <div>
-      <div class="alert-title">Technically Extended — Poor Risk/Reward for New Entries</div>
-      <div class="alert-body">Cat C stocks: RSI &lt;40 = primary buy zone; 200-DMA touch = strong buy. Currently trading ~20% above 200-DMA with the stock recently breaking from a weekly base (per 5Paisa data, "15% from pivot point — extended from ideal buying range"). This is emphatically NOT a technical buy signal — it is a technical warning for new buyers.</div>
-    </div>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(F) Trade Structure — Exit Levels (for existing holders)</h3>
-  <table>
-    <thead><tr><th>Level</th><th>Price</th><th>Action</th><th>Rationale</th></tr></thead>
-    <tbody>
-      <tr><td>Current price</td><td>₹1,597</td><td>Consider trimming (staged)</td><td>At 28x earnings with 5.6% growth — overvalued</td></tr>
-      <tr><td>SL for remaining position</td><td>₹1,380</td><td>Stop-loss (−13.6%)</td><td>Below 50-DMA and monthly swing low region</td></tr>
-      <tr><td>Support Level 1</td><td>₹1,320–₹1,340</td><td>Do NOT panic sell at 200-DMA</td><td>200-DMA support; may be re-accumulation point</td></tr>
-      <tr><td>Strong Support / MoS Zone</td><td>₹1,100–₹1,200</td><td>Re-enter if pledge resolved</td><td>Blended IV zone; meaningful MoS</td></tr>
-      <tr><td>52-Wk Low (extreme)</td><td>₹1,097</td><td>Bottom of range</td><td>Below this → structural review required</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(G) Technical Composite Score</h3>
-  <table>
-    <thead><tr><th>Dimension</th><th>Score /5</th><th>Comment</th></tr></thead>
-    <tbody>
-      <tr><td>Price vs Key MAs</td><td>3/5</td><td>Above all MAs (bullish) but extended</td></tr>
-      <tr><td>Trend Structure</td><td>3/5</td><td>Weekly breakout, momentum valid but aging</td></tr>
-      <tr><td>Volume Profile</td><td>3/5</td><td>Small cap — volume data limited; no red flags</td></tr>
-      <tr><td>RSI/Momentum</td><td>2/5</td><td>Likely overbought zone; not in buy range</td></tr>
-      <tr><td>Pattern Quality</td><td>2/5</td><td>Extended from base; no fresh catalyst base forming</td></tr>
-      <tr><td>Risk/Reward</td><td>1/5</td><td>Asymmetric downside given pledge risk + valuation</td></tr>
-      <tr class="tbl-highlight"><td>Composite</td><td>14/30 = 47%</td><td>NEUTRAL-BEARISH for new entries; HOLD with stops for existing</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- ═══════════════ TAB 8: SHAREHOLDING ═══════════════ -->
-<div id="tab8" class="tab-content">
-  <h2 class="section-title">Shareholding Pattern</h2>
-
-  <div class="alert-box alert-critical">
-    <span class="alert-icon">🚨</span>
-    <div>
-      <div class="alert-title">PLEDGE ALERT: 62.8% of Promoter Holding Pledged [VERIFIED — Screener filing]</div>
-      <div class="alert-body">With promoter holding at 54.1% and 62.8% of that pledged, the effective pledged shares as a % of total equity is approximately 34%. This means ~34% of total company shares are pledged against loans. In a severe market downturn, forced selling of these shares would devastate the stock price regardless of business fundamentals.</div>
-    </div>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(A) Promoter Trend & Pledge Badge</h3>
-  <table>
-    <thead><tr><th>Quarter</th><th>Promoter %</th><th>Pledge %</th><th>Signal</th></tr></thead>
-    <tbody>
-      <tr><td>Q4 FY25 (Mar 2025)</td><td>54.65%</td><td>[EST] ~60%</td><td>⚠️ High pledge</td></tr>
-      <tr><td>Q1 FY26 (Jun 2025)</td><td>54.65%</td><td>[EST] ~61%</td><td>⚠️ Stable but high</td></tr>
-      <tr><td>Q2 FY26 (Sep 2025)</td><td>54.65%</td><td>~62%</td><td>⚠️ Increasing</td></tr>
-      <tr><td>Q3 FY26 (Dec 2025)</td><td>54.65%</td><td>~62%</td><td>⚠️ Stable but high</td></tr>
-      <tr class="tbl-highlight"><td>Q4 FY26 (Mar 2026) [LATEST]</td><td>54.1%</td><td style="color:var(--red);font-weight:700">62.8%</td><td style="color:var(--red);font-weight:700">🚨 AVOID TRIGGER</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:11px;color:var(--muted);font-style:italic">Promoter holding stable at ~54-55%; pledge increasing slightly — the wrong direction. No buy signal from promoter behaviour.</p>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(D) Ownership Composition [VERIFIED — Q3/Q4 FY26 filing data]</h3>
-  <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:8px;padding:16px;margin-bottom:16px">
-    <div style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>Promoter (PAGAC Ecstasy Pte. Ltd)</span><span style="font-weight:600">54.1%</span></div>
-      <div class="sh-bar"><div class="sh-fill sh-promoter" style="width:54.1%"></div></div>
-      <div style="font-size:10px;color:var(--red);font-family:'JetBrains Mono',monospace;margin-top:2px">⚠️ 62.8% of this is pledged</div>
-    </div>
-    <div style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>FII / FPI</span><span style="font-weight:600">16.3%</span></div>
-      <div class="sh-bar"><div class="sh-fill sh-fii" style="width:16.3%"></div></div>
-    </div>
-    <div style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>DII (Mutual Funds + Insurance)</span><span style="font-weight:600">7.6%</span></div>
-      <div class="sh-bar"><div class="sh-fill sh-dii" style="width:7.6%"></div></div>
-    </div>
-    <div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>Retail / Public</span><span style="font-weight:600">21.45%</span></div>
-      <div class="sh-bar"><div class="sh-fill sh-retail" style="width:21.45%"></div></div>
-    </div>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(E) Ownership Momentum Scores</h3>
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-label">Ownership Momentum Score</div>
-      <div class="card-value">32 / 100</div>
-      <div class="prog-bar"><div class="prog-fill" style="width:32%;background:var(--amber)"></div></div>
-      <div class="card-sub" style="margin-top:6px;font-size:11px">FII holdings decent (16.3%) but DII low (7.6%). No institutional accumulation trend. Promoter stable (not buying). Retail at 21.4% — mixed signal.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Shareholding Risk Score</div>
-      <div class="card-value" style="color:var(--red)">82 / 100</div>
-      <div class="prog-bar"><div class="prog-fill" style="width:82%;background:var(--red)"></div></div>
-      <div class="card-sub" style="margin-top:6px;font-size:11px;color:var(--red)">HIGH RISK. Dominated by 62.8% promoter pledge risk. Single largest risk factor in the entire analysis. Score: 82/100 indicates extreme caution warranted.</div>
-    </div>
+  <div class="section">
+    <div class="section-head"><h2>Minor / Administrative</h2></div>
+    <p class="small">NSE issued a warning letter to a Nuvama subsidiary for "Periodical Submission Observations" on 30 Apr 2026 — a procedural compliance matter, not a substantive governance red flag on its own. <span class="conf v">V</span></p>
   </div>
 </div>
 
-<!-- ═══════════════ TAB 9: AI INTELLIGENCE ═══════════════ -->
-<div id="tab9" class="tab-content">
-  <h2 class="section-title">AI Intelligence</h2>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:12px;color:var(--navy)">(A) AI Classification Dashboard</h3>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
-    <div style="background:var(--navy);color:#fff;padding:12px 16px;border-radius:8px;text-align:center;min-width:120px">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold-light);letter-spacing:1px;margin-bottom:4px">CATEGORY</div>
-      <div style="font-size:14px;font-weight:700">C</div>
-      <div style="font-size:10px;color:rgba(255,255,255,0.6)">Mature Compounder</div>
-    </div>
-    <div style="background:rgba(107,114,128,0.15);border:1px solid rgba(107,114,128,0.3);padding:12px 16px;border-radius:8px;text-align:center;min-width:140px">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px">AI OVERLAY</div>
-      <div style="font-size:14px;font-weight:700">⚪ NEUTRAL</div>
-      <div style="font-size:10px;color:var(--muted)">Efficiency only; no moat change</div>
-    </div>
-    <div style="background:rgba(217,119,6,0.15);border:1px solid rgba(217,119,6,0.3);padding:12px 16px;border-radius:8px;text-align:center;min-width:140px">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:1px;margin-bottom:4px">FLYWHEEL</div>
-      <div style="font-size:14px;font-weight:700">FORMING</div>
-      <div style="font-size:10px;color:var(--amber)">2/3 confirmed</div>
-    </div>
-    <div style="background:rgba(45,122,79,0.15);border:1px solid rgba(45,122,79,0.3);padding:12px 16px;border-radius:8px;text-align:center;min-width:120px">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--pass);letter-spacing:1px;margin-bottom:4px">AI PHASE</div>
-      <div style="font-size:14px;font-weight:700">Phase 2</div>
-      <div style="font-size:10px;color:var(--pass)">Digital tools / RM productivity</div>
+<!-- ===================== TAB 5 — VALUATION ===================== -->
+<div class="tab-content" id="tab-5">
+  <div class="section">
+    <div class="section-head"><h2>Where Price Sits vs. Every Method</h2><span class="tag">Signature view</span></div>
+    <div class="ladder">
+      <div class="ladder-track">
+        <div class="ladder-pt" style="left:10.4%;"><div class="stem"></div><div class="knob"></div><div class="lab"><b>₹666</b>MoS Entry</div></div>
+        <div class="ladder-pt" style="left:28.2%;"><div class="stem"></div><div class="knob"></div><div class="lab"><b>₹951</b>Blended Base IV</div></div>
+        <div class="ladder-pt" style="left:49.6%;"><div class="stem"></div><div class="knob"></div><div class="lab"><b>₹1,293</b>DCF Base IV</div></div>
+        <div class="ladder-pt cmp" style="left:81.8%;"><div class="stem"></div><div class="knob"></div><div class="lab"><b>₹1,809</b>CMP · +90% vs Blended IV</div></div>
+        <div class="ladder-pt" style="left:96.9%;"><div class="stem"></div><div class="knob"></div><div class="lab"><b>₹2,050</b>Analyst High</div></div>
+      </div>
+      <p class="footnote">Scale ₹500–₹2,100. Current price sits above every intrinsic-value method in this report, including the Accel-scenario blend (₹1,130) — it is bracketed only by sell-side analyst targets, not by fundamentals-based valuation.</p>
     </div>
   </div>
 
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(B) Data Flywheel Deep-Dive</h3>
-  <div class="flywheel-box">
-    <div class="flywheel-header">
-      <div class="flywheel-title">Flywheel Analysis — Nuvama Wealth</div>
-      <span class="flywheel-badge fw-forming">FORMING 5.5/10</span>
-    </div>
-    <p style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:12px">Nuvama has exceptional raw material for a flywheel — 25 years of HNI wealth data, transaction history, behavioral data under multiple market cycles — but has not yet evidenced the loop closure (better AI → more clients).</p>
-    <div class="fw-row">
-      <div class="fw-check fw-yes">✓</div>
-      <div><strong>Q1 — Proprietary Data:</strong> 25+ years of client wealth transaction data. Volume: 1.3M+ clients. Uniqueness: behavioral data through 2008, 2013, 2020 crashes — rare outcome labels. Recency: live daily transaction feeds. Outcome labels: who held through crashes vs sold — invaluable for behavioral AI modeling. <strong>Score: 2.5/3</strong> [ESTIMATED]</div>
-    </div>
-    <div class="fw-row">
-      <div class="fw-check fw-partial">~</div>
-      <div><strong>Q2 — AI Improves with Scale:</strong> Digital onboarding platform and RM productivity tools launched (confirmed in Q4 FY25 investor presentation). Some personalization evident. However, no metrics cited on AI accuracy improvement with user scale. Lacking: specific citation of how AI recommendations improve as more data accumulates. <strong>Score: 2/4</strong> [ESTIMATED]</div>
-    </div>
-    <div class="fw-row">
-      <div class="fw-check fw-no">✗</div>
-      <div><strong>Q3 — Better AI → More Users:</strong> Not confirmed. Client acquisition is RM-relationship driven, not algorithm-driven. No evidence that clients are choosing Nuvama because of superior AI recommendations vs. competitors. Wealth management remains a human-first business. <strong>Score: 1/3</strong> [UNVERIFIED]</div>
-    </div>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(C) AI Value Chain Position</h3>
-  <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:8px;padding:16px;margin-bottom:16px">
-    <div style="display:flex;gap:0;margin-bottom:12px;overflow-x:auto">
-      <div style="flex:1;min-width:100px;text-align:center;padding:8px 4px;background:#E5E7EB;font-size:11px;border-radius:4px 0 0 4px;font-family:'JetBrains Mono',monospace">L1<br>INFRA</div>
-      <div style="flex:1;min-width:100px;text-align:center;padding:8px 4px;background:#D1D5DB;font-size:11px;font-family:'JetBrains Mono',monospace">L2<br>MODELS</div>
-      <div style="flex:1;min-width:100px;text-align:center;padding:8px 4px;background:#9CA3AF;font-size:11px;font-family:'JetBrains Mono',monospace">L3<br>PLATFORMS</div>
-      <div style="flex:1;min-width:100px;text-align:center;padding:8px 4px;background:#6B7280;font-size:11px;color:#fff;font-family:'JetBrains Mono',monospace">L4<br>VERT. APPS</div>
-      <div style="flex:1;min-width:100px;text-align:center;padding:8px 4px;background:var(--navy);color:var(--gold-light);font-size:11px;border-radius:0 4px 4px 0;font-family:'JetBrains Mono',monospace;font-weight:700">L5 ★<br>AI-ENABLED<br>INCUMBENT</div>
-    </div>
-    <p style="font-size:12px;color:#4B5563"><strong>Nuvama is a Level 5 AI-Enabled Incumbent.</strong> Investment implication: L5 incumbents use AI to defend and enhance existing moats rather than build new ones. Horizon: 7-10yr for full AI integration. Risk: lower than pure AI plays. Moat durability: depends on data flywheel maturation. L5 is the safest AI position but also the lowest AI-driven upside.</p>
-  </div>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(D) India AI Opportunity</h3>
-  <table>
-    <thead><tr><th>Structural Advantage</th><th>Relevant to Nuvama?</th><th>Impact</th></tr></thead>
-    <tbody>
-      <tr><td>India Stack (UPI/Aadhaar) data access</td><td>YES — strong</td><td>UPI transaction data + Aadhaar KYC could enable behavioral credit/wealth scoring</td></tr>
-      <tr><td>Vernacular AI benefit</td><td>PARTIAL — HNI clients are English-literate; B30 expansion could benefit</td><td>Minor near-term, medium-term for mass affluent expansion</td></tr>
-      <tr><td>India Stack infra leverage</td><td>YES — digital onboarding already using DigiLocker</td><td>Reduces onboarding friction; scale benefit real</td></tr>
-      <tr><td>AI talent cost arbitrage</td><td>YES — Nuvama building data/tech team in India</td><td>Lower cost of AI capability build vs global peers</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="font-family:'Playfair Display',serif;margin-bottom:10px;color:var(--navy)">(F) AI Opportunity Score</h3>
-  <div class="grid-2">
-    <div>
+  <div class="section">
+    <div class="section-head"><h2>5-Method Summary</h2></div>
+    <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Component</th><th>Score</th></tr></thead>
-        <tbody>
-          <tr><td>Data Flywheel (/20)</td><td>11/20</td></tr>
-          <tr><td>Adoption Phase timing (/20)</td><td>13/20</td></tr>
-          <tr><td>Value chain position (/20)</td><td>14/20</td></tr>
-          <tr><td>India structural advantage (/20)</td><td>14/20</td></tr>
-          <tr><td>AI threat resistance (/20)</td><td>17/20</td></tr>
-          <tr class="tbl-highlight"><td>Total AI Score (/100)</td><td style="font-weight:700">69/100</td></tr>
-        </tbody>
+        <tr><th>Method</th><th class="num">Stress IV</th><th class="num">Base IV</th><th class="num">Accel IV</th><th>Note</th></tr>
+        <tr><td>1. DCF (2-stage, Owner Earnings)</td><td class="num">₹957</td><td class="num">₹1,293</td><td class="num">₹1,645</td><td class="small">WACC 13% · terminal P/E 16/19/22x <span class="conf e">E</span></td></tr>
+        <tr><td>2. Owner Earnings Capitalisation</td><td class="num">₹830</td><td class="num">₹968</td><td class="num">₹1,162</td><td class="small">Gordon growth, r=13% <span class="conf e">E</span></td></tr>
+        <tr><td>3. ROIC / EPV (no-growth floor)</td><td class="num" colspan="3" style="text-align:center;">₹447 <span class="small">(flat across scenarios by design)</span></td><td class="small">NOPAT/WACC; ROIC 30.1% vs WACC 13% → economic profit +₹595 Cr <span class="conf e">E</span></td></tr>
+        <tr><td>4. P/E Earnings Power</td><td class="num">₹922</td><td class="num">₹1,094</td><td class="num">₹1,267</td><td class="small">EPS ₹57.60 × Cat-C terminal multiples <span class="conf v">V</span> (EPS)</td></tr>
+        <tr><td>5. Earnings Yield vs Bond Yield</td><td class="num" colspan="3" style="text-align:center;">EY 3.18% vs G-Sec 6.75% → ERP <b>−3.57%</b></td><td class="small">Implied fair P/E if EY=bond yield: 14.8x → ₹853/sh <span class="conf v">V</span></td></tr>
+        <tr class="highlight-row"><td><b>Blended Base IV</b> (avg of 4 quant. methods)</td><td class="num">₹789</td><td class="num">₹951</td><td class="num">₹1,130</td><td class="small">Excludes Method 5 (interpretive, not a direct IV)</td></tr>
       </table>
     </div>
-    <div class="card">
-      <div class="card-label">Portfolio Role</div>
-      <div class="card-value" style="font-size:18px;color:var(--navy)">STRATEGIC (60-80)</div>
-      <div class="card-sub" style="margin-top:6px;font-size:12px">AI is a strategic enhancer, not the core thesis. The wealth management sector has low AI disruption risk and meaningful data advantage potential. Investment horizon: 7-10yr for full AI integration value to materialize.</div>
+    <p class="footnote" style="margin-top:8px;">Current TTM P/E of 31.4x sits well above the Category-C terminal band of 18–22x used throughout. MoS entry zone (×0.70): ₹552 (Stress) – ₹666 (Base).</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Growth &amp; Multiple Sensitivity — Is the Exit Multiple Doing Too Much Work?</h2><span class="tag">Added on direct question — see reasoning below</span></div>
+    <p class="small">The DCF above already varies the <i>growth path</i> across three scenarios. It does <b>not</b> vary the <i>terminal multiple</i> — that was held to the framework's generic Category-C band (18–22x) rather than a sector- or peer-calibrated multiple. That's a deliberate methodological choice, not an oversight, but it's worth showing exactly how much it drives the verdict.</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Terminal P/E used</th><th>Basis</th><th class="num">IV/share (Base growth)</th></tr>
+        <tr><td>19x</td><td class="small">Category-C generic band (used in the summary table above)</td><td class="num">₹1,293</td></tr>
+        <tr><td>25x</td><td class="small">Mid-point growth premium</td><td class="num">₹1,611</td></tr>
+        <tr class="highlight-row"><td>28.7x</td><td class="small"><b>Reverse-solved: the multiple CMP actually implies</b>, holding growth at Base case</td><td class="num">₹1,809 (= CMP)</td></tr>
+        <tr><td>31.4x</td><td class="small">= Nuvama's own current trading multiple</td><td class="num">₹1,951</td></tr>
+        <tr><td>38.9x</td><td class="small">= 360 ONE WAM's current trading multiple</td><td class="num">₹2,348</td></tr>
+      </table>
+    </div>
+    <div class="grid grid-2" style="margin-top:14px;">
+      <div class="card"><h4>Reverse-DCF: what CMP requires you to believe</h4><p class="small">Holding growth at Base case, ₹1,809 requires an exit multiple of roughly <b>28.7x</b> — below Nuvama's own current multiple and well below 360 ONE's, so not an unreasonable ask by itself. Alternatively, holding the exit multiple at 19x, CMP requires Stage-1 growth of roughly <b>31.7%</b> — above FY26's actual +8% and above the 5-year CAGR of 26%, though below FY25's own +41%. <span class="conf e">ESTIMATED</span></p></div>
+      <div class="card"><h4>A defensible "both move a bit" case</h4><p class="small">18% growth (above Base, below the 5yr CAGR) combined with a 28x exit multiple (below Nuvama's own current 31.4x) produces an IV of <b>₹1,906</b> — about 5% above CMP. Under that lens the stock isn't dramatically rich; it's close to fair. <span class="conf e">ESTIMATED</span></p></div>
+    </div>
+    <p class="small" style="margin-top:14px;"><b>Why the verdict in Tab 6 still leads with the more conservative number:</b> a margin-of-safety framework deliberately avoids assuming today's rich multiple persists into the terminal year — assuming your exit multiple equals today's entry multiple is exactly the mechanism behind multiple-compression losses, and several richly-multiple Indian financial compounders have de-rated hard in past cycles with no change in the underlying business. The Cat-C-anchored WATCH★★ verdict is this framework's disciplined answer to "is there a margin of safety on conservative assumptions" — and on that specific question, the answer is no. Whether Indian wealth-management multiples structurally hold near 25–35x for the next 5–7 years, as 360 ONE's and Nuvama's own trading history suggest they might, or mean-revert toward 18–22x, is a forecasting judgment, not a settled fact. On the more growth-friendly view, this stock is close to fairly priced today rather than ~90% rich. Both views are shown here rather than only the one the framework's default assumptions produce.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Relative Valuation vs Peers</h2></div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Company</th><th class="num">P/E (TTM)</th><th class="num">P/B</th><th class="num">Op. Margin</th><th>Read</th></tr>
+        <tr class="highlight-row"><td><b>Nuvama Wealth Mgmt</b></td><td class="num">31.4x</td><td class="num">~7.8x</td><td class="num">~55%</td><td class="small">Premium P/B justified by high ROE; P/E now elevated vs history</td></tr>
+        <tr><td>360 ONE WAM</td><td class="num">~38.9x</td><td class="num">~4.9x</td><td class="num">~61%</td><td class="small">Richer P/E, cheaper P/B, best-in-class margins</td></tr>
+        <tr><td>Motilal Oswal Fin. Services</td><td class="num">~23.8x</td><td class="num">~3.8x</td><td class="num">~52%</td><td class="small">Cheaper, more diversified financial-services mix</td></tr>
+        <tr><td>Anand Rathi Wealth</td><td class="num">~67.0x</td><td class="num">~30.3x</td><td class="num">~45%</td><td class="small">Pure distribution model, priced for exceptional growth</td></tr>
+        <tr><td>Angel One</td><td class="num">~31.9x</td><td class="num">~4.2x</td><td class="num">—</td><td class="small">Discount-broking model, different economics</td></tr>
+      </table>
+    </div>
+    <p class="footnote" style="margin-top:8px;">Peer multiples gathered from public market-data pages on/around late Jun 2026; treat as directional rather than same-day-precise. <span class="conf e">ESTIMATED</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Sell-Side Cross-Check</h2></div>
+    <div class="grid grid-3">
+      <div class="metric"><div class="lbl">Analyst Low</div><div class="val">₹1,630</div></div>
+      <div class="metric"><div class="lbl">Analyst Average</div><div class="val">₹1,847</div><div class="sub">~2% above CMP</div></div>
+      <div class="metric"><div class="lbl">Analyst High</div><div class="val">₹2,050</div><div class="sub">Bernstein (split-adj.): Outperform</div></div>
+    </div>
+    <p class="small" style="margin-top:12px;">Sell-side targets sit near or modestly above CMP — the market and most analysts are already pricing in continued execution. That's a materially different starting point from the fundamentals-based methods above, which is exactly the tension this report is flagging rather than resolving for you.</p>
+  </div>
+</div>
+
+<!-- ===================== TAB 6 — VERDICT ===================== -->
+<div class="tab-content" id="tab-6">
+  <div class="section">
+    <div class="section-head"><h2>Four-Pillar Grades</h2></div>
+    <div class="grid grid-4">
+      <div class="pillar-card"><div class="grade-circle" style="background:var(--green);">B+</div><div class="pname">Moat</div><div class="pnote">Real switching costs in UHNI advisory; scale; not unassailable</div></div>
+      <div class="pillar-card"><div class="grade-circle" style="background:var(--green);">B</div><div class="pname">Financial Fortress</div><div class="pnote">Excellent margins/ROE; negative FY26 CFO and elevated leverage</div></div>
+      <div class="pillar-card"><div class="grade-circle" style="background:var(--wine);">D</div><div class="pname">Valuation &amp; MoS</div><div class="pnote">31.4x TTM vs 18–22x Cat-C norm; +90% above blended Base IV</div></div>
+      <div class="pillar-card"><div class="grade-circle" style="background:var(--amber);">C+</div><div class="pname">Management</div><div class="pnote">62.8% promoter pledge unresolved; offset partly by CRISIL upgrade</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="verdict-box">
+      <div class="mono" style="color:var(--gold-bright); font-size:12.5px; letter-spacing:0.1em; margin-bottom:8px;">FINAL VERDICT</div>
+      <h2>WATCH <span class="stars">★★</span></h2>
+      <p style="max-width:760px; margin-top:10px;">Decent-to-good quality with real, specific concerns — not a business to write off, but not a business to buy at ₹1,809 either. Genuine structural tailwind, a top-3 integrated platform, and a fresh credit-rating upgrade are weighed against a sharply decelerated FY26, negative operating cash flow, and — the deciding factor — a 62.8% promoter pledge that remains unexplained in the sources reviewed. Price has moved further from every fundamentals-based intrinsic value since the 12 May report (₹1,735 → ₹1,809), while the blended IV estimate itself has come down slightly on more conservative post-FY26 growth assumptions — widening the gap from ~58% to ~90%. That combination is enough to take one star off the prior WATCH★★★, not enough (given no confirmed fraud and a partly-explicable pledge structure) to drop all the way to PASS.</p>
+      <p class="small" style="margin-top:14px; border-top:1px solid var(--line-navy); padding-top:14px; max-width:760px;"><b style="color:var(--gold-bright);">Important conditionality:</b> this verdict rests on a conservative, mean-reversion exit multiple (Cat-C generic band, 18–22x) rather than the richer multiples the sector currently trades at. See <i>Tab 5 → Growth &amp; Multiple Sensitivity</i> — under a defensible growth-friendly view (18% growth, 28x exit multiple, both below Nuvama's own historical extremes), fair value lands within ~5% of CMP, not ~90% below it. Whether Indian wealth-management multiples mean-revert or structurally persist is a judgment call this report doesn't resolve for you.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Upgrade Conditions</h2><span class="tag">0 of 5 currently met</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th style="width:36px;">#</th><th>Condition</th><th style="width:110px;">Status</th></tr>
+        <tr><td>1</td><td class="small">P/E compresses toward the Cat-C band (18–22x) — via price correction, continued EPS growth, or both (e.g. two more years of 15%+ EPS growth with price flat achieves this)</td><td><span class="pill fail">Not met</span></td></tr>
+        <tr><td>2</td><td class="small">Promoter pledge falls below 20% of promoter holding, or its purpose is publicly clarified as acquisition-financing rather than distress</td><td><span class="pill fail">Not met</span></td></tr>
+        <tr><td>3</td><td class="small">Daily RSI(14) falls below 40, signalling the current overbought run has cooled</td><td><span class="pill fail">Not met <span class="conf e">E</span></span></td></tr>
+        <tr><td>4</td><td class="small">CFO/Net Income recovers to positive and ≥80% for 2 consecutive quarters</td><td><span class="pill fail">Not met</span></td></tr>
+        <tr><td>5</td><td class="small">Revenue growth reaccelerates to ≥15% YoY for 2 consecutive quarters</td><td><span class="pill fail">Not met</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>This Ticker's Tracked History</h2></div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Date</th><th class="num">Price</th><th>Verdict</th><th>Val</th><th>Mgmt</th><th>AI</th><th>Base IV (blended)</th></tr>
+        <tr><td>12 May 2026</td><td class="num">₹1,735</td><td>WATCH★★★</td><td>D</td><td>C+</td><td>⚪ 69</td><td>₹1,101</td></tr>
+        <tr class="highlight-row"><td>02 Jul 2026 <span class="small">(this report)</span></td><td class="num">₹1,809</td><td>WATCH★★</td><td>D</td><td>C+</td><td>⚪ 51</td><td>₹951</td></tr>
+      </table>
+    </div>
+    <p class="footnote" style="margin-top:8px;">This run's AI Score (51) is more conservative than the May report's (69), primarily a stricter read on the Data Flywheel test — flagged transparently, not silently reconciled, since AI-overlay scoring involves genuine judgment calls.</p>
+  </div>
+</div>
+
+<!-- ===================== TAB 7 — TECHNICAL ===================== -->
+<div class="tab-content" id="tab-7">
+  <div class="section">
+    <div class="section-head"><h2>A · Price Structure</h2></div>
+    <div class="grid grid-4">
+      <div class="metric"><div class="lbl">52-Week Low</div><div class="val">₹1,096.90</div></div>
+      <div class="metric pos"><div class="lbl">52-Week High</div><div class="val">₹1,825</div><div class="sub">Made repeatedly through late Jun 2026</div></div>
+      <div class="metric"><div class="lbl">1-Year Return</div><div class="val">+23–24%</div><div class="sub">vs Sensex ~+10%</div></div>
+      <div class="metric warn"><div class="lbl">Last 3 Weeks</div><div class="val">+18%</div><div class="sub">₹1,533 (12 Jun) → ₹1,809</div></div>
+    </div>
+    <p class="small" style="margin-top:10px;">Post-results reaction was actually negative — shares fell ~3.2% to ₹1,547 immediately after the 12 May Q4 print — before a sharp, sustained rally through June pushed the stock to fresh 52-week highs. <span class="conf v">V</span></p>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="section">
+      <div class="section-head"><h2>B · Moving-Average Dashboard</h2></div>
+      <div class="card"><p class="small">Repeated fresh 52-week highs through late June imply price is trading above its 20/50/100/200-day averages in textbook bullish alignment. Exact DMA levels weren't independently verifiable from the sources used in this pass. <span class="conf e">ESTIMATED — directional only</span></p></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>C · OBV &amp; Volume</h2></div>
+      <div class="card"><p class="small">No reliable volume data was available in this research pass. A genuine breakout to new highs should be volume-confirmed — worth checking directly on a charting terminal before acting. <span class="conf u">UNVERIFIED</span></p></div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="section">
+      <div class="section-head"><h2>D · RSI / MACD / Stochastic</h2></div>
+      <div class="card"><p class="small">Not independently measurable here, but a +18% move in under three weeks into fresh highs is the classic signature of an overbought daily RSI (likely &gt;70). Read as a caution flag against fresh entry timing, not as a measured value. <span class="conf e">ESTIMATED — reasoned, not measured</span></p></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>E · Chart Patterns</h2></div>
+      <div class="card"><p class="small">Insufficient OHLC-level data to confidently name a specific pattern (cup-and-handle, flag, etc.). Flagged as a gap rather than guessed. <span class="conf u">UNVERIFIED</span></p></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>F · Trade Structure</h2></div>
+    <div class="card" style="border-left:4px solid var(--wine);">
+      <p class="small"><b>No active entry signal at current levels.</b> Price sits above every fundamentals-based IV method (Tab 5) and is likely technically extended (overbought momentum into fresh highs). The framework's own trade-structure logic requires both a valid technical trigger <i>and</i> price at/below a reasoned entry price — neither condition is currently met. A valid setup would need either a pullback toward the ₹666–905 MoS zone, or a base-building/consolidation phase near current levels that resets momentum without a full price collapse.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>G · Technical Composite Score</h2></div>
+    <div class="gauge-wrap">
+      <div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width:60%;"></div></div>
+      <div class="gauge-num">18/30</div>
+    </div>
+    <p class="small" style="margin-top:10px;">60% — strong trend, weak entry timing. Uptrend and MA alignment are genuinely bullish; the same strength is what makes current momentum overbought and the risk/reward for a fresh entry unfavorable right now.</p>
+  </div>
+</div>
+
+<!-- ===================== TAB 8 — SHAREHOLDING ===================== -->
+<div class="tab-content" id="tab-8">
+  <div class="section">
+    <div class="section-head"><h2>Composition — March 2026</h2></div>
+    <div class="grid grid-4">
+      <div class="metric"><div class="lbl">Promoter (PAG)</div><div class="val">54.1%</div><div class="sub">62.8% of this is pledged <span class="conf v">V</span></div></div>
+      <div class="metric pos"><div class="lbl">FII</div><div class="val">16.9%</div><div class="sub">Sustained accumulation through FY26 <span class="conf v">V</span></div></div>
+      <div class="metric pos"><div class="lbl">DII / Mutual Funds</div><div class="val">8.3%</div><div class="sub">Up from 4.62% a year earlier; 22 MFs hold the stock <span class="conf v">V</span></div></div>
+      <div class="metric"><div class="lbl">Public / Retail</div><div class="val">~20.6%</div><div class="sub"><span class="conf e">E</span></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Promoter &amp; Institutional Trend</h2></div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Quarter</th><th class="num">Promoter %</th><th class="num">FII %</th><th class="num">DII %</th></tr>
+        <tr><td>Mar 2025</td><td class="num">54.78%</td><td class="num">~16.6%</td><td class="num">4.62%</td></tr>
+        <tr><td>Dec 2025</td><td class="num">54.20%</td><td class="num">—</td><td class="num">6.81%</td></tr>
+        <tr class="highlight-row"><td>Mar 2026</td><td class="num">54.10%</td><td class="num">16.9%</td><td class="num">8.3%</td></tr>
+      </table>
+    </div>
+    <p class="footnote" style="margin-top:8px;">Full 5-quarter series, free-float trend, SIP-linked inflow and index-weight data (Nifty 500 / MSCI) were not reliably available in this research pass — shown where found, flagged as gaps elsewhere rather than estimated. <span class="conf u">PARTIAL DATA</span></p>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Composite Scores</h2></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h4>Ownership Momentum Score</h4>
+        <div class="gauge-wrap"><div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width:65%;"></div></div><div class="gauge-num">65/100</div></div>
+        <p class="small" style="margin-top:10px;">FII and DII both accumulating meaningfully; promoter stake drifting down modestly (likely ESOP dilution, not distress selling).</p>
+      </div>
+      <div class="card">
+        <h4>Shareholding Risk Score</h4>
+        <div class="gauge-wrap"><div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width:72%; background:linear-gradient(90deg,var(--amber),var(--wine));"></div></div><div class="gauge-num">72/100</div></div>
+        <p class="small" style="margin-top:10px;">Elevated primarily by the 62.8% pledge; partially offset by institutional promoter quality and rising institutional ownership. Higher = more risk.</p>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
+<!-- ===================== TAB 9 — AI INTELLIGENCE (NEUTRAL depth: dashboard + brief score) ===================== -->
+<div class="tab-content" id="tab-9">
+  <div class="section">
+    <div class="section-head"><h2>A · Classification Dashboard</h2><span class="tag">AI Overlay = NEUTRAL → condensed tab per framework depth rule</span></div>
+    <div class="grid grid-4">
+      <div class="metric"><div class="lbl">Category</div><div class="val">C</div></div>
+      <div class="metric"><div class="lbl">AI Overlay</div><div class="val">⚪ NEUTRAL</div></div>
+      <div class="metric"><div class="lbl">Flywheel Status</div><div class="val">Feature</div></div>
+      <div class="metric"><div class="lbl">Adoption Phase</div><div class="val">Phase 2</div><div class="sub">Active deployment, not yet fully scaled</div></div>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <p class="small">Nuvama has launched an "Agentic AI" assistant and a multicurrency portfolio-reporting module for relationship managers, disclosed as delivering a <b>10–15% productivity lift per RM</b> — a real, quantified efficiency gain, and management explicitly frames AI investment as central to sharpening the client proposition. This sits at Value-Chain <b>Level 5 (AI-enabled incumbent)</b>: using AI as an operating tool, not building AI as a product or data moat. It does not clear the Data Flywheel test (Tab 3) — nothing found indicates the tooling gets better as more clients use it, or that improvement compounds into new client acquisition. <span class="conf v">V</span> (productivity figure) <span class="conf e">E</span> (classification)</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>F · AI Opportunity Score</h2></div>
+    <div class="gauge-wrap"><div class="gauge-bar-bg"><div class="gauge-bar-fill" style="width:51%;"></div></div><div class="gauge-num">51/100</div></div>
+    <p class="small" style="margin:10px 0 16px 0;"><b>MONITOR</b> band (40–60). Component breakdown below — shown individually so the scoring is checkable, not just asserted.</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Component</th><th class="num">Score</th><th>Reasoning</th></tr>
+        <tr><td>Data Flywheel</td><td class="num">6/20</td><td class="small">Real client data, not obviously more proprietary than peers hold</td></tr>
+        <tr><td>Adoption phase timing</td><td class="num">14/20</td><td class="small">Concrete, quantified deployment (rare — most disclosures are vaguer)</td></tr>
+        <tr><td>Value-chain position</td><td class="num">8/20</td><td class="small">Level 5 incumbent — applies AI, doesn't build AI products</td></tr>
+        <tr><td>India structural advantage</td><td class="num">6/20</td><td class="small">UHNI advisory doesn't directly leverage UPI/Aadhaar/India Stack</td></tr>
+        <tr><td>AI threat resistance</td><td class="num">17/20</td><td class="small">High-touch, trust-based UHNI advisory is hard for AI to disintermediate near-term</td></tr>
+        <tr class="highlight-row"><td><b>Total</b></td><td class="num"><b>51/100</b></td><td class="small">Investment horizon if AI becomes decision-relevant: 7–10yr (Level-5 incumbent band)</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
 <footer>
-  <strong>SEBI DISCLAIMER:</strong> This report is for educational/informational purposes only and is NOT investment advice. Past performance is not indicative of future results. The author/AI model is not a SEBI registered investment advisor. Consult a SEBI-registered financial advisor before making any investment decision. ·
-  <strong>DATA:</strong> Data sourced from public BSE/NSE filings, company presentations, screener platforms (Screener.in, 5Paisa, Trendlyne, ICICI Direct) and search results as of May 11-12, 2026. Some figures are estimated/cross-referenced. [VERIFIED] = official filing confirmation. [ESTIMATED] = cross-referenced; high confidence. [UNVERIFIED] = limited source. ·
-  <strong>FONTS:</strong> Playfair Display, JetBrains Mono, Source Serif 4 via Google Fonts · Buffett QV Series v5.0 · Generated: 12 May 2026
+  <div class="container">
+    <p><strong>Buffett Quality-Value Series v5.0</strong> · Generated 2 Jul 2026 for the Argus Reports research archive.</p>
+    <p>This report applies a personal quantitative-qualitative research framework to publicly available data (company filings, exchange disclosures, and financial news/data sources as cited inline via confidence tags). It is analysis for personal research purposes only — not investment advice, and not a recommendation to buy, sell, or hold any security. Data points are labelled VERIFIED, ESTIMATED, or UNVERIFIED throughout; UNVERIFIED and ESTIMATED items should be independently confirmed before being relied on for any investment decision. Past performance and model outputs do not guarantee future results. Please conduct independent due diligence or consult a SEBI-registered investment adviser before making investment decisions.</p>
+    <p class="footnote">Fonts: Fraunces, Source Sans 3, IBM Plex Mono (Google Fonts).</p>
+  </div>
 </footer>
 
 <script>
-var TAB_BAR_TOP = 0;
-window.addEventListener('load', function () {
-  var tabBar = document.getElementById('tab-bar');
-  if (tabBar) {
-    var el = tabBar, top = 0;
-    while (el) { top += el.offsetTop; el = el.offsetParent; }
-    TAB_BAR_TOP = top;
-  }
-});
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
-  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
-  document.getElementById(tabId).style.display = 'block';
-  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
-  if (activeBtn) { activeBtn.classList.add('active'); }
-  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
-}
+(function(){
+  var buttons = document.querySelectorAll('.tabbtn');
+  var panels = document.querySelectorAll('.tab-content');
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = btn.getAttribute('data-tab');
+      buttons.forEach(function(b){ b.classList.remove('active'); });
+      panels.forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+      window.scrollTo({top: 0, behavior: 'instant'});
+    });
+  });
+})();
 </script>
 </body>
 </html>

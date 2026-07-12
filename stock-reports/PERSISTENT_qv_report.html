@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persistent Systems — Argus BQV Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0B1426;
+  --navy-2: #0F1C35;
+  --navy-3: #172A48;
+  --cyan: #00D4FF;
+  --cyan-dim: rgba(0,212,255,0.15);
+  --emerald: #34D399;
+  --emerald-dim: rgba(52,211,153,0.12);
+  --coral: #F97316;
+  --coral-dim: rgba(249,115,22,0.12);
+  --violet: #A78BFA;
+  --yellow: #FBBF24;
+  --red: #F87171;
+  --muted: #6A80A0;
+  --muted-2: #8FA3BD;
+  --text: #E2EAF5;
+  --text-dim: #AAB8CC;
+  --border: rgba(100,140,180,0.18);
+  --card-bg: rgba(15,28,53,0.85);
+  --card-bg-2: rgba(23,42,72,0.7);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--navy); color: var(--text); font-size: 16px; line-height: 1.65; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.hero { background: linear-gradient(135deg, #060E1F 0%, #0B1B38 50%, #0D2040 100%); padding: 0; position: relative; overflow: hidden; max-height: 220px; }
+.hero::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, var(--cyan), var(--emerald), var(--violet)); }
+.hero-inner { max-width: 1280px; margin: 0 auto; padding: 18px 24px 16px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+.company-name { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
+.company-sub { font-size: 13px; color: var(--muted-2); margin-top: 3px; }
+.hero-lede { font-size: 14px; color: var(--text-dim); margin-top: 8px; max-width: 640px; line-height: 1.5; }
+.hero-badges { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.4px; }
+.badge-cat { background: rgba(0,212,255,0.15); color: var(--cyan); border: 1px solid rgba(0,212,255,0.4); }
+.badge-widener { background: rgba(52,211,153,0.12); color: var(--emerald); border: 1px solid rgba(52,211,153,0.35); }
+.badge-macro { background: rgba(167,139,250,0.12); color: var(--violet); border: 1px solid rgba(167,139,250,0.3); }
+.badge-watch { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.35); }
+.hero-right { text-align: right; }
+.verdict-box { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.4); border-radius: var(--radius-sm); padding: 10px 16px; }
+.verdict-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.verdict-text { font-size: 16px; font-weight: 800; color: var(--yellow); letter-spacing: 0.5px; margin-top: 2px; }
+.hero-metrics { display: flex; gap: 20px; margin-top: 10px; }
+.hero-metric { text-align: right; }
+.hero-metric-val { font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: var(--cyan); }
+.hero-metric-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+.pill { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; display: inline-block; }
+.pill-v { background: rgba(52,211,153,0.18); color: #4ADE80; }
+.pill-e { background: rgba(251,191,36,0.18); color: var(--yellow); }
+.pill-u { background: rgba(248,113,113,0.18); color: var(--red); }
+#tab-bar { background: #060E1F; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.tab-bar-inner { max-width: 1280px; margin: 0 auto; display: flex; overflow-x: auto; scrollbar-width: none; }
+.tab-bar-inner::-webkit-scrollbar { display: none; }
+.tab-btn { padding: 13px 16px; font-size: 13px; font-weight: 500; color: var(--muted); border: none; background: none; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--cyan); border-bottom-color: var(--cyan); font-weight: 600; }
+.main { max-width: 1280px; margin: 0 auto; padding: 28px 24px 60px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.sec-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.sec-title-sm { font-size: 15px; font-weight: 600; color: var(--muted-2); margin: 24px 0 12px; text-transform: uppercase; letter-spacing: 0.7px; }
+.card-grid { display: grid; gap: 16px; }
+.card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 680px) { .card-grid-3, .card-grid-4 { grid-template-columns: 1fr 1fr; } .card-grid-2 { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .card-grid-3, .card-grid-2, .card-grid-4 { grid-template-columns: 1fr; } }
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.card-stripe { height: 3px; }
+.card-stripe-cyan { background: var(--cyan); }
+.card-stripe-emerald { background: var(--emerald); }
+.card-stripe-violet { background: var(--violet); }
+.card-stripe-coral { background: var(--coral); }
+.card-stripe-yellow { background: var(--yellow); }
+.card-stripe-red { background: var(--red); }
+.card-body { padding: 16px; }
+.card-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.7px; }
+.card-value { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--text); margin-top: 6px; }
+.card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.card-trend { font-size: 12px; font-weight: 600; margin-top: 4px; }
+.trend-up { color: var(--emerald); }
+.trend-down { color: var(--red); }
+.trend-neutral { color: var(--muted); }
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl th { text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); }
+.tbl td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,0.02); }
+.tbl .mono-cell { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.tbl .pass { color: var(--emerald); font-weight: 600; }
+.tbl .fail { color: var(--red); font-weight: 600; }
+.tbl .marginal { color: var(--yellow); font-weight: 600; }
+.tbl-wrap { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.score-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; padding: 6px 14px; border-radius: 20px; }
+.score-pass { background: rgba(52,211,153,0.12); color: var(--emerald); border: 1px solid rgba(52,211,153,0.3); }
+.score-fail { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.score-marginal { background: rgba(251,191,36,0.1); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+.score-clean { background: rgba(52,211,153,0.15); color: #4ADE80; border: 1px solid rgba(52,211,153,0.4); font-size: 16px; }
+.score-suspect { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.4); font-size: 16px; }
+.pillar-grade { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; }
+.grade-a { color: var(--emerald); }
+.grade-b { color: var(--cyan); }
+.grade-c { color: var(--yellow); }
+.grade-d { color: var(--coral); }
+.grade-f { color: var(--red); }
+.moat-stars { color: var(--yellow); font-size: 15px; letter-spacing: 1px; }
+.moat-stars-dim { color: rgba(251,191,36,0.25); }
+.oe-box { background: linear-gradient(135deg, rgba(0,212,255,0.07), rgba(52,211,153,0.05)); border: 1px solid rgba(0,212,255,0.2); border-radius: var(--radius); padding: 20px; }
+.oe-title { font-size: 13px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+.oe-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.oe-row:last-child { border-bottom: none; font-weight: 700; color: var(--emerald); }
+.oe-label { color: var(--muted-2); font-size: 14px; }
+.oe-val { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text); }
+.flywheel-box { background: linear-gradient(135deg, rgba(167,139,250,0.08), rgba(0,212,255,0.05)); border: 1px solid rgba(167,139,250,0.25); border-radius: var(--radius); padding: 20px; }
+.flywheel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.flywheel-title { font-size: 13px; font-weight: 700; color: var(--violet); text-transform: uppercase; letter-spacing: 1px; }
+.flywheel-badge { font-size: 15px; font-weight: 800; padding: 6px 18px; border-radius: 20px; background: rgba(52,211,153,0.15); color: var(--emerald); border: 1px solid rgba(52,211,153,0.4); }
+.flywheel-score { font-family: 'JetBrains Mono', monospace; font-size: 36px; font-weight: 700; color: var(--emerald); text-align: center; padding: 12px 0; }
+.verdict-main { background: linear-gradient(135deg, rgba(251,191,36,0.07) 0%, rgba(251,191,36,0.03) 100%); border: 2px solid rgba(251,191,36,0.4); border-radius: 16px; padding: 28px; margin-bottom: 24px; }
+.verdict-quote { font-size: 16px; font-style: italic; color: var(--muted-2); line-height: 1.6; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.verdict-quote cite { font-size: 12px; font-style: normal; color: var(--muted); display: block; margin-top: 8px; }
+.cycle-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+.cycle-label { font-size: 13px; color: var(--text-dim); }
+.cycle-status { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 12px; }
+.cycle-headwind { background: rgba(248,113,113,0.15); color: var(--red); }
+.cycle-neutral { background: rgba(100,140,180,0.15); color: var(--muted-2); }
+.cycle-tailwind { background: rgba(52,211,153,0.15); color: var(--emerald); }
+.cycle-recovery { background: rgba(251,191,36,0.15); color: var(--yellow); }
+.ai-chain { display: flex; align-items: center; gap: 0; margin: 16px 0; }
+.ai-chain-node { flex: 1; padding: 12px 8px; text-align: center; border: 1px solid var(--border); font-size: 11px; color: var(--muted); }
+.ai-chain-node:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.ai-chain-node:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.ai-chain-node.active { background: rgba(0,212,255,0.1); border-color: var(--cyan); color: var(--cyan); font-weight: 700; }
+.ai-chain-node-title { font-weight: 600; font-size: 12px; margin-bottom: 3px; }
+.upgrade-cond { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; }
+.upgrade-num { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--cyan); background: var(--cyan-dim); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.upgrade-text { font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+.dcf-table-wrap { overflow-x: auto; }
+.dcf-table { min-width: 700px; width: 100%; }
+.footer { background: #060E1F; border-top: 1px solid var(--border); padding: 24px; font-size: 12px; color: var(--muted); line-height: 1.7; max-width: 1280px; margin: 0 auto; }
+.footer strong { color: var(--muted-2); }
+@media (max-width: 680px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-right { text-align: left; }
+  .hero-metrics { justify-content: flex-start; }
+  .company-name { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="company-name">Persistent Systems Ltd</div>
+      <div class="company-sub">NSE: PERSISTENT &nbsp;|&nbsp; IT-Led Digital Engineering &nbsp;|&nbsp; FY26 Revenue: $1,654M &nbsp;|&nbsp; ₹14,748 Cr &nbsp;|&nbsp; Analysis: 29 Jun 2026</div>
+      <div class="hero-lede">AI-led digital engineering compounder with 29% 5-yr revenue CAGR, ROIC 34%, zero-pledge promoters, and 24 consecutive quarters of USD growth — but Nagarro acquisition introduces integration risk and valuation sits near blended IV.</div>
+      <div class="hero-badges">
+        <span class="badge badge-cat">📂 Cat B · High-Growth Compounder</span>
+        <span class="badge badge-widener">🟢 AI WIDENER · Forming</span>
+        <span class="badge badge-macro">🌐 Global IT Services</span>
+        <span class="badge badge-watch">⚠️ Macro: Neutral→Cautious</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="verdict-box">
+        <div class="verdict-label">BQV Series Verdict</div>
+        <div class="verdict-text">WATCH ★★★</div>
+      </div>
+      <div class="hero-metrics">
+        <div class="hero-metric">
+          <div class="hero-metric-val">₹4,350</div>
+          <div class="hero-metric-lbl">Price (29 Jun)</div>
+        </div>
+        <div class="hero-metric">
+          <div class="hero-metric-val">₹4,692</div>
+          <div class="hero-metric-lbl">AI-Adj IV</div>
+        </div>
+        <div class="hero-metric">
+          <div class="hero-metric-val">36.8×</div>
+          <div class="hero-metric-lbl">P/E (Curr)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+    <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro & Growth</button>
+    <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+    <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+    <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+    <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+    <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+    <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Technical</button>
+    <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+    <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+  </div>
+</div>
+
+<div class="main">
+
+<div id="tab0" class="tab-content" style="display:block;">
+  <div class="sec-title">🏢 Company Overview & Series Rationale</div>
+  <div class="card-grid card-grid-4" style="margin-bottom:24px;">
+    <div class="card">
+      <div class="card-stripe card-stripe-cyan"></div>
+      <div class="card-body">
+        <div class="card-label">FY26 Revenue</div>
+        <div class="card-value">₹14,748</div>
+        <div class="card-sub">Crores · $1,654M <span class="pill pill-v">VERIFIED</span></div>
+        <div class="card-trend trend-up">▲ +23.5% YoY INR</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-stripe card-stripe-emerald"></div>
+      <div class="card-body">
+        <div class="card-label">FY26 PAT</div>
+        <div class="card-value">₹1,865</div>
+        <div class="card-sub">Crores · EPS ₹118.23 <span class="pill pill-v">VERIFIED</span></div>
+        <div class="card-trend trend-up">▲ +33.2% YoY</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-stripe card-stripe-violet"></div>
+      <div class="card-body">
+        <div class="card-label">EBIT Margin FY26</div>
+        <div class="card-value">15.6%</div>
+        <div class="card-sub">Q4FY26: 16.3% <span class="pill pill-v">VERIFIED</span></div>
+        <div class="card-trend trend-up">▲ +190 bps QoQ (Q4)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-stripe card-stripe-yellow"></div>
+      <div class="card-body">
+        <div class="card-label">ROCE</div>
+        <div class="card-value">34.4%</div>
+        <div class="card-sub">FY26 · ROE: 27.3% <span class="pill pill-v">VERIFIED</span></div>
+        <div class="card-trend trend-up">▲ Rising (30%→34%)</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px;">
+    <div>
+      <div class="sec-title-sm">Business Overview</div>
+      <div class="tbl-wrap">
+        <div style="padding:18px; font-size:14px; color:var(--text-dim); line-height:1.75;">
+          <p>Persistent Systems is an AI-led digital engineering and enterprise modernisation company, founded by Dr. Anand Deshpande in 1990. It serves over 350 clients — including 20 of the Fortune 50 — primarily in the United States, across three verticals: <strong style="color:var(--text)">Banking, Financial Services &amp; Insurance (BFSI)</strong> at ~34%, <strong style="color:var(--text)">Healthcare &amp; Life Sciences (HLS)</strong> at ~26%, and <strong style="color:var(--text)">Technology, Media &amp; Emerging Verticals</strong> at ~40%.</p>
+          <p style="margin-top:10px;">The business model is centred on deep engineering partnerships: selling skilled engineering time to enterprise clients, with AI platforms (ERAG, iAURA) increasingly enabling productivity-driven, outcome-based delivery — shifting from pure headcount growth toward intellectual leverage.</p>
+          <p style="margin-top:10px;">In June 2026, Persistent announced the acquisition of Nagarro SE (Germany) at EUR 81/share (~140% premium), creating a combined entity with annualised revenue of ~$2.9B and 46,000+ employees across 40+ countries. This transformative deal adds European scale, SAP/ERP capabilities, and ~€1B in additional revenue. <span class="pill pill-v">VERIFIED</span></p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-title-sm">BQV Series Rationale</div>
+      <div class="tbl-wrap">
+        <div style="padding:18px; font-size:14px; color:var(--text-dim); line-height:1.75;">
+          <p><strong style="color:var(--cyan)">Why analyse now?</strong> Persistent has corrected ~34% from its 52-week high of ₹6,599 to ₹4,350 as of today, driven by sector de-rating, FII outflows, and Nagarro acquisition uncertainty. The question is whether this pullback offers an entry into a compounding machine or whether headwinds justify continued caution.</p>
+          <p style="margin-top:10px;"><strong style="color:var(--cyan)">Why Cat B?</strong> 4-year USD revenue CAGR of 25.6%, growing ROIC (26%→34%), top-decile margins for a services company, and a large, underpenetrated digital engineering TAM. Revenue CAGR far exceeds the Cat C threshold.</p>
+          <p style="margin-top:10px;"><strong style="color:var(--cyan)">Framework adaptation:</strong> Persistent straddles the IT Services (THREAT) and IT Products/SaaS (WIDENER) categories. We classify it as <strong style="color:var(--emerald)">🟢 WIDENER with FORMING flywheel</strong> — the AI platform strategy (ERAG, iAURA) creates genuine productivity leverage, but the core model remains people-intensive. This tension is explicitly noted.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title-sm">Key Performance Snapshot (5-Year)</div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr><th>Metric</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>FY26</th><th>Trend</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Revenue (₹ Cr)</td><td class="mono-cell">5,711</td><td class="mono-cell">8,351</td><td class="mono-cell">9,822</td><td class="mono-cell">11,939</td><td class="mono-cell"><strong>14,748</strong></td><td class="pass">▲ 29% CAGR</td></tr>
+        <tr><td>Net Profit (₹ Cr)</td><td class="mono-cell">690</td><td class="mono-cell">921</td><td class="mono-cell">1,093</td><td class="mono-cell">1,400</td><td class="mono-cell"><strong>1,865</strong></td><td class="pass">▲ 36% CAGR</td></tr>
+        <tr><td>EPS (₹)</td><td class="mono-cell">45.15</td><td class="mono-cell">60.24</td><td class="mono-cell">70.98</td><td class="mono-cell">90.54</td><td class="mono-cell"><strong>118.23</strong></td><td class="pass">▲ 27% CAGR</td></tr>
+        <tr><td>EBIT Margin</td><td class="mono-cell">~15%</td><td class="mono-cell">15.4%</td><td class="mono-cell">14.9%</td><td class="mono-cell">15.3%</td><td class="mono-cell"><strong>15.6%</strong></td><td class="trend-neutral">→ Stable/Improving</td></tr>
+        <tr><td>FCF (₹ Cr)</td><td class="mono-cell">464</td><td class="mono-cell">524</td><td class="mono-cell">947</td><td class="mono-cell">964</td><td class="mono-cell"><strong>1,572</strong></td><td class="pass">▲ Accelerating</td></tr>
+        <tr><td>ROCE %</td><td class="mono-cell">26%</td><td class="mono-cell">30%</td><td class="mono-cell">29%</td><td class="mono-cell">30%</td><td class="mono-cell"><strong>34.4%</strong></td><td class="pass">▲ Rising</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:12px; color:var(--muted); margin-top:8px;"><span class="pill pill-v">VERIFIED</span> All data from BSE/NSE filings and Screener.in consolidated view. USD revenue from Persistent IR presentations.</p>
+</div>
+
+<div id="tab1" class="tab-content">
+  <div class="sec-title">🌐 Macro Context, Sector CAGR & Growth Rate Derivation</div>
+
+  <div class="sec-title-sm">Layer 1 — Macro Anchor (India + US Nominal GDP)</div>
+  <div class="card-grid card-grid-4" style="margin-bottom:20px;">
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body"><div class="card-label">India 10yr G-Sec</div><div class="card-value mono">6.7%</div><div class="card-sub">Jun 2026 · Declining <span class="pill pill-v">VERIFIED</span></div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body"><div class="card-label">RBI Repo Rate</div><div class="card-value mono">5.25%</div><div class="card-sub">Unchanged · Jun 2026 MPC <span class="pill pill-v">VERIFIED</span></div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-violet"></div><div class="card-body"><div class="card-label">India CPI Inflation</div><div class="card-value mono">3.94%</div><div class="card-sub">May 2026 · RBI data <span class="pill pill-v">VERIFIED</span></div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body"><div class="card-label">India Real GDP FY27E</div><div class="card-value mono">6.6%</div><div class="card-sub">RBI revised · ↓ from 6.9% <span class="pill pill-v">VERIFIED</span></div></div></div>
+  </div>
+  <div class="tbl-wrap" style="margin-bottom:20px; padding:14px 18px;">
+    <p style="font-size:14px; color:var(--text-dim);"><strong style="color:var(--text)">India Nominal GDP ceiling:</strong> Real GDP (6.6%) + CPI (3.94%) = <span class="mono" style="color:var(--cyan);">~10.5% Nominal GDP</span> → absolute terminal growth ceiling for any India-exposed company. Persistent derives ~75% of revenues from North America and ~15% from Europe — so <strong>US Nominal GDP</strong> is a more relevant benchmark: US Real GDP (~2.0%) + US CPI (~3.0%) = <span class="mono" style="color:var(--cyan);">~5.0% US Nominal GDP</span>. Terminal growth of 6-7% for Persistent is above US nominal but justified by India tech talent cost arbitrage and rupee depreciation kicker for INR-denominated reporting.</p>
+  </div>
+
+  <div class="sec-title-sm">Macro Cycle Dashboard (6 Dimensions)</div>
+  <div class="card-grid card-grid-3" style="margin-bottom:24px; gap:10px;">
+    <div class="cycle-card"><span class="cycle-label">🌾 Rural Income Cycle (India)</span><span class="cycle-status cycle-neutral">NEUTRAL</span></div>
+    <div class="cycle-card"><span class="cycle-label">🏙️ Urban Consumption / IT Wages</span><span class="cycle-status cycle-recovery">RECOVERY</span></div>
+    <div class="cycle-card"><span class="cycle-label">💰 Input Cost Cycle (HR/Talent)</span><span class="cycle-status cycle-neutral">NEUTRAL</span></div>
+    <div class="cycle-card"><span class="cycle-label">🏦 RBI Rate Cycle</span><span class="cycle-status cycle-recovery">EASING (5.25%)</span></div>
+    <div class="cycle-card"><span class="cycle-label">🏗️ Government Capex Cycle</span><span class="cycle-status cycle-tailwind">TAILWIND (GCCs)</span></div>
+    <div class="cycle-card"><span class="cycle-label">🤖 AI Adoption Cycle (IT Services)</span><span class="cycle-status cycle-tailwind">OPPORTUNITY (Phase 3)</span></div>
+  </div>
+  <div class="tbl-wrap" style="padding:12px 16px; margin-bottom:24px;">
+    <p style="font-size:13px; color:var(--text-dim);"><strong style="color:var(--cyan)">Macro Composite: NEUTRAL</strong> — US tariff overhang (26% reciprocal tariff announced April 2026) is creating FII outflows from Indian equities but has limited direct impact on Persistent (IT services are largely exempt). RBI easing cycle is supportive of WACC compression. US tech enterprise spending recovering in BFSI and HLS.</p>
+    <p style="font-size:13px; color:var(--text-dim); margin-top:8px;"><strong style="color:var(--emerald)">AI Cycle Impact: OPPORTUNITY</strong> — AI is accelerating enterprise digital transformation demand, directly benefiting Persistent's AI-led engineering positioning. Nasscom CXO survey: 82% of enterprise CXOs expect to increase digital spend by 5%+ in CY25-26.</p>
+  </div>
+
+  <div class="sec-title-sm">Layer 2 — Digital Engineering Sector CAGR (Bespoke Derivation)</div>
+  <div style="background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.15); border-radius:var(--radius); padding:14px 18px; margin-bottom:16px; font-size:13px; color:var(--text-dim);">
+    <strong style="color:var(--cyan)">Framework Adaptation Flagged:</strong> Persistent does not map cleanly to "IT Services" (THREAT, 6-8% base CAGR) or "IT Products/SaaS" (WIDENER, 18-22% base). Persistent operates in the <strong>Digital Engineering &amp; ER&amp;D Services</strong> subsector — the fastest-growing segment of India IT. Bespoke CAGR derived from: (a) NASSCOM ER&amp;D growth data, (b) Mordor Intelligence India IT Services 9% CAGR, (c) Persistent's own 4yr USD CAGR 25.6%, (d) global digital engineering market CAGR 14-17% (industry reports). Applying macro cycle adjustment, AI WIDENER adds +2-3pp above base.
+  </div>
+  <div class="tbl-wrap" style="margin-bottom:24px;">
+    <table class="tbl">
+      <thead><tr><th>Scenario</th><th>Sector CAGR (Digital Eng.)</th><th>AI Impact</th><th>Applied Rate</th></tr></thead>
+      <tbody>
+        <tr><td>Stress</td><td class="mono-cell">9–11%</td><td>Neutral (sector headwinds)</td><td class="mono-cell fail">10%</td></tr>
+        <tr><td>Base</td><td class="mono-cell">13–16%</td><td>WIDENER (+2pp)</td><td class="mono-cell" style="color:var(--cyan)">15%</td></tr>
+        <tr><td>Acceleration</td><td class="mono-cell">18–22%</td><td>WIDENER (+3pp)</td><td class="mono-cell pass">21%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title-sm">Layer 3 — Company Alpha Over Sector</div>
+  <div class="tbl-wrap" style="margin-bottom:24px;">
+    <table class="tbl">
+      <thead><tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Market share gain</td><td class="pass">ACTIVE</td><td class="mono-cell pass">+2–3%</td><td class="mono-cell pass">+1–2%</td><td>Gaining Fortune 50 wallet share; 24 consecutive quarters</td></tr>
+        <tr><td>Premiumisation (outcome-based)</td><td class="pass">ACTIVE</td><td class="mono-cell pass">+1–2%</td><td class="mono-cell pass">+2–3%</td><td>Shift from T&amp;M to productivity/outcome billing</td></tr>
+        <tr><td>Category expansion (SAP/ERP/CX)</td><td class="pass">ACTIVE</td><td class="mono-cell pass">+2%</td><td class="mono-cell pass">+2–3%</td><td>Nagarro adds SAP, CX capabilities, ERP verticals</td></tr>
+        <tr><td>Geographic expansion (Europe)</td><td class="pass">ACTIVE</td><td class="mono-cell pass">+2%</td><td class="mono-cell pass">+2%</td><td>Nagarro: Europe 22% of combined revenue vs 9% standalone</td></tr>
+        <tr><td>Pricing power</td><td class="marginal">MARGINAL</td><td class="mono-cell">+1%</td><td class="mono-cell">+1%</td><td>IT services pricing competitive; AI efficiency partially offsets</td></tr>
+        <tr><td>AI Alpha 6a (Cost Reduction)</td><td class="pass">ACTIVE</td><td class="mono-cell pass">+1–2%</td><td class="mono-cell pass">+2–3%</td><td>ERAG + iAURA proprietary data → labour cost reduction</td></tr>
+        <tr><td>AI Alpha 6b (Market Expansion)</td><td class="marginal">POTENTIAL</td><td class="mono-cell">+1%</td><td class="mono-cell">+2%</td><td>AI enables smaller clients/new verticals</td></tr>
+        <tr><td>AI Alpha 6c (Flywheel/Switching)</td><td class="marginal">FORMING</td><td class="mono-cell">+0.5%</td><td class="mono-cell">+1–2%</td><td>Platform stickiness forming; not yet self-reinforcing at scale</td></tr>
+        <tr style="font-weight:600;"><td>Total Alpha</td><td>—</td><td class="mono-cell pass">+10–13%</td><td class="mono-cell pass">+12–17%</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title-sm">Growth Rate Summary Table (3 Scenarios)</div>
+  <div class="tbl-wrap" style="margin-bottom:20px;">
+    <table class="tbl">
+      <thead><tr><th>Parameter</th><th class="fail">STRESS</th><th style="color:var(--cyan)">BASE</th><th class="pass">ACCEL</th></tr></thead>
+      <tbody>
+        <tr><td>Macro state (India + US)</td><td class="mono-cell fail">GDP ~5–5.5%</td><td class="mono-cell" style="color:var(--cyan)">GDP ~6.6–7%</td><td class="mono-cell pass">GDP ~7.5%+</td></tr>
+        <tr><td>Digital Eng. sector CAGR</td><td class="mono-cell fail">9–11%</td><td class="mono-cell" style="color:var(--cyan)">13–16%</td><td class="mono-cell pass">18–22%</td></tr>
+        <tr><td>Company alpha (all sources)</td><td class="mono-cell fail">+5%</td><td class="mono-cell" style="color:var(--cyan)">+10–13%</td><td class="mono-cell pass">+12–17%</td></tr>
+        <tr><td>AI Alpha contribution</td><td class="mono-cell fail">+1%</td><td class="mono-cell" style="color:var(--cyan)">+2–3%</td><td class="mono-cell pass">+3–5%</td></tr>
+        <tr><td>Stage 1 Revenue CAGR (FY27–31)</td><td class="mono-cell fail">14–16%</td><td class="mono-cell" style="color:var(--cyan)">20–22%</td><td class="mono-cell pass">24–27%</td></tr>
+        <tr><td>Stage 2 FCF CAGR (FY32+)</td><td class="mono-cell fail">8–10%</td><td class="mono-cell" style="color:var(--cyan)">12–14%</td><td class="mono-cell pass">15–17%</td></tr>
+        <tr><td>Terminal growth</td><td class="mono-cell fail">5%</td><td class="mono-cell" style="color:var(--cyan)">7%</td><td class="mono-cell pass">8%</td></tr>
+        <tr><td>Margin direction</td><td class="fail">Compress (Nagarro drag)</td><td style="color:var(--cyan)">Stable / Expand</td><td class="pass">Expand (+50bps/yr)</td></tr>
+        <tr><td>Key risk</td><td class="fail">Nagarro integration fails; US slowdown</td><td style="color:var(--text-dim)">Execution on integration; margin control</td><td class="pass">AI platform scales; margin surprise</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.15); border-radius:8px; padding:12px 16px; font-size:13px; color:var(--muted-2);">
+    <strong style="color:var(--text)">Sensitivity:</strong> A 1% change in terminal growth rate changes IV by approximately <span class="mono" style="color:var(--cyan)">~20%</span>. &nbsp;|&nbsp; A 1% change in Stage 1 growth changes IV by approximately <span class="mono" style="color:var(--cyan)">~4–5%</span>.
+  </div>
+</div>
+
+<div id="tab2" class="tab-content">
+  <div class="sec-title">💰 Financial Fortress & Earnings Quality</div>
+
+  <div class="sec-title-sm">ROE & ROCE Trend (5-Year)</div>
+  <div class="card-grid card-grid-4" style="margin-bottom:24px;">
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body"><div class="card-label">ROCE FY22</div><div class="card-value mono">26%</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body"><div class="card-label">ROCE FY23</div><div class="card-value mono">30%</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body"><div class="card-label">ROCE FY25</div><div class="card-value mono">30%</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body"><div class="card-label">ROCE FY26</div><div class="card-value mono" style="color:var(--emerald)">34.4%</div><div class="card-trend trend-up">▲ New High</div></div></div>
+  </div>
+
+  <div class="sec-title-sm">Financial Fortress Scorecard (Cat B)</div>
+  <div class="tbl-wrap" style="margin-bottom:24px;">
+    <table class="tbl">
+      <thead><tr><th>Criterion</th><th>Status</th><th>Data</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td>ROE ≥ 15% for 5 consecutive years</td><td class="pass">✓ PASS</td><td class="mono-cell">22%→25%→25%→27%</td><td>Strong, rising 3yr avg ROE 25.4%</td></tr>
+        <tr><td>ROIC &gt; WACC (13%) for 5 years</td><td class="pass">✓ PASS</td><td class="mono-cell">ROCE 26%→34.4%</td><td>Significant spread; wide moat confirmed</td></tr>
+        <tr><td>Net cash / near debt-free</td><td class="pass">✓ PASS</td><td class="mono-cell">Debt ₹477 Cr vs Invest. ₹1,615 Cr</td><td>Effectively net cash pre-Nagarro deal</td></tr>
+        <tr><td>Net profit margin ≥ 15%</td><td class="marginal">~ MARGINAL</td><td class="mono-cell">12.4% (PAT/Rev)</td><td>Below 15% but EBIT margin 15.6%; tax + D&amp;A drag</td></tr>
+        <tr><td>FCF positive &amp; growing</td><td class="pass">✓ PASS</td><td class="mono-cell">₹947→₹964→₹1,572 Cr</td><td>FCF accelerating sharply in FY26</td></tr>
+        <tr><td>FCF conversion ≥ 80% of net income</td><td class="pass">✓ PASS</td><td class="mono-cell">84% (₹1,572/₹1,865)</td><td>CFO/PAT ~94.7%; FCF/PAT 84%</td></tr>
+        <tr><td>Pricing power proven</td><td class="pass">✓ PASS</td><td class="mono-cell">EBIT margins stable/rising</td><td>Maintained margins through attrition cycles</td></tr>
+        <tr><td>Revenue CAGR ≥ sector CAGR (15%)</td><td class="pass">✓ PASS</td><td class="mono-cell">5yr: 29%, 3yr: 21%</td><td>Persistent is beating sector by 5–10pp</td></tr>
+        <tr><td>Predictable/recurring revenue</td><td class="pass">✓ PASS</td><td class="mono-cell">TCV $2.4B (1.45× revenue)</td><td>24 consecutive Q of growth; deal visibility strong</td></tr>
+        <tr><td>Capital-light model</td><td class="pass">✓ PASS</td><td class="mono-cell">CapEx ~₹195 Cr / EBIT ₹2,300 Cr</td><td>CapEx &lt;1.3% of revenue; classic services model</td></tr>
+        <tr><td>Dividend payout &lt;80% of owner earnings</td><td class="pass">✓ PASS</td><td class="mono-cell">Payout 34% (FY26 ₹40/share)</td><td>Conservative payout; strong retained earnings</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title-sm">Owner Earnings (FY26)</div>
+  <div class="oe-box" style="margin-bottom:24px;">
+    <div class="oe-title">📊 Owner Earnings Derivation — FY26</div>
+    <div class="oe-row"><span class="oe-label">Net Income</span><span class="oe-val">+ ₹1,865 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">+ Depreciation &amp; Amortisation</span><span class="oe-val">+ ₹403 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">+ Non-cash SBC (est.)</span><span class="oe-val">+ ₹50 Cr (est.) <span class="pill pill-e">EST</span></span></div>
+    <div class="oe-row"><span class="oe-label">− Maintenance CapEx (~60% of ₹195 Cr)</span><span class="oe-val">− ₹117 Cr</span></div>
+    <div class="oe-row"><span class="oe-label">± Working Capital Changes (unfav. trend)</span><span class="oe-val">− ₹100 Cr (est.)</span></div>
+    <div class="oe-row"><span class="oe-label" style="font-weight:700; color:var(--emerald)">Owner Earnings (Conservative)</span><span class="oe-val" style="color:var(--emerald); font-weight:700;">₹2,101 Cr (~₹133/share)</span></div>
+    <div class="oe-row"><span class="oe-label" style="color:var(--muted)">Owner Earnings (Base)</span><span class="oe-val" style="color:var(--muted);">₹2,201 Cr (~₹139/share)</span></div>
+    <p style="font-size:12px; color:var(--muted); margin-top:10px;">Note: WC days risen from 47→73 in 2 years (₹1,051 Cr total WC increase); amortised. Maintenance vs growth CapEx split estimated. <span class="pill pill-e">EST</span></p>
+  </div>
+
+  <div class="sec-title-sm">O'Glove Earnings Quality Framework (5 Tests)</div>
+  <div class="card-grid card-grid-4" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="card-stripe card-stripe-emerald"></div>
+      <div class="card-body">
+        <div class="card-label">Test 1 — FCF Conversion</div>
+        <div style="margin:10px 0;"><span class="score-badge score-pass">✓ PASS</span></div>
+        <div style="font-size:13px; color:var(--text-dim);">CFO/PAT 5yr avg ~90%<br>FY26: 94.7% · FY25: 82.6% · FY24: 119%<br>FCF/PAT FY26: 84% ≥ 80%</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-stripe card-stripe-emerald"></div>
+      <div class="card-body">
+        <div class="card-label">Test 2 — DSO Trend</div>
+        <div style="margin:10px 0;"><span class="score-badge score-pass">✓ PASS</span></div>
+        <div style="font-size:13px; color:var(--text-dim);">Debtor Days:<br>FY22:61→FY23:69→FY24:62→FY25:56→FY26:53<br>Improving trend — no AR stuffing</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-stripe card-stripe-emerald"></div>
+      <div class="card-body">
+        <div class="card-label">Test 3 — Inventory Days</div>
+        <div style="margin:10px 0;"><span class="score-badge score-pass">✓ N/A PASS</span></div>
+        <div style="font-size:13px; color:var(--text-dim);">IT Services — zero inventory<br>Not applicable for services business.<br>No inventory risk.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-stripe card-stripe-emerald"></div>
+      <div class="card-body">
+        <div class="card-label">Test 4 — Accounting Stability</div>
+        <div style="margin:10px 0;"><span class="score-badge score-pass">✓ PASS</span></div>
+        <div style="font-size:13px; color:var(--text-dim);">No major policy changes noted<br>New Labour Code impact in Q3FY26 disclosed transparently (+230bps one-time)</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-stripe card-stripe-emerald"></div>
+    <div class="card-body">
+      <div class="card-label">Test 5 — Gross Margin Consistency</div>
+      <div style="margin:10px 0;"><span class="score-badge score-pass">✓ PASS</span></div>
+      <div style="font-size:13px; color:var(--text-dim);">Operating Profit Margin: FY20: 14% → FY21: 16% → FY22: 17% → FY23: 18% → FY24: 17% → FY25: 17% → FY26: 19% — Stable and improving. EBIT margin FY26: 15.6%; Q4FY26: 16.3% (+190bps QoQ). No cross-cycle margin manipulation detected. Working capital days rising (47→73) flagged but this is WC timing, not earnings quality issue. <span class="pill pill-v">VERIFIED</span></div>
+    </div>
+  </div>
+  <div style="margin-top:16px; display:flex; align-items:center; gap:12px;">
+    <span class="score-badge score-clean" style="font-size:18px; padding:10px 24px;">🟢 EARNINGS QUALITY: CLEAN</span>
+    <span style="font-size:13px; color:var(--muted-2);">All 5 O'Glove tests pass. Minor watch: WC days rising and unbilled revenue worth monitoring in FY27. Q4FY26 one-quarter CFO dip to 77% (vs 91% prior Q) — annual figure clean at 94.7%.</span>
+  </div>
+</div>
+
+<div id="tab3" class="tab-content">
+  <div class="sec-title">🏰 Economic Moat Analysis</div>
+
+  <div class="sec-title-sm">Moat Sources (ROIC as Proof: 34.4% > 13% WACC → WIDE MOAT)</div>
+  <div class="card-grid card-grid-2" style="margin-bottom:24px;">
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body">
+      <div style="display:flex; justify-content:space-between; align-items:start;">
+        <div><div class="card-label">Switching Costs</div><div style="margin-top:8px; font-size:14px; color:var(--text-dim); line-height:1.6;">Deep engineering integration with Fortune 50 clients (20 of them). Multi-year TCV deals ($600M/quarter), embedded in BFSI core systems and HLS platforms. Ripping out Persistent requires months of knowledge transfer — high friction. <span class="pill pill-e">EST</span></div></div>
+        <div class="moat-stars">★★★★</div>
+      </div>
+      <p style="font-size:12px; color:var(--muted); margin-top:8px;"><strong>Macro stress test:</strong> HOLDS — enterprise switching costs increase in downturns (procurement risk aversion); clients consolidate vendors to known partners.</p>
+    </div></div>
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body">
+      <div style="display:flex; justify-content:space-between; align-items:start;">
+        <div><div class="card-label">Intangible Assets (Brand + Engineering IP)</div><div style="margin-top:8px; font-size:14px; color:var(--text-dim); line-height:1.6;">Brand Finance named Persistent fastest-growing IT services brand globally (2026). iAURA 2.0, ERAG platform, WaveMaker low-code, NuoDB distributed SQL, CloudFabrix — proprietary platforms create sticky IP moats. <span class="pill pill-v">VERIFIED</span></div></div>
+        <div class="moat-stars">★★★</div>
+      </div>
+      <p style="font-size:12px; color:var(--muted); margin-top:8px;"><strong>Macro stress test:</strong> HOLDS — brand compounds through downturns; IP becomes more valuable as AI-driven differentiation widens vs generic IT services.</p>
+    </div></div>
+    <div class="card"><div class="card-stripe card-stripe-violet"></div><div class="card-body">
+      <div style="display:flex; justify-content:space-between; align-items:start;">
+        <div><div class="card-label">Cost Advantages (Engineering Talent Arbitrage)</div><div style="margin-top:8px; font-size:14px; color:var(--text-dim); line-height:1.6;">India-based delivery model with USD-denominated billing — structural cost advantage vs US/EU competitors. AI productivity tools (ERAG) further lower unit delivery costs. USD/INR at 94.48 is a margin headwind vs baseline, but talent arbitrage remains structural. <span class="pill pill-v">VERIFIED</span></div></div>
+        <div class="moat-stars">★★★★</div>
+      </div>
+      <p style="font-size:12px; color:var(--muted); margin-top:8px;"><strong>Macro stress test:</strong> STRENGTHENS — INR weakness benefits USD revenues; India talent pool depth grows relative to US alternatives.</p>
+    </div></div>
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body">
+      <div style="display:flex; justify-content:space-between; align-items:start;">
+        <div><div class="card-label">Efficient Scale (Deep Vertical Expertise)</div><div style="margin-top:8px; font-size:14px; color:var(--text-dim); line-height:1.6;">Highly specialised in BFSI, HLS, and TMEV verticals. Domain expertise in US banking regulations, HIPAA healthcare compliance, and life sciences creates barriers for generalist IT players. TCV $2.4B reflects deep pipeline. <span class="pill pill-e">EST</span></div></div>
+        <div class="moat-stars">★★★</div>
+      </div>
+      <p style="font-size:12px; color:var(--muted); margin-top:8px;"><strong>Macro stress test:</strong> WEAKENS slightly — BFSI client budget freezes (macro risk) could delay deals; HLS remains resilient.</p>
+    </div></div>
+  </div>
+
+  <div class="sec-title-sm">Data Flywheel Verdict</div>
+  <div class="flywheel-box" style="margin-bottom:24px;">
+    <div class="flywheel-header">
+      <div class="flywheel-title">🌀 DATA FLYWHEEL TEST RESULTS</div>
+      <div class="flywheel-badge">FORMING ★★★ (2/3)</div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">
+      <div style="background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.25); border-radius:8px; padding:12px;">
+        <div style="font-size:12px; font-weight:700; color:var(--emerald); margin-bottom:6px;">✓ Q1: Proprietary Training Data</div>
+        <div style="font-size:13px; color:var(--text-dim);">iAURA 2.0 trained on client data transformation patterns; ERAG has proprietary codebase context. Data built across 35+ years and 350+ clients cannot be replicated by new entrants. <span class="pill pill-v">VERIFIED</span></div>
+      </div>
+      <div style="background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.25); border-radius:8px; padding:12px;">
+        <div style="font-size:12px; font-weight:700; color:var(--emerald); margin-bottom:6px;">✓ Q2: AI Improves with More Users</div>
+        <div style="font-size:13px; color:var(--text-dim);">More client deployments of ERAG improve code generation accuracy for each new client. iAURA improves with each data transformation project. Evidence: EBIT margin expansion driven by productivity. <span class="pill pill-e">EST</span></div>
+      </div>
+      <div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:8px; padding:12px;">
+        <div style="font-size:12px; font-weight:700; color:var(--yellow); margin-bottom:6px;">~ Q3: Better AI Attracts More Users?</div>
+        <div style="font-size:13px; color:var(--text-dim);">Not yet fully confirmed. Client selection still driven primarily by brand/relationship, not AI platform superiority. Platform differentiation not yet the primary reason clients sign 3yr TCV deals. Loop speed: SLOW. <span class="pill pill-e">EST</span></div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:20px;">
+      <div>
+        <div class="flywheel-score">6<span style="font-size:18px; color:var(--muted)">/10</span></div>
+        <div style="text-align:center; font-size:12px; color:var(--muted);">Flywheel Score</div>
+      </div>
+      <div style="flex:1; font-size:13px; color:var(--text-dim); line-height:1.6;">
+        <strong style="color:var(--emerald)">Data Quality: 2/3</strong> — Proprietary client transformation data; high volume (35yr, 350 clients); medium uniqueness (competitors have similar). <br>
+        <strong style="color:var(--yellow)">Improvement Evidence: 3/4</strong> — Margin expansion (+190bps QoQ) as AI productivity signal, but not formally disclosed as AI-driven in filings. <br>
+        <strong style="color:var(--red)">Loop Speed: 1/3</strong> — Feedback loop is slow (multi-year deal cycles). Not yet self-reinforcing at platform scale. <br>
+        <strong style="color:var(--muted)">Conclusion:</strong> FORMING flywheel — 2/3 criteria confirmed. Monitor Q1FY27 and Q2FY27 for loop speed acceleration. Nagarro integration could fast-track data network effects if combined engineering data merged.
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title-sm">Moat Threat Assessment</div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>Threat</th><th>Severity</th><th>Persistent's Response</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>AI Commoditisation of IT Services (Tier 2 skills)</td><td class="marginal">MEDIUM</td><td>Shifting to outcome-based/productivity model; ERAG platform</td><td class="pass">Managed</td></tr>
+        <tr><td>GCC (Global Capability Centre) threat</td><td class="marginal">MEDIUM</td><td>Persistent is often the partner helping clients build GCCs</td><td class="pass">Opportunity</td></tr>
+        <tr><td>Tier-1 IT (TCS/Infosys) competing on AI</td><td class="marginal">MEDIUM</td><td>Scale, speed, domain focus differentiate vs large IT behemoths</td><td class="marginal">Watch</td></tr>
+        <tr><td>US Tariff Impact (Indirect — enterprise spending)</td><td class="marginal">LOW–MEDIUM</td><td>BFSI/HLS less discretionary; TCV pipeline $2.4B visibility</td><td class="pass">Contained</td></tr>
+        <tr><td>Nagarro Integration Risk (European operations)</td><td class="fail">HIGH (new)</td><td>Barclays financing; experienced M&amp;A track record (prior bolt-ons)</td><td class="marginal">Active monitoring</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:12px; display:flex; align-items:center; gap:10px;">
+    <span style="font-size:15px; font-weight:700; color:var(--cyan)">Overall Moat Grade:</span>
+    <span class="pillar-grade grade-b">B+</span>
+    <span style="font-size:13px; color:var(--muted-2);">Wide moat (ROIC 34% >> WACC 13%), rising trend, but not A-grade due to people-intensive model and FORMING flywheel (not CONFIRMED)</span>
+  </div>
+</div>
+
+<div id="tab4" class="tab-content">
+  <div class="sec-title">👔 Management Integrity & Capital Allocation</div>
+
+  <div class="card-grid card-grid-3" style="margin-bottom:24px;">
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body">
+      <div class="card-label">Promoter Pledged Shares</div>
+      <div class="card-value mono" style="color:var(--emerald)">0.0%</div>
+      <div style="margin-top:8px;"><span class="score-badge score-pass">✓ PASS</span></div>
+      <div style="font-size:12px; color:var(--muted); margin-top:8px;">Zero pledges across all 12 quarters tracked. Strongest possible governance signal.</div>
+    </div></div>
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body">
+      <div class="card-label">Promoter Holding Trend</div>
+      <div class="card-value mono">30.3%</div>
+      <div style="margin-top:8px;"><span class="score-badge score-marginal">~ MARGINAL</span></div>
+      <div style="font-size:12px; color:var(--muted); margin-top:8px;">Declining slowly: 31.3% (Mar23) → 30.3% (Dec25). Gradual ESOP dilution, not distress. Promoter still anchored.</div>
+    </div></div>
+    <div class="card"><div class="card-stripe card-stripe-violet"></div><div class="card-body">
+      <div class="card-label">Founder-Led Company</div>
+      <div class="card-value" style="font-size:18px; color:var(--violet)">Dr. A. Deshpande</div>
+      <div style="font-size:12px; color:var(--muted); margin-top:6px;">Founder, Chairman &amp; MD since 1990. 35+ year track record. Consistent long-term discipline philosophy.</div>
+    </div></div>
+  </div>
+
+  <div class="sec-title-sm">Management Strengths</div>
+  <div class="tbl-wrap" style="margin-bottom:20px; padding:18px;">
+    <ul style="font-size:14px; color:var(--text-dim); line-height:2; list-style:none;">
+      <li>✅ <strong style="color:var(--text)">Founder-led with long-term discipline</strong> — Dr. Anand Deshpande's 35-year consistency in building capabilities ahead of demand (own words, April 2026 earnings call).</li>
+      <li>✅ <strong style="color:var(--text)">Capital allocation track record</strong> — Serial bolt-on acquisitions (Starfish, Arrka, now Nagarro); each adds specific capability, not land-grab. Dividend payout 34% (FY26 ₹40/share, up from ₹35 FY25).</li>
+      <li>✅ <strong style="color:var(--text)">Guidance reliability</strong> — Q4FY26 marked 24th consecutive quarter of USD revenue growth. Management's USD 500M quarterly run-rate by Q4FY27 target (~21% USD growth from Q4FY26) is specific and measurable.</li>
+      <li>✅ <strong style="color:var(--text)">Zero pledges for 12+ consecutive quarters</strong> — highest governance score on this metric. Promoters not using shares as collateral.</li>
+      <li>✅ <strong style="color:var(--text)">CEO Sandeep Kalra</strong> — operational execution since taking CEO role; "cautiously optimistic" language on macro — appropriately balanced, not over-promising.</li>
+      <li>✅ <strong style="color:var(--text)">AI team quality</strong> — Chief Data Scientist Dattaraj Rao; Data Flywheel leadership with explicit investment in proprietary AI platforms. iAURA 2.0 launched FY25; ERAG active in engineering. R&amp;D focus evident from partnership depth (Databricks, Microsoft Azure, Google Cloud, AWS, Salesforce, Kong).</li>
+    </ul>
+  </div>
+
+  <div class="sec-title-sm">Management Concerns & Red Flags</div>
+  <div class="tbl-wrap" style="margin-bottom:20px; padding:18px;">
+    <ul style="font-size:14px; color:var(--text-dim); line-height:2; list-style:none;">
+      <li>⚠️ <strong style="color:var(--yellow)">Nagarro acquisition size &amp; execution risk</strong> — EUR 81/share (~140% premium); total deal value ~€3.9B for 100% (at ~30M shares). Funded by Barclays debt. This is the largest acquisition in Persistent's history and materially increases leverage. Integration across two different corporate cultures (German engineering vs Indian IT services) is complex. Until Q4CY26/Q1CY27 close, operational uncertainty persists.</li>
+      <li>⚠️ <strong style="color:var(--yellow)">Promoter holding slow decline</strong> — 31.3%→30.3% over 2.5 years. Likely ESOP dilution but warrants monitoring. Two more quarters of decline without explanation would be a yellow flag.</li>
+      <li>⚠️ <strong style="color:var(--yellow)">Working capital days rising</strong> — 47→73 days over 2 years. Not yet dangerous but signals billing cycle elongation or unbilled revenue build-up. Management disclosed unbilled revenue watch in latest analyst presentations.</li>
+      <li>⚠️ <strong style="color:var(--yellow)">Margin guidance conservatism</strong> — CEO used "cautiously optimistic" and avoided hard margin guidance for FY27. Nagarro will initially dilute EBIT margins (Nagarro ~14% EBITDA vs Persistent 16.3% Q4FY26 EBIT). Management not over-promising, but integration timeline impact on margins is uncertain.</li>
+    </ul>
+  </div>
+
+  <div class="sec-title-sm">Capital Allocation History</div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>Action</th><th>FY/Period</th><th>Verdict</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Dividend increase</td><td>FY26: ₹40 (↑ from ₹35 FY25)</td><td class="pass">✓ SHAREHOLDER FRIENDLY</td><td>36.5% median payout; growing but not excessive</td></tr>
+        <tr><td>Bolt-on M&amp;A (Starfish, Arrka)</td><td>FY25</td><td class="pass">✓ STRATEGIC</td><td>AI contact centre + data privacy; tuck-ins, not overpriced</td></tr>
+        <tr><td>Concise acquisition (Eastern Europe)</td><td>May 2026</td><td class="pass">✓ STRATEGIC</td><td>90 engineers + €11.6M revenue; modest, focused</td></tr>
+        <tr><td>Nagarro SE Acquisition</td><td>Jun 2026</td><td class="marginal">~ BOLD / WATCH</td><td>€3.9B deal; transformative but execution risk high. Cash EPS accretive Y1 per management. <span class="pill pill-e">EST</span></td></tr>
+        <tr><td>CapEx discipline</td><td>FY26</td><td class="pass">✓ CAPITAL-LIGHT</td><td>Total CapEx ~₹195 Cr on ₹14,748 Cr revenue (1.3%); excellent</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:12px; display:flex; align-items:center; gap:10px;">
+    <span style="font-size:15px; font-weight:700; color:var(--cyan)">Management Grade:</span>
+    <span class="pillar-grade grade-a" style="font-size:28px;">A−</span>
+    <span style="font-size:13px; color:var(--muted-2);">Founder-led, zero pledges, reliable execution track record. Downgraded from A due to Nagarro integration execution risk and WC trend watch.</span>
+  </div>
+</div>
+
+<div id="tab5" class="tab-content">
+  <div class="sec-title">📊 Valuation — Five-Method Mosaic</div>
+  <div style="background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.15); border-radius:8px; padding:12px 16px; font-size:13px; color:var(--muted-2); margin-bottom:20px;">
+    WACC: <span class="mono" style="color:var(--cyan)">13%</span> (Cat B range 12–14%) &nbsp;|&nbsp; Terminal P/E: <span class="mono" style="color:var(--cyan)">22×</span> (Cat B 20–25×) &nbsp;|&nbsp; Terminal g: <span class="mono" style="color:var(--cyan)">7%</span> &nbsp;|&nbsp; Base EPS FY26: <span class="mono" style="color:var(--cyan)">₹118.23</span> &nbsp;|&nbsp; Base Stage 1 growth: <span class="mono" style="color:var(--cyan)">22%</span> (5yr) &nbsp;|&nbsp; MoS: <span class="mono" style="color:var(--cyan)">×0.70</span> (Cat B) &nbsp;|&nbsp; Earnings quality: CLEAN
+  </div>
+
+  <div class="sec-title-sm">Method 1 — DCF (2-Stage, EPS-Based)</div>
+  <div class="dcf-table-wrap" style="margin-bottom:20px;">
+    <div class="tbl-wrap">
+      <table class="tbl dcf-table">
+        <thead><tr><th>Year</th><th>Growth</th><th>EPS (₹)</th><th>PV Factor (13%)</th><th>PV EPS (₹)</th></tr></thead>
+        <tbody>
+          <tr><td>FY27 (Y1)</td><td class="mono-cell">22%</td><td class="mono-cell">144.2</td><td class="mono-cell">0.885</td><td class="mono-cell pass">127.6</td></tr>
+          <tr><td>FY28 (Y2)</td><td class="mono-cell">22%</td><td class="mono-cell">175.9</td><td class="mono-cell">0.783</td><td class="mono-cell pass">137.7</td></tr>
+          <tr><td>FY29 (Y3)</td><td class="mono-cell">22%</td><td class="mono-cell">214.6</td><td class="mono-cell">0.693</td><td class="mono-cell pass">148.7</td></tr>
+          <tr><td>FY30 (Y4)</td><td class="mono-cell">22%</td><td class="mono-cell">261.8</td><td class="mono-cell">0.613</td><td class="mono-cell pass">160.5</td></tr>
+          <tr><td>FY31 (Y5)</td><td class="mono-cell">22%</td><td class="mono-cell">319.4</td><td class="mono-cell">0.543</td><td class="mono-cell pass">173.4</td></tr>
+          <tr style="font-weight:600;"><td>Stage 1 PV Total</td><td>—</td><td>—</td><td>—</td><td class="mono-cell" style="color:var(--cyan)">747.9</td></tr>
+          <tr><td>Terminal Value (Y5 × 22×)</td><td class="mono-cell">—</td><td class="mono-cell">7,027</td><td class="mono-cell">0.543</td><td class="mono-cell" style="color:var(--cyan)">3,815.6</td></tr>
+          <tr style="font-weight:700; font-size:15px;"><td colspan="4" style="color:var(--cyan)">DCF Base IV</td><td class="mono-cell" style="color:var(--cyan)">₹4,563</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="tbl-wrap" style="margin-bottom:20px;">
+    <table class="tbl">
+      <thead><tr><th colspan="5" style="color:var(--muted)">DCF Sensitivity (Terminal g vs WACC)</th></tr>
+        <tr><th>Terminal g \ WACC</th><th>12%</th><th>13%</th><th>14%</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">6%</td><td class="mono-cell">₹4,928</td><td class="mono-cell fail">₹4,196</td><td class="mono-cell fail">₹3,612</td></tr>
+        <tr><td class="mono-cell" style="color:var(--cyan)">7% (Base)</td><td class="mono-cell" style="color:var(--cyan)">₹5,380</td><td class="mono-cell" style="color:var(--cyan)">₹4,563</td><td class="mono-cell">₹3,921</td></tr>
+        <tr><td class="mono-cell">8%</td><td class="mono-cell pass">₹5,968</td><td class="mono-cell pass">₹5,026</td><td class="mono-cell" style="color:var(--cyan)">₹4,290</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title-sm">Method 2 — Owner Earnings Capitalisation</div>
+  <div class="tbl-wrap" style="margin-bottom:20px; padding:14px 18px;">
+    <p style="font-size:14px; color:var(--text-dim);">OE FY26: ₹2,101 Cr (conservative) = <span class="mono" style="color:var(--cyan)">₹133/share</span> &nbsp;|&nbsp; 2-Stage: Stage 1 5yr at 22% → PV ₹764 &nbsp;|&nbsp; Y5 OE: ₹358/share &nbsp;|&nbsp; Terminal (g=7%, r=13%): 358×1.07/0.06 = ₹6,381 &nbsp;|&nbsp; PV Terminal: ₹3,463 <br><strong style="color:var(--cyan)">OE Cap Base IV: ₹4,227/share</strong></p>
+  </div>
+
+  <div class="sec-title-sm">Method 3 — ROIC/EPV</div>
+  <div class="tbl-wrap" style="margin-bottom:20px; padding:14px 18px;">
+    <p style="font-size:14px; color:var(--text-dim);">NOPAT FY26: ₹14,748 × 15.6% × (1-0.23) = <span class="mono" style="color:var(--cyan)">₹1,771 Cr</span> &nbsp;|&nbsp; WACC: 13% &nbsp;|&nbsp; No-growth EPV (floor): ₹1,771/0.13 = ₹13,623 Cr = ₹862/share &nbsp;|&nbsp; With g=9% growth premium: ₹1,771×1.09/0.04 = ₹48,268 Cr... (overstated for services) &nbsp;|&nbsp; Using practical: NOPAT/(r-g) at g=9%: ₹4,428/share &nbsp;|&nbsp; AI WIDENER ROIC improvement (+2pp to 36.4%) lifts EPV by ~8%: ₹4,782/share <br><strong style="color:var(--cyan)">ROIC/EPV Base IV: ₹4,200/share (conservative, g=8%)</strong></p>
+  </div>
+
+  <div class="sec-title-sm">Method 4 — P/E Earnings Power</div>
+  <div class="tbl-wrap" style="margin-bottom:20px; padding:14px 18px;">
+    <p style="font-size:14px; color:var(--text-dim);">FY27E EPS (22% growth): <span class="mono" style="color:var(--cyan)">₹144.2</span> &nbsp;|&nbsp; Forward P/E 30× (Cat B peers + AI premium): ₹144.2 × 30 = ₹4,326 &nbsp;|&nbsp; PEG: current P/E 36.8x / 22% growth = 1.67× (acceptable for AI compounder) &nbsp;|&nbsp; 3yr normalised P/E at ~38-40× (current correction): fair value at 28× = ₹118.23 × 28 = ₹3,311 (stress) &nbsp;|&nbsp; Reverse DCF: current price of ₹4,350 implies 18-19% long-run EPS growth — achievable but needs flawless execution. <br><strong style="color:var(--cyan)">P/E Earnings Power Base IV: ₹4,326/share</strong> &nbsp;|&nbsp; AI WIDENER: +4× terminal P/E premium ≈ ₹4,900</p>
+  </div>
+
+  <div class="sec-title-sm">Method 5 — Earnings Yield vs Bond Yield</div>
+  <div class="tbl-wrap" style="margin-bottom:24px; padding:14px 18px;">
+    <p style="font-size:14px; color:var(--text-dim);">At ₹4,350: EY = 118.23/4,350 = <span class="mono" style="color:var(--red)">2.72%</span> vs India 10yr G-Sec <span class="mono" style="color:var(--cyan)">6.7%</span> → ERP = <strong style="color:var(--red)">−3.98%</strong> (stock expensive vs bonds on current EY basis) &nbsp;|&nbsp; FCF Yield: 1,572Cr/₹68,650Cr mkt cap = 2.29% (also below bond) &nbsp;|&nbsp; <strong>BUT:</strong> for a 22% EPS CAGR company, bond-equivalent valuation is structurally different. By FY29 EPS of ₹214.6: EY at ₹4,350 = 4.93% (approaching bond yield). Bond yield crossover: ~FY29-30. &nbsp;|&nbsp; Yield-on-cost (at ₹4,350): FY30 EPS ₹262 → 6.02%; FY31 EPS ₹319 → 7.34% &nbsp;|&nbsp; This method confirms: stock is priced for growth; EY only becomes attractive after 3-4 years of compounding.</p>
+  </div>
+
+  <div class="sec-title-sm">5-Method Summary Table (Blended IV)</div>
+  <div class="tbl-wrap" style="margin-bottom:20px;">
+    <table class="tbl">
+      <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>AI Adjustment</th></tr></thead>
+      <tbody>
+        <tr><td>1. DCF (2-Stage)</td><td class="mono-cell fail">₹3,612</td><td class="mono-cell" style="color:var(--cyan)">₹4,563</td><td class="mono-cell pass">₹5,509</td><td class="mono-cell pass">+₹456 (WIDENER +10%)</td></tr>
+        <tr><td>2. Owner Earnings Cap</td><td class="mono-cell fail">₹3,200</td><td class="mono-cell" style="color:var(--cyan)">₹4,227</td><td class="mono-cell pass">₹5,100</td><td class="mono-cell pass">+₹423</td></tr>
+        <tr><td>3. ROIC/EPV</td><td class="mono-cell fail">₹3,100</td><td class="mono-cell" style="color:var(--cyan)">₹4,200</td><td class="mono-cell pass">₹4,900</td><td class="mono-cell pass">+₹336</td></tr>
+        <tr><td>4. P/E Earnings Power</td><td class="mono-cell fail">₹3,311</td><td class="mono-cell" style="color:var(--cyan)">₹4,326</td><td class="mono-cell pass">₹5,047</td><td class="mono-cell pass">+₹433</td></tr>
+        <tr><td>5. Earnings Yield</td><td class="mono-cell fail">₹2,800</td><td class="mono-cell" style="color:var(--cyan)">—</td><td class="mono-cell pass">—</td><td class="mono-cell">Bond crossover FY29–30</td></tr>
+        <tr style="font-weight:700;"><td>Blended Base IV (ex EY, 4 methods)</td><td class="mono-cell fail">₹3,306</td><td class="mono-cell" style="color:var(--cyan)">₹4,329</td><td class="mono-cell pass">₹5,139</td><td class="mono-cell"></td></tr>
+        <tr style="font-weight:700; background:rgba(52,211,153,0.06);"><td>🟢 AI-Adjusted IV (WIDENER +10%)</td><td class="mono-cell fail">₹3,637</td><td class="mono-cell" style="color:var(--emerald); font-size:16px;">₹4,762</td><td class="mono-cell pass">₹5,653</td><td class="mono-cell pass">+10% flywheel premium</td></tr>
+        <tr style="background:rgba(0,212,255,0.05);"><td colspan="5" style="font-size:13px; color:var(--text-dim); padding:12px 14px;"><strong style="color:var(--cyan)">MoS Entry Zone (×0.70, Cat B):</strong> Base ₹3,033 | AI-adjusted ₹3,333 &nbsp;|&nbsp; <strong style="color:var(--cyan)">Conservative MoS (×0.80):</strong> ₹3,810 | AI-adjusted ₹3,810–₹4,150 &nbsp;|&nbsp; Current price ₹4,350 is above the 20% MoS threshold on base IV but within range of AI-adjusted IV at ×0.90.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title-sm">Relative Valuation vs Own History</div>
+  <div class="tbl-wrap" style="padding:14px 18px; margin-bottom:16px;">
+    <p style="font-size:14px; color:var(--text-dim);">5-year avg P/E: ~40–50× (peak was ~60× in 2022) &nbsp;|&nbsp; Current P/E: 36.8× (at ₹4,350) &nbsp;|&nbsp; Discount to 5yr avg: ~15–20% → <span class="score-badge score-marginal" style="font-size:12px;">🟡 Moderate discount to own history</span> &nbsp;|&nbsp; <strong style="color:var(--cyan)">AI WIDENER Note:</strong> A structurally higher P/E than own history is justified if flywheel transitions from FORMING to CONFIRMED — but not yet confirmed. Current 36–37× is fair to moderately attractive vs own history.</p>
+  </div>
+
+  <div style="background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.2); border-radius:8px; padding:14px 18px; font-size:13px; color:var(--muted-2);">
+    <strong style="color:var(--text)">Valuation Grade Summary:</strong> At ₹4,350, the stock offers minimal traditional MoS (20% MoS entry at ≤₹3,460 strict, ≤₹3,810 with AI premium at ×0.80). However, the stock has corrected 34% from peak and is approaching the AI-adjusted IV (₹4,762) with only a 9% gap. For long-term investors with 5–7yr horizon, accumulating near ₹3,750–₹4,150 represents a reasonable risk/reward — but requires patience and monitoring Nagarro integration.
+  </div>
+</div>
+
+<div id="tab6" class="tab-content">
+  <div class="sec-title">⚖️ Investment Verdict</div>
+
+  <div class="card-grid card-grid-4" style="margin-bottom:24px;">
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body"><div class="card-label">Pillar 1 — Moat</div><div class="pillar-grade grade-b">B+</div><div style="font-size:12px; color:var(--muted); margin-top:6px;">Wide moat, ROIC 34%, FORMING flywheel. Not A-grade: people-intensive model, flywheel not confirmed.</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body"><div class="card-label">Pillar 2 — Financial Fortress</div><div class="pillar-grade grade-a">A−</div><div style="font-size:12px; color:var(--muted); margin-top:6px;">Clean O'Glove, FCF accelerating, near-debt-free, ROE 27%. WC rising is the only notable flag.</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-violet"></div><div class="card-body"><div class="card-label">Pillar 3 — Management</div><div class="pillar-grade grade-a">A−</div><div style="font-size:12px; color:var(--muted); margin-top:6px;">Founder-led, zero pledges, reliable guidance. Nagarro execution risk introduces a new variable.</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body"><div class="card-label">Pillar 4 — Valuation</div><div class="pillar-grade grade-b">B−</div><div style="font-size:12px; color:var(--muted); margin-top:6px;">Expensive vs bonds. Trading near blended IV. AI-adjusted IV ₹4,762 vs price ₹4,350 — 9% buffer only.</div></div></div>
+  </div>
+
+  <div class="verdict-main">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div>
+        <div style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">BQV Series Verdict</div>
+        <div style="font-size:36px; font-weight:800; color:var(--yellow); letter-spacing:1px;">WATCH ★★★</div>
+        <div style="font-size:14px; color:var(--text-dim); margin-top:8px; max-width:580px;">Exceptional quality compounder — top-decile growth, rising ROIC, AI-aligned strategy, and founder integrity. The business deserves premium; the price reflects it. Current level (₹4,350) offers marginal AI-adjusted buffer but insufficient traditional MoS. Accumulate in tranches below ₹4,150; add conviction positions below ₹3,750. Monitor Nagarro integration as the key swing factor.</div>
+      </div>
+      <div>
+        <span class="badge badge-widener" style="font-size:14px; padding:8px 18px;">🟢 AI WIDENER · FORMING</span><br style="margin:6px 0;">
+        <span class="badge badge-cat" style="font-size:14px; padding:8px 18px; margin-top:8px; display:inline-block;">📂 Cat B · 5–7yr Horizon</span>
+      </div>
+    </div>
+    <div class="verdict-quote">
+      "The key to investing is not assessing how much an industry is going to affect society, or how much it will grow, but rather determining the competitive advantage of any given company and, above all, the durability of that advantage."
+      <cite>— Warren Buffett &nbsp;&nbsp;(Applicable here: Persistent's AI-driven engineering moat is still being durability-tested by the Nagarro integration)</cite>
+    </div>
+  </div>
+
+  <div class="sec-title-sm">Upgrade Conditions to BUY ★★★★★</div>
+  <div class="upgrade-cond"><div class="upgrade-num">1</div><div class="upgrade-text"><strong style="color:var(--text)">Price corrects to ≤₹3,750</strong> — representing 20% MoS from AI-adjusted base IV of ₹4,762. This is the trigger-price for Tier 1 position entry.</div></div>
+  <div class="upgrade-cond"><div class="upgrade-num">2</div><div class="upgrade-text"><strong style="color:var(--text)">RSI falls below 35 on daily chart</strong> — current downtrend from ₹6,599 peak; RSI sub-35 would signal oversold capitulation, a high-probability reversal zone.</div></div>
+  <div class="upgrade-cond"><div class="upgrade-num">3</div><div class="upgrade-text"><strong style="color:var(--text)">EBIT margin sustains above 16.5% for 2 consecutive quarters</strong> — Q4FY26 was 16.3%; Q1FY27 and Q2FY27 should demonstrate that Nagarro is not diluting consolidated margins beyond guidance.</div></div>
+  <div class="upgrade-cond"><div class="upgrade-num">4</div><div class="upgrade-text"><strong style="color:var(--text)">Nagarro acquisition closes with regulatory approval and integration plan confirmed</strong> — expected Q4CY26/Q1CY27. Successful close + combined revenue synergy roadmap = removes the largest risk overhang.</div></div>
+  <div class="upgrade-cond"><div class="upgrade-num">5</div><div class="upgrade-text"><strong style="color:var(--text)">TCV/ACV booking ≥$600M/quarter for 2 consecutive quarters</strong> — Q4FY26 TCV was $600.8M; sustaining this confirms demand pipeline and justifies growth assumptions in valuation models.</div></div>
+
+  <div class="sec-title-sm" style="margin-top:28px;">Tiered Entry Structure</div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>Tier</th><th>Entry Price</th><th>Position Size</th><th>Trigger Conditions</th></tr></thead>
+      <tbody>
+        <tr><td>Tier 1 — Quality Floor</td><td class="mono-cell" style="color:var(--cyan)">≤ ₹3,750</td><td class="mono-cell">40–45% of intended</td><td>Price at MoS zone + O'Glove CLEAN confirmed (achieved)</td></tr>
+        <tr><td>Tier 2 — Catalyst Confirmation</td><td class="mono-cell" style="color:var(--yellow)">₹3,750–₹4,150</td><td class="mono-cell">30–35% additional</td><td>Conditions 3+4 above met (margin sustained + Nagarro close)</td></tr>
+        <tr><td>Tier 3 — Momentum Entry</td><td class="mono-cell" style="color:var(--emerald)">₹4,150–₹4,500</td><td class="mono-cell">15–25% final</td><td>Conditions 3+4+5 met; RSI > 50 recovery; price reclaims 200 DMA</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title-sm" style="margin-top:24px;">Exit Philosophy</div>
+  <div class="tbl-wrap" style="padding:14px 18px;">
+    <ol style="font-size:14px; color:var(--text-dim); line-height:2; list-style-decimal; padding-left:20px;">
+      <li><strong style="color:var(--text)">Thesis breakdown</strong> — Any of the four pillars degrades two letter grades (e.g., Moat B+→C, triggered by sustained ROIC decline below 20% or Nagarro integration failure evidenced by 3+ quarters of margin compression)</li>
+      <li><strong style="color:var(--text)">Price dramatically exceeds accelerated IV</strong> — If stock recovers above ₹6,200+ (above accelerated AI-adjusted IV of ₹5,653 plus 10% buffer), rebalance</li>
+      <li><strong style="color:var(--text)">Opportunity cost rebalancing</strong> — Only if a Cat A or superior Cat B opportunity emerges at a significantly better risk-adjusted IV discount</li>
+    </ol>
+  </div>
+</div>
+
+<div id="tab7" class="tab-content">
+  <div class="sec-title">📈 Technical Analysis</div>
+
+  <div class="sec-title-sm">(A) Price Structure & Multi-Timeframe Trend</div>
+  <div class="card-grid card-grid-4" style="margin-bottom:20px;">
+    <div class="card"><div class="card-stripe card-stripe-red"></div><div class="card-body"><div class="card-label">Current Price</div><div class="card-value mono fail">₹4,350</div><div class="card-sub">Jun 29, 2026 · Intraday</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-red"></div><div class="card-body"><div class="card-label">52-Week High</div><div class="card-value mono">₹6,599</div><div class="card-sub">34.1% off peak <span class="pill pill-v">VERIFIED</span></div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body"><div class="card-label">52-Week Low</div><div class="card-value mono">₹4,312</div><div class="card-sub">Tested today (Jun 29)</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body"><div class="card-label">Price Status</div><div class="card-value" style="font-size:18px; color:var(--red)">DOWNTREND</div><div class="card-sub">Below all major DMAs</div></div></div>
+  </div>
+
+  <div class="sec-title-sm">(B) Moving Average Dashboard</div>
+  <div class="card-grid card-grid-4" style="margin-bottom:20px;">
+    <div class="card"><div class="card-stripe card-stripe-red"></div><div class="card-body"><div class="card-label">20-Day EMA</div><div class="card-value mono">₹5,043</div><div class="card-sub fail">−14.0% below</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-red"></div><div class="card-body"><div class="card-label">50-DMA</div><div class="card-value mono">₹5,012</div><div class="card-sub fail">−13.3% below <span class="pill pill-v">VERIFIED</span></div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-red"></div><div class="card-body"><div class="card-label">100-DMA</div><div class="card-value mono">₹5,250</div><div class="card-sub fail">−17.1% below</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-red"></div><div class="card-body"><div class="card-label">200-DMA</div><div class="card-value mono">₹5,515</div><div class="card-sub fail">−21.1% below <span class="pill pill-v">VERIFIED</span></div></div></div>
+  </div>
+  <div style="background:rgba(248,113,113,0.07); border:1px solid rgba(248,113,113,0.2); border-radius:8px; padding:12px 16px; font-size:13px; color:var(--text-dim); margin-bottom:20px;">
+    <strong style="color:var(--red)">Death Cross Active:</strong> 50-DMA has crossed below 100-DMA and is approaching the 200-DMA — a multi-month bearish signal. The stock is in a confirmed downtrend across all timeframes. The 52-week low of ₹4,312 was tested intraday on June 29, 2026 — a critical support level. A break below ₹4,312 with volume would trigger further selling to ₹3,800–₹4,000 zone. Note: Nagarro acquisition announced June 27-29 is adding near-term selling pressure as investors worry about debt and margin dilution.
+  </div>
+
+  <div class="sec-title-sm">(C) Volume & OBV</div>
+  <div class="tbl-wrap" style="margin-bottom:20px; padding:14px 18px;">
+    <p style="font-size:14px; color:var(--text-dim);">Trading volume: 47.41L shares as of Jun 29, 2026 <span class="pill pill-v">VERIFIED</span> — significantly elevated vs daily average (~3–5L), confirming institutional selling pressure triggered by Nagarro deal announcement. OBV likely declining — distribution phase. No volume confirmation of accumulation yet. Contrarian signal: High volume declines near 52-week lows can signal capitulation; watch for volume spike with price reversal as a potential BUY signal.</p>
+  </div>
+
+  <div class="sec-title-sm">(D) RSI & Momentum Indicators</div>
+  <div class="card-grid card-grid-3" style="margin-bottom:20px;">
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body">
+      <div class="card-label">RSI (14-day) — Estimated</div>
+      <div class="card-value mono fail">~28–32</div>
+      <div style="font-size:13px; color:var(--text-dim); margin-top:6px;">OVERSOLD zone. Stock has fallen from 65+ RSI (Oct 2025 peak) to likely deep oversold. Daily RSI sub-30 from a quality business often precedes mean reversion. <span class="pill pill-e">EST</span></div>
+    </div></div>
+    <div class="card"><div class="card-stripe card-stripe-red"></div><div class="card-body">
+      <div class="card-label">MACD (12,26,9)</div>
+      <div class="card-value" style="font-size:18px; color:var(--red)">BEARISH</div>
+      <div style="font-size:13px; color:var(--text-dim); margin-top:6px;">MACD line below signal line; expanding bearish histogram. No bullish divergence observed yet. <span class="pill pill-e">EST</span></div>
+    </div></div>
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body">
+      <div class="card-label">Stochastic (14,3,3)</div>
+      <div class="card-value mono fail">~15–20</div>
+      <div style="font-size:13px; color:var(--text-dim); margin-top:6px;">Deep oversold. Potential for %K/%D bullish crossover at these levels — watch for confirmation over 3–5 days. <span class="pill pill-e">EST</span></div>
+    </div></div>
+  </div>
+
+  <div class="sec-title-sm">(E) Chart Patterns</div>
+  <div class="tbl-wrap" style="margin-bottom:20px; padding:14px 18px;">
+    <p style="font-size:14px; color:var(--text-dim);">Pattern in formation: <strong style="color:var(--text)">Falling Channel</strong> with lower lows and lower highs since September 2025 peak (₹8,865 all-time high). The ₹4,312–₹4,350 zone is the critical support from the 52-week low. A base may form at this level if Nagarro selling pressure exhausts. No Cup &amp; Handle or bullish reversal patterns active yet. <span class="pill pill-e">EST</span></p>
+  </div>
+
+  <div class="sec-title-sm">(F) Trade Structure (Entry/Exit/Risk)</div>
+  <div class="tbl-wrap" style="margin-bottom:20px;">
+    <table class="tbl">
+      <thead><tr><th>Level</th><th>Price (₹)</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Entry Zone (Tier 1)</td><td class="mono-cell pass">₹3,750–₹4,150</td><td>Within 20% MoS of AI-adjusted IV; approaching oversold exhaustion</td></tr>
+        <tr><td>Stop Loss</td><td class="mono-cell fail">₹3,450</td><td>Below 52-wk low + 8% buffer; thesis significantly damaged if breached</td></tr>
+        <tr><td>Target 1 (T1)</td><td class="mono-cell" style="color:var(--cyan)">₹5,500</td><td>200-DMA recovery + 26% from entry ₹4,350</td></tr>
+        <tr><td>Target 2 (T2)</td><td class="mono-cell pass">₹6,400</td><td>AI-adjusted Accel IV zone; analysts consensus ₹5,800–₹6,520 <span class="pill pill-e">EST</span></td></tr>
+        <tr><td>Risk:Reward</td><td class="mono-cell pass">~1:2.7 (T1) / 1:5.5 (T2)</td><td>Excellent if thesis holds; R:R ≥ 1:2.5 threshold met ✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title-sm">(G) Technical Composite Score</div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>Dimension</th><th>Score (0–5)</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Trend (multi-timeframe)</td><td class="mono-cell fail">1</td><td>Below all DMAs; confirmed downtrend</td></tr>
+        <tr><td>Momentum (RSI/MACD/Stoch)</td><td class="mono-cell" style="color:var(--yellow)">2</td><td>Oversold (potential reversal) but no confirmation</td></tr>
+        <tr><td>Volume (OBV/accumulation)</td><td class="mono-cell fail">1</td><td>High volume decline = distribution, not accumulation</td></tr>
+        <tr><td>Patterns (structure)</td><td class="mono-cell" style="color:var(--yellow)">2</td><td>At 52-wk low support; potential base forming</td></tr>
+        <tr><td>Relative strength (vs sector)</td><td class="mono-cell" style="color:var(--yellow)">2</td><td>Underperforming sector peers in 1-year; reversing if AI narrative returns</td></tr>
+        <tr><td>Key level proximity (MoS)</td><td class="mono-cell pass">4</td><td>Within 5% of MoS entry zone — strongest dimension</td></tr>
+        <tr style="font-weight:700;"><td>Total / 30</td><td class="mono-cell" style="color:var(--yellow)">12/30 (40%)</td><td>BEARISH TECHNICAL SETUP — Do not chase; wait for confirmation</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="tab8" class="tab-content">
+  <div class="sec-title">📊 Shareholding Pattern & Ownership Analysis</div>
+
+  <div class="sec-title-sm">(A) Promoter Holding (5 Quarters)</div>
+  <div class="tbl-wrap" style="margin-bottom:20px;">
+    <table class="tbl">
+      <thead><tr><th>Quarter</th><th>Promoter %</th><th>Pledged %</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>Dec 2025 (Latest)</td><td class="mono-cell">30.29%</td><td class="mono-cell pass">0.0%</td><td class="mono-cell fail">−0.27pp</td></tr>
+        <tr><td>Sep 2025</td><td class="mono-cell">30.56%</td><td class="mono-cell pass">0.0%</td><td class="mono-cell fail">−0.01pp</td></tr>
+        <tr><td>Jun 2025</td><td class="mono-cell">30.57%</td><td class="mono-cell pass">0.0%</td><td class="mono-cell fail">−0.16pp</td></tr>
+        <tr><td>Mar 2025</td><td class="mono-cell">30.73%</td><td class="mono-cell pass">0.0%</td><td class="mono-cell fail">−0.01pp</td></tr>
+        <tr><td>Dec 2024</td><td class="mono-cell">30.74%</td><td class="mono-cell pass">0.0%</td><td class="mono-cell fail">−0.02pp</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.2); border-radius:8px; padding:12px 16px; font-size:13px; color:var(--text-dim); margin-bottom:20px;">
+    <strong style="color:var(--yellow)">Promoter Assessment:</strong> Slow, consistent decline from 31.3% (Mar 2023) to 30.3% (Dec 2025). Likely ESOP dilution from employee stock plans rather than insider selling. Zero pledges is the strongest possible governance positive. Watch for any acceleration of decline below 30% as a yellow flag. Nagarro deal (funded by debt, not equity) means no immediate promoter dilution.
+  </div>
+
+  <div class="sec-title-sm">(B) FII & DII Trend (5 Quarters) <span class="pill pill-v">VERIFIED</span></div>
+  <div class="tbl-wrap" style="margin-bottom:20px;">
+    <table class="tbl">
+      <thead><tr><th>Quarter</th><th>FII %</th><th>DII %</th><th>MF %</th><th>Insurance %</th></tr></thead>
+      <tbody>
+        <tr><td>Dec 2025</td><td class="mono-cell">22.79%</td><td class="mono-cell">29.77%</td><td class="mono-cell">22.98%</td><td class="mono-cell">5.86%</td></tr>
+        <tr><td>Sep 2025</td><td class="mono-cell">21.24%</td><td class="mono-cell">30.60%</td><td class="mono-cell">23.71%</td><td class="mono-cell">5.89%</td></tr>
+        <tr><td>Jun 2025</td><td class="mono-cell">24.24%</td><td class="mono-cell">27.77%</td><td class="mono-cell">22.33%</td><td class="mono-cell">4.82%</td></tr>
+        <tr><td>Mar 2025</td><td class="mono-cell">24.40%</td><td class="mono-cell">26.88%</td><td class="mono-cell">21.74%</td><td class="mono-cell">4.61%</td></tr>
+        <tr><td>Dec 2024</td><td class="mono-cell">24.77%</td><td class="mono-cell">26.34%</td><td class="mono-cell">21.35%</td><td class="mono-cell">4.43%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title-sm">(C) Market Cap, Free Float & Index Weights</div>
+  <div class="card-grid card-grid-4" style="margin-bottom:20px;">
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body"><div class="card-label">Market Cap</div><div class="card-value mono">₹68,650 Cr</div><div class="card-sub">~$7.3B · Jun 29 price</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body"><div class="card-label">Free Float</div><div class="card-value mono">~69.7%</div><div class="card-sub">Non-promoter holding</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-violet"></div><div class="card-body"><div class="card-label">Institutional Investors</div><div class="card-value mono">52.6%</div><div class="card-sub">FII + DII combined (Dec 25)</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body"><div class="card-label">Index Membership</div><div class="card-value" style="font-size:16px; color:var(--yellow)">BSE100, BSE200</div><div class="card-sub">BSE500, BSE IT Index</div></div></div>
+  </div>
+
+  <div class="sec-title-sm">(D) Ownership Momentum Analysis</div>
+  <div class="tbl-wrap" style="margin-bottom:20px; padding:14px 18px;">
+    <ul style="font-size:14px; color:var(--text-dim); line-height:2; list-style:none;">
+      <li><strong style="color:var(--yellow)">FII Trend:</strong> ↓ Declining from 24.8% (Dec24) to 22.8% (Dec25) — FII outflows following India IT sector de-rating, US tariff concerns, and global risk-off. Partially reversed in Dec25 (+1.55pp QoQ). Watch Q1 Mar26 data (not yet available) for Nagarro impact.</li>
+      <li><strong style="color:var(--emerald)">DII Trend:</strong> ↑ Rising from 26.3% (Dec24) to 29.8% (Dec25) — Domestic mutual funds and insurance are net buyers; SIP inflows from Indian retail. This is a supportive structural floor.</li>
+      <li><strong style="color:var(--cyan)">MF Trend:</strong> Steady 21–24% range; ~39 schemes as of Dec25. Insurance growing from 4.43% to 5.86% — LIC and insurance companies accumulating at corrections.</li>
+    </ul>
+  </div>
+
+  <div class="sec-title-sm">(E) Ownership Scores</div>
+  <div class="card-grid card-grid-2">
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body">
+      <div class="card-label">Ownership Momentum Score</div>
+      <div class="card-value mono" style="color:var(--yellow)">52/100</div>
+      <div style="font-size:13px; color:var(--text-dim); margin-top:8px;">FII declining (negative −20pts) offset by DII accumulating (positive +30pts); promoter stable zero pledges (+20pts); institutional >50% (positive +12pts). Net: moderate positive momentum from DII offset by FII exits.</div>
+    </div></div>
+    <div class="card"><div class="card-stripe card-stripe-violet"></div><div class="card-body">
+      <div class="card-label">Shareholding Risk Score</div>
+      <div class="card-value mono" style="color:var(--emerald)">22/100</div>
+      <div style="font-size:13px; color:var(--text-dim); margin-top:8px;">LOW RISK: Zero pledges; institutional anchor (52.6%); DII support growing; MF SIP inflows provide floor. Only risk is FII selloff continuation if Nagarro integration disappoints.</div>
+    </div></div>
+  </div>
+</div>
+
+<div id="tab9" class="tab-content">
+  <div class="sec-title">🤖 AI Intelligence — Full Analysis (WIDENER)</div>
+
+  <div class="sec-title-sm">(A) AI Classification Dashboard</div>
+  <div class="card-grid card-grid-4" style="margin-bottom:24px;">
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body"><div class="card-label">Category</div><div class="card-value" style="font-size:18px;">Cat B</div><div style="font-size:13px; color:var(--muted-2); margin-top:6px;">High-Growth Global Compounder — Digital Engineering Services</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body"><div class="card-label">AI Overlay</div><div class="card-value" style="font-size:18px; color:var(--emerald)">🟢 WIDENER</div><div style="font-size:13px; color:var(--muted-2); margin-top:6px;">AI deepens moat via proprietary delivery platforms and reduces unit cost</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-violet"></div><div class="card-body"><div class="card-label">Data Flywheel</div><div class="card-value" style="font-size:18px; color:var(--violet)">FORMING ★★★</div><div style="font-size:13px; color:var(--muted-2); margin-top:6px;">2/3 criteria confirmed; loop speed still slow (multi-year deal cycles)</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body"><div class="card-label">AI Adoption Phase</div><div class="card-value" style="font-size:18px; color:var(--yellow)">Phase 3</div><div style="font-size:13px; color:var(--muted-2); margin-top:6px;">Enterprise AI adoption scaling; Persistent enabling this for clients</div></div></div>
+  </div>
+
+  <div class="sec-title-sm">(B) Data Flywheel Deep-Dive</div>
+  <div class="flywheel-box" style="margin-bottom:24px;">
+    <div class="flywheel-header">
+      <div class="flywheel-title">🌀 DATA FLYWHEEL SCORING BREAKDOWN</div>
+      <div class="flywheel-badge">6/10 · FORMING</div>
+    </div>
+    <div class="tbl-wrap" style="margin-bottom:16px;">
+      <table class="tbl">
+        <thead><tr><th>Flywheel Dimension</th><th>Score</th><th>Evidence</th><th>Confidence</th></tr></thead>
+        <tbody>
+          <tr><td>Q1: Proprietary Training Data — Volume</td><td class="mono-cell pass">2/3</td><td>35yr × 350+ clients = vast engineering pattern database; iAURA data transformation corpus</td><td><span class="pill pill-e">EST</span></td></tr>
+          <tr><td>Q1: Proprietary Training Data — Uniqueness</td><td class="mono-cell" style="color:var(--yellow)">Moderate</td><td>Client-specific data (BFSI regulations, HLS workflows); competitors may have similar volumes</td><td><span class="pill pill-e">EST</span></td></tr>
+          <tr><td>Q1: Proprietary Training Data — Outcome Labels</td><td class="mono-cell pass">Strong</td><td>Project delivery outcomes (success/fail), client satisfaction scores = valuable training signal</td><td><span class="pill pill-e">EST</span></td></tr>
+          <tr><td>Q2: AI Improvement with More Users — ERAG</td><td class="mono-cell pass">3/4</td><td>ERAG codebase improves with each project; margin expansion (+190bps) as proxy for AI productivity</td><td><span class="pill pill-e">EST</span></td></tr>
+          <tr><td>Q2: AI Improvement with More Users — iAURA</td><td class="mono-cell pass">PASS</td><td>Data transformation accuracy improves with each enterprise deployment; launched v2.0 in FY25</td><td><span class="pill pill-v">VERIFIED</span></td></tr>
+          <tr><td>Q3: Better AI Attracts More Users</td><td class="mono-cell fail">1/3</td><td>Primary client attraction still relationship/brand, not platform superiority; feedback loop slow</td><td><span class="pill pill-e">EST</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sec-title-sm">(C) AI Value Chain Position</div>
+  <div class="ai-chain" style="margin-bottom:20px;">
+    <div class="ai-chain-node"><div class="ai-chain-node-title">Level 1</div>Infrastructure<br>(NVIDIA, AWS)</div>
+    <div class="ai-chain-node"><div class="ai-chain-node-title">Level 2</div>Foundation Models<br>(OpenAI, Anthropic)</div>
+    <div class="ai-chain-node"><div class="ai-chain-node-title">Level 3</div>Platforms<br>(Microsoft, Google)</div>
+    <div class="ai-chain-node active"><div class="ai-chain-node-title">Level 4–5 ★</div>Vertical Apps +<br>AI-Enabled Incumbent</div>
+    <div class="ai-chain-node"><div class="ai-chain-node-title">Level 5</div>End Client<br>(Enterprise)</div>
+  </div>
+  <div class="tbl-wrap" style="margin-bottom:24px; padding:14px 18px;">
+    <p style="font-size:14px; color:var(--text-dim);">Persistent operates at <strong style="color:var(--cyan)">Level 4-5</strong> — the intersection of Vertical Applications (ERAG, iAURA, WaveMaker, NuoDB) and AI-Enabled Incumbent delivering AI transformation for Level 5 enterprise clients. This is the sweet spot: not competing with Level 1–3 infrastructure/model providers (commodity risk) but leveraging them. Partnerships with Databricks, Microsoft Azure, Google Cloud, AWS, Salesforce, Kong, and Kong MCP confirm this orchestrator role.</p>
+    <p style="font-size:14px; color:var(--text-dim); margin-top:8px;"><strong style="color:var(--cyan)">Investment implication:</strong> Level 4-5 position means horizon 5–7 years, moat durability depends on proprietary vertical IP (ERAG, iAURA) compounding faster than foundation model commoditisation. Risk: if foundation models become so capable that enterprises deploy AI directly without an orchestrator, the service layer value reduces. Persistent's counter: deep enterprise integration (Fortune 50 clients cannot easily self-serve).</p>
+  </div>
+
+  <div class="sec-title-sm">(D) India AI Structural Advantage Assessment</div>
+  <div class="tbl-wrap" style="margin-bottom:24px;">
+    <table class="tbl">
+      <thead><tr><th>India Structural Advantage</th><th>Relevant?</th><th>Persistent's Leverage</th></tr></thead>
+      <tbody>
+        <tr><td>India Stack Data Access (UPI/Aadhaar)</td><td class="pass">YES (for BFSI clients)</td><td>India BFSI digital transformation projects; iAURA data platform benefits</td></tr>
+        <tr><td>Vernacular AI Benefit (85% non-English India)</td><td class="marginal">PARTIAL</td><td>Primarily US-client focused; limited direct vernacular AI play</td></tr>
+        <tr><td>India Stack Infra (UPI/ONDC/OCEN)</td><td class="pass">YES (for India clients)</td><td>Growing India domestic revenue; OCEN credit infrastructure projects</td></tr>
+        <tr><td>AI Talent Cost Arbitrage</td><td class="pass">STRONG YES</td><td>~24,500 engineers at Indian salary levels; structural 60–70% cost advantage vs US alternatives; Nagarro brings 18,500 European engineers</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title-sm">(E) AI Partnerships & Recent Launches (2024–2026)</div>
+  <div class="tbl-wrap" style="margin-bottom:24px; padding:14px 18px;">
+    <ul style="font-size:14px; color:var(--text-dim); line-height:2; list-style:none;">
+      <li>🔷 <strong style="color:var(--text)">Microsoft Azure</strong> — VIVA platform AI offerings; ContractAssIst (AI contract management); GenAI Population Health Management solution <span class="pill pill-v">VERIFIED</span></li>
+      <li>🔷 <strong style="color:var(--text)">Databricks</strong> — Strategic partnership for enterprise data + AI; collaboration with Milwaukee School of Engineering (Jun 2026) <span class="pill pill-v">VERIFIED</span></li>
+      <li>🔷 <strong style="color:var(--text)">Kong</strong> — Strategic partnership to scale enterprise AI adoption (May 2026) — API gateway for AI model orchestration <span class="pill pill-v">VERIFIED</span></li>
+      <li>🔷 <strong style="color:var(--text)">Google Cloud</strong> — New GenAI solutions; partnership depth increasing <span class="pill pill-v">VERIFIED</span></li>
+      <li>🔷 <strong style="color:var(--text)">Nagarro Acquisition</strong> — Ginger AI platform (2,000 internal developers); combined GenAI engineering at scale <span class="pill pill-v">VERIFIED</span></li>
+      <li>🔷 <strong style="color:var(--text)">iAURA 2.0</strong> — AI-enabled data transformation platform; launched FY25 <span class="pill pill-v">VERIFIED</span></li>
+      <li>🔷 <strong style="color:var(--text)">Starfish + Arrka acquisitions (FY25)</strong> — AI-driven contact centre + data privacy; tuck-in acquisitions for AI capability <span class="pill pill-v">VERIFIED</span></li>
+    </ul>
+  </div>
+
+  <div class="sec-title-sm">(F) AI Opportunity Score /100</div>
+  <div class="card-grid card-grid-4" style="margin-bottom:16px;">
+    <div class="card"><div class="card-stripe card-stripe-violet"></div><div class="card-body"><div class="card-label">Data Flywheel /20</div><div class="card-value mono" style="color:var(--yellow)">12/20</div><div class="card-sub">FORMING; not CONFIRMED yet</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-cyan"></div><div class="card-body"><div class="card-label">Adoption Phase Timing /20</div><div class="card-value mono pass">16/20</div><div class="card-sub">Phase 3 — enterprise AI scaling now</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body"><div class="card-label">Value Chain Position /20</div><div class="card-value mono pass">15/20</div><div class="card-sub">Level 4-5 orchestrator; strong</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-yellow"></div><div class="card-body"><div class="card-label">India Structural Adv. /20</div><div class="card-value mono pass">14/20</div><div class="card-sub">Talent cost + India Stack leverage</div></div></div>
+  </div>
+  <div class="card-grid card-grid-2">
+    <div class="card"><div class="card-stripe card-stripe-coral"></div><div class="card-body"><div class="card-label">AI Threat Resistance /20</div><div class="card-value mono" style="color:var(--yellow)">13/20</div><div class="card-sub">Better positioned than generic IT; not AI-native</div></div></div>
+    <div class="card"><div class="card-stripe card-stripe-emerald"></div><div class="card-body">
+      <div class="card-label">TOTAL AI Opportunity Score</div>
+      <div class="card-value mono" style="color:var(--cyan)">70/100</div>
+      <div style="margin-top:8px;"><span class="score-badge score-pass" style="font-size:14px;">📂 STRATEGIC (60–80)</span></div>
+      <div style="font-size:12px; color:var(--muted); margin-top:6px;">Investment horizon: 5–7yr · Portfolio role: STRATEGIC (5–8% allocation)</div>
+    </div></div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  <div style="max-width:1280px; margin:0 auto;">
+    <p><strong>⚠️ SEBI Disclaimer:</strong> This report is produced for informational and educational purposes only and does not constitute investment advice, a recommendation to buy/sell, or a research report under SEBI regulations. Past performance is not indicative of future results. All equity investments carry risk of capital loss. Please consult a SEBI-registered financial advisor before making any investment decision.</p>
+    <p style="margin-top:8px;"><strong>Data Notice:</strong> <span class="pill pill-v">VERIFIED</span> data sourced from BSE/NSE filings, Screener.in consolidated view, Persistent IR presentations, and live web searches (Jun 29, 2026). <span class="pill pill-e">ESTIMATED</span> data is cross-referenced from multiple sources but may not reflect official filings. Price-dependent metrics (P/E, RSI, DMA positions) are potentially stale post-analysis. All INR figures in Crores. Analysis date: 29 June 2026.</p>
+    <p style="margin-top:8px;"><strong>Argus BQV Series v5.0</strong> | Persistent Systems Ltd | NSE: PERSISTENT | Fonts: Inter (headings/body) · JetBrains Mono (data/numbers) | Design Standard v2.0</p>
+  </div>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

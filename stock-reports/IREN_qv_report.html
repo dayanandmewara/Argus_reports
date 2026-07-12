@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IREN — Buffett Quality-Value Series</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&family=Mulish:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#0B1018;--card:#141E2E;--card2:#1A2640;--border:#1E2D40;
+--amber:#F59500;--teal:#0EC4D4;--text:#EBF0F7;--muted:#6A80A0;
+--success:#22C55E;--warn:#F59E0B;--danger:#EF4444;--pass:#22C55E;
+--marginal:#F59E0B;--fail:#EF4444;--font:'Exo 2',sans-serif;--body:'Mulish',sans-serif;
+--mono:'JetBrains Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;font-weight:400;}
+h1,h2,h3,h4,h5{font-family:var(--font);font-weight:700;}
+.mono{font-family:var(--mono);}
+
+/* HERO */
+#hero{background:linear-gradient(135deg,#0B1018 0%,#0D1828 50%,#111F35 100%);border-bottom:2px solid var(--amber);padding:28px 32px 20px;max-height:220px;overflow:hidden;position:relative;}
+#hero::before{content:'';position:absolute;top:0;right:0;width:400px;height:100%;background:radial-gradient(ellipse at 80% 50%,rgba(245,149,0,0.08) 0%,transparent 70%);pointer-events:none;}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;}
+.hero-left h1{font-size:2.8rem;font-weight:900;letter-spacing:-0.02em;color:#fff;line-height:1;}
+.hero-left .sub{color:var(--muted);font-size:0.85rem;font-family:var(--mono);margin-top:4px;}
+.verdict-badge{background:linear-gradient(135deg,#1A2F10,#1F3F14);border:2px solid var(--success);border-radius:10px;padding:10px 16px;text-align:center;min-width:160px;}
+.verdict-badge .v-label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-family:var(--mono);}
+.verdict-badge .v-text{font-size:1.1rem;font-weight:800;color:var(--success);font-family:var(--font);line-height:1.2;}
+.hero-badges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;align-items:center;}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;font-family:var(--mono);letter-spacing:0.05em;}
+.badge-b{background:rgba(14,196,212,0.15);border:1px solid rgba(14,196,212,0.4);color:var(--teal);}
+.badge-widener{background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.35);color:var(--success);}
+.badge-nasdaq{background:rgba(245,149,0,0.12);border:1px solid rgba(245,149,0,0.35);color:var(--amber);}
+.badge-macro{background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:#F59E0B;}
+.data-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.pill{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-family:var(--mono);}
+.pill-v{background:rgba(34,197,94,0.15);color:var(--success);}
+.pill-e{background:rgba(245,158,11,0.15);color:var(--warn);}
+.pill-u{background:rgba(239,68,68,0.15);color:var(--danger);}
+.hero-lede{color:var(--muted);font-size:0.82rem;margin-top:6px;max-width:700px;line-height:1.4;}
+
+/* TAB BAR */
+#tab-bar{position:sticky;top:0;z-index:100;background:#0D1420;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;}
+#tab-bar::-webkit-scrollbar{display:none;}
+.tab-btn{flex-shrink:0;padding:12px 16px;font-family:var(--font);font-size:0.8rem;font-weight:600;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all 0.2s;letter-spacing:0.03em;white-space:nowrap;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--amber);border-bottom-color:var(--amber);}
+
+/* COMMON */
+.tab-content{display:none;padding:28px 24px 48px;max-width:1200px;margin:0 auto;}
+.tab-content:first-of-type{display:block;}
+.section-title{font-size:1.4rem;font-weight:800;color:var(--amber);border-left:3px solid var(--amber);padding-left:12px;margin:28px 0 16px;font-family:var(--font);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:16px;}
+.card-title{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:var(--mono);margin-bottom:10px;}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+@media(max-width:680px){.metric-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.metric-grid{grid-template-columns:1fr 1fr;}}
+.metric-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;border-left:3px solid var(--amber);}
+.metric-card.teal{border-left-color:var(--teal);}
+.metric-card.green{border-left-color:var(--success);}
+.metric-card.red{border-left-color:var(--danger);}
+.metric-label{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-family:var(--mono);}
+.metric-value{font-size:1.5rem;font-weight:800;font-family:var(--mono);color:var(--text);line-height:1.1;margin:4px 0 2px;}
+.metric-sub{font-size:0.7rem;color:var(--muted);font-family:var(--mono);}
+.metric-up{color:var(--success);}
+.metric-down{color:var(--danger);}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.78rem;}
+thead th{background:rgba(245,149,0,0.08);color:var(--amber);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);font-weight:600;letter-spacing:0.05em;}
+tbody tr{border-bottom:1px solid rgba(30,45,64,0.6);}
+tbody tr:hover{background:rgba(245,149,0,0.03);}
+tbody td{padding:8px 12px;color:var(--text);}
+tbody td:first-child{color:var(--muted);}
+.t-green{color:var(--success)!important;}
+.t-amber{color:var(--amber)!important;}
+.t-red{color:var(--danger)!important;}
+.t-teal{color:var(--teal)!important;}
+.pass-badge{background:rgba(34,197,94,0.12);color:var(--success);border-radius:4px;padding:2px 7px;font-size:0.68rem;font-family:var(--mono);}
+.marginal-badge{background:rgba(245,158,11,0.12);color:var(--warn);border-radius:4px;padding:2px 7px;font-size:0.68rem;font-family:var(--mono);}
+.fail-badge{background:rgba(239,68,68,0.12);color:var(--danger);border-radius:4px;padding:2px 7px;font-size:0.68rem;font-family:var(--mono);}
+.grade{display:inline-block;padding:3px 10px;border-radius:5px;font-family:var(--mono);font-weight:600;font-size:0.8rem;}
+.grade-a{background:rgba(34,197,94,0.15);color:var(--success);}
+.grade-b{background:rgba(14,196,212,0.15);color:var(--teal);}
+.grade-c{background:rgba(245,158,11,0.15);color:var(--warn);}
+.grade-d{background:rgba(239,68,68,0.15);color:var(--danger);}
+.star-row{color:var(--amber);font-size:0.9rem;letter-spacing:0.05em;}
+.bar-wrap{background:rgba(255,255,255,0.05);border-radius:4px;height:8px;overflow:hidden;margin-top:4px;}
+.bar-fill{height:100%;border-radius:4px;background:var(--amber);}
+.bar-fill.teal{background:var(--teal);}
+.bar-fill.green{background:var(--success);}
+.info-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:0.83rem;}
+.info-row .dot{flex-shrink:0;width:6px;height:6px;border-radius:50%;background:var(--amber);margin-top:7px;}
+.info-row.teal .dot{background:var(--teal);}
+.info-row.green .dot{background:var(--success);}
+.info-row.red .dot{background:var(--danger);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:680px){.two-col{grid-template-columns:1fr;}}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+@media(max-width:680px){.three-col{grid-template-columns:1fr;}}
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
+@media(max-width:680px){.scenario-grid{grid-template-columns:1fr;}}
+.scenario-card{border-radius:8px;padding:16px;}
+.sc-stress{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);}
+.sc-base{background:rgba(245,149,0,0.08);border:1px solid rgba(245,149,0,0.3);}
+.sc-accel{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);}
+.sc-label{font-size:0.65rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
+.sc-stress .sc-label{color:var(--danger);}
+.sc-base .sc-label{color:var(--amber);}
+.sc-accel .sc-label{color:var(--success);}
+.sc-value{font-size:1.4rem;font-weight:800;font-family:var(--mono);}
+.sc-stress .sc-value{color:var(--danger);}
+.sc-base .sc-value{color:var(--amber);}
+.sc-accel .sc-value{color:var(--success);}
+.flywheel-box{background:rgba(239,68,68,0.06);border:2px solid rgba(239,68,68,0.25);border-radius:10px;padding:20px;}
+.flywheel-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-family:var(--mono);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.4);margin-bottom:10px;}
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:680px){.pillar-grid{grid-template-columns:repeat(2,1fr);}}
+.pillar-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;}
+.pillar-name{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-family:var(--mono);margin-bottom:6px;}
+.upgrade-list{list-style:none;counter-reset:upgrade-counter;}
+.upgrade-list li{counter-increment:upgrade-counter;display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.85rem;}
+.upgrade-list li::before{content:counter(upgrade-counter);flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--amber);color:#000;font-weight:700;font-family:var(--mono);font-size:0.7rem;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.verdict-box{background:linear-gradient(135deg,#1A1F10,#1F2814);border:2px solid var(--success);border-radius:12px;padding:24px;margin-top:16px;position:relative;overflow:hidden;}
+.verdict-box::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(34,197,94,0.1),transparent);border-radius:50%;}
+.verdict-main{font-size:2rem;font-weight:900;font-family:var(--font);color:var(--success);}
+.verdict-quote{color:var(--muted);font-style:italic;font-size:0.85rem;margin-top:10px;border-left:3px solid var(--success);padding-left:12px;}
+.contract-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:0.75rem;font-family:var(--mono);font-weight:600;margin:4px;}
+.ct-msft{background:rgba(0,120,215,0.15);border:1px solid rgba(0,120,215,0.4);color:#5BB5FF;}
+.ct-nvidia{background:rgba(118,185,0,0.15);border:1px solid rgba(118,185,0,0.4);color:#8DC63F;}
+.ct-amazon{background:rgba(255,153,0,0.15);border:1px solid rgba(255,153,0,0.35);color:#FF9900;}
+.progress-bar{margin:10px 0;}
+.pb-label{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:4px;}
+.pb-track{background:rgba(255,255,255,0.06);border-radius:4px;height:10px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:4px;transition:width 0.5s;}
+.pb-amber{background:linear-gradient(90deg,var(--amber),#FFBB33);}
+.pb-teal{background:linear-gradient(90deg,var(--teal),#33E8F5);}
+.pb-green{background:linear-gradient(90deg,var(--success),#4ADE80);}
+footer{background:var(--card);border-top:1px solid var(--border);padding:20px 24px;font-size:0.72rem;color:var(--muted);line-height:1.7;}
+</style>
+</head>
+<body>
+<div id="hero">
+  <div class="hero-top">
+    <div class="hero-left">
+      <h1>IREN</h1>
+      <div class="sub">NASDAQ: IREN &nbsp;|&nbsp; Iris Energy Limited &nbsp;|&nbsp; AI Infrastructure &amp; Bitcoin Mining</div>
+      <div class="hero-badges">
+        <span class="badge badge-b">📊 CAT B</span>
+        <span class="badge badge-widener">🟢 AI WIDENER</span>
+        <span class="badge badge-nasdaq">🇺🇸 NASDAQ</span>
+        <span class="badge badge-macro">⚡ AI BOOM CYCLE</span>
+      </div>
+      <div class="data-pills">
+        <span class="pill pill-v">✓ VERIFIED – SEC Filings</span>
+        <span class="pill pill-e">~ ESTIMATED – Cross-referenced</span>
+        <span class="pill pill-u">⚠ UNVERIFIED – Limited source</span>
+      </div>
+      <div class="hero-lede">Converting physical scarcity — renewable power &amp; land in grid-constrained regions — into a $13.1B contracted AI infrastructure platform backed by Microsoft and NVIDIA.</div>
+    </div>
+    <div class="verdict-badge">
+      <div class="v-label">Verdict</div>
+      <div class="v-text">WATCH<br>★★★★</div>
+    </div>
+  </div>
+</div>
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Ownership</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intel</button>
+</div>
+<!-- TAB 0: OVERVIEW -->
+<div class="tab-content" id="tab0" style="display:block;">
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Current Price</div><div class="metric-value">~$65</div><div class="metric-sub">June 4, 2026</div></div>
+    <div class="metric-card teal"><div class="metric-label">Market Cap</div><div class="metric-value">$22.7B</div><div class="metric-sub">~357M shares</div></div>
+    <div class="metric-card green"><div class="metric-label">Contracted ARR</div><div class="metric-value">$3.1B</div><div class="metric-sub">Target $3.7B by CY2026</div></div>
+    <div class="metric-card"><div class="metric-label">FY25 Revenue</div><div class="metric-value">$501M</div><div class="metric-sub">+168% YoY [VERIFIED]</div></div>
+    <div class="metric-card teal"><div class="metric-label">Cash (Apr 2026)</div><div class="metric-value">$2.6B</div><div class="metric-sub">Secured financing [VERIFIED]</div></div>
+    <div class="metric-card green"><div class="metric-label">Secured Power</div><div class="metric-value">>4.5GW</div><div class="metric-sub">+5GW pipeline [VERIFIED]</div></div>
+    <div class="metric-card"><div class="metric-label">FY25 Adj. EBITDA</div><div class="metric-value">$270M</div><div class="metric-sub">54% margin [VERIFIED]</div></div>
+    <div class="metric-card red"><div class="metric-label">1-Year Return</div><div class="metric-value">+468%</div><div class="metric-sub">52-wk: $8.29–$76.87</div></div>
+  </div>
+  <div class="card"><div class="card-title">Strategic Anchor Contracts</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+      <span class="contract-tag ct-msft">💼 Microsoft — $9.7B, 5-yr, 20% prepayment ($1.9B avg annual)</span>
+      <span class="contract-tag ct-nvidia">💚 NVIDIA — $3.4B, 5-yr AI Cloud + $2.1B equity option at $70</span>
+      <span class="contract-tag ct-amazon">⚡ Together AI, Fluidstack, Fireworks AI — multi-year GPU contracts</span>
+    </div>
+    <div class="progress-bar"><div class="pb-label"><span>ARR Under Contract</span><span class="t-amber">$3.1B of $3.7B target (84%)</span></div><div class="pb-track"><div class="pb-fill pb-amber" style="width:84%;"></div></div></div>
+    <div class="progress-bar"><div class="pb-label"><span>Operating Capacity (MW)</span><span class="t-teal">810MW operational / 480MW AI Cloud by Q4 2026</span></div><div class="pb-track"><div class="pb-fill pb-teal" style="width:62%;"></div></div></div>
+    <div class="progress-bar"><div class="pb-label"><span>GPU Deployment</span><span class="t-green">~10,900 GPUs deployed / targeting 140,000 by end 2026</span></div><div class="pb-track"><div class="pb-fill pb-green" style="width:8%;"></div></div></div>
+  </div>
+  <div class="two-col">
+    <div class="card"><div class="card-title">Business Overview</div>
+      <div class="info-row"><div class="dot"></div><div>IREN is a vertically integrated AI Cloud and Bitcoin mining data center company, incorporated in Australia and listed on NASDAQ.</div></div>
+      <div class="info-row teal"><div class="dot"></div><div>Founded 2018 by Daniel and William Roberts; operates renewable-powered data centers in Texas, British Columbia (Canada), Spain (via Nostrum, pending), and APAC pipeline.</div></div>
+      <div class="info-row green"><div class="dot"></div><div>Deliberate pivot underway: ASICs being decommissioned and replaced with NVIDIA GPU clusters for AI training and inference workloads.</div></div>
+      <div class="info-row"><div class="dot"></div><div>Three revenue verticals: (1) Bitcoin Mining, (2) AI Cloud Services, (3) AI Data Centers (colocation/hyperscale). Mining still dominant in FY25 but AI Cloud will dominate by FY27.</div></div>
+    </div>
+    <div class="card"><div class="card-title">Series Rationale — Why IREN?</div>
+      <div class="info-row green"><div class="dot"></div><div><strong>Power scarcity as structural moat:</strong> Grid-connected power in renewable-rich regions is one of the scarcest assets in the AI economy. IREN has 4.5GW+ secured.</div></div>
+      <div class="info-row teal"><div class="dot"></div><div><strong>Extraordinary validation:</strong> When Microsoft signs $9.7B and NVIDIA signs $3.4B + offers $2.1B equity option, the speculative infrastructure thesis becomes contracted reality.</div></div>
+      <div class="info-row"><div class="dot"></div><div><strong>Vertical integration bet:</strong> Mirantis acquisition ($625M, pending) moves IREN from commodity compute to managed AI cloud with software orchestration (k0rdent platform).</div></div>
+      <div class="info-row red"><div class="dot"></div><div><strong>Key risk:</strong> Execution on 140,000 GPUs by end 2026 is extremely ambitious. Revenue is declining QoQ in transition. Heavy dilution from convertibles, Mirantis, and NVIDIA option.</div></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title">Infrastructure Scale — IREN's 5-Year Build</div>
+    <table>
+      <thead><tr><th>Metric</th><th>FY23</th><th>FY24</th><th>FY25</th><th>Q3 FY26</th><th>Target CY2026</th></tr></thead>
+      <tbody>
+        <tr><td>Total Revenue</td><td class="t-muted">~$48M</td><td class="t-amber">$187M</td><td class="t-green">$501M</td><td class="t-amber">$145M (Q)</td><td class="t-teal">$700-750M [ESTIMATED]</td></tr>
+        <tr><td>Contracted Power (MW)</td><td>—</td><td>~800</td><td>2,910</td><td>>4,500</td><td class="t-green">>5,000</td></tr>
+        <tr><td>Operating Capacity (MW)</td><td>~75</td><td>~260</td><td>810</td><td>—</td><td class="t-green">480 (AI Cloud)</td></tr>
+        <tr><td>Bitcoin Hashrate (EH/s)</td><td>3</td><td>10</td><td>50</td><td>50→declining</td><td>Transitioning to AI</td></tr>
+        <tr><td>GPU Count</td><td>0</td><td>248</td><td>1,900</td><td>~10,000</td><td class="t-green">140,000</td></tr>
+        <tr><td>Adj. EBITDA Margin</td><td>~10%</td><td>29%</td><td>54%</td><td>~41%</td><td class="t-amber">35-45% [ESTIMATED]</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:0.7rem;color:var(--muted);margin-top:8px;font-family:var(--mono);">FY = July–June. Q3 FY26 = Jan–Mar 2026. Revenue Q3 lower due to deliberate ASIC→GPU transition.</div>
+  </div>
+</div>
+<!-- TAB 1: MACRO & GROWTH -->
+<div class="tab-content" id="tab1">
+  <div class="section-title">US Macro Anchor</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">10Y Treasury</div><div class="metric-value mono">4.49%</div><div class="metric-sub">Jun 2026 [VERIFIED]</div></div>
+    <div class="metric-card teal"><div class="metric-label">Fed Funds Rate</div><div class="metric-value mono">4.25–4.50%</div><div class="metric-sub">Holding; 2 cuts possible</div></div>
+    <div class="metric-card"><div class="metric-label">US Real GDP</div><div class="metric-value mono">~2.0%</div><div class="metric-sub">Slowing [ESTIMATED]</div></div>
+    <div class="metric-card green"><div class="metric-label">US Nominal GDP</div><div class="metric-value mono">~5.5–6%</div><div class="metric-sub">Terminal growth ceiling</div></div>
+  </div>
+  <div class="section-title">Macro Cycle Dashboard</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Dimension</th><th>Status</th><th>IREN Impact</th><th>Magnitude</th></tr></thead>
+      <tbody>
+        <tr><td>AI Data Center Demand Cycle</td><td class="t-green">BOOM</td><td>Hyperscaler CapEx $200B+/yr; structural compute shortage</td><td class="t-green">+15–25% Rev</td></tr>
+        <tr><td>Energy / Power Availability</td><td class="t-green">TAILWIND</td><td>Renewable power as strategic scarce asset; coal retirements</td><td class="t-green">+5–10% Moat</td></tr>
+        <tr><td>Fed Rate / Capital Cost Cycle</td><td class="t-amber">NEUTRAL</td><td>Elevated rates pressure debt-funded CapEx; 2 cuts possible</td><td class="t-amber">-3–5% IV</td></tr>
+        <tr><td>Bitcoin Price Cycle</td><td class="t-green">RECOVERY</td><td>~$99K BTC sustains mining economics; $36K all-in cost</td><td class="t-green">+cash flow buffer</td></tr>
+        <tr><td>GPU Supply Cycle (NVIDIA)</td><td class="t-green">TAILWIND</td><td>Blackwell ramp underway; IREN as Preferred Partner = priority</td><td class="t-green">+GPU access</td></tr>
+        <tr><td>Tariff / Trade Cycle</td><td class="t-red">HEADWIND</td><td>Hardware import costs elevated; GPU supply chain at risk</td><td class="t-red">-3–8% CapEx</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;">
+      <div style="padding:8px 14px;border-radius:6px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);font-size:0.78rem;">Macro Composite: <strong style="color:var(--success)">TAILWIND</strong></div>
+      <div style="padding:8px 14px;border-radius:6px;background:rgba(14,196,212,0.12);border:1px solid rgba(14,196,212,0.3);font-size:0.78rem;">AI Cycle Impact: <strong style="color:var(--teal)">CORE OPPORTUNITY</strong></div>
+    </div>
+  </div>
+  <div class="section-title">Sector Growth Derivation — AI Data Centers / Neocloud</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Parameter</th><th class="t-red">STRESS</th><th class="t-amber">BASE</th><th class="t-green">ACCEL</th></tr></thead>
+      <tbody>
+        <tr><td>US Nominal GDP</td><td>4.5%</td><td>5.8%</td><td>7.5%</td></tr>
+        <tr><td>AI DC Sector CAGR</td><td>25%</td><td>40%</td><td>60%</td></tr>
+        <tr><td>AI Cycle Adjustment</td><td>+5pp</td><td>+12pp</td><td>+20pp</td></tr>
+        <tr><td>Company Alpha (total)</td><td>+8%</td><td>+16%</td><td>+28%</td></tr>
+        <tr><td>Stage 1 Revenue CAGR (FY26–28)</td><td class="t-red">70%</td><td class="t-amber">140%</td><td class="t-green">250%+</td></tr>
+        <tr><td>Stage 2 CAGR (FY28–30)</td><td>18%</td><td>32%</td><td>50%</td></tr>
+        <tr><td>Terminal Revenue Growth</td><td>3.5%</td><td>5.5%</td><td>7%</td></tr>
+        <tr><td>Adj. EBITDA Margin Direction</td><td>Compress 28–32%</td><td>Stable 35–40%</td><td>Expand 40–50%</td></tr>
+        <tr><td>Key Risk</td><td>ARR miss; BTC crash</td><td>Execution on schedule</td><td>Hyperscaler outsourcing AI</td></tr>
+      </tbody>
+    </table>
+    <div style="background:rgba(14,196,212,0.06);border:1px solid rgba(14,196,212,0.2);border-radius:6px;padding:10px 12px;margin-top:10px;font-size:0.78rem;color:var(--muted);">
+      Sensitivity: A 1x change in forward EV/EBITDA multiple changes IV by ~$6–8/share. A 10% miss on contracted ARR changes Base IV by ~$7/share. GPU deployment timeline is the primary Stage 1 growth driver.
+    </div>
+  </div>
+  <div class="section-title">Company Alpha — 6 Sources</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr></thead>
+      <tbody>
+        <tr><td>1. Market Share Gain (neocloud)</td><td><span class="pass-badge">ACTIVE</span></td><td class="t-green">+8%</td><td class="t-green">+5%</td></tr>
+        <tr><td>2. Geographic Expansion</td><td><span class="pass-badge">ACTIVE</span></td><td class="t-green">+5%</td><td class="t-green">+8%</td></tr>
+        <tr><td>3. Customer / Workload Expansion</td><td><span class="pass-badge">ACTIVE</span></td><td class="t-green">+5%</td><td class="t-amber">+3%</td></tr>
+        <tr><td>4. Vertical Integration (software)</td><td><span class="marginal-badge">POTENTIAL</span></td><td class="t-amber">+3%</td><td class="t-green">+6%</td></tr>
+        <tr><td>5. Pricing Power (contracted ARR)</td><td><span class="pass-badge">ACTIVE</span></td><td class="t-green">+3%</td><td class="t-amber">+2%</td></tr>
+        <tr><td>6a. AI Cost Reduction (spot pricing)</td><td><span class="pass-badge">ACTIVE</span></td><td class="t-green">+2%</td><td class="t-amber">+1%</td></tr>
+        <tr><td>6b. AI Market Expansion (GPU scarcity)</td><td><span class="pass-badge">ACTIVE</span></td><td class="t-green">+5%</td><td class="t-green">+8%</td></tr>
+        <tr><td>6c. Scale Economic Flywheel</td><td><span class="marginal-badge">FORMING</span></td><td class="t-amber">+2%</td><td class="t-green">+5%</td></tr>
+        <tr><td><strong>Total Alpha</strong></td><td>—</td><td class="t-green"><strong>+16%</strong></td><td class="t-green"><strong>+20%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- TAB 2: FINANCIALS -->
+<div class="tab-content" id="tab2">
+  <div class="section-title">Revenue &amp; Earnings History</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Period</th><th>Revenue</th><th>Net Income</th><th>Adj. EBITDA</th><th>EBITDA Margin</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>FY23 (Jun 2023)</td><td>~$48M</td><td class="t-red">Loss ~$100M+</td><td>~$10M</td><td>~20%</td><td style="color:var(--muted);font-size:0.72rem;">Early stage [ESTIMATED]</td></tr>
+        <tr><td>FY24 (Jun 2024)</td><td class="t-amber">$187M</td><td class="t-red">$(28.9)M</td><td class="t-amber">$54M</td><td>29%</td><td style="color:var(--muted);font-size:0.72rem;">[VERIFIED] SEC filing</td></tr>
+        <tr><td>FY25 (Jun 2025)</td><td class="t-green">$501M</td><td class="t-green">$87M</td><td class="t-green">$270M</td><td class="t-green">54%</td><td style="color:var(--muted);font-size:0.72rem;">[VERIFIED] 10-K filed Aug 2025</td></tr>
+        <tr><td>Q1 FY26 (Sep 2025)</td><td class="t-green">$240M</td><td class="t-green">$385M*</td><td class="t-amber">$92M</td><td>38%</td><td style="color:var(--muted);font-size:0.72rem;">*Unrealized gains on derivatives</td></tr>
+        <tr><td>Q2 FY26 (Dec 2025)</td><td class="t-amber">$185M</td><td class="t-red">$(155)M*</td><td class="t-amber">$75M</td><td>41%</td><td style="color:var(--muted);font-size:0.72rem;">*Unrealized losses on derivatives</td></tr>
+        <tr><td>Q3 FY26 (Mar 2026)</td><td class="t-amber">$145M</td><td class="t-red">$(248)M*</td><td class="t-amber">$60M</td><td>41%</td><td style="color:var(--muted);font-size:0.72rem;">*$140M ASIC impairment + capped call loss</td></tr>
+      </tbody>
+    </table>
+    <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:6px;padding:10px;margin-top:10px;font-size:0.78rem;color:var(--muted);">
+      ⚠ GAAP net income/loss is unreliable for IREN due to: (1) Non-cash impairments from ASIC decommissioning, (2) Mark-to-market on capped calls/convertible notes, (3) Deliberate transition depressing revenue. <strong style="color:var(--amber);">Adj. EBITDA is the correct operational metric.</strong>
+    </div>
+  </div>
+  <div class="section-title">Financial Fortress Scorecard (Infrastructure Adapted)</div>
+  <div class="card">
+    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:12px;font-family:var(--mono);">Standard Cat B scorecard adapted for capital-intensive infrastructure growth phase. FCF negative = expected; primary gate is EBITDA quality and ARR visibility.</div>
+    <table>
+      <thead><tr><th>Test</th><th>Status</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue CAGR ≥ sector (+40%)</td><td><span class="pass-badge">✓ PASS</span></td><td>+168% FY25; Stage 1 target 140% CAGR</td></tr>
+        <tr><td>Net profit margin positive</td><td><span class="pass-badge">✓ PASS</span></td><td>17% in FY25; FY26 negative GAAP but adj. positive</td></tr>
+        <tr><td>FCF positive + growing</td><td><span class="fail-badge">✗ FAIL</span></td><td>FCF ~-$1.5B (growth CapEx phase); expected for infra buildout</td></tr>
+        <tr><td>Net cash / EBITDA coverage</td><td><span class="pass-badge">✓ PASS</span></td><td>$2.6B cash; EBITDA $270M FY25; Adj. EBITDA positive all quarters</td></tr>
+        <tr><td>Predictable/recurring revenue</td><td><span class="pass-badge">✓ PASS</span></td><td>$3.1B ARR contracted; 5-year avg terms with MSFT/NVIDIA</td></tr>
+        <tr><td>Pricing power proven</td><td><span class="pass-badge">✓ PASS</span></td><td>Fixed-price multi-year contracts; customer prepayments validate pricing</td></tr>
+        <tr><td>Capital efficiency (GPU financing)</td><td><span class="pass-badge">✓ PASS</span></td><td>100% GPU hardware purchase financed; MSFT prepaid $1.9B</td></tr>
+        <tr><td>Dilution management</td><td><span class="fail-badge">✗ FAIL</span></td><td>Mirantis $625M stock; NVIDIA $2.1B option; convertible notes</td></tr>
+        <tr><td>ROIC &gt; WACC</td><td><span class="marginal-badge">~ MARGINAL</span></td><td>Negative in build phase; improving with each MW commissioned</td></tr>
+        <tr><td>Owner earnings ≥ net income</td><td><span class="marginal-badge">~ MARGINAL</span></td><td>Adj. EBITDA positive; maintenance CapEx fraction of total CapEx</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+      <div style="padding:6px 14px;border-radius:6px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);font-size:0.78rem;color:var(--success);">Fortress Grade: <strong>B−</strong></div>
+      <div style="font-size:0.78rem;color:var(--muted);padding:6px 0;">Strong where it matters for growth phase; traditional metrics distorted by deliberate infrastructure buildout.</div>
+    </div>
+  </div>
+  <div class="section-title">O'Glove Earnings Quality (Tests 1 &amp; 5 — Infrastructure Adapted)</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Test 1 — FCF Conversion (5yr)</div>
+      <div style="font-size:0.85rem;margin-bottom:8px;">CFO/Net Income ratio distorted by ~-$1.5B growth CapEx (land, data centers, power infrastructure). Mining operations generate positive operating cash flow; negative FCF is entirely growth investment.</div>
+      <div style="margin-bottom:6px;font-size:0.8rem;color:var(--muted);">FY25 Adj. EBITDA → Revenue: 54% (strong)</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:54%;"></div></div>
+      <div style="margin-top:10px;padding:8px;background:rgba(245,158,11,0.08);border-radius:6px;font-size:0.78rem;color:var(--warn);">Verdict: <strong>ACCEPTABLE</strong> (infrastructure phase; use Adj. EBITDA, not FCF)</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Test 5 — Gross Margin Consistency (5yr)</div>
+      <div style="font-size:0.85rem;margin-bottom:8px;">Bitcoin mining hardware margin: ~75% (revenue less electricity costs). All-in cash cost ~$36K/BTC vs $99K realized. AI Cloud margins: higher but volume small. EBITDA margin expanded from 29% (FY24) to 54% (FY25).</div>
+      <div style="margin-bottom:6px;font-size:0.8rem;color:var(--muted);">Adj. EBITDA margin trend (FY24→FY25): +25pp expansion</div>
+      <div class="bar-wrap"><div class="bar-fill green" style="width:75%;"></div></div>
+      <div style="margin-top:10px;padding:8px;background:rgba(34,197,94,0.08);border-radius:6px;font-size:0.78rem;color:var(--success);">Verdict: <strong>CLEAN</strong> (margins expanding; input cost well-managed)</div>
+    </div>
+  </div>
+  <div class="card" style="background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.3);">
+    <div class="card-title">Overall O'Glove Earnings Quality</div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div style="font-size:1.6rem;font-weight:800;font-family:var(--mono);color:var(--amber);">ACCEPTABLE</div>
+      <div style="font-size:0.82rem;color:var(--muted);">Infrastructure growth phase with deliberate FCF investment. Adj. EBITDA quality is high. Heavy non-cash GAAP charges (ASIC impairments, derivatives MTM) mask operational strength. Not a position-sizing gate — acceptable for high-growth infrastructure. Apply 5% additional MoS buffer for uncertainty.</div>
+    </div>
+  </div>
+  <div class="section-title">Quarterly Revenue Bridge — Transition Story</div>
+  <div class="card">
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;">Revenue declining QoQ in FY26 is DELIBERATE: ASIC miners decommissioned before GPU clusters come fully online. The gap between current revenue (~$145M/Q) and target ARR ($3.7B/yr = $925M/Q) is the investment opportunity.</div>
+    <div class="scenario-grid">
+      <div class="scenario-card sc-stress"><div class="sc-label">Current Run-Rate</div><div class="sc-value" style="font-size:1.1rem;">~$580M/yr</div><div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">Q3 FY26 annualised; transition trough</div></div>
+      <div class="scenario-card sc-base"><div class="sc-label">Target ARR (CY2026E)</div><div class="sc-value" style="font-size:1.1rem;">$3.7B/yr</div><div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">If 140K GPUs deployed on time</div></div>
+      <div class="scenario-card sc-accel"><div class="sc-label">Long-term ARR (2028+)</div><div class="sc-value" style="font-size:1.1rem;">$7B+/yr</div><div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">Full 5GW pipeline monetised</div></div>
+    </div>
+  </div>
+</div>
+<!-- TAB 3: MOAT -->
+<div class="tab-content" id="tab3">
+  <div class="section-title">Economic Moat — Sources &amp; Durability</div>
+  <div class="card">
+    <div class="card-title">Overall Moat Grade</div>
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:14px;">
+      <div><span class="grade grade-b" style="font-size:1.3rem;padding:6px 18px;">B+</span></div>
+      <div style="font-size:0.85rem;color:var(--muted);">Narrow-to-Wide moat being constructed. Power/land portfolio is a genuine scarce-resource moat. Anchor contracts with MSFT and NVIDIA provide multi-year revenue floor. Vertical integration via Mirantis (pending) adds software layer. ROIC not yet proven above WACC — moat widening but unconfirmed by returns.</div>
+    </div>
+    <table>
+      <thead><tr><th>Moat Source</th><th>Strength</th><th>Durability</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td>⚡ Power &amp; Land Portfolio</td><td class="t-green">★★★★★</td><td class="t-green">10–20yr</td><td>4.5GW+ secured; 3–5 yr replication timeline; renewable-rich locations</td></tr>
+        <tr><td>📋 Anchor Customer Contracts</td><td class="t-green">★★★★★</td><td class="t-green">5yr</td><td>MSFT $9.7B + NVIDIA $3.4B; 20% prepayment validates pricing</td></tr>
+        <tr><td>🏗 Execution Track Record</td><td class="t-amber">★★★★</td><td class="t-amber">3–5yr</td><td>50 EH/s ahead of schedule; Sweetwater 1 energised on time</td></tr>
+        <tr><td>💰 Cost Structure</td><td class="t-amber">★★★★</td><td class="t-amber">5–10yr</td><td>$36K all-in BTC cost vs $99K realised; spot electricity strategy</td></tr>
+        <tr><td>🤝 NVIDIA Strategic Partnership</td><td class="t-amber">★★★★</td><td class="t-amber">5yr+</td><td>Preferred Partner; $2.1B investment option at $70; GB300 pipeline</td></tr>
+        <tr><td>💾 Vertical Integration (emerging)</td><td class="t-amber">★★★</td><td class="t-amber">3–7yr</td><td>Mirantis + k0rdent AI orchestration; 1,500+ enterprise clients (pending close)</td></tr>
+        <tr><td>📈 Scale Economics</td><td class="t-amber">★★★</td><td class="t-green">10yr+</td><td>Scale → better financing → lower cost → more customers → more power</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Moat Stress Test — Macro Scenarios</div>
+      <div class="info-row green"><div class="dot"></div><div><strong>Strengthens in boom:</strong> Power/land portfolio becomes MORE valuable if AI compute demand stays structurally strong and grid constraints worsen. IREN's position is inversely correlated to competition's ability to replicate.</div></div>
+      <div class="info-row"><div class="dot"></div><div><strong>Holds in neutral:</strong> Bitcoin mining economics (all-in $36K vs market $99K) provide a free cash flow buffer during AI Cloud ramp. Contracted ARR provides revenue floor regardless of spot market.</div></div>
+      <div class="info-row red"><div class="dot"></div><div><strong>Weakens under stress:</strong> BTC crash below $50K + AI buildout delay + hyperscaler in-sourcing decision = triple threat to revenue, margins, and moat narrative. ASIC impairment creates sunk cost exposure if pivoting back.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Moat vs Nearest Competitors</div>
+      <table style="font-size:0.75rem;">
+        <thead><tr><th>Company</th><th>Power Secured</th><th>Anchor Contracts</th><th>GPU Count</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--amber);">IREN</strong></td><td class="t-green">4.5GW+</td><td class="t-green">$13.1B</td><td class="t-green">→140K</td></tr>
+          <tr><td>CoreWeave</td><td class="t-amber">~1.5GW</td><td class="t-amber">$11.9B (2024)</td><td class="t-amber">250K+</td></tr>
+          <tr><td>Applied Digital</td><td>~640MW</td><td>Limited</td><td>~30K</td></tr>
+          <tr><td>Hut 8</td><td>~590MW</td><td>Limited</td><td>~7K</td></tr>
+          <tr><td>Core Scientific</td><td>~1GW</td><td>NVIDIA 200MW</td><td>~35K</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:0.72rem;color:var(--muted);margin-top:6px;font-family:var(--mono);">[ESTIMATED] — Competitor data approximate, cross-referenced from public sources.</div>
+    </div>
+  </div>
+  <div class="section-title">Data Flywheel Assessment</div>
+  <div class="flywheel-box">
+    <div class="flywheel-badge">COSMETIC — 0 / 10</div>
+    <div style="font-size:0.85rem;color:var(--muted);margin-bottom:14px;">IREN provides compute infrastructure. It does not accumulate AI training data, does not improve AI models with more users, and has no self-reinforcing data loop. This is correct and expected — infrastructure companies have economic scale advantages, not data flywheels.</div>
+    <table style="font-size:0.78rem;">
+      <thead><tr><th>Condition</th><th>Status</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Proprietary training data competitors can't replicate</td><td class="t-red">✗ FAIL</td><td>IREN rents compute; customers own training data</td></tr>
+        <tr><td>More users/data improves AI model accuracy</td><td class="t-red">✗ FAIL</td><td>GPU utilisation doesn't create learning loops</td></tr>
+        <tr><td>Better AI attracts more users → better AI</td><td class="t-red">✗ FAIL</td><td>Not applicable; IREN is the infrastructure layer</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:0.78rem;color:var(--muted);">Note: Post-Mirantis (pending close), IREN may develop an <em>economic flywheel</em> (more customers → lower cost → better platform → more customers), but this is NOT a data flywheel. Score remains COSMETIC until software-driven customer retention is demonstrated at scale.</div>
+  </div>
+</div>
+<!-- TAB 4: MANAGEMENT -->
+<div class="tab-content" id="tab4">
+  <div class="section-title">Management Quality Assessment</div>
+  <div class="card">
+    <div class="pillar-grid" style="margin-bottom:16px;">
+      <div class="pillar-card"><div class="pillar-name">Overall Grade</div><span class="grade grade-a" style="font-size:1.2rem;">A−</span></div>
+      <div class="pillar-card"><div class="pillar-name">Capital Allocation</div><span class="grade grade-b">B+</span></div>
+      <div class="pillar-card"><div class="pillar-name">Execution</div><span class="grade grade-a">A</span></div>
+      <div class="pillar-card"><div class="pillar-name">Shareholder Alignment</div><span class="grade grade-b">B</span></div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Leadership</div>
+      <div class="info-row green"><div class="dot"></div><div><strong>Daniel Roberts (Co-CEO):</strong> Infrastructure operations specialist. Consistently delivered on build milestones — 50 EH/s, Sweetwater 1 substation, GPU deployment ramps — ahead of or on schedule. The operational "builder" half of the founding pair.</div></div>
+      <div class="info-row teal"><div class="dot"></div><div><strong>William Roberts (Co-CEO):</strong> Financial architecture expert. Structured the capped call transactions, convertible notes, and negotiated the Microsoft prepayment mechanism. Turned IREN's capital strategy from equity dilution into customer-funded CapEx. The "deal-maker" half.</div></div>
+      <div class="info-row"><div class="dot"></div><div><strong>Combined track record:</strong> Started with zero operational data centers in 2018; now operating 810MW with $3.1B contracted ARR, listed on NASDAQ, with NVIDIA as a strategic co-investor candidate. 8-year arc of execution.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Capital Allocation — Strengths</div>
+      <div class="info-row green"><div class="dot"></div><div><strong>Customer-funded CapEx:</strong> The $1.9B MSFT prepayment (20% of $9.7B contract) funds construction. Hyperscalers are financing IREN's growth — this is exceptional capital structure creativity.</div></div>
+      <div class="info-row green"><div class="dot"></div><div><strong>100% GPU financing:</strong> Hardware purchased with 100% external financing, preserving capital for land and power infrastructure where scarcity value accumulates.</div></div>
+      <div class="info-row teal"><div class="dot"></div><div><strong>Strategic M&amp;A (Mirantis):</strong> $625M in stock for a software orchestration platform that shifts IREN from commodity compute to managed AI cloud. Rationale is sound; execution risk remains.</div></div>
+      <div class="info-row"><div class="dot"></div><div><strong>Spot electricity strategy:</strong> Purchasing power at spot prices in flexible markets (not fixed long-term PPAs) to optimise for Bitcoin mining vs AI workloads. Saved material costs vs fixed-rate peers.</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Management Concerns &amp; Red Flags</div>
+    <table>
+      <thead><tr><th>Concern</th><th>Severity</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td>Heavy equity dilution (Mirantis + NVIDIA option + convertibles)</td><td class="t-red">HIGH</td><td>Capped call transactions limit dilution at $70 strike; NVIDIA option only exercises above $70</td></tr>
+        <tr><td>Securities class action (2023 equipment financing default)</td><td class="t-amber">MEDIUM</td><td>Legacy issue; operations since resolved; monitoring settlement risk</td></tr>
+        <tr><td>ASIC hardware impairment $140.4M (Q3 FY26)</td><td class="t-amber">MEDIUM</td><td>Non-cash; deliberate strategic choice to accelerate GPU transition; one-time</td></tr>
+        <tr><td>Execution complexity: BTC + AI Cloud + Software + 4 geographies simultaneously</td><td class="t-amber">MEDIUM</td><td>Mirantis adds 400+ staff and enterprise cloud expertise; offset by scale of organisation</td></tr>
+        <tr><td>No dividends or buybacks</td><td class="t-amber">LOW</td><td>100% capital reinvestment is correct at this growth stage; dividend not expected &lt;5yr</td></tr>
+        <tr><td>Promoter/insider pledging</td><td class="t-green">NONE</td><td>No pledging applicable; US-listed company. Roberts brothers = founder-operators</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Benchmark Decisions — Positive</div>
+      <div class="info-row green"><div class="dot"></div><div>Secured $9.7B MSFT + $3.4B NVIDIA simultaneously — unprecedented for a company at IREN's scale stage in 2025/26.</div></div>
+      <div class="info-row green"><div class="dot"></div><div>Sweetwater 1 (1.4GW substation) energised April 2026 — executed on a multi-year infrastructure project with no slippage.</div></div>
+      <div class="info-row teal"><div class="dot"></div><div>Nostrum acquisition (490MW Spain + 1GW+ pipeline) — expanding renewables-rich European footprint ahead of EU AI infrastructure demand wave.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Guidance Accuracy — Historical</div>
+      <table style="font-size:0.75rem;">
+        <thead><tr><th>Target</th><th>Guided</th><th>Delivered</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>Hashrate 50 EH/s FY25</td><td>Q4 FY25</td><td class="t-green">Ahead of schedule</td><td class="t-green">A</td></tr>
+          <tr><td>Sweetwater 1 energisation</td><td>Q3 FY26</td><td class="t-green">Apr 2026 ✓</td><td class="t-green">A</td></tr>
+          <tr><td>GPU deployment 10K</td><td>Dec 2025</td><td class="t-amber">~10.9K ≈ on target</td><td class="t-amber">B+</td></tr>
+          <tr><td>ARR $3.7B by CY2026</td><td>End CY26</td><td class="t-amber">$3.1B with 6mo to go</td><td class="t-amber">Watch</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- TAB 5: VALUATION -->
+<div class="tab-content" id="tab5">
+  <div class="section-title">Framework Adaptation Note</div>
+  <div class="card" style="background:rgba(245,149,0,0.05);border-color:rgba(245,149,0,0.25);">
+    <div style="font-size:0.83rem;color:var(--muted);">IREN is a capital-intensive infrastructure company with negative FCF in the growth phase. Traditional DCF and Owner Earnings methods require adaptation. <strong style="color:var(--amber);">Primary valuation methods: (1) Forward EV/Adj. EBITDA, (2) EV/Contracted ARR multiple, (3) EV/Revenue forward, (4) Comparable transactions.</strong> All methods use estimated EV of ~$21.9B (Market Cap $22.7B + Convertibles ~$1.8B − Cash $2.6B). Shares outstanding: ~357M [ESTIMATED].</div>
+  </div>
+  <div class="section-title">Method 1 — Forward EV / Adj. EBITDA</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Scenario</th><th>FY27E Revenue</th><th>EBITDA Margin</th><th>EBITDA</th><th>EV Multiple</th><th>Implied EV</th><th>Price/Share</th></tr></thead>
+      <tbody>
+        <tr><td class="t-red">Stress (70% ARR hit)</td><td>$2.0B</td><td>30%</td><td>$600M</td><td>15x</td><td>$9.0B</td><td class="t-red">~$38</td></tr>
+        <tr><td class="t-amber">Base ($3.7B ARR exec)</td><td>$2.8B</td><td>37%</td><td>$1.04B</td><td>20x</td><td>$20.8B</td><td class="t-amber">~$70</td></tr>
+        <tr><td class="t-green">Accel ($7B+ ARR, 2028)</td><td>$5.0B</td><td>44%</td><td>$2.2B</td><td>22x</td><td>$48.4B</td><td class="t-green">~$120</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section-title">Method 2 — EV / Contracted ARR</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>ARR Scenario</th><th>ARR Value</th><th>Multiple</th><th>Implied EV</th><th>Price/Share</th></tr></thead>
+      <tbody>
+        <tr><td class="t-red">Stress — current ARR only</td><td>$3.1B</td><td>5x</td><td>$15.5B</td><td class="t-red">~$45</td></tr>
+        <tr><td class="t-amber">Base — target ARR</td><td>$3.7B</td><td>7x</td><td>$25.9B</td><td class="t-amber">~$73</td></tr>
+        <tr><td class="t-green">Accel — full pipeline</td><td>$7.0B</td><td>6x</td><td>$42.0B</td><td class="t-green">~$118</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:0.72rem;color:var(--muted);margin-top:6px;font-family:var(--mono);">ARR multiple of 7x reflects 5-yr contracted terms (lower risk vs spot neocloud). CoreWeave traded at 22x forward revenue at IPO. IREN at 7x ARR is conservative by neocloud peer standards.</div>
+  </div>
+  <div class="section-title">Method 3 — EV / Forward Revenue (P/S)</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Year</th><th>Revenue</th><th>P/S Multiple</th><th>Implied EV</th><th>Price/Share</th></tr></thead>
+      <tbody>
+        <tr><td>FY26E (transition)</td><td>~$750M</td><td>29x (current)</td><td>$21.9B</td><td class="t-amber">$65 (current)</td></tr>
+        <tr><td>FY27E (base)</td><td>~$2.8B</td><td>10x</td><td>$28.0B</td><td class="t-amber">~$78</td></tr>
+        <tr><td>FY27E (fair infra)</td><td>~$2.8B</td><td>8x</td><td>$22.4B</td><td class="t-amber">~$65</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section-title">Method 4 — Earnings Yield vs Bond Yield</div>
+  <div class="card">
+    <div class="two-col">
+      <div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;">Current Adj. EBITDA yield vs 10Y Treasury:</div>
+        <div style="font-size:0.9rem;margin-bottom:4px;">EBITDA Yield (FY25): <span class="mono t-red">1.2%</span> vs Treasury <span class="mono t-amber">4.49%</span></div>
+        <div style="font-size:0.9rem;margin-bottom:4px;">Earnings Risk Premium: <span class="mono t-red">−3.3%</span> (negative → market pricing in growth)</div>
+        <div style="font-size:0.9rem;">FY27E EBITDA Yield: <span class="mono t-green">4.7%</span> → Barely positive ERP</div>
+      </div>
+      <div style="background:rgba(245,149,0,0.06);border:1px solid rgba(245,149,0,0.2);border-radius:8px;padding:14px;">
+        <div style="font-size:0.75rem;color:var(--amber);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Current stock pricing in:</div>
+        <div style="font-size:0.82rem;color:var(--muted);">At $65, market assumes FY27E EBITDA of ~$1B+ is delivered with high probability. Any execution shortfall creates meaningful downside. Positive ERP only achieved on full $3.7B ARR delivery.</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-title">Blended Intrinsic Value Summary</div>
+  <div class="scenario-grid">
+    <div class="scenario-card sc-stress">
+      <div class="sc-label">Stress IV</div>
+      <div class="sc-value">$38–45</div>
+      <div style="font-size:0.72rem;color:var(--danger);margin-top:6px;">70% ARR delivery; 30% EBITDA margin; 15x multiple. BTC crash + execution delays.</div>
+    </div>
+    <div class="scenario-card sc-base">
+      <div class="sc-label">Base IV (with AI Premium)</div>
+      <div class="sc-value">$70–78</div>
+      <div style="font-size:0.72rem;color:var(--amber);margin-top:6px;">Full $3.7B ARR; 37% EBITDA margin; 20x. AI WIDENER premium +$8–12 added.</div>
+    </div>
+    <div class="scenario-card sc-accel">
+      <div class="sc-label">Accelerated IV</div>
+      <div class="sc-value">$110–125</div>
+      <div style="font-size:0.72rem;color:var(--success);margin-top:6px;">$7B+ ARR by 2028; NVIDIA $2.1B option exercises; Mirantis adds software premium.</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px;background:rgba(14,196,212,0.05);border-color:rgba(14,196,212,0.25);">
+    <div class="card-title">MoS Entry Zone</div>
+    <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
+      <div><div style="font-size:2rem;font-weight:900;font-family:var(--mono);color:var(--teal);">$52–62</div><div style="font-size:0.72rem;color:var(--muted);font-family:var(--mono);">20–25% MoS from Base IV</div></div>
+      <div style="font-size:0.82rem;color:var(--muted);flex:1;">At current price of ~$65, stock is trading slightly above the ideal MoS entry zone. The $62–65 range represents the AI-premium-adjusted entry (20% MoS from $78 AI-adjusted IV). <strong style="color:var(--teal);">A correction to $52–60 provides confident entry; $62–65 is marginal entry requiring execution confirmation.</strong></div>
+    </div>
+  </div>
+</div>
+<!-- TAB 6: VERDICT -->
+<div class="tab-content" id="tab6">
+  <div class="section-title">Four Pillar Summary</div>
+  <div class="pillar-grid" style="margin-bottom:20px;">
+    <div class="pillar-card"><div class="pillar-name">Economic Moat</div><span class="grade grade-b" style="font-size:1.2rem;">B+</span><div style="font-size:0.68rem;color:var(--muted);margin-top:6px;">Power scarcity + anchor contracts</div></div>
+    <div class="pillar-card"><div class="pillar-name">Financial Quality</div><span class="grade grade-b">B−</span><div style="font-size:0.68rem;color:var(--muted);margin-top:6px;">Strong EBITDA; FCF negative (infra)</div></div>
+    <div class="pillar-card"><div class="pillar-name">Management</div><span class="grade grade-a">A−</span><div style="font-size:0.68rem;color:var(--muted);margin-top:6px;">Exceptional deal-making; dilution risk</div></div>
+    <div class="pillar-card"><div class="pillar-name">Valuation</div><span class="grade grade-c">C+</span><div style="font-size:0.68rem;color:var(--muted);margin-top:6px;">Rich vs today; fair on FY27 delivery</div></div>
+  </div>
+  <div class="verdict-box">
+    <div style="font-size:0.75rem;color:var(--success);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Verdict</div>
+    <div class="verdict-main">WATCH ★★★★</div>
+    <div style="font-size:0.9rem;color:var(--text);margin-top:10px;font-weight:600;">Exceptional infrastructure platform; price at/above ideal entry zone; wait for $52–62 or execution confirmation.</div>
+    <div class="verdict-quote">IREN is not a speculative bet — it is a $13.1B contracted infrastructure business at the intersection of energy scarcity and AI compute demand. The moat is real and widening. The ask price is not discounted. A patient investor waits; a momentum investor has already won.</div>
+  </div>
+  <div class="section-title">Investment Thesis</div>
+  <div class="card">
+    <div class="info-row green"><div class="dot"></div><div><strong>The core insight:</strong> AI compute is the bottleneck for the entire global AI industry. IREN is building the physical layer (land + power + data centers) to relieve that bottleneck at scale — and locking in decade-long demand through anchor contracts before anyone else can replicate it.</div></div>
+    <div class="info-row teal"><div class="dot"></div><div><strong>The structural moat:</strong> Securing 4.5GW+ of renewable-powered grid connections in low-cost, politically stable regions is a 3–5 year process that cannot be shortcut. IREN has already done this. New entrants face a multi-year disadvantage.</div></div>
+    <div class="info-row"><div class="dot"></div><div><strong>The validation:</strong> When Microsoft (hyper-discerning, long-term capital deployer) commits $9.7B and NVIDIA (world's most valuable semiconductor company) commits $3.4B + $2.1B equity option, the market has provided the best possible external verification of IREN's platform value.</div></div>
+    <div class="info-row red"><div class="dot"></div><div><strong>The risk:</strong> IREN must deploy 140,000 GPUs by end 2026 — a 12.8x increase from ~10,900 today in 7 months. Execution at this velocity has never been achieved at this scale. Any material delay reprices the stock sharply lower.</div></div>
+  </div>
+  <div class="section-title">Upgrade Conditions to BUY ★★★★★</div>
+  <ul class="upgrade-list">
+    <li><strong>Price corrects to $52–58:</strong> Stock trades 20–25% below AI-adjusted Base IV, providing Buffett-standard MoS without needing execution perfection.</li>
+    <li><strong>AI Cloud ARR crosses $1.5B run-rate:</strong> Confirms GPU deployment trajectory is on track for $3.7B target. This is the key operational gate.</li>
+    <li><strong>Adj. EBITDA margin sustains >40% for 2 consecutive quarters:</strong> Demonstrates that the transition to AI Cloud maintains or improves the 54% FY25 margin achieved in pure-mining mode.</li>
+    <li><strong>Diluted share growth slows:</strong> Mirantis acquisition closes + NVIDIA option status clarified + no new major equity issuances signals capital structure is stabilising.</li>
+    <li><strong>Securities class action resolved:</strong> Settlement without material financial impact removes the last legacy legal overhang from the 2023 equipment financing episode.</li>
+  </ul>
+  <div class="section-title">Exit &amp; Thesis Review Triggers</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Hard Exit Conditions (Thesis Breakdown)</div>
+      <div class="info-row red"><div class="dot"></div><div>Microsoft or NVIDIA contract cancelled or materially renegotiated at lower value — removes the core revenue certainty underpinning the valuation.</div></div>
+      <div class="info-row red"><div class="dot"></div><div>GPU deployment falls below 40,000 by end 2026 with no credible revised timeline — execution credibility destroyed.</div></div>
+      <div class="info-row red"><div class="dot"></div><div>Adj. EBITDA margin falls below 25% for 2 consecutive quarters — cost structure degrading against expectations.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Time-Bound Thesis Review</div>
+      <div style="font-size:0.85rem;color:var(--muted);">Horizon: <strong style="color:var(--amber);">3–5 years</strong> (Category B infrastructure build)</div>
+      <div class="info-row teal"><div class="dot"></div><div>18-month review: December 2027 — assess whether GPU count, ARR, and EBITDA margin confirm or deny the base case trajectory.</div></div>
+      <div class="info-row"><div class="dot"></div><div>Accelerated review trigger: BTC &lt;$45K sustained 3 months — tests whether AI Cloud can fully offset mining revenue loss.</div></div>
+      <div class="info-row"><div class="dot"></div><div>Stock materially exceeds Accel IV ($120+) — reverse DCF review to assess if price has exceeded all scenarios.</div></div>
+    </div>
+  </div>
+</div>
+<!-- TAB 7: TECHNICAL -->
+<div class="tab-content" id="tab7">
+  <div class="section-title">Technical Snapshot — June 4, 2026</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Current Price</div><div class="metric-value">~$65</div><div class="metric-sub">Approx. intraday [ESTIMATED]</div></div>
+    <div class="metric-card green"><div class="metric-label">52-Week Low</div><div class="metric-value">$8.29</div><div class="metric-sub">1-yr return: +468%</div></div>
+    <div class="metric-card red"><div class="metric-label">52-Week High</div><div class="metric-value">$76.87</div><div class="metric-sub">Distance to high: −15%</div></div>
+    <div class="metric-card teal"><div class="metric-label">200-DMA</div><div class="metric-value">~$53</div><div class="metric-sub">Stock 22% above [ESTIMATED]</div></div>
+    <div class="metric-card"><div class="metric-label">50-DMA</div><div class="metric-value">~$62</div><div class="metric-sub">Golden Cross May 4 [ESTIMATED]</div></div>
+    <div class="metric-card teal"><div class="metric-label">RSI (14d)</div><div class="metric-value">~60</div><div class="metric-sub">Neutral zone [ESTIMATED]</div></div>
+    <div class="metric-card green"><div class="metric-label">MACD Signal</div><div class="metric-value">Mixed</div><div class="metric-sub">Golden cross bullish; MACD bearish</div></div>
+    <div class="metric-card"><div class="metric-label">YTD Return</div><div class="metric-value">+100%+</div><div class="metric-sub">From ~$30 Dec 2025 [ESTIMATED]</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Key Price Levels</div>
+      <table>
+        <thead><tr><th>Level</th><th>Price</th><th>Significance</th></tr></thead>
+        <tbody>
+          <tr><td>Strong Support</td><td class="t-green">$50–52</td><td>200-DMA zone; major technical floor</td></tr>
+          <tr><td>Entry Zone (MoS)</td><td class="t-teal">$52–62</td><td>20–25% below Base IV — ideal Buffett entry</td></tr>
+          <tr><td>Current Price</td><td class="t-amber">~$65</td><td>Marginal entry; at AI-premium-adj. MoS floor</td></tr>
+          <tr><td>Resistance 1</td><td class="t-amber">$70</td><td>Consensus analyst target; NVIDIA option strike</td></tr>
+          <tr><td>Resistance 2</td><td class="t-red">$76.87</td><td>52-week high — breakout level</td></tr>
+          <tr><td>Accelerated IV</td><td class="t-green">$110–125</td><td>Full execution + NVIDIA investment scenario</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Momentum Indicators</div>
+      <div class="info-row green"><div class="dot"></div><div><strong>Golden Cross (May 4, 2026):</strong> 50-DMA crossed above 200-DMA — a textbook bullish structural signal. Stock has been in an uptrend since this event.</div></div>
+      <div class="info-row teal"><div class="dot"></div><div><strong>Aroon:</strong> Uptrend indicator aligned with Golden Cross momentum. Short-term bullish bias.</div></div>
+      <div class="info-row red"><div class="dot"></div><div><strong>MACD concern:</strong> Some sell signal from 3-month MA crossover suggesting short-term overbought caution. Monitor for pullback to $58–62 range.</div></div>
+      <div class="info-row"><div class="dot"></div><div><strong>Volume profile:</strong> High-volume days associated with contract announcements (MSFT, NVIDIA). Institutional accumulation patterns visible. Short interest declining from ~12.75% (older data) as shorts cover.</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Framework Trade Structure (Buffett-Overlay)</div>
+    <div class="three-col">
+      <div style="text-align:center;padding:12px;background:rgba(34,197,94,0.06);border-radius:8px;border:1px solid rgba(34,197,94,0.2);">
+        <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;margin-bottom:4px;">Entry Zone</div>
+        <div style="font-size:1.3rem;font-weight:800;font-family:var(--mono);color:var(--success);">$52–62</div>
+        <div style="font-size:0.7rem;color:var(--muted);">On correction or execution confirmation</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:rgba(245,158,11,0.06);border-radius:8px;border:1px solid rgba(245,158,11,0.2);">
+        <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;margin-bottom:4px;">Stop-Loss</div>
+        <div style="font-size:1.3rem;font-weight:800;font-family:var(--mono);color:var(--warn);">$40</div>
+        <div style="font-size:0.7rem;color:var(--muted);">Below 200-DMA; thesis breach level</div>
+      </div>
+      <div style="text-align:center;padding:12px;background:rgba(14,196,212,0.06);border-radius:8px;border:1px solid rgba(14,196,212,0.2);">
+        <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;margin-bottom:4px;">Target 1 / Target 2</div>
+        <div style="font-size:1.3rem;font-weight:800;font-family:var(--mono);color:var(--teal);">$78 / $120</div>
+        <div style="font-size:0.7rem;color:var(--muted);">Base IV / Accel IV</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:0.72rem;color:var(--muted);font-family:var(--mono);">⚠ All technical data is ESTIMATED from multiple aggregators as of June 4, 2026. Live price verification required before execution. Day must confirm current RSI, DMA values, and volume profile at time of decision.</div>
+  </div>
+</div>
+<!-- TAB 8: OWNERSHIP -->
+<div class="tab-content" id="tab8">
+  <div class="section-title">Shareholder Structure</div>
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-label">Shares Outstanding</div><div class="metric-value">~357M</div><div class="metric-sub">[ESTIMATED] post-dilution</div></div>
+    <div class="metric-card teal"><div class="metric-label">Institutional Ownership</div><div class="metric-value">~41–50%</div><div class="metric-sub">437 institutional holders [~VERIFIED]</div></div>
+    <div class="metric-card green"><div class="metric-label">Founder / Insider</div><div class="metric-value">~15–20%</div><div class="metric-sub">Daniel + William Roberts [ESTIMATED]</div></div>
+    <div class="metric-card red"><div class="metric-label">Short Interest</div><div class="metric-value">~8–12%</div><div class="metric-sub">Declining from 12.75% peak [ESTIMATED]</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Key Institutional Holders</div>
+      <table>
+        <thead><tr><th>Institution</th><th>Type</th><th>Significance</th></tr></thead>
+        <tbody>
+          <tr><td>Jane Street</td><td>Market Maker</td><td class="t-amber">Liquidity provider; large position size</td></tr>
+          <tr><td>Susquehanna</td><td>Quant / Arb</td><td>Options market maker; vol exposure</td></tr>
+          <tr><td>D.E. Shaw</td><td>Systematic</td><td class="t-teal">Long-term systematic buyer signal</td></tr>
+          <tr><td>Citadel</td><td>Multi-strategy</td><td>Tactical position; significant size</td></tr>
+          <tr><td>Other 433+ institutions</td><td>Various</td><td>Broad institutional base forming</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:8px;font-family:var(--mono);">[ESTIMATED] Institutional ownership data from aggregators; exact positions change quarterly.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Strategic Capital Structure</div>
+      <div class="info-row green"><div class="dot"></div><div><strong>NVIDIA Investment Option:</strong> NVIDIA holds rights to purchase up to 30M shares at $70/share (~$2.1B total). If exercised: (a) massive cash inflow, (b) ultimate strategic validation, (c) NVIDIA directly aligned as shareholder.</div></div>
+      <div class="info-row teal"><div class="dot"></div><div><strong>Convertible Notes (2029 + 2030):</strong> Used to raise $2–2.5B [ESTIMATED] for CapEx. Capped call transactions limit dilution impact at the $70 strike level — management actively managing dilution ceiling.</div></div>
+      <div class="info-row red"><div class="dot"></div><div><strong>Mirantis ($625M stock):</strong> Pending acquisition. Will issue new shares = dilution. Exact share count unknown until deal closes. Material dilution risk from this single transaction alone.</div></div>
+      <div class="info-row"><div class="dot"></div><div><strong>Promoter pledging:</strong> Not applicable (US company, Roberts brothers are founder-operators, no pledging structure). Zero pledging risk.</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Dilution Risk Tracker</div>
+    <table>
+      <thead><tr><th>Dilution Source</th><th>Shares at Risk</th><th>Price Trigger</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Mirantis acquisition (stock consideration)</td><td>~8–10M est.</td><td>At close</td><td class="t-amber"><span class="marginal-badge">PENDING</span></td></tr>
+        <tr><td>NVIDIA investment option</td><td>Up to 30M</td><td>&gt;$70</td><td class="t-green"><span class="pass-badge">CONDITIONAL</span></td></tr>
+        <tr><td>2029 Convertible Notes</td><td>TBD</td><td>At conversion</td><td class="t-amber"><span class="marginal-badge">MONITORING</span></td></tr>
+        <tr><td>2030 Convertible Notes</td><td>TBD</td><td>At conversion</td><td class="t-amber"><span class="marginal-badge">MONITORING</span></td></tr>
+        <tr><td>Capped calls (offsetting)</td><td>Negative (hedge)</td><td>$70 cap</td><td class="t-green"><span class="pass-badge">HEDGED</span></td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:0.72rem;color:var(--muted);margin-top:8px;font-family:var(--mono);">Net dilution: Moderately high. The NVIDIA exercise above $70 is paradoxically bullish (cash in + partnership locked). Mirantis dilution is the cleanest near-term risk to model.</div>
+  </div>
+</div>
+<!-- TAB 9: AI INTELLIGENCE -->
+<div class="tab-content" id="tab9">
+  <div class="section-title">AI Classification Framework</div>
+  <div class="card">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+      <div style="padding:8px 16px;border-radius:8px;background:rgba(14,196,212,0.12);border:1px solid rgba(14,196,212,0.35);font-family:var(--mono);font-size:0.8rem;color:var(--teal);font-weight:700;">📊 CATEGORY B</div>
+      <div style="padding:8px 16px;border-radius:8px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.35);font-family:var(--mono);font-size:0.8rem;color:var(--success);font-weight:700;">🟢 AI WIDENER</div>
+      <div style="padding:8px 16px;border-radius:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);font-family:var(--mono);font-size:0.8rem;color:var(--danger);font-weight:700;">⚡ DATA FLYWHEEL: COSMETIC</div>
+      <div style="padding:8px 16px;border-radius:8px;background:rgba(245,149,0,0.12);border:1px solid rgba(245,149,0,0.3);font-family:var(--mono);font-size:0.8rem;color:var(--amber);font-weight:700;">🏗 AI VALUE CHAIN: LEVEL 1 (INFRA)</div>
+    </div>
+    <div style="font-size:0.85rem;color:var(--muted);">IREN is NOT an AI company in the traditional sense — it IS the physical infrastructure that makes all AI possible. Every LLM trained on every GPU cluster globally runs on infrastructure like what IREN builds. This positions IREN at Level 1 of the AI value chain: the foundational layer beneath everything else.</div>
+  </div>
+  <div class="section-title">AI Value Chain Position</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Level</th><th>Layer</th><th>IREN Presence</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(245,149,0,0.06);"><td class="t-amber"><strong>Level 1</strong></td><td class="t-amber"><strong>Infrastructure (Land + Power + DC)</strong></td><td class="t-green"><strong>CORE — PRIMARY BUSINESS</strong></td><td class="t-amber"><strong>IREN, Equinix, Digital Realty</strong></td></tr>
+        <tr style="background:rgba(14,196,212,0.03);"><td class="t-teal">Level 2</td><td>Foundation Models (Training + Inference)</td><td class="t-muted">Not present</td><td>OpenAI, Anthropic, Google DeepMind</td></tr>
+        <tr style="background:rgba(245,149,0,0.04);"><td class="t-amber">Level 3</td><td>AI Platforms (MLOps, Orchestration)</td><td class="t-amber">EMERGING — via Mirantis/k0rdent (pending)</td><td>Databricks, Mirantis, CoreWeave</td></tr>
+        <tr><td class="t-muted">Level 4</td><td>Vertical AI Applications</td><td class="t-muted">Not present</td><td>Palantir, ServiceNow, Veeva</td></tr>
+        <tr><td class="t-muted">Level 5</td><td>AI-Enabled Incumbents</td><td class="t-muted">Not applicable</td><td>Microsoft, Salesforce, Adobe</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section-title">AI WIDENER Analysis — Why IREN Qualifies</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Widening Mechanism</div>
+      <div class="info-row green"><div class="dot"></div><div><strong>AI demand grows → grid constraints worsen → IREN's secured power becomes MORE scarce:</strong> The very success of AI infrastructure buildout makes IREN's existing grid connections harder to replicate. The moat widens as the industry grows.</div></div>
+      <div class="info-row green"><div class="dot"></div><div><strong>Scale → Better financing → Lower cost → More customers:</strong> Each MW commissioned proves execution credibility, enabling cheaper debt and better terms from customers, which funds more MW. A genuine economic flywheel (not data, but scale).</div></div>
+      <div class="info-row teal"><div class="dot"></div><div><strong>NVIDIA Preferred Partner status:</strong> Priority GPU access + strategic co-investment creates a customer relationship that strengthens the moat. Being NVIDIA's preferred infrastructure partner is a compound moat — IREN gets the best hardware first, which attracts the most demanding AI customers.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">AI Opportunity Score</div>
+      <table style="font-size:0.78rem;">
+        <thead><tr><th>Dimension</th><th>Weight</th><th>Score</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td>Data Flywheel</td><td>/20</td><td class="t-red">2</td><td>Economic scale; no data loop</td></tr>
+          <tr><td>Adoption Phase Timing</td><td>/20</td><td class="t-green">18</td><td>Phase 2–3; AI infra wave early</td></tr>
+          <tr><td>Value Chain Position</td><td>/20</td><td class="t-amber">16</td><td>Level 1 foundational; commodity risk</td></tr>
+          <tr><td>India Stack (N/A)</td><td>/20</td><td class="t-muted">0</td><td>US company; no India exposure</td></tr>
+          <tr><td>AI Threat Resistance</td><td>/20</td><td class="t-amber">14</td><td>Power barriers; hyperscaler risk</td></tr>
+          <tr><td><strong>Total AI Score</strong></td><td>/100</td><td class="t-amber"><strong>50 → MONITOR</strong></td><td>Level 1 infra; high cyclical risk</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:6px;font-family:var(--mono);">India Stack dimension scored 0 (not applicable for US company). Score remapped to /80 effective scale: 50/80 = 62.5%. MONITOR-STRATEGIC border.</div>
+    </div>
+  </div>
+  <div class="section-title">AI Cloud Customer Ecosystem</div>
+  <div class="card">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+      <span class="contract-tag ct-msft">💼 Microsoft — $9.7B, 5-yr, Horizon data centers</span>
+      <span class="contract-tag ct-nvidia">💚 NVIDIA — $3.4B, 5-yr, Childress TX (air-cooled Blackwell)</span>
+      <span class="contract-tag" style="background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.3);color:#A78BFA;">🤖 Together AI — inference platform</span>
+      <span class="contract-tag" style="background:rgba(236,72,153,0.12);border:1px solid rgba(236,72,153,0.3);color:#F472B6;">⚡ Fluidstack — GPU cloud</span>
+      <span class="contract-tag" style="background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.3);color:#2DD4BF;">🔥 Fireworks AI — inference</span>
+      <span class="contract-tag" style="background:rgba(251,146,60,0.12);border:1px solid rgba(251,146,60,0.3);color:#FB923C;">🌊 Poolside AI — code models</span>
+    </div>
+    <div class="info-row teal"><div class="dot"></div><div><strong>Sweetwater Campus (Childress, Texas):</strong> 1.4GW substation energised April 2026. Horizon 1–4 liquid-cooled data centers in build. Designed for GB300 NVL72 dense GPU configurations. Microsoft colocation + NVIDIA AI Cloud deployment here.</div></div>
+    <div class="info-row"><div class="dot"></div><div><strong>Nostrum (Spain, pending):</strong> 490MW immediate capacity + 1GW+ development pipeline in renewables-rich Spain. Secures European AI infrastructure footprint ahead of EU sovereign AI demand.</div></div>
+    <div class="info-row green"><div class="dot"></div><div><strong>British Columbia (Canada):</strong> Renewable hydropower data centers; operational Bitcoin mining with GPU ramp. Lower latency for North American AI inference workloads.</div></div>
+  </div>
+  <div class="section-title">Key AI Risk — Hyperscaler In-Sourcing</div>
+  <div class="card" style="background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.2);">
+    <div style="font-size:0.85rem;color:var(--muted);">The primary AI-specific risk for IREN: hyperscalers (Microsoft, Google, Amazon) building their own data centers rather than continuing to outsource. The fact that Microsoft signed a $9.7B, 5-year contract with IREN DESPITE owning vast real estate infrastructure of their own is the strongest counter-evidence to this risk. Microsoft's commitment signals: (a) grid-connected renewable power is scarce enough to justify outsourcing, and (b) IREN's execution quality meets hyperscaler standards. However, if energy constraints ease or AI training consolidates further into 3 hyperscalers, IREN's contract renewal thesis weakens at Year 5.</div>
+  </div>
+</div>
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+    <div>
+      <div style="color:var(--amber);font-weight:700;font-size:0.8rem;margin-bottom:4px;">IREN — Buffett Quality-Value Series</div>
+      <div>Report generated: June 5, 2026 &nbsp;|&nbsp; Framework: Buffett Quality-Value v2.0 &nbsp;|&nbsp; Design Standard v2.0</div>
+      <div style="margin-top:4px;">Category B | AI WIDENER 🟢 | NASDAQ | Verdict: WATCH ★★★★ | Entry Zone: $52–62</div>
+    </div>
+    <div style="text-align:right;">
+      <div>Base IV: ~$70–78 &nbsp;|&nbsp; Stress IV: ~$38–45 &nbsp;|&nbsp; Accel IV: ~$110–125</div>
+      <div style="margin-top:4px;color:var(--danger);">⚠ NOT investment advice. All figures for research only. Verify live price data before any decision.</div>
+      <div style="margin-top:2px;">Price-sensitive metrics (current P/E, ERP, entry zone positioning) require Day's live price verification.</div>
+    </div>
+  </div>
+</footer>
+<script>
+var TAB_BAR_TOP=0;
+window.addEventListener('load',function(){
+  var tb=document.getElementById('tab-bar');
+  if(tb){var el=tb,top=0;while(el){top+=el.offsetTop;el=el.offsetParent;}TAB_BAR_TOP=top;}
+  document.querySelectorAll('.tab-content').forEach(function(el,i){el.style.display=i===0?'block':'none';});
+});
+function switchTab(tabId){
+  document.querySelectorAll('.tab-content').forEach(function(el){el.style.display='none';});
+  document.querySelectorAll('.tab-btn').forEach(function(btn){btn.classList.remove('active');});
+  var target=document.getElementById(tabId);
+  if(target)target.style.display='block';
+  var activeBtn=document.querySelector('[data-tab="'+tabId+'"]');
+  if(activeBtn)activeBtn.classList.add('active');
+  window.scrollTo({top:TAB_BAR_TOP,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tata Power Company Ltd — Buffett Quality-Value Series v5.0</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#0F1A24;
+  --ink-2:#16242F;
+  --paper:#F7F4EC;
+  --paper-2:#FFFFFF;
+  --line:#E2DBC9;
+  --muted:#5B6975;
+  --amber:#D9842A;
+  --amber-deep:#A35F16;
+  --teal:#1F8F66;
+  --teal-deep:#136B4B;
+  --red:#B5402C;
+  --gold:#C9A227;
+  --grid-blue:#2A4A6B;
+  --verified:#1F8F4E;
+  --estimated:#B8821A;
+  --unverified:#B5402C;
+  --pass:#1F8F4E;
+  --marginal:#B8821A;
+  --fail:#B5402C;
+  --font-display:'Space Grotesk', sans-serif;
+  --font-body:'IBM Plex Sans', sans-serif;
+  --font-mono:'IBM Plex Mono', monospace;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em;}
+.mono{font-family:var(--font-mono);}
+a{color:inherit;}
+
+/* ===== HERO ===== */
+.hero{
+  background: radial-gradient(ellipse at top right, #1B3048 0%, var(--ink) 55%, #0A1219 100%);
+  color: #F4F1E6;
+  padding: 28px 28px 20px;
+  position:relative;
+  overflow:hidden;
+  border-bottom: 3px solid var(--amber);
+}
+.hero::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image: repeating-linear-gradient(90deg, rgba(217,132,42,0.05) 0px, rgba(217,132,42,0.05) 1px, transparent 1px, transparent 64px);
+  pointer-events:none;
+}
+.hero-top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; position:relative;}
+.hero-id{display:flex; flex-direction:column; gap:4px;}
+.hero-eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#C9A876; opacity:0.85;}
+.hero-name{font-size:clamp(24px,4vw,38px); font-weight:700; line-height:1.05;}
+.hero-tickers{font-family:var(--font-mono); font-size:12.5px; color:#A9B6C0; margin-top:2px;}
+.hero-verdict{
+  text-align:right;
+  display:flex; flex-direction:column; align-items:flex-end; gap:6px;
+}
+.verdict-badge{
+  font-family:var(--font-display); font-weight:700; font-size:17px;
+  background: linear-gradient(135deg, var(--amber), var(--amber-deep));
+  color:#1A1208; padding:7px 16px; border-radius:3px;
+  letter-spacing:0.02em;
+}
+.stars{font-size:14px; letter-spacing:1px; color:var(--gold);}
+.price-line{font-family:var(--font-mono); font-size:13px; color:#D8D2C0;}
+.badge-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; position:relative;}
+.badge{
+  font-family:var(--font-mono); font-size:11px; padding:5px 10px; border-radius:3px;
+  border:1px solid rgba(244,241,230,0.25); background:rgba(244,241,230,0.06);
+  display:flex; align-items:center; gap:5px;
+}
+.badge.cat{border-color:rgba(42,74,107,0.6); background:rgba(42,74,107,0.35);}
+.badge.ai{border-color:rgba(31,143,102,0.6); background:rgba(31,143,102,0.22);}
+.badge.macro{border-color:rgba(201,162,39,0.5); background:rgba(201,162,39,0.12);}
+.lede{margin-top:14px; max-width:840px; font-size:14.5px; color:#DDD7C6; line-height:1.6; position:relative;}
+.confidence-key{display:flex; gap:14px; margin-top:14px; font-family:var(--font-mono); font-size:10.5px; color:#A9B6C0; flex-wrap:wrap; position:relative;}
+.ckey{display:flex; align-items:center; gap:5px;}
+.dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
+.dot.v{background:#3FCB7E;} .dot.e{background:#E3A93B;} .dot.u{background:#E0604A;}
+
+/* ===== TABS ===== */
+#tab-bar{
+  position:sticky; top:0; z-index:50;
+  background:var(--ink-2);
+  display:flex; overflow-x:auto;
+  border-bottom:1px solid #243441;
+  scrollbar-width:thin;
+}
+.tab-btn{
+  font-family:var(--font-display); font-size:12.5px; font-weight:600;
+  color:#9FB0BC; background:transparent; border:none; cursor:pointer;
+  padding:13px 16px; white-space:nowrap; border-bottom:3px solid transparent;
+  transition:color 0.15s, border-color 0.15s;
+}
+.tab-btn:hover{color:#E8E3D2;}
+.tab-btn.active{color:#F4F1E6; border-bottom-color:var(--amber);}
+
+.wrap{max-width:1080px; margin:0 auto; padding:26px 22px 60px;}
+.tab-content{display:none;}
+
+/* ===== SHARED COMPONENTS ===== */
+.section-title{font-size:13px; text-transform:uppercase; letter-spacing:0.1em; color:var(--amber-deep); margin:30px 0 12px; font-family:var(--font-mono); font-weight:600;}
+.section-title:first-child{margin-top:0;}
+p.body-text{font-size:14.5px; color:#3A4651; margin-bottom:12px; line-height:1.65;}
+.callout{
+  background:var(--paper-2); border:1px solid var(--line); border-left:4px solid var(--grid-blue);
+  padding:14px 16px; border-radius:4px; font-size:13.5px; color:#3A4651; margin:14px 0;
+}
+.callout.warn{border-left-color:var(--unverified); background:#FBF3EE;}
+.callout.good{border-left-color:var(--teal); background:#F2F8F4;}
+
+.grid{display:grid; gap:12px;}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:680px){.grid-2,.grid-3,.grid-4{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:460px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+.metric{
+  background:var(--paper-2); border:1px solid var(--line); border-left:3px solid var(--grid-blue);
+  border-radius:4px; padding:11px 13px;
+}
+.metric.pos{border-left-color:var(--teal);}
+.metric.neg{border-left-color:var(--red);}
+.metric.warn{border-left-color:var(--estimated);}
+.metric-label{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted);}
+.metric-value{font-family:var(--font-display); font-size:21px; font-weight:700; margin-top:3px;}
+.metric-sub{font-size:11px; color:var(--muted); margin-top:2px;}
+
+table{width:100%; border-collapse:collapse; font-size:12.5px; margin:10px 0 18px; background:var(--paper-2);}
+th,td{padding:7px 9px; text-align:right; border-bottom:1px solid var(--line); white-space:nowrap;}
+th:first-child,td:first-child{text-align:left; font-weight:500;}
+thead th{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted); background:#EFE9D8; border-bottom:1px solid var(--line);}
+tbody tr:hover{background:#F2EEE0;}
+.table-scroll{overflow-x:auto;}
+
+.pill{display:inline-block; font-family:var(--font-mono); font-size:9.5px; padding:2px 6px; border-radius:9px; font-weight:600;}
+.pill.V{background:#E3F5E9; color:var(--verified);}
+.pill.E{background:#FBEDD3; color:var(--estimated);}
+.pill.U{background:#FBE5E0; color:var(--unverified);}
+
+.score-pass{color:var(--pass); font-weight:600;}
+.score-marginal{color:var(--marginal); font-weight:600;}
+.score-fail{color:var(--fail); font-weight:600;}
+
+.card{background:var(--paper-2); border:1px solid var(--line); border-radius:5px; padding:15px 17px;}
+.card h4{font-size:14px; margin-bottom:7px;}
+.card .grade{font-family:var(--font-display); font-size:26px; font-weight:700; color:var(--grid-blue);}
+
+.moat-stars{color:var(--gold); font-size:13px; letter-spacing:1px;}
+
+.flywheel-box{
+  background:linear-gradient(135deg,#152431,#0F1A24); color:#F0ECDD; border-radius:6px;
+  padding:20px; border:1px solid #2A4A6B;
+}
+.flywheel-box .verdict-chip{
+  display:inline-block; font-family:var(--font-mono); font-weight:700; font-size:13px;
+  padding:5px 12px; border-radius:3px; background:rgba(217,132,42,0.25); border:1px solid var(--amber); margin-bottom:10px;
+}
+.flywheel-score{font-family:var(--font-display); font-size:34px; font-weight:700; color:var(--amber);}
+
+.verdict-box{
+  background:var(--ink); color:#F4F1E6; border-radius:6px; padding:26px;
+  border:2px solid var(--amber); position:relative; overflow:hidden;
+}
+.verdict-box::before{content:"";position:absolute; top:-40%; right:-10%; width:280px; height:280px; background:radial-gradient(circle, rgba(217,132,42,0.18), transparent 70%);}
+.verdict-headline{font-family:var(--font-display); font-size:30px; font-weight:700; margin-bottom:6px; position:relative;}
+.verdict-quote{font-style:italic; color:#C9C2AC; font-size:13.5px; margin-top:14px; border-left:2px solid var(--amber); padding-left:12px; position:relative;}
+
+.pillar-grades{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:14px 0;}
+.pillar-card{background:var(--paper-2); border:1px solid var(--line); border-radius:5px; padding:13px; text-align:center;}
+.pillar-card .label{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; color:var(--muted); letter-spacing:0.05em;}
+.pillar-card .grade-big{font-family:var(--font-display); font-size:30px; font-weight:700; color:var(--grid-blue); margin-top:4px;}
+@media(max-width:600px){.pillar-grades{grid-template-columns:repeat(2,1fr);}}
+
+.cond-list{list-style:none; margin:10px 0;}
+.cond-list li{
+  display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--line); font-size:13.5px;
+}
+.cond-num{font-family:var(--font-mono); font-weight:700; color:var(--amber-deep); min-width:20px;}
+
+.gauge-wrap{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
+.gauge{position:relative; width:140px; height:140px;}
+.gauge svg{transform:rotate(-90deg);}
+.gauge-label{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+.gauge-label .num{font-family:var(--font-display); font-size:28px; font-weight:700;}
+.gauge-label .denom{font-family:var(--font-mono); font-size:10px; color:var(--muted);}
+
+.chain-row{display:flex; gap:6px; margin:14px 0; flex-wrap:wrap;}
+.chain-step{flex:1; min-width:130px; background:var(--paper-2); border:1px solid var(--line); border-radius:5px; padding:11px; font-size:11.5px; position:relative;}
+.chain-step.active{border:2px solid var(--amber); background:#FBF1E3;}
+.chain-step .lvl{font-family:var(--font-mono); font-size:9.5px; color:var(--muted); text-transform:uppercase;}
+.chain-step .name{font-weight:600; margin-top:3px;}
+
+.disc-footer{
+  background:var(--ink); color:#A9B6C0; font-size:11px; padding:22px; line-height:1.7; margin-top:10px;
+}
+.disc-footer b{color:#D8D2C0;}
+
+.src-note{font-size:10.5px; color:var(--muted); font-style:italic; margin-top:-8px; margin-bottom:14px;}
+ul.tight{margin:6px 0 14px 18px; font-size:13.5px; color:#3A4651;}
+ul.tight li{margin-bottom:5px;}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+@media(max-width:680px){.two-col{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-id">
+      <div class="hero-eyebrow">Buffett Quality-Value Series v5.0 · Institutional Equity Note</div>
+      <div class="hero-name">Tata Power Company Ltd</div>
+      <div class="hero-tickers">NSE: TATAPOWER &nbsp;·&nbsp; BSE: 500400 &nbsp;·&nbsp; Sector: Integrated Power Utility / Renewables</div>
+    </div>
+    <div class="hero-verdict">
+      <div class="verdict-badge">WATCH</div>
+      <div class="stars">★★☆☆☆</div>
+      <div class="price-line">CMP ₹402 <span class="pill V">V</span> · Mkt Cap ₹1,28,500 Cr</div>
+    </div>
+  </div>
+  <div class="badge-row">
+    <div class="badge cat">CATEGORY D — Transformation / Special Situation</div>
+    <div class="badge ai">🟢 AI OVERLAY — WIDENER (mild)</div>
+    <div class="badge macro">MACRO — Mixed (Capex Tailwind / Input-Cost Headwind)</div>
+  </div>
+  <p class="lede">India's largest integrated private power utility, mid-way through a self-funded pivot from a coal-heavy generator to a majority-renewable platform (70% clean capacity targeted by 2030). The growth story is real and Tata-Group-backed, but trailing financial-fortress metrics — negative free cash flow, fast-rising debt, sub-cost-of-capital ROIC, a Q4 FY26 earnings miss — have not yet caught up with the narrative the stock already prices in.</p>
+  <div class="confidence-key">
+    <div class="ckey"><span class="dot v"></span> VERIFIED — live search / official filing this session</div>
+    <div class="ckey"><span class="dot e"></span> ESTIMATED — cross-referenced, high confidence</div>
+    <div class="ckey"><span class="dot u"></span> UNVERIFIED — limited source, treat with caution</div>
+  </div>
+</div>
+
+<!-- ============ TAB BAR ============ -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab-0" onclick="switchTab('tab-0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab-1" onclick="switchTab('tab-1')">1 · Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="tab-2" onclick="switchTab('tab-2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab-3" onclick="switchTab('tab-3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab-4" onclick="switchTab('tab-4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab-5" onclick="switchTab('tab-5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab-6" onclick="switchTab('tab-6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab-7" onclick="switchTab('tab-7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="tab-8" onclick="switchTab('tab-8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab-9" onclick="switchTab('tab-9')">9 · AI Intelligence</button>
+</div>
+
+<div class="wrap">
+
+<!-- ============ TAB 0: OVERVIEW ============ -->
+<div class="tab-content" id="tab-0" style="display:block;">
+
+  <div class="section-title">Business Overview</div>
+  <p class="body-text">Tata Power is a 100+ year old, vertically integrated power company spanning generation (thermal, hydro, solar, wind), transmission, distribution, solar manufacturing and EV charging. <span class="pill V">V</span> Transmission &amp; Distribution has grown from ~59% of revenue (FY22) to ~62% (9M FY25), and the company runs distribution franchises serving 12.5 million customers across Mumbai, Delhi (via TPDDL), Odisha (TPCODL) and Ajmer (TPADL), alongside a 4,633-ckm transmission network. <span class="pill V">V</span></p>
+  <p class="body-text">Its renewable arm, Tata Power Renewable Energy Ltd (TPREL), targets roughly 23 GW of renewable capacity by FY30 as part of a company-wide goal of 70% renewable generation capacity (and ~31 GW total capacity) by 2030 — up from a 43% green portfolio today. <span class="pill V">V</span> Solar cell/module manufacturing capacity spans Bengaluru and a 4.3 GW plant in Tirunelveli, Tamil Nadu, and the company has built India's largest rooftop-solar installed base under its retail push. <span class="pill V">V</span></p>
+
+  <div class="section-title">Why Category D</div>
+  <p class="body-text">The framework's Category A–C buckets require ROIC consistently above 15–20% with a durable, demonstrated moat. Tata Power's ROCE has run at 10–11% for the past four years <span class="pill V">V</span> — below even the "narrow moat" threshold — while free cash flow has been negative and deepening (₹‑4,357 Cr FY25 → ₹‑7,677 Cr FY26) <span class="pill V">V</span> as the company funds a multi-year renewable build-out mostly with debt (borrowings up 21% YoY to ₹76,141 Cr). <span class="pill V">V</span> That combination — sub-threshold current profitability metrics, an explicit multi-year transformation thesis, and event risk around execution (Q4 FY26 PAT missed estimates and the stock fell ~11% over five sessions) <span class="pill V">V</span> — is the textbook definition of the framework's Category D, not a steady-state quality compounder.</p>
+
+  <div class="section-title">Why AI Overlay = WIDENER (mild)</div>
+  <p class="body-text">Tata Power is not an AI company, but AI intersects its business in two real ways: (1) data-centre and industrial electrification is becoming a structural new source of power demand, and management has pointed to grid-transformation capex as partly tied to this trend; <span class="pill V">V</span> and (2) the company has partnered with Databricks to build a data/AI platform for grid operations and predictive maintenance. <span class="pill V">V</span> Neither rises to a proprietary data flywheel — see Tab 3 and Tab 9 — so this is graded a mild, not a structural, widener.</p>
+
+  <div class="section-title">What makes this name interesting — and what makes it hard</div>
+  <ul class="tight">
+    <li><b>Interesting:</b> A AAA-pedigree Tata Group balance sheet (CRISIL AA+/Stable) <span class="pill V">V</span> executing one of India's largest private coal-to-clean pivots, with steadily rising domestic institutional ownership (DIIs up from 14.2% to 18.0% of the register over three years) <span class="pill V">V</span> even as the stock has been flat-to-down over one year.</li>
+    <li><b>Hard:</b> Earnings quality has genuinely deteriorated this year — operating cash flow conversion fell from 109% of operating profit (FY25) to 55% (FY26) <span class="pill V">V</span> — and sell-side views on fair value are unusually dispersed: Motilal Oswal's ₹490 Buy target sits against Morgan Stanley's ₹399 Equal-weight and at least one foreign broker's ₹300 Sell call. <span class="pill V">V</span> That spread tells you the market hasn't agreed on how much of the renewable story is already in the price.</li>
+  </ul>
+  <div class="callout">This report is a structured, methodology-driven analysis for informational and educational purposes. It is not personalized investment advice, and Claude is not a SEBI-registered investment adviser. Please do your own diligence or consult a qualified advisor before acting on any of this.</div>
+</div>
+
+<!-- ============ TAB 1: MACRO & GROWTH ============ -->
+<div class="tab-content" id="tab-1">
+
+  <div class="section-title">Layer 1 — Macro Cycle Dashboard</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Dimension</th><th>Status</th><th>Read-through for Tata Power</th></tr></thead>
+    <tbody>
+      <tr><td>Rural / Agri Demand Cycle</td><td>Neutral</td><td>Limited direct relevance — Tata Power's exposure is urban/industrial discom + C&amp;I, not rural agri-power <span class="pill E">E</span></td></tr>
+      <tr><td>Industrial / Capex Cycle</td><td>Tailwind</td><td>IIP +4.0% YoY (Sep'25), sustained government infra push <span class="pill V">V</span></td></tr>
+      <tr><td>Input Cost Cycle</td><td>Headwind</td><td>Brent briefly &gt;$110/bbl on the West Asia conflict; rupee fell &gt;11% in FY26 — raises imported-coal and dollar-debt servicing costs <span class="pill V">V</span></td></tr>
+      <tr><td>RBI Rate Cycle</td><td>Neutral / on hold</td><td>Repo at 5.25%, neutral stance after a 125bps FY26 easing cycle — financing costs stable, not falling further near-term <span class="pill V">V</span></td></tr>
+      <tr><td>Government Capex / Policy Cycle</td><td>Tailwind</td><td>India targets 500 GW non-fossil capacity by 2030; ISTS waiver, PM Surya Ghar rooftop scheme <span class="pill V">V</span></td></tr>
+      <tr><td>AI Adoption Cycle</td><td>Opportunity</td><td>Data-centre and grid-AI demand is a genuine new power-consumption driver, but it is sector-wide — every large IPP/utility is chasing the same load growth <span class="pill E">E</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="body-text"><b>Macro Composite: Mixed, tilted Tailwind</b> for volume/capacity growth, offset by a genuine <b>cost and currency headwind</b> on the financing side. <b>AI Cycle Impact: Opportunity</b> (demand-side, not moat-side).</p>
+  <div class="grid grid-4">
+    <div class="metric"><div class="metric-label">India 10Y G-Sec</div><div class="metric-value">6.85%</div><div class="metric-sub">Jun 2026 <span class="pill V">V</span></div></div>
+    <div class="metric"><div class="metric-label">RBI Repo Rate</div><div class="metric-value">5.25%</div><div class="metric-sub">Neutral stance <span class="pill V">V</span></div></div>
+    <div class="metric"><div class="metric-label">Real GDP FY27E</div><div class="metric-value">~6.6–6.9%</div><div class="metric-sub">RBI / multi-agency range <span class="pill V">V</span></div></div>
+    <div class="metric"><div class="metric-label">CPI (latest)</div><div class="metric-value">3.9%</div><div class="metric-sub">May 2026, rising from lows <span class="pill V">V</span></div></div>
+  </div>
+  <p class="src-note">Nominal GDP ≈ Real GDP + CPI, roughly 10–11% — the absolute ceiling for any India terminal growth assumption. Nifty 50 trades at ~20.0–20.7x P/E, about 14% below its 10-year median of ~23.4x — the broad market is not expensive, which matters when judging whether Tata Power's own multiple is stretched. <span class="pill V">V</span></p>
+
+  <div class="section-title">Layer 2 — Sector Growth Derivation</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Sector</th><th>Stress</th><th>Base</th><th>Accel</th><th>AI Impact</th></tr></thead>
+    <tbody>
+      <tr><td><b>Renewables / Power (this stock)</b></td><td>10–13%</td><td>14–18%</td><td>20–25%</td><td>🟢 WIDENER</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src-note">Framework sector table, applied to the Renewables/Power bucket. <span class="pill E">E</span> Note Tata Power's trailing 3-year revenue CAGR is only 4% and TTM revenue growth is actually <b>‑5%</b> <span class="pill V">V</span> — the company is currently underperforming even the Stress case on revenue, which is a key tension this report flags repeatedly.</p>
+
+  <div class="section-title">Layer 3 — Company Alpha Over Sector</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Source</th><th>Status</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Market share gain (T&amp;D)</td><td class="score-pass">Active</td><td>T&amp;D mix 59%→62% of revenue; new transmission wins (e.g. Ryapte SPV, ₹521 Cr/yr, 35-yr concession) <span class="pill V">V</span></td></tr>
+      <tr><td>Geographic expansion</td><td class="score-pass">Active</td><td>Bhutan hydro supply deal with Druk Green; Rajasthan MoU for large-scale renewable manufacturing investment <span class="pill V">V</span></td></tr>
+      <tr><td>Category expansion</td><td class="score-pass">Active</td><td>EV charging, rooftop solar (200,000+ installs), solar cell/module manufacturing scale-up <span class="pill V">V</span></td></tr>
+      <tr><td>Pricing power</td><td class="score-fail">N/A</td><td>Regulated cost-plus tariff model — not a market-pricing-power business by design</td></tr>
+      <tr><td>Premiumisation</td><td class="score-fail">N/A</td><td>Electricity is not a premiumisable product</td></tr>
+      <tr><td>AI alpha (6a+6b+6c)</td><td>Potential</td><td>6a (grid-AI cost reduction): low/replicable. 6b (data-centre demand expansion): real but sector-wide, not company-specific. 6c (flywheel): not evidenced — see Tab 9 <span class="pill E">E</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="section-title">Growth Rate Summary (Stress / Base / Accel)</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Accel</th></tr></thead>
+    <tbody>
+      <tr><td>Macro state</td><td>GDP ~5.5%</td><td>GDP ~6.8%</td><td>GDP ~8%+</td></tr>
+      <tr><td>Sector growth</td><td>10–13%</td><td>14–18%</td><td>20–25%</td></tr>
+      <tr><td>Company alpha</td><td>+0–2%</td><td>+2–4%</td><td>+4–7%</td></tr>
+      <tr><td>Revenue CAGR (Stage 1, FY27–29)</td><td>4–6%</td><td>9–12%</td><td>15–18%</td></tr>
+      <tr><td>Terminal growth</td><td>4%</td><td>5.5%</td><td>6.5%</td></tr>
+      <tr><td>Margin direction</td><td>Compress (curtailment, rate pressure)</td><td>Roughly stable</td><td>Expand (new capacity ramps to full utilisation)</td></tr>
+      <tr><td>Key risk</td><td>Renewable curtailment / grid bottlenecks persist; debt servicing squeezes equity FCF</td><td>Capex moderates post-FY28 as 2030 targets near completion</td><td>Data-centre demand pull accelerates tariff realisation and PLF</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src-note">All figures in this block are <span class="pill E">E</span> ESTIMATED — derived from the macro/sector framework above, not sourced from a published consensus model (none was found for FY27–29 segment-level estimates in this session). Sensitivity: a 1-point change in terminal growth moves intrinsic value by roughly 8–10%; a 1-point change in Stage-1 growth moves it by roughly 4–6%, given the Cat-D discount rate band used in Tab 5.</p>
+</div>
+
+<!-- ============ TAB 2: FINANCIALS ============ -->
+<div class="tab-content" id="tab-2">
+
+  <div class="section-title">Consolidated P&amp;L — 12-Year Trend (₹ Cr)</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>FY (Mar)</th><th>22</th><th>23</th><th>24</th><th>25</th><th>26</th></tr></thead>
+    <tbody>
+      <tr><td>Revenue</td><td>42,816</td><td>55,109</td><td>61,449</td><td>65,478</td><td>62,429</td></tr>
+      <tr><td>Operating Profit</td><td>7,031</td><td>7,728</td><td>10,735</td><td>12,166</td><td>13,095</td></tr>
+      <tr><td>OPM %</td><td>16%</td><td>14%</td><td>17%</td><td>19%</td><td>21%</td></tr>
+      <tr><td>Net Profit</td><td>2,156</td><td>3,810</td><td>4,280</td><td>4,775</td><td>5,118</td></tr>
+      <tr><td>EPS (₹)</td><td>5.45</td><td>10.44</td><td>11.57</td><td>12.43</td><td>11.73</td></tr>
+      <tr><td>Free Cash Flow</td><td>‑540</td><td>‑440</td><td>‑590</td><td>‑4,357</td><td>‑7,677</td></tr>
+      <tr><td>CFO / Operating Profit</td><td>105%</td><td>104%</td><td>122%</td><td>109%</td><td class="score-fail">55%</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src-note">Consolidated figures, Screener.in / company filings. <span class="pill V">V</span> Revenue CAGR: 10yr 8%, 5yr 14%, 3yr 4%, TTM ‑5%. Profit CAGR: 5yr 27%, 3yr 6%, TTM 2%. Note the standalone-basis P/E quoted by several retail brokers (~110–117x) reflects a much smaller parent-only EPS base; this report uses the consolidated EPS (₹11.73, FY26) throughout, consistent with the framework's preference for the full integrated business. <span class="pill V">V</span></p>
+
+  <div class="section-title">ROE / ROCE — 5-Year Trend</div>
+  <div class="grid grid-4">
+    <div class="metric"><div class="metric-label">ROE (10yr)</div><div class="metric-value">9%</div></div>
+    <div class="metric"><div class="metric-label">ROE (5yr)</div><div class="metric-value">11%</div></div>
+    <div class="metric"><div class="metric-label">ROE (3yr)</div><div class="metric-value">11%</div></div>
+    <div class="metric neg"><div class="metric-label">ROE (FY26)</div><div class="metric-value">10.1–10.7%</div></div>
+  </div>
+  <p class="src-note">ROCE has moved 12% (FY23) → 11% (FY24) → 11% (FY25) → 10% (FY26) <span class="pill V">V</span> — a mild downward drift even as profit grew, because the capital base is expanding faster than profit (heavy capex). This sits in the framework's "weak moat" 10–15% ROIC band, not the 15–40% band required for Category C.</p>
+
+  <div class="section-title">Financial Fortress Scorecard (Category D criteria)</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Test</th><th>Result</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>ROE ≥15%, 5 consecutive years</td><td class="score-fail">FAIL</td><td>10–11% range throughout <span class="pill V">V</span></td></tr>
+      <tr><td>ROIC &gt; WACC, 5 years</td><td class="score-fail">FAIL</td><td>ROCE ~10–11% vs Cat-D WACC band of 14–16% <span class="pill E">E</span></td></tr>
+      <tr><td>Net cash preferred / leverage contained</td><td class="score-fail">FAIL</td><td>Borrowings ₹76,141 Cr, +21% YoY; gross debt/equity ~1.9x <span class="pill V">V</span></td></tr>
+      <tr><td>Net profit margin ≥15%</td><td class="score-fail">FAIL</td><td>~8.2% (FY26) — typical for a regulated utility, but below the generic threshold <span class="pill V">V</span></td></tr>
+      <tr><td>FCF positive and growing</td><td class="score-fail">FAIL</td><td>‑₹7,677 Cr FY26, deepening from ‑₹4,357 Cr FY25 <span class="pill V">V</span></td></tr>
+      <tr><td>Revenue CAGR ≥ sector base case</td><td class="score-fail">FAIL</td><td>TTM revenue ‑5% vs 14–18% sector base case <span class="pill V">V</span></td></tr>
+      <tr><td>Predictable / recurring revenue</td><td class="score-marginal">MARGINAL</td><td>Regulated distribution + PPA generation recurring; trading/EPC less so</td></tr>
+      <tr><td>Dividend payout &lt;80% of earnings</td><td class="score-pass">PASS</td><td>~20–21% payout, ₹2.50/share final FY26 dividend declared <span class="pill V">V</span></td></tr>
+      <tr><td>Debtor days trend</td><td class="score-pass">PASS</td><td>Improved from 44 days (FY24) to 26 days (FY26) <span class="pill V">V</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="callout warn"><b>Net read:</b> Financial Fortress is the weakest of the four pillars today. This is precisely why the stock sits in Category D — the transformation is real, but it has not yet produced fortress-grade financial metrics. The bull case requires this scorecard to visibly improve (FCF inflecting positive, leverage stabilising) over the next 2–3 years.</div>
+
+  <div class="section-title">Owner Earnings — Data Limitation</div>
+  <p class="body-text">A clean Owner Earnings figure requires splitting capex into maintenance vs. growth, which Tata Power does not disclose at the consolidated level. <span class="pill U">U</span> As a directional proxy: FY26 CFO was ₹5,993 Cr against capex (investing outflow) of ₹14,193 Cr — i.e., operating cash flow currently covers well under half of total capex, with the gap bridged by debt and some equity-linked financing (financing activity was a net +₹7,783 Cr inflow in FY26). <span class="pill V">V</span> Until segment-level maintenance capex is disclosed, treat any "Owner Earnings" figure for this name as a rough estimate rather than a precise number.</p>
+
+  <div class="section-title">O'Glove Earnings Quality Tests</div>
+  <div class="grid grid-3">
+    <div class="card"><h4>Test 1 — FCF Conversion</h4><div class="grade score-fail">FAIL (FY26)</div><p style="font-size:12px;margin-top:6px;color:var(--muted)">CFO/Operating Profit fell to 55% in FY26 from 109–122% in the three prior years <span class="pill V">V</span></p></div>
+    <div class="card"><h4>Test 2 — DSO Trend</h4><div class="grade score-pass">PASS</div><p style="font-size:12px;margin-top:6px;color:var(--muted)">Debtor days improved 44→32→26 over three years — genuinely positive <span class="pill V">V</span></p></div>
+    <div class="card"><h4>Test 3 — Inventory Days</h4><div class="grade score-marginal">INSUFFICIENT DATA</div><p style="font-size:12px;margin-top:6px;color:var(--muted)">217 days reported for FY26 only; no prior-year comparator surfaced <span class="pill U">U</span></p></div>
+    <div class="card"><h4>Test 4 — Accounting Policy</h4><div class="grade score-pass">No flags found</div><p style="font-size:12px;margin-top:6px;color:var(--muted)">No earnings-boosting policy changes surfaced in filings/news this session <span class="pill E">E</span></p></div>
+    <div class="card"><h4>Test 5 — Gross Margin Consistency</h4><div class="grade score-marginal">MARGINAL</div><p style="font-size:12px;margin-top:6px;color:var(--muted)">OPM trending up (14%→21% over 5yrs) but Q4 FY26 dipped to 17% from 22% in Q3 <span class="pill V">V</span></p></div>
+    <div class="card"><h4>Overall Quality Badge</h4><div class="grade" style="color:var(--marginal)">ACCEPTABLE</div><p style="font-size:12px;margin-top:6px;color:var(--muted)">Improving collections offset by a sharp, recent fall in cash conversion — widen MoS ~5%</p></div>
+  </div>
+</div>
+
+<!-- ============ TAB 3: MOAT ============ -->
+<div class="tab-content" id="tab-3">
+
+  <div class="section-title">Moat Sources</div>
+  <div class="grid grid-3">
+    <div class="card">
+      <h4>Distribution Franchise</h4>
+      <div class="moat-stars">★★★☆☆</div>
+      <p style="font-size:12.5px;margin-top:8px;color:var(--muted)">Regulated, quasi-exclusive licenses in Mumbai, Delhi (TPDDL), Odisha (TPCODL) and Ajmer create a genuine regional barrier to entry — capital intensity and regulatory licensing keep competitors out. This is the strongest moat element in the portfolio.</p>
+    </div>
+    <div class="card">
+      <h4>Renewable Generation</h4>
+      <div class="moat-stars">★★☆☆☆</div>
+      <p style="font-size:12.5px;margin-top:8px;color:var(--muted)">Scale, land-bank access and long-tenor PPAs provide a moderate edge, but the field is crowded — Adani Green, NTPC Green, JSW Energy and ReNew are all scaling aggressively against the same 500GW national pie.</p>
+    </div>
+    <div class="card">
+      <h4>Thermal Generation &amp; Power Trading</h4>
+      <div class="moat-stars">★☆☆☆☆</div>
+      <p style="font-size:12.5px;margin-top:8px;color:var(--muted)">Largely commodity-like: input-cost passthrough economics, limited pricing power, and the segment the company is actively shrinking as a share of the portfolio.</p>
+    </div>
+  </div>
+
+  <div class="section-title">ROIC as Moat Proof — 5-Year Trend</div>
+  <p class="body-text">ROCE: 9% (FY20) → 8% (FY21) → 9% (FY22) → 12% (FY23) → 11% (FY24) → 11% (FY25) → 10% (FY26). <span class="pill V">V</span> Per the framework's own scale (&gt;40% exceptional, 20–40% wide, 15–20% narrow, 10–15% weak, &lt;10% no moat), Tata Power sits firmly in the <b>"weak moat"</b> band, with a step-up around FY23 (post-deleveraging and portfolio cleanup) that has since plateaued rather than continued compounding upward.</p>
+
+  <div class="section-title">Data Flywheel Test</div>
+  <div class="flywheel-box">
+    <span class="verdict-chip">FEATURE — 1 of 3 confirmed</span>
+    <div style="display:flex; align-items:baseline; gap:10px; margin:10px 0;">
+      <div class="flywheel-score">3<span style="font-size:16px;">/10</span></div>
+      <div style="font-size:13px; color:#C9C2AC;">Data Flywheel Score</div>
+    </div>
+    <ul class="tight" style="color:#D8D2C0;">
+      <li><b>Proprietary data competitors can't replicate?</b> Partial — Tata Power has rich smart-meter and grid telemetry data via TPDDL/TPCODL, but so does every other discom; not obviously proprietary or hard to replicate.</li>
+      <li><b>More users/data measurably improves AI accuracy?</b> Not evidenced in any disclosure found this session.</li>
+      <li><b>Better AI attracts more users (self-reinforcing loop)?</b> Not applicable — distribution customers are captive to a regulated franchise, not won by better AI.</li>
+    </ul>
+    <p style="font-size:12px; color:#9FAAB3; margin-top:8px;">Verdict: AI is a genuine operational tool here (Databricks grid-AI partnership), not a compounding moat. No upgrade to the moat grade is warranted.</p>
+  </div>
+
+  <div class="section-title">Macro Stress Test</div>
+  <p class="body-text"><b>Distribution franchise:</b> HOLDS — regulated cash flows are relatively insulated from a macro downturn, though tariff-revision delays are a recurring regulatory risk. <b>Renewables:</b> WEAKENS in a stress scenario — curtailment and grid-evacuation constraints (already flagged by at least one broker after Q4 FY26 results) <span class="pill V">V</span> worsen when system-wide renewable penetration rises faster than transmission build-out. <b>Thermal/trading:</b> WEAKENS — margins compress directly with input-cost spikes, which is exactly the macro condition prevailing now (oil/rupee headwind, Tab 1).</p>
+
+  <div class="section-title">Moat Threats</div>
+  <ul class="tight">
+    <li>Intensifying renewable-sector competition compressing future project IRRs as more capital chases the same 500GW pipeline.</li>
+    <li>Execution risk in renewable generation — curtailment and transmission-constraint issues explicitly cited as a reason for the Q4 FY26 PAT miss. <span class="pill V">V</span></li>
+    <li>Regulatory/tariff-order risk inherent to the discom model (timing and adequacy of tariff revisions).</li>
+  </ul>
+</div>
+
+<!-- ============ TAB 4: MANAGEMENT ============ -->
+<div class="tab-content" id="tab-4">
+
+  <div class="section-title">Strengths</div>
+  <ul class="tight">
+    <li>Tata Group ownership and governance halo; CRISIL AA+/Stable, A1+ ratings reaffirmed (Oct 2025) <span class="pill V">V</span> reflect continued comfort from credit-rating agencies despite rising absolute debt.</li>
+    <li>CEO &amp; MD Dr. Praveer Sinha has articulated a consistent, multi-year renewable target (70% capacity by 2030, ~31GW total) across several years of public commentary, with demonstrated interim progress (43% green portfolio achieved, 968 MW of renewable capacity added in FY26). <span class="pill V">V</span></li>
+    <li>Domestic institutional investors have been steadily accumulating — DII holding rose from 14.2% to 18.0% over three years even as the stock underperformed — a vote of confidence from analysts who can see the segment-level numbers most retail investors cannot. <span class="pill V">V</span></li>
+    <li>No promoter pledging flagged in any source reviewed this session; promoter holding has been flat at 46.86% for three-plus years. <span class="pill E">E</span></li>
+  </ul>
+
+  <div class="section-title">Concerns</div>
+  <ul class="tight">
+    <li>Capital allocation is aggressive: annual capex of roughly ₹20,000–25,000 Cr, ~60% directed to renewables, funded increasingly by debt rather than operating cash flow. <span class="pill V">V</span></li>
+    <li>Q4 FY26 PAT came in ~13% below estimates on weak renewable generation and a weaker JV contribution — the first real test of execution since the capex ramp accelerated. <span class="pill V">V</span></li>
+    <li>Earnings-quality deterioration (CFO/Operating Profit falling to 55%) needs to reverse for the capital-allocation story to be credible over a full cycle.</li>
+  </ul>
+
+  <div class="section-title">Pledged Shares</div>
+  <div class="grid grid-3">
+    <div class="metric pos"><div class="metric-label">Pledge Status</div><div class="metric-value" style="font-size:16px;">&lt;5% (PASS)</div><div class="metric-sub">No pledge disclosures surfaced <span class="pill E">E</span></div></div>
+    <div class="metric"><div class="metric-label">Promoter Holding</div><div class="metric-value">46.86%</div><div class="metric-sub">Stable since FY22 <span class="pill V">V</span></div></div>
+    <div class="metric pos"><div class="metric-label">Credit Rating</div><div class="metric-value" style="font-size:18px;">CRISIL AA+</div><div class="metric-sub">Stable outlook, Oct 2025 <span class="pill V">V</span></div></div>
+  </div>
+
+  <div class="section-title">Capital Allocation &amp; Counter-Cyclical Behaviour</div>
+  <p class="body-text">Management has not slowed the capex program despite the recent earnings miss — the FY26 final dividend (₹2.50/share, record date 23 June 2026) was held roughly flat rather than cut, signalling confidence in the medium-term cash-flow trajectory even as near-term FCF stays negative. <span class="pill V">V</span> This is consistent behaviour for a multi-year build-out, but it does place the onus on execution: the market will not give credit for "counter-cyclical buying" in the way it would for a cash-rich compounder, because Tata Power itself is the one consuming capital right now, not deploying surplus cash opportunistically.</p>
+
+  <div class="section-title">AI Team &amp; Responsible-AI Disclosure</div>
+  <p class="body-text">Limited public disclosure on AI-specific headcount, R&amp;D spend or model-governance practices. <span class="pill U">U</span> The one concrete, verifiable data point is the Databricks partnership announced to build a "future-ready data and AI platform" for grid operations and the energy transition. <span class="pill V">V</span> There is no evidence of a dedicated AI research function, patents, or publications — consistent with a traditional utility adopting third-party AI tooling rather than building proprietary AI capability.</p>
+</div>
+
+<!-- ============ TAB 5: VALUATION & MARGIN OF SAFETY ============ -->
+<div class="tab-content" id="tab-5">
+
+  <div class="callout warn"><b>Read this first:</b> Category D parameters (WACC 14–16%, terminal P/E 15–18x, MoS 25%) are calibrated for a typical "below-threshold-but-improving" special situation. Tata Power's case is unusual: trailing profitability metrics are weak, but the company is mid-way through a capacity build-out whose payoff mostly shows up in FY28–30 earnings, not today's. Every method below is shown with that tension made explicit rather than papered over.</div>
+
+  <div class="section-title">Method 4 — P/E Earnings Power (primary, given available data)</div>
+  <div class="grid grid-4">
+    <div class="metric"><div class="metric-label">CMP</div><div class="metric-value">₹402</div></div>
+    <div class="metric"><div class="metric-label">Consolidated EPS FY26</div><div class="metric-value">₹11.73</div></div>
+    <div class="metric"><div class="metric-label">Consolidated TTM P/E</div><div class="metric-value">~34x</div></div>
+    <div class="metric warn"><div class="metric-label">5yr Avg P/E</div><div class="metric-value" style="font-size:15px;">Not independently verified <span class="pill U">U</span></div></div>
+  </div>
+  <p class="body-text">Applying the Category D terminal multiple of 15–18x directly to trailing consolidated EPS (₹11.73) implies a static, no-growth fair value of roughly <b>₹176–211</b> — well below the current price. That comparison is honest but incomplete on its own: it ignores the EPS growth that should materialise as ~5GW+ of renewable capacity currently under construction reaches full utilisation through FY28–30. Projecting modest near-term EPS growth (~10–12% to ~₹13 for FY27E) and applying the same 15–18x band gives a more growth-aware <b>Base IV of roughly ₹195–235</b>.</p>
+
+  <div class="section-title">Method 2/3 — Owner Earnings Capitalisation &amp; ROIC/EPV</div>
+  <p class="body-text">Economic Profit = (ROIC − WACC) × Invested Capital. With ROIC at ~10–11% against a Category-D WACC of 14–16%, this spread is currently <b>negative</b> — on a trailing basis, incremental capital deployed is not yet clearing its cost of capital. <span class="pill E">E</span> This is the single most important valuation finding in this report: the bull case is not "the business earns excess returns today," it is "the business will earn excess returns once ~23GW of renewable capacity is fully ramped and debt-funded capex moderates post-2028." That is a real but unproven thesis, not a current fact.</p>
+
+  <div class="section-title">Method 5 — Earnings Yield vs. Bond Yield</div>
+  <div class="grid grid-3">
+    <div class="metric"><div class="metric-label">Earnings Yield (1/P-E)</div><div class="metric-value">~2.9%</div></div>
+    <div class="metric"><div class="metric-label">India 10Y G-Sec</div><div class="metric-value">6.85%</div></div>
+    <div class="metric neg"><div class="metric-label">Implied ERP</div><div class="metric-value">Negative</div><div class="metric-sub">Equity earns less than risk-free debt on trailing earnings</div></div>
+  </div>
+  <p class="body-text">On trailing earnings, Tata Power's earnings yield sits well below the risk-free rate — not unusual for a high-growth-capex story trading on future earnings power, but a genuine signal that <b>no margin of safety exists on current numbers alone.</b> Any investment case here is explicitly a bet on the FY28–30 capacity ramp, not on what the business earns today.</p>
+
+  <div class="section-title">5-Method Summary (Illustrative, ESTIMATED)</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th></tr></thead>
+    <tbody>
+      <tr><td>P/E Earnings Power (terminal multiple)</td><td>₹176</td><td>₹211</td><td>₹250</td></tr>
+      <tr><td>Owner Earnings Cap / EPV</td><td>&lt;₹150 (sub-cost-of-capital)</td><td>₹190</td><td>₹240</td></tr>
+      <tr><td>Earnings Yield vs Bond Yield</td><td>₹140</td><td>₹180</td><td>₹220</td></tr>
+      <tr><td><b>Blended Base IV</b></td><td colspan="3"><b>~₹195–235</b></td></tr>
+      <tr><td>AI adjustment</td><td colspan="3">Negligible (+0–3%) — mild WIDENER, not a flywheel; no material premium warranted</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src-note">All IV figures are <span class="pill E">E</span> ESTIMATED, derived from the methods above with explicit, stated assumptions — not a precise valuation. They should be read as an order-of-magnitude cross-check, not a price target.</p>
+
+  <div class="section-title">Margin of Safety Entry Zone</div>
+  <div class="grid grid-2">
+    <div class="metric"><div class="metric-label">Base IV (blended)</div><div class="metric-value">₹195–₹235</div></div>
+    <div class="metric neg"><div class="metric-label">MoS Entry Zone (×0.70, Cat D)</div><div class="metric-value">₹135–₹165</div></div>
+  </div>
+  <p class="body-text">At ₹402, the stock trades roughly <b>70–105% above</b> the framework's conservative entry zone. This does not mean the renewable story is wrong — it means the market is already paying up-front for several years of successful execution that has not yet shown up in the financials. Relative valuation context: sell-side targets cluster ₹380–490 <span class="pill V">V</span> (i.e., closer to current price than to this framework's conservative entry zone), reflecting that most analysts are valuing the business on a growth/SOTP basis rather than a strict regulated-utility terminal multiple. Both views are legitimate; the gap between them is the real debate on this stock.</p>
+</div>
+
+<!-- ============ TAB 6: VERDICT ============ -->
+<div class="tab-content" id="tab-6">
+
+  <div class="section-title">Four-Pillar Grades</div>
+  <div class="pillar-grades">
+    <div class="pillar-card"><div class="label">Moat</div><div class="grade-big">C+</div></div>
+    <div class="pillar-card"><div class="label">Financial Fortress</div><div class="grade-big" style="color:var(--red)">C‑</div></div>
+    <div class="pillar-card"><div class="label">Management</div><div class="grade-big">B</div></div>
+    <div class="pillar-card"><div class="label">Valuation</div><div class="grade-big" style="color:var(--marginal)">C</div></div>
+  </div>
+
+  <div class="verdict-box">
+    <div style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; color:#C9A876; text-transform:uppercase;">Buffett QV v5.0 · Verdict</div>
+    <div class="verdict-headline">WATCH ★★</div>
+    <p style="position:relative; font-size:14px; color:#DDD7C6; max-width:680px;">Decent underlying quality and a credible long-horizon thesis, with real concerns that justify waiting for either a price correction toward the margin-of-safety zone or — more importantly — visible evidence that free cash flow and ROIC are inflecting in the right direction. 🟢 AI Overlay: WIDENER (mild) — does not change the verdict.</p>
+    <div class="verdict-quote">"Price is what you pay; value is what you get." The framework's own arithmetic says the market is currently paying up for value Tata Power has not yet delivered.</div>
+  </div>
+
+  <div class="section-title">Upgrade Conditions (none currently met — 0/5)</div>
+  <ul class="cond-list">
+    <li><span class="cond-num">1</span> Free cash flow conversion (CFO/Operating Profit) recovers above 80% for two consecutive quarters.</li>
+    <li><span class="cond-num">2</span> Consolidated net debt/EBITDA stabilises or declines for two consecutive quarters (current trajectory is rising).</li>
+    <li><span class="cond-num">3</span> Price corrects into the ₹135–₹165 margin-of-safety zone, or alternatively into the ₹340–₹360 range (a 20%+ discount to current levels) as a partial-credit re-entry trigger.</li>
+    <li><span class="cond-num">4</span> Promoter or DII holding increases for two consecutive quarters from current levels (46.86% / 17.98%).</li>
+    <li><span class="cond-num">5</span> Two consecutive quarters of renewable PLF (plant load factor) meeting or beating management guidance, with no further curtailment-related misses cited by sell-side coverage.</li>
+  </ul>
+  <p class="src-note">✗ "AI momentum improves" is explicitly not an acceptable trigger under this framework — too vague to be falsifiable.</p>
+
+  <div class="section-title">Series Tracker</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Ticker</th><th>Category</th><th>Verdict</th><th>AI Overlay</th><th>Last Updated</th></tr></thead>
+    <tbody>
+      <tr><td>TATAPOWER</td><td>D</td><td>WATCH ★★</td><td>🟢 WIDENER (mild)</td><td>2026‑06‑22</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ============ TAB 7: TECHNICAL ============ -->
+<div class="tab-content" id="tab-7">
+
+  <div class="callout warn">Granular intraday indicators (RSI-14, MACD, Stochastic, OBV) were not independently retrievable with confidence in this session and are <b>not</b> fabricated here. <span class="pill U">U</span> What follows uses only verified price-structure and moving-average data; check a live charting terminal for current oscillator readings before acting on any technical view.</div>
+
+  <div class="section-title">Price Structure</div>
+  <div class="grid grid-4">
+    <div class="metric"><div class="metric-label">CMP</div><div class="metric-value">₹402</div><div class="metric-sub">~19 Jun 2026 close <span class="pill V">V</span></div></div>
+    <div class="metric"><div class="metric-label">52‑Week High</div><div class="metric-value">₹464.90</div><div class="metric-sub">‑13.5% from high <span class="pill V">V</span></div></div>
+    <div class="metric"><div class="metric-label">52‑Week Low</div><div class="metric-value">₹342.50</div><div class="metric-sub">+17.4% from low <span class="pill V">V</span></div></div>
+    <div class="metric"><div class="metric-label">1‑Year Return</div><div class="metric-value">≈ flat</div><div class="metric-sub">Range ‑1.7% to +4.4% across sources <span class="pill V">V</span></div></div>
+  </div>
+
+  <div class="section-title">Moving Average Dashboard</div>
+  <div class="grid grid-3">
+    <div class="metric warn"><div class="metric-label">50‑Day MA</div><div class="metric-value">₹417.81</div><div class="metric-sub">CMP is below — short-term resistance <span class="pill V">V</span></div></div>
+    <div class="metric pos"><div class="metric-label">200‑Day MA</div><div class="metric-value">₹391.82</div><div class="metric-sub">CMP is above — long-term support <span class="pill V">V</span></div></div>
+    <div class="metric"><div class="metric-label">20 / 100‑Day MA</div><div class="metric-value" style="font-size:15px;">Not retrieved <span class="pill U">U</span></div></div>
+  </div>
+  <p class="body-text">The stock is currently range-bound between its 200-DMA (~₹392, acting as support) and its 50-DMA (~₹418, acting as resistance) — consistent with a market still digesting the Q4 FY26 miss after a sharp ~11% five-session decline in mid-May 2026, followed by a partial recovery. <span class="pill V">V</span> MarketsMOJO upgraded its in-house rating from Sell to Hold in late April 2026, citing improving technical trend and "fair valuation" at the time. <span class="pill V">V</span></p>
+
+  <div class="section-title">Volume &amp; Event Context</div>
+  <p class="body-text">A notable volume spike accompanied the Q4 FY26 results-day decline (6.5 million shares traded within the first 45 minutes vs. typical daily averages in the 60–87 lakh-share range over the prior month). <span class="pill V">V</span> This is consistent with genuine institutional repositioning around the earnings miss, not a low-conviction retail move.</p>
+
+  <div class="section-title">Reference Levels (educational, not a trade recommendation)</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Level type</th><th>Price</th><th>Basis</th></tr></thead>
+    <tbody>
+      <tr><td>Near-term support</td><td>₹391–392</td><td>200-DMA <span class="pill V">V</span></td></tr>
+      <tr><td>Near-term resistance</td><td>₹417–418</td><td>50-DMA <span class="pill V">V</span></td></tr>
+      <tr><td>Deeper support</td><td>₹342–360</td><td>52-week low zone <span class="pill V">V</span></td></tr>
+      <tr><td>Upside reference</td><td>₹465</td><td>52-week high <span class="pill V">V</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src-note">These are descriptive reference levels for context, not entry/stop-loss/target trading instructions. Position sizing and risk management are personal decisions that depend on factors this report cannot see.</p>
+</div>
+
+<!-- ============ TAB 8: SHAREHOLDING ============ -->
+<div class="tab-content" id="tab-8">
+
+  <div class="section-title">Promoter Trend</div>
+  <div class="grid grid-3">
+    <div class="metric pos"><div class="metric-label">Promoter Holding</div><div class="metric-value">46.86%</div><div class="metric-sub">Flat since FY22 <span class="pill V">V</span></div></div>
+    <div class="metric pos"><div class="metric-label">Pledged Shares</div><div class="metric-value">None flagged</div><div class="metric-sub"><span class="pill E">E</span></div></div>
+    <div class="metric"><div class="metric-label">Government Stake</div><div class="metric-value">0.31%</div></div>
+  </div>
+
+  <div class="section-title">FII / DII — 5-Quarter Trend</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Quarter</th><th>Jun'25</th><th>Sep'25</th><th>Dec'25</th><th>Mar'26</th></tr></thead>
+    <tbody>
+      <tr><td>FII %</td><td>10.05%</td><td>10.19%</td><td>10.00%</td><td>10.04%</td></tr>
+      <tr><td>DII %</td><td>15.95%</td><td>16.34%</td><td>17.20%</td><td>17.98%</td></tr>
+      <tr><td>Public %</td><td>26.82%</td><td>26.29%</td><td>25.60%</td><td>24.81%</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src-note">Source: Screener.in / NSE shareholding disclosures. <span class="pill V">V</span> DIIs have added roughly 200 bps over the past year while public/retail holding has shed a similar amount — a clean, steady rotation from retail to domestic institutions even as the stock has been roughly flat.</p>
+
+  <div class="section-title">3-Year Shareholding Arc</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th></th><th>FY23</th><th>FY24</th><th>FY25</th><th>FY26</th></tr></thead>
+    <tbody>
+      <tr><td>Promoters</td><td>46.86%</td><td>46.86%</td><td>46.86%</td><td>46.86%</td></tr>
+      <tr><td>FIIs</td><td>9.45%</td><td>9.44%</td><td>9.38%</td><td>10.04%</td></tr>
+      <tr><td>DIIs</td><td>14.16%</td><td>15.47%</td><td>15.87%</td><td>17.98%</td></tr>
+      <tr><td>Public</td><td>29.21%</td><td>27.91%</td><td>27.57%</td><td>24.81%</td></tr>
+      <tr><td>No. of shareholders</td><td>38,90,518</td><td>44,35,226</td><td>46,67,439</td><td>41,05,019</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="body-text">The shareholder count peaked around FY25 (~46.7 lakh) and has since fallen to ~41.1 lakh in FY26 <span class="pill V">V</span> — consistent with smaller retail holders exiting after a flat-to-weak year, even as the percentage held by larger DII funds rose. This is a genuinely mixed signal: fewer, more concentrated institutional hands is constructive for long-term price discovery, but a shrinking retail base also reduces a source of demand that has historically supported richly-valued growth narratives in Indian power/renewable names.</p>
+
+  <div class="section-title">Index Membership &amp; Free Float</div>
+  <p class="body-text">Tata Power is a constituent of the Nifty Next 50, Nifty 100, Nifty 500, Nifty Energy, BSE 100/200, BSE Power &amp; Energy, BSE Utilities and Nifty Tata Group 25% Cap indices, among others. <span class="pill V">V</span> With ~53% of shares held by non-promoter investors and meaningful DII ownership already in place, incremental passive/index-driven flows are a smaller relative lever here than for a more under-owned mid-cap.</p>
+
+  <div class="section-title">Ownership Momentum</div>
+  <p class="body-text"><b>Qualitative read: Moderately Positive.</b> Steady, multi-quarter DII accumulation against a falling retail base is a constructive — though not decisive — signal; it reflects informed money willing to hold through a weak earnings print, but it has not (yet) been large enough to arrest the stock's flat one-year performance. A precise 0–100 "momentum score" is not assigned here, since the framework's underlying weighting methodology was not specified with enough precision to produce a defensible number rather than an arbitrary one.</p>
+</div>
+
+<!-- ============ TAB 9: AI INTELLIGENCE ============ -->
+<div class="tab-content" id="tab-9">
+
+  <div class="section-title">A. AI Classification Dashboard</div>
+  <div class="badge-row" style="margin-bottom:18px;">
+    <div class="badge cat" style="color:#1a1208;background:#EFE6D2;border-color:var(--line);">CATEGORY D</div>
+    <div class="badge ai" style="color:#1a1208;background:#DCF0E5;border-color:var(--teal);">🟢 AI OVERLAY: WIDENER (mild)</div>
+    <div class="badge" style="color:#1a1208;background:#F1E4D2;border-color:var(--line);">FLYWHEEL: FEATURE (3/10)</div>
+    <div class="badge" style="color:#1a1208;background:#E4E9EF;border-color:var(--line);">PHASE 2 — Early grid-AI deployment</div>
+  </div>
+  <p class="body-text">Adoption-phase evidence: a single named partnership (Databricks, for grid data/AI infrastructure) <span class="pill V">V</span> and a sector-wide demand tailwind from data-centre electrification <span class="pill E">E</span> — together this reads as early-stage (Phase 2), efficiency-oriented AI adoption rather than a transformative deployment.</p>
+
+  <div class="section-title">B. Data Flywheel Deep-Dive</div>
+  <div class="two-col">
+    <div class="card">
+      <h4>Q1 — What is the proprietary training data?</h4>
+      <p style="font-size:13px;color:var(--muted);margin-top:6px;">Smart-meter and grid telemetry across TPDDL/TPCODL/TPADL distribution territories. Volume is real, but uniqueness is low — every regulated discom in India generates structurally similar data, and none of it is currently positioned as a competitive data asset in disclosed strategy.</p>
+    </div>
+    <div class="card">
+      <h4>Q2 — Does more data improve the AI?</h4>
+      <p style="font-size:13px;color:var(--muted);margin-top:6px;">No specific metric or case study was found tying additional grid data to measurably better forecasting, maintenance, or trading outcomes. <span class="pill U">U</span></p>
+    </div>
+    <div class="card">
+      <h4>Q3 — Does better AI attract more users?</h4>
+      <p style="font-size:13px;color:var(--muted);margin-top:6px;">Not applicable in the conventional sense — distribution customers are captive within a regulated territory and cannot "choose" Tata Power for better AI-driven service.</p>
+    </div>
+    <div class="card">
+      <h4>Flywheel Score Breakdown</h4>
+      <p style="font-size:13px;color:var(--muted);margin-top:6px;">Data quality 1/3 · Improvement evidence 1/4 · Loop speed 1/3 → <b>3/10 total.</b> This is a FEATURE-level AI use case, not a moat.</p>
+    </div>
+  </div>
+
+  <div class="section-title">C. AI Value Chain Position</div>
+  <div class="chain-row">
+    <div class="chain-step"><div class="lvl">Level 1</div><div class="name">Infrastructure</div></div>
+    <div class="chain-step"><div class="lvl">Level 2</div><div class="name">Foundation Models</div></div>
+    <div class="chain-step"><div class="lvl">Level 3</div><div class="name">Platforms</div></div>
+    <div class="chain-step"><div class="lvl">Level 4</div><div class="name">Vertical Apps</div></div>
+    <div class="chain-step active"><div class="lvl">Level 5 — Tata Power is here</div><div class="name">AI-Enabled Incumbent</div></div>
+  </div>
+  <p class="body-text">Investment implication of a Level 5 position: AI is a cost/efficiency lever and (via data-centre demand) a revenue tailwind, but it confers no structural moat upgrade and should be valued on the underlying utility/renewable economics, not on an AI multiple. Appropriate investment horizon per the framework for a Level 5 incumbent: 7–10 years.</p>
+
+  <div class="section-title">D. India AI Opportunity — Structural Advantage Check</div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Factor</th><th>Relevant?</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>India Stack data access (UPI/Aadhaar)</td><td class="score-fail">No</td><td>Core grid-ops data is metering/SCADA data, not identity or payments-rail data</td></tr>
+      <tr><td>Vernacular AI benefit</td><td class="score-marginal">Minor</td><td>Regional-language customer service/chatbots for discom billing — a back-office convenience, not a strategic lever</td></tr>
+      <tr><td>India Stack infra leverage (UPI/ONDC/DigiLocker)</td><td class="score-marginal">Minor</td><td>UPI used for bill collections; not a differentiator</td></tr>
+      <tr><td>AI talent cost arbitrage</td><td class="score-fail">No</td><td>Tata Power is a capital-intensive utility, not an AI-services business</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="body-text">Honest conclusion: this section of the framework is built for AI-native and platform businesses; for an integrated power utility the more relevant "India AI" story is macro and indirect — India's data-centre buildout is itself a demand driver for power capacity, which benefits Tata Power as a supplier of electrons, not as an AI company.</p>
+
+  <div class="section-title">F. AI Opportunity Score</div>
+  <div class="gauge-wrap">
+    <div class="gauge">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="58" fill="none" stroke="#E2DBC9" stroke-width="14"/>
+        <circle cx="70" cy="70" r="58" fill="none" stroke="#D9842A" stroke-width="14" stroke-linecap="round" stroke-dasharray="364.4" stroke-dashoffset="262.4"/>
+      </svg>
+      <div class="gauge-label"><div class="num">28</div><div class="denom">/ 100</div></div>
+    </div>
+    <div>
+      <p class="body-text" style="margin-bottom:6px;"><b>Portfolio Role: NEUTRAL</b> (20–40 band)</p>
+      <ul class="tight">
+        <li>Data Flywheel: 3/20</li>
+        <li>Adoption Phase Timing: 6/20 (early, unproven)</li>
+        <li>Value Chain Position: 8/20 (Level 5 incumbent — efficiency only)</li>
+        <li>India Structural Advantage: 3/20 (largely not applicable)</li>
+        <li>AI Threat Resistance: 8/20 (low threat exposure, but also low offensive upside)</li>
+      </ul>
+      <p class="src-note">All sub-scores <span class="pill E">E</span> ESTIMATED qualitative judgments, not a published or audited score.</p>
+    </div>
+  </div>
+  <p class="body-text">Bottom line: own Tata Power, if at all, for the regulated-utility-plus-renewable-buildout thesis covered in Tabs 1–6. The AI angle is a real but secondary demand-side tailwind (data-centre power consumption), not a reason to pay up for the stock on its own.</p>
+</div>
+
+</div><!-- /wrap -->
+
+<div class="disc-footer">
+  <b>SEBI Disclaimer:</b> This report is generated for informational and educational purposes only and does not constitute investment advice, a recommendation, or an offer/solicitation to buy or sell any security. Equity markets are subject to risk; past performance and analyst projections are not guarantees of future results. The author is not a SEBI-registered Research Analyst or Investment Adviser. Please conduct independent due diligence and consult a SEBI-registered advisor before making any investment decision.<br><br>
+  <b>Data Notice:</b> Figures are sourced from NSE/BSE filings, Screener.in, company press releases, CRISIL rating rationales, sell-side commentary (Motilal Oswal, Morgan Stanley, MarketsMOJO) and macro data providers (RBI/PIB, TradingEconomics) as available as of 22 June 2026, and are labeled VERIFIED / ESTIMATED / UNVERIFIED throughout per the methodology's confidence framework. Prices and ratios move daily — treat point-in-time figures as approximate by the time you read this.<br><br>
+  <b>Fonts:</b> Space Grotesk, IBM Plex Sans, IBM Plex Mono (Google Fonts, open license).<br>
+  Buffett Quality-Value Series v5.0 · Report generated 22 June 2026.
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>

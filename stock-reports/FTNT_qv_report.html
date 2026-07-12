@@ -3,1127 +3,586 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fortinet (FTNT) — BQV Series v5.0</title>
+<title>Fortinet (FTNT) — Buffett Quality-Value Series v5.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0d12;
-  --surface: #111620;
-  --surface2: #161c28;
-  --border: #1e2d3d;
-  --accent: #00d4aa;
-  --accent2: #ff5e3a;
-  --accent3: #4fc3f7;
-  --text: #e2e8f0;
-  --muted: #7a8fa6;
-  --pass: #00c896;
-  --warn: #f5a623;
-  --fail: #ff4d4d;
-  --tab-active: var(--accent);
-  --card: #13192a;
+:root{
+  --ink:#0b0e17; --ink2:#121627; --ink3:#1b2138; --line:#2a3150;
+  --violet:#8b5cf6; --violet-dim:#6d4bd6; --emerald:#34d399; --emerald-dim:#0f9d74;
+  --amber:#f5b64b; --red:#f2585b; --green:#34d399;
+  --text:#e8ebf5; --muted:#98a0bd; --faint:#6b7396;
+  --disp:'Sora',sans-serif; --body:'Source Sans 3',sans-serif; --mono:'JetBrains Mono',monospace;
+  --pass:#34d399; --marg:#f5b64b; --fail:#f2585b;
 }
-
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--bg); color:var(--text); font-family:'Lora',Georgia,serif; font-size:15px; line-height:1.7; }
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--text);font-family:var(--body);line-height:1.6;font-size:16px}
+h1,h2,h3,h4{font-family:var(--disp);line-height:1.2;font-weight:700}
+a{color:var(--violet)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--muted)}
 
 /* HERO */
-.hero {
-  background: linear-gradient(135deg, #0a0d12 0%, #0d1825 40%, #051a12 100%);
-  border-bottom: 1px solid var(--border);
-  padding: 36px 32px 28px;
-  position:relative;
-  overflow:hidden;
-  max-height: 220px;
-}
-.hero::before {
-  content:'';
-  position:absolute; top:0; left:0; right:0; bottom:0;
-  background: repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(0,212,170,0.02) 60px, rgba(0,212,170,0.02) 61px),
-              repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(0,212,170,0.02) 60px, rgba(0,212,170,0.02) 61px);
-  pointer-events:none;
-}
-.hero-inner { max-width:1100px; margin:0 auto; position:relative; }
-.hero-top { display:flex; justify-content:space-between; align-items:flex-start; }
-.hero-ticker { font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:600; letter-spacing:3px; color:var(--accent); text-transform:uppercase; margin-bottom:4px; }
-.hero-name { font-family:'Rajdhani',sans-serif; font-size:42px; font-weight:700; color:#fff; letter-spacing:-1px; line-height:1; }
-.hero-sub { font-family:'Rajdhani',sans-serif; font-size:15px; color:var(--muted); letter-spacing:1px; margin-top:2px; }
-.hero-right { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
-.verdict-box {
-  background: linear-gradient(135deg, #00443a, #001a12);
-  border: 1px solid var(--accent);
-  border-radius:8px; padding:8px 16px; text-align:right;
-}
-.verdict-label { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:2px; }
-.verdict-text { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; color:#fff; }
-.badges { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:4px; }
-.badge { font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:600; letter-spacing:1px; padding:3px 10px; border-radius:20px; border:1px solid; }
-.badge-cat { background:rgba(0,212,170,0.12); border-color:var(--accent); color:var(--accent); }
-.badge-ai { background:rgba(0,212,170,0.08); border-color:rgba(0,212,170,0.4); color:var(--accent); }
-.badge-macro { background:rgba(79,195,247,0.1); border-color:var(--accent3); color:var(--accent3); }
-.pills { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
-.pill { font-family:'Share Tech Mono',monospace; font-size:11px; background:var(--surface2); border:1px solid var(--border); border-radius:4px; padding:3px 10px; color:var(--muted); }
-.pill span { color:var(--text); font-weight:600; }
-.lede { font-size:13px; color:var(--muted); margin-top:10px; line-height:1.5; max-width:680px; font-style:italic; }
+.hero{background:radial-gradient(1200px 400px at 15% -10%,rgba(139,92,246,.22),transparent),radial-gradient(900px 350px at 95% 0%,rgba(52,211,153,.12),transparent),var(--ink2);border-bottom:1px solid var(--line);padding:26px 0 22px;max-height:230px}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.hero h1{font-size:38px;font-weight:800;letter-spacing:-.5px}
+.hero h1 span{color:var(--violet)}
+.tick{font-family:var(--mono);color:var(--muted);font-size:15px;margin-top:2px}
+.verdict-badge{border:1.5px solid var(--amber);color:var(--amber);border-radius:10px;padding:8px 14px;text-align:center;font-family:var(--disp);font-weight:700;background:rgba(245,182,75,.08)}
+.verdict-badge .v{font-size:19px;display:block}
+.verdict-badge .s{font-size:13px;letter-spacing:2px}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.badge{font-size:12.5px;font-family:var(--mono);padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--ink3);color:var(--text)}
+.badge.cat{border-color:var(--violet);color:#cbb6ff;background:rgba(139,92,246,.12)}
+.badge.ai{border-color:var(--emerald);color:#9df0d3;background:rgba(52,211,153,.10)}
+.badge.macro{border-color:var(--amber);color:#f7d49a;background:rgba(245,182,75,.10)}
+.badge.v{border-color:var(--green);color:#9df0d3}
+.badge.e{border-color:var(--amber);color:#f7d49a}
+.badge.u{border-color:var(--red);color:#f6a6a7}
+.lede{color:var(--muted);margin-top:12px;font-size:15px;max-width:860px}
 
-/* TAB BAR */
-#tab-bar {
-  position:sticky; top:0; z-index:100;
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  overflow-x:auto;
-  white-space:nowrap;
-}
-.tab-btn {
-  display:inline-block; font-family:'Rajdhani',sans-serif; font-size:12px;
-  font-weight:600; letter-spacing:1px; text-transform:uppercase;
-  padding:13px 16px; cursor:pointer; color:var(--muted);
-  border-bottom:3px solid transparent; background:none; border-top:none; border-left:none; border-right:none;
-  transition:color .2s, border-color .2s;
-}
-.tab-btn:hover { color:var(--text); }
-.tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+/* TABS */
+#tab-bar{position:sticky;top:0;z-index:50;background:rgba(11,14,23,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex:0 0 auto;background:none;border:none;border-bottom:3px solid transparent;color:var(--faint);font-family:var(--disp);font-weight:600;font-size:14px;padding:14px 15px;cursor:pointer;white-space:nowrap;transition:.15s}
+.tab-btn:hover{color:var(--muted)}
+.tab-btn.active{color:var(--text);border-bottom-color:var(--violet)}
+.tab-btn b{color:var(--violet-dim);font-family:var(--mono);margin-right:6px;font-size:12px}
 
 /* CONTENT */
-.tab-content { display:none; max-width:1100px; margin:0 auto; padding:36px 24px; }
-.tab-content.active { display:block; }
-
-/* SECTION HEADERS */
-.section-title {
-  font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700;
-  letter-spacing:-0.5px; color:var(--accent); margin-bottom:16px;
-  padding-bottom:8px; border-bottom:1px solid var(--border);
-}
-.subsection { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; color:var(--accent3); margin:24px 0 12px; }
-
-/* CARDS */
-.card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin:16px 0; }
-.card {
-  background:var(--card); border:1px solid var(--border); border-radius:10px;
-  padding:16px; border-left:3px solid var(--accent);
-}
-.card.warn { border-left-color:var(--warn); }
-.card.fail { border-left-color:var(--fail); }
-.card.neutral { border-left-color:var(--border); }
-.card-label { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
-.card-value { font-family:'Rajdhani',sans-serif; font-size:26px; font-weight:700; color:var(--text); line-height:1; }
-.card-sub { font-size:12px; color:var(--muted); margin-top:4px; }
-
-/* TABLES */
-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; }
-th { font-family:'Rajdhani',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; background:var(--surface2); color:var(--muted); padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); }
-td { padding:10px 12px; border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:top; }
-tr:hover td { background:rgba(255,255,255,0.02); }
-.tbl-num { font-family:'Share Tech Mono',monospace; }
-
-/* SCORE CHIPS */
-.grade {
-  display:inline-block; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:14px;
-  padding:3px 10px; border-radius:5px; border:1px solid;
-}
-.grade-a { background:rgba(0,200,150,0.15); border-color:rgba(0,200,150,0.5); color:#00c896; }
-.grade-b { background:rgba(79,195,247,0.12); border-color:rgba(79,195,247,0.4); color:#4fc3f7; }
-.grade-c { background:rgba(245,166,35,0.12); border-color:rgba(245,166,35,0.4); color:#f5a623; }
-.grade-d { background:rgba(255,77,77,0.12); border-color:rgba(255,77,77,0.4); color:#ff4d4d; }
-
-/* PILL SCORES */
-.score-pill {
-  display:inline-block; font-family:'Share Tech Mono',monospace; font-size:11px;
-  padding:2px 8px; border-radius:3px;
-}
-.pass { background:rgba(0,200,150,0.15); color:#00c896; }
-.marginal { background:rgba(245,166,35,0.15); color:#f5a623; }
-.fail-chip { background:rgba(255,77,77,0.15); color:#ff4d4d; }
-.verified { background:rgba(0,200,150,0.1); color:#00c896; border:1px solid rgba(0,200,150,0.3); font-size:10px; padding:1px 6px; border-radius:3px; font-family:'Share Tech Mono',monospace; }
-.estimated { background:rgba(245,166,35,0.1); color:#f5a623; border:1px solid rgba(245,166,35,0.3); font-size:10px; padding:1px 6px; border-radius:3px; font-family:'Share Tech Mono',monospace; }
-.unverified { background:rgba(255,77,77,0.1); color:#ff4d4d; border:1px solid rgba(255,77,77,0.3); font-size:10px; padding:1px 6px; border-radius:3px; font-family:'Share Tech Mono',monospace; }
-
-/* MOAT STARS */
-.stars { color:var(--accent); font-size:14px; letter-spacing:2px; }
-
-/* FLYWHEEL BOX */
-.flywheel-box {
-  background:linear-gradient(135deg, #0a1a14, #0d2218);
-  border:2px solid var(--accent); border-radius:12px; padding:24px; margin:20px 0;
-}
-.flywheel-badge {
-  display:inline-block; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:18px;
-  background:rgba(0,212,170,0.15); border:1px solid var(--accent); color:var(--accent);
-  padding:6px 16px; border-radius:30px; margin-bottom:12px;
-}
-
-/* VERDICT BOX */
-.verdict-hero {
-  background:linear-gradient(135deg, #0d1f18, #0a1520);
-  border:2px solid var(--accent); border-radius:14px; padding:28px; margin:20px 0;
-}
-.verdict-hero-text { font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:700; color:var(--accent); }
-.verdict-hero-sub { font-size:14px; color:var(--muted); margin-top:8px; line-height:1.6; }
-.upgrade-conditions { margin-top:20px; }
-.upgrade-item {
-  display:flex; gap:12px; align-items:flex-start; margin-bottom:10px;
-  background:var(--surface2); border-radius:8px; padding:12px 14px; border:1px solid var(--border);
-}
-.upgrade-num {
-  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:18px;
-  color:var(--accent); min-width:28px;
-}
-
-/* PILLAR GRID */
-.pillar-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:20px 0; }
-.pillar-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px; text-align:center; }
-.pillar-name { font-family:'Rajdhani',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
-.pillar-grade { font-family:'Rajdhani',sans-serif; font-size:36px; font-weight:700; }
-
-/* AI GAUGE */
-.ai-gauge-wrap { display:flex; align-items:center; gap:24px; margin:20px 0; }
-.ai-gauge-bar { flex:1; background:var(--surface2); border-radius:8px; height:28px; overflow:hidden; border:1px solid var(--border); }
-.ai-gauge-fill { height:100%; border-radius:8px; display:flex; align-items:center; padding-left:12px; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:14px; color:#000; }
-
-/* TA PRICE LADDER */
-.price-ladder { display:flex; flex-direction:column; gap:2px; margin:16px 0; }
-.ladder-item {
-  display:flex; align-items:center; gap:12px;
-  padding:8px 12px; border-radius:6px; border-left:3px solid transparent;
-}
-.ladder-item.resistance { border-left-color:var(--fail); background:rgba(255,77,77,0.05); }
-.ladder-item.current { border-left-color:var(--warn); background:rgba(245,166,35,0.08); }
-.ladder-item.support { border-left-color:var(--pass); background:rgba(0,200,150,0.05); }
-.ladder-price { font-family:'Share Tech Mono',monospace; font-size:14px; font-weight:700; min-width:70px; }
-.ladder-label { font-size:12px; color:var(--muted); }
-
-/* DCF TABLE */
-.dcf-wrap { overflow-x:auto; margin:16px 0; }
-.dcf-scenario { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:16px 0; }
-.dcf-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; text-align:center; }
-.dcf-label { font-family:'Rajdhani',sans-serif; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
-.dcf-val { font-family:'Rajdhani',sans-serif; font-size:30px; font-weight:700; }
-.dcf-stress { color:#ff8a80; }
-.dcf-base { color:var(--accent); }
-.dcf-accel { color:var(--accent3); }
-
-/* SERIES TABLE */
-.series-table { font-size:12px; }
-.series-table td { padding:8px 10px; }
-
-/* INFO BOX */
-.info-box {
-  background:var(--surface2); border:1px solid var(--border);
-  border-radius:8px; padding:16px 18px; margin:16px 0;
-  border-left:3px solid var(--accent3); font-size:13px; line-height:1.7;
-}
-
-/* RESPONSIVE */
-@media(max-width:680px){
-  .hero-name { font-size:28px; }
-  .pillar-grid { grid-template-columns:repeat(2,1fr); }
-  .dcf-scenario { grid-template-columns:1fr; }
-  .card-grid { grid-template-columns:1fr 1fr; }
-}
-@media(max-width:600px){
-  .hero { padding:24px 16px 20px; }
-  .tab-content { padding:24px 14px; }
-  .hero-top { flex-direction:column; gap:14px; }
-}
-
-.growth-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:16px 0; }
-.growth-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; }
-.growth-scenario { font-family:'Rajdhani',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
-
-.ai-chain { display:flex; gap:4px; margin:16px 0; }
-.ai-level { flex:1; padding:12px 8px; text-align:center; border-radius:6px; border:1px solid var(--border); font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:600; background:var(--surface2); }
-.ai-level.active { background:rgba(0,212,170,0.15); border-color:var(--accent); color:var(--accent); }
-
-.share-table td { padding:9px 12px; }
+.tab-content{display:none;padding:34px 0 70px;animation:fade .25s ease}
+.tab-content.show{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2.tab-h{font-size:26px;margin-bottom:6px;letter-spacing:-.3px}
+.tab-sub{color:var(--muted);margin-bottom:22px;font-size:15px}
+h3.sec{font-size:18px;margin:30px 0 14px;padding-left:12px;border-left:3px solid var(--violet)}
+p{margin-bottom:12px}
+.card{background:var(--ink2);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.metric{background:var(--ink2);border:1px solid var(--line);border-left:4px solid var(--faint);border-radius:10px;padding:14px 16px}
+.metric.good{border-left-color:var(--emerald)}
+.metric.warn{border-left-color:var(--amber)}
+.metric.bad{border-left-color:var(--red)}
+.metric .k{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.metric .val{font-family:var(--mono);font-size:23px;font-weight:700;margin-top:5px}
+.metric .sub{font-size:12.5px;color:var(--faint);margin-top:3px}
+.pill{font-size:11px;font-family:var(--mono);padding:2px 7px;border-radius:6px;vertical-align:middle}
+.pill.V{background:rgba(52,211,153,.16);color:var(--emerald)}
+.pill.E{background:rgba(245,182,75,.16);color:var(--amber)}
+.pill.U{background:rgba(242,88,91,.16);color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 8px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-family:var(--disp);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.5px}
+td.mono,th.mono{font-family:var(--mono)}
+tr:last-child td{border-bottom:none}
+.tag{font-family:var(--mono);font-size:12px;font-weight:700;padding:3px 9px;border-radius:6px}
+.tag.pass{background:rgba(52,211,153,.15);color:var(--pass)}
+.tag.marg{background:rgba(245,182,75,.15);color:var(--marg)}
+.tag.fail{background:rgba(242,88,91,.15);color:var(--fail)}
+.stars{color:var(--amber);letter-spacing:2px}
+.q-box{background:linear-gradient(180deg,var(--ink3),var(--ink2));border:1px solid var(--violet-dim);border-radius:14px;padding:22px}
+.verdict-box{background:var(--ink2);border:2px solid var(--amber);border-radius:16px;padding:26px}
+.quote{font-style:italic;color:var(--muted);border-left:3px solid var(--emerald);padding-left:14px;margin:14px 0}
+.flag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-family:var(--mono);font-weight:700}
+.flag.up{background:rgba(52,211,153,.15);color:var(--emerald)}
+.flag.dn{background:rgba(242,88,91,.15);color:var(--red)}
+.flag.fl{background:rgba(245,182,75,.15);color:var(--amber)}
+.bar-track{height:9px;background:var(--ink3);border-radius:999px;overflow:hidden;margin-top:6px}
+.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--violet),var(--emerald))}
+.gauge{display:flex;align-items:center;gap:16px}
+.gauge .num{font-family:var(--mono);font-size:34px;font-weight:700}
+.numbadge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;background:var(--violet);color:#fff;font-family:var(--mono);font-weight:700;font-size:13px;margin-right:10px;flex:0 0 auto}
+.cond{display:flex;gap:0;align-items:flex-start;margin-bottom:12px}
+.ladder{font-family:var(--mono);font-size:13.5px}
+.ladder div{display:flex;justify-content:space-between;padding:7px 12px;border-bottom:1px solid var(--line)}
+.ladder .hi{color:var(--emerald)}.ladder .lo{color:var(--red)}.ladder .now{background:rgba(139,92,246,.12);color:var(--violet)}
+.chip{display:inline-block;font-family:var(--mono);font-size:12px;padding:3px 8px;border:1px solid var(--line);border-radius:6px;margin:2px}
+.flywheel{background:radial-gradient(600px 200px at 50% 0%,rgba(52,211,153,.14),transparent),var(--ink2);border:1.5px solid var(--emerald-dim);border-radius:16px;padding:24px;text-align:center}
+.flywheel .score{font-family:var(--mono);font-size:44px;font-weight:700;color:var(--emerald)}
+.chain{display:flex;gap:6px;margin:10px 0}
+.chain .lvl{flex:1;text-align:center;padding:10px 6px;border-radius:8px;background:var(--ink3);border:1px solid var(--line);font-size:12px}
+.chain .lvl.on{border-color:var(--violet);background:rgba(139,92,246,.16);color:#cbb6ff}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--faint);font-size:12.5px}
+@media(max-width:680px){.hero{max-height:none}.hero h1{font-size:30px}.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}}
+@media(max-width:600px){.g2{grid-template-columns:1fr}.g4{grid-template-columns:1fr}table{font-size:13px}th,td{padding:8px 8px}}
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-inner">
+<!-- ===================== HERO ===================== -->
+<header class="hero">
+  <div class="wrap">
     <div class="hero-top">
       <div>
-        <div class="hero-ticker">NASDAQ: FTNT</div>
-        <div class="hero-name">FORTINET</div>
-        <div class="hero-sub">Global Cybersecurity Leader · Security Fabric + AI</div>
+        <h1>Fortinet<span>.</span></h1>
+        <div class="tick">NASDAQ: FTNT · Systems Software / Cybersecurity · Sunnyvale, CA</div>
       </div>
-      <div class="hero-right">
-        <div class="verdict-box">
-          <div class="verdict-label">Verdict</div>
-          <div class="verdict-text">WATCH ★★★★</div>
-        </div>
-        <div class="badges">
-          <span class="badge badge-cat">CAT C</span>
-          <span class="badge badge-ai">🟢 AI WIDENER</span>
-          <span class="badge badge-macro">US MACRO: NEUTRAL</span>
-        </div>
+      <div class="verdict-badge">
+        <span class="v">WATCH</span>
+        <span class="s">★ ★ ★</span>
       </div>
     </div>
-    <div class="pills">
-      <div class="pill">Price <span>~$82.76</span></div>
-      <div class="pill">Market Cap <span>~$62B</span></div>
-      <div class="pill">MoS Entry <span>$58–65</span></div>
-      <div class="pill">FY2025 FCF <span>$2.21B</span></div>
-      <div class="pill">Rule of 40 <span>~47</span></div>
-      <div class="pill">GAAP P/E <span>~34x</span></div>
+    <div class="badge-row">
+      <span class="badge cat">Category C · Mature Quality Compounder</span>
+      <span class="badge ai">🟢 AI Overlay: WIDENER</span>
+      <span class="badge macro">Macro: Neutral / mild Headwind</span>
+      <span class="badge v">Data: VERIFIED</span>
+      <span class="badge e">ESTIMATED</span>
     </div>
-    <div class="lede">The world's largest pure-play cybersecurity company by revenue, Fortinet's Security Fabric integrates networking and security across a proprietary ASIC-powered platform. FortiAI's data flywheel — trained on 5.6M+ deployed sensors — is forming a durable AI WIDENER moat. Price is near base IV; 30% MoS not yet met.</div>
+    <p class="lede">Elite cybersecurity franchise — 80% gross margins, ~35% operating margin, net cash, ROIC ~22% — with a genuinely widening AI/threat-intelligence moat. But at ~58–65× earnings and a ~1.9% FCF yield versus a 4.5% bond, priced for perfection near an all-time high. Quality is not the question; price is.</p>
   </div>
-</div>
+</header>
 
-<!-- TAB BAR -->
-<div id="tab-bar">
-  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 Overview</button>
-  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 Macro</button>
-  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 Financials</button>
-  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 Moat</button>
-  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 Management</button>
-  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 Valuation</button>
-  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 Verdict</button>
-  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 Technical</button>
-  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 Shareholding</button>
-  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 AI Intel</button>
-</div>
-
-<!-- TAB 0: OVERVIEW -->
-<div id="tab0" class="tab-content" style="display:block;">
-  <div class="section-title">Business Overview</div>
-  <div class="info-box">
-    Fortinet (NASDAQ: FTNT) is the global leader in the convergence of networking and security, providing its integrated Security Fabric platform to enterprises, service providers, governments, and SMBs across 170+ countries. Founded in 2000 by brothers Ken Xie (CEO) and Michael Xie (CTO), the company invented the world's first purpose-built network security ASIC, enabling performance-to-cost advantages unmatched by software-only peers. FY2025 revenue of $6.80B (+14%) is underpinned by a $6.36B deferred revenue backlog, giving high revenue visibility. The business is 67% services (recurring subscriptions and support), with a Rule of 40 score of ~47, confirming quality software economics.
-  </div>
-
-  <div class="subsection">Category Classification</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">Category</div>
-      <div class="card-value">C</div>
-      <div class="card-sub">Mature Quality Compounder — ROIC 15–40%, durable moat, stable growth 8–18%. Fortinet fits: consistent >20% ROIC trend, market-leading platform, 14% FY2025 revenue growth. AI WIDENER upgrade to moat grade applies.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">AI Overlay</div>
-      <div class="card-value" style="color:var(--accent); font-size:18px;">🟢 WIDENER</div>
-      <div class="card-sub">FortiGuard Labs threat intelligence trained on 5.6M+ sensors globally is a forming data flywheel. AI is not merely a tool — it is actively compounding Fortinet's threat detection advantage vs. competitors.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Framework Adaptation</div>
-      <div class="card-value" style="font-size:18px;">Standard</div>
-      <div class="card-sub">5-method DCF applies. FCF positive for 5+ years. WACC 10% (large-cap US quality compounder). Terminal g ≤ US nominal GDP ~4.5%. AI WIDENER premium +5–8% to blended IV justified by forming flywheel.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Investment Horizon</div>
-      <div class="card-value" style="font-size:18px;">5–7 yr</div>
-      <div class="card-sub">Cat C AI WIDENER. The flywheel compound is a 5–7 year thesis, not a 12-month trade. Entry discipline is key — the moat is real, but price premium must be respected.</div>
+<!-- ===================== TAB BAR ===================== -->
+<nav id="tab-bar">
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')"><b>0</b>Overview</button>
+      <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')"><b>1</b>Macro &amp; Growth</button>
+      <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')"><b>2</b>Financials</button>
+      <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')"><b>3</b>Moat</button>
+      <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')"><b>4</b>Management</button>
+      <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')"><b>5</b>Valuation</button>
+      <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')"><b>6</b>Verdict</button>
+      <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')"><b>7</b>Technical</button>
+      <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')"><b>8</b>Shareholding</button>
+      <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')"><b>9</b>AI Intelligence</button>
     </div>
   </div>
+</nav>
 
-  <div class="subsection">Why This Stock Is in the Series</div>
-  <p style="margin-bottom:12px;">Fortinet is the most profitable large-cap pure-play cybersecurity vendor in the world. Its unique combination of proprietary FortiASIC chips, unified FortiOS operating system, and the Security Fabric's breadth creates structural cost advantages over software-only peers. The cyber threat landscape is structurally worsening (AI-powered attacks, 85% of professionals cite GenAI as a threat driver per Fortinet's own 2025 report), creating a secular tailwind independent of the economic cycle. The forming FortiAI data flywheel — 5.6M sensors generating real-time threat telemetry — is the series' cleanest example of a Legacy Incumbent becoming an AI WIDENER. With $6.36B in deferred revenue and $2.21B FCF, the financial fortress is exceptional. The challenge: the stock has de-rated from its $114 ATH and remains above the 30% MoS entry zone, making patience the primary discipline required.</p>
+<main class="wrap">
 
-  <div class="subsection">Business Model Summary</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">Revenue Mix (FY2025)</div>
-      <div class="card-value" style="font-size:18px;">67% Service</div>
-      <div class="card-sub">$4.58B service (subscriptions + support) | $2.22B product (hardware appliances). Recurring mix rising each year = improving revenue quality.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Deferred Revenue</div>
-      <div class="card-value" style="font-size:18px;">~$6.4B</div>
-      <div class="card-sub">FY2024: $6.36B (+10.9% YoY). This is the "balance sheet bank" — already paid-for revenue yet to be recognised. Strong visibility 12–24 months out. <span class="verified">VERIFIED</span></div>
-    </div>
-    <div class="card">
-      <div class="card-label">SASE ARR Growth</div>
-      <div class="card-value" style="font-size:18px;">+40% YoY</div>
-      <div class="card-sub">Unified SASE ARR grew 40% in Q4 2025. Security Operations ARR grew 35%. These are the fastest-growing, highest-margin product lines. <span class="verified">VERIFIED</span></div>
-    </div>
-    <div class="card">
-      <div class="card-label">FortiASIC Advantage</div>
-      <div class="card-value" style="font-size:18px;">3–5× Speed</div>
-      <div class="card-sub">Custom ASIC chips deliver 3–5x throughput at lower cost vs. FPGA-based or software-only peers. This is a structural, not cyclical, cost advantage. <span class="estimated">ESTIMATED</span></div>
-    </div>
-  </div>
-</div>
+<!-- ===================== TAB 0 — OVERVIEW ===================== -->
+<section id="t0" class="tab-content show">
+  <h2 class="tab-h">Overview</h2>
+  <p class="tab-sub">The convergence of networking and security, run by its founders for 25 years.</p>
 
-<!-- TAB 1: MACRO & GROWTH -->
-<div id="tab1" class="tab-content">
-  <div class="section-title">Macro & Sector Context</div>
-
-  <div class="subsection">Layer 1 — Macro Anchor (US)</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">US 10Y Treasury</div>
-      <div class="card-value">4.31%</div>
-      <div class="card-sub">As of April 24, 2026. Elevated by Middle East (Strait of Hormuz) tensions driving oil/inflation. <span class="verified">VERIFIED</span></div>
-    </div>
-    <div class="card">
-      <div class="card-label">US Real GDP Growth</div>
-      <div class="card-value">~2.2%</div>
-      <div class="card-sub">IMF April 2026 estimate. Slowing from 2024 as tariff impact and geopolitical tensions weigh. <span class="estimated">ESTIMATED</span></div>
-    </div>
-    <div class="card">
-      <div class="card-label">US CPI (Current)</div>
-      <div class="card-value">~3.2%</div>
-      <div class="card-sub">Elevated above Fed 2% target; oil prices (Hormuz) adding upward pressure. Fed on hold. <span class="estimated">ESTIMATED</span></div>
-    </div>
-    <div class="card">
-      <div class="card-label">US Nominal GDP</div>
-      <div class="card-value">~5.4%</div>
-      <div class="card-sub">Real 2.2% + CPI 3.2% = ~5.4%. This is the ABSOLUTE CEILING for terminal growth rate in the DCF.</div>
-    </div>
+  <div class="grid g4">
+    <div class="metric"><div class="k">Price (snapshot)</div><div class="val">$158</div><div class="sub">7 Jul 2026 <span class="pill V">V</span></div></div>
+    <div class="metric warn"><div class="k">Market Cap</div><div class="val">~$116B</div><div class="sub">~733M shares</div></div>
+    <div class="metric bad"><div class="k">Trailing P/E</div><div class="val">~62×</div><div class="sub">GAAP EPS $2.42</div></div>
+    <div class="metric good"><div class="k">FY25 FCF</div><div class="val">$2.21B</div><div class="sub">FCF &gt; net income</div></div>
   </div>
 
-  <div class="subsection">US Macro Cycle Dashboard</div>
+  <h3 class="sec">What Fortinet is</h3>
+  <div class="card">
+    <p>Fortinet is a global cybersecurity leader built around the <b>Fortinet Security Fabric</b> — a single operating system (FortiOS) spanning three pillars: secure networking (its flagship FortiGate firewalls), unified SASE, and AI-driven security operations (SecOps). Its defining engineering choice is proprietary <b>FortiASIC</b> security-processing silicon, which lets FortiGate appliances deliver more throughput per watt and per dollar than software-only competitors — a durable cost advantage rare in software.</p>
+    <p>The business has shifted decisively toward recurring revenue: FY2025 revenue of <b>$6.80B (+14% YoY)</b> was roughly two-thirds service/subscription, with Unified SASE ARR up 22% and Security Operations ARR up 35%. <span class="pill V">V</span></p>
+  </div>
+
+  <h3 class="sec">Why this stock, in this series</h3>
+  <div class="grid g2">
+    <div class="card"><h4 style="color:var(--emerald);margin-bottom:8px">The quality case</h4><p style="margin:0">A textbook Category C compounder: wide moat, 80% gross margins, ~35% non-GAAP operating margins, net cash, ROIC (~22%) roughly 2.2× its cost of capital, founder-led with heavy insider ownership, and an AI overlay that genuinely deepens the moat rather than threatening it.</p></div>
+    <div class="card"><h4 style="color:var(--red);margin-bottom:8px">The price problem</h4><p style="margin:0">The market already knows all of the above. At ~16× EV/revenue and a sub-2% FCF yield versus a 4.5% risk-free rate, the stock discounts many years of flawless execution. Every intrinsic-value method and the analyst consensus target (~$114) sit below the current $158.</p></div>
+  </div>
+
+  <h3 class="sec">Framework adaptation</h3>
+  <div class="card"><p style="margin:0">US large-cap adaptations applied throughout: USD, S&amp;P 500 benchmark, WACC 8–10%, terminal growth capped at US nominal GDP (~4.5%), SEC disclaimer, and DOJ/FTC/EU antitrust lens. Because AI in cybersecurity is a live competitive vector, the <b>Data Flywheel test</b> (Tab 3 &amp; 9) is weighted heavily.</p></div>
+</section>
+
+<!-- ===================== TAB 1 — MACRO & GROWTH ===================== -->
+<section id="t1" class="tab-content">
+  <h2 class="tab-h">Macro &amp; Growth</h2>
+  <p class="tab-sub">Growth is derived outside-in: US macro anchor → sector → company alpha.</p>
+
+  <h3 class="sec">Layer 1 — Macro cycle dashboard (US)</h3>
+  <div class="grid g3">
+    <div class="metric warn"><div class="k">10-yr Treasury</div><div class="val">~4.5%</div><div class="sub">Fed turned hawkish, Jun-26 <span class="pill V">V</span></div></div>
+    <div class="metric"><div class="k">US real GDP</div><div class="val">~2%</div><div class="sub">soft-landing path <span class="pill E">E</span></div></div>
+    <div class="metric"><div class="k">US CPI</div><div class="val">~3%</div><div class="sub">sticky; oil risk <span class="pill E">E</span></div></div>
+    <div class="metric"><div class="k">Nominal GDP ceiling</div><div class="val">~5%</div><div class="sub">terminal-g cap ~4.5%</div></div>
+    <div class="metric warn"><div class="k">Fed stance</div><div class="val">Hawkish</div><div class="sub">Sept move data-dependent</div></div>
+    <div class="metric good"><div class="k">AI cycle</div><div class="val">Opportunity</div><div class="sub">AI SOC demand tailwind</div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><p style="margin:0"><b>Macro composite: Neutral, tilting Headwind.</b> Enterprise security spend is among the most defensive lines in the IT budget — a tailwind for demand. But a 4.5% risk-free rate that is no longer clearly falling is a headwind for a stock trading on a sub-2% earnings yield. The valuation, not the fundamentals, carries the macro risk here.</p></div>
+
+  <h3 class="sec">Layer 2 — Sector growth derivation</h3>
   <table>
-    <tr><th>Cycle Dimension</th><th>Current Status</th><th>Impact on FTNT</th></tr>
-    <tr><td>Tech Enterprise Capex</td><td><span class="marginal">MODERATE GROWTH</span></td><td>Enterprise security budgets resilient; AI adoption driving new security needs (securing LLMs, shadow AI)</td></tr>
-    <tr><td>Government Cyber Spend</td><td><span class="pass">BOOM</span></td><td>CISA programs, NCS, Middle East tensions driving defensive spending — significant tailwind for Fortinet's government vertical</td></tr>
-    <tr><td>Interest Rate Cycle</td><td><span class="marginal">ON HOLD</span></td><td>Neutral — Fortinet is FCF generative with net cash; rates do not materially impact business model</td></tr>
-    <tr><td>AI Adoption Cycle</td><td><span class="pass">ACCELERATING</span></td><td>85% of security professionals cite GenAI as driving attack surge; Fortinet is positioned as both defender and beneficiary</td></tr>
-    <tr><td>Cybercrime Landscape</td><td><span class="fail-chip">ESCALATING</span></td><td>Ransomware, supply chain attacks, AI-powered phishing at record levels — secular tailwind regardless of GDP cycle</td></tr>
-    <tr><td>Cloud Migration Cycle</td><td><span class="pass">ONGOING</span></td><td>Expanding attack surface = expanding Fortinet TAM; SASE growth 40% YoY confirms cloud migration = security spend</td></tr>
+    <tr><th>Segment</th><th class="mono">Market CAGR</th><th>AI impact</th><th>FTNT exposure</th></tr>
+    <tr><td>Network security (broad)</td><td class="mono">~7–8%</td><td><span class="flag fl">NEUTRAL→WIDENER</span></td><td>Core FortiGate</td></tr>
+    <tr><td>Unified Threat Mgmt (UTM)</td><td class="mono">~12.5%</td><td><span class="flag up">WIDENER</span></td><td>Consolidation play</td></tr>
+    <tr><td>SASE / cloud-delivered</td><td class="mono">~15–18%</td><td><span class="flag up">WIDENER</span></td><td>Unified SASE ARR +22%</td></tr>
+    <tr><td>Security Operations (SecOps)</td><td class="mono">~18–22%</td><td><span class="flag up">WIDENER</span></td><td>SecOps ARR +35%</td></tr>
   </table>
-  <p><strong>Macro Composite for FTNT:</strong> <span class="pass">TAILWIND</span> — Cybersecurity is a secular growth vertical that benefits from technology adoption, geopolitical tensions, and AI proliferation simultaneously. Largely GDP-immune on the demand side.</p>
+  <p class="muted" style="font-size:14px">Blended sector growth for Fortinet's mix ≈ <b>9–12%</b>. AI is <b>accelerating</b> the SASE/SecOps portion by an estimated +3–5pp over five years via AI-SOC automation and consolidation. <span class="pill V">V</span> (MarketsandMarkets, Grand View, Statista)</p>
 
-  <div class="subsection">Layer 2 — Sector Growth Derivation</div>
+  <h3 class="sec">Layer 3 — Company alpha over sector</h3>
   <table>
-    <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Acceleration</th></tr>
-    <tr><td>Global Cybersecurity CAGR (2025–30)</td><td class="tbl-num">7–8%</td><td class="tbl-num">9–11%</td><td class="tbl-num">12–14%</td></tr>
-    <tr><td>AI impact on sector baseline</td><td class="tbl-num">+1%</td><td class="tbl-num">+2–3%</td><td class="tbl-num">+3–5%</td></tr>
-    <tr><td>Sector adjusted growth</td><td class="tbl-num">8–9%</td><td class="tbl-num">11–14%</td><td class="tbl-num">15–19%</td></tr>
-    <tr><td>Sources</td><td colspan="3">MarketsandMarkets ($228B→$352B by 2030 at 9.1% CAGR); GrandView ($272B→$663B by 2033 at 11.9% CAGR) <span class="verified">VERIFIED</span></td></tr>
+    <tr><th>Source</th><th>Status</th><th class="mono">Stage 1</th><th class="mono">Stage 2</th></tr>
+    <tr><td>Market-share gain (firewall leader)</td><td>Active</td><td class="mono">+1–2%</td><td class="mono">+0–1%</td></tr>
+    <tr><td>Premiumisation (platform bundling)</td><td>Active</td><td class="mono">+1–2%</td><td class="mono">+1%</td></tr>
+    <tr><td>Category expansion (SASE, SecOps, OT)</td><td>Active</td><td class="mono">+3–4%</td><td class="mono">+2–3%</td></tr>
+    <tr><td>Geographic expansion</td><td>Potential</td><td class="mono">+1%</td><td class="mono">+1%</td></tr>
+    <tr><td>Pricing power (ASIC cost edge)</td><td>Active</td><td class="mono">+1%</td><td class="mono">+1%</td></tr>
+    <tr><td>AI alpha (6a cost + 6b expansion + 6c flywheel)</td><td>Forming</td><td class="mono">+2–3%</td><td class="mono">+2–4%</td></tr>
+    <tr style="font-weight:700"><td>Total alpha over sector</td><td>—</td><td class="mono">+9–13%</td><td class="mono">+7–11%</td></tr>
   </table>
 
-  <div class="subsection">Layer 3 — Company Alpha Over Sector</div>
+  <h3 class="sec">Growth rate summary (3 scenarios)</h3>
   <table>
-    <tr><th>Alpha Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th><th>Notes</th></tr>
-    <tr><td>Market Share Gain</td><td><span class="pass">ACTIVE</span></td><td>+1–2%</td><td>+0.5%</td><td>Network security #1 globally; firewall market share >20%; SASE gaining vs PANW/ZS</td></tr>
-    <tr><td>Premiumisation</td><td><span class="pass">ACTIVE</span></td><td>+1%</td><td>+1%</td><td>Enterprise bundles, SASE, SecOps driving higher-ASP contracts</td></tr>
-    <tr><td>Category Expansion</td><td><span class="pass">ACTIVE</span></td><td>+1.5%</td><td>+1%</td><td>Lacework (CNAPP), Suridata (SaaS SPM) acquisitions; expanding from NGFW to full SecOps</td></tr>
-    <tr><td>Geographic Expansion</td><td><span class="marginal">STABLE</span></td><td>+0.5%</td><td>+0.5%</td><td>APAC growing fastest; 170+ countries already — incremental, not transformational</td></tr>
-    <tr><td>Pricing Power</td><td><span class="pass">ACTIVE</span></td><td>+1%</td><td>+0.5%</td><td>Bundled subscriptions allow value-based pricing as threat complexity rises</td></tr>
-    <tr><td>AI Alpha (6a+6b+6c)</td><td><span class="pass">FORMING</span></td><td>+1.5%</td><td>+2.5%</td><td>6a: FortiAI reducing SOC analyst load (40% false positive reduction stated); 6b: AI expanding SME/mid-market TAM; 6c: data flywheel FORMING (5.6M sensors) <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td><strong>Total Company Alpha</strong></td><td>—</td><td><strong>+6.5–7%</strong></td><td><strong>+6%</strong></td><td>Above-sector alpha is credible given platform breadth</td></tr>
+    <tr><th>Parameter</th><th class="mono">Stress</th><th class="mono">Base</th><th class="mono">Accel</th></tr>
+    <tr><td>Revenue growth</td><td class="mono">7–8%</td><td class="mono">11–13%</td><td class="mono">15–17%</td></tr>
+    <tr><td>Stage-1 FCF CAGR</td><td class="mono">6%</td><td class="mono">12%</td><td class="mono">16%</td></tr>
+    <tr><td>Stage-2 FCF CAGR</td><td class="mono">4%</td><td class="mono">7%</td><td class="mono">10%</td></tr>
+    <tr><td>Terminal growth</td><td class="mono">3%</td><td class="mono">4%</td><td class="mono">4.5%</td></tr>
+    <tr><td>Margin direction</td><td class="mono">Compress</td><td class="mono">Stable</td><td class="mono">Expand</td></tr>
+    <tr><td>Key risk</td><td class="mono">Firewall refresh fades</td><td class="mono">Multiple de-rates</td><td class="mono">SASE/SecOps re-rate</td></tr>
   </table>
+  <div class="card" style="margin-top:8px"><p style="margin:0"><b>Sensitivity.</b> A 1% change in terminal growth moves intrinsic value by ≈ 12–15%. A 1% change in Stage-1 growth moves IV by ≈ 4–5%. At this multiple, the stock is far more exposed to the <i>discount rate and terminal assumption</i> than to near-term revenue beats.</p></div>
+</section>
 
-  <div class="subsection">Growth Rate Summary</div>
-  <div class="growth-grid">
-    <div class="growth-card">
-      <div class="growth-scenario">⚠ STRESS</div>
-      <table style="margin:0;">
-        <tr><td>Macro state</td><td class="tbl-num">US GDP ~1.5%</td></tr>
-        <tr><td>Sector growth</td><td class="tbl-num">8%</td></tr>
-        <tr><td>Company alpha</td><td class="tbl-num">+2%</td></tr>
-        <tr><td>AI alpha</td><td class="tbl-num">+0.5%</td></tr>
-        <tr><td><strong>Stage 1 FCF CAGR</strong></td><td class="tbl-num"><strong>7–8%</strong></td></tr>
-        <tr><td>Stage 2 FCF CAGR</td><td class="tbl-num">6%</td></tr>
-        <tr><td>Terminal growth</td><td class="tbl-num">3.0%</td></tr>
-        <tr><td>Key risk</td><td>Budget cuts + competition consolidation</td></tr>
-      </table>
-    </div>
-    <div class="growth-card">
-      <div class="growth-scenario">✅ BASE</div>
-      <table style="margin:0;">
-        <tr><td>Macro state</td><td class="tbl-num">US GDP ~2.2%</td></tr>
-        <tr><td>Sector growth</td><td class="tbl-num">11%</td></tr>
-        <tr><td>Company alpha</td><td class="tbl-num">+3%</td></tr>
-        <tr><td>AI alpha</td><td class="tbl-num">+1.5%</td></tr>
-        <tr><td><strong>Stage 1 FCF CAGR</strong></td><td class="tbl-num"><strong>13%</strong></td></tr>
-        <tr><td>Stage 2 FCF CAGR</td><td class="tbl-num">9%</td></tr>
-        <tr><td>Terminal growth</td><td class="tbl-num">4.0%</td></tr>
-        <tr><td>Key risk</td><td>Billings normalisation; PANW platform consolidation</td></tr>
-      </table>
-    </div>
-    <div class="growth-card">
-      <div class="growth-scenario">🚀 ACCEL</div>
-      <table style="margin:0;">
-        <tr><td>Macro state</td><td class="tbl-num">US GDP ~3%+</td></tr>
-        <tr><td>Sector growth</td><td class="tbl-num">14%</td></tr>
-        <tr><td>Company alpha</td><td class="tbl-num">+4%</td></tr>
-        <tr><td>AI alpha</td><td class="tbl-num">+2.5%</td></tr>
-        <tr><td><strong>Stage 1 FCF CAGR</strong></td><td class="tbl-num"><strong>17%</strong></td></tr>
-        <tr><td>Stage 2 FCF CAGR</td><td class="tbl-num">12%</td></tr>
-        <tr><td>Terminal growth</td><td class="tbl-num">4.5%</td></tr>
-        <tr><td>Key risk</td><td>Margin compression from rapid hiring</td></tr>
-      </table>
-    </div>
+<!-- ===================== TAB 2 — FINANCIALS ===================== -->
+<section id="t2" class="tab-content">
+  <h2 class="tab-h">Financials</h2>
+  <p class="tab-sub">A fortress balance sheet and cash machine — the strongest pillar in the thesis.</p>
+
+  <h3 class="sec">ROE &amp; ROIC (5-yr context)</h3>
+  <div class="grid g4">
+    <div class="metric good"><div class="k">ROIC (TTM)</div><div class="val">~22%</div><div class="sub">vs WACC ~10% <span class="pill V">V</span></div></div>
+    <div class="metric good"><div class="k">ROE (FY25)</div><div class="val">~150%</div><div class="sub">buyback-inflated</div></div>
+    <div class="metric good"><div class="k">Gross margin</div><div class="val">80.5%</div><div class="sub">FY25 <span class="pill V">V</span></div></div>
+    <div class="metric good"><div class="k">Op margin (non-GAAP)</div><div class="val">~35%</div><div class="sub">Q3-25 record 36.9%</div></div>
   </div>
-  <div class="info-box"><strong>Sensitivity:</strong> A 1% change in terminal growth rate changes IV by approximately 15–18%. A 1% change in Stage 1 FCF CAGR changes IV by approximately 8–10%. At 4.0% terminal growth (base), the stock is near fair value; at 4.5% (acceleration scenario), meaningful upside exists.</div>
-</div>
+  <p class="muted" style="font-size:14px;margin-top:8px">ROE is flattered by aggressive buybacks shrinking the equity base, so <b>ROIC (~22%, wide-moat territory) is the cleaner signal</b>. It has comfortably exceeded WACC for years — the definition of value creation.</p>
 
-<!-- TAB 2: FINANCIALS -->
-<div id="tab2" class="tab-content">
-  <div class="section-title">Financial Fortress</div>
-
-  <div class="subsection">Revenue & Income History (5-Year)</div>
+  <h3 class="sec">Financial Fortress scorecard</h3>
   <table>
-    <tr><th>Year</th><th>Revenue</th><th>Growth</th><th>GAAP NI</th><th>GAAP EPS</th><th>Non-GAAP EPS</th><th>FCF</th><th>FCF Margin</th></tr>
-    <tr><td>FY2021</td><td class="tbl-num">$3.34B</td><td class="tbl-num">+29%</td><td class="tbl-num">$0.71B</td><td class="tbl-num">$0.87</td><td class="tbl-num">$1.03</td><td class="tbl-num">~$1.0B</td><td class="tbl-num">~30%</td></tr>
-    <tr><td>FY2022</td><td class="tbl-num">$4.42B</td><td class="tbl-num">+32%</td><td class="tbl-num">$0.86B</td><td class="tbl-num">$1.06</td><td class="tbl-num">$1.19</td><td class="tbl-num">$1.45B</td><td class="tbl-num">33%</td></tr>
-    <tr><td>FY2023</td><td class="tbl-num">$5.30B</td><td class="tbl-num">+20%</td><td class="tbl-num">$1.15B</td><td class="tbl-num">$1.46</td><td class="tbl-num">$1.63</td><td class="tbl-num">$1.73B</td><td class="tbl-num">33%</td></tr>
-    <tr><td>FY2024</td><td class="tbl-num">$5.96B</td><td class="tbl-num">+12%</td><td class="tbl-num">$1.75B</td><td class="tbl-num">$2.26</td><td class="tbl-num">$2.37</td><td class="tbl-num">$1.88B</td><td class="tbl-num">32%</td></tr>
-    <tr style="background:rgba(0,212,170,0.04);"><td><strong>FY2025</strong></td><td class="tbl-num"><strong>$6.80B</strong></td><td class="tbl-num"><strong>+14%</strong></td><td class="tbl-num"><strong>$1.94B</strong></td><td class="tbl-num"><strong>$2.42</strong></td><td class="tbl-num"><strong>$2.76</strong></td><td class="tbl-num"><strong>$2.21B</strong></td><td class="tbl-num"><strong>32.5%</strong></td></tr>
-  </table>
-  <p style="font-size:12px; color:var(--muted);">FY2021 estimates [ESTIMATED]; all other data [VERIFIED] from SEC filings and Fortinet press releases.</p>
-
-  <div class="subsection">Gross Margin & Operating Margin Trend</div>
-  <table>
-    <tr><th>Year</th><th>Non-GAAP Gross Margin</th><th>GAAP Operating Margin</th><th>Non-GAAP Operating Margin</th></tr>
-    <tr><td>FY2022</td><td class="tbl-num">~76%</td><td class="tbl-num">21.9%</td><td class="tbl-num">~27%</td></tr>
-    <tr><td>FY2023</td><td class="tbl-num">~78%</td><td class="tbl-num">23.4%</td><td class="tbl-num">28.4%</td></tr>
-    <tr><td>FY2024</td><td class="tbl-num">~79%</td><td class="tbl-num">30.3%</td><td class="tbl-num">35.0%</td></tr>
-    <tr style="background:rgba(0,212,170,0.04);"><td><strong>FY2025</strong></td><td class="tbl-num"><strong>~80%</strong></td><td class="tbl-num"><strong>31%</strong></td><td class="tbl-num"><strong>35%</strong></td></tr>
-  </table>
-  <p class="info-box">Gross margin consistently expanding (~80% for software-like economics on service segment) while GAAP operating margin expanded dramatically from 21.9% → 31% over 3 years. This is operating leverage in action — revenues growing faster than costs. Q4 2024 set a company record non-GAAP OM of 39%.</p>
-
-  <div class="subsection">Financial Fortress Scorecard</div>
-  <table>
-    <tr><th>Test</th><th>Result</th><th>Evidence</th></tr>
-    <tr><td>ROE ≥ 15% for 5 years</td><td><span class="pass">PASS</span></td><td>ROE 118%+ (artificially inflated by negative equity from $5.3B in buybacks since 2020 — note: high ROE not comparable to peers with positive equity; ROIC is more meaningful)</td></tr>
-    <tr><td>Net profit margin ≥ 15%</td><td><span class="pass">PASS</span></td><td>FY2025 GAAP NI margin: $1.94/$6.80 = 28.5% | FY2024: 29.4% — expanding and exceptional <span class="verified">VERIFIED</span></td></tr>
-    <tr><td>FCF positive and growing</td><td><span class="pass">PASS</span></td><td>$1.0B→$1.45B→$1.73B→$1.88B→$2.21B (5yr CAGR ~22%) <span class="verified">VERIFIED</span></td></tr>
-    <tr><td>FCF conversion ≥ 80%</td><td><span class="pass">PASS</span></td><td>FY2025: $2.21B FCF / $1.94B NI = 114%. FCF exceeds GAAP net income — extremely high quality earnings <span class="verified">VERIFIED</span></td></tr>
-    <tr><td>Revenue CAGR ≥ sector CAGR</td><td><span class="pass">PASS</span></td><td>5yr revenue CAGR ~20%; sector ~9–11%. Outperforming by ~10pp annually <span class="verified">VERIFIED</span></td></tr>
-    <tr><td>Pricing power proven</td><td><span class="pass">PASS</span></td><td>Service revenue +19.8% in FY2024, +13% in FY2025 on expanding installed base. Bundle upsell pricing confirmed <span class="verified">VERIFIED</span></td></tr>
-    <tr><td>Predictable recurring revenue</td><td><span class="pass">PASS</span></td><td>67% service revenue; $6.4B deferred revenue backlog; RPO $6.42B (+11.7% YoY) <span class="verified">VERIFIED</span></td></tr>
-    <tr><td>Capital-light model</td><td><span class="pass">PASS</span></td><td>FCF margin 32.5% despite hardware manufacturing. FortiASIC chips manufactured by TSMC — no fab capex <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Net cash / debt position</td><td><span class="marginal">MARGINAL</span></td><td>Negative GAAP equity due to $5.3B cumulative buybacks. Net cash position approximately neutral to slightly positive; no debt crisis risk. <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Dividend payout sustainable</td><td>N/A</td><td>No dividend — all capital returned via buybacks ($1.5B in FY2023). Accretive at current prices.</td></tr>
-    <tr><td>Rule of 40 Score</td><td><span class="pass">PASS (47)</span></td><td>Revenue growth 14% + FCF margin 32.5% = ~47. Exceeded Rule of 45 for 6 consecutive years per TipRanks. <span class="verified">VERIFIED</span></td></tr>
+    <tr><th>Test</th><th>Reading</th><th>Grade</th></tr>
+    <tr><td>ROE ≥15% for 5 yrs</td><td class="mono">Yes (very high)</td><td><span class="tag pass">PASS ✓</span></td></tr>
+    <tr><td>ROIC &gt; WACC for 5 yrs</td><td class="mono">~22% vs ~10%</td><td><span class="tag pass">PASS ✓</span></td></tr>
+    <tr><td>Net cash preferred</td><td class="mono">~$2.5B cash / ~$0.5B LT debt</td><td><span class="tag pass">PASS ✓</span></td></tr>
+    <tr><td>Net margin ≥15%</td><td class="mono">27.3%</td><td><span class="tag pass">PASS ✓</span></td></tr>
+    <tr><td>FCF positive &amp; growing; conv ≥80%</td><td class="mono">$2.21B; conv &gt;100%</td><td><span class="tag pass">PASS ✓</span></td></tr>
+    <tr><td>Owner earnings ≥ net income</td><td class="mono">Roughly in line (SBC adj.)</td><td><span class="tag marg">MARGINAL ~</span></td></tr>
+    <tr><td>Pricing power proven</td><td class="mono">ASIC cost edge, held share</td><td><span class="tag pass">PASS ✓</span></td></tr>
+    <tr><td>Revenue CAGR ≥ sector CAGR</td><td class="mono">14% vs ~9–12%</td><td><span class="tag pass">PASS ✓</span></td></tr>
+    <tr><td>Predictable / recurring revenue</td><td class="mono">~⅔ subscription; ARR rising</td><td><span class="tag pass">PASS ✓</span></td></tr>
+    <tr><td>Capital-light</td><td class="mono">CapEx ~5% of rev</td><td><span class="tag pass">PASS ✓</span></td></tr>
+    <tr><td>Dividend payout &lt;80% OE</td><td class="mono">No dividend; buybacks</td><td><span class="tag pass">PASS ✓</span></td></tr>
   </table>
 
-  <div class="subsection">Owner Earnings Calculation (FY2025)</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">GAAP Net Income</div>
-      <div class="card-value">$1.94B</div>
-    </div>
-    <div class="card">
-      <div class="card-label">+ D&A</div>
-      <div class="card-value">~$115M</div>
-      <div class="card-sub">[ESTIMATED based on quarterly run-rate]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">+ SBC (add back non-cash)</div>
-      <div class="card-value">~$280M</div>
-      <div class="card-sub">[ESTIMATED — SBC is ~4% of revenue]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">− Maintenance CapEx</div>
-      <div class="card-value">−$330M</div>
-      <div class="card-sub">[ESTIMATED — FY2025 total capex ~$330M; mostly growth]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Owner Earnings (Conservative)</div>
-      <div class="card-value" style="color:var(--accent);">~$2.00B</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Owner Earnings (Base)</div>
-      <div class="card-value" style="color:var(--accent);">~$2.21B</div>
-      <div class="card-sub">FCF proxy — most reliable measure given capex complexity</div>
-    </div>
+  <h3 class="sec">Owner earnings (base)</h3>
+  <div class="q-box">
+    <table style="margin:0">
+      <tr><td>Net income (FY25)</td><td class="mono" style="text-align:right">+$1.85B</td></tr>
+      <tr><td>+ D&amp;A</td><td class="mono" style="text-align:right">+~$0.20B</td></tr>
+      <tr><td>+ Stock-based comp (non-cash)</td><td class="mono" style="text-align:right">+~$0.45B</td></tr>
+      <tr><td>− Maintenance CapEx (of ~$0.37B total)</td><td class="mono" style="text-align:right">−~$0.20B</td></tr>
+      <tr><td>− Normalised SBC economic cost*</td><td class="mono" style="text-align:right">−~$0.45B</td></tr>
+      <tr style="font-weight:700"><td>≈ Owner earnings</td><td class="mono" style="text-align:right">~$1.85–1.95B</td></tr>
+    </table>
+    <p class="muted" style="font-size:13px;margin:10px 0 0">*Reported FCF of $2.21B adds SBC back as non-cash. A conservative owner-earnings view charges SBC as a real economic cost, bringing the figure back near GAAP net income. This is why <b>headline FCF slightly overstates true owner earnings</b> — flagged, not fatal.</p>
   </div>
 
-  <div class="subsection">Part B — Earnings Quality (O'Glove Tests)</div>
-  <table>
-    <tr><th>Test</th><th>Grade</th><th>Evidence</th></tr>
-    <tr><td>Test 1 — FCF Conversion (5yr)</td><td><span class="pass">PASS</span></td><td>FCF/NI: FY2021 ~1.4x | FY2022 1.7x | FY2023 1.5x | FY2024 1.07x | FY2025 1.14x. Consistently above 100% = CLEAN. Cash earnings exceed GAAP earnings every year.</td></tr>
-    <tr><td>Test 2 — DSO Trend (AR)</td><td><span class="pass">PASS</span></td><td>High deferred revenue means most contracts are pre-billed (cash before revenue recognition). DSO risk is structurally low. <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Test 3 — Inventory Days</td><td><span class="pass">PASS</span></td><td>Hardware inventory is modest relative to revenue; predominantly software/subscription revenue makes inventory risk low. <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Test 4 — Accounting Policy Stability</td><td><span class="pass">PASS</span></td><td>No material accounting policy changes detected in the last 3 years. Revenue recognition (ASC 606) stable. <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Test 5 — Gross Margin Consistency</td><td><span class="pass">PASS</span></td><td>Non-GAAP gross margin: ~76% → ~78% → ~79% → ~80% (steadily expanding). Service gross margin >80%. Hardware gross margin ~60–65%. Mix shift to software is margin-accretive. <span class="verified">VERIFIED</span></td></tr>
-  </table>
-  <div class="info-box"><strong>Overall Earnings Quality: CLEAN.</strong> FCF consistently exceeds GAAP earnings; gross margin expanding; no accounting concerns identified. High-quality earnings — no MoS adjustment required.</div>
-</div>
-
-<!-- TAB 3: MOAT -->
-<div id="tab3" class="tab-content">
-  <div class="section-title">Economic Moat Analysis</div>
-
-  <table>
-    <tr><th>Moat Source</th><th>Rating</th><th>Analysis</th><th>Durability</th></tr>
-    <tr>
-      <td>FortiASIC Custom Silicon</td>
-      <td><span class="stars">★★★★★</span></td>
-      <td>Proprietary ASIC chips deliver 3–5× throughput at significantly lower cost vs. FPGA-based (Palo Alto) or software-only (Zscaler) alternatives. Competitors cannot replicate this without 5–7 years of R&D + fab partnerships. TSMC-manufactured, patent-protected.</td>
-      <td><span class="pass">WIDE</span></td>
-    </tr>
-    <tr>
-      <td>Unified FortiOS Platform</td>
-      <td><span class="stars">★★★★½</span></td>
-      <td>Single operating system across 50+ integrated products eliminates inter-product friction. Switching costs are structural — replacing Fortinet means replacing firewall, SIEM, endpoint, SASE, and 30+ other tools simultaneously. Average enterprise uses 13 Fortinet products.</td>
-      <td><span class="pass">WIDE</span></td>
-    </tr>
-    <tr>
-      <td>FortiGuard Threat Intelligence</td>
-      <td><span class="stars">★★★★</span></td>
-      <td>5.6M+ deployed sensors globally generate real-time telemetry. FortiGuard Labs processes this at scale, training AI/ML models that push updates to ALL Fortinet devices simultaneously. This is the data flywheel core — assessed separately below.</td>
-      <td><span class="pass">FORMING WIDE</span></td>
-    </tr>
-    <tr>
-      <td>Channel Partner Lock-in</td>
-      <td><span class="stars">★★★</span></td>
-      <td>Deep MSSP/VAR relationships globally. Partners are trained, certified, and margin-dependent on Fortinet. Multi-year engagement cycles make competitive switching rare.</td>
-      <td><span class="pass">NARROW</span></td>
-    </tr>
-    <tr>
-      <td>Efficient Scale / Market Position</td>
-      <td><span class="stars">★★★★</span></td>
-      <td>Largest pure-play cybersecurity company by revenue. Network security market share >20%. Scale enables R&D investment (>$700M annually) that smaller competitors cannot match.</td>
-      <td><span class="pass">NARROW–WIDE</span></td>
-    </tr>
-  </table>
-
-  <div class="subsection">ROIC as Moat Proof (5-Year Trend)</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">FY2021</div>
-      <div class="card-value">~25%</div>
-      <div class="card-sub">Post-pandemic recovery year; strong ROIC expansion beginning</div>
-    </div>
-    <div class="card">
-      <div class="card-label">FY2022</div>
-      <div class="card-value">~32%</div>
-      <div class="card-sub">Billing surge; ROIC expanding on operating leverage</div>
-    </div>
-    <div class="card">
-      <div class="card-label">FY2023</div>
-      <div class="card-value">~38%</div>
-      <div class="card-sub">Record revenue growth at elevated margins</div>
-    </div>
-    <div class="card">
-      <div class="card-label">FY2024</div>
-      <div class="card-value">~45%</div>
-      <div class="card-sub">Margin expansion phase; GAAP OM 30.3%</div>
-    </div>
-    <div class="card">
-      <div class="card-label">FY2025</div>
-      <div class="card-value">~50%+</div>
-      <div class="card-sub">ROIC is exceptional: well above the 40% = "exceptional" threshold [ESTIMATED — negative book equity distorts; FCF/Assets used as proxy]</div>
-    </div>
+  <h3 class="sec">Earnings quality — O'Glove tests</h3>
+  <div class="grid g3">
+    <div class="card"><h4>1 · FCF conversion</h4><p style="margin:6px 0 0">CFO/NI well above 100% over 5 yrs. <span class="tag pass">PASS</span></p></div>
+    <div class="card"><h4>2 · DSO trend</h4><p style="margin:6px 0 0">Stable; deferred revenue (billings&gt;rev) is a positive-quality tell. <span class="tag pass">PASS</span></p></div>
+    <div class="card"><h4>3 · Inventory days</h4><p style="margin:6px 0 0">Inventory built ahead of demand; revenue accelerating, not slowing. <span class="tag marg">WATCH</span></p></div>
+    <div class="card"><h4>4 · Accounting stability</h4><p style="margin:6px 0 0">No earnings-boosting policy changes flagged. <span class="tag pass">PASS</span></p></div>
+    <div class="card"><h4>5 · Gross-margin consistency</h4><p style="margin:6px 0 0">80–82%, remarkably stable through cost cycles. <span class="tag pass">PASS</span></p></div>
+    <div class="card" style="border-color:var(--emerald-dim)"><h4 style="color:var(--emerald)">Overall: CLEAN</h4><p style="margin:6px 0 0">No quality adjustment required. Deferred-revenue model actually understates in-period economics.</p></div>
   </div>
-  <p class="info-box">Note: ROIC calculation is complicated by negative book equity (aggressive buybacks have depleted equity). Using FCF/Total Assets as a proxy, Fortinet's capital productivity is exceptional. The more meaningful test: gross margins are expanding AND FCF margins are expanding simultaneously — the hallmark of a wide-moat business with pricing power above cost inflation.</p>
+</section>
 
-  <div class="subsection">Macro Moat Stress Test</div>
-  <table>
-    <tr><th>Moat</th><th>In Stress Scenario</th><th>Verdict</th></tr>
-    <tr><td>FortiASIC Silicon</td><td>ASIC advantage persists regardless of macro — it is a design/IP advantage, not cyclically sensitive</td><td><span class="pass">STRENGTHENS</span></td></tr>
-    <tr><td>Switching Costs (FortiOS)</td><td>Budget cuts may delay refresh cycles but do not trigger competitive replacement — replacing Fortinet is expensive and disruptive</td><td><span class="pass">HOLDS</span></td></tr>
-    <tr><td>FortiGuard Intelligence</td><td>Threat landscape worsens in any macro — cyber attacks do not decline in recessions. Data flywheel continues accumulating</td><td><span class="pass">STRENGTHENS</span></td></tr>
-    <tr><td>Channel Partner</td><td>MSSPs may face margin pressure but Fortinet's embedded-platform model protects it better than single-product vendors</td><td><span class="marginal">HOLDS (slightly)</span></td></tr>
-  </table>
+<!-- ===================== TAB 3 — MOAT ===================== -->
+<section id="t3" class="tab-content">
+  <h2 class="tab-h">Economic Moat</h2>
+  <p class="tab-sub">Wide, and slowly widening — three reinforcing sources plus a forming data flywheel.</p>
 
-  <div class="flywheel-box">
-    <div class="flywheel-badge">🔄 DATA FLYWHEEL — FORMING ★★★</div>
-    <p><strong>Question 1 — Proprietary Training Data?</strong> ✅ YES<br>
-    5.6M+ deployed Fortinet sensors worldwide generating real-time threat telemetry across network traffic, endpoints, IoT, email, and web. FortiAI's ANN model is pre-trained on data from 20M+ clean/malicious files using 6M malware features. This telemetry is proprietary and cannot be obtained by competitors. <span class="verified">VERIFIED</span> (Klover.ai analysis citing Fortinet patent filings)</p>
-    <br>
-    <p><strong>Question 2 — Does AI improve with more data?</strong> ✅ FORMING<br>
-    FortiAI reduces false positives by up to 40% (company stated). FortiGuard IPS uses advanced AI/ML for enhanced threat detection with sub-second investigation verdicts. Each new device deployment adds to the training pool. However, Fortinet has not yet published specific performance metrics showing model accuracy improvement correlated with sensor volume growth — this moves it from CONFIRMED to FORMING. <span class="estimated">ESTIMATED</span></p>
-    <br>
-    <p><strong>Question 3 — Does better AI attract more users?</strong> 🔄 FORMING<br>
-    Better threat detection is a primary purchase driver — if Fortinet demonstrates measurably lower breach rates vs. competitors, it will attract more enterprise customers who generate more data, closing the loop. The loop mechanism is sound; quantified evidence of self-reinforcing growth acceleration is not yet visible in published metrics.</p>
-    <br>
-    <p><strong>Flywheel Score: 7/10</strong> — Data quality: 3/3 | Improvement evidence: 2.5/4 | Loop speed: 1.5/3</p>
-    <p style="margin-top:12px;"><strong>Implication:</strong> Flywheel FORMING → moat grade maintained at B+; would upgrade to A− upon CONFIRMED status (requires: specific accuracy improvement metrics from earnings calls OR third-party security benchmark showing FTNT threat detection superiority over time).</p>
+  <div class="grid g2">
+    <div class="card"><h4>Cost advantage — FortiASIC <span class="stars">★★★★★</span></h4><p style="margin:6px 0 0">Custom security silicon gives FortiGate superior price/performance and power efficiency. Software-only rivals cannot easily replicate a decade-plus of ASIC design. This is the rarest kind of moat in software: a genuine <b>unit-cost edge</b>.</p></div>
+    <div class="card"><h4>Switching costs — platform lock-in <span class="stars">★★★★</span></h4><p style="margin:6px 0 0">Once FortiOS, SASE and SecOps are woven through a network, ripping them out is costly and risky. Consolidation onto one fabric deepens each year of tenure.</p></div>
+    <div class="card"><h4>Intangibles — FortiGuard Labs <span class="stars">★★★★</span></h4><p style="margin:6px 0 0">Global threat-intelligence organisation feeding ML/AI detection across the installed base. Brand + Gartner leadership reinforce enterprise trust.</p></div>
+    <div class="card"><h4>Efficient scale — installed base <span class="stars">★★★½</span></h4><p style="margin:6px 0 0">Millions of deployed sensors create a telemetry advantage (see flywheel) and a distribution flywheel through channel partners.</p></div>
   </div>
-</div>
 
-<!-- TAB 4: MANAGEMENT -->
-<div id="tab4" class="tab-content">
-  <div class="section-title">Management Integrity & Capital Allocation</div>
+  <h3 class="sec">ROIC as moat proof</h3>
+  <div class="card"><p style="margin:0">ROIC ~22% (Dec-25) against WACC ~10% places Fortinet firmly in <b>wide-moat</b> territory (20–40% band), if at the lower end. The trend has been stable-to-rising as the mix shifts to high-margin subscriptions.</p></div>
 
-  <div class="subsection">Leadership Team</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">Ken Xie — CEO & Founder</div>
-      <div class="card-value" style="font-size:18px;">AI Pioneer</div>
-      <div class="card-sub">Built Fortinet from the ground up since 2000. Former NetScreen co-founder. Deep networking and security expertise — not a traditional operator who added an "AI department." Holds significant equity stake. Has proven ability to navigate product cycles (transition from hardware to SaaS model executed well).</div>
+  <h3 class="sec">Data Flywheel verdict</h3>
+  <div class="flywheel">
+    <div class="score">6.5<span style="font-size:22px;color:var(--muted)">/10</span></div>
+    <div class="badge ai" style="display:inline-block;margin:6px 0 14px;font-size:14px">FORMING ★★★</div>
+    <table style="text-align:left">
+      <tr><th>Test</th><th>Evidence</th><th>Result</th></tr>
+      <tr><td>Proprietary data rivals can't replicate</td><td>Threat telemetry from millions of FortiGate sensors, outcome-labelled</td><td><span class="tag pass">✓</span></td></tr>
+      <tr><td>More data measurably improves the AI</td><td>Broader sensor net → wider threat visibility → better detection</td><td><span class="tag pass">✓</span></td></tr>
+      <tr><td>Better AI attracts more users (loop)</td><td>Helps retention/wins, but buyers also weigh price, ASIC perf, MQ position</td><td><span class="tag marg">~</span></td></tr>
+    </table>
+    <p class="muted" style="font-size:13.5px;margin:12px 0 0">Two of three criteria are clearly met; the self-reinforcing purchase loop is real but weaker than a pure-play detection vendor (e.g. CrowdStrike). Verdict: <b>FORMING, not yet CONFIRMED</b> — so the moat grade is <b>not</b> auto-upgraded a full level. It supports A− rather than A.</p>
+  </div>
+
+  <h3 class="sec">Macro stress test</h3>
+  <table>
+    <tr><th>Moat source</th><th>In a downturn</th></tr>
+    <tr><td>ASIC cost advantage</td><td><span class="flag up">STRENGTHENS</span> — budget pressure favours best price/performance</td></tr>
+    <tr><td>Platform switching costs</td><td><span class="flag fl">HOLDS</span> — consolidation accelerates in cost-cutting cycles</td></tr>
+    <tr><td>Threat-intel data</td><td><span class="flag fl">HOLDS</span> — telemetry compounds regardless of cycle</td></tr>
+  </table>
+  <h3 class="sec">Moat threats</h3>
+  <p class="muted" style="font-size:14px">Architecture shift toward cloud-delivered, hardware-light security (Zscaler, Cato, Netskope) could erode the appliance advantage over 5–10 years; hyperscaler-native security bundles; and AI-native entrants. Fortinet's SASE/SecOps pivot is the credible response — progress is real but must continue.</p>
+</section>
+
+<!-- ===================== TAB 4 — MANAGEMENT ===================== -->
+<section id="t4" class="tab-content">
+  <h2 class="tab-h">Management Integrity</h2>
+  <p class="tab-sub">Founder-led for 25 years, deeply aligned, disciplined capital allocation.</p>
+
+  <div class="grid g2">
+    <div class="card"><h4 style="color:var(--emerald)">Strengths</h4>
+      <ul style="margin:8px 0 0 18px">
+        <li>Founders Ken Xie (CEO, ~7.9%) &amp; Michael Xie (CTO, ~8.9%) still run the company — ~16–17% combined stake. <span class="pill V">V</span></li>
+        <li>Excellent capital allocation: ROIC ~22×WACC; repurchase authorization raised to <b>$10.25B</b> through Feb-2027; ~$2.3B bought back in FY25.</li>
+        <li>One-share-one-vote; no dual-class entrenchment.</li>
+        <li>Guidance reliability: consistent double-digit growth, margin records, conservative-then-beat cadence.</li>
+      </ul>
     </div>
-    <div class="card">
-      <div class="card-label">Michael Xie — CTO & Founder</div>
-      <div class="card-value" style="font-size:18px;">ASIC Architect</div>
-      <div class="card-sub">Invented the FortiASIC chip. Drives technical product roadmap. FortiAI strategy (agentic AI, MCP protocol support, FortiSOC announced at Accelerate 2026) demonstrates ongoing technical vision.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Capital Allocation Track Record</div>
-      <div class="card-value" style="font-size:18px;">★★★★</div>
-      <div class="card-sub">$5.3B in buybacks since 2020 at avg ~$39. Current stock price ~$83 = 2.1× avg buyback price — accretive allocation. No dividend — capital concentrated in repurchases and selective acquisitions (Lacework, Suridata). R&D investment growing: >$700M annually.</div>
-    </div>
-    <div class="card warn">
-      <div class="card-label">Management Concern</div>
-      <div class="card-value" style="font-size:16px; color:var(--warn);">CEO Sales</div>
-      <div class="card-sub">Ken Xie sold 158,485 shares in November 2025 per SEC filings. While founders often sell for diversification, it is worth monitoring the pace of insider selling — pre-scheduled 10b5-1 plans should be checked. <span class="verified">VERIFIED</span></div>
+    <div class="card"><h4 style="color:var(--amber)">Concerns</h4>
+      <ul style="margin:8px 0 0 18px">
+        <li>Routine insider <b>net selling</b> (Ken &amp; Michael Xie each net-sold ~1.1–1.2M shares over 18 months) — normal 10b5-1 diversification given multi-billion stakes, but net buying it is not.</li>
+        <li>Heavy buybacks partly offset dilution from SBC rather than purely returning surplus.</li>
+        <li>Periodic firewall/VPN vulnerability disclosures are an operational-reputation risk inherent to the category.</li>
+      </ul>
     </div>
   </div>
 
-  <div class="subsection">Sharehoilding Integrity</div>
-  <table>
-    <tr><th>Metric</th><th>Status</th><th>Notes</th></tr>
-    <tr><td>Promoter / Founder Pledge</td><td><span class="pass">PASS</span></td><td>No reported pledged shares. Clean governance. <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Insider Ownership</td><td><span class="pass">ADEQUATE</span></td><td>Ken Xie and Michael Xie retain significant stakes providing alignment. Exact % not confirmed in search results. <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Board Independence</td><td><span class="pass">PASS</span></td><td>Standard US corporate governance; no material red flags detected <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Related Party Risk</td><td><span class="pass">LOW</span></td><td>No related-party transaction concerns identified in public disclosures <span class="estimated">ESTIMATED</span></td></tr>
-  </table>
-
-  <div class="subsection">AI Management Assessment</div>
-  <table>
-    <tr><th>AI Criterion</th><th>Result</th></tr>
-    <tr><td>AI-native founding team?</td><td><span class="pass">YES</span> — Michael Xie built early ML-based threat detection models. FortiGuard Labs has a dedicated AI/ML research team with 15+ years of model development history.</td></tr>
-    <tr><td>R&D as % of revenue</td><td><span class="pass">~10–11%</span> — Approximately $700M+ annually. <span class="estimated">ESTIMATED</span> Strong by industry standards for a hardware+software hybrid company</td></tr>
-    <tr><td>Building proprietary models vs API wrappers?</td><td><span class="pass">PROPRIETARY</span> — FortiAI uses in-house trained DNNs and ANNs (patent-pending). Customer queries processed locally, not shared with external LLM providers. FortiAI-Assist augments GenAI with Fortinet's own curated threat intelligence, preserving proprietary advantage.</td></tr>
-    <tr><td>Responsible AI / Regulatory</td><td><span class="marginal">MARGINAL</span> — No AI bias complaints or investigations identified. GDPR compliance noted. Ongoing OT/ICS regulatory work for critical infrastructure. <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Agentic AI roadmap</td><td><span class="pass">ACTIVE</span> — FortiSOC with agentic AI announced at Accelerate 2026 (March 2026). MCP protocol support, autonomous alert triage, and automated threat hunting are in preview. This signals a shift from copilot to autonomous operations — ahead of most competitors.</td></tr>
-  </table>
-
-  <div class="subsection">Counter-Cyclical Behaviour</div>
-  <p>Fortinet continued its buyback program aggressively during the 2022 market downturn (36M shares at ~$55 average). Management accelerated R&D investment when competitors cut costs. The 2023–2024 billings normalization was handled transparently — management communicated the extended refresh cycle challenge on earnings calls rather than obscuring it. This consistent transparency is a management quality positive.</p>
-
-  <div class="subsection">Red Flags</div>
-  <div class="info-box" style="border-left-color:var(--warn);">
-    ⚠️ <strong>Critical Vulnerability Disclosure (April 2026):</strong> Yahoo Finance notes Fortinet is "navigating a mix of strong growth metrics and recent challenges, including a critical vulnerability disclosure" (April 2026). Any firewall/VPN vendor that finds a zero-day in its own products faces temporary reputational risk, though historically such incidents are resolved quickly and do not damage long-term market share. This should be monitored for Q1 2026 earnings (May 6, 2026) commentary. <span class="verified">VERIFIED</span>
+  <h3 class="sec">Governance flags</h3>
+  <div class="grid g3">
+    <div class="metric good"><div class="k">Pledged shares</div><div class="val">None noted</div><div class="sub">US large-cap</div></div>
+    <div class="metric good"><div class="k">Founder tenure</div><div class="val">25 yrs</div><div class="sub">since 2000</div></div>
+    <div class="metric warn"><div class="k">Insider trend</div><div class="val">Net sell</div><div class="sub">routine diversification</div></div>
   </div>
-</div>
+  <div class="card"><p style="margin:0"><b>Counter-cyclical behaviour:</b> Fortinet has historically leaned into buybacks on weakness and invested through downturns (data-centre build-out, inventory ahead of demand). Capital allocation grade: <b>A−</b>.</p></div>
+</section>
 
-<!-- TAB 5: VALUATION -->
-<div id="tab5" class="tab-content">
-  <div class="section-title">Valuation & Margin of Safety</div>
+<!-- ===================== TAB 5 — VALUATION ===================== -->
+<section id="t5" class="tab-content">
+  <h2 class="tab-h">Valuation &amp; Margin of Safety</h2>
+  <p class="tab-sub">Five methods, one message: a wonderful business at an uncomfortable price.</p>
 
-  <div class="subsection">Current Valuation Snapshot</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">Price (Apr 23, 2026)</div>
-      <div class="card-value">$82.76</div>
-      <div class="card-sub"><span class="unverified">UNVERIFIED</span> — confirm at time of investment</div>
-    </div>
-    <div class="card">
-      <div class="card-label">GAAP P/E (TTM)</div>
-      <div class="card-value">~34x</div>
-      <div class="card-sub">$82.76 / $2.42 EPS = 34.2x [VERIFIED EPS; price unverified]</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Non-GAAP P/E</div>
-      <div class="card-value">~30x</div>
-      <div class="card-sub">$82.76 / $2.76 Non-GAAP EPS = 30x</div>
-    </div>
-    <div class="card">
-      <div class="card-label">EV / Revenue (FY2025)</div>
-      <div class="card-value">~9.1x</div>
-      <div class="card-sub">Market cap ~$62B / FY2025 Revenue $6.80B</div>
-    </div>
-    <div class="card">
-      <div class="card-label">FCF Yield</div>
-      <div class="card-value">3.6%</div>
-      <div class="card-sub">$2.21B FCF / $62B market cap = 3.6%</div>
-    </div>
-    <div class="card">
-      <div class="card-label">US 10Y Yield</div>
-      <div class="card-value">4.31%</div>
-      <div class="card-sub">FCF yield (3.6%) < bond yield (4.31%) → negative ERP. Price does not yet offer a risk premium over bonds. <span class="verified">VERIFIED</span></div>
-    </div>
+  <div class="grid g4">
+    <div class="metric bad"><div class="k">EV / Revenue</div><div class="val">~16×</div><div class="sub">rich for 14% grower</div></div>
+    <div class="metric bad"><div class="k">Fwd P/E (non-GAAP)</div><div class="val">~53×</div><div class="sub">EPS guide ~$2.97</div></div>
+    <div class="metric bad"><div class="k">FCF yield</div><div class="val">~1.9%</div><div class="sub">vs 4.5% bond</div></div>
+    <div class="metric warn"><div class="k">Analyst target</div><div class="val">~$114</div><div class="sub">−28% vs price <span class="pill V">V</span></div></div>
   </div>
 
-  <div class="subsection">Method 1 — DCF (2-Stage, FCF-Based)</div>
-  <div class="dcf-wrap">
-    <table>
-      <tr><th>Year</th><th>Stress FCF (7%)</th><th>Base FCF (13%)</th><th>Accel FCF (17%)</th></tr>
-      <tr><td>FY2025 (base)</td><td class="tbl-num">$2.21B</td><td class="tbl-num">$2.21B</td><td class="tbl-num">$2.21B</td></tr>
-      <tr><td>Year 1</td><td class="tbl-num">$2.36B</td><td class="tbl-num">$2.50B</td><td class="tbl-num">$2.59B</td></tr>
-      <tr><td>Year 2</td><td class="tbl-num">$2.53B</td><td class="tbl-num">$2.82B</td><td class="tbl-num">$3.03B</td></tr>
-      <tr><td>Year 3</td><td class="tbl-num">$2.71B</td><td class="tbl-num">$3.19B</td><td class="tbl-num">$3.54B</td></tr>
-      <tr><td>Year 4</td><td class="tbl-num">$2.90B</td><td class="tbl-num">$3.60B</td><td class="tbl-num">$4.14B</td></tr>
-      <tr><td>Year 5</td><td class="tbl-num">$3.10B</td><td class="tbl-num">$4.07B</td><td class="tbl-num">$4.85B</td></tr>
-      <tr style="background:rgba(255,255,255,0.03)"><td>Stage 1 PV (WACC)</td><td class="tbl-num">$10.5B (11%)</td><td class="tbl-num">$11.7B (10%)</td><td class="tbl-num">$14.5B (9.5%)</td></tr>
-      <tr><td>Stage 2 PV (Yr 6–10)</td><td class="tbl-num">$10.2B (6% CAGR)</td><td class="tbl-num">$11.8B (9% CAGR)</td><td class="tbl-num">$17.2B (12% CAGR)</td></tr>
-      <tr><td>Terminal Value PV</td><td class="tbl-num">$29.5B (g=3.0%)</td><td class="tbl-num">$40.1B (g=4.0%)</td><td class="tbl-num">$68.0B (g=4.5%)</td></tr>
-      <tr style="background:rgba(0,212,170,0.06)"><td><strong>Intrinsic Value (Enterprise)</strong></td><td class="tbl-num"><strong>$50.2B</strong></td><td class="tbl-num"><strong>$63.6B</strong></td><td class="tbl-num"><strong>$99.7B</strong></td></tr>
-      <tr style="background:rgba(0,212,170,0.06)"><td><strong>IV Per Share (~762M shares)</strong></td><td class="tbl-num dcf-stress"><strong>~$66</strong></td><td class="tbl-num dcf-base"><strong>~$83.5</strong></td><td class="tbl-num dcf-accel"><strong>~$131</strong></td></tr>
+  <h3 class="sec">5-method summary (intrinsic value / share)</h3>
+  <table>
+    <tr><th>Method</th><th class="mono">Stress</th><th class="mono">Base</th><th class="mono">Accel</th><th>Note</th></tr>
+    <tr><td>DCF (2-stage, WACC 9%)</td><td class="mono">$78</td><td class="mono">$105</td><td class="mono">$135</td><td>growth-based anchor</td></tr>
+    <tr><td>Owner-earnings capitalisation</td><td class="mono">$55</td><td class="mono">$72</td><td class="mono">$95</td><td>conservative floor</td></tr>
+    <tr><td>ROIC / EPV</td><td class="mono">$30</td><td class="mono">$44</td><td class="mono">$62</td><td>no-/low-growth floor</td></tr>
+    <tr><td>P/E earnings power (23–28×)</td><td class="mono">$55</td><td class="mono">$78</td><td class="mono">$99</td><td>incl. AI premium</td></tr>
+    <tr style="font-weight:700"><td>Blended base (4 methods)</td><td class="mono">—</td><td class="mono">~$75</td><td class="mono">—</td><td>equal-weighted</td></tr>
+    <tr><td>+ AI WIDENER premium</td><td class="mono">—</td><td class="mono">+15–20%</td><td class="mono">—</td><td>flywheel forming</td></tr>
+    <tr style="font-weight:700;color:var(--violet)"><td>Adjusted base IV</td><td class="mono">—</td><td class="mono">~$95</td><td class="mono">—</td><td>headline estimate</td></tr>
+  </table>
+  <p class="muted" style="font-size:13.5px">Method 5 — <b>earnings yield vs bond</b>: FTNT's ~1.7% trailing earnings yield sits ~280bp <i>below</i> the 4.5% 10-yr Treasury, an unusually negative equity risk premium that confirms a rich absolute valuation rather than producing a separate price target.</p>
+
+  <h3 class="sec">DCF sensitivity (base ≈ $105)</h3>
+  <table>
+    <tr><th>WACC ↓ / term-g →</th><th class="mono">3.0%</th><th class="mono">4.0%</th><th class="mono">4.5%</th></tr>
+    <tr><td class="mono">8.0%</td><td class="mono">$112</td><td class="mono">$128</td><td class="mono">$140</td></tr>
+    <tr><td class="mono">9.0%</td><td class="mono">$92</td><td class="mono">$105</td><td class="mono">$113</td></tr>
+    <tr><td class="mono">10.0%</td><td class="mono">$78</td><td class="mono">$88</td><td class="mono">$94</td></tr>
+  </table>
+  <p class="muted" style="font-size:13.5px">Only the most generous corner (8% WACC, 4.5% terminal growth) approaches today's $158 — and even that requires a discount rate below Fortinet's own estimated WACC.</p>
+
+  <h3 class="sec">Relative valuation</h3>
+  <div class="card"><p style="margin:0">FTNT trades at a meaningful premium to its own multi-year average multiple and near the top of its historical range, having roughly doubled off the 52-week low ($70). An AI WIDENER can justify a structurally higher multiple than history — but "higher" is not "unlimited," and the current multiple already banks the optimistic case. <span class="flag dn">20%+ premium — 🔴</span></p></div>
+
+  <div class="card" style="border-color:var(--violet-dim);margin-top:14px">
+    <h4 style="color:var(--violet)">Margin-of-safety entry zone</h4>
+    <p style="margin:8px 0 0">Base IV ≈ <b>$95</b>. Applying a 20–25% margin of safety → <b>entry zone ≈ $70–$85</b>. At $158, the stock offers a <b>negative</b> margin of safety of roughly 40–65% to intrinsic value.</p>
+  </div>
+</section>
+
+<!-- ===================== TAB 6 — VERDICT ===================== -->
+<section id="t6" class="tab-content">
+  <h2 class="tab-h">Verdict</h2>
+  <p class="tab-sub">Own the business, question the price.</p>
+
+  <div class="grid g4">
+    <div class="metric good"><div class="k">Moat</div><div class="val">A−</div><div class="sub">wide, widening</div></div>
+    <div class="metric good"><div class="k">Quality</div><div class="val">A</div><div class="sub">fortress + clean</div></div>
+    <div class="metric bad"><div class="k">Valuation</div><div class="val">D+</div><div class="sub">priced for perfection</div></div>
+    <div class="metric good"><div class="k">Management</div><div class="val">A−</div><div class="sub">aligned, disciplined</div></div>
+  </div>
+
+  <div class="verdict-box" style="margin-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <h3 style="font-size:24px;margin:0">WATCH <span class="stars">★★★</span></h3>
+      <span class="badge ai">🟢 AI WIDENER</span>
+    </div>
+    <p style="margin:12px 0 0">Strong quality; price is materially above the entry zone. This is not a quality problem — every pillar bar valuation grades A-/A. It is a <b>price</b> problem: at ~58–65× earnings and a sub-2% FCF yield versus a 4.5% bond, the stock discounts many years of flawless execution and leaves no margin of safety. The rational action is to build the watchlist thesis now and wait for the multiple to come to you.</p>
+    <div class="quote">"It's far better to buy a wonderful company at a fair price than a fair company at a wonderful price." — Warren Buffett</div>
+    <div class="quote" style="border-left-color:var(--violet)">AI conviction note: "The companies that win with AI own the data others can't get." Fortinet's threat-telemetry flywheel is forming — a reason to want to own it, at the right price.</div>
+  </div>
+
+  <h3 class="sec">Upgrade conditions (specific &amp; measurable)</h3>
+  <div class="card">
+    <div class="cond"><span class="numbadge">1</span><div>Price corrects to <b>~$95–100</b> (converging with base intrinsic value).</div></div>
+    <div class="cond"><span class="numbadge">2</span><div>Forward P/E de-rates to <b>≤ 35×</b> (roughly a one-third compression from current).</div></div>
+    <div class="cond"><span class="numbadge">3</span><div>Daily <b>RSI falls below 40</b> after the current overbought reading unwinds.</div></div>
+    <div class="cond"><span class="numbadge">4</span><div><b>SecOps + SASE ARR growth holds &gt;25%</b> for two consecutive quarters (flywheel evidence → possible moat upgrade to A).</div></div>
+    <div class="cond"><span class="numbadge">5</span><div>FCF yield rises to <b>≥ 3%</b> (i.e. re-rating or FCF growth closes the gap to bonds).</div></div>
+  </div>
+
+  <h3 class="sec">Series tracker</h3>
+  <table>
+    <tr><th>Ticker</th><th>Cat</th><th>Verdict</th><th>AI</th><th class="mono">Base IV</th><th class="mono">Price</th></tr>
+    <tr><td class="mono">FTNT</td><td>C</td><td>WATCH ★★★</td><td>🟢</td><td class="mono">~$95</td><td class="mono">$158</td></tr>
+  </table>
+</section>
+
+<!-- ===================== TAB 7 — TECHNICAL ===================== -->
+<section id="t7" class="tab-content">
+  <h2 class="tab-h">Technical</h2>
+  <p class="tab-sub">Strong uptrend, but stretched — momentum is a reason for patience, not chasing.</p>
+
+  <h3 class="sec">Price structure &amp; ladder</h3>
+  <div class="grid g2">
+    <div class="card ladder">
+      <div class="hi"><span>52-wk / all-time high</span><span>$164.70 / $159.80</span></div>
+      <div class="now"><span>Current</span><span>~$158</span></div>
+      <div><span>Prior breakout / support</span><span>~$107</span></div>
+      <div class="lo"><span>52-wk low</span><span>$70.12</span></div>
+    </div>
+    <div class="card">
+      <p style="margin:0"><b>Multi-timeframe trend: bullish.</b> Price sits above the 20/50/100/200-DMA — a stacked, confirmed uptrend. The stock has roughly doubled off its 52-week low with no major correction, which is powerful but also the classic signature of an extended move. <span class="pill V">V</span></p>
+    </div>
+  </div>
+
+  <h3 class="sec">Moving-average &amp; momentum dashboard</h3>
+  <div class="grid g4">
+    <div class="metric good"><div class="k">Price vs 200-DMA</div><div class="val">Above</div><div class="sub">golden-cross intact</div></div>
+    <div class="metric good"><div class="k">50 vs 200-DMA</div><div class="val">50 &gt; 200</div><div class="sub">bullish structure</div></div>
+    <div class="metric warn"><div class="k">RSI (14)</div><div class="val">~60–70</div><div class="sub">overbought-leaning</div></div>
+    <div class="metric good"><div class="k">MACD</div><div class="val">Bullish</div><div class="sub">above signal</div></div>
+  </div>
+
+  <h3 class="sec">Volume &amp; patterns</h3>
+  <div class="card"><p style="margin:0">Positive volume balance (up-days out-volume down-days) signals accumulation. No resistance overhead at new highs; support layered at ~$107. Pattern read: extended trend continuation — attractive for trend-followers, poor risk/reward for value entries.</p></div>
+
+  <h3 class="sec">Trade structure (for traders, not the value thesis)</h3>
+  <table>
+    <tr><th class="mono">Entry (pullback)</th><th class="mono">Stop</th><th class="mono">T1</th><th class="mono">T2</th><th class="mono">R:R</th></tr>
+    <tr><td class="mono">~$140 (rising 50-DMA)</td><td class="mono">$122</td><td class="mono">$165</td><td class="mono">$185</td><td class="mono">~1:2.5</td></tr>
+  </table>
+  <div class="card" style="margin-top:6px"><p style="margin:0"><b>Technical composite: ~24/30 (≈80%).</b> Trend, MAs, MACD and volume are strong; RSI overbought and the absence of a low-risk entry deduct points. Note the divergence worth respecting: <b>technicals bullish, fundamentals expensive</b> — a setup that rewards waiting for a shakeout.</p></div>
+</section>
+
+<!-- ===================== TAB 8 — SHAREHOLDING ===================== -->
+<section id="t8" class="tab-content">
+  <h2 class="tab-h">Shareholding</h2>
+  <p class="tab-sub">Founder-anchored, institution-dominated, deep liquidity.</p>
+
+  <h3 class="sec">Composition</h3>
+  <div class="grid g3">
+    <div class="metric good"><div class="k">Institutions</div><div class="val">~66.7%</div><div class="sub">Vanguard, BlackRock, State St <span class="pill V">V</span></div></div>
+    <div class="metric good"><div class="k">Insiders / founders</div><div class="val">~15%</div><div class="sub">Xie brothers ~16–17%</div></div>
+    <div class="metric"><div class="k">Retail</div><div class="val">~18%</div><div class="sub">deep free float</div></div>
+  </div>
+
+  <h3 class="sec">Top holders</h3>
+  <table>
+    <tr><th>Holder</th><th class="mono">Stake</th><th>Recent move</th></tr>
+    <tr><td>Vanguard</td><td class="mono">~9.5%</td><td><span class="flag up">adding</span></td></tr>
+    <tr><td>Michael Xie (Co-founder, CTO)</td><td class="mono">~8.9%</td><td><span class="flag dn">trim (routine)</span></td></tr>
+    <tr><td>Ken Xie (Co-founder, CEO)</td><td class="mono">~7.9%</td><td><span class="flag dn">trim (routine)</span></td></tr>
+    <tr><td>BlackRock</td><td class="mono">~5–7%</td><td><span class="flag up">adding</span></td></tr>
+    <tr><td>State Street</td><td class="mono">~3.8%</td><td><span class="flag fl">steady</span></td></tr>
+  </table>
+
+  <h3 class="sec">Signals</h3>
+  <div class="grid g2">
+    <div class="card"><h4>Ownership momentum</h4><div class="gauge"><div class="num" style="color:var(--emerald)">62</div><div style="flex:1"><div class="bar-track"><div class="bar-fill" style="width:62%"></div></div><p class="muted" style="font-size:13px;margin:6px 0 0">Passive giants accumulating; founders trimming modestly. Net: constructive, not a strong accumulation signal.</p></div></div></div>
+    <div class="card"><h4>Shareholding risk</h4><div class="gauge"><div class="num" style="color:var(--emerald)">18</div><div style="flex:1"><div class="bar-track"><div class="bar-fill" style="width:18%;background:var(--emerald)"></div></div><p class="muted" style="font-size:13px;margin:6px 0 0">Low. No pledges, no concentration cliff, S&amp;P 500 constituent with heavy index demand and liquidity.</p></div></div></div>
+  </div>
+  <p class="muted" style="font-size:13px">Note: removed from Russell 1000 <i>Defensive</i> / Growth-Defensive sub-indices in Jun-2026 — a style reclassification, not a fundamental event. <span class="pill V">V</span></p>
+</section>
+
+<!-- ===================== TAB 9 — AI INTELLIGENCE ===================== -->
+<section id="t9" class="tab-content">
+  <h2 class="tab-h">AI Intelligence</h2>
+  <p class="tab-sub">AI here is a moat-widener, not a moat-threat — the key overlay call.</p>
+
+  <h3 class="sec">A · Classification dashboard</h3>
+  <div class="badge-row" style="margin-bottom:14px">
+    <span class="badge cat">Category C</span>
+    <span class="badge ai">🟢 WIDENER</span>
+    <span class="badge macro">Flywheel: FORMING</span>
+    <span class="badge">Adoption Phase 3</span>
+  </div>
+  <div class="card"><p style="margin:0">Cybersecurity is in <b>Phase 3</b> AI adoption — scaling deployment, not experimentation. AI-driven detection, automated SOC triage and GenAI security assistants (FortiAI) are shipping and monetised. Fortinet launched a cloud-delivered <b>AI SOC</b> platform in mid-2026, consolidating six SecOps functions into one AI experience. <span class="pill E">E</span></p></div>
+
+  <h3 class="sec">B · Data flywheel deep-dive</h3>
+  <div class="card">
+    <p><b>Q1 — What is the proprietary training data?</b> Threat telemetry from millions of deployed FortiGate sensors and FortiGuard Labs research: attack signatures, malicious-traffic patterns, and — critically — <b>outcome labels</b> (what turned out to be malicious). Volume: very high. Uniqueness: high. Recency: continuous. Outcome labels: strong.</p>
+    <p><b>Q2 — How does the AI improve with more users?</b> Each additional sensor widens threat visibility; novel attacks seen at one edge inoculate the whole base. More coverage → faster, more accurate detection models.</p>
+    <p><b>Q3 — Does better AI attract more users?</b> Partially. Better detection aids renewals and competitive wins, but purchase decisions also hinge on ASIC price/performance, platform breadth and analyst rankings — so the loop is real but slower than a pure detection-network business.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">
+      <span class="chip">Data quality: 3/3</span>
+      <span class="chip">Improvement evidence: 2.5/4</span>
+      <span class="chip">Loop speed: 1/3</span>
+      <span class="chip" style="border-color:var(--emerald);color:var(--emerald)">Flywheel score: 6.5/10 — FORMING</span>
+    </div>
+  </div>
+
+  <h3 class="sec">C · AI value-chain position</h3>
+  <div class="chain">
+    <div class="lvl">1 · Infra</div>
+    <div class="lvl">2 · Foundation models</div>
+    <div class="lvl on">3 · Platforms</div>
+    <div class="lvl on">4 · Vertical apps</div>
+    <div class="lvl on">5 · AI-enabled incumbent</div>
+  </div>
+  <p class="muted" style="font-size:14px">Fortinet is primarily a <b>Level 5 AI-enabled incumbent</b> embedding AI into a dominant existing platform, with genuine <b>Level 4 vertical-app</b> character in security operations. Implication: durable moat, 5–7-year horizon, lower disruption risk than a single-point AI vendor — but upside is compounding, not explosive.</p>
+
+  <h3 class="sec">D · Structural context</h3>
+  <div class="card"><p style="margin:0">As a US company, India-Stack advantages (UPI/Aadhaar/vernacular/talent arbitrage) are <b>not material</b> to the thesis. The relevant structural edge is Western enterprise/government trust plus a global sensor network — assessed under moat, not India optionality.</p></div>
+
+  <h3 class="sec">F · AI opportunity score</h3>
+  <div class="card">
+    <div class="gauge"><div class="num" style="color:var(--violet)">60<span style="font-size:16px;color:var(--muted)">/100</span></div>
+      <div style="flex:1"><div class="bar-track"><div class="bar-fill" style="width:60%"></div></div>
+      <p class="muted" style="font-size:13px;margin:6px 0 0">Portfolio role: <b>STRATEGIC</b> (border of MONITOR). Horizon 5–7 yrs.</p></div>
+    </div>
+    <table style="margin-top:12px">
+      <tr><th>Component</th><th class="mono">Score</th></tr>
+      <tr><td>Data flywheel</td><td class="mono">13/20</td></tr>
+      <tr><td>Adoption-phase timing</td><td class="mono">15/20</td></tr>
+      <tr><td>Value-chain position</td><td class="mono">14/20</td></tr>
+      <tr><td>India structural advantage</td><td class="mono">4/20</td></tr>
+      <tr><td>AI threat resistance</td><td class="mono">14/20</td></tr>
+      <tr style="font-weight:700"><td>Total</td><td class="mono">60/100</td></tr>
     </table>
   </div>
+</section>
 
-  <div class="subsection">Method 2 — Owner Earnings Capitalisation</div>
-  <p>OE Base: $2.21B | Required Return: 10% | g: 4% → IV = $2.21B / (0.10 − 0.04) = <strong>$36.8B ÷ 0.762B shares = ~$48</strong> (conservative, no growth premium built in)<br>
-  OE with Growth Premium (justified for 13% Stage 1 growth): ~$2.21B × 1.13^3 / 0.06 = $2.83B / 0.06 = $47B → <strong>~$62/share</strong></p>
+</main>
 
-  <div class="subsection">Method 3 — ROIC/EPV</div>
-  <p>Using FCF/Enterprise Value as EPV proxy: $2.21B FCF @ 10% WACC = EPV ~$22B (no growth credit). With growth premium for 13% FCF CAGR over 5 years: EPV adjusted ~$45B → <strong>~$59/share</strong>. Confirms conservative floor around $50–65.</p>
-
-  <div class="subsection">Method 4 — P/E Earnings Power</div>
-  <table>
-    <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
-    <tr><td>Current Non-GAAP P/E</td><td class="tbl-num">~30x</td><td>At $82.76 / $2.76 NxGAAP EPS</td></tr>
-    <tr><td>Estimated 5yr avg Non-GAAP P/E</td><td class="tbl-num">~35–40x</td><td>Historical peak ~80x (2021), normalised ~35–40x during 2022–24 growth phase <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>PEG Ratio (Non-GAAP P/E / FCF growth)</td><td class="tbl-num">30x / 13% = 2.3</td><td>Moderate — not cheap, but not extreme. Justified for wide-moat quality at this growth rate.</td></tr>
-    <tr><td>AI Widener Premium Question</td><td colspan="2">A forming data flywheel (CONFIRMED status) would justify terminal P/E of 22–25x vs. non-AI cybersecurity peers at 18–20x. Currently FORMING → +3x premium warranted conditionally. Applied as +5% adjustment to blended IV.</td></tr>
-    <tr><td>Reverse DCF Implied Growth</td><td class="tbl-num">~11% FCF CAGR</td><td>At $82.76 and WACC 10%, market is pricing in ~11% FCF growth — achievable but not assured given billings normalisation.</td></tr>
-  </table>
-
-  <div class="subsection">Method 5 — Earnings Yield vs Bond Yield</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">GAAP Earnings Yield</div>
-      <div class="card-value">2.9%</div>
-      <div class="card-sub">$2.42 / $82.76 — below 10Y UST at 4.31%</div>
-    </div>
-    <div class="card">
-      <div class="card-label">FCF Yield</div>
-      <div class="card-value">3.6%</div>
-      <div class="card-sub">$2.21B FCF / $62B — still below 4.31% UST. Negative ERP. Price should correct for attractive ERP.</div>
-    </div>
-    <div class="card warn">
-      <div class="card-label">Equity Risk Premium</div>
-      <div class="card-value" style="color:var(--warn);">−0.7%</div>
-      <div class="card-sub">Negative ERP means you are being paid less than risk-free rate to own equity. Premium requires growth — confirmed for Fortinet but price is still demanding.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Yield-on-Cost (Yr 5)</div>
-      <div class="card-value">~6%</div>
-      <div class="card-sub">If bought at $82.76, FCF/share grows 13%/yr → Yr5 FCF yield on cost ~6%. Bond crossover at ~Yr 6-7.</div>
-    </div>
+<footer>
+  <div class="wrap">
+    <p><b>Disclaimer.</b> Educational research only; not investment advice or a recommendation to buy or sell any security. Prepared under the Buffett Quality-Value Series v5.0 framework. Not affiliated with, endorsed by, or reviewed by the SEC or Fortinet, Inc. Do your own due diligence and consult a licensed advisor.</p>
+    <p style="margin-top:8px"><b>Data notice.</b> Figures marked <span class="pill V">V</span> VERIFIED (filings / live search, Jul 2026), <span class="pill E">E</span> ESTIMATED (cross-referenced), <span class="pill U">U</span> UNVERIFIED. Price snapshot ~$158 as of 7 Jul 2026; markets move. Valuation ranges are illustrative model outputs, not price targets.</p>
+    <p style="margin-top:8px">Type: Sora · Source Sans 3 · JetBrains Mono. Palette: dark ink / electric violet / emerald.</p>
   </div>
-
-  <div class="subsection">5-Method Summary + AI Adjustment</div>
-  <div class="dcf-scenario">
-    <div class="dcf-card">
-      <div class="dcf-label">STRESS</div>
-      <div class="dcf-val dcf-stress">~$58</div>
-      <div style="font-size:12px; color:var(--muted); margin-top:8px;">Blended of 4 methods at stress parameters. FCF growth 7%, terminal g 3%, WACC 11%.</div>
-    </div>
-    <div class="dcf-card" style="border:1px solid var(--accent);">
-      <div class="dcf-label">BASE (Blended)</div>
-      <div class="dcf-val dcf-base">~$83</div>
-      <div style="font-size:12px; color:var(--muted); margin-top:8px;">Average of 4 methods. DCF $83.5 | OE Cap $62 | EPV $59 | P/E Power ~$85 → Blended ~$73 + AI WIDENER 5% premium = <strong>~$77 base IV.</strong></div>
-    </div>
-    <div class="dcf-card">
-      <div class="dcf-label">ACCELERATION</div>
-      <div class="dcf-val dcf-accel">~$115</div>
-      <div style="font-size:12px; color:var(--muted); margin-top:8px;">FCF growth 17%, terminal g 4.5%, WACC 9.5%. Requires data flywheel CONFIRMATION + sector acceleration.</div>
-    </div>
-  </div>
-
-  <div class="info-box"><strong>Base IV: ~$77–84.</strong> Current price ~$82.76 is at the high end of base IV — there is minimal margin of safety at current levels. MoS entry zone (30% discount to base IV ~$80): <strong>$56–63.</strong> A more patient investor might use $65–72 as a starter zone with partial position. <br><br><strong>AI WIDENER premium note:</strong> Flywheel FORMING status warrants +5% IV premium (vs. 0% for AI NEUTRAL, +8–10% if CONFIRMED). This lifts blended IV from ~$73 to ~$77. Full premium would apply only upon data flywheel CONFIRMATION.</div>
-</div>
-
-<!-- TAB 6: VERDICT -->
-<div id="tab6" class="tab-content">
-  <div class="section-title">Investment Verdict</div>
-
-  <div class="pillar-grid">
-    <div class="pillar-card">
-      <div class="pillar-name">Moat</div>
-      <div class="pillar-grade" style="color:var(--accent3);">B+</div>
-      <p style="font-size:12px; color:var(--muted); margin-top:8px;">FortiASIC + FortiOS platform = wide moat. Flywheel FORMING (not yet CONFIRMED) holds grade at B+. Would upgrade to A− upon flywheel confirmation.</p>
-    </div>
-    <div class="pillar-card">
-      <div class="pillar-name">Financial Quality</div>
-      <div class="pillar-grade" style="color:var(--accent);">A−</div>
-      <p style="font-size:12px; color:var(--muted); margin-top:8px;">FCF margin 32.5%, Rule of 40 ~47, FCF conversion >100%, gross margin 80%. Exceptional earnings quality. Negative equity from buybacks is a structural note, not a risk.</p>
-    </div>
-    <div class="pillar-card">
-      <div class="pillar-name">Management</div>
-      <div class="pillar-grade" style="color:var(--accent);">A−</div>
-      <p style="font-size:12px; color:var(--muted); margin-top:8px;">Founder-led with deep technical roots. Capital allocation excellence ($5.3B buybacks at avg $39). Agentic AI roadmap ahead of peers. Minor concern: CEO share sales. No governance red flags.</p>
-    </div>
-    <div class="pillar-card">
-      <div class="pillar-name">Valuation</div>
-      <div class="pillar-grade" style="color:var(--warn);">C+</div>
-      <p style="font-size:12px; color:var(--muted); margin-top:8px;">Price ~$83 is near base IV of ~$77–84. Negative ERP vs. 4.31% UST. 30% MoS entry at ~$56–63 not yet met. No immediate valuation margin of safety at current price.</p>
-    </div>
-  </div>
-
-  <div class="verdict-hero">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-      <span class="badge badge-cat">CAT C</span>
-      <span class="badge badge-ai">🟢 AI WIDENER</span>
-    </div>
-    <div class="verdict-hero-text">WATCH ★★★★</div>
-    <div class="verdict-hero-sub">
-      Fortinet is an exceptional cybersecurity franchise with widening financial quality and a forming AI data flywheel. Three of four Buffett pillars are strong (Moat B+, Quality A−, Management A−). The fourth pillar — Valuation — does not currently offer a 30% margin of safety. At ~$83, the price is near base intrinsic value, but the FCF yield of 3.6% is below the 4.31% risk-free rate, offering no equity risk premium. The entry discipline here is non-negotiable.
-      <br><br>
-      The investment thesis is intact and the stock deserves a permanent watchlist position. If price corrects to $65–72 (an approximate 15–20% discount to base IV), a BUY STARTER position becomes appropriate. A full BUY rating activates at $56–63 (30% MoS) with an active technical trigger (RSI &lt;45 + at/near 200-DMA).
-    </div>
-  </div>
-
-  <div class="upgrade-conditions">
-    <div class="subsection">Upgrade Conditions (WATCH → BUY STARTER)</div>
-    <div class="upgrade-item"><div class="upgrade-num">1</div><div>Price corrects to $65–72 (approximately 15% discount to base IV of $77–80) and RSI falls below 45 on the weekly chart — indicates institutional selling exhaustion</div></div>
-    <div class="upgrade-item"><div class="upgrade-num">2</div><div>US 10Y Treasury yield declines below 3.75%, restoring a positive equity risk premium for Fortinet at current prices — this alone could trigger a re-rating without a price correction</div></div>
-    <div class="upgrade-item"><div class="upgrade-num">3</div><div>Billings growth re-accelerates above 15% YoY for 2 consecutive quarters — this would confirm the 2023–24 billing normalization is fully behind the company and Stage 1 FCF CAGR is sustainable at 13%+</div></div>
-    <div class="upgrade-item"><div class="upgrade-num">4</div><div>Data flywheel CONFIRMED: Fortinet publishes or management discloses specific metrics showing AI model accuracy improvement correlated with sensor deployment growth (e.g., false positive rate declined from X% to Y% as sensors doubled)</div></div>
-
-    <div class="subsection" style="margin-top:24px;">Upgrade Conditions (BUY STARTER → BUY ★★★★★)</div>
-    <div class="upgrade-item"><div class="upgrade-num">5</div><div>Price at or below $56–63 (30% MoS from base IV) AND all four of the above conditions met AND technical momentum triggers (RSI &lt;40 + price at/below 200-DMA of ~$82)</div></div>
-  </div>
-
-  <div class="section-title" style="margin-top:40px;">Series Context Table</div>
-  <div class="dcf-wrap">
-    <table class="series-table">
-      <tr><th>Company</th><th>Cat</th><th>AI</th><th>Moat</th><th>Quality</th><th>Mgmt</th><th>Val</th><th>Verdict</th><th>Thesis</th></tr>
-      <tr><td>PVR INOX</td><td>C</td><td>⚪</td><td>C+</td><td>D</td><td>C</td><td>D+</td><td>PASS</td><td>No pricing power; 5 loss years</td></tr>
-      <tr><td>Yatharth Hospital</td><td>C</td><td>🟢</td><td>B−</td><td>C+</td><td>C+</td><td>D+</td><td>WATCH★★</td><td>IT investigation; AI diagnostics potential</td></tr>
-      <tr><td>Bajaj Auto</td><td>C</td><td>⚪</td><td>A−</td><td>A</td><td>B+</td><td>C</td><td>WATCH★★★</td><td>India quality leader; above entry</td></tr>
-      <tr><td>Tata Chemicals</td><td>E</td><td>⚪</td><td>D−</td><td>F</td><td>B−</td><td>C+</td><td>PASS</td><td>Commodity trap; wrong framework</td></tr>
-      <tr><td>Tata Motors PV</td><td>D</td><td>🔴</td><td>B−</td><td>D</td><td>B</td><td>B−</td><td>WATCH★★</td><td>JLR EV + AI risk; near entry price</td></tr>
-      <tr><td>Bank of Baroda</td><td>D</td><td>🟢</td><td>C+</td><td>C+</td><td>C</td><td>B</td><td>WATCH★★</td><td>PSB; AI credit scoring forming moat</td></tr>
-      <tr><td>Alphabet (GOOGL)</td><td>C</td><td>🟢</td><td>A</td><td>A</td><td>B+</td><td>C+</td><td>WATCH★★★★</td><td>Gemini = AI WIDENER; antitrust priced</td></tr>
-      <tr><td>Microsoft (MSFT)</td><td>C</td><td>🟢</td><td>A+</td><td>A</td><td>A</td><td>D+</td><td>WATCH★★★</td><td>Copilot flywheel; still too expensive</td></tr>
-      <tr><td>Newgen Software</td><td>C</td><td>🟢</td><td>B+</td><td>B+</td><td>A−</td><td>D</td><td>WATCH★★★</td><td>AI-native BPM moat; overpriced</td></tr>
-      <tr><td>MercadoLibre (MELI)</td><td>B</td><td>🟢</td><td>A−</td><td>B+</td><td>B+</td><td>B+</td><td>BUY★★★★★</td><td>LatAm AI flywheel; FCF yield > UST</td></tr>
-      <tr><td>Colgate India</td><td>A</td><td>⚪</td><td>A+</td><td>A+</td><td>A</td><td>B+</td><td>WATCH★★★★½</td><td>Perfect biz; AI neutral; adapted buy</td></tr>
-      <tr style="background:rgba(0,212,170,0.06);"><td><strong>Fortinet (FTNT)</strong></td><td><strong>C</strong></td><td><strong>🟢</strong></td><td><strong>B+</strong></td><td><strong>A−</strong></td><td><strong>A−</strong></td><td><strong>C+</strong></td><td><strong>WATCH★★★★</strong></td><td><strong>FortiASIC moat + forming AI flywheel; price near base IV</strong></td></tr>
-    </table>
-  </div>
-</div>
-
-<!-- TAB 7: TECHNICAL -->
-<div id="tab7" class="tab-content">
-  <div class="section-title">Technical Analysis</div>
-
-  <div class="subsection">Section A — Price Structure & Multi-Timeframe Trend</div>
-  <table>
-    <tr><th>Timeframe</th><th>Trend</th><th>Structure</th></tr>
-    <tr><td>Monthly</td><td><span class="marginal">NEUTRAL</span></td><td>Stock in wide horizontal range since mid-2024 after de-rating from $114 ATH (Feb 2025). No primary downtrend, no new uptrend established. Range: $70–110.</td></tr>
-    <tr><td>Weekly</td><td><span class="marginal">NEUTRAL–BEARISH</span></td><td>Trading below Feb 2025 all-time high of $114.57. Price coiling in horizontal trend per TradingView analysis. Potential double bottom formation cited by technical traders.</td></tr>
-    <tr><td>Daily</td><td><span class="marginal">NEUTRAL</span></td><td>Price recovering from 52-week low $70.12. Range bound $78–88. Last close $82.76 with a −5% day on April 23 (significant sell-off from $87 pivot).</td></tr>
-  </table>
-
-  <div class="subsection">Section B — Price Ladder</div>
-  <div class="price-ladder">
-    <div class="ladder-item resistance"><span class="ladder-price">$109.33</span><span class="ladder-label">52-week high — major resistance</span></div>
-    <div class="ladder-item resistance"><span class="ladder-price">$100–105</span><span class="ladder-label">Analyst avg PT $88; high PT $110. Psychological $100 level.</span></div>
-    <div class="ladder-item resistance"><span class="ladder-price">$88–90</span><span class="ladder-label">Analyst consensus PT ($88.28); short-term MA resistance ~$83</span></div>
-    <div class="ladder-item current"><span class="ladder-price">$82.76</span><span class="ladder-label">⬤ CURRENT PRICE (Apr 23, 2026) — near short-term average</span></div>
-    <div class="ladder-item support"><span class="ladder-price">$78–80</span><span class="ladder-label">Long-term MA support ~$82; horizontal range support</span></div>
-    <div class="ladder-item support"><span class="ladder-price">$70–72</span><span class="ladder-label">52-week low support zone. BUY STARTER entry zone.</span></div>
-    <div class="ladder-item support"><span class="ladder-price">$58–65</span><span class="ladder-label">Full BUY entry (30% MoS). Below 200-DMA expected in this zone.</span></div>
-  </div>
-
-  <div class="subsection">Section C — Moving Average Dashboard</div>
-  <table>
-    <tr><th>MA Level</th><th>Estimated Level</th><th>Price vs MA</th><th>Signal</th></tr>
-    <tr><td>20-EMA (daily)</td><td class="tbl-num">~$83</td><td>AT</td><td><span class="marginal">Neutral — price hugging 20-EMA</span></td></tr>
-    <tr><td>50-DMA</td><td class="tbl-num">~$84</td><td>BELOW</td><td><span class="warn" style="color:var(--warn);">Bearish — below 50-DMA is a caution sign</span></td></tr>
-    <tr><td>100-DMA</td><td class="tbl-num">~$87</td><td>BELOW</td><td><span class="warn" style="color:var(--warn);">Bearish — additional resistance at 100-DMA</span></td></tr>
-    <tr><td>200-DMA</td><td class="tbl-num">~$90–95</td><td>WELL BELOW</td><td><span class="fail-chip">Bearish — touch of 200-DMA would be strong BUY signal. Currently ~12% above</span></td></tr>
-    <tr><td>MA Cross Status</td><td colspan="3"><span class="warn" style="color:var(--warn);">Bearish — 50-DMA below 100-DMA (Death Cross territory). Trend not confirmed bullish.</span></td></tr>
-  </table>
-  <p style="font-size:12px; color:var(--muted);">[ESTIMATED] — MAs derived from price history approximation; confirm on TradingView before acting.</p>
-
-  <div class="subsection">Section D — Momentum</div>
-  <table>
-    <tr><th>Indicator</th><th>Reading</th><th>Signal</th></tr>
-    <tr><td>RSI (14-day, daily)</td><td>Approaching oversold after −5% day Apr 23. Likely 35–42 range.</td><td><span class="marginal">Neutral-Oversold — positive for patience</span></td></tr>
-    <tr><td>RSI (weekly)</td><td>~45–50 — mid-range</td><td><span class="marginal">Neutral</span></td></tr>
-    <tr><td>MACD (daily)</td><td>3-month MACD buy signal per StockInvest analysis</td><td><span class="pass">Positive cross recently</span></td></tr>
-    <tr><td>1Y return</td><td>−15.07%</td><td>Stock has underperformed significantly vs ATH — creating value opportunity</td></tr>
-  </table>
-
-  <div class="subsection">Section E — Chart Pattern</div>
-  <p>Technical traders on TradingView are identifying a potential <strong>Double Bottom</strong> pattern at the $70–72 support zone. If price holds above $70 and breaks above $90 (neck line), the pattern target would be approximately $110–115 (ATH retest). Volume confirmation on the breakout is required. Until the break above $90 occurs with volume, this remains a speculative setup.</p>
-
-  <div class="subsection">Section F — Trade Structure</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">Primary Trigger</div>
-      <div class="card-value" style="font-size:16px;">$65–72 Entry</div>
-      <div class="card-sub">RSI &lt;40 daily + price at/near 52wk low support zone. 30% MoS from base IV. Strong BUY trigger. Stop loss: $60 (breakdown below 52wk low). Target 1: $88 (analyst consensus). Target 2: $110 (ATH). R:R: 1:2.5+</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Secondary Trigger</div>
-      <div class="card-value" style="font-size:16px;">$75–80 Starter</div>
-      <div class="card-sub">Price near long-term MA support + RSI recovering from oversold &lt;40. MACD positive. Partial (25%) position with plan to average down to primary trigger zone.</div>
-    </div>
-    <div class="card warn">
-      <div class="card-label">Current Price Action</div>
-      <div class="card-value" style="font-size:16px; color:var(--warn);">WAIT</div>
-      <div class="card-sub">At $82.76 — above both starter and primary trigger zones. Negative ERP vs. bonds. −5% day April 23 on increased volume (potential distribution signal). Do NOT add new positions at current levels.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Position Size</div>
-      <div class="card-value" style="font-size:16px;">3–5%</div>
-      <div class="card-sub">Cat C AI WIDENER with forming flywheel. Standard 3–5% portfolio weighting. Do not exceed 5% until flywheel CONFIRMED and full BUY signal active.</div>
-    </div>
-  </div>
-
-  <div class="subsection">Section G — Technical Composite Score</div>
-  <table>
-    <tr><th>Dimension</th><th>Score (/5)</th><th>Notes</th></tr>
-    <tr><td>Trend</td><td>2/5</td><td>Below 50/100/200-DMA. No established uptrend.</td></tr>
-    <tr><td>Momentum</td><td>3/5</td><td>RSI approaching oversold; MACD buy signal forming</td></tr>
-    <tr><td>Volume</td><td>3/5</td><td>Volume elevated on Apr 23 sell-off — ambiguous (distribution or capitulation)</td></tr>
-    <tr><td>Pattern</td><td>3/5</td><td>Potential double bottom at $70–72 support — bullish if confirmed</td></tr>
-    <tr><td>Price vs MAs</td><td>2/5</td><td>Below all major MAs; bearish configuration until 200-DMA reclaim</td></tr>
-    <tr><td>Relative strength</td><td>2/5</td><td>−15% 1-year vs market; underperforming peers</td></tr>
-    <tr><td><strong>Composite</strong></td><td><strong>15/30 = 50%</strong></td><td><strong>NEUTRAL–WEAK. Not a technical buy at current levels.</strong></td></tr>
-  </table>
-</div>
-
-<!-- TAB 8: SHAREHOLDING -->
-<div id="tab8" class="tab-content">
-  <div class="section-title">Shareholding & Float Analysis</div>
-
-  <div class="subsection">Section A — Insider & Founder Holding</div>
-  <div class="info-box">Fortinet is founder-led by Ken Xie (CEO) and Michael Xie (CTO). Exact insider ownership percentages are not available from current search results, but founders retain meaningful stakes. Key concern: Ken Xie sold 158,485 shares in November 2025 — while likely part of a pre-scheduled 10b5-1 plan, this should be tracked for pattern escalation. Total insider selling in the buyback context should be evaluated against the $5.3B in company buybacks since 2020, which dwarfs individual insider sales in scale. <span class="verified">VERIFIED (sale)</span> <span class="estimated">ESTIMATED (ownership %)</span></div>
-
-  <div class="subsection">Section B — Institutional Ownership</div>
-  <table>
-    <tr><th>Category</th><th>Ownership</th><th>Notes</th></tr>
-    <tr><td>Institutional Investors</td><td class="tbl-num">~75%+</td><td>MSCI, S&P, NASDAQ composite inclusion. Major holders include Vanguard, BlackRock, Fidelity. <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Retail / Public</td><td class="tbl-num">~20–25%</td><td>Free float is large and liquid given ~$62B market cap <span class="estimated">ESTIMATED</span></td></tr>
-    <tr><td>Founders/Insiders</td><td class="tbl-num">~5–8%</td><td>Declining due to share sales but still meaningful for alignment <span class="estimated">ESTIMATED</span></td></tr>
-  </table>
-
-  <div class="subsection">Section C — Float & Market Structure</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">Shares Outstanding</div>
-      <div class="card-value">~762M</div>
-      <div class="card-sub">Diluted. Steadily declining due to buybacks (down from ~800M in 2020).</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Market Cap</div>
-      <div class="card-value">~$62B</div>
-      <div class="card-sub">NASDAQ constituent; adequate liquidity for institutional participation</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Share Buybacks</div>
-      <div class="card-value">$5.3B</div>
-      <div class="card-sub">Since 2020, avg ~$39/share. At current $83, total value created = 2.1× avg cost. Outstanding capital allocation.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Institutional Holder Quality</div>
-      <div class="card-value" style="font-size:16px;">Long-Duration</div>
-      <div class="card-sub">MSCI World Index, Nasdaq-100 membership attracts passive long-horizon capital. Any MSCI upgrade/inclusion event would be a technical positive.</div>
-    </div>
-  </div>
-
-  <div class="subsection">Section D — Ownership Momentum Score</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">Ownership Momentum</div>
-      <div class="card-value" style="font-size:22px;">55/100</div>
-      <div class="card-sub">Neutral. Institutional holding stable; insider selling a minor negative; buyback program a significant positive offset.</div>
-    </div>
-    <div class="card warn">
-      <div class="card-label">Shareholding Risk Score</div>
-      <div class="card-value" style="font-size:22px; color:var(--warn);">25/100</div>
-      <div class="card-sub">Low risk. No pledge concerns, no promoter distress, no regulatory freeze. Main risk is escalation of founder selling — currently minor.</div>
-    </div>
-  </div>
-</div>
-
-<!-- TAB 9: AI INTELLIGENCE -->
-<div id="tab9" class="tab-content">
-  <div class="section-title">AI Opportunity Intelligence</div>
-
-  <!-- SECTION A: AI CLASSIFICATION DASHBOARD -->
-  <div class="subsection">Section A — AI Classification Dashboard</div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-label">Category</div>
-      <div class="card-value">C</div>
-      <div class="card-sub">Mature Quality Compounder using AI to widen moat</div>
-    </div>
-    <div class="card" style="border-left-color:var(--accent);">
-      <div class="card-label">AI Overlay</div>
-      <div class="card-value" style="color:var(--accent); font-size:18px;">🟢 WIDENER</div>
-      <div class="card-sub">FortiGuard threat intelligence network + FortiAI model suite = AI deepening existing security moat</div>
-    </div>
-    <div class="card" style="border-left-color:var(--accent3);">
-      <div class="card-label">Data Flywheel</div>
-      <div class="card-value" style="color:var(--accent3); font-size:16px;">FORMING ★★★</div>
-      <div class="card-sub">5.6M sensors → AI training → better detection → more adoption. Loop mechanism confirmed; quantified acceleration not yet published.</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Adoption Phase</div>
-      <div class="card-value" style="font-size:18px;">Phase 3</div>
-      <div class="card-sub">AI in cybersecurity (threat detection, SOC automation) is Phase 3 — inflection. Winners clearly emerging. FortiAI reducing alert false positives 40%. <span class="estimated">ESTIMATED</span></div>
-    </div>
-  </div>
-
-  <!-- SECTION B: FLYWHEEL DEEP DIVE -->
-  <div class="subsection">Section B — Data Flywheel Deep-Dive</div>
-  <div class="flywheel-box">
-    <p><strong>Q1: What is Fortinet's proprietary training data?</strong></p>
-    <p>FortiGuard Labs collects telemetry from 5.6M+ Fortinet devices deployed globally (firewalls, endpoints, IoT sensors, email gateways, web gateways). This covers threat data across every attack vector. The FortiAI ANN model is pre-trained on 20M+ clean and malicious files using 6M malware features. Crucially, FortiGuard updates are pushed to ALL deployed devices in real-time — meaning every new threat blocked by any device becomes training data for every other device globally. This is proprietary data no competitor can replicate without owning the same installed base. <span class="verified">VERIFIED</span></p>
-    <br>
-    <p><strong>Q2: How does the AI improve with more data/users?</strong></p>
-    <p>FortiAI reduces false positives by up to 40% vs. baseline (company stated). FortiGuard IPS uses deep learning for anomaly spotting with sub-second response. However, Fortinet has not published a specific metric showing false positive rate declining as sensor count doubled (the gold standard for flywheel confirmation). The mechanism is sound; the published evidence moves this to FORMING rather than CONFIRMED. FortiAI-Assist agentic capabilities at Accelerate 2026 show the model is being actively trained on SOC resolution patterns — this will generate outcome labels (human analyst corrections) that will further improve the model. <span class="estimated">ESTIMATED</span></p>
-    <br>
-    <p><strong>Q3: Does better AI attract more users?</strong></p>
-    <p>Better threat detection is a primary purchase criterion in enterprise security RFPs. If FortiAI demonstrably outperforms alternatives in blind benchmark testing, it directly drives new customer wins. The loop cycle time is ~12–18 months (enterprise procurement + deployment + measurable outcome). This is a real loop — but slower than consumer-facing flywheels (e.g., Naukri job matching). FortiGuard SOC-as-a-Service expansion (Accelerate 2026) adds managed services, which generates even richer outcome data (which threats were resolved, how quickly, what playbooks worked) — accelerating the training loop. <span class="estimated">ESTIMATED</span></p>
-    <br>
-    <table>
-      <tr><th>Component</th><th>Score</th><th>Notes</th></tr>
-      <tr><td>Data quality (proprietary, unique)</td><td>3/3</td><td>5.6M sensors; multi-vector coverage; outcome labels (blocked threats) available</td></tr>
-      <tr><td>Improvement evidence</td><td>2.5/4</td><td>40% false positive reduction stated but not correlated with sensor scale growth</td></tr>
-      <tr><td>Loop speed</td><td>1.5/3</td><td>12–18 month enterprise cycle; not as fast as consumer flywheels</td></tr>
-      <tr><td><strong>Flywheel Score</strong></td><td><strong>7/10</strong></td><td>MODERATE → STRONG. Forming flywheel with near-term confirmation potential.</td></tr>
-    </table>
-  </div>
-
-  <!-- SECTION C: AI VALUE CHAIN POSITION -->
-  <div class="subsection">Section C — AI Value Chain Position</div>
-  <div class="ai-chain">
-    <div class="ai-level">L1<br>Infrastructure</div>
-    <div class="ai-level">L2<br>Foundation Models</div>
-    <div class="ai-level">L3<br>Platforms</div>
-    <div class="ai-level">L4<br>Vertical Apps</div>
-    <div class="ai-level active">L5 ✓<br>AI-Enabled Incumbent</div>
-  </div>
-  <div class="info-box"><strong>Level 5 — AI-Enabled Incumbent.</strong> Fortinet is an existing cybersecurity leader using AI to widen an already-strong moat. This is the most under-appreciated opportunity in the AI investment landscape: existing business quality + AI acceleration, with lower binary risk than pure AI plays. The risk is low-medium; the return is compounding over 5–7 years (not a quick trade). FortiASIC hardware at Level 1 (infrastructure) AND FortiGuard at Level 4 (vertical applications) creates a rare dual-level presence — most AI-enabled incumbents are only at Level 5.</div>
-
-  <!-- SECTION D: INDIA AI CONTEXT (adapted for US company) -->
-  <div class="subsection">Section D — Global AI Opportunity Context</div>
-  <table>
-    <tr><th>AI Theme</th><th>Phase</th><th>Fortinet Relevance</th></tr>
-    <tr><td>AI in cybersecurity (threat detection)</td><td>Phase 3</td><td><strong>DIRECTLY</strong> — FortiAI is the core product; AI threat detection is 15+ years of history</td></tr>
-    <tr><td>AI in SOC / SecOps automation</td><td>Phase 2→3</td><td><strong>DIRECTLY</strong> — FortiSOC (Accelerate 2026 preview), agentic AI for alert triage</td></tr>
-    <tr><td>Securing AI infrastructure (AI security)</td><td>Phase 2</td><td><strong>DIRECTLY</strong> — FortiAI-Protect secures LLMs, blocks shadow AI, detects AI-powered attacks</td></tr>
-    <tr><td>SASE / Zero Trust Network</td><td>Phase 3</td><td><strong>DIRECTLY</strong> — SASE ARR +40% YoY; converged networking+security is Fortinet's core thesis</td></tr>
-    <tr><td>OT/ICS Critical Infrastructure Security</td><td>Phase 2</td><td><strong>DIRECTLY</strong> — Gartner Challenger in CPS Protection Platforms (2026); energy sector a key vertical</td></tr>
-    <tr><td>AI-powered attacks (adversarial)</td><td>Phase 3</td><td><strong>INDIRECTLY</strong> — AI-powered attacks are the TAM expander; 85% of security pros cite GenAI driving attack surge</td></tr>
-  </table>
-
-  <!-- SECTION F: AI OPPORTUNITY VERDICT -->
-  <div class="subsection">Section F — AI Opportunity Verdict & Portfolio Role</div>
-  <div class="ai-gauge-wrap">
-    <div style="font-family:'Rajdhani',sans-serif; font-size:14px; min-width:160px; color:var(--muted);">AI Opportunity Score</div>
-    <div class="ai-gauge-bar">
-      <div class="ai-gauge-fill" style="width:72%; background:linear-gradient(90deg, var(--accent), #00ff88);">72/100</div>
-    </div>
-    <div style="font-family:'Rajdhani',sans-serif; font-size:24px; font-weight:700; color:var(--accent);">72</div>
-  </div>
-  <table>
-    <tr><th>Component</th><th>Score</th><th>Rationale</th></tr>
-    <tr><td>Data Flywheel Strength</td><td>14/20</td><td>FORMING (7/10 flywheel) → not yet CONFIRMED; full 20/20 requires confirmation</td></tr>
-    <tr><td>Adoption Phase Timing</td><td>18/20</td><td>Phase 3 (inflection) = near maximum score. Cybersecurity AI is in the highest-conviction window.</td></tr>
-    <tr><td>Value Chain Position</td><td>18/20</td><td>Level 5 AI-enabled incumbent = best risk/reward. Dual presence (L1 ASIC + L5 Security) = bonus.</td></tr>
-    <tr><td>Structural Advantage</td><td>15/20</td><td>Global deployment; no India Stack context. Strong IP / patent portfolio (most AI patents in cybersecurity).</td></tr>
-    <tr><td>AI Threat Resistance</td><td>7/20</td><td>Fortinet's hardware moat is AI-resistant. Threat: commoditisation of AI models could reduce the differentiation of FortiAI if foundation models surpass it. Moderate risk.</td></tr>
-  </table>
-
-  <div class="info-box" style="margin-top:16px;">
-    <strong>Portfolio Role: STRATEGIC AI BET (60–80 range)</strong><br>
-    Strong AI opportunity with some uncertainty remaining (flywheel FORMING, not CONFIRMED). Recommend a <strong>starter position (2–3% max)</strong> at entry price of $65–72. Wait for Phase 2→3 SOC AI inflection confirmation (FortiSOC commercial launch + management citing AI-driven customer expansion) before sizing to full 5% position.
-    <br><br>
-    <strong>Investment Horizon: 5–7 years.</strong> The FortiAI data flywheel compounds its moat advantage over 5–7 years, not 12 months. Do not apply a 12-month price target framework to this position. The annual checkpoints are: (1) SASE ARR growth 30%+ sustained, (2) Security Operations ARR growth 30%+ sustained, (3) FCF margin expanding above 35%, (4) Flywheel metrics quantified in earnings calls.
-  </div>
-</div>
-
-<!-- FOOTER -->
-<div style="background:var(--surface); border-top:1px solid var(--border); padding:24px; text-align:center; margin-top:40px;">
-  <p style="font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted); line-height:2;">
-    <strong style="color:var(--text);">DISCLAIMER</strong><br>
-    This report is for research and educational purposes only. It does not constitute financial advice, a solicitation, or a recommendation to buy or sell any security. The analysis and opinions herein reflect a specific analytical framework applied at a specific point in time (April 2026) and may become outdated. Past performance is not indicative of future results. Investing in equities involves substantial risk including loss of principal. Consult a registered investment advisor before making investment decisions.<br><br>
-    Data sources: Fortinet SEC filings (8-K, 10-Q), GlobeNewswire press releases, MarketsandMarkets, Grand View Research, TradingView, StockInvest.us, US Treasury H.15. Confidence labels: [VERIFIED] = official filings or confirmed live search; [ESTIMATED] = cross-referenced; [UNVERIFIED] = limited source.<br><br>
-    BQV Series v5.0 | Report generated April 26, 2026 | Fonts: Rajdhani, Share Tech Mono, Lora (Google Fonts)
-  </p>
-</div>
+</footer>
 
 <script>
 var TAB_BAR_TOP = 0;
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
   var tabBar = document.getElementById('tab-bar');
   if (tabBar) {
     var el = tabBar, top = 0;
@@ -1131,15 +590,11 @@ window.addEventListener('load', function() {
     TAB_BAR_TOP = top;
   }
 });
-
 function switchTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(function(el) {
-    el.style.display = 'none';
-  });
-  document.querySelectorAll('.tab-btn').forEach(function(btn) {
-    btn.classList.remove('active');
-  });
-  document.getElementById(tabId).style.display = 'block';
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; el.classList.remove('show'); });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  var panel = document.getElementById(tabId);
+  panel.style.display = 'block'; panel.classList.add('show');
   var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
   if (activeBtn) { activeBtn.classList.add('active'); }
   window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });

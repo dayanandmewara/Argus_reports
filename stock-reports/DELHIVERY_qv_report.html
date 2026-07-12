@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Delhivery Ltd — Buffett Quality-Value Report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A0E1A;
+  --navy2:#121729;
+  --orange:#FF6B1A;
+  --orange-dim:#8a3d10;
+  --chrome:#C8CDD3;
+  --white:#F5F6F8;
+  --green:#3CCB7F;
+  --amber:#F5B93D;
+  --red:#EF5350;
+  --grey:#7C8496;
+  --card:#161C2E;
+  --border:#262E45;
+  --font-d:'Space Grotesk',sans-serif;
+  --font-m:'JetBrains Mono',monospace;
+  --font-b:'IBM Plex Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--navy);color:var(--white);font-family:var(--font-b);line-height:1.55;}
+h1,h2,h3,h4{font-family:var(--font-d);}
+.mono{font-family:var(--font-m);}
+a{color:var(--orange);}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0A0E1A 0%,#171f38 100%);padding:22px 26px;border-bottom:2px solid var(--orange);max-height:260px;overflow:hidden;position:relative;}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
+.hero h1{font-size:1.9rem;color:var(--white);}
+.hero .ticker{color:var(--grey);font-family:var(--font-m);font-size:0.85rem;margin-top:2px;}
+.verdict-badge{background:var(--card);border:2px solid var(--amber);color:var(--amber);padding:8px 16px;border-radius:8px;font-family:var(--font-d);font-weight:700;font-size:1rem;text-align:center;white-space:nowrap;}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.badge{padding:5px 12px;border-radius:20px;font-size:0.78rem;font-weight:600;font-family:var(--font-m);border:1px solid var(--border);}
+.badge-cat{background:#2a1a0d;color:var(--orange);border-color:var(--orange-dim);}
+.badge-ai{background:#0d2a1f;color:var(--green);border-color:#1e5c3d;}
+.badge-macro{background:#1a2438;color:#8fb4ff;border-color:#2c4470;}
+.pill{padding:3px 9px;border-radius:12px;font-size:0.68rem;font-family:var(--font-m);}
+.pill-v{background:#0d2a1f;color:var(--green);}
+.pill-e{background:#3a2c0a;color:var(--amber);}
+.pill-u{background:#3a1414;color:var(--red);}
+.lede{color:var(--chrome);margin-top:10px;font-size:0.92rem;max-width:900px;}
+
+/* TAB BAR */
+#tab-bar{position:sticky;top:0;z-index:50;background:var(--navy2);display:flex;overflow-x:auto;border-bottom:1px solid var(--border);}
+.tab-btn{background:none;border:none;color:var(--grey);font-family:var(--font-m);font-size:0.78rem;padding:14px 16px;white-space:nowrap;cursor:pointer;border-bottom:3px solid transparent;}
+.tab-btn:hover{color:var(--white);}
+.tab-btn.active{color:var(--orange);border-bottom:3px solid var(--orange);}
+
+.tab-content{display:none;padding:24px 26px 50px;max-width:1180px;margin:0 auto;}
+.tab-content.active{display:block;}
+.section-title{font-size:1.25rem;color:var(--white);margin:26px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.section-title:first-child{margin-top:0;}
+p{margin-bottom:10px;color:#dfe2ea;}
+.small{font-size:0.82rem;color:var(--grey);}
+
+/* GRID / CARDS */
+.grid{display:grid;gap:12px;margin:14px 0;}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-5{grid-template-columns:repeat(5,1fr);}
+@media(max-width:680px){.grid-2,.grid-3,.grid-4,.grid-5{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4,.grid-5{grid-template-columns:1fr;}}
+
+.metric{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--grey);border-radius:6px;padding:12px 14px;}
+.metric.g{border-left-color:var(--green);} .metric.a{border-left-color:var(--amber);} .metric.r{border-left-color:var(--red);} .metric.o{border-left-color:var(--orange);}
+.metric .label{font-size:0.7rem;color:var(--grey);text-transform:uppercase;letter-spacing:.04em;}
+.metric .value{font-family:var(--font-d);font-size:1.25rem;color:var(--white);margin-top:3px;}
+.metric .sub{font-size:0.72rem;color:var(--grey);margin-top:2px;}
+
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.85rem;}
+th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;}
+th{color:var(--orange);font-family:var(--font-m);font-size:0.72rem;text-transform:uppercase;}
+tr:hover td{background:#141a2c;}
+
+.pass{color:var(--green);} .marginal{color:var(--amber);} .fail{color:var(--red);}
+.scorecard-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.88rem;}
+
+.moat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;}
+.stars{color:var(--amber);letter-spacing:2px;}
+
+.flywheel-box{background:linear-gradient(135deg,#0d2a1f,#0a1a13);border:1px solid #1e5c3d;border-radius:10px;padding:18px;margin:14px 0;}
+.flywheel-box .badge-forming{background:var(--amber);color:#2b1e00;padding:4px 12px;border-radius:14px;font-weight:700;font-size:0.78rem;font-family:var(--font-m);}
+
+.verdict-box{background:var(--card);border:2px solid var(--amber);border-radius:10px;padding:20px;margin:16px 0;}
+.verdict-box .vtitle{font-family:var(--font-d);font-size:1.5rem;color:var(--amber);}
+.quote{font-style:italic;color:var(--chrome);border-left:3px solid var(--orange);padding-left:14px;margin:12px 0;}
+
+.cond-badge{display:inline-flex;align-items:center;gap:8px;background:#141a2c;border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin:5px 0;font-size:0.85rem;width:100%;}
+.cond-num{background:var(--orange);color:var(--navy);font-family:var(--font-m);font-weight:700;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;}
+
+.gauge-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.footer{padding:24px 26px;border-top:1px solid var(--border);font-size:0.72rem;color:var(--grey);max-width:1180px;margin:0 auto;}
+.disc-box{background:#141a2c;border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:10px;}
+
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <h1>Delhivery Limited</h1>
+      <div class="ticker">NSE: DELHIVERY &nbsp;|&nbsp; BSE: 543529 &nbsp;|&nbsp; Sector: Logistics / 3PL &amp; E-commerce Fulfilment</div>
+      <div class="badge-row">
+        <span class="badge badge-cat">CATEGORY D — TURNAROUND / SPECIAL SITUATION</span>
+        <span class="badge badge-ai">🟢 AI OVERLAY — WIDENER</span>
+        <span class="badge badge-macro">MACRO: NEUTRAL / TAILWIND</span>
+      </div>
+    </div>
+    <div class="verdict-badge">WATCH ★★★</div>
+  </div>
+  <p class="lede">India's largest integrated logistics network is finally converting scale into cash — FY26 EBITDA doubled and free cash flow turned positive for the first time — but the market has already re-rated the stock to ~110x trailing earnings, leaving little room for error on a still-single-digit ROCE.</p>
+  <div class="tag-row" style="margin-top:8px;">
+    <span class="pill pill-v">VERIFIED</span><span class="small">live search, exchange filings</span>
+    <span class="pill pill-e">ESTIMATED</span><span class="small">cross-referenced consensus</span>
+    <span class="pill pill-u">UNVERIFIED</span><span class="small">single-source, treat with caution</span>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 · Macro &amp; Growth</button>
+  <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 · Management</button>
+  <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 · Technical</button>
+  <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 · AI Intelligence</button>
+</div>
+
+<!-- TAB 0 OVERVIEW -->
+<div class="tab-content active" id="t0">
+  <h2 class="section-title">Business Overview</h2>
+  <p>Delhivery is India's largest fully-integrated third-party logistics (3PL) provider by revenue, offering express parcel delivery, part-truckload (PTL) and full-truckload (FTL) freight, warehousing, supply-chain software (OS1), cross-border express, and — as of June 2026 — a commercial geospatial AI platform (Delhivery Maps). <span class="pill pill-v">V</span> Founded in 2011 and headquartered in Gurugram, the company listed on the NSE/BSE in May 2022 raising ₹5,235 Cr. <span class="pill pill-v">V</span></p>
+  <p>The single biggest structural event since IPO is the July 2025 acquisition of a 99.87% stake in Ecom Express, its closest scaled competitor, folding a rival network into Delhivery's own and materially consolidating the Indian express-logistics market. <span class="pill pill-v">V</span></p>
+
+  <h2 class="section-title">Why Category D — Turnaround / Special Situation</h2>
+  <p>Delhivery does not fit a "quality compounder" template today: ROE is 1.87% and ROCE 2.82% <span class="pill pill-v">V</span> — both far below the 15%+ threshold for Categories A–C. What earns it a Category D slot rather than "wrong framework" (E) is that these metrics are visibly improving off a low base, driven by identifiable, dateable events: EBITDA margin nearly doubled from FY25 to FY26 (3.8% → 7.3% of revenue), free cash flow turned positive for the first time (₹89 Cr in FY26), and the Ecom Express integration removes a major price-competing rival. <span class="pill pill-v">V</span> This is a classic event-driven re-rating thesis, not a proven moat-and-compounding story yet.</p>
+
+  <h2 class="section-title">AI Overlay — Why WIDENER</h2>
+  <p>Delhivery's June 2026 launch of Delhivery Maps, built on its proprietary "Naksha LLM" geospatial model trained on telemetry from over 2 billion shipments and ~1 billion daily GPS pings across 100,000+ vehicles, is a genuine attempt to convert operational data exhaust into a moat and a new revenue line. <span class="pill pill-v">V</span> It already replaces third-party mapping across 100% of Delhivery's own network and is now sold externally to e-commerce, quick-commerce and ride-hailing platforms. <span class="pill pill-v">V</span> This lowers Delhivery's own unit routing cost and opens a asset-light software/API revenue stream — the textbook definition of an AI Widener — though the external flywheel loop (more third-party users → more data → better model → more users) is only weeks old and unproven at scale, so we grade the Data Flywheel FORMING rather than CONFIRMED (see Tab 3 and Tab 9).</p>
+
+  <h2 class="section-title">Macro Relevance</h2>
+  <p>Delhivery sits at the intersection of two macro tailwinds and one macro headwind: India's e-commerce logistics market is forecast to grow at a wide range of ~9–26% CAGR depending on methodology/scope <span class="pill pill-e">E</span>, tier-3-and-below cities already account for ~40% of e-commerce logistics volume signalling deep penetration runway <span class="pill pill-e">E</span>, while intensifying competition from Amazon's own logistics arm, Xpressbees, Shadowfax and others caps pricing power. <span class="pill pill-v">V</span></p>
+
+  <h2 class="section-title">What Makes This Interesting — and Challenging</h2>
+  <div class="grid grid-2">
+    <div class="metric g"><div class="label">Interesting</div><div class="sub" style="font-size:0.85rem;color:#dfe2ea;">Market-leading scale (largest fully-integrated logistics network in India by FY24 revenue), first FCF-positive year, EBITDA doubling, Ecom Express consolidation, and a credible proprietary-data AI monetisation angle via Delhivery Maps.</div></div>
+    <div class="metric r"><div class="label">Challenging</div><div class="sub" style="font-size:0.85rem;color:#dfe2ea;">Trailing P/E ~110–115x on a company still earning single-digit ROCE; net profit trajectory is inconsistent across reporting lines (standalone vs. Ecom Express-consolidated); intense multi-player price competition; no dividend, no promoter group (0% promoter holding) so governance rests entirely with professional management and the board.</div></div>
+  </div>
+
+  <h2 class="section-title">Framework Adaptation</h2>
+  <p>Standard Owner Earnings and O'Glove tests are run, but earnings quality is graded cautiously given the scale of one-off/M&A-related adjustments in FY26 (Ecom Express consolidation). Given FCF only just turned positive, DCF is shown but weighted lightly versus relative valuation and reverse-DCF sanity checks; MoS is widened to 25% per Category D convention.</p>
+</div>
+
+<!-- TAB 1 MACRO & GROWTH -->
+<div class="tab-content" id="t1">
+  <h2 class="section-title">Macro Cycle Dashboard</h2>
+  <div class="grid grid-3">
+    <div class="metric a"><div class="label">Rural Income Cycle</div><div class="value" style="font-size:1rem;">NEUTRAL</div><div class="sub">Steady MSP/monsoon; limited direct read-through to B2C parcel volumes <span class="pill pill-e">E</span></div></div>
+    <div class="metric g"><div class="label">Urban Consumption</div><div class="value" style="font-size:1rem;">TAILWIND</div><div class="sub">E-commerce penetration and quick-commerce order volumes rising <span class="pill pill-e">E</span></div></div>
+    <div class="metric a"><div class="label">Input Cost Cycle</div><div class="value" style="font-size:1rem;">NEUTRAL</div><div class="sub">Fuel/diesel and last-mile gig wages broadly stable; Brent ~$71-72/bbl post US-Iran de-escalation <span class="pill pill-v">V</span></div></div>
+    <div class="metric g"><div class="label">RBI Rate Cycle</div><div class="value" style="font-size:1rem;">NEUTRAL-EASING BIAS</div><div class="sub">10Y G-Sec ~6.8%, 14-15 week lows on FPI inflows and soft oil <span class="pill pill-v">V</span></div></div>
+    <div class="metric g"><div class="label">Govt Capex Cycle</div><div class="value" style="font-size:1rem;">TAILWIND</div><div class="sub">PM Gati Shakti, Dedicated Freight Corridors lowering structural logistics cost <span class="pill pill-e">E</span></div></div>
+    <div class="metric g"><div class="label">AI Adoption Cycle</div><div class="value" style="font-size:1rem;">OPPORTUNITY</div><div class="sub">Delhivery Maps/Naksha LLM commercial launch, June 2026 <span class="pill pill-v">V</span></div></div>
+  </div>
+  <p><strong>Macro Composite: NEUTRAL-TO-TAILWIND &nbsp;|&nbsp; AI Cycle Impact: OPPORTUNITY</strong></p>
+  <p class="small">India nominal GDP ceiling: Real GDP ~6.8% (Goldman Sachs' upgraded FY26 estimate) <span class="pill pill-v">V</span> + CPI ~4.4% projected <span class="pill pill-v">V</span> ≈ <strong>~11.2% nominal GDP</strong> — the absolute terminal growth ceiling for any DCF on this stock.</p>
+
+  <h2 class="section-title">Sector Growth Derivation</h2>
+  <table>
+    <tr><th>Sector Bucket</th><th>Stress</th><th>Base</th><th>Accel</th><th>AI Impact</th></tr>
+    <tr><td>Domestic Logistics / 3PL (overall)</td><td>5–6%</td><td>6.5–7.7%</td><td>9–10%</td><td>WIDENER</td></tr>
+    <tr><td>India E-commerce Logistics (core exposure)</td><td>9–12%</td><td>15–20%</td><td>25–26%</td><td>WIDENER</td></tr>
+    <tr><td>Cross-border E-commerce Logistics</td><td>15–20%</td><td>29%</td><td>35%+</td><td>WIDENER</td></tr>
+  </table>
+  <p class="small">Wide dispersion across published estimates (8.98% Mordor Intelligence base case to 25.9% Grand View Research) reflects differing market-definition scope; we anchor the Base case near the middle of this range. <span class="pill pill-e">E</span></p>
+
+  <h2 class="section-title">Company Alpha Summary</h2>
+  <table>
+    <tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+    <tr><td>Market share gain (5.2%→8.9% over 5yr)</td><td>Active</td><td>+4%</td><td>+2%</td></tr>
+    <tr><td>Premiumisation (Direct/Rapid, quick-commerce)</td><td>Potential</td><td>+2%</td><td>+2%</td></tr>
+    <tr><td>Category expansion (Fintech, Financial Services sub)</td><td>Potential</td><td>+1%</td><td>+2%</td></tr>
+    <tr><td>Geographic / cross-border expansion</td><td>Potential</td><td>+1%</td><td>+2%</td></tr>
+    <tr><td>Pricing power</td><td>Exhausted (competitive)</td><td>0%</td><td>+1%</td></tr>
+    <tr><td>AI-Driven Alpha (Maps/Naksha LLM: 6a+6b+6c)</td><td>Active/Potential</td><td>+2%</td><td>+4%</td></tr>
+    <tr><td><strong>Total Alpha</strong></td><td>—</td><td><strong>+10%</strong></td><td><strong>+13%</strong></td></tr>
+  </table>
+
+  <h2 class="section-title">Growth Rate Summary Table</h2>
+  <table>
+    <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Accel</th></tr>
+    <tr><td>Macro state</td><td>GDP ~5.5%</td><td>GDP ~6.8%</td><td>GDP ~8%+</td></tr>
+    <tr><td>Sector growth</td><td>9%</td><td>16%</td><td>25%</td></tr>
+    <tr><td>Company alpha</td><td>+4%</td><td>+8%</td><td>+9%</td></tr>
+    <tr><td>AI alpha (6a+6b+6c)</td><td>+1%</td><td>+2%</td><td>+4%</td></tr>
+    <tr><td>Stage 1 Revenue CAGR (using Rev not FCF — FCF nascent)</td><td>10%</td><td>18%</td><td>26%</td></tr>
+    <tr><td>Stage 2 FCF CAGR</td><td>8%</td><td>15%</td><td>22%</td></tr>
+    <tr><td>Terminal growth</td><td>6%</td><td>8%</td><td>10%</td></tr>
+    <tr><td>Margin direction</td><td>Compress</td><td>Expand</td><td>Expand</td></tr>
+    <tr><td>Key risk</td><td>Price war resumes</td><td>Steady integration</td><td>Maps scales fast</td></tr>
+  </table>
+  <p class="small">Sensitivity: a 1% change in terminal growth moves IV by roughly 8–12%; a 1% change in Stage-1 growth moves IV by roughly 4–6%, given the still-small earnings base.</p>
+</div>
+
+<!-- TAB 2 FINANCIALS -->
+<div class="tab-content" id="t2">
+  <h2 class="section-title">Revenue &amp; Profitability (5-Year Trend)</h2>
+  <div class="grid grid-4">
+    <div class="metric g"><div class="label">FY26 Revenue</div><div class="value">₹10,508 Cr</div><div class="sub">+17.6% YoY <span class="pill pill-v">V</span></div></div>
+    <div class="metric g"><div class="label">FY26 EBITDA</div><div class="value">₹764 Cr</div><div class="sub">vs ₹380 Cr FY25 (+101%) <span class="pill pill-v">V</span></div></div>
+    <div class="metric a"><div class="label">FY26 EBITDA Margin</div><div class="value">7.3%</div><div class="sub">vs 4.3% FY25 <span class="pill pill-v">V</span></div></div>
+    <div class="metric a"><div class="label">FY26 Net Profit</div><div class="value">₹152–321 Cr</div><div class="sub">Range across standalone/consolidated disclosures <span class="pill pill-u">U</span></div></div>
+    <div class="metric g"><div class="label">FY26 Free Cash Flow</div><div class="value">₹89 Cr</div><div class="sub">First positive FCF year <span class="pill pill-v">V</span></div></div>
+    <div class="metric g"><div class="label">Cash &amp; Equivalents</div><div class="value">₹4,555 Cr</div><div class="sub">As of Mar-2026, net cash positive <span class="pill pill-v">V</span></div></div>
+    <div class="metric r"><div class="label">ROE (trailing)</div><div class="value">1.87%</div><div class="sub">Far below 15% quality threshold <span class="pill pill-v">V</span></div></div>
+    <div class="metric r"><div class="label">ROCE (trailing)</div><div class="value">2.82%</div><div class="sub">3yr avg ROE ~0.18% <span class="pill pill-v">V</span></div></div>
+  </div>
+  <p class="small">5-year revenue CAGR ~25.7% vs. industry average ~10.3%; market share rose from 5.18% to 8.91% over the same period. <span class="pill pill-e">E</span> Net profit has been volatile/near-breakeven for most of the listed history, only turning consistently positive from FY25 onward.</p>
+
+  <h2 class="section-title">Financial Fortress Scorecard</h2>
+  <div class="scorecard-item"><span>ROE ≥15% for 5 consecutive years</span><span class="fail">✗ FAIL</span></div>
+  <div class="scorecard-item"><span>ROIC/ROCE &gt; WACC for 5 consecutive years</span><span class="fail">✗ FAIL</span></div>
+  <div class="scorecard-item"><span>Net cash preferred</span><span class="pass">✓ PASS — ₹4,555 Cr cash, no meaningful net debt</span></div>
+  <div class="scorecard-item"><span>Net profit margin ≥15%</span><span class="fail">✗ FAIL (~1.4–3%)</span></div>
+  <div class="scorecard-item"><span>FCF positive + growing</span><span class="marginal">~ MARGINAL — positive for the first time (FY26)</span></div>
+  <div class="scorecard-item"><span>Owner earnings ≥ net income</span><span class="pass">✓ PASS (D&amp;A add-back is material for an asset-heavy network)</span></div>
+  <div class="scorecard-item"><span>Pricing power proven</span><span class="fail">✗ FAIL — competitive, price-taking market</span></div>
+  <div class="scorecard-item"><span>Revenue CAGR ≥ macro-derived sector CAGR</span><span class="pass">✓ PASS (25.7% 5yr vs. ~16% base-case sector)</span></div>
+  <div class="scorecard-item"><span>Predictable/recurring revenue</span><span class="marginal">~ MARGINAL — B2C parcel volumes cyclical, B2B/SaaS more sticky</span></div>
+  <div class="scorecard-item"><span>Capital-light model</span><span class="marginal">~ MARGINAL — asset-light 3PL model but heavy network capex</span></div>
+  <div class="scorecard-item"><span>Dividend payout &lt;80% owner earnings</span><span class="pass">✓ PASS — 0% payout, all capital retained</span></div>
+  <p><strong>Scorecard tally: 4 PASS / 3 MARGINAL / 5 FAIL</strong> — consistent with a Category D turnaround profile, not yet an investable "quality" balance sheet on Buffett terms.</p>
+
+  <h2 class="section-title">Owner Earnings</h2>
+  <p class="small">Owner Earnings = Net Income + D&amp;A + Non-cash items − Maintenance CapEx ± WC changes. Given FY26 net income is disputed across disclosures (₹152–321 Cr) and D&amp;A on the logistics network is substantial, we conservatively estimate Owner Earnings at roughly <strong>₹300–400 Cr</strong> for FY26 <span class="pill pill-e">E</span> — meaningfully below what the ~₹35,000+ Cr market cap would require for a "quality compounder" valuation, reinforcing the Category D framing.</p>
+
+  <h2 class="section-title">Earnings Quality — O'Glove Framework</h2>
+  <table>
+    <tr><th>Test</th><th>Result</th></tr>
+    <tr><td>1. FCF Conversion (CFO/NI, 5yr)</td><td class="marginal">MARGINAL — inconsistent given near-zero base earnings in several years <span class="pill pill-e">E</span></td></tr>
+    <tr><td>2. DSO Trend (3yr)</td><td class="marginal">Not independently verifiable this session <span class="pill pill-u">U</span></td></tr>
+    <tr><td>3. Inventory Days (3yr)</td><td>N/A — asset-light service model</td></tr>
+    <tr><td>4. Accounting Policy Stability</td><td class="marginal">MARGINAL — Ecom Express consolidation changes scope of consolidated numbers materially in FY26 <span class="pill pill-v">V</span></td></tr>
+    <tr><td>5. Gross Margin Consistency (5yr)</td><td class="pass">PASS — freight cost ratio has been broadly stable near 65-70% of expenses <span class="pill pill-v">V</span></td></tr>
+  </table>
+  <p><strong>Overall Earnings Quality Grade: SUSPECT</strong> — not due to any fraud indicator, but because of conflicting net-profit figures across sources for the same fiscal year (standalone ₹152.5 Cr vs. widely reported ₹321 Cr) tied to the Ecom Express acquisition accounting. We quality-adjust earnings downward and widen the Margin of Safety by an additional 5% in the valuation tab.</p>
+</div>
+
+<!-- TAB 3 MOAT -->
+<div class="tab-content" id="t3">
+  <h2 class="section-title">Moat Sources</h2>
+  <div class="grid grid-2">
+    <div class="moat-card"><h4>Network Scale &amp; Density</h4><div class="stars">★★★☆☆</div><p class="small">18,600+ pincode coverage, largest fully-integrated network by FY24 revenue; density is genuinely hard to replicate quickly. <span class="pill pill-e">E</span></p></div>
+    <div class="moat-card"><h4>Switching Costs (Enterprise/D2C sellers)</h4><div class="stars">★★☆☆☆</div><p class="small">OS1 software integration creates some lock-in, but most sellers multi-home across 2-3 logistics partners.</p></div>
+    <div class="moat-card"><h4>Cost Advantage (scale economics)</h4><div class="stars">★★★☆☆</div><p class="small">Post Ecom Express consolidation, network utilisation improves, aiding unit economics — evidenced in the FY26 EBITDA margin jump.</p></div>
+    <div class="moat-card"><h4>Proprietary Data / AI (Naksha LLM)</h4><div class="stars">★★★☆☆</div><p class="small">Genuinely proprietary telemetry (2bn+ shipments, ~1bn daily GPS pings); nascent but real emerging moat layer via Delhivery Maps.</p></div>
+  </div>
+
+  <h2 class="section-title">ROIC/ROCE Trend &amp; Macro Stress Test</h2>
+  <p>ROCE at 2.82% and ROE at 1.87% place Delhivery firmly in the "no moat proven yet" ROIC band (&lt;10%) on the standard test. <span class="pill pill-v">V</span> In a macro stress scenario (demand slowdown, renewed price competition from Amazon/Flipkart's captive logistics arms), the network-scale moat likely <strong>HOLDS</strong> (fixed-cost network becomes a competitive weapon in a downturn against smaller rivals), while the pricing-power "moat" clearly <strong>WEAKENS</strong> given the company has no demonstrated ability to raise prices without volume loss.</p>
+
+  <div class="flywheel-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+      <h3 style="color:var(--green);">Data Flywheel Verdict</h3>
+      <span class="badge-forming">FORMING — 2/3 confirmed · Score 6/10</span>
+    </div>
+    <table style="margin-top:10px;">
+      <tr><td>✓ Proprietary data competitors can't replicate</td><td class="pass">CONFIRMED — 2bn+ shipment telemetry, 1bn daily GPS pings, unique address-resolution dataset for India's informal addressing system</td></tr>
+      <tr><td>✓ More users/data improves AI accuracy</td><td class="pass">LIKELY TRUE internally (validated across Delhivery's own network for years) but not yet independently verified for the external Maps product</td></tr>
+      <tr><td>✗ Better AI attracts more users (self-reinforcing loop)</td><td class="marginal">UNPROVEN — Delhivery Maps commercially launched only in June 2026; no external adoption metrics available yet <span class="pill pill-u">U</span></td></tr>
+    </table>
+    <p class="small" style="margin-top:8px;">CONFIRMED would upgrade the moat grade one level; at FORMING, we monitor quarterly for evidence of external API adoption before crediting a moat upgrade.</p>
+  </div>
+
+  <h2 class="section-title">Moat Threats</h2>
+  <p>Amazon Transportation Services, Xpressbees, Shadowfax, Blue Dart and the newly-merged Ecom Express-Delhivery entity all compete aggressively on price; quick-commerce dark-store logistics is a distinct and fast-evolving battleground where Delhivery's traditional network advantage is less pronounced. <span class="pill pill-v">V</span></p>
+</div>
+
+<!-- TAB 4 MANAGEMENT -->
+<div class="tab-content" id="t4">
+  <h2 class="section-title">Management &amp; Ownership</h2>
+  <p>Delhivery was founded in 2011 by Sahil Barua, Kapil Bharati, Bhavesh Manglani, Mohit Tandon and Amit Prakash Ambasta. <span class="pill pill-v">V</span> There is <strong>no promoter group</strong> in the classic Indian-listed sense — promoter shareholding is reported at 0%, with the company run by professional management under board oversight and owned predominantly by domestic and foreign institutions. <span class="pill pill-v">V</span></p>
+
+  <h2 class="section-title">Strengths</h2>
+  <ul style="margin-left:20px;color:#dfe2ea;">
+    <li>Clean audit opinion from Deloitte Haskins &amp; Sells for FY26, no modified opinion. <span class="pill pill-v">V</span></li>
+    <li>Decisive, well-telegraphed M&amp;A (Ecom Express, Spoton Logistics, Algorhythm Tech, Vinculum stake) consistently aimed at consolidating scale or capability rather than unrelated diversification. <span class="pill pill-v">V</span></li>
+    <li>CTO-led AI platform launch (Naksha LLM/Delhivery Maps) suggests genuine technical depth rather than a marketing veneer.</li>
+  </ul>
+  <h2 class="section-title">Concerns</h2>
+  <ul style="margin-left:20px;color:#dfe2ea;">
+    <li>Conflicting net-profit disclosures for FY26 (₹152.5 Cr vs. ₹321 Cr across different reports) warrant investor scrutiny of segment/consolidation accounting. <span class="pill pill-u">U</span></li>
+    <li>No promoter "skin in the game" in the traditional sense — alignment rests on ESOP structures (e.g., 1,87,375 options granted under ESOP-2021 in June 2026) rather than founder ownership concentration. <span class="pill pill-v">V</span></li>
+    <li>Large institutional holders periodically sell down via block deals (e.g., Nexus Venture Partners sold ₹716 Cr worth of shares; CPPIB trimmed 2.77% via block trade) — routine VC/PE exit activity but a source of overhang. <span class="pill pill-v">V</span></li>
+  </ul>
+  <h2 class="section-title">Pledged Shares</h2>
+  <p>Not applicable — there is no promoter holding to pledge. <span class="pill pill-v">V</span></p>
+</div>
+
+<!-- TAB 5 VALUATION -->
+<div class="tab-content" id="t5">
+  <h2 class="section-title">Valuation Snapshot</h2>
+  <div class="grid grid-4">
+    <div class="metric o"><div class="label">CMP</div><div class="value">₹472</div><div class="sub">Late Jun 2026 <span class="pill pill-v">V</span></div></div>
+    <div class="metric"><div class="label">Market Cap</div><div class="value">~₹35,700 Cr</div><div class="sub"><span class="pill pill-v">V</span></div></div>
+    <div class="metric r"><div class="label">Trailing P/E</div><div class="value">~110–115x</div><div class="sub">vs. sources ranging 106x–233x <span class="pill pill-u">U</span></div></div>
+    <div class="metric"><div class="label">P/B</div><div class="value">~3.5–3.8x</div><div class="sub">Book value ₹129/share <span class="pill pill-v">V</span></div></div>
+  </div>
+
+  <h2 class="section-title">5-Method Summary (Category D convention: WACC 14–16%, Terminal P/E 15–18x, MoS ×0.70–0.75)</h2>
+  <table>
+    <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>Note</th></tr>
+    <tr><td>DCF (2-Stage)</td><td>₹260</td><td>₹430</td><td>₹610</td><td>Highly sensitive — FCF base only 1 year old <span class="pill pill-e">E</span></td></tr>
+    <tr><td>Owner Earnings Capitalisation</td><td>₹240</td><td>₹390</td><td>₹560</td><td>Required return 15%, macro-derived g <span class="pill pill-e">E</span></td></tr>
+    <tr><td>ROIC/EPV</td><td>₹150</td><td>₹280</td><td>₹420</td><td>Economic profit still near zero at current ROIC vs WACC <span class="pill pill-e">E</span></td></tr>
+    <tr><td>P/E Earnings Power (normalised)</td><td>₹300</td><td>₹460</td><td>₹640</td><td>Normalised on a 3-5yr forward earnings base, not trailing <span class="pill pill-e">E</span></td></tr>
+    <tr><td>Earnings Yield vs Bond Yield</td><td>₹280</td><td>₹420</td><td>₹580</td><td>vs. 10Y G-Sec ~6.8% <span class="pill pill-e">E</span></td></tr>
+    <tr><td><strong>Blended Base IV</strong></td><td colspan="3"><strong>~₹430–450</strong></td><td>Average of 4 quantitative methods (ex-ROIC/EPV floor)</td></tr>
+  </table>
+  <p class="small">AI adjustment row: Delhivery Maps/Naksha LLM is not yet monetised at material scale — no AI premium added to Base IV; a confirmed flywheel with external revenue traction could plausibly add 5-10% to Base IV within 2-3 years.</p>
+  <p><strong>MoS Entry Zone (×0.70-0.75 of Base IV, Category D convention): ~₹300–₹340</strong>, though given SUSPECT earnings-quality grading we additionally widen this to <strong>₹280–₹340</strong> as a stricter entry band.</p>
+
+  <h2 class="section-title">Relative Valuation vs. History &amp; Peers</h2>
+  <p>At ~110-115x trailing earnings and ~3.5-3.8x book, Delhivery trades at a rich multiple relative to almost any conventional logistics peer (Blue Dart, Container Corporation, Mahindra Logistics), justified only if the market is pricing a multi-year margin-expansion and platform-monetisation story rather than today's earnings. <span class="pill pill-e">E</span> Sell-side targets are notably split: Citi (₹565), UBS (₹630) and Motilal Oswal (₹580, citing express-volume growth and PTL margin turnaround) are bullish, while Goldman Sachs remains Neutral at ₹480, citing an EBITDA miss despite strong revenue growth. <span class="pill pill-v">V</span> Broader trailing-12-month analyst consensus trackers show a much wider and lower range (₹277–₹630, median well below CMP on some platforms), reflecting genuine disagreement on how much of the turnaround is durable. <span class="pill pill-v">V</span></p>
+
+  <h2 class="section-title">Reverse DCF Sanity Check</h2>
+  <p>At CMP ₹472, the market is implicitly pricing in a sustained Stage-1 FCF/earnings growth rate well above our Base-case 15% estimate — consistent with the stock already embedding a meaningful chunk of the Accel scenario. This is the central valuation risk in the thesis.</p>
+</div>
+
+<!-- TAB 6 VERDICT -->
+<div class="tab-content" id="t6">
+  <h2 class="section-title">Four-Pillar Grades</h2>
+  <div class="grid grid-4">
+    <div class="metric a"><div class="label">Moat</div><div class="value">B-</div></div>
+    <div class="metric a"><div class="label">Financial Fortress / Quality</div><div class="value">C+</div></div>
+    <div class="metric r"><div class="label">Valuation</div><div class="value">C-</div></div>
+    <div class="metric g"><div class="label">Management</div><div class="value">B+</div></div>
+  </div>
+  <div class="badge-row" style="margin:14px 0;">
+    <span class="badge badge-ai">🟢 AI OVERLAY: WIDENER — Flywheel FORMING</span>
+  </div>
+
+  <div class="verdict-box">
+    <div class="vtitle">WATCH ★★★</div>
+    <p style="margin-top:8px;">Strong operational quality trajectory — but price sits meaningfully above our Base-case Margin-of-Safety entry zone, and 3 of 4 pillars still carry a C-grade or weaker.</p>
+    <div class="quote">"Price is what you pay, value is what you get." The value here is genuinely improving quarter over quarter; the price has already run ahead to reflect a good chunk of that improvement.</div>
+  </div>
+
+  <h2 class="section-title">Upgrade Conditions</h2>
+  <div class="cond-badge"><span class="cond-num">1</span> Price corrects to the ₹340–₹400 zone (a 15–25% discount to CMP, closer to Base-case MoS entry)</div>
+  <div class="cond-badge"><span class="cond-num">2</span> Consolidated FY27 net profit disclosure reconciles cleanly (single, unambiguous figure post Ecom Express integration)</div>
+  <div class="cond-badge"><span class="cond-num">3</span> ROCE rises above 8% for 2 consecutive quarters</div>
+  <div class="cond-badge"><span class="cond-num">4</span> Delhivery Maps discloses external (non-captive) revenue or customer-count metrics for 2 consecutive quarters</div>
+  <div class="cond-badge"><span class="cond-num">5</span> FCF conversion (CFO/EBITDA) sustains above 60% for 2 consecutive quarters</div>
+
+  <h2 class="section-title">Series Tracker</h2>
+  <table>
+    <tr><th>Ticker</th><th>Category</th><th>Verdict</th><th>AI Overlay</th></tr>
+    <tr><td>DELHIVERY</td><td>D</td><td>WATCH ★★★</td><td>🟢</td></tr>
+  </table>
+  <p class="small">First entry in this tracking series for this ticker.</p>
+</div>
+
+<!-- TAB 7 TECHNICAL -->
+<div class="tab-content" id="t7">
+  <h2 class="section-title">Price Structure</h2>
+  <div class="grid grid-4">
+    <div class="metric"><div class="label">CMP</div><div class="value">₹472</div></div>
+    <div class="metric"><div class="label">52-Week Range</div><div class="value">₹374–₹492</div></div>
+    <div class="metric"><div class="label">All-Time High/Low</div><div class="value">₹708 / ₹237</div><div class="sub">Jul-2022 / Mar-2025 <span class="pill pill-v">V</span></div></div>
+    <div class="metric"><div class="label">Beta</div><div class="value">~1.09</div></div>
+  </div>
+
+  <h2 class="section-title">Moving Average Dashboard</h2>
+  <table>
+    <tr><th>MA</th><th>Value</th><th>Price vs MA</th></tr>
+    <tr><td>20-EMA</td><td>₹460.7</td><td class="pass">Above</td></tr>
+    <tr><td>50-DMA</td><td>₹449.8–458.4</td><td class="pass">Above</td></tr>
+    <tr><td>100-EMA</td><td>₹442.8</td><td class="pass">Above</td></tr>
+    <tr><td>200-DMA</td><td>₹439.6–441.4</td><td class="pass">Above</td></tr>
+  </table>
+  <p class="small">Multiple data providers show conflicting daily snapshots given the stock's elevated volatility around the Delhivery Maps launch and Q4 results (late May–June 2026); directionally, price is holding above its short, medium and long-term moving averages, consistent with an intact uptrend off the March 2025 low. <span class="pill pill-u">U</span></p>
+
+  <h2 class="section-title">RSI, MACD &amp; Momentum</h2>
+  <p>14-day RSI readings across sources range from ~28 (oversold, sell signal) to ~50 (neutral) depending on the exact date sampled in a fast-moving late-June 2026 tape — reflecting a stock in a volatile consolidation rather than a clean trend. <span class="pill pill-u">U</span> MACD readings are similarly mixed (slightly negative to slightly positive) across providers. TradingView chart commentary flags a potential bullish breakout above ₹488 resistance with RSI trending toward 70, alongside a competing head-and-shoulders pattern view from other chartists — genuine technical disagreement exists here. <span class="pill pill-u">U</span></p>
+
+  <h2 class="section-title">Chart Patterns</h2>
+  <p>Multiple independent technical takes are visible in recent commentary: (a) a triple-bottom/support-reversal pattern off the ₹374 low, (b) a possible head-and-shoulders topping pattern, and (c) a 38.2% Fibonacci retracement bounce. No single pattern has decisive confirmation as of this report. <span class="pill pill-u">U</span></p>
+
+  <h2 class="section-title">Trade Structure (illustrative, not investment advice)</h2>
+  <div class="grid grid-4">
+    <div class="metric"><div class="label">Entry Zone</div><div class="value" style="font-size:1rem;">₹340–₹400</div></div>
+    <div class="metric"><div class="label">Stop Loss</div><div class="value" style="font-size:1rem;">₹374</div><div class="sub">Below 52wk low</div></div>
+    <div class="metric"><div class="label">Target 1 / 2</div><div class="value" style="font-size:1rem;">₹480 / ₹580</div></div>
+    <div class="metric"><div class="label">R:R</div><div class="value" style="font-size:1rem;">~1:2.3</div></div>
+  </div>
+
+  <h2 class="section-title">Technical Composite Score</h2>
+  <p><strong>17/30 (57%)</strong> — trend structure and moving-average alignment score well; momentum/oscillator signals are mixed-to-conflicting across providers, keeping the composite in "constructive but not confirmed" territory.</p>
+</div>
+
+<!-- TAB 8 SHAREHOLDING -->
+<div class="tab-content" id="t8">
+  <h2 class="section-title">Shareholding Composition</h2>
+  <div class="grid grid-4">
+    <div class="metric"><div class="label">Promoter</div><div class="value">0%</div><div class="sub">No promoter group <span class="pill pill-v">V</span></div></div>
+    <div class="metric g"><div class="label">FII</div><div class="value">~48–53%</div><div class="sub">Range across trackers <span class="pill pill-u">U</span></div></div>
+    <div class="metric g"><div class="label">DII (incl. Mutual Funds)</div><div class="value">~29–33%</div><div class="sub">MF holding rising QoQ: 32.75%→33.16% <span class="pill pill-v">V</span></div></div>
+    <div class="metric"><div class="label">Retail / Non-Institutional</div><div class="value">~15–17%</div></div>
+  </div>
+  <p class="small">Institutions collectively hold ~84.5% of the register as of Mar-2026, an unusually institution-heavy cap table for an Indian listed company, reflecting its VC/PE-backed IPO history (SoftBank, Tiger Global and others were early backers pre-IPO). <span class="pill pill-v">V</span></p>
+
+  <h2 class="section-title">Trend &amp; Signals</h2>
+  <p>Mutual fund holding has been steadily rising quarter-on-quarter (32.75% → 33.16%), a mild positive DII-accumulation signal. <span class="pill pill-v">V</span> Recent large block deals (Nexus Venture Partners selling ₹716 Cr, CPPIB trimming 2.77%) reflect legacy VC/PE investors continuing to monetise pre-IPO stakes — routine but a source of periodic share-price pressure and float expansion. <span class="pill pill-v">V</span> Non-institutional shareholder count has risen from ~139,358 to ~161,965, indicating growing retail interest. <span class="pill pill-e">E</span></p>
+
+  <h2 class="section-title">Free Float &amp; Index Relevance</h2>
+  <p>With 0% promoter holding, free float is effectively the full market cap (~₹35,700 Cr), comfortably above typical Nifty Midcap/Next-50 inclusion thresholds; the stock is a Nifty Midcap constituent given its market-cap ranking. <span class="pill pill-e">E</span></p>
+
+  <h2 class="section-title">Ownership Momentum &amp; Risk Scores</h2>
+  <div class="grid grid-2">
+    <div class="metric g"><div class="label">Ownership Momentum Score</div><div class="value">62/100</div><div class="sub">Rising DII/MF holding, elevated FII base, no pledge risk</div></div>
+    <div class="metric a"><div class="label">Shareholding Risk Score</div><div class="value">45/100</div><div class="sub">Ongoing legacy PE/VC block-deal overhang is the main risk factor</div></div>
+  </div>
+</div>
+
+<!-- TAB 9 AI INTELLIGENCE -->
+<div class="tab-content" id="t9">
+  <h2 class="section-title">A. AI Classification Dashboard</h2>
+  <div class="badge-row">
+    <span class="badge badge-cat">Category D</span>
+    <span class="badge badge-ai">🟢 AI WIDENER</span>
+    <span class="badge" style="background:#3a2c0a;color:var(--amber);border-color:#6b5010;">Flywheel: FORMING</span>
+    <span class="badge badge-macro">Adoption Phase: 2</span>
+  </div>
+  <p class="small" style="margin-top:10px;">Phase 2 = early commercial deployment with real usage evidence but limited external validation — consistent with a platform that launched externally in June 2026. <span class="pill pill-e">E</span></p>
+
+  <h2 class="section-title">B. Data Flywheel Deep-Dive</h2>
+  <p><strong>Q1 — What is the proprietary training data?</strong> Telemetry from over 2 billion historical shipments and roughly 1 billion daily GPS pings across a fleet of 100,000+ vehicles, plus a uniquely large corpus of India's informal, unstructured address data used to train the "Naksha LLM" geospatial reasoning model. <span class="pill pill-v">V</span></p>
+  <p><strong>Q2 — Does AI improve with more users?</strong> Internally, yes — Delhivery has iterated this stack for years to run its own network. Externally (post-June-2026 commercial launch), this remains a management claim rather than an independently verified metric this session. <span class="pill pill-u">U</span></p>
+  <p><strong>Q3 — Does better AI attract more users?</strong> Too early to confirm; the product (APIs, MCP server for AI agents) is built for this, but no adoption numbers are public yet. <span class="pill pill-u">U</span></p>
+  <p><strong>Flywheel Score: 6/10</strong> (Data quality 3/3 · Improvement evidence 2/4 · Loop speed 1/3)</p>
+
+  <h2 class="section-title">C. AI Value Chain Position</h2>
+  <p>Delhivery Maps sits primarily at <strong>Level 4 — Vertical Application</strong> (a domain-specific AI product for logistics/geospatial use cases built atop its own foundation-model-scale data asset), with elements of <strong>Level 1 — Infrastructure</strong> given it is now offered as raw API/MCP infrastructure to third-party developers. This is a favourable position: vertical applications with genuinely proprietary data tend to have longer investment horizons (5-7 years) and more durable moats than thin wrapper products around third-party LLMs.</p>
+
+  <h2 class="section-title">D. India AI Opportunity</h2>
+  <table>
+    <tr><th>Structural Advantage</th><th>Relevance</th></tr>
+    <tr><td>India Stack data access (UPI/Aadhaar)</td><td>No — Delhivery's edge is proprietary logistics telemetry, not India Stack rails directly</td></tr>
+    <tr><td>Vernacular/informal-address AI benefit</td><td>Yes — Naksha LLM is explicitly built to resolve India's informal, non-standardised addressing, a genuine local advantage over global mapping providers <span class="pill pill-v">V</span></td></tr>
+    <tr><td>India Stack infra leverage (ONDC etc.)</td><td>Partial — logistics fulfilment for ONDC-enabled commerce is a plausible growth vector</td></tr>
+    <tr><td>AI talent cost arbitrage</td><td>Yes — in-house model development at India engineering cost base</td></tr>
+  </table>
+
+  <h2 class="section-title">F. AI Opportunity Score</h2>
+  <div class="gauge-wrap">
+    <div class="metric o" style="min-width:160px;"><div class="label">AI Opportunity Score</div><div class="value">58/100</div><div class="sub">Data Flywheel 12/20 · Adoption Phase 10/20 · Value Chain 14/20 · India Advantage 12/20 · Threat Resistance 10/20</div></div>
+    <div>
+      <p><strong>Portfolio Role: MONITOR (40-60 band)</strong> — real and interesting, but not yet a primary investment driver. Investment horizon if this scales: 5-7 years (Level 4 vertical application).</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="disc-box">
+    <strong>SEBI Disclaimer:</strong> This report is generated for personal research and educational purposes only and does not constitute investment advice, a recommendation, or an offer/solicitation to buy or sell any security. Data is sourced from public filings and third-party financial data providers as of late June/early July 2026 and may contain inaccuracies, particularly where sources conflict (flagged inline as [UNVERIFIED]). Past performance and analyst estimates are not indicative of future results. Consult a SEBI-registered investment adviser before making investment decisions.
+  </div>
+  <p style="margin-top:10px;">Buffett Quality-Value Series v5.0 · Report generated 01-Jul-2026 · Fonts: Space Grotesk, JetBrains Mono, IBM Plex Sans (Google Fonts)</p>
+</div>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; el.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  var panel = document.getElementById(tabId);
+  panel.style.display = 'block';
+  panel.classList.add('active');
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
