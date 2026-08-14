@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEAP India Limited — BQV v5.0 Research Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --race-orange:#ff5a1f;
+  --midnight:#0b0f1a;
+  --midnight-2:#12182a;
+  --chrome:#c8ced9;
+  --chrome-dim:#7d8494;
+  --white:#f5f6f8;
+  --green:#2ecc71;
+  --amber:#f2b705;
+  --red:#e6483f;
+  --border:#232a3d;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--white);
+  color:#1a1d24;
+  font-family:'Work Sans',sans-serif;
+  font-size:15px;
+  line-height:1.55;
+}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;font-weight:600;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 60px;}
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,var(--midnight) 0%,var(--midnight-2) 100%);
+  color:var(--white);
+  padding:24px 16px 18px;
+  max-height:none;
+}
+.hero-inner{max-width:980px;margin:0 auto;}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
+.hero-name{font-size:1.7rem;font-weight:700;}
+.hero-sub{color:var(--chrome-dim);font-size:.85rem;margin-top:2px;}
+.verdict-badge{
+  background:var(--red);color:#fff;font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:.85rem;padding:6px 12px;border-radius:6px;white-space:nowrap;
+}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.badge{
+  border:1px solid var(--border);background:rgba(255,255,255,.04);
+  padding:5px 10px;border-radius:20px;font-size:.78rem;color:var(--chrome);
+}
+.badge.orange{border-color:var(--race-orange);color:var(--race-orange);}
+.lede{margin-top:14px;font-size:.92rem;color:var(--chrome);max-width:760px;}
+.confpills{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
+.pill{font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:3px 8px;border-radius:4px;}
+.pill.v{background:rgba(46,204,113,.15);color:var(--green);}
+.pill.e{background:rgba(242,183,5,.15);color:var(--amber);}
+.pill.u{background:rgba(230,72,63,.15);color:var(--red);}
+
+/* TAB BAR */
+#tab-bar{
+  position:sticky;top:0;z-index:50;background:var(--midnight);
+  display:flex;overflow-x:auto;white-space:nowrap;border-bottom:2px solid var(--border);
+  -webkit-overflow-scrolling:touch;
+}
+.tab-btn{
+  background:none;border:none;color:var(--chrome-dim);font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;padding:12px 13px;cursor:pointer;border-bottom:3px solid transparent;
+  flex:0 0 auto;
+}
+.tab-btn.active{color:var(--race-orange);border-bottom-color:var(--race-orange);}
+
+/* CONTENT */
+.tab-content{display:none;padding:22px 0 10px;}
+.tab-content.active{display:block;}
+.section-title{font-size:1.05rem;margin:22px 0 10px;color:#12182a;border-left:4px solid var(--race-orange);padding-left:10px;}
+.section-title:first-child{margin-top:0;}
+p{margin-bottom:10px;}
+.card{background:#fff;border:1px solid #e2e5ec;border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;}
+.metric{border-left:3px solid var(--chrome-dim);background:#fafbfc;border-radius:6px;padding:9px 11px;}
+.metric.g{border-left-color:var(--green);}
+.metric.a{border-left-color:var(--amber);}
+.metric.r{border-left-color:var(--red);}
+.metric .label{font-size:.68rem;color:#666;text-transform:uppercase;letter-spacing:.03em;}
+.metric .value{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;margin-top:2px;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:14px;}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid #e6e8ee;}
+th{background:#f4f5f8;font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;color:#555;}
+.status-pass{color:var(--green);font-weight:700;}
+.status-marg{color:var(--amber);font-weight:700;}
+.status-fail{color:var(--red);font-weight:700;}
+.moatstars{color:var(--race-orange);letter-spacing:2px;}
+.verdictbox{
+  background:var(--midnight);color:#fff;border-radius:12px;padding:20px;
+  border:2px solid var(--red);margin:16px 0;
+}
+.verdictbox h3{color:#fff;}
+.verdictbox .quote{font-style:italic;color:var(--chrome);margin-top:10px;font-size:.88rem;border-left:3px solid var(--race-orange);padding-left:12px;}
+.flywheelbox{background:#fff7f0;border:2px solid var(--race-orange);border-radius:10px;padding:16px;margin:14px 0;}
+.flag{background:#fff3e0;border-left:4px solid var(--amber);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.88rem;}
+.flag.judgment{background:#f0f4ff;border-left-color:#5b6ee1;}
+.adapt{background:#fdecea;border-left:4px solid var(--red);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:.88rem;}
+ul{padding-left:20px;margin-bottom:10px;}
+li{margin-bottom:4px;}
+footer{
+  text-align:center;font-size:.72rem;color:#888;padding:24px 16px;border-top:1px solid #e2e5ec;margin-top:20px;
+}
+@media(max-width:680px){
+  .hero-name{font-size:1.35rem;}
+  .tab-btn{padding:11px 10px;font-size:.68rem;}
+}
+@media(max-width:600px){
+  .grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div>
+        <div class="hero-name">LEAP India Limited</div>
+        <div class="hero-sub mono">NSE/BSE: LEAPINDIA (est.) · IPO Listing Day · Aug 14, 2026</div>
+      </div>
+      <div class="verdict-badge">PASS</div>
+    </div>
+    <div class="badge-row">
+      <span class="badge orange">Category C — Mature Quality Compounder</span>
+      <span class="badge">⚪ AI NEUTRAL</span>
+      <span class="badge">Macro: Tailwind (Neutral-lean)</span>
+      <span class="badge">Day-1 Adaptation Active</span>
+    </div>
+    <p class="lede">India's dominant (~90% share) pallet/asset-pooling infrastructure platform, freshly listed via a heavily OFS-driven KKR-sponsored IPO — a genuinely strong moat business priced, on Day 1, at roughly 5x any BQV-consistent estimate of intrinsic value.</p>
+    <div class="confpills">
+      <span class="pill v">VERIFIED — IPO mechanics, subscription, anchor book</span>
+      <span class="pill e">ESTIMATED — DCF/valuation, macro-derived growth</span>
+      <span class="pill u">UNVERIFIED — 5yr history, FCF detail (no track record)</span>
+    </div>
+  </div>
+</div>
+
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="t0" onclick="switchTab('t0')">0 Overview</button>
+  <button class="tab-btn" data-tab="t1" onclick="switchTab('t1')">1 Macro</button>
+  <button class="tab-btn" data-tab="t2" onclick="switchTab('t2')">2 Financials</button>
+  <button class="tab-btn" data-tab="t3" onclick="switchTab('t3')">3 Moat</button>
+  <button class="tab-btn" data-tab="t4" onclick="switchTab('t4')">4 Management</button>
+  <button class="tab-btn" data-tab="t5" onclick="switchTab('t5')">5 Valuation</button>
+  <button class="tab-btn" data-tab="t6" onclick="switchTab('t6')">6 Verdict</button>
+  <button class="tab-btn" data-tab="t7" onclick="switchTab('t7')">7 Technical</button>
+  <button class="tab-btn" data-tab="t8" onclick="switchTab('t8')">8 Shareholding</button>
+  <button class="tab-btn" data-tab="t9" onclick="switchTab('t9')">9 AI Intel</button>
+</div>
+
+<div class="wrap">
+
+<!-- TAB 0 OVERVIEW -->
+<div class="tab-content active" id="t0">
+  <div class="adapt"><strong>Day-1 adaptation notice:</strong> No post-listing price history exists. Issue price (₹159, upper band) is used as the valuation anchor throughout this report. Technical, shareholding-trend, and 5-year financial-history sections are adapted or marked UNVERIFIED accordingly.</div>
+
+  <div class="section-title">Business</div>
+  <p>LEAP India runs a "share-and-reuse" asset-pooling model: businesses rent standardised pallets, containers, and material handling equipment (MHE) instead of owning them. Founded 2013 by Sunu Mathew; KKR (via Vertical Holdings II Pte Ltd) acquired a majority stake in 2023. The company consolidated its market position by acquiring CHEP India in January 2025.</p>
+  <div class="grid">
+    <div class="metric"><div class="label">Pooled Assets (FY26)</div><div class="value">14.70M</div></div>
+    <div class="metric"><div class="label">Customer Touchpoints</div><div class="value">10,100+</div></div>
+    <div class="metric"><div class="label">Customers</div><div class="value">1,000+</div></div>
+    <div class="metric"><div class="label">Fulfilment Centres</div><div class="value">29</div></div>
+    <div class="metric"><div class="label">Top-100 Churn (FY26)</div><div class="value">0%</div></div>
+    <div class="metric"><div class="label">Market Share (Pallet Pooling)</div><div class="value">~90%</div></div>
+  </div>
+
+  <div class="section-title">Why This Stock Is Interesting</div>
+  <ul>
+    <li>Rare, near-monopoly physical-infrastructure moat — closest India analogue to global pooling incumbents (Brambles/CHEP model), now consolidated domestically after the CHEP India acquisition.</li>
+    <li>Marquee institutional anchor book (Norway's GPFG, Smallcap World Fund, Monetary Authority of Singapore, Morgan Stanley, Goldman Sachs) signals genuine long-term conviction, not just flip-oriented demand.</li>
+    <li>Structural tailwind: India's pallet market is projected to grow from ~10.6cr to ~16.4cr units by FY31, with the pooling segment specifically forecast at ~15% CAGR (organised-logistics formalisation, e-commerce, Grade-A warehousing).</li>
+  </ul>
+
+  <div class="section-title">Why This Stock Is Challenging</div>
+  <ul>
+    <li>The IPO is 81% Offer-for-Sale (₹2,000cr of the ₹2,480cr issue) — this is primarily a KKR/promoter monetisation event, not a growth-capital raise.</li>
+    <li>Capital-intensive by design (physical fleet ownership) — the opposite of the "capital-light" profile the BQV Financial Fortress checklist rewards.</li>
+    <li>P/E of ~112x at issue price against ROE of only ~6.2–6.5% is an unusually wide quality-vs-price gap for a Day-1 listing.</li>
+    <li>Recent 41–54% headline growth is materially inflated by the CHEP India acquisition (inorganic), not a clean read on organic compounding.</li>
+  </ul>
+
+  <div class="section-title">Framework Adaptation</div>
+  <p>Standard Cat A/B/C/D machinery applies, but every 5-year historical check (ROE trend, ROIC trend, FCF conversion trend) is replaced with single-year FY26 data flagged UNVERIFIED for trend purposes. Valuation is anchored to issue price, not a live market price.</p>
+</div>
+
+<!-- TAB 1 MACRO -->
+<div class="tab-content" id="t1">
+  <div class="section-title">Macro Cycle Status (India)</div>
+  <table>
+    <tr><th>Dimension</th><th>Status</th><th>Note</th></tr>
+    <tr><td>Rural Income Cycle</td><td class="status-marg">Neutral</td><td>Limited direct relevance — B2B industrial demand driver, not rural consumption</td></tr>
+    <tr><td>Urban Consumption / Premiumisation</td><td class="status-marg">Neutral</td><td>Indirect — FMCG/e-commerce client base benefits from urban demand</td></tr>
+    <tr><td>Input Cost Cycle</td><td class="status-pass">Tailwind</td><td>Timber/steel/plastic input costs broadly stable; oil-driven freight cost risk from Middle East tensions</td></tr>
+    <tr><td>RBI Rate Cycle</td><td class="status-marg">Neutral</td><td>Repo held at 5.25%, neutral stance (Aug 2026 policy) — no near-term tailwind or headwind</td></tr>
+    <tr><td>Government Capex Cycle</td><td class="status-pass">Tailwind</td><td>PM Gati Shakti + Grade-A warehousing build-out directly expands addressable pallet-pooling demand</td></tr>
+    <tr><td>AI Adoption Cycle</td><td class="status-marg">Neutral</td><td>IoT/RFID/AI used for efficiency, not a sector-repricing force here</td></tr>
+  </table>
+  <p><strong>Macro Composite: Mild Tailwind</strong> · <strong>AI Cycle Impact: Neutral</strong></p>
+
+  <div class="section-title">Macro Anchors [VERIFIED]</div>
+  <div class="grid">
+    <div class="metric"><div class="label">India 10Y G-Sec</div><div class="value">6.79%</div></div>
+    <div class="metric"><div class="label">Nifty 50 P/E</div><div class="value">20.6x</div></div>
+    <div class="metric"><div class="label">RBI Repo Rate</div><div class="value">5.25%</div></div>
+    <div class="metric"><div class="label">FY27E Real GDP</div><div class="value">6.7%</div></div>
+    <div class="metric"><div class="label">FY27E CPI</div><div class="value">5.0%</div></div>
+    <div class="metric"><div class="label">Nominal GDP (derived)</div><div class="value">~11.7%</div></div>
+  </div>
+
+  <div class="section-title">Sector Growth Derivation [ESTIMATED — no preset BQV row for asset-pooling; derived directly from F&S sector report]</div>
+  <table>
+    <tr><th>Scenario</th><th>Growth Basis</th><th>AI Impact</th></tr>
+    <tr><td>Stress</td><td>7–9% (unit-volume growth only, no pooling-mix gain)</td><td>Neutral</td></tr>
+    <tr><td>Base</td><td>13–16% (F&S-cited pooling-segment CAGR)</td><td>Neutral</td></tr>
+    <tr><td>Accel</td><td>18–22% (pooling-mix share gain + adjacent MHE growth)</td><td>Neutral</td></tr>
+  </table>
+
+  <div class="section-title">Company Alpha Over Sector</div>
+  <table>
+    <tr><th>Source</th><th>Status</th><th>Stage 1</th><th>Stage 2</th></tr>
+    <tr><td>Market share gain</td><td>Exhausted</td><td>+0–1%</td><td>+0%</td></tr>
+    <tr><td>Premiumisation</td><td>N/A</td><td>—</td><td>—</td></tr>
+    <tr><td>Category expansion (MHE/TARON)</td><td>Active</td><td>+2–4%</td><td>+1–2%</td></tr>
+    <tr><td>Geographic expansion</td><td>Exhausted (domestic), Potential (int'l)</td><td>+0–1%</td><td>+1–3%</td></tr>
+    <tr><td>Pricing power</td><td>Potential (0% top-100 churn suggests some room)</td><td>+1–2%</td><td>+1%</td></tr>
+    <tr><td>AI alpha (6a+6b+6c)</td><td>Feature only</td><td>+0–1%</td><td>+0–1%</td></tr>
+    <tr><td><strong>Total alpha</strong></td><td>—</td><td><strong>+3–9%</strong></td><td><strong>+3–7%</strong></td></tr>
+  </table>
+  <p>Judgment call: ~90% share is already near-saturated domestically (the framework's own note that ">50% share = hard to grow further" applies directly), so most of the growth story is sector-beta plus adjacency, not further share capture.</p>
+
+  <div class="section-title">Growth Rate Summary</div>
+  <table>
+    <tr><th>Parameter</th><th>Stress</th><th>Base</th><th>Accel</th></tr>
+    <tr><td>Macro state</td><td>GDP ~5.5%</td><td>GDP ~6.7%</td><td>GDP ~8%+</td></tr>
+    <tr><td>Sector growth</td><td>7–9%</td><td>13–16%</td><td>18–22%</td></tr>
+    <tr><td>Company alpha</td><td>+3%</td><td>+5%</td><td>+7%</td></tr>
+    <tr><td>Stage 1 PAT CAGR</td><td>12%</td><td>20%</td><td>28%</td></tr>
+    <tr><td>Terminal growth</td><td>7%</td><td>9%</td><td>11%</td></tr>
+    <tr><td>Margin direction</td><td>Compress (competitive re-entry)</td><td>Stable</td><td>Expand (scale + TARON mix)</td></tr>
+    <tr><td>Key risk</td><td>New entrant erodes pricing</td><td>Growth normalises post-CHEP</td><td>Successful adjacency scaling</td></tr>
+  </table>
+  <p><strong>Sensitivity:</strong> a 1% change in Stage-1 growth moves Base IV by roughly 4–5%; a 1% change in terminal growth moves it by roughly 6–8% — this stock's fair value is unusually sensitive to whether the ~15% sector CAGR actually holds, since the current PAT base (₹62cr) is so small relative to the ₹7,005cr price being paid.</p>
+</div>
+
+<!-- TAB 2 FINANCIALS -->
+<div class="tab-content" id="t2">
+  <div class="adapt">5-year trend checks (ROE, ROIC, FCF conversion) cannot be run — LEAP has no public trading/reporting history. Only FY24–FY26 RHP figures are available, and FY25–26 include the CHEP India acquisition (Jan 2025), which inflates YoY comparisons. All checks below marked accordingly.</div>
+
+  <div class="section-title">Headline Financials [VERIFIED — RHP figures]</div>
+  <div class="grid">
+    <div class="metric"><div class="label">Revenue FY26</div><div class="value">₹747.4cr</div></div>
+    <div class="metric"><div class="label">Revenue FY25</div><div class="value">₹485.0cr</div></div>
+    <div class="metric"><div class="label">PAT FY26</div><div class="value">₹62.3cr</div></div>
+    <div class="metric"><div class="label">PAT FY25</div><div class="value">₹37.6cr</div></div>
+    <div class="metric r"><div class="label">Net Margin</div><div class="value">8.34%</div></div>
+    <div class="metric g"><div class="label">EBITDA Margin</div><div class="value">50.69%</div></div>
+    <div class="metric r"><div class="label">ROE / RoNW</div><div class="value">~6.2–6.5%</div></div>
+    <div class="metric a"><div class="label">ROCE</div><div class="value">19.06%</div></div>
+    <div class="metric r"><div class="label">Debt/Equity</div><div class="value">~1.01x</div></div>
+    <div class="metric r"><div class="label">P/E (at ₹159)</div><div class="value">111.97x</div></div>
+    <div class="metric r"><div class="label">P/B</div><div class="value">6.48x</div></div>
+    <div class="metric"><div class="label">Post-issue EPS</div><div class="value">₹1.42</div></div>
+  </div>
+  <p class="mono" style="font-size:.78rem;color:#666;">FY24–26 CAGR: Revenue 41.4% · EBITDA 33.3% · PAT 29.5% [VERIFIED, but M&A-inflated — see judgment call below]</p>
+
+  <div class="flag judgment"><strong>Judgment call flagged for framework:</strong> ROE (~6.2–6.5%) and ROCE (19.06%) diverge sharply — normal for a business that just took on fresh post-IPO equity and carries meaningful acquisition-related debt/goodwill from CHEP. Treat ROE as depressed-but-improving rather than structurally weak; ROCE is the cleaner near-term moat-quality signal here.</p>
+
+  <div class="section-title">Financial Fortress Scorecard [Cat C]</div>
+  <table>
+    <tr><th>Test</th><th>Result</th><th>Note</th></tr>
+    <tr><td>ROE ≥15% for 5 years</td><td class="status-fail">FAIL</td><td>Single-year ~6.2–6.5%; no 5yr history exists</td></tr>
+    <tr><td>ROIC/ROCE > WACC for 5 years</td><td class="status-marg">MARGINAL</td><td>19.06% > 13% WACC for the one year available; no trend</td></tr>
+    <tr><td>Net cash preferred</td><td class="status-fail">FAIL</td><td>D/E ~1.01x; ₹360cr of fresh proceeds earmarked for debt repayment</td></tr>
+    <tr><td>Net profit margin ≥15%</td><td class="status-fail">FAIL</td><td>8.34%</td></tr>
+    <tr><td>FCF positive + growing, conversion ≥80%</td><td class="status-fail">UNVERIFIED → treat as FAIL</td><td>Full cash-flow statement not available from IPO summary sources; capital-intensive fleet model makes strong FCF conversion unlikely near-term</td></tr>
+    <tr><td>Owner earnings ≥ net income</td><td class="status-fail">UNVERIFIED → treat as MARGINAL/FAIL</td><td>Fleet replacement capex likely exceeds D&A in a growth-pooling model — same logic as the SBC-heavy owner-earnings caution, applied to physical capex here</td></tr>
+    <tr><td>Pricing power proven</td><td class="status-marg">MARGINAL</td><td>0% churn in top-100 clients is suggestive, not proof of price hikes without volume loss</td></tr>
+    <tr><td>Revenue CAGR ≥ sector CAGR</td><td class="status-marg">MARGINAL</td><td>41.4% reported vs ~15% sector — but M&A-inflated; organic rate unverified</td></tr>
+    <tr><td>Predictable/recurring revenue</td><td class="status-pass">PASS</td><td>Rental/pooling model is inherently recurring</td></tr>
+    <tr><td>Capital-light model</td><td class="status-fail">FAIL</td><td>Structurally capital-heavy — physical fleet ownership is the business</td></tr>
+    <tr><td>Dividend payout &lt;80% of owner earnings</td><td>N/A</td><td>No dividend history; growth/deleveraging phase</td></tr>
+  </table>
+  <p><strong>Scorecard read: 1 PASS · 3 MARGINAL · 6 FAIL · 1 N/A</strong> — a weaker Financial Fortress profile than the moat and growth headlines suggest.</p>
+
+  <div class="section-title">Owner Earnings [ESTIMATED — conservative]</div>
+  <p class="card">Net Income (₹62.3cr) + D&A (est.) + non-cash items − Maintenance CapEx (fleet replacement) ± WC change. Full D&A/CapEx split is not disclosed in the IPO summary sources reviewed this session. Conservative estimate: <strong>Owner Earnings ≈ Net Income</strong> (₹62.3cr), i.e. no premium assumed — a capital-intensive pooling model typically sees maintenance capex roughly offset D&A add-back. Treated as [UNVERIFIED].</p>
+
+  <div class="section-title">Earnings Quality — O'Glove Framework</div>
+  <table>
+    <tr><th>Test</th><th>Result</th></tr>
+    <tr><td>1. FCF Conversion (CFO/NI)</td><td class="status-fail">UNVERIFIED (data unavailable) → lean FAIL given capex intensity</td></tr>
+    <tr><td>2. DSO Trend</td><td class="status-marg">UNVERIFIED</td></tr>
+    <tr><td>3. Inventory Days</td><td>N/A (service/rental model, not inventory-driven)</td></tr>
+    <tr><td>4. Accounting Policy Stability</td><td class="status-pass">PASS (no flagged changes found)</td></tr>
+    <tr><td>5. Gross Margin Consistency</td><td class="status-pass">PASS — EBITDA margin 50.69% is high and plausible for an asset-pooling model</td></tr>
+  </table>
+  <p><strong>Overall Earnings Quality Grade: SUSPECT</strong> (insufficient independently verifiable cash-flow data on a Day-1 listing) → MoS widened +5% in valuation.</p>
+</div>
+
+<!-- TAB 3 MOAT -->
+<div class="tab-content" id="t3">
+  <div class="section-title">Moat Sources</div>
+  <div class="card"><strong>Scale & Network</strong> <span class="moatstars">★★★★</span><br>14.70M pooled assets, 29 fulfilment centres, 10,100+ touchpoints pan-India — F&S report cites this as the single largest barrier: replicating the fleet requires "substantial investment over multiple years with no assurance of immediate customer demand."</div>
+  <div class="card"><strong>Customer Relationships / Switching Costs</strong> <span class="moatstars">★★★★</span><br>0% churn among top-100 clients (HCCBPL, Marico, P&G, Asian Paints, Daikin, Panasonic, Daimler, Haier). Once a customer's warehouse/production workflow is built around LEAP's pallet/container specs and MyLEAP tracking, switching is operationally disruptive.</div>
+  <div class="card"><strong>Cost Advantage</strong> <span class="moatstars">★★★</span><br>Shared-fleet utilisation economics beat any single customer owning its own pallets — but this advantage compresses as competitors (Loscam, Schoeller Allibert) scale regionally.</div>
+  <div class="card"><strong>Efficient Scale / Consolidation</strong> <span class="moatstars">★★★★</span><br>CHEP India acquisition (Jan 2025) removed the only scaled domestic competitor, pushing LEAP to ~90% share — global precedent (this industry is "typically a monopoly or duopoly" per country, per the F&S report) suggests this consolidation is durable.</div>
+
+  <div class="section-title">ROIC as Moat Proof</div>
+  <p>ROCE 19.06% sits in the "narrow-to-wide moat" band (15–40%) on a single available year — genuinely respectable, but there is no 5-year trend to confirm durability through a full capex/demand cycle, and it is meaningfully diluted by the 2023 KKR LBO-style capital structure and the 2025 CHEP acquisition.</p>
+
+  <div class="flywheelbox">
+    <h3>DATA FLYWHEEL VERDICT: <span style="color:#e6483f;">FEATURE ★</span> — Score 3/10</h3>
+    <ul>
+      <li>✓ Proprietary data: <strong>Partial</strong> — RFID/IoT movement data across 14.7M assets is genuinely hard to replicate at scale, but is asset-tracking data, not customer-behaviour data with strong network effects.</li>
+      <li>✗ Data improves AI with more users: <strong>Not evidenced</strong> — AI/ML is used for pallet demand forecasting; no disclosed evidence that forecasting accuracy compounds specifically with customer count.</li>
+      <li>✗ Better AI attracts more users: <strong>Not evidenced</strong> — customers choose LEAP for network reach and cost savings, not an AI-driven product advantage.</li>
+    </ul>
+    <p>1 of 3 confirmed → <strong>FEATURE</strong>: AI adds real operational value (demand forecasting, RFID/IoT tracking via the proprietary MyLEAP platform) but does not compound the moat the way a true flywheel would. The moat here is physical (fleet + network + relationships), not data-driven.</p>
+  </div>
+
+  <div class="section-title">Macro Stress Test</div>
+  <table>
+    <tr><th>Moat Source</th><th>In Stress Scenario</th></tr>
+    <tr><td>Scale/Network</td><td class="status-pass">STRENGTHENS — smaller rivals struggle to fund fleet capex in a downturn</td></tr>
+    <tr><td>Customer switching costs</td><td class="status-pass">HOLDS — sunk integration cost keeps clients even if demand softens</td></tr>
+    <tr><td>Cost advantage</td><td class="status-marg">WEAKENS mildly — utilisation rates fall with client volumes, pressuring unit economics</td></tr>
+  </table>
+
+  <div class="section-title">Moat Threats</div>
+  <ul>
+    <li>Regional/global players (Loscam, Schoeller Allibert, Tosca) could enter India at scale if the opportunity becomes visible enough post-listing.</li>
+    <li>Customers with sufficient scale (large FMCG/auto majors) retain the option to in-house pooling if LEAP's pricing power is pushed too far — a natural ceiling on the pricing-power lever.</li>
+  </ul>
+</div>
+
+<!-- TAB 4 MANAGEMENT -->
+<div class="tab-content" id="t4">
+  <div class="section-title">Ownership & Capital Allocation</div>
+  <p>Promoters: Sunu Mathew (founder) and Vertical Holdings II Pte Ltd (KKR investment vehicle, majority stake since 2023). Vertical Holdings' pre-IPO stake was trimmed from 73.73% to 68.06% via an early-August private placement (GIC subsidiary Gamnat Pte Ltd and Dymon Asia among the buyers), ahead of a further, much larger reduction through the ₹2,000cr IPO offer-for-sale.</p>
+
+  <div class="flag"><strong>Deal-structure flag:</strong> ₹2,000cr of the ₹2,480cr issue (81%) is OFS — predominantly Vertical Holdings (KKR) monetising, plus promoter-group entity KIA EBT Scheme 3. Only ₹480cr is fresh capital, of which ₹360cr goes to debt repayment. This is a sponsor-exit-led IPO more than a growth-capital raise — common for PE-backed listings, not disqualifying on its own, but it does mean today's buyers are largely the counterparty to KKR's partial exit rather than funding new growth.</div>
+
+  <div class="section-title">Strengths</div>
+  <ul>
+    <li>Decisive, value-accretive M&A execution: the CHEP India acquisition (Jan 2025) converted the only credible domestic competitor into consolidated market leadership.</li>
+    <li>High-quality, long-horizon anchor book (sovereign wealth funds, large global asset managers) suggests sophisticated investors underwrote the growth story at ₹159, not just momentum flippers.</li>
+    <li>0% churn among top-100 clients is a credible proxy for management's execution on service quality and account management.</li>
+  </ul>
+
+  <div class="section-title">Concerns</div>
+  <ul>
+    <li>Heavy sponsor OFS on Day 1 removes the "skin in the game grows with me" signal that's typical of a founder-led, minimal-dilution IPO.</li>
+    <li>No public governance track record yet (newly listed) — board independence, related-party practices, and guidance reliability are all unverified.</li>
+    <li>Pledged shares: no data available (new listing) — flag as UNVERIFIED, monitor first post-listing disclosure.</li>
+  </ul>
+
+  <div class="section-title">Counter-Cyclical Behaviour</div>
+  <p>No public track record to assess (private-equity-owned since 2023, first public disclosures are this IPO). Monitor management's response to the next demand slowdown as the first real data point.</p>
+</div>
+
+<!-- TAB 5 VALUATION -->
+<div class="tab-content" id="t5">
+  <div class="adapt"><strong>Day-1 valuation caveat:</strong> Owner Earnings and ROIC/EPV inputs rely on estimated D&A/CapEx splits (full cash-flow statement not available from IPO summary sources reviewed this session) — both methods are labelled [ESTIMATED] and given less weight in the blend. Earnings Quality was graded SUSPECT (Tab 2) → MoS widened +5% across all methods below.</div>
+
+  <div class="section-title">Method 1 — DCF (2-Stage)</div>
+  <p>WACC 13% (Cat C midpoint) · Terminal P/E 16x/20x/24x (Stress/Base/Accel) · Base year PAT ₹62.3cr</p>
+  <table>
+    <tr><th>Scenario</th><th>Stage-1 PAT CAGR</th><th>Yr-5 PAT</th><th>Terminal Value</th><th>PV (IV/share)</th></tr>
+    <tr><td>Stress</td><td>12%</td><td>₹109.9cr</td><td>₹1,758cr</td><td class="mono">₹21.7</td></tr>
+    <tr><td>Base</td><td>20%</td><td>₹155.1cr</td><td>₹3,102cr</td><td class="mono">₹38.2</td></tr>
+    <tr><td>Accel</td><td>28%</td><td>₹214.2cr</td><td>₹5,141cr</td><td class="mono">₹63.4</td></tr>
+  </table>
+  <p class="mono" style="font-size:.8rem;color:#666;">Sensitivity: ±1% terminal growth ≈ ±6–8% IV · ±1% WACC ≈ ±5% IV · ±1% Stage-1 growth ≈ ±4–5% IV</p>
+
+  <div class="section-title">Method 2 — Owner Earnings Capitalisation [ESTIMATED]</div>
+  <p class="card">OE ≈ ₹62.3cr (conservative, see Tab 2) ÷ (13% required return − 9% macro-derived g) = ₹1,558cr → <strong class="mono">₹35.4/share</strong></p>
+
+  <div class="section-title">Method 3 — ROIC/EPV [ESTIMATED — D&A/EBIT modelled, not disclosed]</div>
+  <p class="card">Est. EBIT ≈ ₹179cr (EBITDA ₹378.9cr less modelled D&A ≈ ₹200cr) → NOPAT ≈ ₹134cr ÷ 13% WACC = ₹1,031cr → <strong class="mono">₹23.4/share</strong>. Treat as a rough floor, not a precise figure.</p>
+
+  <div class="section-title">Method 4 — P/E Earnings Power / Reverse DCF</div>
+  <p class="card">At issue price, the market is pricing in a Year-5 PAT of ~₹645cr (20x terminal P/E) to justify today's ₹7,005cr market cap with zero return — that requires a sustained <strong>~60% PAT CAGR for 5 straight years</strong>, roughly 2x even the historical M&A-inflated growth rate and 4x the sector's organic ~15% CAGR. This is the single clearest number in the report.</p>
+
+  <div class="section-title">Method 5 — Earnings Yield vs Bond Yield</div>
+  <table>
+    <tr><td>Earnings Yield (1/P/E)</td><td class="mono">0.89%</td></tr>
+    <tr><td>India 10Y G-Sec</td><td class="mono">6.79%</td></tr>
+    <tr><td>Implied "ERP"</td><td class="mono status-fail">−5.9%</td></tr>
+    <tr><td>Dividend Yield</td><td class="mono">0%</td></tr>
+  </table>
+  <p>A negative implied equity risk premium at the risk-free rate is a textbook "priced for perfection" signal in the Graham/Buffett earnings-yield lens.</p>
+
+  <div class="section-title">5-Method Summary</div>
+  <table>
+    <tr><th>Method</th><th>Stress</th><th>Base</th><th>Accel</th></tr>
+    <tr><td>DCF</td><td>₹22</td><td>₹38</td><td>₹63</td></tr>
+    <tr><td>Owner Earnings Cap</td><td>—</td><td>₹35</td><td>—</td></tr>
+    <tr><td>ROIC/EPV</td><td>—</td><td>₹23</td><td>—</td></tr>
+    <tr><td>P/E Earnings Power</td><td colspan="3">Reverse-DCF implies ~60% CAGR needed to justify price — not a point IV</td></tr>
+    <tr><td><strong>Blended Base IV</strong></td><td colspan="3" class="mono"><strong>≈ ₹32–38 (use ₹35)</strong></td></tr>
+  </table>
+
+  <div class="card" style="background:#fdecea;border-color:var(--red);">
+    <strong>Base IV: ₹35</strong> · <strong>MoS Entry Zone (Cat C, 20% MoS, +5% earnings-quality widening): ₹26–₹30</strong><br>
+    Issue price ₹159 / GMP-implied listing ₹170–180 is <strong>~5–6x</strong> this range.
+  </div>
+</div>
+
+<!-- TAB 6 VERDICT -->
+<div class="tab-content" id="t6">
+  <div class="section-title">Four-Pillar Grades</div>
+  <table>
+    <tr><th>Pillar</th><th>Grade</th><th>One-line why</th></tr>
+    <tr><td>Moat</td><td><strong>A−</strong></td><td>Genuine near-monopoly, high barriers, 0% top-client churn — but unproven through a full public-market cycle</td></tr>
+    <tr><td>Financial Fortress (Quality)</td><td><strong>C</strong></td><td>1 PASS / 3 MARGINAL / 6 FAIL on the scorecard; capital-heavy by design, thin net margin, leveraged</td></tr>
+    <tr><td>Management Integrity</td><td><strong>B</strong></td><td>Strong M&A execution and top-tier anchor book, offset by heavy sponsor OFS and zero public track record</td></tr>
+    <tr><td>Valuation / MoS</td><td><strong>F</strong></td><td>Price ~5–6x Blended Base IV; negative implied ERP vs risk-free rate</td></tr>
+  </table>
+
+  <div class="verdictbox">
+    <h3>VERDICT: PASS</h3>
+    <p>AI Overlay: ⚪ NEUTRAL — no change to base thesis</p>
+    <p class="quote">"Price is what you pay, value is what you get." A wonderful moat business does not become a wonderful <em>investment</em> at any price — and on Day 1, LEAP is priced for outcomes the BQV framework's own assumptions can't get close to justifying.</p>
+  </div>
+
+  <div class="section-title">Upgrade Conditions (any 3 of 5 → revisit for WATCH)</div>
+  <ol>
+    <li>Price corrects to the ₹26–₹30 MoS entry zone (an 80%+ pullback from issue price) — extreme but the framework's own bar.</li>
+    <li>Two consecutive quarterly results with organic (ex-CHEP) revenue growth disclosed and verified ≥15% (matching sector CAGR without M&A inflation).</li>
+    <li>FCF conversion (CFO/Net Income) confirmed ≥60% for 2 consecutive quarters once cash-flow statements are published.</li>
+    <li>Promoter/KKR lock-in expiry passes without material further OFS/block-deal selling.</li>
+    <li>ROE improves to ≥10% for 2 consecutive quarters as post-IPO deleveraging (₹360cr debt repayment) takes effect.</li>
+  </ol>
+
+  <div class="section-title">Series Tracker (Argus_reports coverage)</div>
+  <table>
+    <tr><th>Ticker</th><th>Category</th><th>Verdict</th><th>AI</th></tr>
+    <tr><td>SUZLON</td><td>D</td><td>WATCH ★★★</td><td>⚪</td></tr>
+    <tr><td>AADHARHFC</td><td>—</td><td>—</td><td>⚪</td></tr>
+    <tr><td>KNACK</td><td>C</td><td>WATCH ★★</td><td>⚪</td></tr>
+    <tr><td>FTNT</td><td>C</td><td>WATCH ★★★</td><td>🟢</td></tr>
+    <tr><td><strong>LEAPINDIA</strong></td><td><strong>C</strong></td><td><strong>PASS</strong></td><td><strong>⚪</strong></td></tr>
+  </table>
+</div>
+
+<!-- TAB 7 TECHNICAL -->
+<div class="tab-content" id="t7">
+  <div class="adapt"><strong>Day-1 adaptation:</strong> No DMA/RSI/volume history exists. This tab covers the listing-day mechanics relevant to the hold/sell decision instead of standard multi-timeframe technicals.</div>
+
+  <div class="section-title">Listing-Day Reference Points</div>
+  <div class="grid">
+    <div class="metric"><div class="label">Price Band</div><div class="value">₹151–₹159</div></div>
+    <div class="metric"><div class="label">Issue Price</div><div class="value">₹159</div></div>
+    <div class="metric"><div class="label">GMP (as of Aug 12–13)</div><div class="value">₹11–₹13.5</div></div>
+    <div class="metric"><div class="label">GMP-Implied Open</div><div class="value">₹170–₹180</div></div>
+    <div class="metric"><div class="label">Overall Subscription</div><div class="value">6.7x–8.4x*</div></div>
+    <div class="metric"><div class="label">Retail Subscription</div><div class="value">~1.0–1.2x</div></div>
+  </div>
+  <p class="mono" style="font-size:.75rem;color:#666;">*Sources conflict on the final overall multiple (6.71x vs 8.38x depending on reporting cutoff) — QIB (~12.8x) and NII (~11.4x) figures are consistent across sources; retail (~1.0–1.2x) is consistent and notably weaker.</p>
+
+  <div class="section-title">Trade Structure — Framework, Not a Recommendation</div>
+  <p>GMP is informal and unregulated (NSE/BSE/SEBI do not endorse it) — treat the ₹170–180 range as an indicative, not guaranteed, open. Two scenarios:</p>
+  <ul>
+    <li><strong>If it opens near GMP levels (₹170–180):</strong> that's already a price further from the ₹26–30 MoS entry zone than the issue price was. Nothing in this framework supports adding or holding for fundamentals at that level — a listing-gain exit is the position the valuation work supports.</li>
+    <li><strong>If it opens flat or below issue price:</strong> retail's soft 1.0–1.2x subscription makes this a real possibility. Even then, ₹159 itself is ~4.5x the Base IV — a weak open doesn't make this cheap on this framework, it just changes the exit from "profit" to "smaller loss."</li>
+  </ul>
+  <p>No R:R/entry/SL/target ladder is offered here — that machinery assumes a support/resistance history that doesn't exist yet for a Day-1 listing.</p>
+</div>
+
+<!-- TAB 8 SHAREHOLDING -->
+<div class="tab-content" id="t8">
+  <div class="adapt">No quarterly shareholding history exists (Day 1). Post-issue structure only.</div>
+
+  <div class="section-title">Post-Issue Ownership Structure [ESTIMATED from RHP/OFS disclosures]</div>
+  <table>
+    <tr><th>Holder</th><th>Pre-Placement</th><th>Post-IPO (est.)</th></tr>
+    <tr><td>Vertical Holdings II (KKR)</td><td>68.06%</td><td>Materially reduced — sold ~₹1,998.6cr via OFS</td></tr>
+    <tr><td>KIA EBT Scheme 3 (promoter group)</td><td>—</td><td>Reduced via balance of OFS</td></tr>
+    <tr><td>Founder Sunu Mathew</td><td>Co-promoter</td><td>Retained (no disclosed sale)</td></tr>
+    <tr><td>Anchor investors (32, incl. GPFG, Smallcap World Fund, MAS, Morgan Stanley, Goldman Sachs)</td><td>—</td><td>₹743.62cr allotted at ₹159</td></tr>
+    <tr><td>Pre-IPO placement (GIC/Gamnat, Dymon Asia)</td><td>—</td><td>₹371.3cr, Aug 3–4</td></tr>
+  </table>
+
+  <div class="section-title">Free Float & Index Relevance</div>
+  <p>Post-issue market cap ≈ ₹7,005cr — comfortably within Nifty Smallcap/Midcap eligibility ranges over time, but too early for MSCI/Nifty index inclusion assessment on Day 1. No SIP-flow or sectoral-FII-headroom data applicable yet.</p>
+
+  <div class="section-title">Ownership Momentum Score</div>
+  <p>N/A — requires at least 2 quarters of disclosed shareholding pattern to compute. First data point will arrive with the Q2 FY27 shareholding disclosure.</p>
+</div>
+
+<!-- TAB 9 AI INTELLIGENCE -->
+<div class="tab-content" id="t9">
+  <div class="section-title">A. AI Classification Dashboard</div>
+  <div class="badge-row" style="margin-bottom:14px;">
+    <span class="badge orange">Category C</span>
+    <span class="badge">⚪ AI NEUTRAL</span>
+    <span class="badge">Flywheel: FEATURE</span>
+    <span class="badge">Phase 2 [ESTIMATED]</span>
+  </div>
+  <p>Adoption-phase evidence: AI/ML is deployed for pallet demand forecasting and RFID/IoT-based asset tracking (MyLEAP platform, SAP S/4HANA + Salesforce integration) — an efficiency layer on top of a physical-asset moat, not a core product differentiator. This matches the framework's own INDUSTRIALS adaptation note: "AI = operational efficiency (NEUTRAL mostly)."</p>
+
+  <div class="section-title">F. AI Opportunity Score</div>
+  <table>
+    <tr><th>Component</th><th>Score</th></tr>
+    <tr><td>Data Flywheel</td><td>6/20</td></tr>
+    <tr><td>Adoption Phase Timing</td><td>10/20</td></tr>
+    <tr><td>Value Chain Position (Level 5 — AI-enabled incumbent)</td><td>8/20</td></tr>
+    <tr><td>India Structural Advantage</td><td>4/20 — limited direct India Stack (UPI/Aadhaar) relevance for a B2B logistics-asset business</td></tr>
+    <tr><td>AI Threat Resistance</td><td>16/20 — physical-fleet moat is largely immune to AI-only disruption</td></tr>
+    <tr><td><strong>Total</strong></td><td><strong>44/100 — Portfolio Role: MONITOR</strong></td></tr>
+  </table>
+
+  <div class="section-title">D. India AI Opportunity — Structural Advantages</div>
+  <table>
+    <tr><td>India Stack data access (UPI/Aadhaar)</td><td class="status-fail">No — not a financial-identity or payments business</td></tr>
+    <tr><td>Vernacular AI benefit</td><td class="status-marg">Limited — B2B enterprise clients, not consumer-facing</td></tr>
+    <tr><td>India Stack infra leverage (ONDC/logistics)</td><td class="status-marg">Potential — logistics-AI is a named India AI theme, LEAP is adjacent but not core</td></tr>
+    <tr><td>AI talent cost arbitrage</td><td class="status-marg">Neutral — not an AI-talent-driven business model</td></tr>
+  </table>
+
+  <p style="margin-top:14px;color:#666;font-size:.85rem;">Because AI Overlay is NEUTRAL (not WIDENER or THREAT), Sections B, C, and E are abbreviated per the framework's Tab-9 depth rule.</p>
+</div>
+
+</div>
+
+<footer>
+  BQV v5.0 · For informational/educational purposes only, not investment advice. SEBI RA disclaimer: this is personal research, not a registered advisory recommendation. Data confidence: VERIFIED (IPO mechanics, RHP financials, macro prints) / ESTIMATED (valuation models, sector growth, D&A splits) / UNVERIFIED (5yr trends, full cash-flow detail — none exist for a Day-1 listing).<br>
+  Fonts: Space Grotesk, JetBrains Mono, Work Sans (Google Fonts). Report generated 2026-08-14, pre-market.
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('t0').style.display = 'block';
+});
+</script>
+
+</body>
+</html>
