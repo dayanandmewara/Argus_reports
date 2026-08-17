@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Molbio Diagnostics Limited — BQV v5.0 Report</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=IBM+Plex+Mono:wght@400;500;600&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+:root{
+  --teal:#0B4F4A;
+  --teal-dark:#062F2C;
+  --teal-deep:#04211F;
+  --saffron:#E8974A;
+  --saffron-soft:#F5C287;
+  --sage:#8FAE8B;
+  --sage-soft:#DCE9DA;
+  --ivory:#FBF7EF;
+  --paper:#FFFFFF;
+  --ink:#12211E;
+  --ink-soft:#4A5C58;
+  --line:#E1E4E0;
+  --pass:#2E8B57;
+  --marginal:#C98A1F;
+  --fail:#C0392B;
+  --verified:#2E8B57;
+  --estimated:#C98A1F;
+  --unverified:#C0392B;
+  --font-display:'Fraunces', serif;
+  --font-mono:'IBM Plex Mono', monospace;
+  --font-body:'Work Sans', sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--font-body);color:var(--ink);background:var(--ivory);line-height:1.5;}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0 0 8px 0;color:var(--teal-dark);}
+p{margin:0 0 10px 0;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--teal-deep) 0%, var(--teal) 65%, var(--teal-dark) 100%);color:var(--ivory);padding:26px 0 20px 0;max-height:none;}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;}
+.hero-name{font-size:2rem;font-weight:700;color:#fff;margin-bottom:2px;}
+.hero-sub{font-family:var(--font-mono);font-size:0.78rem;color:var(--saffron-soft);letter-spacing:0.03em;}
+.verdict-badge{background:var(--saffron);color:var(--teal-deep);font-family:var(--font-mono);font-weight:600;padding:8px 16px;border-radius:6px;font-size:0.95rem;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.25);}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.badge{font-family:var(--font-mono);font-size:0.72rem;padding:5px 10px;border-radius:20px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#fff;}
+.badge.cat{background:var(--sage);color:var(--teal-deep);border-color:var(--sage);font-weight:600;}
+.badge.ai-neutral{background:rgba(255,255,255,0.14);}
+.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.pill{font-family:var(--font-mono);font-size:0.65rem;padding:3px 8px;border-radius:10px;color:#fff;}
+.pill.v{background:var(--verified);}
+.pill.e{background:var(--estimated);}
+.pill.u{background:var(--unverified);}
+.lede{margin-top:14px;font-size:0.95rem;max-width:820px;color:var(--sage-soft);}
+
+/* TAB BAR */
+#tab-bar{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:2px solid var(--line);overflow-x:auto;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.06);}
+.tab-btn{font-family:var(--font-mono);font-size:0.72rem;background:none;border:none;border-bottom:3px solid transparent;padding:12px 14px;cursor:pointer;color:var(--ink-soft);font-weight:500;}
+.tab-btn.active{color:var(--teal-dark);border-bottom-color:var(--saffron);font-weight:600;}
+.tab-btn:hover{color:var(--teal);}
+
+.tab-content{display:none;padding:28px 0 50px 0;}
+.tab-content.active{display:block;}
+
+section{margin-bottom:30px;}
+h2.tab-title{font-size:1.5rem;border-left:5px solid var(--saffron);padding-left:12px;margin-bottom:16px;}
+h3.section-title{font-size:1.1rem;color:var(--teal);margin-top:22px;margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px;}
+
+/* GRIDS */
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0;}
+.metric-card{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--sage);border-radius:6px;padding:12px 14px;}
+.metric-card.v{border-left-color:var(--verified);}
+.metric-card.e{border-left-color:var(--estimated);}
+.metric-card.u{border-left-color:var(--unverified);}
+.metric-label{font-family:var(--font-mono);font-size:0.68rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.03em;}
+.metric-value{font-size:1.3rem;font-weight:700;color:var(--teal-dark);margin-top:4px;}
+.metric-note{font-size:0.72rem;color:var(--ink-soft);margin-top:2px;}
+
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.86rem;background:var(--paper);}
+th{background:var(--teal-dark);color:#fff;text-align:left;padding:9px 10px;font-family:var(--font-mono);font-weight:500;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.02em;}
+td{padding:8px 10px;border-bottom:1px solid var(--line);}
+tr:nth-child(even) td{background:#F6F3EA;}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin:12px 0;}
+.card.dark{background:var(--teal-deep);color:var(--ivory);border-color:var(--teal-dark);}
+.card.dark h3, .card.dark h4{color:var(--saffron-soft);}
+
+.grade-row{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0;}
+.grade-box{background:var(--paper);border:2px solid var(--line);border-radius:8px;padding:14px 18px;text-align:center;min-width:110px;}
+.grade-box .g{font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--teal-dark);}
+.grade-box .l{font-family:var(--font-mono);font-size:0.7rem;color:var(--ink-soft);text-transform:uppercase;}
+
+.stars{color:var(--saffron);font-size:1.1rem;letter-spacing:2px;}
+
+.pass{color:var(--pass);font-weight:600;}
+.marginal{color:var(--marginal);font-weight:600;}
+.fail{color:var(--fail);font-weight:600;}
+
+.scorecard-item{display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line);font-size:0.88rem;}
+.scorecard-item:last-child{border-bottom:none;}
+
+.moat-card{display:flex;justify-content:space-between;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:10px 14px;margin:8px 0;}
+
+.flywheel-box{background:linear-gradient(135deg,var(--teal-deep),var(--teal));color:#fff;border-radius:10px;padding:20px 22px;margin:16px 0;}
+.flywheel-box h3{color:var(--saffron-soft);}
+.flywheel-badge{display:inline-block;background:var(--ink-soft);color:#fff;font-family:var(--font-mono);padding:6px 14px;border-radius:20px;font-weight:600;font-size:0.85rem;}
+.flywheel-badge.cosmetic{background:#5A5A5A;}
+.flywheel-badge.forming{background:var(--marginal);}
+.flywheel-badge.confirmed{background:var(--pass);}
+
+.verdict-box{background:var(--teal-deep);color:var(--ivory);border-left:6px solid var(--saffron);border-radius:8px;padding:22px 24px;margin:18px 0;}
+.verdict-box .vtitle{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.05em;color:var(--saffron-soft);text-transform:uppercase;}
+.verdict-box .vmain{font-size:1.8rem;font-weight:700;margin:6px 0;font-family:var(--font-display);}
+.quote{font-style:italic;color:var(--sage-soft);border-left:3px solid var(--sage);padding-left:14px;margin-top:12px;font-size:0.9rem;}
+
+.upgrade-list{list-style:none;padding:0;margin:12px 0;}
+.upgrade-list li{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--saffron);padding:10px 14px;margin-bottom:8px;border-radius:4px;font-size:0.88rem;}
+.upgrade-num{font-family:var(--font-mono);color:var(--saffron);font-weight:700;margin-right:8px;}
+
+.gauge-wrap{display:flex;align-items:center;gap:16px;margin:14px 0;}
+.gauge-track{flex:1;height:14px;background:var(--line);border-radius:8px;overflow:hidden;position:relative;}
+.gauge-fill{height:100%;background:linear-gradient(90deg,var(--saffron),var(--teal));}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+
+.disc-box{background:#F0EBDD;border:1px solid var(--line);border-radius:6px;padding:14px 16px;font-size:0.78rem;color:var(--ink-soft);margin-top:20px;}
+
+.anchor-note{font-family:var(--font-mono);font-size:0.72rem;color:var(--ink-soft);}
+
+footer{background:var(--teal-deep);color:var(--sage-soft);padding:26px 0;font-size:0.78rem;margin-top:20px;}
+footer a{color:var(--saffron-soft);}
+
+@media (max-width:680px){
+  .metric-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col{grid-template-columns:1fr;}
+  .hero-name{font-size:1.5rem;}
+}
+@media (max-width:600px){
+  .metric-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <div>
+        <div class="hero-name">Molbio Diagnostics Limited</div>
+        <div class="hero-sub">NSE: MOLBIO · BSE: 544866 · Healthcare / Point-of-Care Molecular Diagnostics · IPO LISTING DAY — 17 Aug 2026</div>
+      </div>
+      <div class="verdict-badge">PASS — Priced For Perfection</div>
+    </div>
+    <div class="badge-row">
+      <span class="badge cat">CATEGORY B — High-Growth Global Compounder</span>
+      <span class="badge ai-neutral">⚪ AI OVERLAY: NEUTRAL</span>
+      <span class="badge">MACRO: Tailwind (Healthcare/Diagnostics)</span>
+      <span class="badge">DAY-1 IPO ADAPTATION ACTIVE</span>
+    </div>
+    <div class="pill-row">
+      <span class="pill v">VERIFIED — Listing price, subscription, anchor book</span>
+      <span class="pill e">ESTIMATED — Valuation, sector CAGR, alpha</span>
+      <span class="pill u">UNVERIFIED — 5yr trends, ROIC history, DSO/inventory</span>
+    </div>
+    <div class="lede">First Indian point-of-care molecular diagnostics company to list — WHO-endorsed, 100+ country patent coverage on the Truenat platform — but debuting on a Day-1 pop to ₹980 (+21.4% over the ₹807 issue price) on a year where operating cash flow collapsed 82% even as revenue grew 42%. Genuine moat, uncomfortable cash-flow arithmetic, rich price.</div>
+  </div>
+</div>
+
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="tab0" onclick="switchTab('tab0')">0 · Overview</button>
+  <button class="tab-btn" data-tab="tab1" onclick="switchTab('tab1')">1 · Macro & Growth</button>
+  <button class="tab-btn" data-tab="tab2" onclick="switchTab('tab2')">2 · Financials</button>
+  <button class="tab-btn" data-tab="tab3" onclick="switchTab('tab3')">3 · Moat</button>
+  <button class="tab-btn" data-tab="tab4" onclick="switchTab('tab4')">4 · Management</button>
+  <button class="tab-btn" data-tab="tab5" onclick="switchTab('tab5')">5 · Valuation</button>
+  <button class="tab-btn" data-tab="tab6" onclick="switchTab('tab6')">6 · Verdict</button>
+  <button class="tab-btn" data-tab="tab7" onclick="switchTab('tab7')">7 · Listing Mechanics</button>
+  <button class="tab-btn" data-tab="tab8" onclick="switchTab('tab8')">8 · Shareholding</button>
+  <button class="tab-btn" data-tab="tab9" onclick="switchTab('tab9')">9 · AI Intelligence</button>
+</div>
+
+<div class="wrap">
+
+<!-- TAB 0 OVERVIEW -->
+<div class="tab-content active" id="tab0">
+  <h2 class="tab-title">Overview</h2>
+
+  <div class="metric-grid">
+    <div class="metric-card v"><div class="metric-label">Listing Price</div><div class="metric-value">₹980</div><div class="metric-note">+21.44% vs issue price</div></div>
+    <div class="metric-card v"><div class="metric-label">Issue Price (Anchor)</div><div class="metric-value">₹807</div><div class="metric-note">Upper band of ₹768–807</div></div>
+    <div class="metric-card e"><div class="metric-label">Post-Issue Market Cap</div><div class="metric-value">≈₹11,290 Cr</div><div class="metric-note">At listing price; ≈₹9,300 Cr at issue price</div></div>
+    <div class="metric-card v"><div class="metric-label">Issue Size</div><div class="metric-value">₹939.7 Cr</div><div class="metric-note">₹200 Cr fresh + ₹739.7 Cr OFS</div></div>
+  </div>
+
+  <h3 class="section-title">Business Overview</h3>
+  <p>Molbio Diagnostics, incorporated in 2000 and headquartered in Verna, South Goa, is a point-of-care (POC) molecular diagnostics company built around its proprietary <b>Truenat</b> platform — a portable, battery-operated, chip-based real-time PCR system that delivers results in roughly an hour without requiring lab infrastructure, stable power, or cold-chain reagents. The platform tests for 30+ infectious and non-communicable diseases (TB, COVID-19, HIV, Hepatitis B/C, HPV, dengue and others) and is deployed in 90+ countries. In 2020 the WHO endorsed Truenat assays as an initial test for TB detection and rifampicin resistance — a rare validation for an Indian-origin diagnostics platform, and one competitors cannot simply replicate on a press release.</p>
+  <p>The business runs a razor/razorblade model: Truenat and Trueprep devices are the capital good; disease-specific micro-PCR test kits are the recurring, higher-margin consumable. Six manufacturing facilities span Goa (2), Bengaluru (2), Visakhapatnam, and Pune, with installed device capacity of 5,400 units as of March 2026. Subsidiaries extend into digital radiology and digital pathology (following the 2023 acquisition of Prognosys Medical Systems). The company converted from private to public limited in January 2025 ahead of this listing.</p>
+  <p>Backed by <b>Temasek Holdings</b> (invested 2022 at a reported ~$1.5bn valuation) and <b>Motilal Oswal Private Equity</b>, alongside founder-promoters Sriram Natarajan (CEO, 35 years in diagnostics) and Dr. Chandrasekhar Bhaskaran Nair (CTO, 33 years in bioprocess/tech development).</p>
+
+  <h3 class="section-title">Series Rationale — Why Category B</h3>
+  <p>Revenue grew from ₹836.56 Cr (FY24) to ₹1,445.69 Cr (FY26), a ~31.4% 2-year CAGR — comfortably clearing the Cat B >25% threshold. The global point-of-care testing market (₹USD 29.3bn → USD 67.1bn by 2030, ~17.9% CAGR per RHP/1Lattice) is large and underpenetrated, and Molbio's patent estate is a genuine structural asset. <b>However</b>, Cat B also requires "FCF accelerating" — and FY26 operating cash flow fell to ₹50.39 Cr from ₹287.10 Cr in FY25, an 82% collapse in the same year PAT margin compressed from 13.48% to 11.28%. That is a direct contradiction of the Cat B FCF criterion. I am keeping the Cat B classification because the growth, TAM, and moat characteristics dominate, but this is flagged explicitly rather than smoothed over — it is the single most important number in this report and it drives the PASS verdict in Tab 6.</p>
+
+  <h3 class="section-title">What Makes This One Interesting — and Difficult</h3>
+  <p><b>Interesting:</b> a real, hard-to-replicate technology moat (100+ country patents, WHO endorsement, first mover in India's TB elimination program) in a structurally growing global category, run by domain-expert founders with credible institutional backing.</p>
+  <p><b>Difficult:</b> 84.56% of FY26 revenue comes from Indian government bodies and international aid agencies, and 70.20% comes from TB kits alone — a concentration that makes revenue hostage to public-health budget cycles and a single disease's testing algorithm. Layer on the OCF collapse, a debt jump (₹123 Cr → ₹413 Cr), and an IPO structure where 78.7% of proceeds are an OFS exit for existing shareholders (only ₹200 Cr of the ₹940 Cr enters the company) — and a 57–69x trailing P/E on Day 1 leaves very little room for anything to go wrong.</p>
+
+  <h3 class="section-title">Framework Adaptation — Day-1 IPO</h3>
+  <p>Per the established IPO Day-1 protocol: the ₹807 issue price is used as the valuation anchor (not the ₹980 listing print) for all intrinsic-value work in Tab 5. Five-year ROE/ROIC/DSO/inventory trend checks are marked <span class="pill u" style="display:inline;">UNVERIFIED</span> — only 3 restated years (FY24–26) exist in the RHP and there is no trading history. Tab 7 (normally Technical Analysis) is replaced with listing-day mechanics: GMP trend, subscription breakdown, and anchor book detail. The anchor investor list is reproduced in full in Tab 8 per your request.</p>
+</div>
+
+<!-- TAB 1 MACRO & GROWTH -->
+<div class="tab-content" id="tab1">
+  <h2 class="tab-title">Macro & Growth</h2>
+
+  <h3 class="section-title">Macro Cycle Status Dashboard</h3>
+  <table>
+    <tr><th>Dimension</th><th>Status</th><th>Read-through</th></tr>
+    <tr><td>Rural Income Cycle</td><td class="pass">Neutral–Recovery</td><td>Limited direct relevance — Molbio's channel is government/institutional, not rural discretionary spend</td></tr>
+    <tr><td>Urban Consumption</td><td class="marginal">Neutral</td><td>Minor relevance via private-lab/hospital channel expansion</td></tr>
+    <tr><td>Input Cost Cycle</td><td class="marginal">Mild Headwind</td><td>EBITDA margin already compressed 225bps FY25→FY26; electronics/chip and logistics costs matter for device economics</td></tr>
+    <tr><td>RBI Rate Cycle</td><td class="pass">Neutral (5.25% repo, neutral stance)</td><td>Company just took on ₹289 Cr of incremental debt (FY26) — rate stability is a modest positive</td></tr>
+    <tr><td>Government Capex/Health Budget Cycle</td><td class="pass">Tailwind</td><td>National TB Elimination Program and decentralised diagnostics remain funded priorities — this is the company's core demand driver</td></tr>
+    <tr><td>AI Adoption Cycle</td><td class="marginal">Neutral</td><td>India's healthcare AI policy push (digital X-ray, AI triage) is real but not yet monetised by Molbio's core Truenat business</td></tr>
+  </table>
+  <p><b>Macro Composite: Tailwind</b> (government health infrastructure spend) · <b>AI Cycle Impact: Neutral</b></p>
+
+  <h3 class="section-title">Layer 1 — Macro Anchor</h3>
+  <div class="metric-grid">
+    <div class="metric-card v"><div class="metric-label">RBI FY27 Real GDP</div><div class="metric-value">6.7%</div></div>
+    <div class="metric-card v"><div class="metric-label">RBI FY27 CPI Forecast</div><div class="metric-value">5.0%</div></div>
+    <div class="metric-card e"><div class="metric-label">India Nominal GDP</div><div class="metric-value">~11.7%</div><div class="metric-note">Real + CPI, terminal growth ceiling</div></div>
+    <div class="metric-card v"><div class="metric-label">10-Yr G-Sec Yield</div><div class="metric-value">6.76%</div></div>
+  </div>
+  <p class="metric-note">Nifty 50 P/E: 20.6–20.8 (≈6% below 5-yr median of 22.09) — broad market fairly valued; Molbio's own multiple sits far above this, on trailing PAT.</p>
+
+  <h3 class="section-title">Layer 2 — Sector Growth Derivation</h3>
+  <table>
+    <tr><th>Sector</th><th>Stress</th><th>Base</th><th>Accel</th><th>AI Impact</th></tr>
+    <tr><td>Healthcare / Diagnostics (BQV table)</td><td>10–13%</td><td>14–18%</td><td>20–25%</td><td>WIDENER (sector-wide; not yet WIDENER at Molbio specifically)</td></tr>
+  </table>
+  <p>Global validation: point-of-care testing market projected USD 29.3bn → USD 67.1bn by 2030, a ~17.9% CAGR (RHP, citing 1Lattice) — sits between the Base and Accel bands above, supporting the sector-growth assumption used in Tab 5.</p>
+
+  <h3 class="section-title">Layer 3 — Company Alpha Over Sector</h3>
+  <table>
+    <tr><th>Source</th><th>Status</th><th>Stage 1 Alpha</th><th>Stage 2 Alpha</th></tr>
+    <tr><td>Market share gain (India POC-PCR)</td><td>Active</td><td>+3–4%</td><td>+1–2%</td></tr>
+    <tr><td>Premiumisation</td><td>N/A</td><td>+0%</td><td>+0%</td></tr>
+    <tr><td>Category/product expansion (radiology, digital pathology)</td><td>Potential</td><td>+1–2%</td><td>+2–3%</td></tr>
+    <tr><td>Geographic expansion (90+ countries, early monetisation)</td><td>Active</td><td>+2–3%</td><td>+3–4%</td></tr>
+    <tr><td>Pricing power</td><td>Exhausted (government tender pricing)</td><td>+0–1%</td><td>+0–1%</td></tr>
+    <tr><td>AI alpha (6a+6b+6c)</td><td>N/A — no confirmed flywheel</td><td>+0%</td><td>+0–1%</td></tr>
+    <tr><td><b>Total alpha</b></td><td>—</td><td><b>+6–10%</b></td><td><b>+6–11%</b></td></tr>
+  </table>
+
+  <h3 class="section-title">Growth Rate Summary Table</h3>
+  <table>
+    <tr><th>Parameter</th><th>STRESS</th><th>BASE</th><th>ACCEL</th></tr>
+    <tr><td>Macro state</td><td>GDP ~5.5%</td><td>GDP ~6.7%</td><td>GDP ~8%+</td></tr>
+    <tr><td>Sector growth</td><td>11%</td><td>16%</td><td>22%</td></tr>
+    <tr><td>Company alpha</td><td>+5%</td><td>+8%</td><td>+10%</td></tr>
+    <tr><td>AI alpha</td><td>+0%</td><td>+0%</td><td>+1%</td></tr>
+    <tr><td>Stage 1 FCF/Rev CAGR</td><td>12%</td><td>20%</td><td>28%</td></tr>
+    <tr><td>Stage 2 FCF CAGR (terminal)</td><td>6%</td><td>7.5%</td><td>9%</td></tr>
+    <tr><td>Terminal growth</td><td>6%</td><td>7.5%</td><td>9%</td></tr>
+    <tr><td>Margin direction</td><td>Compress further</td><td>Stabilise</td><td>Expand as scale kicks in</td></tr>
+    <tr><td>Key risk</td><td>Govt budget cut / OCF stays broken</td><td>OCF normalises over 2–3 quarters</td><td>Global expansion + margin recovery both land</td></tr>
+  </table>
+  <p><b>Sensitivity:</b> a 1% change in terminal growth rate changes IV by approximately 9–11%. A 1% change in Stage 1 growth changes IV by approximately 4–5%.</p>
+</div>
+
+<!-- TAB 2 FINANCIALS -->
+<div class="tab-content" id="tab2">
+  <h2 class="tab-title">Financials</h2>
+  <p class="metric-note">Day-1 adaptation: only 3 restated years (FY24–26) are available in the RHP. 5-year ROE/ROIC/DSO/inventory trend checks below are marked UNVERIFIED — treat with caution until 2–3 years of listed-company reporting accumulate.</p>
+
+  <h3 class="section-title">3-Year Financial Snapshot (Restated, RHP)</h3>
+  <table>
+    <tr><th>Metric (₹ Cr)</th><th>FY24</th><th>FY25</th><th>FY26</th></tr>
+    <tr><td>Revenue from Operations</td><td>836.56</td><td>1,027.94</td><td>1,445.69</td></tr>
+    <tr><td>Revenue Growth YoY</td><td>—</td><td>22.9%</td><td>40.6%</td></tr>
+    <tr><td>EBITDA</td><td class="metric-note">UNVERIFIED</td><td>256.64</td><td>328.24</td></tr>
+    <tr><td>EBITDA Margin</td><td>—</td><td>24.96%</td><td>22.71%</td></tr>
+    <tr><td>Net Profit (PAT)</td><td class="metric-note">≈83.6 (est.)</td><td>138.58</td><td>164.14</td></tr>
+    <tr><td>PAT Margin</td><td>≈10.0% (est.)</td><td>13.48%</td><td>11.28%</td></tr>
+    <tr><td>Operating Cash Flow (CFO)</td><td class="metric-note">UNVERIFIED</td><td>287.10</td><td>50.39</td></tr>
+    <tr><td>CFO / PAT (FCF Conversion)</td><td>—</td><td>207.2%</td><td>30.7%</td></tr>
+    <tr><td>Net Worth</td><td class="metric-note">UNVERIFIED</td><td class="metric-note">UNVERIFIED</td><td>1,308.78</td></tr>
+    <tr><td>Total Borrowings</td><td class="metric-note">UNVERIFIED</td><td>123.16</td><td>412.64</td></tr>
+    <tr><td>ROE (PAT / Net Worth)</td><td>UNVERIFIED</td><td>UNVERIFIED</td><td>≈12.5%</td></tr>
+  </table>
+  <p class="metric-note">Revenue CAGR FY24–26: ~31.4% [VERIFIED, RHP-sourced]. PAT CAGR FY24–26: ~40.1% [VERIFIED, RHP-sourced] — note PAT CAGR exceeding revenue CAGR over 2 years while FY26 margin itself compressed is a base-effect artefact of a weak FY24, not a trend to extrapolate.</p>
+
+  <h3 class="section-title">Financial Fortress Scorecard (Cat B/C/D standard)</h3>
+  <div class="card">
+    <div class="scorecard-item"><span>ROE ≥15% for 5 consecutive years</span><span class="fail">FAIL — only FY26 known (12.5%); prior years UNVERIFIED</span></div>
+    <div class="scorecard-item"><span>ROIC > WACC for 5 consecutive years</span><span class="marginal">UNVERIFIED — insufficient data</span></div>
+    <div class="scorecard-item"><span>Net cash preferred / net debt penalty</span><span class="marginal">MARGINAL — borrowings more than tripled in FY26 (₹123→₹413 Cr)</span></div>
+    <div class="scorecard-item"><span>Net profit margin ≥15%</span><span class="fail">FAIL — 11.28% FY26, and compressing</span></div>
+    <div class="scorecard-item"><span>FCF positive + growing; FCF conversion ≥80% of NI</span><span class="fail">FAIL — FY26 conversion 30.7%, down from 207% in FY25</span></div>
+    <div class="scorecard-item"><span>Owner earnings ≥ net income</span><span class="marginal">MARGINAL — cannot verify without D&A/SBC/maintenance capex detail; CFO collapse argues against it for FY26</span></div>
+    <div class="scorecard-item"><span>Pricing power proven</span><span class="marginal">MARGINAL — government tender-driven pricing caps this structurally</span></div>
+    <div class="scorecard-item"><span>Revenue CAGR ≥ macro-derived sector CAGR</span><span class="pass">PASS — 31.4% vs 14–18% base sector CAGR</span></div>
+    <div class="scorecard-item"><span>Predictable / recurring revenue</span><span class="pass">PASS — razor/razorblade consumables model, though govt-tender timing adds lumpiness</span></div>
+    <div class="scorecard-item"><span>Capital-light model (high ROIC, low reinvestment)</span><span class="marginal">MARGINAL — six manufacturing facilities is more capital-intensive than a pure-software or asset-light model</span></div>
+    <div class="scorecard-item"><span>Dividend payout &lt;80% of owner earnings</span><span class="pass">PASS — no dividend history disclosed; fully reinvesting</span></div>
+  </div>
+
+  <h3 class="section-title">Owner Earnings (Estimated — Day-1 Caveat)</h3>
+  <p>OE = Net Income + D&A + Non-cash FX + SBC − Maintenance CapEx ± WC Changes. The RHP data pulled here does not break out D&A, SBC, or maintenance-vs-growth capex, so this cannot be built bottom-up with confidence. Given the FY26 OCF/PAT gap, I am using a <b>conservative estimate of ₹140 Cr</b> for FY26 owner earnings (below reported PAT of ₹164.14 Cr) rather than assuming full owner-earnings-equals-net-income parity. This flows into Tab 5.</p>
+
+  <h3 class="section-title">Earnings Quality — O'Glove Framework</h3>
+  <table>
+    <tr><th>Test</th><th>Result</th></tr>
+    <tr><td>1. FCF Conversion (CFO/NI, available years)</td><td class="fail">FAIL for FY26 (30.7%) — sharp reversal from FY25 PASS (207%)</td></tr>
+    <tr><td>2. DSO Trend (3yr)</td><td class="marginal">UNVERIFIED — not disclosed in sources reviewed</td></tr>
+    <tr><td>3. Inventory Days (3yr)</td><td class="marginal">UNVERIFIED</td></tr>
+    <tr><td>4. Accounting Policy Stability</td><td class="pass">No red flags found — standard IPO restatement (share subdivision ₹10→₹1, 4:1 bonus issue July 2025) is procedural, not earnings-boosting</td></tr>
+    <tr><td>5. Gross Margin Consistency (proxy: EBITDA margin)</td><td class="marginal">MARGINAL — 225bps compression FY25→FY26</td></tr>
+  </table>
+  <p><b>Overall Grade: SUSPECT.</b> The FY26 operating cash flow collapse against a still-growing, still-profitable P&L is the single number this report leans on most. It could reflect a one-off working-capital build (receivables extension to government customers, inventory build for capacity expansion) ahead of a high-growth year — or it could be the first sign that reported profit is running ahead of collectable cash. One data point cannot distinguish the two. <b>Quality-adjusted: widen Margin of Safety +5% versus standard Cat B ×0.70.</b></p>
+</div>
+
+<!-- TAB 3 MOAT -->
+<div class="tab-content" id="tab3">
+  <h2 class="tab-title">Moat</h2>
+
+  <h3 class="section-title">Moat Sources</h3>
+  <div class="moat-card"><span>Patent protection — Truenat platform patented in 100+ countries</span><span class="stars">★★★★☆</span></div>
+  <div class="moat-card"><span>WHO endorsement (2020, TB/rifampicin resistance) — regulatory/clinical trust moat</span><span class="stars">★★★★☆</span></div>
+  <div class="moat-card"><span>First-mover embedded in India's National TB Elimination Program</span><span class="stars">★★★★☆</span></div>
+  <div class="moat-card"><span>Razor/razorblade recurring consumables revenue</span><span class="stars">★★★☆☆</span></div>
+  <div class="moat-card"><span>Switching costs (device + trained field workforce + government procurement inertia)</span><span class="stars">★★★☆☆</span></div>
+  <div class="moat-card"><span>Brand/scale — 90+ countries, but revenue heavily India-concentrated</span><span class="stars">★★☆☆☆</span></div>
+  <div class="moat-card"><span>Data flywheel</span><span class="stars">★☆☆☆☆</span></div>
+
+  <h3 class="section-title">ROIC as Moat Proof</h3>
+  <p class="metric-note">UNVERIFIED — no invested-capital breakdown available from Day-1 sources; cannot compute a reliable ROIC trend. Treat the moat grade below as qualitative (patent/endorsement-based) rather than ROIC-proven until FY27 annual report data is available.</p>
+
+  <h3 class="section-title">Macro Stress Test</h3>
+  <table>
+    <tr><th>Moat Source</th><th>In Stress Scenario</th><th>Why</th></tr>
+    <tr><td>Patents / WHO endorsement</td><td class="pass">HOLDS</td><td>Regulatory and IP moats are not macro-cyclical</td></tr>
+    <tr><td>Government/aid revenue (84.56% of FY26 sales)</td><td class="fail">WEAKENS</td><td>Public-health budgets are the first casualty of fiscal stress; this is the moat's biggest vulnerability, not its strength</td></tr>
+    <tr><td>TB kit concentration (70.20% of FY26 sales)</td><td class="marginal">WEAKENS if WHO algorithm shifts</td><td>Single-disease dependence means any change in global TB testing guidelines is a structural risk, not just a cyclical one</td></tr>
+    <tr><td>Recurring consumables</td><td class="pass">HOLDS</td><td>Installed base keeps generating kit demand even if new device placements slow</td></tr>
+  </table>
+
+  <div class="flywheel-box">
+    <h3>Data Flywheel Verdict</h3>
+    <div class="flywheel-badge cosmetic">COSMETIC — 0/3 confirmed</div>
+    <p style="margin-top:14px;">✗ Proprietary training data competitors cannot replicate — no evidence found; Truenat generates diagnostic results, not a training corpus feeding a model.<br>
+    ✗ More users/data measurably improves AI accuracy or relevance — no cited mechanism.<br>
+    ✗ Better AI attracts more users — no self-reinforcing loop described anywhere in available sources.</p>
+    <p style="margin-top:10px;">The subsidiary-level digital radiology/pathology business (post-Prognosys acquisition) is a services extension, not evidence of a Molbio-wide data flywheel. This does not upgrade the moat grade.</p>
+  </div>
+
+  <h3 class="section-title">Moat Threats</h3>
+  <ul>
+    <li>Cepheid (GeneXpert) is actively expanding local manufacturing in India to support TB access — a well-capitalised global incumbent targeting the same government channel.</li>
+    <li>Single-disease revenue concentration (TB, 70.20%) is a structural, not cyclical, vulnerability to policy or protocol change.</li>
+    <li>Government/aid-agency customer concentration (84.56%) caps pricing power and extends collection cycles — plausibly the direct cause of the FY26 OCF collapse.</li>
+  </ul>
+</div>
+
+<!-- TAB 4 MANAGEMENT -->
+<div class="tab-content" id="tab4">
+  <h2 class="tab-title">Management</h2>
+
+  <h3 class="section-title">Leadership</h3>
+  <table>
+    <tr><th>Name</th><th>Role</th><th>Background</th></tr>
+    <tr><td>Sriram Natarajan</td><td>Promoter, Executive Director & CEO</td><td>35 years in developing, manufacturing and marketing diagnostic devices/kits; previously built and exited Tulip Diagnostics (acquired by PerkinElmer, 2017)</td></tr>
+    <tr><td>Dr. Chandrasekhar Bhaskaran Nair</td><td>Promoter, Executive Director & CTO</td><td>33 years in bioprocess and technology development; co-founded Bigtec Labs, the R&D origin of the Truenat platform</td></tr>
+    <tr><td>Dr Balram Bhargava</td><td>Independent Director</td><td>Former Director General, ICMR — adds public-health/regulatory credibility given the government-channel concentration</td></tr>
+  </table>
+
+  <h3 class="section-title">Strengths</h3>
+  <ul>
+    <li>Founder-CEO and founder-CTO with genuinely deep, complementary domain expertise (commercial + technical) and a prior successful exit (Tulip Diagnostics) between them.</li>
+    <li>Institutional capital discipline from Temasek and Motilal Oswal PE, present since 2022, typically brings governance and reporting rigor ahead of listing.</li>
+    <li>Independent board includes a former ICMR Director General — relevant given the regulatory/government dependency.</li>
+  </ul>
+
+  <h3 class="section-title">Concerns</h3>
+  <ul>
+    <li><b>OFS-heavy issue structure:</b> of the ₹939.70 Cr raised, only ₹200 Cr (21.3%) is fresh capital into the company; ₹739.70 Cr (78.7%) is an offer-for-sale — existing shareholders, including promoters and PE investors, taking money off the table at listing. This is not disqualifying on its own (common at this stage), but it is a data point on insider conviction at this specific valuation, not a growth-capital raise.</li>
+    <li>Promoter holding dilutes from 46.65% pre-offer to an estimated 41–43% post-offer (sources vary slightly on the exact post-issue number) — worth confirming against the final listing-day shareholding disclosure rather than the pre-listing estimate used here.</li>
+    <li>Pledged-shares data not found in sources reviewed — mark UNVERIFIED rather than assumed clean.</li>
+  </ul>
+
+  <h3 class="section-title">Capital Allocation</h3>
+  <p>Fresh-issue proceeds (₹200 Cr) are earmarked for a new R&D facility, a Center of Excellence, and manufacturing automation/plant & machinery at the Goa and Visakhapatnam units, plus general corporate purposes — a reasonable, moat-reinforcing use of the primary capital raised, even though it is a small fraction of total issue size.</p>
+
+  <h3 class="section-title">Counter-Cyclical Behaviour</h3>
+  <p class="metric-note">UNVERIFIED — no listed-company track record exists yet to assess how management has historically behaved in a downturn (buybacks, cost discipline, capital return). This is a Day-1 structural gap, not a red flag in itself.</p>
+</div>
+
+<!-- TAB 5 VALUATION -->
+<div class="tab-content" id="tab5">
+  <h2 class="tab-title">Valuation & Margin of Safety</h2>
+  <p class="metric-note">Day-1 adaptation: all methods below anchor to the ₹807 issue price, not the ₹980 listing print. Owner earnings quality-adjusted per Tab 2 (SUSPECT → +5% MoS widening). WACC 13% (Cat B mid-point), Terminal P/E 20–25x, Terminal g 7.5% base (≤ nominal GDP ceiling of ~11.7%). Post-issue shares outstanding ≈11.52 Cr (derived from disclosed promoter share count ÷ promoter %).</p>
+
+  <div class="metric-grid">
+    <div class="metric-card e"><div class="metric-label">Issue Price P/E (trailing)</div><div class="metric-value">56.7x</div></div>
+    <div class="metric-card e"><div class="metric-label">Listing Price P/E (trailing)</div><div class="metric-value">68.8x</div></div>
+    <div class="metric-card e"><div class="metric-label">Earnings Yield @ Issue Price</div><div class="metric-value">1.76%</div><div class="metric-note">vs 6.76% 10yr G-Sec — negative ERP</div></div>
+    <div class="metric-card e"><div class="metric-label">FCF Yield (FY26 OCF)</div><div class="metric-value">0.54%</div><div class="metric-note">At issue-price market cap</div></div>
+  </div>
+
+  <h3 class="section-title">5-Method Summary Table (₹/share, ESTIMATED)</h3>
+  <table>
+    <tr><th>Method</th><th>Stress IV</th><th>Base IV</th><th>Accel IV</th><th>Note</th></tr>
+    <tr><td>Method 1 — DCF (2-stage)</td><td>₹320</td><td>₹462</td><td>₹610</td><td>Base owner earnings ₹140 Cr, 20% Stage-1 growth, 7.5% terminal</td></tr>
+    <tr><td>Method 2 — Owner Earnings Capitalisation</td><td>₹165</td><td>₹221</td><td>₹295</td><td>OE / (required return − g)</td></tr>
+    <tr><td>Method 3 — ROIC / EPV</td><td>₹85</td><td>₹110</td><td>₹140</td><td>No-growth floor value; excludes any expansion premium</td></tr>
+    <tr><td>Method 4 — P/E Earnings Power</td><td>₹310</td><td>₹376</td><td>₹427</td><td>20–25x forward EPS (₹17.09 est.)</td></tr>
+    <tr><td>Method 5 — Earnings Yield vs Bond</td><td colspan="3">Negative ERP at current price — not a supportive signal at either issue or listing price</td><td>EY 1.76% vs 6.76% risk-free</td></tr>
+    <tr><td><b>Blended Base IV (avg. of 4 quant. methods)</b></td><td colspan="3"><b>≈₹292 / share</b></td><td>—</td></tr>
+  </table>
+
+  <h3 class="section-title">Reading the Gap</h3>
+  <p>Every quantitative method lands between roughly ₹110 and ₹462 per share on a base case, with a blended base estimate of <b>≈₹292</b>. The issue price is ₹807 — roughly <b>2.8x</b> the blended base IV. The listing price of ₹980 is roughly <b>3.4x</b>. This is not a marginal overvaluation; it is a gap wide enough that the market is pricing in either (a) a materially more optimistic growth/margin path than the Base scenario above, or (b) a re-rating on qualitative factors (patent moat, WHO endorsement, scarcity as India's only listed POC molecular diagnostics pure-play) that these mechanical methods don't fully capture. Both may be partially true. The honest read: at this price, you are paying growth-stock multiples for a business whose most recent cash-flow print moved in the wrong direction.</p>
+
+  <h3 class="section-title">Margin of Safety Entry Zone</h3>
+  <div class="gauge-wrap">
+    <div class="gauge-track"><div class="gauge-fill" style="width:30%;"></div></div>
+    <span class="metric-note">Current price sits well above MoS entry zone</span>
+  </div>
+  <p><b>MoS Entry Zone (Base IV × 0.60–0.70, incl. +5% quality widening): ≈₹175–₹205 / share</b> — a 74–78% discount to the ₹807 issue price. This is a wide zone; it reflects genuine estimation uncertainty on Day 1 as much as it reflects "this stock is expensive." Treat it as the level at which the quantitative case turns favourable, not as a price target or a prediction.</p>
+
+  <h3 class="section-title">Relative Valuation (Sector Context)</h3>
+  <p>Domestic diagnostics-services comparables (Dr Lal PathLabs, Metropolis Healthcare) have historically traded in the 40–60x trailing P/E range as asset-light lab-services businesses with better cash conversion. Molbio is a device-and-kit manufacturer with heavier capex, government-tender revenue, and — this year — materially worse cash conversion, yet is priced at 57–69x. Relative to the closest domestic comp set, this screens rich rather than in line.</p>
+</div>
+
+<!-- TAB 6 VERDICT -->
+<div class="tab-content" id="tab6">
+  <h2 class="tab-title">Verdict</h2>
+
+  <h3 class="section-title">Four-Pillar Grades</h3>
+  <div class="grade-row">
+    <div class="grade-box"><div class="g">B+</div><div class="l">Moat</div></div>
+    <div class="grade-box"><div class="g">C</div><div class="l">Quality</div></div>
+    <div class="grade-box"><div class="g">B-</div><div class="l">Management</div></div>
+    <div class="grade-box"><div class="g">D+</div><div class="l">Valuation</div></div>
+  </div>
+  <p><span class="badge ai-neutral" style="color:var(--ink);border-color:var(--ink-soft);">⚪ AI OVERLAY: NEUTRAL</span> — no impact on conviction or target price; core thesis is entirely non-AI (patent + regulatory + channel moat).</p>
+
+  <div class="verdict-box">
+    <div class="vtitle">BQV v5.0 Verdict</div>
+    <div class="vmain">PASS</div>
+    <p>A genuinely good business — patent-protected, WHO-validated, embedded in a government program that isn't going away — priced on Day 1 at a level that requires the FY26 operating-cash-flow collapse to have been a one-off and the growth rate to keep compounding at 30%+ with margins holding. Every quantitative valuation method here lands well below both the issue and listing price. Structural quality flags (earnings-quality SUSPECT, OFS-heavy issue, single-disease/single-customer-type concentration) compound the price-extreme trigger. This is a "watch the tape, watch the next two quarters" name, not a Day-1 buy at these levels.</p>
+    <div class="quote">"Price is what you pay. Value is what you get." — the gap between the two here is currently one of the widest in this series.</div>
+  </div>
+
+  <h3 class="section-title">Upgrade Conditions (all must be specific and measurable)</h3>
+  <ul class="upgrade-list">
+    <li><span class="upgrade-num">1.</span>FY27 Q1 or Q2 operating cash flow recovers to ≥80% of net income for the quarter, reversing the FY26 CFO/PAT breakdown</li>
+    <li><span class="upgrade-num">2.</span>Price corrects toward the ₹175–₹205 MoS entry zone (a ~75-78% discount to issue price), or the blended Base IV re-rates upward on confirmed FY27 data</li>
+    <li><span class="upgrade-num">3.</span>Government/aid-agency revenue concentration falls below 75% of total revenue over two consecutive quarters, evidencing genuine private/export diversification</li>
+    <li><span class="upgrade-num">4.</span>TB kit revenue concentration falls below 60% of total revenue, evidencing genuine diagnostic-portfolio diversification</li>
+    <li><span class="upgrade-num">5.</span>Promoter/anchor shareholding holds flat or increases for 2 consecutive quarters post-lock-in expiry (first tranche unlocks 11 Sep 2026), rather than further selling</li>
+  </ul>
+
+  <h3 class="section-title">Series Tracker</h3>
+  <table>
+    <tr><th>Ticker</th><th>Category</th><th>Verdict</th><th>AI</th><th>Date</th></tr>
+    <tr><td>SUZLON</td><td>—</td><td>—</td><td>—</td><td>Prior run</td></tr>
+    <tr><td>AADHARHFC</td><td>—</td><td>—</td><td>—</td><td>Prior run</td></tr>
+    <tr><td>KNACK (IPO Day-1)</td><td>—</td><td>—</td><td>—</td><td>Prior run</td></tr>
+    <tr><td>FTNT</td><td>—</td><td>—</td><td>—</td><td>Prior run</td></tr>
+    <tr><td>LEAPINDIA (IPO Day-1)</td><td>—</td><td>—</td><td>—</td><td>Prior run</td></tr>
+    <tr><td><b>MOLBIO (IPO Day-1)</b></td><td><b>B</b></td><td><b>PASS</b></td><td>⚪</td><td><b>17 Aug 2026</b></td></tr>
+  </table>
+  <p class="metric-note">Tracker.csv auto-rebuilds from data/stocks/*.json via GitHub Action — this row reflects today's push only; full series history lives in the repo tracker.</p>
+</div>
+
+<!-- TAB 7 LISTING MECHANICS (replaces Technical Analysis — IPO Day-1) -->
+<div class="tab-content" id="tab7">
+  <h2 class="tab-title">Listing Mechanics — Day-1 Substitute for Technical Analysis</h2>
+  <p class="metric-note">No trading history exists yet, so standard technical analysis (moving averages, RSI, chart patterns) does not apply. This tab covers grey-market signal, subscription demand, and the anchor book instead — the Day-1 equivalent of technical read-through.</p>
+
+  <h3 class="section-title">Grey Market Premium (GMP) Trend</h3>
+  <table>
+    <tr><th>Date</th><th>GMP (₹)</th><th>Implied Premium</th></tr>
+    <tr><td>6 Aug 2026</td><td>₹220</td><td>~27.3%</td></tr>
+    <tr><td>10 Aug 2026 (issue open)</td><td>₹125</td><td>~15.5%</td></tr>
+    <tr><td>13 Aug 2026 (allotment day)</td><td>₹146</td><td>~18.1%</td></tr>
+    <tr><td>17 Aug 2026 (pre-listing)</td><td>₹120</td><td>~14.9%</td></tr>
+    <tr><td><b>17 Aug 2026 — Actual Listing</b></td><td><b>₹173</b></td><td><b>21.44%</b></td></tr>
+  </table>
+  <p>Listing performance <i>beat</i> the pre-listing GMP signal (actual +21.44% vs GMP-implied +14.9%) — a modestly bullish surprise on the day, though GMP is unofficial and unregulated and should be read as sentiment, not forecast.</p>
+
+  <h3 class="section-title">Subscription Breakdown (Final, 12 Aug 2026)</h3>
+  <table>
+    <tr><th>Category</th><th>Subscription</th></tr>
+    <tr><td>Overall</td><td>70.26x</td></tr>
+    <tr><td>Qualified Institutional Buyers (QIB)</td><td>186.39x</td></tr>
+    <tr><td>Non-Institutional Investors (NII/HNI)</td><td>49.80x</td></tr>
+    <tr><td>Retail Individual Investors (RII)</td><td>12.96x</td></tr>
+  </table>
+  <p>Bids received: 57,32,14,536 shares against 81,58,529 shares on offer. The QIB skew (186x vs 13x retail) signals institutional conviction well ahead of retail enthusiasm — consistent with a book dominated by informed, sector-focused domestic and global institutions (see anchor list, Tab 8).</p>
+
+  <h3 class="section-title">Listing-Day Print</h3>
+  <div class="metric-grid">
+    <div class="metric-card v"><div class="metric-label">NSE Open</div><div class="metric-value">₹980</div></div>
+    <div class="metric-card v"><div class="metric-label">BSE Open</div><div class="metric-value">₹980</div></div>
+    <div class="metric-card v"><div class="metric-label">Premium vs Issue Price</div><div class="metric-value">+21.44%</div></div>
+    <div class="metric-card e"><div class="metric-label">Gain per Lot (18 shares)</div><div class="metric-value">₹3,114</div></div>
+  </div>
+
+  <h3 class="section-title">Trade Structure Note</h3>
+  <p class="metric-note">Standard entry/stop-loss/target price-ladder guidance (per BQV framework's Section F) does not apply on Day 1 — there is no chart, no support/resistance, and no volume history to build R:R levels from. Revisit this tab once 10–15 trading sessions of price/volume data exist.</p>
+</div>
+
+<!-- TAB 8 SHAREHOLDING -->
+<div class="tab-content" id="tab8">
+  <h2 class="tab-title">Shareholding</h2>
+  <p class="metric-note">Day-1 adaptation: 5-quarter promoter/FII/DII trend tables do not exist yet for a company listing today. This tab presents the pre/post-issue snapshot plus the full anchor investor book, as requested.</p>
+
+  <h3 class="section-title">A. Promoter Holding — Pre/Post Offer</h3>
+  <table>
+    <tr><th>Metric</th><th>Pre-Offer</th><th>Post-Offer (est.)</th></tr>
+    <tr><td>Promoter Group Holding</td><td>46.65% (52,597,450 shares)</td><td>≈41–43% (estimates vary by source; confirm against final listing-day disclosure)</td></tr>
+    <tr><td>Pledged Shares</td><td colspan="2" class="metric-note">UNVERIFIED — not disclosed in sources reviewed</td></tr>
+  </table>
+  <p>Promoters: Sriram Natarajan, Dr. Chandrasekhar Bhaskaran Nair, Sangeetha Sriram, Shiva Sriram, Sowmya Sriram, and Exxora Trading LLP.</p>
+
+  <h3 class="section-title">B. FII / DII Holding</h3>
+  <p class="metric-note">UNVERIFIED — no 5-quarter FII/DII trend exists pre-listing. The anchor book below (33 institutional investors, ₹281.46 Cr, 29.95% of total issue) is the closest available proxy for Day-1 institutional positioning and sectoral-limit headroom is not yet applicable.</p>
+
+  <h3 class="section-title">C. Free Float & Structure</h3>
+  <div class="metric-grid">
+    <div class="metric-card e"><div class="metric-label">Est. Free Float Post-Listing</div><div class="metric-value">≈57–59%</div></div>
+    <div class="metric-card v"><div class="metric-label">Total Issue Shares</div><div class="metric-value">1,16,46,246</div></div>
+    <div class="metric-card v"><div class="metric-label">Anchor Allocation</div><div class="metric-value">29.95%</div><div class="metric-note">of total issue size</div></div>
+    <div class="metric-card u"><div class="metric-label">MSCI / Nifty Index Weight</div><div class="metric-value">N/A</div><div class="metric-note">Too early for index inclusion</div></div>
+  </div>
+
+  <h3 class="section-title">D. Full Anchor Investor Book (33 Investors, ₹281.46 Cr, allotted 7 Aug 2026 at ₹807/share)</h3>
+  <table>
+    <tr><th>Investor / Category</th><th>Type</th><th>Shares</th><th>Value</th><th>% of Anchor Book</th></tr>
+    <tr><td>Goldman Sachs India Equity Portfolio</td><td>Global institutional</td><td>3.09 lakh</td><td>₹25 Cr</td><td>8.88%</td></tr>
+    <tr><td>BlackRock Global Funds</td><td>Global institutional</td><td class="metric-note">Not individually disclosed</td><td class="metric-note">—</td><td class="metric-note">—</td></tr>
+    <tr><td>International Finance Corporation (IFC)</td><td>DFI / multilateral</td><td class="metric-note">Not individually disclosed</td><td class="metric-note">—</td><td class="metric-note">—</td></tr>
+    <tr><td>Mirae Asset MF</td><td>Domestic mutual fund</td><td colspan="3" rowspan="8" style="vertical-align:middle;">Domestic MF bloc: 23.54–23.55 lakh shares (67.51% of anchor book) across 19 schemes from 9 AMCs</td></tr>
+    <tr><td>Nippon India MF</td><td>Domestic mutual fund</td></tr>
+    <tr><td>Kotak Mahindra AMC</td><td>Domestic mutual fund</td></tr>
+    <tr><td>ICICI Prudential MF</td><td>Domestic mutual fund</td></tr>
+    <tr><td>HDFC MF</td><td>Domestic mutual fund</td></tr>
+    <tr><td>Tata MF</td><td>Domestic mutual fund</td></tr>
+    <tr><td>WhiteOak Capital</td><td>Domestic mutual fund</td></tr>
+    <tr><td>Edelweiss MF</td><td>Domestic mutual fund</td></tr>
+    <tr><td>Bajaj Life Insurance</td><td>Insurance (IRDAI)</td><td colspan="3" rowspan="2" style="vertical-align:middle;">Insurance bloc: 2.65–2.66 lakh shares (7.62% of anchor book), 10 life insurers total</td></tr>
+    <tr><td>HDFC Life Insurance</td><td>Insurance (IRDAI)</td></tr>
+    <tr><td><b>Top 10 anchors (combined)</b></td><td>—</td><td colspan="3"><b>59.34% of total anchor allocation</b> — concentrated institutional conviction</td></tr>
+  </table>
+  <p class="anchor-note">Lock-in: 50% of anchor shares unlock 11 Sep 2026; remaining 50% unlock 10 Nov 2026 (standard SEBI staggered-release structure). Individual share/value splits beyond Goldman Sachs were not disclosed at the aggregate-category level in sources reviewed — treat unlisted individual allocations as directionally accurate, not exact.</p>
+
+  <h3 class="section-title">E. Ownership Momentum & Risk Scores (Day-1 proxy)</h3>
+  <div class="metric-grid">
+    <div class="metric-card e"><div class="metric-label">Ownership Momentum Score</div><div class="metric-value">62/100</div><div class="metric-note">High-quality, diversified anchor book (Goldman Sachs, BlackRock, IFC + 9 domestic AMCs) offset by OFS-heavy structure</div></div>
+    <div class="metric-card e"><div class="metric-label">Shareholding Risk Score</div><div class="metric-value">55/100</div><div class="metric-note">Moderate — promoter dilution + anchor lock-in expiry (Sep/Nov 2026) both create near-term supply overhang risk</div></div>
+  </div>
+</div>
+
+<!-- TAB 9 AI INTELLIGENCE -->
+<div class="tab-content" id="tab9">
+  <h2 class="tab-title">AI Intelligence</h2>
+
+  <h3 class="section-title">A. AI Classification Dashboard</h3>
+  <div class="badge-row" style="margin-bottom:14px;">
+    <span class="badge cat" style="background:var(--sage);color:var(--ink);">Category B</span>
+    <span class="badge" style="background:#888;color:#fff;">⚪ AI Overlay: NEUTRAL</span>
+    <span class="badge" style="background:#5A5A5A;color:#fff;">Flywheel: COSMETIC</span>
+    <span class="badge" style="background:var(--marginal);color:#fff;">Phase: 1</span>
+  </div>
+  <p>Adoption-phase evidence: Molbio's core Truenat workflow is deterministic PCR chemistry read out on dedicated hardware, not a machine-learning system. The company's subsidiaries touch digital radiology/pathology, where AI-assisted image reading is an industry-standard adjacent capability — but no source reviewed cites Molbio deploying proprietary AI models, disclosing an AI R&D budget, or describing an AI-driven product roadmap. This places the company at Phase 1 (minimal/no disclosed AI deployment) on the adoption scale, [ESTIMATED].</p>
+
+  <h3 class="section-title">B. Data Flywheel Deep-Dive</h3>
+  <p><b>Q1 — What is the proprietary training data?</b> None identified. Truenat produces diagnostic test results (positive/negative + Ct values), not a labelled dataset feeding a continuously-improving model that Molbio has disclosed using.</p>
+  <p><b>Q2 — Does AI improve with more users?</b> No cited mechanism. No metric in any source reviewed ties device/kit volume to any AI accuracy or product improvement.</p>
+  <p><b>Q3 — Does better AI attract more users?</b> No evidence of any such loop; demand is driven by government program adoption and WHO/regulatory endorsement, not an AI feature set.</p>
+  <p><b>Flywheel Score: 1/10</b> (Data quality 0/3 + Improvement evidence 0/4 + Loop speed 1/3 — nominal credit only for the theoretical possibility via the digital pathology subsidiary).</p>
+
+  <h3 class="section-title">C. AI Value Chain Position</h3>
+  <p>Molbio sits closest to <b>Level 5 — AI-Enabled Incumbent</b> (a traditional hardware/diagnostics business that could layer AI on top of an existing distribution and installed base) rather than any AI-native level. Investment implication: if an AI overlay does eventually emerge (e.g., AI-assisted result interpretation, predictive stocking/logistics for government tenders), it would most plausibly arrive as a bolt-on efficiency tool, not a new moat — consistent with the NEUTRAL overlay rather than WIDENER.</p>
+
+  <h3 class="section-title">D. India AI Opportunity — Structural Advantages</h3>
+  <table>
+    <tr><th>Structural Advantage</th><th>Applies to Molbio?</th><th>Explanation</th></tr>
+    <tr><td>India Stack data access (UPI/Aadhaar)</td><td class="fail">No</td><td>Diagnostic device data isn't routed through India Stack rails in any disclosed way</td></tr>
+    <tr><td>Vernacular AI benefit</td><td class="fail">No</td><td>Not a language-facing consumer product</td></tr>
+    <tr><td>India Stack infra leverage (ONDC/OCEN/DigiLocker)</td><td class="marginal">Potential, unrealised</td><td>Health-records digitisation (ABDM) could someday intersect with Molbio's device data, but nothing disclosed today</td></tr>
+    <tr><td>AI talent cost arbitrage</td><td class="marginal">Indirect</td><td>India R&D base (Bigtec Labs, Bengaluru) gives underlying cost advantage for any future AI hire, but not currently exploited for AI specifically</td></tr>
+  </table>
+
+  <h3 class="section-title">F. AI Opportunity Score</h3>
+  <div class="gauge-wrap">
+    <div class="gauge-track"><div class="gauge-fill" style="width:20%;"></div></div>
+    <span class="metric-value" style="font-size:1.1rem;">20/100</span>
+  </div>
+  <table>
+    <tr><th>Component</th><th>Score</th></tr>
+    <tr><td>Data Flywheel</td><td>1/20</td></tr>
+    <tr><td>Adoption Phase Timing</td><td>4/20</td></tr>
+    <tr><td>Value Chain Position</td><td>6/20</td></tr>
+    <tr><td>India Structural Advantage</td><td>5/20</td></tr>
+    <tr><td>AI Threat Resistance</td><td>4/20 (n/a — not a threat scenario, but no offsetting AI-defensibility either)</td></tr>
+  </table>
+  <p><b>Portfolio Role: NEUTRAL (20–40 band).</b> AI is not a factor in this thesis in either direction — the entire investment case rests on the patent/regulatory/channel moat covered in Tab 3, and the entire caution rests on price and cash-flow quality covered in Tabs 2 and 5.</p>
+</div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <p><b>Disclaimer:</b> This report is generated for research and educational purposes and does not constitute investment advice. Data is sourced from the Molbio Diagnostics RHP, exchange filings, and financial media as available on 17 August 2026 (IPO listing day) and is subject to the confidence labels shown throughout (VERIFIED / ESTIMATED / UNVERIFIED). Securities market investments are subject to market risk. Please read all offer-related documents carefully and consult a SEBI-registered investment advisor before making investment decisions. Neither the author nor any affiliated system is a registered investment advisor.</p>
+    <p style="margin-top:8px;">Buffett Quality-Value Series v5.0 · Fonts: Fraunces, IBM Plex Mono, Work Sans (Google Fonts) · Report generated 17 Aug 2026</p>
+  </div>
+</footer>
+
+<script>
+var TAB_BAR_TOP = 0;
+window.addEventListener('load', function () {
+  var tabBar = document.getElementById('tab-bar');
+  if (tabBar) {
+    var el = tabBar, top = 0;
+    while (el) { top += el.offsetTop; el = el.offsetParent; }
+    TAB_BAR_TOP = top;
+  }
+});
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(function(btn){ btn.classList.remove('active'); });
+  document.getElementById(tabId).style.display = 'block';
+  var activeBtn = document.querySelector('[data-tab="' + tabId + '"]');
+  if (activeBtn) { activeBtn.classList.add('active'); }
+  window.scrollTo({ top: TAB_BAR_TOP, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
